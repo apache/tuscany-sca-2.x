@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2005 The Apache Software Foundation or its licensors, as applicable.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.apache.tuscany.message/src"
+    editDirectory="/org.apache.tuscany.message.edit/src" editorDirectory="/org.apache.tuscany.message.editor/src"
+    modelPluginID="org.apache.tuscany.message" runtimeJar="true" modelName="Message"
+    editPluginClass="org.xmlsoap.schemas.soap.envelope.provider.MessageEditPlugin"
+    editorPluginClass="org.xmlsoap.schemas.soap.envelope.presentation.MessageEditorPlugin"
+    rootExtendsInterface="" rootExtendsClass="org.eclipse.emf.ecore.sdo.impl.EDataObjectImpl"
+    rootImplementsInterface="org.eclipse.emf.ecore.sdo.InternalEDataObject" suppressEMFTypes="true"
+    featureMapWrapperInterface="commonj.sdo.Sequence" featureMapWrapperInternalInterface="org.eclipse.emf.ecore.sdo.util.ESequence"
+    featureMapWrapperClass="org.eclipse.emf.ecore.sdo.util.BasicESequence" importerID="org.eclipse.xsd.ecore.importer">
+  <foreignModel>../../src/model/soap-message.xsd</foreignModel>
+  <staticPackages>http://www.eclipse.org/emf/2003/SDO</staticPackages>
+  <modelPluginVariables>EMF_COMMONJ_SDO=org.eclipse.emf.commonj.sdo</modelPluginVariables>
+  <modelPluginVariables>EMF_ECORE_SDO=org.eclipse.emf.ecore.sdo</modelPluginVariables>
+  <genPackages prefix="Message" basePackage="org.apache.tuscany" ecorePackage="soap-message.ecore#/">
+    <genDataTypes ecoreDataType="soap-message.ecore#//FaultcodeEnum"/>
+    <genClasses ecoreClass="soap-message.ecore#//BodyElement">
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//BodyElement/any"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//BodyElement/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="soap-message.ecore#//DocumentRoot">
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//DocumentRoot/mixed"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference soap-message.ecore#//DocumentRoot/xMLNSPrefixMap"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference soap-message.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference soap-message.ecore#//DocumentRoot/bodyElement"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference soap-message.ecore#//DocumentRoot/envelope"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference soap-message.ecore#//DocumentRoot/faultElement"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference soap-message.ecore#//DocumentRoot/headerElement"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference soap-message.ecore#//DocumentRoot/notlUnderstoodElement"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference soap-message.ecore#//DocumentRoot/upgradeElement"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//DocumentRoot/encodingStyle"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//DocumentRoot/mustUnderstand"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//DocumentRoot/relay"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//DocumentRoot/role"/>
+    </genClasses>
+    <genClasses ecoreClass="soap-message.ecore#//FaultCodeElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//FaultCodeElement/value"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference soap-message.ecore#//FaultCodeElement/subcode"/>
+    </genClasses>
+    <genClasses ecoreClass="soap-message.ecore#//FaultDetailElement">
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//FaultDetailElement/any"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//FaultDetailElement/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="soap-message.ecore#//FaultElement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference soap-message.ecore#//FaultElement/code"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference soap-message.ecore#//FaultElement/reason"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//FaultElement/node"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//FaultElement/role"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference soap-message.ecore#//FaultElement/detail"/>
+    </genClasses>
+    <genClasses ecoreClass="soap-message.ecore#//FaultReasonElement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference soap-message.ecore#//FaultReasonElement/text"/>
+    </genClasses>
+    <genClasses ecoreClass="soap-message.ecore#//FaultReasonTextElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//FaultReasonTextElement/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//FaultReasonTextElement/lang"/>
+    </genClasses>
+    <genClasses ecoreClass="soap-message.ecore#//FaultSubCodeElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//FaultSubCodeElement/value"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference soap-message.ecore#//FaultSubCodeElement/subcode"/>
+    </genClasses>
+    <genClasses ecoreClass="soap-message.ecore#//HeaderElement">
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//HeaderElement/any"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//HeaderElement/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="soap-message.ecore#//Message">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference soap-message.ecore#//Message/headerElement"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference soap-message.ecore#//Message/bodyElement"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//Message/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="soap-message.ecore#//NotUnderstoodType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//NotUnderstoodType/qname"/>
+    </genClasses>
+    <genClasses ecoreClass="soap-message.ecore#//SupportedEnvElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute soap-message.ecore#//SupportedEnvElement/qname"/>
+    </genClasses>
+    <genClasses ecoreClass="soap-message.ecore#//UpgradeType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference soap-message.ecore#//UpgradeType/supportedEnvelope"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *  Copyright (c) 2005 The Apache Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ -->
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/tuscany.runtime.binding.axis/src/main/java"
+    editDirectory="/org.apache.tuscany.binding.axis.edit/src" editorDirectory="/org.apache.tuscany.binding.axis.editor/src"
+    modelPluginID="tuscany.runtime.binding.axis" modelName="Sca-assembly-webservice"
+    editPluginClass="org.apache.tuscany.binding.axis.edit.provider.WebServiceAssemblyEditPlugin"
+    editorPluginClass="org.apache.tuscany.binding.axis.editor.WebServiceAssemblyEditorPlugin"
+    rootExtendsInterface="" rootExtendsClass="org.eclipse.emf.ecore.sdo.impl.EDataObjectImpl"
+    rootImplementsInterface="org.eclipse.emf.ecore.sdo.InternalEDataObject" suppressEMFTypes="true"
+    featureMapWrapperInterface="commonj.sdo.Sequence" featureMapWrapperInternalInterface="org.eclipse.emf.ecore.sdo.util.ESequence"
+    featureMapWrapperClass="org.eclipse.emf.ecore.sdo.util.BasicESequence" testsDirectory="/tuscany.runtime.binding.axis/src/test/java"
+    testSuiteClass="org.apache.tuscany.binding.axis.assembly.sdo.tests.WebServiceAssemblyTests"
+    booleanFlagsField="" importerID="org.eclipse.xsd.ecore.importer" usedGenPackages="sca-assembly.genmodel#//assembly">
+  <foreignModel>sca-binding-webservice.xsd</foreignModel>
+  <staticPackages>http://www.eclipse.org/emf/2003/SDO</staticPackages>
+  <modelPluginVariables>EMF_COMMONJ_SDO=org.eclipse.emf.commonj.sdo</modelPluginVariables>
+  <modelPluginVariables>EMF_ECORE_SDO=org.eclipse.emf.ecore.sdo</modelPluginVariables>
+  <genPackages prefix="WebServiceAssembly" basePackage="org.apache.tuscany.binding.axis"
+      disposableProviderFactory="true" adapterFactory="false" interfacePackageSuffix="binding"
+      classPackageSuffix="binding.impl" utilityPackageSuffix="binding.util" testsPackageSuffix="binding.tests"
+      ecorePackage="sca-assembly-webservice.ecore#/">
+    <genClasses ecoreClass="sca-assembly-webservice.ecore#//DocumentRoot">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly-webservice.ecore#//DocumentRoot/mixed"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference sca-assembly-webservice.ecore#//DocumentRoot/xMLNSPrefixMap"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference sca-assembly-webservice.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference sca-assembly-webservice.ecore#//DocumentRoot/bindingWs"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly-webservice.ecore#//WebServiceBinding">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly-webservice.ecore#//WebServiceBinding/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly-webservice.ecore#//WebServiceBinding/port"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly-webservice.ecore#//WebServiceBinding/anyAttribute"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

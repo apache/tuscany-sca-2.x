@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4" relativePaths="true" type="JAVA_MODULE">
+  <component name="ModuleRootManager" />
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <exclude-output />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="emf" level="application" />
+    <orderEntry type="library" name="emf-ecore-sdo-2.1.1" level="application" />
+    <orderEntry type="library" name="commonj-sdo-2.1.0" level="application" />
+    <orderEntry type="module" module-name="spec.sca" />
+    <orderEntry type="library" name="junit" level="application" />
+    <orderEntryProperties />
+  </component>
+</module>
+

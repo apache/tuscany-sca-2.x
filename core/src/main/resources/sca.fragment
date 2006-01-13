@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="ASCII"?>
+<!--
+  Copyright (c) 2005 The Apache Software Foundation or its licensors, as applicable.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<moduleFragment xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
+
+                name="org.apache.tuscany.core">
+
+    <component name="org.apache.tuscany.core.pipeline.TuscanyCorePipeline">
+        <implementation.system class="org.apache.tuscany.core.pipeline.impl.TuscanyCoreCreationPipelineImpl"/>
+        <references>
+            <v:entryPointBindingExtensionPoint>org.apache.tuscany.core.pipeline.EntryPointBindingExtensionPoint</v:entryPointBindingExtensionPoint>
+            <v:referenceExtensionPoint>org.apache.tuscany.core.pipeline.ReferenceExtensionPoint</v:referenceExtensionPoint>
+            <v:serviceExtensionPoint>org.apache.tuscany.core.pipeline.ServiceExtensionPoint</v:serviceExtensionPoint>
+            <v:externalServiceExtensionPoint>org.apache.tuscany.core.pipeline.ExternalServiceExtensionPoint</v:externalServiceExtensionPoint>
+            <v:externalServiceBindingExtensionPoint>org.apache.tuscany.core.pipeline.ExternalServiceBindingExtensionPoint</v:externalServiceBindingExtensionPoint>
+        </references>
+    </component>
+
+    <component name="org.apache.tuscany.core.pipeline.EntryPointBindingExtensionPoint">
+        <implementation.system class="org.apache.tuscany.core.pipeline.impl.EntryPointBindingExtensionPointImpl"/>
+        <references>
+            <v:entryPoint>org.apache.tuscany.core.pipeline.EntryPointExtensionPoint</v:entryPoint>
+        </references>
+    </component>
+
+    <component name="org.apache.tuscany.core.pipeline.EntryPointExtensionPoint">
+        <implementation.system class="org.apache.tuscany.core.pipeline.impl.EntryPointExtensionPointImpl"/>
+        <references>
+            <v:reference>org.apache.tuscany.core.pipeline.ReferenceExtensionPoint</v:reference>
+            <v:binding>org.apache.tuscany.core.pipeline.EntryPointBindingExtensionPoint</v:binding>
+        </references>
+    </component>
+
+    <component name="org.apache.tuscany.core.pipeline.ReferenceExtensionPoint">
+        <implementation.system class="org.apache.tuscany.core.pipeline.impl.ReferenceExtensionPointImpl"/>
+        <references>
+            <v:entryPoint>org.apache.tuscany.core.pipeline.EntryPointExtensionPoint</v:entryPoint>
+            <v:wire>org.apache.tuscany.core.pipeline.WireSourceExtensionPoint</v:wire>
+        </references>
+    </component>
+
+    <component name="org.apache.tuscany.core.pipeline.WireSourceExtensionPoint">
+        <implementation.system class="org.apache.tuscany.core.pipeline.impl.WireSourceExtensionPointImpl"/>
+        <references>
+            <v:reference>org.apache.tuscany.core.pipeline.ReferenceExtensionPoint</v:reference>
+            <v:wire>org.apache.tuscany.core.pipeline.WireExtensionPoint</v:wire>
+        </references>
+    </component>
+
+    <component name="org.apache.tuscany.core.pipeline.WireExtensionPoint">
+        <implementation.system class="org.apache.tuscany.core.pipeline.impl.WireExtensionPointImpl"/>
+        <references>
+            <v:source>org.apache.tuscany.core.pipeline.WireSourceExtensionPoint</v:source>
+            <v:target>org.apache.tuscany.core.pipeline.WireTargetExtensionPoint</v:target>
+        </references>
+    </component>
+
+    <component name="org.apache.tuscany.core.pipeline.WireTargetExtensionPoint">
+        <implementation.system class="org.apache.tuscany.core.pipeline.impl.WireTargetExtensionPointImpl"/>
+        <references>
+            <v:wire>org.apache.tuscany.core.pipeline.WireExtensionPoint</v:wire>
+            <v:service>org.apache.tuscany.core.pipeline.ServiceExtensionPoint</v:service>
+            <v:externalService>org.apache.tuscany.core.pipeline.ExternalServiceExtensionPoint</v:externalService>
+        </references>
+    </component>
+
+    <component name="org.apache.tuscany.core.pipeline.ServiceExtensionPoint">
+        <implementation.system class="org.apache.tuscany.core.pipeline.impl.ServiceExtensionPointImpl"/>
+        <references>
+            <v:wire>org.apache.tuscany.core.pipeline.WireTargetExtensionPoint</v:wire>
+            <v:implementation>org.apache.tuscany.core.pipeline.ImplementationExtensionPoint</v:implementation>
+        </references>
+    </component>
+
+    <component name="org.apache.tuscany.core.pipeline.ImplementationExtensionPoint">
+        <implementation.system class="org.apache.tuscany.core.pipeline.impl.ImplementationExtensionPointImpl"/>
+        <references>
+            <v:service>org.apache.tuscany.core.pipeline.ServiceExtensionPoint</v:service>
+        </references>
+    </component>
+
+    <component name="org.apache.tuscany.core.pipeline.ExternalServiceExtensionPoint">
+        <implementation.system class="org.apache.tuscany.core.pipeline.impl.ExternalServiceExtensionPointImpl"/>
+        <references>
+            <v:wire>org.apache.tuscany.core.pipeline.WireTargetExtensionPoint</v:wire>
+            <v:binding>org.apache.tuscany.core.pipeline.ExternalServiceBindingExtensionPoint</v:binding>
+        </references>
+    </component>
+
+    <component name="org.apache.tuscany.core.pipeline.ExternalServiceBindingExtensionPoint">
+        <implementation.system class="org.apache.tuscany.core.pipeline.impl.ExternalServiceBindingExtensionPointImpl"/>
+        <references>
+            <v:externalService>org.apache.tuscany.core.pipeline.ExternalServiceExtensionPoint</v:externalService>
+        </references>
+    </component>
+
+    <component name="org.apache.tuscany.core.pipeline.PipelineExtensionImplementationHandler">
+        <implementation.system class="org.apache.tuscany.core.pipeline.impl.PipelineExtensionImplementationHandlerImpl"/>
+    </component>
+
+    <wire>
+        <source.uri>org.apache.tuscany.core.pipeline.ImplementationExtensionPoint/extensions</source.uri>
+        <target.uri>org.apache.tuscany.core.pipeline.PipelineExtensionImplementationHandler</target.uri>
+    </wire>
+
+</moduleFragment>

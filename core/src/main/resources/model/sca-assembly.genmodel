@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/tuscany.runtime.model/src/main/java"
+    editDirectory="/org.apache.tuscany.model.edit/src" editorDirectory="/org.apache.tuscany.model.editor/src"
+    modelPluginID="tuscany.runtime.model" runtimeJar="true" modelName="Sca-assembly"
+    editPluginClass="org.apache.tuscany.model.edit.provider.ModelEditPlugin" editorPluginClass="org.apache.tuscany.model.editor.ModelEditorPlugin"
+    updateClasspath="false" rootExtendsInterface="" rootExtendsClass="org.eclipse.emf.ecore.sdo.impl.EDataObjectImpl"
+    rootImplementsInterface="org.eclipse.emf.ecore.sdo.InternalEDataObject" suppressEMFTypes="true"
+    featureMapWrapperInterface="commonj.sdo.Sequence" featureMapWrapperInternalInterface="org.eclipse.emf.ecore.sdo.util.ESequence"
+    featureMapWrapperClass="org.eclipse.emf.ecore.sdo.util.BasicESequence" testsDirectory="/tuscany.runtime.model/src/test/java"
+    testSuiteClass="org.apache.tuscany.model.assembly.sdo.tests.AssemblyTests" booleanFlagsField=""
+    importerID="org.eclipse.xsd.ecore.importer">
+  <foreignModel>sca.xsd</foreignModel>
+  <staticPackages>http://www.eclipse.org/emf/2003/SDO</staticPackages>
+  <modelPluginVariables>EMF_COMMONJ_SDO=org.eclipse.emf.commonj.sdo</modelPluginVariables>
+  <modelPluginVariables>EMF_ECORE_SDO=org.eclipse.emf.ecore.sdo</modelPluginVariables>
+  <genPackages prefix="Assembly" basePackage="org.apache.tuscany.model" adapterFactory="false"
+      interfacePackageSuffix="sdo" classPackageSuffix="sdo.impl" utilityPackageSuffix="sdo.impl"
+      testsPackageSuffix="sdo.tests" ecorePackage="sca-assembly.ecore#/">
+    <genEnums ecoreEnum="sca-assembly.ecore#//OverrideOptions">
+      <genEnumLiterals ecoreEnumLiteral="sca-assembly.ecore#//OverrideOptions/no"/>
+      <genEnumLiterals ecoreEnumLiteral="sca-assembly.ecore#//OverrideOptions/may"/>
+      <genEnumLiterals ecoreEnumLiteral="sca-assembly.ecore#//OverrideOptions/must"/>
+    </genEnums>
+    <genDataTypes ecoreDataType="sca-assembly.ecore#//Multiplicity"/>
+    <genDataTypes ecoreDataType="sca-assembly.ecore#//OverrideOptionsObject"/>
+    <genClasses ecoreClass="sca-assembly.ecore#//Binding">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Binding/uri"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//Component">
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//Component/implementation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//Component/properties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//Component/references"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Component/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Component/name"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Component/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//ComponentType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//ComponentType/services"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//ComponentType/references"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference sca-assembly.ecore#//ComponentType/properties"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ComponentType/any"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ComponentType/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//DocumentRoot">
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//DocumentRoot/mixed"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//DocumentRoot/xMLNSPrefixMap"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//DocumentRoot/binding"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference sca-assembly.ecore#//DocumentRoot/bindingSca"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//DocumentRoot/componentType"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//DocumentRoot/implementation"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//DocumentRoot/interface"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference sca-assembly.ecore#//DocumentRoot/interfaceJava"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference sca-assembly.ecore#//DocumentRoot/interfaceWsdl"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//DocumentRoot/module"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//DocumentRoot/moduleFragment"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//DocumentRoot/source"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//DocumentRoot/sourceEpr"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//DocumentRoot/sourceUri"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//DocumentRoot/subsystem"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//DocumentRoot/target"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//DocumentRoot/targetEpr"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//DocumentRoot/targetUri"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//EntryPoint">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//EntryPoint/interfaceGroup"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//EntryPoint/interface"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//EntryPoint/bindingGroup"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//EntryPoint/binding"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//EntryPoint/references"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//EntryPoint/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//EntryPoint/multiplicity"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//EntryPoint/name"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//EntryPoint/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//ExternalService">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ExternalService/interfaceGroup"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//ExternalService/interface"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ExternalService/bindingsGroup"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference sca-assembly.ecore#//ExternalService/bindings"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ExternalService/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ExternalService/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ExternalService/overridable"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ExternalService/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//Implementation"/>
+    <genClasses ecoreClass="sca-assembly.ecore#//Interface"/>
+    <genClasses ecoreClass="sca-assembly.ecore#//JavaInterface">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//JavaInterface/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//JavaInterface/callbackInterface"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//JavaInterface/interface"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//JavaInterface/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//Module"/>
+    <genClasses ecoreClass="sca-assembly.ecore#//ModuleComponent">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//ModuleComponent/properties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//ModuleComponent/references"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ModuleComponent/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ModuleComponent/module"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ModuleComponent/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ModuleComponent/uri"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ModuleComponent/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//ModuleFragment">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//ModuleFragment/entryPoints"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//ModuleFragment/components"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//ModuleFragment/externalServices"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//ModuleFragment/wires"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ModuleFragment/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ModuleFragment/name"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ModuleFragment/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//ModuleWire">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ModuleWire/sourceUri"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ModuleWire/targetUri"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ModuleWire/any"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ModuleWire/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//Property">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Property/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Property/default"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Property/many"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Property/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Property/required"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Property/propertyType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Property/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//PropertyValues">
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//PropertyValues/any"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//PropertyValues/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//Reference">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Reference/interfaceGroup"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//Reference/interface"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Reference/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Reference/multiplicity"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Reference/name"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Reference/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//ReferenceValues">
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ReferenceValues/any"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//ReferenceValues/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//SCABinding">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//SCABinding/any"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//SCABinding/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//Service">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Service/interfaceGroup"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//Service/interface"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Service/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Service/name"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Service/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//Subsystem">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//Subsystem/entryPoints"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//Subsystem/moduleComponents"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//Subsystem/externalServices"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//Subsystem/wires"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Subsystem/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Subsystem/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Subsystem/uri"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//Subsystem/anyAttribute"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//SystemWire">
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//SystemWire/sourceGroup"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//SystemWire/source"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//SystemWire/targetGroup"/>
+      <genFeatures property="None" notify="false" createChild="true" ecoreFeature="ecore:EReference sca-assembly.ecore#//SystemWire/target"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//SystemWire/any"/>
+    </genClasses>
+    <genClasses ecoreClass="sca-assembly.ecore#//WSDLPortType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//WSDLPortType/any"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//WSDLPortType/callbackInterface"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//WSDLPortType/interface"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute sca-assembly.ecore#//WSDLPortType/anyAttribute"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

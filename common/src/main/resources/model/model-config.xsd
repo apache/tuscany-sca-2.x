@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *  Copyright (c) 2005 The Apache Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://org.apache.tuscany/xmlns/model/config/0.9"
+        xmlns:config="http://org.apache.tuscany/xmlns/model/config/0.9"
+        xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+        ecore:nsPrefix="config"
+        ecore:package="org.apache.tuscany.model.config">
+
+    <element name="modelConfiguration" type="config:ModelConfiguration"/>
+    <complexType name="ModelConfiguration">
+        <sequence>
+            <element name="generatedPackage" type="config:GeneratedPackage" maxOccurs="unbounded" minOccurs="0" ecore:name="generatedPackages"/>
+            <element name="dynamicPackage" type="config:DynamicPackage" maxOccurs="unbounded" minOccurs="0" ecore:name="dynamicPackages"/>
+            <element name="dynamicPackageLoader" type="config:DynamicPackageLoader" maxOccurs="unbounded" minOccurs="0" ecore:name="dynamicPackageLoaders"/>
+            <element name="uriMapping" type="config:URIMapping" maxOccurs="unbounded" minOccurs="0" ecore:name="uriMappings"/>
+            <element name="resourceFactory" type="config:ResourceFactory" maxOccurs="unbounded" minOccurs="0" ecore:name="resourceFactories"/>
+            <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+        <anyAttribute namespace="##any" processContents="lax"/>
+    </complexType>
+
+    <complexType name="GeneratedPackage">
+        <sequence>
+            <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+        <attribute name="uri" type="string"/>
+        <attribute name="packageClassName" type="string"/>
+        <attribute name="preLoad" type="boolean" use="optional"/>
+        <anyAttribute namespace="##any" processContents="lax"/>
+    </complexType>
+
+    <complexType name="DynamicPackage">
+        <sequence>
+            <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+        <attribute name="uri" type="string"/>
+        <attribute name="location" type="string"/>
+        <attribute name="loaderClassName" type="string"/>
+        <attribute name="preLoad" type="boolean" use="optional"/>
+        <anyAttribute namespace="##any" processContents="lax"/>
+    </complexType>
+
+    <complexType name="DynamicPackageLoader">
+        <sequence>
+            <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+        <attribute name="className" type="string"/>
+        <attribute name="extension" type="string"/>
+        <attribute name="protocol" type="string"/>
+        <anyAttribute namespace="##any" processContents="lax"/>
+    </complexType>
+
+    <complexType name="ResourceFactory">
+        <sequence>
+            <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+        <attribute name="className" type="string"/>
+        <attribute name="extension" type="string"/>
+        <attribute name="protocol" type="string"/>
+        <anyAttribute namespace="##any" processContents="lax"/>
+    </complexType>
+
+    <complexType name="URIMapping">
+        <sequence>
+            <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+        <attribute name="source" type="string"/>
+        <attribute name="target" type="string"/>
+        <anyAttribute namespace="##any" processContents="lax"/>
+    </complexType>
+
+</schema>

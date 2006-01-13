@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://org.apache.tuscany/xmlns/java/0.9"
+        xmlns:sca="http://www.osoa.org/xmlns/sca/0.9"
+        xmlns:java="http://org.apache.tuscany/xmlns/java/0.9"
+        xmlns:codegen="http://www.eclipse.org/emf/2002/Ecore"
+        codegen:nsPrefix="java"
+        codegen:package="org.apache.tuscany.container.java.assembly"
+        elementFormDefault="qualified">
+
+    <import schemaLocation="sca-core.xsd" namespace="http://www.osoa.org/xmlns/sca/0.9"/>
+
+    <element name="implementation.java" type="java:JavaImplementation" substitutionGroup="sca:implementation"/>
+    <complexType name="JavaImplementation">
+        <complexContent>
+            <extension base="sca:Implementation">
+                <sequence>
+                    <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="class" type="NCName" use="required"/>
+                <anyAttribute namespace="##any" processContents="lax"/>
+            </extension>
+        </complexContent>
+    </complexType>
+</schema>
