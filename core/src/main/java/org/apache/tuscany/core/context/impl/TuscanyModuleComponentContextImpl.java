@@ -223,10 +223,12 @@ public class TuscanyModuleComponentContextImpl extends AbstractContext implement
                 lifecycleState = ERROR;
                 ContextInitException cie = new ContextInitException(e);
                 cie.addContextName(getName());
+                throw cie;
             } catch (ClassNotFoundException e) {
                 lifecycleState = ERROR;
                 ContextInitException cie = new ContextInitException(e);
                 cie.addContextName(getName());
+                throw cie;
             } catch (IllegalAccessException e) {
                 lifecycleState = ERROR;
                 ContextInitException cie = new ContextInitException(e);
