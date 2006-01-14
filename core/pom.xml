@@ -28,18 +28,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.osoa</groupId>
-            <artifactId>sca-api</artifactId>
-            <version>${pom.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany</groupId>
-            <artifactId>tuscany-common</artifactId>
-            <version>${pom.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.tuscany</groupId>
             <artifactId>tuscany-model</artifactId>
             <version>${pom.version}</version>
@@ -47,66 +35,17 @@
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>commonj-sdo</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>common</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>ecore</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>ecore-change</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>ecore-sdo</artifactId>
-            <version>2.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>ecore-xmi</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.xsd</groupId>
-            <artifactId>xsd</artifactId>
-            <version>2.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.wtp</groupId>
-            <artifactId>wsdl</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>axis</groupId>
-            <artifactId>axis-wsdl4j</artifactId>
-            <version>1.5.1</version>
-        </dependency>
-        <dependency>
-            <groupId>stax</groupId>
-            <artifactId>stax-api</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
             <groupId>tomcat</groupId>
             <artifactId>servlet-api</artifactId>
             <version>5.0.18</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>3.8.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
