@@ -22,46 +22,56 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This interface represents a resource loader.
+ * Interface which abstracts the implementation of something that is able to
+ * load resources (such as a ClassLoader). All Tuscany code should use this
+ * API rather than a ClassLoader directly in order to reduce the risk of
+ * memory leaks due to ClassLoader references.
+ *
  */
 public interface ResourceLoader {
 
     /**
      * Returns the parent resource loaders.
-     * @return
+     * @return resource loaders that are parents to this one
      */
-    List getParents();
+    List<ResourceLoader> getParents();
 
     /**
-     * Loads a class.
-     * @param name
-     * @return
-     * @throws ClassNotFoundException
+     * Loads the class with the specified binary name.
+     * @param name the binary name of the class
+     * @return the resulting Class object
+     * @throws ClassNotFoundException if the class was not found
+     * @see ClassLoader#loadClass(String)
      */
-    Class loadClass(String name) throws ClassNotFoundException;
-
-    /**
-     * Find resources with the given name.
-     * @param name
-     * @return
-     * @throws IOException
-     */
-    Iterator getResources(String name) throws IOException;
-
-    /**
-     * Finds all the resources with the given name.
-     * @param name
-     * @return
-     * @throws IOException
-     */
-    Iterator getAllResources(String name) throws IOException;
+    Class<?> loadClass(String name) throws ClassNotFoundException;
 
     /**
      * Finds the first resource with the given name.
-     * @param name
-     * @return
-     * @throws IOException
+     *
+     * Each parent is searched first (in the order returned by {@link #getParents()})
+     * and the first resource located is found. If no parent returns a resource then
+     * the first resource defined by this ResourceLoader is returned.
+     * @param name the resource name
+     * @return a {@link URL} that can be used to read the resource, or null if no resource could be found
+     * @throws IOException if there was a problem locating the resource
      */
     URL getResource(String name) throws IOException;
-	
+
+    /**
+     * Find resources with the given name that are available directly from this
+     * ResourceLoader. Resources from parent ResourceLoaders are not returned.
+     * @param name the resource name
+     * @return an Iterator of {@link URL} objects for the resource
+     * @throws IOException if there was a problem locating the resources
+     */
+    Iterator<URL> getResources(String name) throws IOException;
+
+    /**
+     * Find resources with the given name that are available from this
+     * ResourceLoader or any of its parents.
+     * @param name the resource name
+     * @return an Iterator of {@link URL} objects for the resource
+     * @throws IOException if there was a problem locating the resources
+     */
+    Iterator<URL> getAllResources(String name) throws IOException;
 }
