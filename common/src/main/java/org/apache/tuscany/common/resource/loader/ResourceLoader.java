@@ -27,17 +27,20 @@ import java.util.List;
  * API rather than a ClassLoader directly in order to reduce the risk of
  * memory leaks due to ClassLoader references.
  *
+ * @version $Rev$ $Date$
  */
 public interface ResourceLoader {
 
     /**
      * Returns the parent resource loaders.
+     *
      * @return resource loaders that are parents to this one
      */
     List<ResourceLoader> getParents();
 
     /**
      * Loads the class with the specified binary name.
+     *
      * @param name the binary name of the class
      * @return the resulting Class object
      * @throws ClassNotFoundException if the class was not found
@@ -47,10 +50,11 @@ public interface ResourceLoader {
 
     /**
      * Finds the first resource with the given name.
-     *
+     * <p/>
      * Each parent is searched first (in the order returned by {@link #getParents()})
      * and the first resource located is found. If no parent returns a resource then
      * the first resource defined by this ResourceLoader is returned.
+     *
      * @param name the resource name
      * @return a {@link URL} that can be used to read the resource, or null if no resource could be found
      * @throws IOException if there was a problem locating the resource
@@ -60,6 +64,7 @@ public interface ResourceLoader {
     /**
      * Find resources with the given name that are available directly from this
      * ResourceLoader. Resources from parent ResourceLoaders are not returned.
+     *
      * @param name the resource name
      * @return an Iterator of {@link URL} objects for the resource
      * @throws IOException if there was a problem locating the resources
@@ -69,6 +74,7 @@ public interface ResourceLoader {
     /**
      * Find resources with the given name that are available from this
      * ResourceLoader or any of its parents.
+     *
      * @param name the resource name
      * @return an Iterator of {@link URL} objects for the resource
      * @throws IOException if there was a problem locating the resources

@@ -19,111 +19,81 @@ package org.apache.tuscany.common.resource.loader.impl;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.common.resource.loader.ResourceLoader;
 
 /**
  * Default implementation of the ResourceLoader interface.
+ *
+ * @version $Rev$ $Date$
  */
 public class ResourceLoaderImpl implements ResourceLoader {
+    private final WeakReference<ClassLoader> classLoaderReference;
+    private final List<ResourceLoader> parents;
 
-    private final WeakReference classLoaderReference;
-    private List parents;
-    private Map resources;
-
-    /**
-     * Constructor
-     * @param classLoader
-     */
     protected ResourceLoaderImpl(ClassLoader classLoader) {
         classLoaderReference = new WeakReference(classLoader);
+        ClassLoader parentCL = classLoader.getParent();
+        parents = parentCL == null ? Collections.EMPTY_LIST : Collections.singletonList(new ResourceLoaderImpl(parentCL));
     }
 
+
     /**
-     * @see org.apache.tuscany.common.resource.loader.ResourceLoader#getParents()
+     * Return the classloader backing this resource loader.
+     *
+     * @return the classloader that backs this resource loader
+     * @throws IllegalStateException if the classloader has been garbage collected
      */
-    public List getParents() {
-        if (parents == null) {
-            ClassLoader parentClassLoader = ((ClassLoader) classLoaderReference.get()).getParent();
-            parents = Collections.singletonList(new ResourceLoaderImpl(parentClassLoader));
+    private ClassLoader getClassLoader() throws IllegalStateException {
+        ClassLoader cl = classLoaderReference.get();
+        if (cl == null) {
+            throw new IllegalStateException("Referenced ClassLoader has been garbage collected");
         }
+        return cl;
+    }
+
+    public List<ResourceLoader> getParents() {
         return parents;
     }
 
-    /**
-     * @see org.apache.tuscany.common.resource.loader.ResourceLoader#loadClass(java.lang.String)
-     */
     public Class loadClass(String name) throws ClassNotFoundException {
-        return Class.forName(name, true, (ClassLoader) classLoaderReference.get());
+        return getClassLoader().loadClass(name);
     }
 
-    /**
-     * @see org.apache.tuscany.common.resource.loader.ResourceLoader#getResources(java.lang.String)
-     */
-    public Iterator getResources(String name) throws IOException {
-        if (resources == null)
-            resources = new HashMap();
-
-        // Get the cached set of resources
-        Set set = (Set) resources.get(name);
-        if (set != null) {
-            return set.iterator();
-        }
+    public Iterator<URL> getResources(String name) throws IOException {
+        // This implementation used to cache but users are not likely
+        // to ask for the same resource multiple times.
 
         // Create a new set, add all the resources visible from the current ClassLoader
-        set = new HashSet();
-        ClassLoader classLoader = (ClassLoader) classLoaderReference.get();
-        for (Enumeration e = classLoader.getResources(name); e.hasMoreElements();) {
-            URL resource = (URL) e.nextElement();
-            set.add(resource);
+        Set<URL> set = new HashSet();
+        ClassLoader classLoader = getClassLoader();
+        for (Enumeration<URL> e = classLoader.getResources(name); e.hasMoreElements();) {
+            set.add(e.nextElement());
         }
 
         // Remove the resources visible from the parent ClassLoaders
-        for (Iterator p = getParents().iterator(); p.hasNext();) {
-            ResourceLoaderImpl parent = (ResourceLoaderImpl) p.next();
-            for (Iterator i = parent.getAllResources(name); i.hasNext();) {
+        for (ResourceLoader parent : getParents()) {
+            for (Iterator<URL> i = parent.getAllResources(name); i.hasNext();) {
                 set.remove(i.next());
             }
         }
-
-        // Cache the resulting set
-        resources.put(name, set);
-
         return set.iterator();
     }
 
-    /**
-     * @see org.apache.tuscany.common.resource.loader.ResourceLoader#getAllResources(java.lang.String)
-     */
-    public Iterator getAllResources(String name) throws IOException {
-        ClassLoader classLoader = (ClassLoader) classLoaderReference.get();
-        Enumeration e = classLoader.getResources(name);
-        return Collections.list(e).iterator();
+    public Iterator<URL> getAllResources(String name) throws IOException {
+        return new EnumerationIterator(getClassLoader().getResources(name));
     }
 
-    /**
-     * @see org.apache.tuscany.common.resource.loader.ResourceLoader#getResource(java.lang.String)
-     */
     public URL getResource(String name) throws IOException {
-        Iterator resources = getAllResources(name);
-        if (resources.hasNext())
-            return (URL) resources.next();
-        else
-            return null;
+        return getClassLoader().getResource(name);
     }
-    
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
+
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -132,13 +102,30 @@ public class ResourceLoaderImpl implements ResourceLoader {
             return false;
         }
         final ResourceLoaderImpl other = (ResourceLoaderImpl) obj;
-        return classLoaderReference.get() == other.classLoaderReference.get();
+        return getClassLoader() == other.getClassLoader();
     }
 
-    /**
-     * @see java.lang.Object#hashCode()
-     */
     public int hashCode() {
-        return classLoaderReference.get().hashCode();
+        return getClassLoader().hashCode();
+    }
+
+    private static class EnumerationIterator<E> implements Iterator<E> {
+        private final Enumeration<E> e;
+
+        public EnumerationIterator(Enumeration<E> e) {
+            this.e = e;
+        }
+
+        public boolean hasNext() {
+            return e.hasMoreElements();
+        }
+
+        public E next() {
+            return e.nextElement();
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     }
 }
