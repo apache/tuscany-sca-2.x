@@ -47,9 +47,9 @@ import org.apache.tuscany.model.assembly.ModuleComponent;
  */
 public class RuntimeContextImpl extends AbstractContext implements RuntimeContext {
 
-    private List<RuntimeConfigurationBuilder> builders = new ArrayList();
+    private final List<RuntimeConfigurationBuilder> builders;
 
-    private List<RuntimeEventListener> listeners = new ArrayList();
+    private final List<RuntimeEventListener> listeners = new ArrayList(1);
 
     private AggregateContext rootContext;
 
@@ -65,16 +65,16 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     // ----------------------------------
 
     public RuntimeContextImpl() {
-        super(RUNTIME);
-        monitorFactory = new NullMonitorFactory();
+        this(new NullMonitorFactory(), null, null);
     }
 
-    public RuntimeContextImpl(MonitorFactory monitorFactory, List<RuntimeConfigurationBuilder> builders,
-            ConfigurationLoader loader) {
+    public RuntimeContextImpl(MonitorFactory monitorFactory, List<RuntimeConfigurationBuilder> builders, ConfigurationLoader loader) {
         super(RUNTIME);
         this.monitorFactory = monitorFactory;
-        if (builders != null) {
-            this.builders.addAll(builders);
+        if (builders == null) {
+            this.builders = new ArrayList(1);
+        } else {
+            this.builders = new ArrayList(builders);
         }
         this.loader = loader;
     }
