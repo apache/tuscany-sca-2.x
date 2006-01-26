@@ -58,7 +58,7 @@ public class RuntimeContextImplTestCase extends TestCase {
     public void testSystemExplicitWiring() throws Exception {
         List<RuntimeConfigurationBuilder> builders = MockSystemAssemblyFactory.createBuilders();
 
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders);
         runtime.start();
 
         AggregateContext root = runtime.getRootContext();
@@ -117,7 +117,7 @@ public class RuntimeContextImplTestCase extends TestCase {
     public void testSystemAutoWiring() throws Exception {
         List<RuntimeConfigurationBuilder> builders = MockSystemAssemblyFactory.createBuilders();
 
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders);
         runtime.start();
 
         AggregateContext root = runtime.getRootContext();
@@ -154,7 +154,7 @@ public class RuntimeContextImplTestCase extends TestCase {
     public void testServiceNotFound() throws Exception {
         List<RuntimeConfigurationBuilder> builders = MockSystemAssemblyFactory.createBuilders();
 
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders);
         runtime.start();
         Component systemComponent = MockSystemAssemblyFactory.createComponent(RuntimeContext.SYSTEM, SystemAggregateContextImpl.class.getName(),
                 ContextConstants.AGGREGATE_SCOPE_ENUM);
@@ -178,7 +178,7 @@ public class RuntimeContextImplTestCase extends TestCase {
     public void testExternalServiceReferenceNotFound() throws Exception {
         List<RuntimeConfigurationBuilder> builders = MockSystemAssemblyFactory.createBuilders();
 
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders);
         runtime.start();
         // create the system context
         Component component = MockSystemAssemblyFactory.createComponent(RuntimeContext.SYSTEM, SystemAggregateContextImpl.class
@@ -211,7 +211,7 @@ public class RuntimeContextImplTestCase extends TestCase {
     public void testEntryPointReferenceNotFound() throws Exception {
         List<RuntimeConfigurationBuilder> builders = MockSystemAssemblyFactory.createBuilders();
 
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders);
         runtime.start();
         Component systemComponent = MockSystemAssemblyFactory.createComponent(RuntimeContext.SYSTEM, SystemAggregateContextImpl.class.getName(),
                 ContextConstants.AGGREGATE_SCOPE_ENUM);
@@ -246,7 +246,7 @@ public class RuntimeContextImplTestCase extends TestCase {
      */
     public void testCircularWires() throws Exception {
         List<RuntimeConfigurationBuilder> builders = MockSystemAssemblyFactory.createBuilders();
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders);
         runtime.start();
         Component systemComponent = MockSystemAssemblyFactory.createComponent(RuntimeContext.SYSTEM, SystemAggregateContextImpl.class.getName(),
                 ContextConstants.AGGREGATE_SCOPE_ENUM);
@@ -297,7 +297,7 @@ public class RuntimeContextImplTestCase extends TestCase {
     public void testInterModuleCircularReference() throws Exception {
         List<RuntimeConfigurationBuilder> builders = MockSystemAssemblyFactory.createBuilders();
 
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders);
         runtime.start();
         Component systemComponent = MockSystemAssemblyFactory.createComponent(RuntimeContext.SYSTEM, SystemAggregateContextImpl.class.getName(),
                 ContextConstants.AGGREGATE_SCOPE_ENUM);
@@ -336,7 +336,7 @@ public class RuntimeContextImplTestCase extends TestCase {
     public void testRuntimeBuilderAutowire() throws Exception {
         List<RuntimeConfigurationBuilder> builders = MockSystemAssemblyFactory.createBuilders();
 
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders);
         runtime.start();
         Component systemComponent = MockSystemAssemblyFactory.createComponent(RuntimeContext.SYSTEM,
                 SystemAggregateContextImpl.class.getName(), ContextConstants.AGGREGATE_SCOPE_ENUM);

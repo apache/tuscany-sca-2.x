@@ -38,7 +38,7 @@ public class RuntimeBootTestCase extends TestCase {
 
         List<RuntimeConfigurationBuilder> builders  = MockSystemAssemblyFactory.createBuilders();
         // start the runtime context
-        RuntimeContext runtimeContext = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
+        RuntimeContext runtimeContext = new RuntimeContextImpl(new NullMonitorFactory(), builders);
         runtimeContext.start();
 
         // create the system context

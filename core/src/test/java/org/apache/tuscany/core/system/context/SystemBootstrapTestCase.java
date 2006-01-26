@@ -54,7 +54,7 @@ public class SystemBootstrapTestCase extends TestCase {
     public void testBoot() throws Exception {
         List<RuntimeConfigurationBuilder> builders  = MockSystemAssemblyFactory.createBuilders();
 
-        RuntimeContext runtimeContext = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
+        RuntimeContext runtimeContext = new RuntimeContextImpl(new NullMonitorFactory(), builders);
         runtimeContext.start();
         // create the system context
         Component component = MockSystemAssemblyFactory.createComponent(RuntimeContext.SYSTEM,
@@ -89,7 +89,7 @@ public class SystemBootstrapTestCase extends TestCase {
 
     public void testRuntimeBoot() throws Exception {
         List<RuntimeConfigurationBuilder> builders  = MockSystemAssemblyFactory.createBuilders();
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders);
         runtime.start();
         runtime.getRootContext();
         runtime.registerModelObject(MockSystemAssemblyFactory.createComponent(RuntimeContext.SYSTEM,

@@ -81,7 +81,7 @@ public class WebAppLifecycleListener implements LifecycleListener {
             Context context = (Context) lifecycleEventSource;
             String name = context.getPath().substring(1);
             try {
-                ModuleComponent moduleComponent = runtime.loadModuleComponent(name, "sca.module");
+                ModuleComponent moduleComponent = null;//FIXME runtime.loadModuleComponent(name, "sca.module");
                 if (moduleComponent == null) {
                     return; // not an SCA module component
                 }

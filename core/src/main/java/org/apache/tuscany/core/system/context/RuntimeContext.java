@@ -15,11 +15,9 @@ package org.apache.tuscany.core.system.context;
 
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
-import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
-import org.apache.tuscany.model.assembly.ModuleComponent;
 
 /**
  * Represents a top-level component context in the runtime, that is the bootstrap context
@@ -56,15 +54,5 @@ public interface RuntimeContext extends AutowireContext, ConfigurationContext {
      * Returns the monitor factory in use by the runtime
      */
     public MonitorFactory getMonitorFactory();
-
-    /**
-     * Loads a module component from an external source FIXME this should take a URL, stream or reader
-     * 
-     * @param componentName
-     * @param moduleUri
-     * @return
-     * @throws ConfigurationException
-     */
-    public ModuleComponent loadModuleComponent(String componentName, String moduleUri) throws ConfigurationException;
 
 }

@@ -22,23 +22,21 @@ import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.config.ConfigurationLoader;
 import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.AutowireResolutionException;
-import org.apache.tuscany.core.context.InstanceContext;
-import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.ContextRuntimeException;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventException;
+import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.RuntimeEventListener;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.model.assembly.ExtensibleModelObject;
-import org.apache.tuscany.model.assembly.ModuleComponent;
 
 /**
  * Serves as the runtime bootstrap
@@ -56,8 +54,6 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     // the cached system context
     private AutowireContext systemContext;
 
-    private ConfigurationLoader loader;
-
     private MonitorFactory monitorFactory;
 
     // ----------------------------------
@@ -65,10 +61,10 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     // ----------------------------------
 
     public RuntimeContextImpl() {
-        this(new NullMonitorFactory(), null, null);
+        this(new NullMonitorFactory(), null);
     }
 
-    public RuntimeContextImpl(MonitorFactory monitorFactory, List<RuntimeConfigurationBuilder> builders, ConfigurationLoader loader) {
+    public RuntimeContextImpl(MonitorFactory monitorFactory, List<RuntimeConfigurationBuilder> builders) {
         super(RUNTIME);
         this.monitorFactory = monitorFactory;
         if (builders == null) {
@@ -76,7 +72,6 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         } else {
             this.builders = new ArrayList(builders);
         }
-        this.loader = loader;
     }
 
     // ----------------------------------
@@ -185,9 +180,6 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     // ConfigurationContext methods
     // ----------------------------------
 
-    public ModuleComponent loadModuleComponent(String qualifiedName, String moduleUri) throws ConfigurationException {
-        return loader.loadModuleComponent(qualifiedName, moduleUri);
-    }
 
     public synchronized void build(AggregateContext parent, ExtensibleModelObject model) throws BuilderConfigException {
         AssemblyVisitor visitor = new AssemblyVisitor(parent, builders);

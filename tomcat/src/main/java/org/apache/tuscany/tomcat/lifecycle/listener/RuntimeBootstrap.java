@@ -86,18 +86,18 @@ public class RuntimeBootstrap implements ObjectFactory {
                 throw new BootstrapConfigurationException("Error initializing monitor factory in Tomcat configuration", e);
             }
         }
-        try {
-            Class configurationLoaderClass = JavaIntrospectionHelper.loadClass(loaderAddr.getContent().toString());
-            configurationLoader = (ConfigurationLoader) configurationLoaderClass.newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new BootstrapConfigurationException("Unable to find configuration loader class specified in Tomcat configuration", e);
-        } catch (InstantiationException e) {
-            throw new BootstrapConfigurationException("Error initializing configuration loader in Tomcat configuration", e);
-        } catch (IllegalAccessException e) {
-            throw new BootstrapConfigurationException("Error initializing configuration loader in Tomcat configuration", e);
-        }
+//        try {
+//            Class configurationLoaderClass = JavaIntrospectionHelper.loadClass(loaderAddr.getContent().toString());
+//            configurationLoader = (ConfigurationLoader) configurationLoaderClass.newInstance();
+//        } catch (ClassNotFoundException e) {
+//            throw new BootstrapConfigurationException("Unable to find configuration loader class specified in Tomcat configuration", e);
+//        } catch (InstantiationException e) {
+//            throw new BootstrapConfigurationException("Error initializing configuration loader in Tomcat configuration", e);
+//        } catch (IllegalAccessException e) {
+//            throw new BootstrapConfigurationException("Error initializing configuration loader in Tomcat configuration", e);
+//        }
         // create the SCA Runtime and have it bound in the global JNDI context
-        return new RuntimeContextImpl(monitorFactory, createBuilders(), configurationLoader);
+        return new RuntimeContextImpl(monitorFactory, createBuilders());
     }
 
     /**
