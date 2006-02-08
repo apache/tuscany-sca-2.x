@@ -24,6 +24,7 @@ import org.osoa.sca.ServiceRuntimeException;
 
 import org.apache.tuscany.core.addressing.AddressingFactory;
 import org.apache.tuscany.core.addressing.EndpointReference;
+import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
@@ -106,7 +107,8 @@ public class PortRuntimeConfigurationBuilderImpl implements AssemblyModelVisitor
         // Create Proxy configuration
         Map<OperationType, InvocationConfiguration> invocationConfigurations = new HashMap<OperationType, InvocationConfiguration>();
         Class javaInterface=interfaceType.getInstanceClass();
-        ProxyConfiguration proxyConfiguration = new ProxyConfiguration(invocationConfigurations, javaInterface.getClassLoader(), scopeContainers, messageFactory);
+        //@FIXME Proxy this will break
+        ProxyConfiguration proxyConfiguration = new ProxyConfiguration(null,invocationConfigurations, javaInterface.getClassLoader(), scopeContainers, messageFactory);
         
         // Create invocation configurations for all the operations on the business interface
         for (OperationType operationType : interfaceType.getOperationTypes()) {
@@ -125,7 +127,9 @@ public class PortRuntimeConfigurationBuilderImpl implements AssemblyModelVisitor
         // Create a proxy factory
         ProxyFactory proxyFactory = new JDKProxyFactory();
         try {
-            proxyFactory.initialize(javaInterface, proxyConfiguration);
+            proxyFactory.initialize();
+            proxyFactory.setBusinessInterface(javaInterface);
+            proxyFactory.setProxyConfiguration(proxyConfiguration);
         } catch (ProxyInitializationException e) {
             throw new ServiceRuntimeException(e);
         }
@@ -140,7 +144,8 @@ public class PortRuntimeConfigurationBuilderImpl implements AssemblyModelVisitor
         // Create Proxy configuration
         Map<OperationType, InvocationConfiguration> invocationConfigurations = new HashMap<OperationType, InvocationConfiguration>();
         Class javaInterface=interfaceType.getInstanceClass();
-        ProxyConfiguration proxyConfiguration = new ProxyConfiguration(invocationConfigurations, javaInterface.getClassLoader(), scopeContainers, messageFactory);
+        QualifiedName qName = new QualifiedName(configuredService.getPart().getName() +"/"+configuredService.getPort().getName());
+        ProxyConfiguration proxyConfiguration = new ProxyConfiguration(qName, invocationConfigurations, javaInterface.getClassLoader(), scopeContainers, messageFactory);
         
         // Create invocation configurations for all the operations on the business interface
         for (OperationType operationType : interfaceType.getOperationTypes()) {
@@ -168,7 +173,9 @@ public class PortRuntimeConfigurationBuilderImpl implements AssemblyModelVisitor
         // Create a proxy factory
         ProxyFactory proxyFactory = new JDKProxyFactory();
         try {
-            proxyFactory.initialize(javaInterface, proxyConfiguration);
+            proxyFactory.initialize();
+            proxyFactory.setBusinessInterface(javaInterface);
+            proxyFactory.setProxyConfiguration(proxyConfiguration);
         } catch (ProxyInitializationException e) {
             throw new ServiceRuntimeException(e);
         }

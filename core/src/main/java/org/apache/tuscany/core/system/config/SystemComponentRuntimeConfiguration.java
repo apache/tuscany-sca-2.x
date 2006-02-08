@@ -2,6 +2,7 @@ package org.apache.tuscany.core.system.config;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
@@ -10,6 +11,7 @@ import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemComponentContext;
 import org.apache.tuscany.model.assembly.ScopeEnum;
 
@@ -104,6 +106,35 @@ public class SystemComponentRuntimeConfiguration implements RuntimeConfiguration
             PojoObjectFactory objectFactory = new PojoObjectFactory(ctr, null, setters);
             return new SystemComponentContext(name, objectFactory, eagerInit, init, destroy, stateless);
         }
+    }
+    
+    // -- Proxy
+
+    public void prepare() {
+    }
+
+    public void addTargetProxyFactory(String serviceName, ProxyFactory factory) {
+        throw new UnsupportedOperationException();
+    }
+
+    public ProxyFactory getTargetProxyFactory(String serviceName) {
+        return null;
+    }
+
+    public Map<String, ProxyFactory> getTargetProxyFactories() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void addSourceProxyFactory(String referenceName, ProxyFactory factory) {
+        throw new UnsupportedOperationException();
+    }
+
+    public ProxyFactory getSourceProxyFactory(String referenceName) {
+        return null;
+    }
+
+    public Map<String, ProxyFactory> getSourceProxyFactories() {
+        return null;
     }
 
 }

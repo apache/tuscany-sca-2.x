@@ -22,7 +22,7 @@ import org.apache.tuscany.core.message.channel.MessageChannel;
 
 /**
  * An interceptor that first sends the invocation Message down its request channel then extracts the response from the message and
- * sends it down the response channel before returning it the up the interceptor stack.
+ * sends it down the response channel before returning it up the interceptor stack.
  * 
  * @version $Rev$ $Date$
  */

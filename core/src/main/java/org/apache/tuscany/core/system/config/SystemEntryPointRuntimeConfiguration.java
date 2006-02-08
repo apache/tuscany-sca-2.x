@@ -13,10 +13,13 @@
  */
 package org.apache.tuscany.core.system.config;
 
+import java.util.Map;
+
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.injection.ObjectFactory;
+import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemEntryPointContext;
 import org.apache.tuscany.model.assembly.ScopeEnum;
 
@@ -56,6 +59,34 @@ public class SystemEntryPointRuntimeConfiguration implements RuntimeConfiguratio
 
     public String getName() {
         return name;
+    }
+
+    // -- Proxy
+    public void prepare() {
+    }
+
+    public void addTargetProxyFactory(String serviceName, ProxyFactory pFactory) {
+        throw new UnsupportedOperationException();
+ }
+
+    public ProxyFactory getTargetProxyFactory(String serviceName) {
+        return null;
+    }
+
+    public Map<String, ProxyFactory> getTargetProxyFactories() {
+        return null;
+    }
+
+    public void addSourceProxyFactory(String referenceName, ProxyFactory pFactory) {
+        throw new UnsupportedOperationException();
+    }
+
+    public ProxyFactory getSourceProxyFactory(String referenceName) {
+        return null;
+    }
+
+    public Map<String, ProxyFactory> getSourceProxyFactories() {
+        return null;
     }
 
 }

@@ -14,15 +14,30 @@
 package org.apache.tuscany.container.java.config;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.tuscany.container.java.context.JavaComponentContext;
+import org.apache.tuscany.container.java.injection.ReferenceProxyTargetFactory;
+import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextCreationException;
+import org.apache.tuscany.core.builder.NoAccessorException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.injection.EventInvoker;
+import org.apache.tuscany.core.injection.FactoryInitException;
+import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
+import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.apache.tuscany.model.assembly.ConfiguredReference;
+import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.ScopeEnum;
 
 /**
@@ -53,7 +68,7 @@ public class JavaComponentRuntimeConfiguration implements RuntimeConfiguration<S
 
     // the scope of the implementation instance
     private int scope;
-    
+
     private boolean stateless;
 
     // ----------------------------------
@@ -65,10 +80,11 @@ public class JavaComponentRuntimeConfiguration implements RuntimeConfiguration<S
      * 
      * @param name the SCDL name of the component the context refers to
      * @param ctr the implementation type constructor
-     * @param setters a collection of <code>Injectors</code> used to configure properties, references and other meta data values
-     *        on implementation instances
+     * @param setters a collection of <code>Injectors</code> used to configure properties, references and other meta
+     *        data values on implementation instances
      * @param eagerInit whether the component should be eagerly initialized
-     * @param init an <code>Invoker</code> pointing to a method on the implementation type decorated with <code>@Init</code>
+     * @param init an <code>Invoker</code> pointing to a method on the implementation type decorated with
+     *        <code>@Init</code>
      * @param destroy an <code>Invoker</code> pointing to a method on the implementation type decorated with
      *        <code>@Destroy</code>
      * @param scope the scope of the component implementation type
@@ -77,8 +93,6 @@ public class JavaComponentRuntimeConfiguration implements RuntimeConfiguration<S
             EventInvoker init, EventInvoker destroy, int scope) {
         assert (name != null) : "Name was null";
         assert (ctr != null) : "Constructor was null";
-        assert (setters != null) : "Setters were null";
-        //assert (scope != null) : "Scope was null";
         this.name = name;
         this.ctr = ctr;
         this.setters = setters;
@@ -89,21 +103,104 @@ public class JavaComponentRuntimeConfiguration implements RuntimeConfiguration<S
         stateless = (scope == ScopeEnum.INSTANCE);
     }
 
+    public JavaComponentRuntimeConfiguration(String name, Constructor ctr, boolean eagerInit, EventInvoker init,
+            EventInvoker destroy, int scope) {
+        this(name, ctr, null, eagerInit, init, destroy, scope);
+    }
+
     // ----------------------------------
     // Methods
     // ----------------------------------
-    
-    public String getName(){
+
+    public String getName() {
         return name;
     }
-    
-    public int getScope(){
+
+    public int getScope() {
         return scope;
     }
-    
+
     public SimpleComponentContext createInstanceContext() throws ContextCreationException {
         PojoObjectFactory objectFactory = new PojoObjectFactory(ctr, null, setters);
         return new JavaComponentContext(name, objectFactory, eagerInit, init, destroy, stateless);
     }
 
+    // //
+
+    private Map<String, ProxyFactory> targetProxyFactories = new HashMap();
+
+    public void addTargetProxyFactory(String serviceName, ProxyFactory factory) {
+        targetProxyFactories.put(serviceName, factory);
+    }
+
+    public ProxyFactory getTargetProxyFactory(String serviceName) {
+        return targetProxyFactories.get(serviceName);
+    }
+
+    public Map<String, ProxyFactory> getTargetProxyFactories() {
+        return targetProxyFactories;
+    }
+
+    private Map<String, ProxyFactory> sourceProxyFactories = new HashMap();
+
+    public void addSourceProxyFactory(String referenceName, ProxyFactory factory) {
+        sourceProxyFactories.put(referenceName, factory);
+    }
+
+    public ProxyFactory getSourceProxyFactory(String referenceName) {
+        return sourceProxyFactories.get(referenceName);
+    }
+
+    public Map<String, ProxyFactory> getSourceProxyFactories() {
+        return sourceProxyFactories;
+    }
+
+    public void setSetters(List<Injector> setters) {
+        this.setters = setters;
+    }
+
+    public void prepare(){
+        
+    }
+    
+    
+//    
+//    private Injector createReferenceInjector(ProxyFactory factory,
+//            Set<Field> fields, Set<Method> methods) throws NoAccessorException, BuilderConfigException {
+//        String refName = reference.getReference().getName();
+//        List<ConfiguredService> services = reference.getConfiguredServices();
+//        Class type;
+//        // FIXME added the size check - do we need to do this?
+//        if (services.size() == 1) {
+//            // get the interface
+//            type = reference.getReference().getInterfaceContract().getInterfaceType().getInstanceClass();
+//        } else {
+//            // FIXME do we support arrays?
+//            type = List.class;
+//        }
+//
+//        Method method = null;
+//
+//        Field field = JavaIntrospectionHelper.findClosestMatchingField(refName, type, fields);
+//        if (field == null) {
+//            method = JavaIntrospectionHelper.findClosestMatchingMethod(refName, new Class[] { type }, methods);
+//            if (method == null) {
+//                throw new NoAccessorException(refName);
+//            }
+//        }
+//        Injector injector;
+//        try {
+//            if (field != null) {
+//                injector = new FieldInjector(field, new ReferenceProxyTargetFactory(reference));
+//            } else {
+//                injector = new MethodInjector(method, new ReferenceProxyTargetFactory(reference));
+//            }
+//        } catch (FactoryInitException e) {
+//            BuilderConfigException ce = new BuilderConfigException("Error configuring reference", e);
+//            ce.setIdentifier(refName);
+//            throw ce;
+//        }
+//        return injector;
+//    }
+    
 }

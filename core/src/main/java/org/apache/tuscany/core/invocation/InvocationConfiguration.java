@@ -59,30 +59,34 @@ public class InvocationConfiguration {
     }
 
     public void addSourceInterceptor(Interceptor interceptor) {
-        if (sourceInterceptorChainHead == null)
+        if (sourceInterceptorChainHead == null) {
             sourceInterceptorChainHead = interceptor;
-        else
+        } else {
             sourceInterceptorChainTail.setNext(interceptor);
+        }
         sourceInterceptorChainTail = interceptor;
     }
 
     public void addTargetInterceptor(Interceptor interceptor) {
-        if (targetInterceptorChainHead == null)
+        if (targetInterceptorChainHead == null){
             targetInterceptorChainHead = interceptor;
-        else
+        }else{
             targetInterceptorChainTail.setNext(interceptor);
+        }
         targetInterceptorChainTail = interceptor;
     }
 
     public void addRequestHandler(MessageHandler handler) {
-        if (requestHandlers == null)
+        if (requestHandlers == null){
             requestHandlers = new ArrayList<MessageHandler>();
+        }
         requestHandlers.add(handler);
     }
 
     public void addResponseHandler(MessageHandler handler) {
-        if (responseHandlers == null)
+        if (responseHandlers == null){
             responseHandlers = new ArrayList<MessageHandler>();
+        }
         responseHandlers.add(handler);
     }
 
@@ -98,6 +102,14 @@ public class InvocationConfiguration {
         return sourceInterceptorChainHead;
     }
 
+    public MessageHandler getHeadHandler() {
+        if (responseHandlers != null && responseHandlers.size() > 0) {
+            return responseHandlers.get(0);
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Build the configuration, link the interceptors and handlers together
      */
@@ -106,9 +118,9 @@ public class InvocationConfiguration {
         // Build target interceptor chain
         if (targetInvoker != null) {
             if (targetInterceptorChainHead != null) {
-                targetInterceptorChainTail.setNext((Interceptor) targetInvoker);
+                targetInterceptorChainTail.setNext(targetInvoker);
             } else {
-                targetInterceptorChainHead = (Interceptor) targetInvoker;
+                targetInterceptorChainHead = targetInvoker;
             }
         }
 

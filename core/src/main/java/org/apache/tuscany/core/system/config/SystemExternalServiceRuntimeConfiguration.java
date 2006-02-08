@@ -13,10 +13,13 @@
  */
 package org.apache.tuscany.core.system.config;
 
+import java.util.Map;
+
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.injection.ObjectFactory;
+import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemExternalServiceContext;
 import org.apache.tuscany.model.assembly.ScopeEnum;
 
@@ -61,6 +64,34 @@ public class SystemExternalServiceRuntimeConfiguration implements RuntimeConfigu
 
     public ExternalServiceContext createInstanceContext() throws ContextCreationException {
         return new SystemExternalServiceContext(name, factory);
+    }
+
+    // -- Proxy
+    public void prepare() {
+    }
+
+    public void addTargetProxyFactory(String serviceName, ProxyFactory factory) {
+        throw new UnsupportedOperationException();
+    }
+
+    public ProxyFactory getTargetProxyFactory(String serviceName) {
+        return null;
+    }
+
+    public Map<String, ProxyFactory> getTargetProxyFactories() {
+        return null;
+    }
+
+    public void addSourceProxyFactory(String referenceName, ProxyFactory factory) {
+        throw new UnsupportedOperationException();
+    }
+
+    public ProxyFactory getSourceProxyFactory(String referenceName) {
+        return null;
+    }
+
+    public Map<String, ProxyFactory> getSourceProxyFactories() {
+        return null;
     }
 
 }

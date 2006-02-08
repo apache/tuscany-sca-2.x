@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationTargetException;
  * 
  * @version $Rev$ $Date$
  */
-public interface TargetInvoker {
+public interface TargetInvoker extends Interceptor{
 
     /**
      * Responsible for invoking an operation on a target with the given payload

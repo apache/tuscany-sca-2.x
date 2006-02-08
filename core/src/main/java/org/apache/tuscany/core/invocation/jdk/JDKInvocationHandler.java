@@ -55,8 +55,8 @@ public class JDKInvocationHandler implements InvocationHandler {
      * Dispatches a client request made on a proxy
      */
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        InvocationConfiguration config = configuration.get(method);
         Interceptor headInterceptor = null;
+        InvocationConfiguration config = configuration.get(method);
         if (config != null) {
             headInterceptor = config.getInterceptor();
         }

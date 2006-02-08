@@ -31,7 +31,7 @@ import org.apache.tuscany.core.message.Message;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class AbstractJavaComponentInvoker implements TargetInvoker, Interceptor {
+public abstract class AbstractJavaComponentInvoker implements TargetInvoker {
 
     protected Method operation;
 

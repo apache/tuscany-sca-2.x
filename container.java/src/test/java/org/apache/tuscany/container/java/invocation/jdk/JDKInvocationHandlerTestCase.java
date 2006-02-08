@@ -61,6 +61,72 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         Assert.assertEquals("hello", proxy.hello("hello"));
     }
 
+    public void testInterceptorsOnly() throws Exception {
+        Map<Method, InvocationConfiguration> config = new HashMap();
+        OperationType operation = new MockJavaOperationType(hello);
+        StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(hello, new SimpleTargetImpl());
+        InvocationConfiguration invocationConfiguration = new InvocationConfiguration(operation);
+        invocationConfiguration.addSourceInterceptor(new MockSyncInterceptor());
+        invocationConfiguration.addTargetInterceptor(new MockSyncInterceptor());
+        invocationConfiguration.setTargetInvoker(invoker);
+        invocationConfiguration.build();
+        InvocationConfiguration helloConfig = invocationConfiguration;
+        config.put(hello, helloConfig);
+        InvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), config);
+        SimpleTarget proxy = (SimpleTarget) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                new Class[]{SimpleTarget.class}, handler);
+        Assert.assertEquals("hello", proxy.hello("hello"));
+    }
+
+    public void testSourceInterceptoOnly() throws Exception {
+        Map<Method, InvocationConfiguration> config = new HashMap();
+        OperationType operation = new MockJavaOperationType(hello);
+        StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(hello, new SimpleTargetImpl());
+        InvocationConfiguration invocationConfiguration = new InvocationConfiguration(operation);
+        invocationConfiguration.addSourceInterceptor(new MockSyncInterceptor());
+        invocationConfiguration.setTargetInvoker(invoker);
+        invocationConfiguration.build();
+        InvocationConfiguration helloConfig = invocationConfiguration;
+        config.put(hello, helloConfig);
+        InvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), config);
+        SimpleTarget proxy = (SimpleTarget) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                new Class[]{SimpleTarget.class}, handler);
+        Assert.assertEquals("hello", proxy.hello("hello"));
+    }
+
+    public void testTargetInterceptorOnly() throws Exception {
+        Map<Method, InvocationConfiguration> config = new HashMap();
+        OperationType operation = new MockJavaOperationType(hello);
+        StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(hello, new SimpleTargetImpl());
+        InvocationConfiguration invocationConfiguration = new InvocationConfiguration(operation);
+        invocationConfiguration.addTargetInterceptor(new MockSyncInterceptor());
+        invocationConfiguration.setTargetInvoker(invoker);
+        invocationConfiguration.build();
+        InvocationConfiguration helloConfig = invocationConfiguration;
+        config.put(hello, helloConfig);
+        InvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), config);
+        SimpleTarget proxy = (SimpleTarget) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                new Class[]{SimpleTarget.class}, handler);
+        Assert.assertEquals("hello", proxy.hello("hello"));
+    }
+
+    public void testHandlerAndTargetInterceptor() throws Exception {
+        Map<Method, InvocationConfiguration> config = new HashMap();
+        OperationType operation = new MockJavaOperationType(hello);
+        StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(hello, new SimpleTargetImpl());
+        InvocationConfiguration invocationConfiguration = new InvocationConfiguration(operation);
+        invocationConfiguration.addRequestHandler(new MockHandler());
+        invocationConfiguration.addTargetInterceptor(new MockSyncInterceptor());
+        invocationConfiguration.setTargetInvoker(invoker);
+        invocationConfiguration.build();
+        InvocationConfiguration helloConfig = invocationConfiguration;
+        config.put(hello, helloConfig);
+        InvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), config);
+        SimpleTarget proxy = (SimpleTarget) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                new Class[]{SimpleTarget.class}, handler);
+        Assert.assertEquals("hello", proxy.hello("hello"));
+    }
+
     private InvocationConfiguration getConfiguration(Method m) {
         OperationType operation = new MockJavaOperationType(m);
         StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(m, new SimpleTargetImpl());

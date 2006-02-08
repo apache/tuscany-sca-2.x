@@ -18,32 +18,41 @@ package org.apache.tuscany.core.invocation;
 
 import java.util.Map;
 
+import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.model.types.OperationType;
 
 /**
  * Represents configuration information for creating a service reference proxy
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class ProxyConfiguration {
 
     private Map<OperationType, InvocationConfiguration> configurations;
+
     private ClassLoader proxyClassLoader;
+
     private MessageFactory messageFactory;
-    private Map<Integer,ScopeContext> scopeContainers;
+
+    private Map<Integer, ScopeContext> scopeContainers;
+
+    private QualifiedName targetName;
 
     // ----------------------------------
     // Constructors
     // ----------------------------------
 
-    //TODO add "from"
-    public ProxyConfiguration(Map<OperationType, InvocationConfiguration> invocationConfigs, ClassLoader proxyClassLoader, Map<Integer,ScopeContext> scopeContainers, MessageFactory messageFactory) {
+    // TODO add "from"
+    public ProxyConfiguration(QualifiedName targetName, Map<OperationType, InvocationConfiguration> invocationConfigs,
+            ClassLoader proxyClassLoader, Map<Integer, ScopeContext> scopeContainers, MessageFactory messageFactory) {
         assert (invocationConfigs != null) : "No invocation configuration map specified";
+        assert (targetName != null) : "No target name specified";
+        this.targetName = targetName;
         configurations = invocationConfigs;
-        this.scopeContainers=scopeContainers;
-        this.messageFactory=messageFactory;
+        this.scopeContainers = scopeContainers;
+        this.messageFactory = messageFactory;
         if (proxyClassLoader == null) {
             this.proxyClassLoader = Thread.currentThread().getContextClassLoader();
         } else {
@@ -55,10 +64,13 @@ public class ProxyConfiguration {
     // Methods
     // ----------------------------------
 
+    public QualifiedName getTargetName() {
+        return targetName;
+    }
+
     /**
-     * Returns a collection of operation types to {@link InvocationConfiguration}
-     * mappings that represent the specific proxy configuration information for
-     * particular operations
+     * Returns a collection of operation types to {@link InvocationConfiguration} mappings that represent the specific
+     * proxy configuration information for particular operations
      */
     public Map<OperationType, InvocationConfiguration> getInvocationConfigurations() {
         return configurations;
@@ -78,8 +90,8 @@ public class ProxyConfiguration {
     /**
      * @return Returns the scopeContainers.
      */
-    public Map<Integer,ScopeContext> getScopeContainers() {
+    public Map<Integer, ScopeContext> getScopeContainers() {
         return scopeContainers;
     }
-    
+
 }

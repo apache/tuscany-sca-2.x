@@ -38,6 +38,8 @@ import org.apache.tuscany.core.context.ScopeStrategy;
 import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
+import org.apache.tuscany.core.invocation.InvocationConfiguration;
+import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.model.assembly.Component;
@@ -47,6 +49,7 @@ import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Part;
 import org.apache.tuscany.model.assembly.pojo.PojoModule;
+import org.apache.tuscany.model.types.OperationType;
 
 /**
  * The base implementation of an aggregate context
@@ -77,7 +80,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     // protected ModuleComponent moduleComponent;
     protected Module module;
 
-    protected List<RuntimeConfiguration<InstanceContext>> configurations = new ArrayList();
+    protected Map<String, RuntimeConfiguration<InstanceContext>> configurations = new HashMap();
 
     // Factory for scope contexts
     @Autowire(required = false)
@@ -89,8 +92,8 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     // The scopes for this context
     protected Map<Integer, ScopeContext> scopeContexts;
 
-    protected  Map<Integer, ScopeContext> immutableScopeContexts;
-    
+    protected Map<Integer, ScopeContext> immutableScopeContexts;
+
     // A component context name to scope context index
     protected Map<String, ScopeContext> scopeIndex;
 
@@ -131,7 +134,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     public void start() {
         synchronized (initializeLatch) {
             try {
-                if(lifecycleState != UNINITIALIZED){
+                if (lifecycleState != UNINITIALIZED) {
                     throw new IllegalStateException("Context not in UNINITIALIZED state");
                 }
                 lifecycleState = INITIALIZING;
@@ -139,13 +142,47 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
 
                 Map<Integer, List<RuntimeConfiguration<SimpleComponentContext>>> configurationsByScope = new HashMap();
                 if (configurations != null) {
-                    for (RuntimeConfiguration config : configurations) {
+                    for (RuntimeConfiguration config : configurations.values()) {
                         // FIXME scopes are defined at the interface level
                         int scope = config.getScope();
                         // ensure duplicate names were not added before the context was started
-                        if (scopeIndex.get(config.getName()) != null) {
-                            throw new DuplicateNameException(config.getName());
+                        // if (scopeIndex.get(config.getName()) != null) {
+                        // throw new DuplicateNameException(config.getName());
+                        // }
+                        // /----------------
+                        if (config.getSourceProxyFactories() != null) {
+                            for (ProxyFactory sourceFactory : ((Map<String, ProxyFactory>) config.getSourceProxyFactories())
+                                    .values()) {
+                                QualifiedName targetName = sourceFactory.getProxyConfiguration().getTargetName();
+                                RuntimeConfiguration target = configurations.get(targetName.getPartName());
+                                if (target == null) {
+                                    ContextInitException e = new ContextInitException("Target not found");
+                                    e.setIdentifier(targetName.getPartName());
+                                    e.addContextName(name);
+                                    throw e;
+                                }
+                                // get the proxy chain for the target
+                                ProxyFactory targetFactory = target.getTargetProxyFactory(sourceFactory.getProxyConfiguration()
+                                        .getTargetName().getPortName());
+                                Map<OperationType, InvocationConfiguration> targetInvocationConfigs = targetFactory
+                                        .getProxyConfiguration().getInvocationConfigurations();
+                                for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration()
+                                        .getInvocationConfigurations().values()) {
+                                    // match invocation chains
+                                    InvocationConfiguration targetInvocationConfig = targetInvocationConfigs
+                                            .get(sourceInvocationConfig.getOperationType());
+                                    // if handler is configured, add that
+                                    if (targetInvocationConfig.getHeadHandler() != null) {
+                                        sourceInvocationConfig.addRequestHandler(targetInvocationConfig.getHeadHandler());
+                                    } else {
+                                        // no handlers, just conntect interceptors
+                                        sourceInvocationConfig.addTargetInterceptor(targetInvocationConfig.getInterceptor());
+                                    }
+                                }
+                            }
                         }
+                        config.prepare();
+                        // /---------------
                         scopeIndex.put(config.getName(), scopeContexts.get(scope));
                         List<RuntimeConfiguration<SimpleComponentContext>> list = configurationsByScope.get(scope);
                         if (list == null) {
@@ -356,7 +393,10 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
             scope.registerConfiguration(configuration);
             scopeIndex.put(configuration.getName(), scope);
         } else {
-            configurations.add(configuration);
+            if (configurations.get(configuration.getName()) != null) {
+                throw new DuplicateNameException(configuration.getName());
+            }
+            configurations.put(configuration.getName(), configuration);
         }
 
     }
@@ -430,8 +470,8 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
             throw e;
         }
     }
-    
-    public Map<Integer,ScopeContext> getScopeContexts(){
+
+    public Map<Integer, ScopeContext> getScopeContexts() {
         initializeScopes();
         return immutableScopeContexts;
     }
@@ -470,7 +510,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
 
     protected void initializeScopes() {
         if (scopeContexts == null) {
-            if(scopeStrategy == null){
+            if (scopeStrategy == null) {
                 scopeStrategy = new DefaultScopeStrategy();
             }
             scopeContexts = scopeStrategy.createScopes(eventContext);

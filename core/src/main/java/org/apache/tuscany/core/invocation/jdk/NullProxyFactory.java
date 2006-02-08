@@ -32,4 +32,28 @@ public class NullProxyFactory implements ProxyFactory {
         return ctx.locateService(serviceName);
     }
 
+    public void initialize() throws ProxyInitializationException {
+    }
+
+    public ProxyConfiguration getProxyConfiguration() {
+        return null;
+    }
+
+    public void setProxyConfiguration(ProxyConfiguration config) {
+    }
+
+    public void setBusinessInterface(Class interfaze) {
+    }
+
+    public Class getBusinessInterface() {
+        return null;
+    }
+
+    public void addInterface(Class claz) {
+    }
+
+    public Class[] getImplementatedInterfaces() {
+        return null;
+    }
+
 }

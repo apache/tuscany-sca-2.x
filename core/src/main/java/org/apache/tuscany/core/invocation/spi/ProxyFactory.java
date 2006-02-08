@@ -36,11 +36,23 @@ public interface ProxyFactory<T> {
      * @throws ProxyInitializationException if an error generating a proxy is
      *                                      encountered
      */
-    public void initialize(Class businessInterface, ProxyConfiguration config) throws ProxyInitializationException;
+    public void initialize() throws ProxyInitializationException;
 
     /**
      * Returns a proxy for a service reference
      */
     public T createProxy() throws ProxyCreationException;
 
+    public ProxyConfiguration getProxyConfiguration();
+    
+    public void setProxyConfiguration(ProxyConfiguration config);
+
+    public void setBusinessInterface(Class interfaze);
+    
+    public Class getBusinessInterface();
+    
+    public void addInterface(Class claz);
+    
+    public Class[] getImplementatedInterfaces();
+    
 }

@@ -12,7 +12,7 @@ import org.apache.tuscany.core.message.handler.MessageHandler;
 public class MockHandler implements MessageHandler {
 
     public boolean processMessage(Message message) {
-        System.out.println("Invoking handler");
+        //System.out.println("Invoking handler");
         return true;
     }
 }

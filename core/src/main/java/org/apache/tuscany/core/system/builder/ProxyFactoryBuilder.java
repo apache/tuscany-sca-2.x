@@ -30,6 +30,7 @@ import org.apache.tuscany.core.builder.BuilderInitException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeAwareContext;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
@@ -59,6 +60,7 @@ import org.osoa.sca.annotations.Scope;
  * A system component that configures proxy factories for references
  * <p>
  * FIXME integrate back with {@link org.apache.tuscany.core.builder.impl.PortRuntimeConfigurationBuilderImpl}
+ * @deprecated
  */
 
 @Scope("MODULE")
@@ -178,7 +180,7 @@ public class ProxyFactoryBuilder implements RuntimeConfigurationBuilder<Aggregat
         // Create Proxy configuration
         Map<OperationType, InvocationConfiguration> invocationConfigurations = new HashMap<OperationType, InvocationConfiguration>();
         Class javaInterface = interfaceType.getInstanceClass();
-        ProxyConfiguration proxyConfiguration = new ProxyConfiguration(invocationConfigurations, javaInterface.getClassLoader(),
+        ProxyConfiguration proxyConfiguration = new ProxyConfiguration(null,invocationConfigurations, javaInterface.getClassLoader(),
                 scopeContexts, messageFactory);
 
         // Create invocation configurations for all the operations on the business interface
@@ -205,7 +207,8 @@ public class ProxyFactoryBuilder implements RuntimeConfigurationBuilder<Aggregat
         // Create Proxy configuration
         Map<OperationType, InvocationConfiguration> invocationConfigurations = new HashMap<OperationType, InvocationConfiguration>();
         Class javaInterface = interfaceType.getInstanceClass();
-        ProxyConfiguration proxyConfiguration = new ProxyConfiguration(invocationConfigurations, javaInterface.getClassLoader(),
+        QualifiedName qName = new QualifiedName(configuredService.getPart().getName()+"/"+configuredService.getPort().getName());
+        ProxyConfiguration proxyConfiguration = new ProxyConfiguration(qName, invocationConfigurations, javaInterface.getClassLoader(),
                 scopeContexts, messageFactory);
 
         // Create invocation configurations for all the operations on the business interface
@@ -243,7 +246,9 @@ public class ProxyFactoryBuilder implements RuntimeConfigurationBuilder<Aggregat
         try {
             // Create a proxy factory
             ProxyFactory proxyFactory = (ProxyFactory) proxyFactoryConstructor.newInstance((Object[]) null);
-            proxyFactory.initialize(javaInterface, proxyConfiguration);
+            proxyFactory.setBusinessInterface(javaInterface);
+            proxyFactory.setProxyConfiguration(proxyConfiguration);
+            proxyFactory.initialize();
             return proxyFactory;
         } catch (ProxyInitializationException e) {
             e.addContextName(name);

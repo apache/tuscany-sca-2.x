@@ -41,6 +41,10 @@ public class MockScopeContext implements ScopeContext {
         components.put("bar", new SimpleTargetImpl());
     }
 
+    public MockScopeContext(Map<String,Object> instances) {
+        components = instances;
+    }
+
     
     public void start() {
     }
