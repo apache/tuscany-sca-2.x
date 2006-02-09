@@ -127,9 +127,9 @@ public class PortRuntimeConfigurationBuilderImpl implements AssemblyModelVisitor
         // Create a proxy factory
         ProxyFactory proxyFactory = new JDKProxyFactory();
         try {
-            proxyFactory.initialize();
             proxyFactory.setBusinessInterface(javaInterface);
             proxyFactory.setProxyConfiguration(proxyConfiguration);
+            proxyFactory.initialize();
         } catch (ProxyInitializationException e) {
             throw new ServiceRuntimeException(e);
         }
@@ -173,9 +173,9 @@ public class PortRuntimeConfigurationBuilderImpl implements AssemblyModelVisitor
         // Create a proxy factory
         ProxyFactory proxyFactory = new JDKProxyFactory();
         try {
-            proxyFactory.initialize();
             proxyFactory.setBusinessInterface(javaInterface);
             proxyFactory.setProxyConfiguration(proxyConfiguration);
+            proxyFactory.initialize();
         } catch (ProxyInitializationException e) {
             throw new ServiceRuntimeException(e);
         }

@@ -33,6 +33,8 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
 
     private QualifiedName name;
 
+    private Object target;
+
     public ScopedJavaComponentInvoker(String serviceName, Method operation, ScopeContext container) {
         super(operation);
         assert (serviceName != null) : "No service name specified";
@@ -41,8 +43,25 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
         this.container = container;
     }
 
+    public boolean cacheable;
+
+    public boolean getCacheable() {
+        return cacheable;
+    }
+
+    public void setCacheable(boolean val) {
+        cacheable = val;
+    }
+
     protected Object getInstance() throws TargetException {
-        return container.getInstance(name);
+        if (!cacheable) {
+            return container.getInstance(name);
+        } else {
+            if (target == null) {
+                target = container.getInstance(name);
+            }
+            return target;
+        }
     }
 
 }
