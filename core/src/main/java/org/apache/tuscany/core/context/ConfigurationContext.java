@@ -18,24 +18,31 @@ import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.model.assembly.ExtensibleModelObject;
 
 /**
- * Offers configuration services in the runtime. Configuration contexts will typically be hierarchical, delegating to
- * their parent <b>after</b> performing an operation.
- * 
+ * Offers configuration services in the runtime.
+ * A ConfigurationContext is able to configure a model and then build the runtime representation corresponding
+ * to that model in the live system.
+ * <p/>
+ * Configuration contexts will typically be hierarchical, delegating to their parent <b>after</b> performing an operation.
+ * The parent ConfigurationContext will typically be injected into an implementation of this interface during registration.
+ *
  * @version $Rev$ $Date$
  */
 public interface ConfigurationContext {
 
     /**
-     * Adds additional configuration information to a model object
-     * @param part
+     * Adds additional configuration information to a model object.
+     *
+     * @param model the model object to be configured
      * @throws ConfigurationException
      */
     public void configure(ExtensibleModelObject model) throws ConfigurationException;
 
     /**
-     * Decorates the model with runtime configurations
-     * @param parent the parent context of the model object being built
-     * @param part
+     * Decorates the supplied model object with a {@link org.apache.tuscany.core.builder.RuntimeConfiguration}
+     * that can be used to create the runtime context corresponding to the model.
+     *
+     * @param parent an AggregrateContext that will ultimately become the parent of the runtime context
+     * @param model  the model object that defines the configuration to be built
      * @throws BuilderConfigException
      * @see org.apache.tuscany.core.builder.RuntimeConfiguration
      */

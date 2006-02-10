@@ -14,17 +14,22 @@
 package org.apache.tuscany.core.context;
 
 /**
- * A context that offers automatic wiring capabilities
- * 
+ * A specialization of an AggregateContext that is able to automatically resolve references
+ * for its children using EntryPoint or Service interfaces exposed by it or, recursively, any
+ * of it parents.
+ *
  * @version $Rev$ $Date$
  */
-public interface AutowireContext extends AggregateContext{
+public interface AutowireContext extends AggregateContext {
 
     /**
-     * Returns an instance of the given type
-     * 
+     * Returns an reference to the requested service.
+     *
+     * @param instanceInterface the type of service being requested
+     * @return a reference to the requested service or null if none can be found
      * @throws AutowireResolutionException if an error occurs attempting to resolve an autowire
      */
-    <T> T resolveInstance(Class<T> instanceInterace) throws AutowireResolutionException;
+    <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException;
 
+    // todo add additional methods that allow other qualifications to be supplied
 }
