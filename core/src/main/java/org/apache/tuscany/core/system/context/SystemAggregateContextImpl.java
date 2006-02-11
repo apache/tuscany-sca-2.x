@@ -143,15 +143,16 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         scopeStrategy = new SystemScopeStrategy();
     }
 
-    public SystemAggregateContextImpl(String name, AggregateContext parent, ScopeStrategy strategy, EventContext ctx,
-            ConfigurationContext configCtx, MonitorFactory factory) {
+    public SystemAggregateContextImpl(String name, AggregateContext parent, AutowireContext autowire, ScopeStrategy strategy, EventContext ctx,
+                                      ConfigurationContext configCtx, MonitorFactory factory) {
         super(name);
+        this.parentContext = parent;
+        this.autowireContext = autowire;
         this.scopeStrategy = strategy;
         this.eventContext = ctx;
         this.configurationContext = configCtx;
         this.monitorFactory = factory;
         scopeIndex = new ConcurrentHashMap();
-        parentContext = parent;
         module = new PojoModule();
     }
 

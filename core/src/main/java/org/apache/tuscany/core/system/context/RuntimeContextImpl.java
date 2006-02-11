@@ -27,10 +27,8 @@ import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.AutowireResolutionException;
 import org.apache.tuscany.core.context.ConfigurationContext;
-import org.apache.tuscany.core.context.ContextRuntimeException;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventException;
-import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.RuntimeEventListener;
 import org.apache.tuscany.core.context.TargetException;
@@ -39,8 +37,8 @@ import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.model.assembly.ExtensibleModelObject;
 
 /**
- * Serves as the runtime bootstrap
- * 
+ * Implementation of a RuntimeContext that forms the foundation for a Tuscany environment.
+ *
  * @version $Rev$ $Date$
  */
 public class RuntimeContextImpl extends AbstractContext implements RuntimeContext {
@@ -49,45 +47,69 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
     private final List<RuntimeEventListener> listeners = new ArrayList(1);
 
-    private AggregateContext rootContext;
+    private final AggregateContext rootContext;
 
-    // the cached system context
-    private AutowireContext systemContext;
+    private final AutowireContext systemContext;
 
-    private MonitorFactory monitorFactory;
+    private final MonitorFactory monitorFactory;
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
+    /**
+     * Default constructor that creates a runtime with a NullMonitorFactory and no builders.
+     */
     public RuntimeContextImpl() {
         this(new NullMonitorFactory(), null);
     }
 
+    /**
+     * Constructor for creating a runtime with a specified MonitorFactory and pre-defined builders.
+     *
+     * @param monitorFactory the default {@link MonitorFactory} for this runtime
+     * @param builders       a list of builders automatically made available; may be null
+     */
     public RuntimeContextImpl(MonitorFactory monitorFactory, List<RuntimeConfigurationBuilder> builders) {
         super(RUNTIME);
         this.monitorFactory = monitorFactory;
-        if (builders == null) {
-            this.builders = new ArrayList(1);
-        } else {
-            this.builders = new ArrayList(builders);
-        }
+        this.builders = (builders == null) ? new ArrayList(1) : new ArrayList(builders);
+
+        rootContext = new AggregateContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this, monitorFactory);
+        systemContext = new SystemAggregateContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(), this, monitorFactory);
     }
 
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
+    /**
+     * Specicalized constructor that allows the default implementations of the root and system contexts
+     * to be overridden.
+     *
+     * @param monitorFactory the default {@link MonitorFactory} for this runtime
+     * @param rootContext    the context to use for the root of the user context tree
+     * @param systemContext  the context to use for the root of the system context tree
+     * @param builders       a list of builders automatically made available; may be null
+     */
+    public RuntimeContextImpl(MonitorFactory monitorFactory,
+                              AggregateContext rootContext,
+                              AutowireContext systemContext,
+                              List<RuntimeConfigurationBuilder> builders) {
+        super(RUNTIME);
+        this.rootContext = rootContext;
+        this.systemContext = systemContext;
+        this.monitorFactory = monitorFactory;
+        this.builders = (builders == null) ? new ArrayList(1) : new ArrayList(builders);
+    }
 
     public void start() throws CoreRuntimeException {
-        rootContext = new AggregateContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this,
-                monitorFactory);
+        if (lifecycleState == RUNNING) {
+            return;
+        }
+        systemContext.start();
         rootContext.start();
         lifecycleState = RUNNING;
     }
 
     public void stop() throws CoreRuntimeException {
-        checkRunning();
+        if (lifecycleState == STOPPED) {
+            return;
+        }
         rootContext.stop();
+        systemContext.stop();
         lifecycleState = STOPPED;
     }
 
@@ -101,7 +123,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         if (ROOT.equals(ctxName)) {
             return rootContext;
         } else if (SYSTEM.equals(ctxName)) {
-            return getSystemContext();
+            return systemContext;
         }
         return (AggregateContext) rootContext.getContext(ctxName);
     }
@@ -109,6 +131,11 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     public AggregateContext getRootContext() {
         checkRunning();
         return rootContext;
+    }
+
+    public AutowireContext getSystemContext() {
+        checkRunning();
+        return systemContext;
     }
 
     public MonitorFactory getMonitorFactory() {
@@ -157,23 +184,6 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
     public Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
         return getInstance(qName);
-    }
-
-    public AutowireContext getSystemContext() {
-        checkRunning();
-        if (systemContext == null) {
-            InstanceContext ctx = rootContext.getContext(SYSTEM);
-            if (ctx == null) {
-                throw new ContextRuntimeException("System context not found");
-            } else if (!(ctx instanceof AutowireContext)) {
-                ContextRuntimeException e = new ContextRuntimeException("Invalid type for system context: it must implement "
-                        + AutowireContext.class.getName());
-                e.setIdentifier(ctx.getClass().getName());
-                throw e;
-            }
-            systemContext = (AutowireContext) ctx;
-        }
-        return systemContext;
     }
 
     // ----------------------------------

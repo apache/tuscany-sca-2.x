@@ -18,14 +18,12 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.ContextConstants;
+import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.mock.MockSystemAssemblyFactory;
-import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 
 /**
  * Tests runtime boot scenarios
@@ -40,11 +38,6 @@ public class RuntimeBootTestCase extends TestCase {
         // start the runtime context
         RuntimeContext runtimeContext = new RuntimeContextImpl(new NullMonitorFactory(), builders);
         runtimeContext.start();
-
-        // create the system context
-        Component component = MockSystemAssemblyFactory.createComponent(RuntimeContext.SYSTEM,
-                SystemAggregateContextImpl.class.getName(), ContextConstants.AGGREGATE_SCOPE_ENUM);
-        runtimeContext.registerModelObject(component);
 
         AggregateContext system = runtimeContext.getSystemContext();
         Assert.assertNotNull(system);

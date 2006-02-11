@@ -75,7 +75,6 @@ public class MockSystemAssemblyFactory {
      * @param name the name of the component
      * @param type the component implementation class name
      * @param scope the scope of the component implementation
-     * @param aggregateContext the containing aggregate context
      * @throws NoSuchMethodException
      * @throws ClassNotFoundException
      * @see RuntimeConfiguration

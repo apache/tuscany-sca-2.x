@@ -44,7 +44,7 @@ public class SystemAggregateComponentContextTestCase extends TestCase {
         List<RuntimeConfigurationBuilder> builders  = MockSystemAssemblyFactory.createBuilders();
 
         SystemAggregateContextImpl system = new SystemAggregateContextImpl("system", null,
-                new SystemScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
+                null, new SystemScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
         system.start();
 
         Component aggregateComponent = MockSystemAssemblyFactory.createComponent("system.child",
@@ -68,7 +68,7 @@ public class SystemAggregateComponentContextTestCase extends TestCase {
     public void testAutowire() throws Exception {
         List<RuntimeConfigurationBuilder> builders  = MockSystemAssemblyFactory.createBuilders();
         SystemAggregateContextImpl system = new SystemAggregateContextImpl("system", null,
-                new SystemScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
+                null, new SystemScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
 
         Component component = MockSystemAssemblyFactory.createComponent("TestService1", ModuleScopeSystemComponentImpl.class
                 .getName(), ScopeEnum.MODULE_LITERAL);
@@ -87,7 +87,7 @@ public class SystemAggregateComponentContextTestCase extends TestCase {
         List<RuntimeConfigurationBuilder> builders = MockSystemAssemblyFactory.createBuilders();
 
         SystemAggregateContextImpl system = new SystemAggregateContextImpl("system", null,
-                new SystemScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
+                null, new SystemScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
 
         Component component = MockSystemAssemblyFactory.createComponent("TestService1", ModuleScopeSystemComponentImpl.class
                 .getName(), ScopeEnum.MODULE_LITERAL);
@@ -106,7 +106,7 @@ public class SystemAggregateComponentContextTestCase extends TestCase {
         List<RuntimeConfigurationBuilder> builders  = MockSystemAssemblyFactory.createBuilders();
 
         SystemAggregateContextImpl system = new SystemAggregateContextImpl("system", null,
-                new SystemScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
+                null, new SystemScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
         system.registerModelObject(MockSystemAssemblyFactory.createSystemModule());
         system.start();
         system.fireEvent(EventContext.MODULE_START, null);
@@ -118,7 +118,7 @@ public class SystemAggregateComponentContextTestCase extends TestCase {
     public void testAutowireModuleRegisterAfterStart() throws Exception {
         List<RuntimeConfigurationBuilder> builders = MockSystemAssemblyFactory.createBuilders();
         SystemAggregateContextImpl system = new SystemAggregateContextImpl("system", null,
-                new SystemScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
+                null, new SystemScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
         system.start();
         system.fireEvent(EventContext.MODULE_START, null);
         system.registerModelObject(MockSystemAssemblyFactory.createSystemModule());

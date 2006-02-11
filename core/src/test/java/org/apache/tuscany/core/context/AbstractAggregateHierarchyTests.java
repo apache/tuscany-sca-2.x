@@ -39,6 +39,7 @@ import org.osoa.sca.ModuleContext;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractAggregateHierarchyTests extends TestCase {
+    protected List<RuntimeConfigurationBuilder> builders;
 
     public void testParentContextIsolation() throws Exception {
         AggregateContext parent = createContextHierachy();
@@ -68,7 +69,6 @@ public abstract class AbstractAggregateHierarchyTests extends TestCase {
      * Checks that registration of duplicate named model objects before context start throws an exception
      */
     public void testRegisterSameName() throws Exception {
-        List<RuntimeConfigurationBuilder> builders = MockSystemAssemblyFactory.createBuilders();
         AggregateContext parent = new AggregateContextImpl("test.parent", null, new DefaultScopeStrategy(),
                 new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
         parent.registerModelObject(MockSystemAssemblyFactory.createComponent("test.child", AggregateContextImpl.class.getName(),
@@ -87,7 +87,6 @@ public abstract class AbstractAggregateHierarchyTests extends TestCase {
      * Checks that registration of duplicate named model objects after context start throws an exception
      */
     public void testRegisterSameNameAfterStart() throws Exception {
-        List<RuntimeConfigurationBuilder> builders = MockSystemAssemblyFactory.createBuilders();
         AggregateContext parent = new AggregateContextImpl("test.parent", null, new DefaultScopeStrategy(),
                 new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
         parent.registerModelObject(MockSystemAssemblyFactory.createComponent("test.child", AggregateContextImpl.class.getName(),
@@ -106,4 +105,8 @@ public abstract class AbstractAggregateHierarchyTests extends TestCase {
 
     protected abstract AggregateContext createContextHierachy() throws Exception;
 
+    protected void setUp() throws Exception {
+        super.setUp();
+        builders = MockSystemAssemblyFactory.createBuilders();
+    }
 }

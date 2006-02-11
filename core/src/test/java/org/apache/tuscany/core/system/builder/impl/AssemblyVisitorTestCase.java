@@ -79,7 +79,7 @@ public class AssemblyVisitorTestCase extends TestCase {
 
     }
 
-    private class TestBuilder implements RuntimeConfigurationBuilder {
+    private static class TestBuilder implements RuntimeConfigurationBuilder {
 
         private AssemblyModelObject model;
 

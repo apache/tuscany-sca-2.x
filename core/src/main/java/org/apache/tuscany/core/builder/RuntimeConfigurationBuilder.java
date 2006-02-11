@@ -9,7 +9,6 @@ import org.apache.tuscany.model.assembly.AssemblyModelObject;
  * decorated with the runtime configuration model (RCM).
  *
  * @version $Rev$ $Date$
- * @param <T>
  * @see RuntimeConfiguration
  */
 public interface RuntimeConfigurationBuilder<Y extends Context> {

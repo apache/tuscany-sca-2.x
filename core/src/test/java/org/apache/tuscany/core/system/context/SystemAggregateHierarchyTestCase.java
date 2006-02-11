@@ -39,7 +39,7 @@ public class SystemAggregateHierarchyTestCase extends AbstractAggregateHierarchy
 
     protected AggregateContext createContextHierachy() throws Exception {
         List<RuntimeConfigurationBuilder> builders = MockSystemAssemblyFactory.createBuilders();
-        AggregateContext parent = new SystemAggregateContextImpl("test.parent", null, new DefaultScopeStrategy(),
+        AggregateContext parent = new SystemAggregateContextImpl("test.parent", null, null, new DefaultScopeStrategy(),
                 new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
         parent.registerModelObject(MockSystemAssemblyFactory.createComponent("test.child", AggregateContextImpl.class.getName(),
                 ContextConstants.AGGREGATE_SCOPE_ENUM));

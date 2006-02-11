@@ -47,19 +47,15 @@ import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
  * @version $Rev$ $Date$
  */
 public class SystemBootstrapTestCase extends TestCase {
+    private List<RuntimeConfigurationBuilder> builders;
 
     /**
      * Simulates booting a runtime process
      */
     public void testBoot() throws Exception {
-        List<RuntimeConfigurationBuilder> builders  = MockSystemAssemblyFactory.createBuilders();
-
         RuntimeContext runtimeContext = new RuntimeContextImpl(new NullMonitorFactory(), builders);
         runtimeContext.start();
-        // create the system context
-        Component component = MockSystemAssemblyFactory.createComponent(RuntimeContext.SYSTEM,
-                SystemAggregateContextImpl.class.getName(), ContextConstants.AGGREGATE_SCOPE_ENUM);
-        runtimeContext.registerModelObject(component);
+
         AggregateContext systemContext = runtimeContext.getSystemContext();
         Assert.assertNotNull(systemContext);
         Module systemModule = MockSystemAssemblyFactory.createSystemModule();
@@ -88,12 +84,10 @@ public class SystemBootstrapTestCase extends TestCase {
     }
 
     public void testRuntimeBoot() throws Exception {
-        List<RuntimeConfigurationBuilder> builders  = MockSystemAssemblyFactory.createBuilders();
         RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders);
         runtime.start();
         runtime.getRootContext();
-        runtime.registerModelObject(MockSystemAssemblyFactory.createComponent(RuntimeContext.SYSTEM,
-                SystemAggregateContextImpl.class.getName(), ContextConstants.AGGREGATE_SCOPE_ENUM));
+
         AggregateContext system = runtime.getSystemContext();
         system.registerModelObject(MockSystemAssemblyFactory.createSystemModule());
         system.registerModelObject(MockSystemAssemblyFactory.createComponent("module2", SystemAggregateContextImpl.class
@@ -169,4 +163,8 @@ public class SystemBootstrapTestCase extends TestCase {
 //    }
 
 
+    protected void setUp() throws Exception {
+        super.setUp();
+        builders = MockSystemAssemblyFactory.createBuilders();
+    }
 }
