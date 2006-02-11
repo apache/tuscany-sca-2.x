@@ -35,6 +35,16 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
 
     private Object target;
 
+    public boolean cacheable;
+
+    /**
+     * Constructs a new component invoker for a given operation.
+     * 
+     * @param serviceName the name of the target service
+     * @param operation the method on the target object to invoke corresponding to the operation
+     * @param container the scope container managing the service instance
+     * @deprecated
+     */
     public ScopedJavaComponentInvoker(String serviceName, Method operation, ScopeContext container) {
         super(operation);
         assert (serviceName != null) : "No service name specified";
@@ -43,16 +53,33 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
         this.container = container;
     }
 
-    public boolean cacheable;
-
-    public boolean getCacheable() {
+    public ScopedJavaComponentInvoker(QualifiedName serviceName, Method operation, ScopeContext container) {
+        super(operation);
+        assert (serviceName != null) : "No service name specified";
+        assert (container != null) : "No scope container specified";
+        name = serviceName;
+        this.container = container;
+    }
+    
+    /**
+     * Returns whether the target is cacheable.
+     */
+    public boolean isCacheable() {
         return cacheable;
     }
 
+    /**
+     * Sets whether the target service instance may be cached by the invoker. This is a possible optimization when a
+     * wire is configured for a "down-scope" reference, i.e. a reference from a source of a shorter lifetime to a source
+     * of greater lifetime.
+     */
     public void setCacheable(boolean val) {
         cacheable = val;
     }
 
+    /**
+     * Resolves the target service instance or returns a cached one
+     */
     protected Object getInstance() throws TargetException {
         if (!cacheable) {
             return container.getInstance(name);

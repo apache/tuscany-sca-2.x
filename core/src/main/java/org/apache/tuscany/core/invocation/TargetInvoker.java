@@ -35,4 +35,8 @@ public interface TargetInvoker extends Interceptor{
      */
     public Object invokeTarget(Object payload) throws InvocationTargetException;
 
+    /**
+     * Determines whether the proxy can be cached on the client/source side
+     */
+    public boolean isCacheable();
 }

@@ -58,7 +58,7 @@ public class JDKInvocationHandler implements InvocationHandler {
         Interceptor headInterceptor = null;
         InvocationConfiguration config = configuration.get(method);
         if (config != null) {
-            headInterceptor = config.getInterceptor();
+            headInterceptor = config.getSourceInterceptor();
         }
         if (headInterceptor == null) {
             try {
@@ -73,6 +73,7 @@ public class JDKInvocationHandler implements InvocationHandler {
             }
         } else {
             Message msg = messageFactory.createMessage();
+            msg.setTargetInvoker(config.getTargetInvoker());
             msg.setPayload(args);
             // dispatch the invocation down the chain and get the response
             Message resp = headInterceptor.invoke(msg);

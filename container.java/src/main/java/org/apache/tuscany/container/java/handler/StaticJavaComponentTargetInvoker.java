@@ -38,4 +38,8 @@ public class StaticJavaComponentTargetInvoker extends AbstractJavaComponentInvok
         return instance;
     }
 
+    public boolean isCacheable(){
+        return true;
+    }
+
 }

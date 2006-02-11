@@ -14,6 +14,7 @@
 package org.apache.tuscany.core.context;
 
 import org.apache.tuscany.core.builder.BuilderConfigException;
+import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.model.assembly.ExtensibleModelObject;
 
@@ -47,5 +48,7 @@ public interface ConfigurationContext {
      * @see org.apache.tuscany.core.builder.RuntimeConfiguration
      */
     public void build(AggregateContext parent, ExtensibleModelObject model) throws BuilderConfigException;
+
+   // public void buildWire(RuntimeConfiguration source, RuntimeConfiguration target, ScopeContext targetScopeContext);
 
 }

@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import org.apache.tuscany.core.injection.SDOObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
+import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
@@ -192,9 +194,10 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
                         InvocationConfiguration iConfig = new InvocationConfiguration(type);
                         iConfigMap.put(type, iConfig);
                     }
-                    //@FIXME hardcode separator
-                    QualifiedName qName = new QualifiedName(configuredService.getPart().getName()+"/"+configuredService.getPort().getName());
-                    ProxyConfiguration pConfiguration = new ProxyConfiguration(qName,iConfigMap, null, null, msgFactory);
+                    // @FIXME hardcode separator
+                    QualifiedName qName = new QualifiedName(configuredService.getPart().getName() + "/"
+                            + configuredService.getPort().getName());
+                    ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, null, msgFactory);
                     proxyFactory.setBusinessInterface(interfaze.getInterfaceType().getInstanceClass());
                     proxyFactory.setProxyConfiguration(pConfiguration);
                     config.addTargetProxyFactory(service.getName(), proxyFactory);
@@ -203,6 +206,12 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
                     referenceBuilder.setParentContext(parentContext);
                     referenceBuilder.setModelObject(configuredService);
                     referenceBuilder.build();
+                    // add tail interceptor
+                    for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
+                        iConfig.addTargetInterceptor(new InvokerInterceptor());
+                        //iConfig.build();
+                    }
+
                 }
 
                 // handle references
@@ -221,8 +230,9 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
                          * FIXME we pass null for scopes since ProxyConfiguration requires scopes - this should be
                          * removed from the constructor
                          */
-                        QualifiedName qName = new QualifiedName(reference.getPart().getName() +"/"+reference.getPort().getName());
-                        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName,iConfigMap, null, null, msgFactory);
+                        QualifiedName qName = new QualifiedName(reference.getPart().getName() + "/"
+                                + reference.getPort().getName());
+                        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, null, msgFactory);
                         proxyFactory.setBusinessInterface(interfaze.getInterfaceType().getInstanceClass());
                         proxyFactory.setProxyConfiguration(pConfiguration);
                         config.addSourceProxyFactory(reference.getReference().getName(), proxyFactory);

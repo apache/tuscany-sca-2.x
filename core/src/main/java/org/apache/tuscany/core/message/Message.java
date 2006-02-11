@@ -19,6 +19,7 @@ package org.apache.tuscany.core.message;
 import java.util.Map;
 
 import org.apache.tuscany.core.addressing.EndpointReference;
+import org.apache.tuscany.core.invocation.TargetInvoker;
 import org.apache.tuscany.core.message.channel.MessageChannel;
 
 /**
@@ -185,5 +186,10 @@ public interface Message {
      * FIXME Javadoc
      */
     Message getRelatedCallbackMessage();
-
+    
+    //ADDED
+    public void setTargetInvoker(TargetInvoker invoker);
+    
+    public TargetInvoker getTargetInvoker();
+    
 } // Message

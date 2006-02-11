@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.core.addressing.EndpointReference;
+import org.apache.tuscany.core.invocation.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.channel.MessageChannel;
 
@@ -172,6 +173,16 @@ public class PojoMessageImpl implements Message, MessageChannel {
 
     public void send(Message message) {
         callbackMessage = message;
+    }
+
+    private TargetInvoker invoker;
+    
+    public void setTargetInvoker(TargetInvoker invoker){
+        this.invoker = invoker;
+    }
+
+    public TargetInvoker getTargetInvoker(){
+        return invoker;
     }
 
 }

@@ -32,6 +32,7 @@ import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.container.java.invocation.mock.SimpleTarget;
 import org.apache.tuscany.container.java.invocation.mock.SimpleTargetImpl;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
+import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.jdk.JDKInvocationHandler;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.model.types.OperationType;
@@ -68,6 +69,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         InvocationConfiguration invocationConfiguration = new InvocationConfiguration(operation);
         invocationConfiguration.addSourceInterceptor(new MockSyncInterceptor());
         invocationConfiguration.addTargetInterceptor(new MockSyncInterceptor());
+        invocationConfiguration.addTargetInterceptor(new InvokerInterceptor());
         invocationConfiguration.setTargetInvoker(invoker);
         invocationConfiguration.build();
         InvocationConfiguration helloConfig = invocationConfiguration;
@@ -84,6 +86,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(hello, new SimpleTargetImpl());
         InvocationConfiguration invocationConfiguration = new InvocationConfiguration(operation);
         invocationConfiguration.addSourceInterceptor(new MockSyncInterceptor());
+        invocationConfiguration.addTargetInterceptor(new InvokerInterceptor());
         invocationConfiguration.setTargetInvoker(invoker);
         invocationConfiguration.build();
         InvocationConfiguration helloConfig = invocationConfiguration;
@@ -100,6 +103,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(hello, new SimpleTargetImpl());
         InvocationConfiguration invocationConfiguration = new InvocationConfiguration(operation);
         invocationConfiguration.addTargetInterceptor(new MockSyncInterceptor());
+        invocationConfiguration.addTargetInterceptor(new InvokerInterceptor());
         invocationConfiguration.setTargetInvoker(invoker);
         invocationConfiguration.build();
         InvocationConfiguration helloConfig = invocationConfiguration;
@@ -117,6 +121,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         InvocationConfiguration invocationConfiguration = new InvocationConfiguration(operation);
         invocationConfiguration.addRequestHandler(new MockHandler());
         invocationConfiguration.addTargetInterceptor(new MockSyncInterceptor());
+        invocationConfiguration.addTargetInterceptor(new InvokerInterceptor());
         invocationConfiguration.setTargetInvoker(invoker);
         invocationConfiguration.build();
         InvocationConfiguration helloConfig = invocationConfiguration;
@@ -133,6 +138,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         InvocationConfiguration invocationConfiguration = new InvocationConfiguration(operation);
         invocationConfiguration.addRequestHandler(new MockHandler());
         invocationConfiguration.addSourceInterceptor(new MockSyncInterceptor());
+        invocationConfiguration.addTargetInterceptor(new InvokerInterceptor());
         invocationConfiguration.setTargetInvoker(invoker);
         invocationConfiguration.build();
         return invocationConfiguration;

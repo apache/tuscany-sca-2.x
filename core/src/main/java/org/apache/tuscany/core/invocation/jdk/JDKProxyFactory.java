@@ -94,5 +94,5 @@ public class JDKProxyFactory implements ProxyFactory {
     public Class[] getImplementatedInterfaces() {
         return businessInterfaceArray;
     }
-
+    
 }

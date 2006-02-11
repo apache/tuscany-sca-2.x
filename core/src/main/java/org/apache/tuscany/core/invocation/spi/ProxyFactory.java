@@ -17,6 +17,7 @@
 package org.apache.tuscany.core.invocation.spi;
 
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
+import org.apache.tuscany.core.invocation.TargetInvoker;
 
 /**
  * Implementations are responsible for creating service reference proxies using

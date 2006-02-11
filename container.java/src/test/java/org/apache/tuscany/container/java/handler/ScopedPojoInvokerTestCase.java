@@ -24,6 +24,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.container.java.handler.ScopedJavaComponentInvoker;
 import org.apache.tuscany.container.java.invocation.mock.MockScopeContext;
 import org.apache.tuscany.container.java.invocation.mock.SimpleTarget;
+import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 
 public class ScopedPojoInvokerTestCase extends TestCase {
@@ -45,7 +46,7 @@ public class ScopedPojoInvokerTestCase extends TestCase {
 
     public void testScopedInvoke() throws Exception {
         ScopeContext container = new MockScopeContext();
-        ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker("foo", echoMethod, container);
+        ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(new QualifiedName("foo"), echoMethod, container);
         Object ret = invoker.invokeTarget("foo");
         Assert.assertEquals("foo", ret);
     }

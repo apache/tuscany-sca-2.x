@@ -30,6 +30,7 @@ import org.apache.tuscany.container.java.invocation.mock.MockHandler;
 import org.apache.tuscany.container.java.invocation.mock.MockJavaOperationType;
 import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
+import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.jdk.JDKInvocationHandler;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.model.types.OperationType;
@@ -94,6 +95,7 @@ public class InvocationHandlerErrorTestCase extends TestCase {
         invocationConfiguration.addSourceInterceptor(new MockSyncInterceptor());
         invocationConfiguration.addRequestHandler(new MockHandler());
         invocationConfiguration.setTargetInvoker(invoker);
+        invocationConfiguration.addTargetInterceptor(new InvokerInterceptor());
         invocationConfiguration.build();
         return invocationConfiguration;
     }

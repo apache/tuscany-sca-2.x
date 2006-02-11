@@ -145,10 +145,6 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                     for (RuntimeConfiguration config : configurations.values()) {
                         // FIXME scopes are defined at the interface level
                         int scope = config.getScope();
-                        // ensure duplicate names were not added before the context was started
-                        // if (scopeIndex.get(config.getName()) != null) {
-                        // throw new DuplicateNameException(config.getName());
-                        // }
                         // /----------------
                         if (config.getSourceProxyFactories() != null) {
                             for (ProxyFactory sourceFactory : ((Map<String, ProxyFactory>) config.getSourceProxyFactories())
@@ -176,7 +172,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                                         sourceInvocationConfig.addRequestHandler(targetInvocationConfig.getHeadHandler());
                                     } else {
                                         // no handlers, just conntect interceptors
-                                        sourceInvocationConfig.addTargetInterceptor(targetInvocationConfig.getInterceptor());
+                                        sourceInvocationConfig.addTargetInterceptor(targetInvocationConfig.getSourceInterceptor());
                                     }
                                 }
                             }

@@ -98,10 +98,14 @@ public class InvocationConfiguration {
         return targetInvoker;
     }
 
-    public Interceptor getInterceptor() {
+    public Interceptor getSourceInterceptor() {
         return sourceInterceptorChainHead;
     }
 
+    public Interceptor getTargetInterceptor() {
+        return targetInterceptorChainHead;
+    }
+    
     public MessageHandler getHeadHandler() {
         if (responseHandlers != null && responseHandlers.size() > 0) {
             return responseHandlers.get(0);
@@ -116,13 +120,15 @@ public class InvocationConfiguration {
     public void build() {
 
         // Build target interceptor chain
-        if (targetInvoker != null) {
-            if (targetInterceptorChainHead != null) {
-                targetInterceptorChainTail.setNext(targetInvoker);
-            } else {
-                targetInterceptorChainHead = targetInvoker;
-            }
-        }
+//FIXME Break
+//        if (targetInvoker != null) {
+//            if (targetInterceptorChainHead != null) {
+//                targetInterceptorChainTail.setNext(targetInvoker);
+//            } else {
+//                targetInterceptorChainHead = targetInvoker;
+//            }
+//        }
+//FIXME Break
 
         // Connect request handler chain to target interceptor chain
         if (requestHandlers != null && targetInterceptorChainHead != null) {

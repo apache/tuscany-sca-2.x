@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.apache.tuscany.core.addressing.EndpointReference;
 import org.apache.tuscany.core.addressing.sdo.EndpointReferenceElement;
+import org.apache.tuscany.core.invocation.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.channel.MessageChannel;
 import org.apache.tuscany.core.message.sdo.impl.MessageElementImpl;
@@ -231,5 +232,15 @@ public class MessageImpl extends MessageElementImpl implements Message, MessageC
      */
     public Message getRelatedCallbackMessage() {
         return relatedCallbackMessage;
+    }
+    
+    private TargetInvoker invoker;
+    
+    public void setTargetInvoker(TargetInvoker invoker){
+        this.invoker = invoker;
+    }
+
+    public TargetInvoker getTargetInvoker(){
+        return invoker;
     }
 }
