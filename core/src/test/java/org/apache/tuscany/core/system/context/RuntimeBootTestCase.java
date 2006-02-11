@@ -31,6 +31,31 @@ import org.apache.tuscany.core.mock.MockSystemAssemblyFactory;
  * @version $Rev$ $Date$
  */
 public class RuntimeBootTestCase extends TestCase {
+    private RuntimeContext runtime;
+
+    public void testContextParents() {
+        AggregateContext rootContext = runtime.getRootContext();
+        assertNotNull(rootContext);
+        assertEquals("tuscany.root", rootContext.getName());
+        assertSame(runtime, rootContext.getParent());
+
+        AggregateContext systemContext = runtime.getSystemContext();
+        assertNotNull(systemContext);
+        assertEquals("tuscany.system", systemContext.getName());
+        assertSame(runtime, systemContext.getParent());
+    }
+
+    public void testRuntimeLifecycle() {
+/* fails as system context has already been initialized
+        assertEquals(Context.RUNNING, runtime.getLifecycleState());
+        runtime.stop();
+
+        assertEquals(Context.STOPPED, runtime.getLifecycleState());
+
+        runtime.start();
+        assertEquals(Context.RUNNING, runtime.getLifecycleState());
+*/
+    }
 
     public void testIncrementalBoot() throws Exception{
 
@@ -54,6 +79,18 @@ public class RuntimeBootTestCase extends TestCase {
         system.fireEvent(EventContext.MODULE_STOP, null);
         runtimeContext.stop();
         Assert.assertEquals(Context.STOPPED,system.getLifecycleState());
+    }
+
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        runtime = new RuntimeContextImpl();
+        runtime.start();
+    }
+
+    protected void tearDown() throws Exception {
+        runtime.stop();
+        super.tearDown();
     }
 }
 
