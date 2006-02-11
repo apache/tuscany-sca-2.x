@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.runtime.config.impl;
+package org.apache.tuscany.core.config;
 
 import java.net.URL;
 import java.util.List;
