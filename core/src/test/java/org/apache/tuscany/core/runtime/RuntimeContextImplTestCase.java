@@ -11,7 +11,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.system.context;
+package org.apache.tuscany.core.runtime;
 
 import java.util.List;
 
@@ -29,6 +29,10 @@ import org.apache.tuscany.core.mock.MockSystemAssemblyFactory;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
 import org.apache.tuscany.core.system.assembly.pojo.PojoSystemBinding;
+import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
+import org.apache.tuscany.core.system.context.TestBuilder;
+import org.apache.tuscany.core.runtime.RuntimeContext;
+import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;

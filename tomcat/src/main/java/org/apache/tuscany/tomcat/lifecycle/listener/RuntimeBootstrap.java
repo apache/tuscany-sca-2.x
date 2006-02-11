@@ -30,8 +30,8 @@ import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
-import org.apache.tuscany.core.system.context.RuntimeContext;
-import org.apache.tuscany.core.system.context.RuntimeContextImpl;
+import org.apache.tuscany.core.runtime.RuntimeContext;
+import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 
 /**
  * Bootstraps an SCA runtime hosted by a Tomcat instance. The runtime will be bound to JNDI and accessed by
@@ -42,7 +42,7 @@ import org.apache.tuscany.core.system.context.RuntimeContextImpl;
  * <code>GlobalNamingResources</code> element:
  * 
  * <pre>
- *   &lt;Resource name=&quot;TuscanyRuntime&quot; auth=&quot;Container&quot; type=&quot;org.apache.tuscany.core.system.context.RuntimeContext&quot;
+ *   &lt;Resource name=&quot;TuscanyRuntime&quot; auth=&quot;Container&quot; type=&quot;org.apache.tuscany.core.runtime.RuntimeContext&quot;
  *          description=&quot;Tuscany Runtime&quot;
  *          factory=&quot; org.apache.tuscany.tomcat.lifecycle.listener.RuntimeBootstrap&quot;
  *          monitor=&quot;[monitor factory]&quot; loader=&quot;[configuration loader]&quot;/&gt;

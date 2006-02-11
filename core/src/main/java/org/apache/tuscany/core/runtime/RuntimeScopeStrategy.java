@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.system.context;
+package org.apache.tuscany.core.runtime;
 
 import static org.apache.tuscany.core.context.ContextConstants.AGGREGATE_SCOPE;
 

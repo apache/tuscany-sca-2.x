@@ -29,6 +29,8 @@ import org.apache.tuscany.core.mock.component.GenericSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
 import org.apache.tuscany.core.system.assembly.pojo.PojoSystemBinding;
+import org.apache.tuscany.core.runtime.RuntimeContext;
+import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;

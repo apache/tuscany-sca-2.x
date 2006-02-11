@@ -11,7 +11,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.system.context;
+package org.apache.tuscany.core.runtime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +34,9 @@ import org.apache.tuscany.core.context.RuntimeEventListener;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
+import org.apache.tuscany.core.runtime.RuntimeContext;
+import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
+import org.apache.tuscany.core.system.context.SystemScopeStrategy;
 import org.apache.tuscany.model.assembly.ExtensibleModelObject;
 
 /**

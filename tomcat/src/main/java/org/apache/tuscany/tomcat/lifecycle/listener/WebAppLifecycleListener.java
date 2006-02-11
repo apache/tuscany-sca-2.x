@@ -26,14 +26,14 @@ import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
 import org.apache.tuscany.core.TuscanyRuntimeException;
+import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
 import org.apache.tuscany.core.context.webapp.HTTPSessionExpirationListener;
 import org.apache.tuscany.core.context.webapp.TuscanyRequestFilter;
 import org.apache.tuscany.core.context.webapp.TuscanyWebAppRuntime;
-import org.apache.tuscany.core.system.context.RuntimeContext;
-import org.apache.tuscany.core.system.context.RuntimeMonitor;
+import org.apache.tuscany.core.runtime.RuntimeMonitor;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 
 /**

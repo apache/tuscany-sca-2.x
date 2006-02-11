@@ -44,7 +44,7 @@ import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.handler.MessageHandler;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
-import org.apache.tuscany.core.system.context.RuntimeContext;
+import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredReference;

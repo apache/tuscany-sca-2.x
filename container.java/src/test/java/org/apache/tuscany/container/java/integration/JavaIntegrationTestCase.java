@@ -21,8 +21,8 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.container.java.assembly.impl.JavaAssemblyFactoryImpl;
-import org.apache.tuscany.core.system.context.RuntimeContext;
-import org.apache.tuscany.core.system.context.RuntimeContextImpl;
+import org.apache.tuscany.core.runtime.RuntimeContext;
+import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 
