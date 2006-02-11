@@ -38,11 +38,13 @@ public class RuntimeBootTestCase extends TestCase {
         assertNotNull(rootContext);
         assertEquals("tuscany.root", rootContext.getName());
         assertSame(runtime, rootContext.getParent());
+        assertSame(rootContext, runtime.getContext("tuscany.root"));
 
         AggregateContext systemContext = runtime.getSystemContext();
         assertNotNull(systemContext);
         assertEquals("tuscany.system", systemContext.getName());
         assertSame(runtime, systemContext.getParent());
+        assertSame(systemContext, runtime.getContext("tuscany.system"));
     }
 
     public void testRuntimeLifecycle() {
