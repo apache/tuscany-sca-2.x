@@ -21,31 +21,49 @@ import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.channel.MessageChannel;
 
 /**
- * An interceptor that first sends the invocation Message down its request channel then extracts the response from the message and
- * sends it down the response channel before returning it up the interceptor stack.
+ * An interceptor that first sends the invocation Message down its request channel then extracts the response from the
+ * message and sends it down the response channel before returning it up the interceptor stack.
  * 
  * @version $Rev$ $Date$
  */
 public class RequestResponseInterceptor implements Interceptor {
-    private MessageChannel requestChannel;
 
-    private MessageChannel responseChannel;
+    private MessageChannel sourceRequestChannel;
+
+    private MessageChannel sourceResponseChannel;
+
+    private MessageChannel targetRequestChannel;
+
+    private MessageChannel targetResponseChannel;
 
     /**
      * Construct an interceptor that sends messages down the supplied channels.
      * 
-     * @param requestChannel the channel to send request messages down
-     * @param responseChannel the channel to sent response messages down
+     * @param targetRequestChannel the channel to send request messages down
+     * @param targetResponseChannel the channel to sent response messages down
      */
-    public RequestResponseInterceptor(MessageChannel requestChannel, MessageChannel responseChannel) {
-        this.requestChannel = requestChannel;
-        this.responseChannel = responseChannel;
+    public RequestResponseInterceptor(MessageChannel sourceRequestChannel, MessageChannel targetRequestChannel,
+            MessageChannel sourceResponseChannel, MessageChannel targetResponseChannel) {
+        this.sourceRequestChannel = sourceRequestChannel;
+        this.sourceResponseChannel = sourceResponseChannel;
+        this.targetRequestChannel = targetRequestChannel;
+        this.targetResponseChannel = targetResponseChannel;
     }
 
     public Message invoke(Message requestMessage) {
-        requestChannel.send(requestMessage);
+        if (sourceRequestChannel != null) {
+            sourceRequestChannel.send(requestMessage);
+        }
+        if (targetRequestChannel != null) {
+            targetRequestChannel.send(requestMessage);
+        }
         Message responseMessage = requestMessage.getRelatedCallbackMessage();
-        responseChannel.send(responseMessage);
+        if (targetResponseChannel != null) {
+            targetResponseChannel.send(responseMessage);
+        }
+        if (sourceResponseChannel != null) {
+            sourceResponseChannel.send(responseMessage);
+        }
         return responseMessage;
     }
 

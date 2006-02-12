@@ -13,18 +13,13 @@
  */
 package org.apache.tuscany.container.java.builder;
 
-import java.util.Map;
-
 import org.apache.tuscany.container.java.config.JavaComponentRuntimeConfiguration;
 import org.apache.tuscany.container.java.handler.ScopedJavaComponentInvoker;
 import org.apache.tuscany.core.builder.BuilderConfigException;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.context.ScopeStrategy;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.types.java.JavaOperationType;
 import org.osoa.sca.annotations.Scope;
 
@@ -36,35 +31,28 @@ import org.osoa.sca.annotations.Scope;
 @Scope("MODULE")
 public class JavaTargetWireBuilder implements WireBuilder {
 
-    @Autowire
-    ScopeStrategy scopeStrategy;
-
     public JavaTargetWireBuilder() {
     }
 
-    public void setScopeStrategy(ScopeStrategy strategy) {
-        scopeStrategy = strategy;
-    }
-
-    public void wire(RuntimeConfiguration source, RuntimeConfiguration target, ScopeContext targetScopeContext)
+    public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope, ScopeContext targetScopeContext)
             throws BuilderConfigException {
-        if (!(target instanceof JavaComponentRuntimeConfiguration)) {
+        if (!(JavaComponentRuntimeConfiguration.class.isAssignableFrom(targetType))) {
             return;
         }
-        for (ProxyFactory sourceFactory : ((Map<String, ProxyFactory>) source.getSourceProxyFactories()).values()) {
+//        for (ProxyFactory sourceFactory : ((Map<String, ProxyFactory>) source.getSourceProxyFactories()).values()) {
             for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration()
                     .getInvocationConfigurations().values()) {
                 ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(sourceFactory.getProxyConfiguration()
                         .getTargetName(), ((JavaOperationType) sourceInvocationConfig.getOperationType()).getJavaMethod(),
                         targetScopeContext);
-                if (scopeStrategy.downScopeReference(source.getScope(), target.getScope())) {
+                if (downScope) {
                     invoker.setCacheable(true);
                 } else {
                     invoker.setCacheable(false);
                 }
                 sourceInvocationConfig.setTargetInvoker(invoker);
             }
-        }
+//        }
 
     }
 }

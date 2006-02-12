@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.core.context.AggregateContext;
@@ -38,7 +39,6 @@ import org.apache.tuscany.core.context.ScopeStrategy;
 import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
-import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
@@ -49,7 +49,6 @@ import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Part;
 import org.apache.tuscany.model.assembly.pojo.PojoModule;
-import org.apache.tuscany.model.types.OperationType;
 
 /**
  * The base implementation of an aggregate context
@@ -75,6 +74,10 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     // The system monitor factory
     @Autowire(required = false)
     protected MonitorFactory monitorFactory;
+
+    // The system wire builder
+    @Autowire(required = false)
+    protected WireBuilder wireBuilder;
 
     // The logical model representing the module assembly
     // protected ModuleComponent moduleComponent;
@@ -142,12 +145,12 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
 
                 Map<Integer, List<RuntimeConfiguration<SimpleComponentContext>>> configurationsByScope = new HashMap();
                 if (configurations != null) {
-                    for (RuntimeConfiguration config : configurations.values()) {
+                    for (RuntimeConfiguration source : configurations.values()) {
                         // FIXME scopes are defined at the interface level
-                        int scope = config.getScope();
+                        int sourceScope = source.getScope();
                         // /----------------
-                        if (config.getSourceProxyFactories() != null) {
-                            for (ProxyFactory sourceFactory : ((Map<String, ProxyFactory>) config.getSourceProxyFactories())
+                        if (source.getSourceProxyFactories() != null) {
+                            for (ProxyFactory sourceFactory : ((Map<String, ProxyFactory>) source.getSourceProxyFactories())
                                     .values()) {
                                 QualifiedName targetName = sourceFactory.getProxyConfiguration().getTargetName();
                                 RuntimeConfiguration target = configurations.get(targetName.getPartName());
@@ -160,32 +163,20 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                                 // get the proxy chain for the target
                                 ProxyFactory targetFactory = target.getTargetProxyFactory(sourceFactory.getProxyConfiguration()
                                         .getTargetName().getPortName());
-                                Map<OperationType, InvocationConfiguration> targetInvocationConfigs = targetFactory
-                                        .getProxyConfiguration().getInvocationConfigurations();
-                                for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration()
-                                        .getInvocationConfigurations().values()) {
-                                    // match invocation chains
-                                    InvocationConfiguration targetInvocationConfig = targetInvocationConfigs
-                                            .get(sourceInvocationConfig.getOperationType());
-                                    // if handler is configured, add that
-                                    if (targetInvocationConfig.getHeadHandler() != null) {
-                                        sourceInvocationConfig.addRequestHandler(targetInvocationConfig.getHeadHandler());
-                                    } else {
-                                        // no handlers, just conntect interceptors
-                                        sourceInvocationConfig.addTargetInterceptor(targetInvocationConfig.getSourceInterceptor());
-                                    }
-                                }
+                                boolean downScope = scopeStrategy.downScopeReference(sourceScope, target.getScope());
+                                wireBuilder.wire(sourceFactory, targetFactory, target.getClass(), downScope, scopeContexts
+                                        .get(sourceScope));
                             }
                         }
-                        config.prepare();
+                        source.prepare();
                         // /---------------
-                        scopeIndex.put(config.getName(), scopeContexts.get(scope));
-                        List<RuntimeConfiguration<SimpleComponentContext>> list = configurationsByScope.get(scope);
+                        scopeIndex.put(source.getName(), scopeContexts.get(sourceScope));
+                        List<RuntimeConfiguration<SimpleComponentContext>> list = configurationsByScope.get(sourceScope);
                         if (list == null) {
                             list = new ArrayList();
-                            configurationsByScope.put(scope, list);
+                            configurationsByScope.put(sourceScope, list);
                         }
-                        list.add(config);
+                        list.add(source);
                     }
                 }
                 for (EntryPoint ep : module.getEntryPoints()) {

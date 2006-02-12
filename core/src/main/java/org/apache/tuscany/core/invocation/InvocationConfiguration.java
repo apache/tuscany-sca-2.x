@@ -49,6 +49,10 @@ public class InvocationConfiguration {
 
     private List<MessageHandler> responseHandlers;
 
+    private MessageChannel targetRequestChannel;
+
+    private MessageChannel targetResponseChannel;
+
     public InvocationConfiguration(OperationType operation) {
         assert (operation != null) : "No operation type specified";
         this.operation = operation;
@@ -56,6 +60,14 @@ public class InvocationConfiguration {
 
     public OperationType getOperationType() {
         return operation;
+    }
+    
+    public void addTargetRequestChannel(MessageChannel channel){
+        targetRequestChannel = channel;
+    }
+
+    public void addTargetResponseChannel(MessageChannel channel){
+        targetResponseChannel = channel;
     }
 
     public void addSourceInterceptor(Interceptor interceptor) {
@@ -68,23 +80,23 @@ public class InvocationConfiguration {
     }
 
     public void addTargetInterceptor(Interceptor interceptor) {
-        if (targetInterceptorChainHead == null){
+        if (targetInterceptorChainHead == null) {
             targetInterceptorChainHead = interceptor;
-        }else{
+        } else {
             targetInterceptorChainTail.setNext(interceptor);
         }
         targetInterceptorChainTail = interceptor;
     }
 
     public void addRequestHandler(MessageHandler handler) {
-        if (requestHandlers == null){
+        if (requestHandlers == null) {
             requestHandlers = new ArrayList<MessageHandler>();
         }
         requestHandlers.add(handler);
     }
 
     public void addResponseHandler(MessageHandler handler) {
-        if (responseHandlers == null){
+        if (responseHandlers == null) {
             responseHandlers = new ArrayList<MessageHandler>();
         }
         responseHandlers.add(handler);
@@ -105,14 +117,22 @@ public class InvocationConfiguration {
     public Interceptor getTargetInterceptor() {
         return targetInterceptorChainHead;
     }
-    
-    public MessageHandler getHeadHandler() {
-        if (responseHandlers != null && responseHandlers.size() > 0) {
-            return responseHandlers.get(0);
-        } else {
-            return null;
-        }
+
+    public List<MessageHandler> getRequestHandlers(){
+        return requestHandlers;
     }
+
+    public List<MessageHandler> getResponseHandlers(){
+        return responseHandlers;
+    }
+    
+//    public MessageHandler getHeadHandler() {
+//        if (responseHandlers != null && responseHandlers.size() > 0) {
+//            return responseHandlers.get(0);
+//        } else {
+//            return null;
+//        }
+//    }
 
     /**
      * Build the configuration, link the interceptors and handlers together
@@ -120,15 +140,15 @@ public class InvocationConfiguration {
     public void build() {
 
         // Build target interceptor chain
-//FIXME Break
-//        if (targetInvoker != null) {
-//            if (targetInterceptorChainHead != null) {
-//                targetInterceptorChainTail.setNext(targetInvoker);
-//            } else {
-//                targetInterceptorChainHead = targetInvoker;
-//            }
-//        }
-//FIXME Break
+        // FIXME Break
+        // if (targetInvoker != null) {
+        // if (targetInterceptorChainHead != null) {
+        // targetInterceptorChainTail.setNext(targetInvoker);
+        // } else {
+        // targetInterceptorChainHead = targetInvoker;
+        // }
+        // }
+        // FIXME Break
 
         // Connect request handler chain to target interceptor chain
         if (requestHandlers != null && targetInterceptorChainHead != null) {
@@ -140,7 +160,8 @@ public class InvocationConfiguration {
         if (requestHandlers != null) {
             MessageChannel requestChannel = new MessageChannelImpl(requestHandlers);
             MessageChannel responseChannel = new MessageChannelImpl(responseHandlers);
-            Interceptor channelInterceptor = new RequestResponseInterceptor(requestChannel, responseChannel);
+            Interceptor channelInterceptor = new RequestResponseInterceptor(requestChannel, targetRequestChannel,
+                    responseChannel, targetResponseChannel);
 
             if (sourceInterceptorChainHead != null) {
                 sourceInterceptorChainTail.setNext(channelInterceptor);
