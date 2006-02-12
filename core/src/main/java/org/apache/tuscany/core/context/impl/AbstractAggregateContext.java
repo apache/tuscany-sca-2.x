@@ -134,7 +134,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     public void start() {
         synchronized (initializeLatch) {
             try {
-                if (lifecycleState != UNINITIALIZED) {
+                if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
                     throw new IllegalStateException("Context not in UNINITIALIZED state");
                 }
                 lifecycleState = INITIALIZING;

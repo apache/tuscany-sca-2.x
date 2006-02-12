@@ -50,7 +50,7 @@ public class RuntimeBootTestCase extends TestCase {
     }
 
     public void testRuntimeLifecycle() {
-/* fails as system context has already been initialized
+// fails as system context has already been initialized
         assertEquals(Context.RUNNING, runtime.getLifecycleState());
         runtime.stop();
 
@@ -58,7 +58,7 @@ public class RuntimeBootTestCase extends TestCase {
 
         runtime.start();
         assertEquals(Context.RUNNING, runtime.getLifecycleState());
-*/
+//
     }
 
     public void testIncrementalBoot() throws Exception{

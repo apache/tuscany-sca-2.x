@@ -164,7 +164,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     public void start() {
         synchronized (initializeLatch) {
             try {
-                if(lifecycleState != UNINITIALIZED){
+                if(lifecycleState != UNINITIALIZED && lifecycleState != STOPPED){
                     throw new IllegalStateException("Context not in UNINITIALIZED state");
                 }
 
