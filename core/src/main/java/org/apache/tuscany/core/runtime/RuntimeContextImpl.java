@@ -31,10 +31,10 @@ import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventException;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.RuntimeEventListener;
+import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
-import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
 import org.apache.tuscany.model.assembly.ExtensibleModelObject;
@@ -52,7 +52,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
     private final AggregateContext rootContext;
 
-    private final AutowireContext systemContext;
+    private final SystemAggregateContext systemContext;
 
     private final MonitorFactory monitorFactory;
 
@@ -89,7 +89,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
      */
     public RuntimeContextImpl(MonitorFactory monitorFactory,
                               AggregateContext rootContext,
-                              AutowireContext systemContext,
+                              SystemAggregateContext systemContext,
                               List<RuntimeConfigurationBuilder> builders) {
         super(RUNTIME);
         this.rootContext = rootContext;
@@ -136,7 +136,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         return rootContext;
     }
 
-    public AutowireContext getSystemContext() {
+    public SystemAggregateContext getSystemContext() {
         checkRunning();
         return systemContext;
     }
