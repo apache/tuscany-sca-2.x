@@ -59,6 +59,7 @@ import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
+import org.apache.tuscany.core.system.config.SystemObjectRuntimeConfiguration;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
@@ -373,6 +374,10 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
             registerConfiguration(configuration);
             registerAutowire(model);
         }
+    }
+
+    public void registerJavaObject(String name, Object instance) throws ConfigurationException {
+        registerConfiguration(new SystemObjectRuntimeConfiguration(name, instance));
     }
 
     protected void registerConfiguration(RuntimeConfiguration<InstanceContext> configuration) throws ConfigurationException {

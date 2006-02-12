@@ -13,12 +13,24 @@
  */
 package org.apache.tuscany.core.context;
 
+import org.apache.tuscany.core.config.ConfigurationException;
+
 /**
  * Marker type for system aggregate contexts
- * 
+ *
  * @version $Rev$ $Date$
  */
 public interface SystemAggregateContext extends AutowireContext, ScopeAwareContext, ConfigurationContext {
 
+    /**
+     * Register a simple Java Object as a system component.
+     * This is primarily intended for use by bootstrap code to create the initial
+     * configuration components.
+     *
+     * @param name     the name of the resulting component
+     * @param instance the Object that will become the component's implementation
+     * @throws ConfigurationException
+     */
+    void registerJavaObject(String name, Object instance) throws ConfigurationException;
 }
 
