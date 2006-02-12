@@ -21,8 +21,11 @@ import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.SystemAggregateContext;
 
 /**
- * Represents a top-level component context in the runtime, that is the bootstrap context
- * 
+ * Represents a top-level component context in the runtime, that is the bootstrap context.
+ * This context serves as the ultimate root of the context hierarchy. Under it are two
+ * separate trees: the rootContext for user components and the systemContext for
+ * system components (those that comprise the runtime itself).
+ *
  * @version $Rev$ $Date$
  */
 public interface RuntimeContext extends AutowireContext, ConfigurationContext {
@@ -30,26 +33,31 @@ public interface RuntimeContext extends AutowireContext, ConfigurationContext {
     /* the symbolic name of the runtime bootstrap context */
     public static final String RUNTIME = "tuscany.runtime";
 
-    /* the symbolic name of the root aggregate context containing all system components in the runtime */
+    /* the symbolic name of the aggregate context containing all system components in the runtime */
     public static final String SYSTEM = "tuscany.system";
 
-    /* the symbolic name of the root aggregate context containing all components in the runtime */
+    /* the symbolic name of the aggregate context containing all user components in the runtime */
     public static final String ROOT = "tuscany.root";
+
+    /**
+     * Returns the context that forms the root of the user component tree.
+     * All user components will managed by contexts that are children of this root.
+     * @return the root of the user component tree
+     */
+    public AggregateContext getRootContext();
+
+    /**
+     * Returns the context that forms the root of the system component tree.
+     * All system components, components that provide system services needed by the
+     * Tuscany runtime itself, will be managed by contexts that are children of this root.
+     * @return the root of the system component tree
+     */
+    public SystemAggregateContext getSystemContext();
 
     /**
      * Adds a configuration builder to the runtime
      */
     public void addBuilder(RuntimeConfigurationBuilder builder);
-
-    /**
-     * Returns the root component context. The root context contains all user components in the runtime
-     */
-    public AggregateContext getRootContext();
-
-    /**
-     * Returns the system component context.
-     */
-    public SystemAggregateContext getSystemContext();
 
     /**
      * Returns the monitor factory in use by the runtime
