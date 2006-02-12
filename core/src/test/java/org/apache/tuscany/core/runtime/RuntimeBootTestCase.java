@@ -24,8 +24,6 @@ import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.mock.MockSystemAssemblyFactory;
-import org.apache.tuscany.core.runtime.RuntimeContext;
-import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 
 /**
  * Tests runtime boot scenarios
@@ -50,7 +48,6 @@ public class RuntimeBootTestCase extends TestCase {
     }
 
     public void testRuntimeLifecycle() {
-// fails as system context has already been initialized
         assertEquals(Context.RUNNING, runtime.getLifecycleState());
         runtime.stop();
 
@@ -58,7 +55,6 @@ public class RuntimeBootTestCase extends TestCase {
 
         runtime.start();
         assertEquals(Context.RUNNING, runtime.getLifecycleState());
-//
     }
 
     public void testIncrementalBoot() throws Exception{
