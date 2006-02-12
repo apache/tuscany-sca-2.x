@@ -108,12 +108,9 @@ public class BasicModuleScopeTestCase extends TestCase {
 
     JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
 
-    private List<RuntimeConfiguration<InstanceContext>> createConfigurations()
-            throws NoSuchMethodException, BuilderException {
-        SimpleComponent component = MockAssemblyFactory.createComponent("TestService1", ModuleScopeComponentImpl.class,
-                ScopeEnum.MODULE_LITERAL);
-        builder.setModelObject(component);
-        builder.build();
+    private List<RuntimeConfiguration<InstanceContext>> createConfigurations() throws NoSuchMethodException, BuilderException {
+        SimpleComponent component = MockAssemblyFactory.createComponent("TestService1", ModuleScopeComponentImpl.class, ScopeEnum.MODULE_LITERAL);
+        builder.build(component, null);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         configs.add((RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration());
         return configs;
@@ -123,8 +120,7 @@ public class BasicModuleScopeTestCase extends TestCase {
             throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockAssemblyFactory.createComponent(name, ModuleScopeInitDestroyComponent.class,
                 ScopeEnum.MODULE_LITERAL);
-        builder.setModelObject(component);
-        builder.build();
+        builder.build(component, null);
         return (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration();
     }
 }

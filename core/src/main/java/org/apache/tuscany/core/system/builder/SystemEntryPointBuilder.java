@@ -41,19 +41,7 @@ public class SystemEntryPointBuilder implements RuntimeConfigurationBuilder<Aggr
     // Methods
     // ----------------------------------
 
-    private AssemblyModelObject modelObject;
-
-    private AggregateContext context;
-
-    public void setModelObject(AssemblyModelObject modelObject) {
-        this.modelObject = modelObject;
-    }
-
-    public void setParentContext(AggregateContext context) {
-        this.context = context;
-    }
-
-    public void build() throws BuilderException {
+    public void build(AssemblyModelObject modelObject, AggregateContext context) throws BuilderException {
         if (!(modelObject instanceof EntryPoint)) {
             return;
         }

@@ -100,9 +100,7 @@ public class SystemComponentContextBuilderTestCase extends TestCase {
         cProp.setProperty(prop);
         component.getConfiguredProperties().add(cProp);
 
-        builder.setParentContext(createContext());
-        builder.setModelObject(component);
-        builder.build();
+        builder.build(component, createContext());
         RuntimeConfiguration config = (RuntimeConfiguration) component.getComponentImplementation().getRuntimeConfiguration();
         Assert.assertNotNull(config);
         InstanceContext ctx = (InstanceContext) config.createInstanceContext();

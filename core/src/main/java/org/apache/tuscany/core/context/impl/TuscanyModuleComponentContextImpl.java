@@ -172,9 +172,7 @@ public class TuscanyModuleComponentContextImpl extends AbstractContext implement
                         .forName("org.apache.tuscany.container.java.builder.JavaComponentContextBuilder").newInstance();
                 componentBuilders.add(builder);
                 TuscanyModuleContextBuilder moduleContextBuilder = new TuscanyModuleContextBuilder(componentBuilders);
-                moduleContextBuilder.setParentContext(this);
-                moduleContextBuilder.setModelObject(moduleComponent);
-                moduleContextBuilder.build();
+                moduleContextBuilder.build(moduleComponent, this);
 
                 // sort the components by scope
                 Collection serviceComponents = moduleComponent.getModuleImplementation().getComponents();

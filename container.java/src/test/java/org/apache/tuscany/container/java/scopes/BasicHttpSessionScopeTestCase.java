@@ -208,21 +208,16 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
 
     private List<RuntimeConfiguration<InstanceContext>> createConfigurations() throws NoSuchMethodException, BuilderException {
-        SimpleComponent component = MockAssemblyFactory.createComponent("TestService1", SessionScopeComponentImpl.class,
-                ScopeEnum.SESSION_LITERAL);
-        builder.setModelObject(component);
-        builder.build();
+        SimpleComponent component = MockAssemblyFactory.createComponent("TestService1", SessionScopeComponentImpl.class, ScopeEnum.SESSION_LITERAL);
+        builder.build(component, null);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         configs.add((RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration());
         return configs;
     }
 
-    private RuntimeConfiguration<InstanceContext> createConfiguration(String name) throws NoSuchMethodException,
-            BuilderException {
-        SimpleComponent component = MockAssemblyFactory.createComponent(name, SessionScopeInitDestroyComponent.class,
-                ScopeEnum.SESSION_LITERAL);
-        builder.setModelObject(component);
-        builder.build();
+    private RuntimeConfiguration<InstanceContext> createConfiguration(String name) throws NoSuchMethodException, BuilderException {
+        SimpleComponent component = MockAssemblyFactory.createComponent(name, SessionScopeInitDestroyComponent.class, ScopeEnum.SESSION_LITERAL);
+        builder.build(component, null);
         return (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration();
     }
 }

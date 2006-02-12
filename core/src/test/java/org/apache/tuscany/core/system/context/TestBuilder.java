@@ -26,13 +26,7 @@ public class TestBuilder implements RuntimeConfigurationBuilder<AggregateContext
         runtime.addBuilder(this);
     }
 
-    public void setModelObject(AssemblyModelObject object) {
-    }
-
-    public void setParentContext(AggregateContext context) {
-    }
-
-    public void build() throws BuilderException {
+    public void build(AssemblyModelObject object, AggregateContext context) throws BuilderException {
         invoked = true;
     }
 

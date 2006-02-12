@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
-import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.Component;
@@ -15,17 +14,11 @@ import org.apache.tuscany.model.assembly.SimpleComponent;
 /**
  * Generates runtime configurations for logical model artifacts contained in a module component such as a
  * <code>SimpleComponent</code>
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class TuscanyModuleContextBuilder implements RuntimeConfigurationBuilder<TuscanyModuleComponentContext> {
-
-    private AssemblyModelObject modelObject;
-
-    private TuscanyModuleComponentContext moduleComponentContext;
-
-    // a collection of builders that will visit the contained artifacts when the
-    // logical model is walked
+    // a collection of builders that will visit the contained artifacts when the logical model is walked
     private List<RuntimeConfigurationBuilder<TuscanyModuleComponentContext>> componentBuilders;
 
     // ----------------------------------
@@ -45,18 +38,7 @@ public class TuscanyModuleContextBuilder implements RuntimeConfigurationBuilder<
     // Methods
     // ----------------------------------
 
-    public void setModelObject(AssemblyModelObject modelObject) {
-        this.modelObject = modelObject;
-    }
-
-    public void setParentContext(TuscanyModuleComponentContext context) {
-        moduleComponentContext = context;
-        for (RuntimeConfigurationBuilder<TuscanyModuleComponentContext> builder : componentBuilders) {
-            builder.setParentContext(context);
-        }
-    }
-
-    public void build() throws BuilderException {
+    public void build(AssemblyModelObject modelObject, TuscanyModuleComponentContext context) throws BuilderException {
         if(!(modelObject instanceof ModuleComponent)){
             return;
         }
@@ -69,8 +51,7 @@ public class TuscanyModuleContextBuilder implements RuntimeConfigurationBuilder<
             if (component instanceof SimpleComponent) {
                 try {
                     for (RuntimeConfigurationBuilder<TuscanyModuleComponentContext> builder : componentBuilders) {
-                        builder.setModelObject((SimpleComponent) component);
-                        builder.build();
+                        builder.build(component, context);
                     }
                 } catch (BuilderException e) {
                     e.addContextName(component.getName());
@@ -80,6 +61,4 @@ public class TuscanyModuleContextBuilder implements RuntimeConfigurationBuilder<
             }
         }
     }
-
-
 }

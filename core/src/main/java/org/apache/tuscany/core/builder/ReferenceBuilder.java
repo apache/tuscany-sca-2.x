@@ -13,17 +13,16 @@
  */
 package org.apache.tuscany.core.builder;
 
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
+
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
-import org.apache.tuscany.core.message.MessageFactory;
-import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.runtime.RuntimeContext;
+import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
 
 /**
  * Builds the source and target sides of wires for a component
@@ -32,16 +31,7 @@ import org.osoa.sca.annotations.Scope;
  */
 @Scope("MODULE")
 public class ReferenceBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
-
-    private ProxyFactoryFactory factory;
-
     private RuntimeContext runtimeContext;
-
-    private AggregateContext parentContext;
-
-    private AssemblyModelObject modelObject;
-
-    private MessageFactory msgFactory;
 
     // ----------------------------------
     // Constructors
@@ -64,15 +54,7 @@ public class ReferenceBuilder implements RuntimeConfigurationBuilder<AggregateCo
         runtimeContext.addBuilder(this);
     }
 
-    public void setModelObject(AssemblyModelObject modelObject) {
-        this.modelObject = modelObject;
-    }
-
-    public void setParentContext(AggregateContext context) {
-        parentContext = context;
-    }
-
-    public void build() throws BuilderException {
+    public void build(AssemblyModelObject modelObject, AggregateContext context) throws BuilderException {
         if (!(modelObject instanceof ConfiguredReference) && (!(modelObject instanceof ConfiguredService))) {
             return; // FIXME support external service
         }

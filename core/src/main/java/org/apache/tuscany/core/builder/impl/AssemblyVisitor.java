@@ -54,9 +54,7 @@ public class AssemblyVisitor implements AssemblyModelVisitor {
      */
     public boolean visit(AssemblyModelObject modelObject) {
         for (RuntimeConfigurationBuilder builder : builders) {
-            builder.setParentContext(parent);
-            builder.setModelObject(modelObject);
-            builder.build();
+            builder.build(modelObject, parent);
         }
         return true;
     }

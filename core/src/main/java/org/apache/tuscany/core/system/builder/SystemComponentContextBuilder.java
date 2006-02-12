@@ -66,13 +66,6 @@ import commonj.sdo.DataObject;
  * @version $Rev$ $Date$
  */
 public class SystemComponentContextBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
-
-    private final List<Injector> setters = new ArrayList();
-
-    private AssemblyModelObject modelObject;
-
-    private AggregateContext parentContext;
-
     // ----------------------------------
     // Constructors
     // ----------------------------------
@@ -84,15 +77,7 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
     // Methods
     // ----------------------------------
 
-    public void setModelObject(AssemblyModelObject modelObject) {
-        this.modelObject = modelObject;
-    }
-
-    public void setParentContext(AggregateContext context) {
-        parentContext = context;
-    }
-
-    public void build() throws BuilderException {
+    public void build(AssemblyModelObject modelObject, AggregateContext parentContext) throws BuilderException {
         if (!(modelObject instanceof Component) || (modelObject instanceof ModuleComponent)) {
             return;
         }
@@ -129,7 +114,7 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
                 // FIXME should return empty refs - does it?
                 if (configuredReferences != null) {
                     for (ConfiguredReference reference : configuredReferences) {
-                        Injector injector = createReferenceInjector(parentContext.getName(), component.getName(), reference,
+                        Injector injector = createReferenceInjector(parentContext.getName(), component.getName(), parentContext, reference,
                                 fields, methods);
                         injectors.add(injector);
                     }
@@ -333,8 +318,8 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
     /**
      * Creates an <code>Injector</code> for service references
      */
-    private Injector createReferenceInjector(String moduleName, String componentName, ConfiguredReference reference,
-            Set<Field> fields, Set<Method> methods) throws NoAccessorException, BuilderConfigException {
+    private Injector createReferenceInjector(String moduleName, String componentName, AggregateContext parentContext, ConfiguredReference reference,
+                                             Set<Field> fields, Set<Method> methods) throws NoAccessorException, BuilderConfigException {
         String refName = reference.getReference().getName();
         List<ConfiguredService> services = reference.getConfiguredServices();
         Class type;

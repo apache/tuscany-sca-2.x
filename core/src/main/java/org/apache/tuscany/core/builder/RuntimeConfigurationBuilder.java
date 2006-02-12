@@ -12,22 +12,14 @@ import org.apache.tuscany.model.assembly.AssemblyModelObject;
  * @see RuntimeConfiguration
  */
 public interface RuntimeConfigurationBuilder<Y extends Context> {
-
     /**
-     * Sets the logical configuration model node to visit
-     */
-    public void setModelObject(AssemblyModelObject object);
-
-    /**
-     * Sets the parent context of the context type the current builder produces
-     */
-    public void setParentContext(Y context);
-
-    /**
-     * Compiles the runtime configuration model and decorates the LCM with it
+     * Builds a runtime configuration for the supplied model object for registration
+     * under the supplied context.
      *
+     * @param object the logical configuration model node
+     * @param context the context that will be the parent of the built context
      * @throws BuilderException
      */
-    public void build() throws BuilderException;
+    public void build(AssemblyModelObject object, Y context) throws BuilderException;
 
 }

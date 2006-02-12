@@ -71,9 +71,7 @@ public class MockSystemAssemblyFactory {
 
         Component sc = createComponent(name, type, scope, aggregateContext);
         SystemComponentContextBuilder builder = new SystemComponentContextBuilder();
-        builder.setModelObject(sc);
-        builder.setParentContext(aggregateContext);
-        builder.build();
+        builder.build(sc, aggregateContext);
         return sc;
     }
 
@@ -117,9 +115,7 @@ public class MockSystemAssemblyFactory {
         EntryPoint ep = createEntryPoint(name, refName);
         ep.getConfiguredReference().getConfiguredServices().get(0).setPart(component);
         SystemEntryPointBuilder builder = new SystemEntryPointBuilder();
-        builder.setModelObject(ep);
-        builder.setParentContext(aggregateContext);
-        builder.build();
+        builder.build(ep, aggregateContext);
         return ep;
     }
 
@@ -141,9 +137,7 @@ public class MockSystemAssemblyFactory {
             AggregateContext aggregateContext) {
         ExternalService es = createExternalService(name, refName);
         SystemExternalServiceBuilder builder = new SystemExternalServiceBuilder();
-        builder.setModelObject(es);
-        builder.setParentContext(aggregateContext);
-        builder.build();
+        builder.build(es, aggregateContext);
         return es;
     }
 
@@ -167,16 +161,12 @@ public class MockSystemAssemblyFactory {
             AggregateContext moduleContext) {
         SystemComponentContextBuilder componentBuilder = new SystemComponentContextBuilder();
         for (Component component : module.getComponents()) {
-            componentBuilder.setParentContext(moduleContext);
-            componentBuilder.setModelObject(component);
-            componentBuilder.build();
+            componentBuilder.build(component, moduleContext);
         }
 
         SystemEntryPointBuilder epBuilder = new SystemEntryPointBuilder();
         for (EntryPoint ep : module.getEntryPoints()) {
-            epBuilder.setParentContext(moduleContext);
-            epBuilder.setModelObject(ep);
-            epBuilder.build();
+            epBuilder.build(ep, moduleContext);
         }
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         for (Component component : module.getComponents()) {

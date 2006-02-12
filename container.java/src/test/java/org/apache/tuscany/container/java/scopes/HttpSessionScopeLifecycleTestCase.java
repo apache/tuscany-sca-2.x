@@ -133,8 +133,7 @@ public class HttpSessionScopeLifecycleTestCase extends TestCase {
                 ScopeEnum.SESSION_LITERAL);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
-            builder.setModelObject(ca[i]);
-            builder.build();
+            builder.build(ca[i], null);
             configs.add((RuntimeConfiguration<InstanceContext>) ca[i].getComponentImplementation()
                     .getRuntimeConfiguration());
 
@@ -150,8 +149,7 @@ public class HttpSessionScopeLifecycleTestCase extends TestCase {
         ca[2] = MockAssemblyFactory.createComponent("three", OrderedInitPojo.class, ScopeEnum.SESSION_LITERAL);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
-            builder.setModelObject(ca[i]);
-            builder.build();
+            builder.build(ca[i], null);
             configs.add((RuntimeConfiguration<InstanceContext>) ca[i].getComponentImplementation()
                     .getRuntimeConfiguration());
 

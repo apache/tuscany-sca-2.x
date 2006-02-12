@@ -125,30 +125,15 @@ public class ProxyFactoryBuilder implements RuntimeConfigurationBuilder<Aggregat
         }
     }
 
-    private AggregateContext parentContext;
-
-    // scope containers of the parent context
-    private Map<Integer, ScopeContext> scopeContexts;
-
-    public void setParentContext(AggregateContext context) {
-        assert (parentContext != null) : "Parent context was null";
-        parentContext = context;
+    public void build(AssemblyModelObject model, AggregateContext parentContext) throws BuilderException {
         if (!(parentContext instanceof ScopeAwareContext)) {
             BuilderInitException e = new BuilderInitException("Parent context is not scope aware");
             e.setIdentifier(parentContext.getName());
             e.addContextName(name);
             throw e;
         }
-        scopeContexts = ((ScopeAwareContext) parentContext).getScopeContexts();
-    }
+        Map<Integer, ScopeContext> scopeContexts = ((ScopeAwareContext) parentContext).getScopeContexts();
 
-    private AssemblyModelObject model;
-
-    public void setModelObject(AssemblyModelObject model) {
-        this.model = model;
-    }
-
-    public void build() throws BuilderException {
         if (model instanceof Component) {
             try {
                 Component component = (Component) model;
@@ -157,7 +142,7 @@ public class ProxyFactoryBuilder implements RuntimeConfigurationBuilder<Aggregat
                 }
                 for (Iterator<ConfiguredService> i = component.getConfiguredServices().iterator(); i.hasNext();) {
                     ConfiguredService configuredService = i.next();
-                    ProxyFactory proxyFactory = buildProxyFactory(configuredService);
+                    ProxyFactory proxyFactory = buildProxyFactory(scopeContexts, configuredService);
                     configuredService.setProxyFactory(proxyFactory);
                 }
 
@@ -165,7 +150,7 @@ public class ProxyFactoryBuilder implements RuntimeConfigurationBuilder<Aggregat
                     ConfiguredReference configuredReference = i.next();
                     InterfaceType interfaceType = configuredReference.getReference().getInterfaceContract().getInterfaceType();
                     Class businessInterface = interfaceType.getInstanceClass();
-                    ProxyFactory proxyFactory = buildProxyFactory(configuredReference);
+                    ProxyFactory proxyFactory = buildProxyFactory(scopeContexts, configuredReference);
                     configuredReference.setProxyFactory(proxyFactory);
                 }
             } catch (ProxyException e) {
@@ -174,7 +159,7 @@ public class ProxyFactoryBuilder implements RuntimeConfigurationBuilder<Aggregat
         }
     }
 
-    private ProxyFactory buildProxyFactory(ConfiguredService configuredService) throws ProxyException {
+    private ProxyFactory buildProxyFactory(Map<Integer, ScopeContext> scopeContexts, ConfiguredService configuredService) throws ProxyException {
         InterfaceType interfaceType = configuredService.getService().getInterfaceContract().getInterfaceType();
 
         // Create Proxy configuration
@@ -199,7 +184,7 @@ public class ProxyFactoryBuilder implements RuntimeConfigurationBuilder<Aggregat
         return createProxyFactory(javaInterface, proxyConfiguration);
     }
 
-    private ProxyFactory buildProxyFactory(ConfiguredReference configuredReference) throws ProxyInitializationException {
+    private ProxyFactory buildProxyFactory(Map<Integer, ScopeContext> scopeContexts, ConfiguredReference configuredReference) throws ProxyInitializationException {
         InterfaceType interfaceType = configuredReference.getReference().getInterfaceContract().getInterfaceType();
 
         ConfiguredService configuredService = configuredReference.getConfiguredServices().get(0);

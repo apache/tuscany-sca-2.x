@@ -51,13 +51,9 @@ public class MockAggregateAssemblyFactory {
                     SessionScopeComponentImpl.class, ScopeEnum.SESSION_LITERAL);
             SimpleComponent requestComponent = MockAssemblyFactory.createComponent("TestService3",
                     SessionScopeComponentImpl.class, ScopeEnum.REQUEST_LITERAL);
-            builder.setParentContext(ctx);
-            builder.setModelObject(component);
-            builder.build();
-            builder.setModelObject(sessionComponent);
-            builder.build();
-            builder.setModelObject(requestComponent);
-            builder.build();
+            builder.build(component, ctx);
+            builder.build(sessionComponent, ctx);
+            builder.build(requestComponent, ctx);
             List<ExtensibleModelObject> configs = new ArrayList();
             configs.add(component);
             configs.add(sessionComponent);

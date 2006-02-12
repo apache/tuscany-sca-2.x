@@ -80,17 +80,7 @@ public class AssemblyVisitorTestCase extends TestCase {
     }
 
     private static class TestBuilder implements RuntimeConfigurationBuilder {
-
-        private AssemblyModelObject model;
-
-        public void setModelObject(AssemblyModelObject model) {
-            this.model = model;
-        }
-
-        public void setParentContext(Context context) {
-        }
-
-        public void build() throws BuilderException {
+        public void build(AssemblyModelObject model, Context context) throws BuilderException {
             if (model instanceof ConfiguredPort) {
                 ((ConfiguredPort) model).setProxyFactory(MARKER);
             }

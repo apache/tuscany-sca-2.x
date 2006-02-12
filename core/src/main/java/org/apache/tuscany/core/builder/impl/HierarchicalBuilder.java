@@ -27,11 +27,6 @@ import org.apache.tuscany.model.assembly.AssemblyModelObject;
  * @version $Rev$ $Date$
  */
 public class HierarchicalBuilder implements RuntimeConfigurationBuilder {
-
-    private AssemblyModelObject modelObject;
-
-    private Context context;
-
     private List<RuntimeConfigurationBuilder> builders = new ArrayList();
 
     public HierarchicalBuilder() {
@@ -41,19 +36,9 @@ public class HierarchicalBuilder implements RuntimeConfigurationBuilder {
         builders.add(builder);
     }
 
-    public void setModelObject(AssemblyModelObject modelObject) {
-        this.modelObject = modelObject;
-    }
-
-    public void setParentContext(Context context) {
-        this.context = context;
-    }
-
-    public void build() throws BuilderException {
+    public void build(AssemblyModelObject object, Context context) throws BuilderException {
         for (RuntimeConfigurationBuilder builder : builders) {
-            builder.setParentContext(context);
-            builder.setModelObject(modelObject);
-            builder.build();
+            builder.build(object, context);
         }
 
     }

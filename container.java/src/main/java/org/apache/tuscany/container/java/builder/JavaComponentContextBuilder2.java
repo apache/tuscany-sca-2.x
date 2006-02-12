@@ -59,14 +59,6 @@ import commonj.sdo.DataObject;
  */
 public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder<AggregateContext> {
 
-    private String name;
-
-    private final List<Injector> setters = new ArrayList();
-
-    private AggregateContext parentContext;
-
-    private AssemblyModelObject modelObject;
-
     private ProxyFactoryFactory factory;
 
     @Autowire
@@ -99,15 +91,7 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
     // Methods
     // ----------------------------------
 
-    public void setModelObject(AssemblyModelObject modelObject) {
-        this.modelObject = modelObject;
-    }
-
-    public void setParentContext(AggregateContext context) {
-        parentContext = context;
-    }
-
-    public void build() throws BuilderException {
+    public void build(AssemblyModelObject modelObject, AggregateContext parentContext) throws BuilderException {
         if (!(modelObject instanceof SimpleComponent)) {
             return;
         }
@@ -123,7 +107,7 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
                 implClass = JavaIntrospectionHelper.loadClass(javaImpl.getClass_());
                 fields = JavaIntrospectionHelper.getAllFields(implClass);
                 methods = JavaIntrospectionHelper.getAllUniqueMethods(implClass);
-                name = component.getName();
+                String name = component.getName();
                 Constructor ctr = implClass.getConstructor((Class[]) null);
 
                 List<Injector> injectors = new ArrayList();
@@ -203,9 +187,7 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
                     config.addTargetProxyFactory(service.getName(), proxyFactory);
                     configuredService.setProxyFactory(proxyFactory);
                     // invoke another builder to add interceptors, etc.
-                    referenceBuilder.setParentContext(parentContext);
-                    referenceBuilder.setModelObject(configuredService);
-                    referenceBuilder.build();
+                    referenceBuilder.build(configuredService, parentContext);
                     // add tail interceptor
                     for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
                         iConfig.addTargetInterceptor(new InvokerInterceptor());
@@ -238,9 +220,7 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
                         config.addSourceProxyFactory(reference.getReference().getName(), proxyFactory);
                         reference.setProxyFactory(proxyFactory);
                         // invoke another builder to add interceptors, etc.
-                        referenceBuilder.setParentContext(parentContext);
-                        referenceBuilder.setModelObject(reference);
-                        referenceBuilder.build();
+                        referenceBuilder.build(reference, parentContext);
                         Injector injector = createReferenceInjector(reference.getReference().getName(), proxyFactory, fields,
                                 methods);
                         injectors.add(injector);

@@ -45,14 +45,6 @@ import commonj.sdo.DataObject;
  */
 public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
 
-    private String name;
-
-    private final List<Injector> setters = new ArrayList();
-
-    private AggregateContext parentContext;
-
-    private AssemblyModelObject modelObject;
-    
     // ----------------------------------
     // Constructors
     // ----------------------------------
@@ -64,15 +56,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
     // Methods
     // ----------------------------------
 
-    public void setModelObject(AssemblyModelObject modelObject) {
-        this.modelObject = modelObject;
-    }
-
-    public void setParentContext(AggregateContext context) {
-        parentContext = context;
-    }
-
-    public void build() throws BuilderException {
+    public void build(AssemblyModelObject modelObject, AggregateContext parentContext) throws BuilderException {
         if(!(modelObject instanceof SimpleComponent)){
             return;
         }
@@ -88,7 +72,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                 implClass = JavaIntrospectionHelper.loadClass(javaImpl.getClass_());
                 fields = JavaIntrospectionHelper.getAllFields(implClass);
                 methods = JavaIntrospectionHelper.getAllUniqueMethods(implClass);
-                name = component.getName();
+                String name = component.getName();
                 Constructor ctr = implClass.getConstructor((Class[]) null);
 
                 List<Injector> injectors = new ArrayList();

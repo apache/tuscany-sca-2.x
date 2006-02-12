@@ -30,11 +30,6 @@ import org.apache.tuscany.model.assembly.ExternalService;
  * @version $Rev$ $Date$
  */
 public class SystemExternalServiceBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
-
-    private AggregateContext context;
-
-    private AssemblyModelObject modelObject;
-
     // ----------------------------------
     // Constructors
     // ----------------------------------
@@ -46,15 +41,7 @@ public class SystemExternalServiceBuilder implements RuntimeConfigurationBuilder
     // Methods
     // ----------------------------------
 
-    public void setModelObject(AssemblyModelObject modelObject) {
-        this.modelObject = modelObject;
-    }
-
-    public void setParentContext(AggregateContext context) {
-        this.context = context;
-    }
-
-    public void build() throws BuilderException {
+    public void build(AssemblyModelObject modelObject, AggregateContext context) throws BuilderException {
         if (!(modelObject instanceof ExternalService)) {
             return;
         }
@@ -73,7 +60,7 @@ public class SystemExternalServiceBuilder implements RuntimeConfigurationBuilder
             externalService.getConfiguredService().setRuntimeConfiguration(config);
         } else if (externalService.getInterfaceContract().getInterfaceType() != null) {
             // autowire
-            Class claz = externalService.getInterfaceContract().getInterfaceType().getInstanceClass();
+            Class<?> claz = externalService.getInterfaceContract().getInterfaceType().getInstanceClass();
             if (claz == null) {
                 BuilderException e = new BuilderConfigException("Interface type not specified");
                 e.setIdentifier(externalService.getName());
