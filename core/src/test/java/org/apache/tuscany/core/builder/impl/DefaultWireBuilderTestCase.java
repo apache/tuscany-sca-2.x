@@ -1,46 +1,41 @@
-/**
- * 
- * Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
- */
-package org.apache.tuscany.core.invocation;
+package org.apache.tuscany.core.builder.impl;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.core.invocation.InvocationConfiguration;
+import org.apache.tuscany.core.invocation.ProxyConfiguration;
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
+import org.apache.tuscany.core.invocation.jdk.JDKProxyFactory;
 import org.apache.tuscany.core.invocation.mock.MockHandler;
 import org.apache.tuscany.core.invocation.mock.MockJavaOperationType;
 import org.apache.tuscany.core.invocation.mock.MockStaticInvoker;
 import org.apache.tuscany.core.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.core.invocation.mock.SimpleTarget;
 import org.apache.tuscany.core.invocation.mock.SimpleTargetImpl;
+import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.message.Message;
-import org.apache.tuscany.core.message.channel.impl.MessageChannelImpl;
+import org.apache.tuscany.core.message.MessageFactory;
+import org.apache.tuscany.core.message.impl.PojoMessageFactory;
 import org.apache.tuscany.core.message.impl.PojoMessageImpl;
 import org.apache.tuscany.model.types.OperationType;
 
-public class InvocationConfigurationTestCase extends TestCase {
+public class DefaultWireBuilderTestCase extends TestCase {
 
     private Method hello;
 
     private Method goodbye;
 
-    public InvocationConfigurationTestCase() {
+    public DefaultWireBuilderTestCase() {
         super();
     }
 
-    public InvocationConfigurationTestCase(String arg0) {
+    public DefaultWireBuilderTestCase(String arg0) {
         super(arg0);
     }
 
@@ -52,8 +47,10 @@ public class InvocationConfigurationTestCase extends TestCase {
     /**
      * Tests basic wiring of a source to a target, including handlers and interceptors
      */
-    public void testInvokeWithHandlers() throws Exception {
+    public void testWireWithInterceptorsAndHandlers() throws Exception {
+        MessageFactory msgFactory = new PojoMessageFactory();
         OperationType operation = new MockJavaOperationType(hello);
+
         InvocationConfiguration source = new InvocationConfiguration(operation);
         MockHandler sourceRequestHandler = new MockHandler();
         MockHandler sourceResponseHandler = new MockHandler();
@@ -61,6 +58,14 @@ public class InvocationConfigurationTestCase extends TestCase {
         source.addRequestHandler(sourceRequestHandler);
         source.addResponseHandler(sourceResponseHandler);
         source.addSourceInterceptor(sourceInterceptor);
+
+        ProxyFactory sourceFactory = new JDKProxyFactory();
+        Map<OperationType, InvocationConfiguration> sourceInvocationConfigs = new HashMap();
+        sourceInvocationConfigs.put(operation, source);
+        ProxyConfiguration sourceConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+                sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), null, msgFactory);
+        sourceFactory.setProxyConfiguration(sourceConfig);
+        sourceFactory.setBusinessInterface(SimpleTarget.class);
 
         InvocationConfiguration target = new InvocationConfiguration(operation);
         MockHandler targetRequestHandler = new MockHandler();
@@ -71,11 +76,21 @@ public class InvocationConfigurationTestCase extends TestCase {
         target.addTargetInterceptor(targetInterceptor);
         target.addTargetInterceptor(new InvokerInterceptor());
 
+        ProxyFactory targetFactory = new JDKProxyFactory();
+        Map<OperationType, InvocationConfiguration> targetInvocationConfigs = new HashMap();
+        targetInvocationConfigs.put(operation, target);
+        ProxyConfiguration targetConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+                targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), null, msgFactory);
+        targetFactory.setProxyConfiguration(targetConfig);
+        targetFactory.setBusinessInterface(SimpleTarget.class);
+
         // connect the source to the target
-        source.addTargetRequestChannel(new MessageChannelImpl(target.getRequestHandlers()));
-        source.addTargetResponseChannel(new MessageChannelImpl(target.getResponseHandlers()));
+        DefaultWireBuilder builder = new DefaultWireBuilder();
+        // no need for scopes since we use a static invoker
+        builder.wire(sourceFactory, targetFactory, SimpleTarget.class, true, null);
         source.build();
         target.build();
+        // set a static invoker
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
@@ -92,13 +107,24 @@ public class InvocationConfigurationTestCase extends TestCase {
         Assert.assertEquals(1, targetInterceptor.getCount());
     }
 
-    public void testInvokeWithRequestHandlers() throws Exception {
+    
+    public void testWireWithInterceptorsAndRequestHandlers() throws Exception {
+        MessageFactory msgFactory = new PojoMessageFactory();
         OperationType operation = new MockJavaOperationType(hello);
+
         InvocationConfiguration source = new InvocationConfiguration(operation);
         MockHandler sourceRequestHandler = new MockHandler();
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addRequestHandler(sourceRequestHandler);
         source.addSourceInterceptor(sourceInterceptor);
+
+        ProxyFactory sourceFactory = new JDKProxyFactory();
+        Map<OperationType, InvocationConfiguration> sourceInvocationConfigs = new HashMap();
+        sourceInvocationConfigs.put(operation, source);
+        ProxyConfiguration sourceConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+                sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), null, msgFactory);
+        sourceFactory.setProxyConfiguration(sourceConfig);
+        sourceFactory.setBusinessInterface(SimpleTarget.class);
 
         InvocationConfiguration target = new InvocationConfiguration(operation);
         MockHandler targetRequestHandler = new MockHandler();
@@ -107,11 +133,21 @@ public class InvocationConfigurationTestCase extends TestCase {
         target.addTargetInterceptor(targetInterceptor);
         target.addTargetInterceptor(new InvokerInterceptor());
 
+        ProxyFactory targetFactory = new JDKProxyFactory();
+        Map<OperationType, InvocationConfiguration> targetInvocationConfigs = new HashMap();
+        targetInvocationConfigs.put(operation, target);
+        ProxyConfiguration targetConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+                targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), null, msgFactory);
+        targetFactory.setProxyConfiguration(targetConfig);
+        targetFactory.setBusinessInterface(SimpleTarget.class);
+
         // connect the source to the target
-        source.addTargetRequestChannel(new MessageChannelImpl(target.getRequestHandlers()));
-        source.addTargetResponseChannel(new MessageChannelImpl(target.getResponseHandlers()));
+        DefaultWireBuilder builder = new DefaultWireBuilder();
+        // no need for scopes since we use a static invoker
+        builder.wire(sourceFactory, targetFactory, SimpleTarget.class, true, null);
         source.build();
         target.build();
+        // set a static invoker
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
@@ -126,24 +162,42 @@ public class InvocationConfigurationTestCase extends TestCase {
         Assert.assertEquals(1, targetInterceptor.getCount());
     }
 
-    /**
-     * Tests basic wiring of a source to a target, including handlers and interceptors
-     */
-    public void testInvokeWithInterceptorsOnly() throws Exception {
+    public void testWireWithInterceptorsOnly() throws Exception {
+        MessageFactory msgFactory = new PojoMessageFactory();
         OperationType operation = new MockJavaOperationType(hello);
+
         InvocationConfiguration source = new InvocationConfiguration(operation);
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addSourceInterceptor(sourceInterceptor);
+
+        ProxyFactory sourceFactory = new JDKProxyFactory();
+        Map<OperationType, InvocationConfiguration> sourceInvocationConfigs = new HashMap();
+        sourceInvocationConfigs.put(operation, source);
+        ProxyConfiguration sourceConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+                sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), null, msgFactory);
+        sourceFactory.setProxyConfiguration(sourceConfig);
+        sourceFactory.setBusinessInterface(SimpleTarget.class);
 
         InvocationConfiguration target = new InvocationConfiguration(operation);
         MockSyncInterceptor targetInterceptor = new MockSyncInterceptor();
         target.addTargetInterceptor(targetInterceptor);
         target.addTargetInterceptor(new InvokerInterceptor());
 
+        ProxyFactory targetFactory = new JDKProxyFactory();
+        Map<OperationType, InvocationConfiguration> targetInvocationConfigs = new HashMap();
+        targetInvocationConfigs.put(operation, target);
+        ProxyConfiguration targetConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+                targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), null, msgFactory);
+        targetFactory.setProxyConfiguration(targetConfig);
+        targetFactory.setBusinessInterface(SimpleTarget.class);
+
         // connect the source to the target
-        source.addTargetInterceptor(target.getTargetInterceptor());
+        DefaultWireBuilder builder = new DefaultWireBuilder();
+        // no need for scopes since we use a static invoker
+        builder.wire(sourceFactory, targetFactory, SimpleTarget.class, true, null);
         source.build();
         target.build();
+        // set a static invoker
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
@@ -155,4 +209,9 @@ public class InvocationConfigurationTestCase extends TestCase {
         Assert.assertEquals(1, sourceInterceptor.getCount());
         Assert.assertEquals(1, targetInterceptor.getCount());
     }
+
+    
+    // public void testInvokeWithRequestHandlers() throws Exception {}
+    // public void testInvokeWithInterceptorsOnly() throws Exception { }
+
 }

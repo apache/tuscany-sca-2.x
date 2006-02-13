@@ -48,56 +48,6 @@ public class DefaultWireBuilder implements WireBuilder {
         builders.add(builder);
     }
 
-    // public void wire(RuntimeConfiguration source, RuntimeConfiguration target, ScopeContext targetScopeContext) {
-    // if (source.getSourceProxyFactories() != null) {
-    // for (ProxyFactory sourceFactory : ((Map<String, ProxyFactory>) source.getSourceProxyFactories()).values()) {
-    // QualifiedName targetName = sourceFactory.getProxyConfiguration().getTargetName();
-    // // get the proxy chain for the target
-    // ProxyFactory targetFactory = target.getTargetProxyFactory(sourceFactory.getProxyConfiguration().getTargetName()
-    // .getPortName());
-    // if (targetFactory != null) {
-    // // if null, the target side has no interceptors or handlers
-    // Map<OperationType, InvocationConfiguration> targetInvocationConfigs = targetFactory.getProxyConfiguration()
-    // .getInvocationConfigurations();
-    // for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration()
-    // .getInvocationConfigurations().values()) {
-    // // match invocation chains
-    // InvocationConfiguration targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig
-    // .getOperationType());
-    // // if handler is configured, add that
-    // if (targetInvocationConfig.getRequestHandlers() != null) {
-    // sourceInvocationConfig.addTargetRequestChannel(new
-    // MessageChannelImpl(targetInvocationConfig.getRequestHandlers()));
-    // sourceInvocationConfig.addTargetResponseChannel(new
-    // MessageChannelImpl(targetInvocationConfig.getResponseHandlers()));
-    // } else {
-    // // no handlers, just connect interceptors
-    // sourceInvocationConfig.addTargetInterceptor(targetInvocationConfig.getTargetInterceptor());
-    // }
-    // }
-    // }
-    // }
-    // // delegate to other wire builders
-    // for (WireBuilder builder : builders) {
-    // builder.wire(source, target, targetScopeContext);
-    // }
-    // // signal that wire build process is complete
-    // for (ProxyFactory sourceFactory : ((Map<String, ProxyFactory>) source.getSourceProxyFactories()).values()) {
-    // QualifiedName targetName = sourceFactory.getProxyConfiguration().getTargetName();
-    // // get the proxy chain for the target
-    // ProxyFactory targetFactory = target.getTargetProxyFactory(sourceFactory.getProxyConfiguration().getTargetName()
-    // .getPortName());
-    // boolean optimizable = true;
-    // for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration()
-    // .getInvocationConfigurations().values()) {
-    // sourceInvocationConfig.build();
-    // // TODO optimize if no proxy needed using NullProxyFactory
-    // }
-    // }
-    // }
-    //
-    // }
-
     public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) {
         QualifiedName targetName = sourceFactory.getProxyConfiguration().getTargetName();
