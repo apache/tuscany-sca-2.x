@@ -36,6 +36,7 @@ public class ProxyConfiguration {
 
     private MessageFactory messageFactory;
 
+    //FIXME Remove
     private Map<Integer, ScopeContext> scopeContainers;
 
     private QualifiedName targetName;
@@ -89,6 +90,7 @@ public class ProxyConfiguration {
 
     /**
      * @return Returns the scopeContainers.
+     * @deprecated
      */
     public Map<Integer, ScopeContext> getScopeContainers() {
         return scopeContainers;

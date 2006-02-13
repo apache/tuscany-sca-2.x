@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.java.invocation.jdk;
+package org.apache.tuscany.core.invocation;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -25,31 +25,30 @@ import java.util.Map;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.handler.StaticJavaComponentTargetInvoker;
-import org.apache.tuscany.container.java.invocation.mock.MockHandler;
-import org.apache.tuscany.container.java.invocation.mock.MockJavaOperationType;
-import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
-import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.jdk.JDKInvocationHandler;
+import org.apache.tuscany.core.invocation.mock.MockHandler;
+import org.apache.tuscany.core.invocation.mock.MockJavaOperationType;
+import org.apache.tuscany.core.invocation.mock.MockStaticInvoker;
+import org.apache.tuscany.core.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.model.types.OperationType;
 
 /**
  * Tests handling of exceptions thrown during an invocation
  * 
- * @version $Rev$ $Date$
+ * @version $Rev: 377006 $ $Date: 2006-02-11 09:41:59 -0800 (Sat, 11 Feb 2006) $
  */
-public class InvocationHandlerErrorTestCase extends TestCase {
+public class InvocationErrorTestCase extends TestCase {
 
     private Method checkedMethod;
     private Method runtimeMethod;
 
-    public InvocationHandlerErrorTestCase() {
+    public InvocationErrorTestCase() {
         super();
     }
 
-    public InvocationHandlerErrorTestCase(String arg0) {
+    public InvocationErrorTestCase(String arg0) {
         super(arg0);
     }
 
@@ -90,7 +89,7 @@ public class InvocationHandlerErrorTestCase extends TestCase {
 
     private InvocationConfiguration getConfiguration(Method m) {
         OperationType operation = new MockJavaOperationType(m);
-        StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(m, new TestBeanImpl());
+        MockStaticInvoker invoker = new MockStaticInvoker(m, new TestBeanImpl());
         InvocationConfiguration invocationConfiguration=new InvocationConfiguration(operation);
         invocationConfiguration.addSourceInterceptor(new MockSyncInterceptor());
         invocationConfiguration.addRequestHandler(new MockHandler());
