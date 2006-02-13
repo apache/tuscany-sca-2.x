@@ -87,7 +87,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         // connect the source to the target
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
-        builder.wire(sourceFactory, targetFactory, SimpleTarget.class, true, null);
+        builder.wire(sourceFactory, targetFactory, null, true, null);
         source.build();
         target.build();
         // set a static invoker
@@ -144,7 +144,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         // connect the source to the target
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
-        builder.wire(sourceFactory, targetFactory, SimpleTarget.class, true, null);
+        builder.wire(sourceFactory, targetFactory, null, true, null);
         source.build();
         target.build();
         // set a static invoker
@@ -194,7 +194,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         // connect the source to the target
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
-        builder.wire(sourceFactory, targetFactory, SimpleTarget.class, true, null);
+        builder.wire(sourceFactory, targetFactory, null, true, null);
         source.build();
         target.build();
         // set a static invoker
@@ -209,9 +209,5 @@ public class DefaultWireBuilderTestCase extends TestCase {
         Assert.assertEquals(1, sourceInterceptor.getCount());
         Assert.assertEquals(1, targetInterceptor.getCount());
     }
-
-    
-    // public void testInvokeWithRequestHandlers() throws Exception {}
-    // public void testInvokeWithInterceptorsOnly() throws Exception { }
 
 }
