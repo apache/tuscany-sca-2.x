@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.apache.tuscany.container.java.invocation.mock;
+package org.apache.tuscany.core.invocation.mock;
 
 import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.handler.MessageHandler;

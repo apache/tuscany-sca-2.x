@@ -126,29 +126,10 @@ public class InvocationConfiguration {
         return responseHandlers;
     }
     
-//    public MessageHandler getHeadHandler() {
-//        if (responseHandlers != null && responseHandlers.size() > 0) {
-//            return responseHandlers.get(0);
-//        } else {
-//            return null;
-//        }
-//    }
-
     /**
      * Build the configuration, link the interceptors and handlers together
      */
     public void build() {
-
-        // Build target interceptor chain
-        // FIXME Break
-        // if (targetInvoker != null) {
-        // if (targetInterceptorChainHead != null) {
-        // targetInterceptorChainTail.setNext(targetInvoker);
-        // } else {
-        // targetInterceptorChainHead = targetInvoker;
-        // }
-        // }
-        // FIXME Break
 
         // Connect request handler chain to target interceptor chain
         if (requestHandlers != null && targetInterceptorChainHead != null) {
