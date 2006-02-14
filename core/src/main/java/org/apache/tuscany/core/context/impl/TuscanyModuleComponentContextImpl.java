@@ -171,6 +171,8 @@ public class TuscanyModuleComponentContextImpl extends AbstractContext implement
                 RuntimeConfigurationBuilder<TuscanyModuleComponentContext> builder = (RuntimeConfigurationBuilder<TuscanyModuleComponentContext>) Class
                         .forName("org.apache.tuscany.container.java.builder.JavaComponentContextBuilder").newInstance();
                 componentBuilders.add(builder);
+                componentBuilders.add((RuntimeConfigurationBuilder<TuscanyModuleComponentContext>)
+                		Class.forName("org.apache.tuscany.container.js.builder.JavaScriptComponentContextBuilder").newInstance());
                 TuscanyModuleContextBuilder moduleContextBuilder = new TuscanyModuleContextBuilder(componentBuilders);
                 moduleContextBuilder.build(moduleComponent, this);
 

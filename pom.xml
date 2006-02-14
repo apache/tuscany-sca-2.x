@@ -32,6 +32,7 @@
         <module>core</module>
         <module>binding.axis</module>
         <module>container.java</module>
+        <module>container.js</module>
         <module>tomcat</module>
     </modules>
 
