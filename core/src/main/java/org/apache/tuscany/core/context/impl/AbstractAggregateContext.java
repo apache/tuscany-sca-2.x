@@ -39,6 +39,7 @@ import org.apache.tuscany.core.context.ScopeStrategy;
 import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
+import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyInitializationException;
 import org.apache.tuscany.core.system.annotation.Autowire;
@@ -150,6 +151,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                         // FIXME scopes are defined at the interface level
                         int sourceScope = source.getScope();
                         wireSource(source);
+                        buildTarget(source);
                         scopeIndex.put(source.getName(), scopeContexts.get(sourceScope));
                         List<RuntimeConfiguration<SimpleComponentContext>> list = configurationsByScope.get(sourceScope);
                         if (list == null) {
@@ -319,6 +321,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                     RuntimeConfiguration<InstanceContext> config = (RuntimeConfiguration<InstanceContext>) component
                             .getComponentImplementation().getRuntimeConfiguration();
                     wireSource(config);
+                    buildTarget(config);
                     try {
                         if (config.getSourceProxyFactories() != null) {
                             for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()
@@ -538,6 +541,19 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
             }
         }
         source.prepare();
+    }
+
+    protected void buildTarget(RuntimeConfiguration target){
+        if (target.getTargetProxyFactories() != null) {
+            for (ProxyFactory targetFactory : ((Map<String, ProxyFactory>) target.getTargetProxyFactories()).values()) {
+                for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) targetFactory
+                        .getProxyConfiguration().getInvocationConfigurations().values()) {
+                    
+                    iConfig.build();
+
+                }
+            }
+        }
     }
 
     protected void initializeProxies() throws ProxyInitializationException {

@@ -127,7 +127,54 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         MockHandlerBuilder handlerBuilder = new MockHandlerBuilder(mockHandler,true,true);
         refBuilder.addBuilder(handlerBuilder);
         
-        
+        javaBuilder.setReferenceBuilder(refBuilder);
+        builders.add(javaBuilder);
+
+        List<WireBuilder> wireBuilders = new ArrayList();
+        DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
+        defaultWireBuilder.addWireBuilder(new JavaTargetWireBuilder());
+        wireBuilders.add(defaultWireBuilder);
+
+        RuntimeContext runtime = new RuntimeContextImpl(null, builders, wireBuilders);
+        runtime.start();
+        runtime.getRootContext().registerModelObject(
+                MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),
+                        ContextConstants.AGGREGATE_SCOPE_ENUM));
+        AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
+        child.registerModelObject(MockModuleFactory.createModule());
+        child.fireEvent(EventContext.MODULE_START, null);
+        GenericComponent source = (GenericComponent) child.locateInstance("source");
+        Assert.assertNotNull(source);
+        source.getGenericComponent().getString();
+        Assert.assertEquals(1, mockInterceptor.getCount());
+        Assert.assertEquals(1, mockHandler.getCount());
+        source.getGenericComponent().getString();
+        Assert.assertEquals(2, mockInterceptor.getCount());
+        Assert.assertEquals(2, mockHandler.getCount());
+        child.fireEvent(EventContext.MODULE_STOP, null);
+        runtime.stop();
+    }
+
+    
+    public void testRefWithTargetInterceptorHandler() throws Exception {
+        MessageFactory msgFactory = new PojoMessageFactory();
+
+        List<RuntimeConfigurationBuilder> builders = new ArrayList();
+        builders.add((new SystemComponentContextBuilder()));
+        builders.add(new SystemEntryPointBuilder());
+        builders.add(new SystemExternalServiceBuilder());
+
+        JavaComponentContextBuilder2 javaBuilder = new JavaComponentContextBuilder2();
+        javaBuilder.setMessageFactory(msgFactory);
+        javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
+
+        MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
+        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
+        HierarchicalBuilder refBuilder = new HierarchicalBuilder();
+        refBuilder.addBuilder(interceptorBuilder);
+        MockHandler mockHandler = new MockHandler();
+        MockHandlerBuilder handlerBuilder = new MockHandlerBuilder(mockHandler,false,true);
+        refBuilder.addBuilder(handlerBuilder);
         
         javaBuilder.setReferenceBuilder(refBuilder);
         builders.add(javaBuilder);
@@ -135,7 +182,6 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         List<WireBuilder> wireBuilders = new ArrayList();
         DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
         defaultWireBuilder.addWireBuilder(new JavaTargetWireBuilder());
-
         wireBuilders.add(defaultWireBuilder);
 
         RuntimeContext runtime = new RuntimeContextImpl(null, builders, wireBuilders);

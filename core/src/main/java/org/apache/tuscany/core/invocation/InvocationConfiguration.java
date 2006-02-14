@@ -61,12 +61,12 @@ public class InvocationConfiguration {
     public OperationType getOperationType() {
         return operation;
     }
-    
-    public void addTargetRequestChannel(MessageChannel channel){
+
+    public void addTargetRequestChannel(MessageChannel channel) {
         targetRequestChannel = channel;
     }
 
-    public void addTargetResponseChannel(MessageChannel channel){
+    public void addTargetResponseChannel(MessageChannel channel) {
         targetResponseChannel = channel;
     }
 
@@ -118,26 +118,26 @@ public class InvocationConfiguration {
         return targetInterceptorChainHead;
     }
 
-    public List<MessageHandler> getRequestHandlers(){
+    public List<MessageHandler> getRequestHandlers() {
         return requestHandlers;
     }
 
-    public List<MessageHandler> getResponseHandlers(){
+    public List<MessageHandler> getResponseHandlers() {
         return responseHandlers;
     }
-    
+
     /**
      * Build the configuration, link the interceptors and handlers together
      */
     public void build() {
 
-        // Connect request handler chain to target interceptor chain
+        // Connect source request handler chain directly to target interceptor chain
         if (requestHandlers != null && targetInterceptorChainHead != null) {
             MessageHandler messageDispatcher = new MessageDispatcher(targetInterceptorChainHead);
             requestHandlers.add(messageDispatcher);
         }
 
-        // Connect source interceptor chain to handler chain
+        // Connect source interceptor chain to source handler chain
         if (requestHandlers != null) {
             MessageChannel requestChannel = new MessageChannelImpl(requestHandlers);
             MessageChannel responseChannel = new MessageChannelImpl(responseHandlers);
@@ -156,7 +156,13 @@ public class InvocationConfiguration {
             if (sourceInterceptorChainHead != null) {
                 sourceInterceptorChainTail.setNext(targetInterceptorChainHead);
             } else if (targetInterceptorChainHead != targetInvoker) {
-                sourceInterceptorChainHead = targetInterceptorChainHead;
+                if (targetInterceptorChainHead == null) {
+                    Interceptor channelInterceptor = new RequestResponseInterceptor(null, targetRequestChannel, null,
+                            targetResponseChannel);
+                    sourceInterceptorChainHead = channelInterceptor;
+                } else {
+                    sourceInterceptorChainHead = targetInterceptorChainHead;
+                }
             }
         }
 
