@@ -84,6 +84,13 @@ public class DefaultWireBuilder implements WireBuilder {
             sourceInvocationConfig.build();
             // TODO optimize if no proxy needed using NullProxyFactory
         }
+        //TODO initialize here?
+        //try {
+        //    sourceFactory.initialize();
+        //} catch (Exception e) {
+         //   e.printStackTrace(); FIXME
+        //}
+        //End init here
     }
 
 }

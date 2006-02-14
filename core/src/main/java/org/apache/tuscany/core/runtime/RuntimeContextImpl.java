@@ -20,6 +20,7 @@ import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AbstractContext;
@@ -31,22 +32,26 @@ import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventException;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.RuntimeEventListener;
+import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
+import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
 import org.apache.tuscany.model.assembly.ExtensibleModelObject;
 
 /**
  * Implementation of a RuntimeContext that forms the foundation for a Tuscany environment.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class RuntimeContextImpl extends AbstractContext implements RuntimeContext {
 
     private final List<RuntimeConfigurationBuilder> builders;
+
+    private final List<WireBuilder> wireBuilders;
 
     private final List<RuntimeEventListener> listeners = new ArrayList(1);
 
@@ -60,42 +65,47 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
      * Default constructor that creates a runtime with a NullMonitorFactory and no builders.
      */
     public RuntimeContextImpl() {
-        this(new NullMonitorFactory(), null);
+        this(new NullMonitorFactory(), null, null);
     }
 
     /**
      * Constructor for creating a runtime with a specified MonitorFactory and pre-defined builders.
-     *
+     * 
      * @param monitorFactory the default {@link MonitorFactory} for this runtime
-     * @param builders       a list of builders automatically made available; may be null
+     * @param builders a list of builders automatically made available; may be null
+     * @param wireBuilders a list of wire builders automatically made available; may be null
      */
-    public RuntimeContextImpl(MonitorFactory monitorFactory, List<RuntimeConfigurationBuilder> builders) {
+    public RuntimeContextImpl(MonitorFactory monitorFactory, List<RuntimeConfigurationBuilder> builders,
+            List<WireBuilder> wireBuilders) {
         super(RUNTIME);
         this.monitorFactory = monitorFactory;
         this.builders = (builders == null) ? new ArrayList(1) : new ArrayList(builders);
+        this.wireBuilders = (wireBuilders == null) ? new ArrayList(1) : new ArrayList(wireBuilders);
 
-        rootContext = new AggregateContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this, monitorFactory);
-        systemContext = new SystemAggregateContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(), this, monitorFactory);
+        rootContext = new AggregateContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this,
+                monitorFactory);
+        systemContext = new SystemAggregateContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(),
+                this, monitorFactory);
     }
 
     /**
-     * Specicalized constructor that allows the default implementations of the root and system contexts
-     * to be overridden.
-     *
+     * Specicalized constructor that allows the default implementations of the root and system contexts to be
+     * overridden.
+     * 
      * @param monitorFactory the default {@link MonitorFactory} for this runtime
-     * @param rootContext    the context to use for the root of the user context tree
-     * @param systemContext  the context to use for the root of the system context tree
-     * @param builders       a list of builders automatically made available; may be null
+     * @param rootContext the context to use for the root of the user context tree
+     * @param systemContext the context to use for the root of the system context tree
+     * @param builders a list of builders automatically made available; may be null
+     * @param wireBuilders a list of wire builders automatically made available; may be null
      */
-    public RuntimeContextImpl(MonitorFactory monitorFactory,
-                              AggregateContext rootContext,
-                              SystemAggregateContext systemContext,
-                              List<RuntimeConfigurationBuilder> builders) {
+    public RuntimeContextImpl(MonitorFactory monitorFactory, AggregateContext rootContext, SystemAggregateContext systemContext,
+            List<RuntimeConfigurationBuilder> builders, List<WireBuilder> wireBuilders) {
         super(RUNTIME);
         this.rootContext = rootContext;
         this.systemContext = systemContext;
         this.monitorFactory = monitorFactory;
         this.builders = (builders == null) ? new ArrayList(1) : new ArrayList(builders);
+        this.wireBuilders = (wireBuilders == null) ? new ArrayList(1) : new ArrayList(wireBuilders);
     }
 
     public void start() throws CoreRuntimeException {
@@ -193,13 +203,19 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     // ConfigurationContext methods
     // ----------------------------------
 
-
     public synchronized void build(AggregateContext parent, ExtensibleModelObject model) throws BuilderConfigException {
         AssemblyVisitor visitor = new AssemblyVisitor(parent, builders);
         visitor.start(model);
     }
 
     public void configure(ExtensibleModelObject model) throws ConfigurationException {
+    }
+
+    public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+            ScopeContext targetScopeContext) throws BuilderConfigException {
+        for (WireBuilder wireBuilder : wireBuilders) {
+            wireBuilder.wire(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
+        }
     }
 
     // ----------------------------------
@@ -230,5 +246,4 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
             throw new IllegalStateException("Context must be in RUNNING state");
         }
     }
-
 }

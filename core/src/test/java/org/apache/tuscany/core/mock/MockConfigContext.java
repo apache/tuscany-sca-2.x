@@ -22,6 +22,8 @@ import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
+import org.apache.tuscany.core.context.ScopeContext;
+import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.model.assembly.ExtensibleModelObject;
 
 /**
@@ -43,6 +45,9 @@ public class MockConfigContext implements ConfigurationContext {
     public void build(AggregateContext parent, ExtensibleModelObject model) throws BuilderConfigException {
         AssemblyVisitor visitor = new AssemblyVisitor(parent, builders);
         visitor.start(model);
+    }
+
+    public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope, ScopeContext targetScopeContext) throws BuilderConfigException {
     }
 
 }

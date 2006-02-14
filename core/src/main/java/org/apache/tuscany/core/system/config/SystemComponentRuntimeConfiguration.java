@@ -122,7 +122,7 @@ public class SystemComponentRuntimeConfiguration implements RuntimeConfiguration
     }
 
     public Map<String, ProxyFactory> getTargetProxyFactories() {
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     public void addSourceProxyFactory(String referenceName, ProxyFactory factory) {

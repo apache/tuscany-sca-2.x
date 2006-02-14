@@ -31,6 +31,7 @@ import org.apache.tuscany.core.context.ScopeStrategy;
 import org.apache.tuscany.core.context.ServiceNotFoundException;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
+import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ExtensibleModelObject;
@@ -100,7 +101,7 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Tu
         InstanceContext ctx = scope.getContext(qName.getPartName());
         try {
             Object o = ctx.getInstance(qName, true);
-            if(o == null){
+            if (o == null) {
                 throw new ServiceUnavailableException(qualifiedName);
             }
             return o;
@@ -109,7 +110,7 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Tu
             throw new ServiceUnavailableException(e);
         }
     }
-    
+
     public ServiceReference createServiceReference(String serviceName) {
         throw new UnsupportedOperationException();
     }
@@ -193,6 +194,18 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Tu
         if (configurationContext != null) {
             try {
                 configurationContext.build(parent, model);
+            } catch (BuilderConfigException e) {
+                e.addContextName(getName());
+                throw e;
+            }
+        }
+    }
+
+    public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+            ScopeContext targetScopeContext) throws BuilderConfigException {
+        if (configurationContext != null) {
+            try {
+                configurationContext.wire(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
             } catch (BuilderConfigException e) {
                 e.addContextName(getName());
                 throw e;

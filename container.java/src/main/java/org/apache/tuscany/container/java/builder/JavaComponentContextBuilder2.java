@@ -75,7 +75,6 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
 
     private RuntimeConfigurationBuilder referenceBuilder;
 
-    @Autowire
     public void setReferenceBuilder(RuntimeConfigurationBuilder builder) {
         this.referenceBuilder = builder;
     }
@@ -179,19 +178,21 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
                         iConfigMap.put(type, iConfig);
                     }
                     // @FIXME hardcode separator
-                    QualifiedName qName = new QualifiedName(configuredService.getPart().getName() + "/"
-                            + configuredService.getPort().getName());
-                    ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, null, msgFactory);
+//                    QualifiedName qName = new QualifiedName(configuredService.getPart().getName() + "/"
+//                            + configuredService.getService().getName());
+                    ProxyConfiguration pConfiguration = new ProxyConfiguration(null, iConfigMap, null, null, msgFactory);
                     proxyFactory.setBusinessInterface(interfaze.getInterfaceType().getInstanceClass());
                     proxyFactory.setProxyConfiguration(pConfiguration);
                     config.addTargetProxyFactory(service.getName(), proxyFactory);
                     configuredService.setProxyFactory(proxyFactory);
-                    // invoke another builder to add interceptors, etc.
-                    referenceBuilder.build(configuredService, parentContext);
+                    if (referenceBuilder != null) {
+                        // invoke another builder to add interceptors, etc.
+                        referenceBuilder.build(configuredService, parentContext);
+                    }
                     // add tail interceptor
                     for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
                         iConfig.addTargetInterceptor(new InvokerInterceptor());
-                        //iConfig.build();
+                        // iConfig.build();
                     }
 
                 }
@@ -219,8 +220,10 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
                         proxyFactory.setProxyConfiguration(pConfiguration);
                         config.addSourceProxyFactory(reference.getReference().getName(), proxyFactory);
                         reference.setProxyFactory(proxyFactory);
-                        // invoke another builder to add interceptors, etc.
-                        referenceBuilder.build(reference, parentContext);
+                        if (referenceBuilder != null) {
+                            // invoke another builder to add interceptors, etc.
+                            referenceBuilder.build(reference, parentContext);
+                        }
                         Injector injector = createReferenceInjector(reference.getReference().getName(), proxyFactory, fields,
                                 methods);
                         injectors.add(injector);

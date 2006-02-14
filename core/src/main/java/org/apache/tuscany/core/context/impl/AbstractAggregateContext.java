@@ -5,6 +5,7 @@ import static org.apache.tuscany.core.context.EventContext.REQUEST_END;
 import static org.apache.tuscany.core.context.EventContext.SESSION_NOTIFY;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
-import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.core.context.AggregateContext;
@@ -40,6 +40,7 @@ import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.apache.tuscany.core.invocation.spi.ProxyInitializationException;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.model.assembly.Component;
@@ -76,8 +77,8 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     protected MonitorFactory monitorFactory;
 
     // The system wire builder
-    @Autowire(required = false)
-    protected WireBuilder wireBuilder;
+    // @Autowire(required = false)
+    // protected WireBuilder wireBuilder;
 
     // The logical model representing the module assembly
     // protected ModuleComponent moduleComponent;
@@ -148,28 +149,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                     for (RuntimeConfiguration source : configurations.values()) {
                         // FIXME scopes are defined at the interface level
                         int sourceScope = source.getScope();
-                        // /----------------
-                        if (source.getSourceProxyFactories() != null) {
-                            for (ProxyFactory sourceFactory : ((Map<String, ProxyFactory>) source.getSourceProxyFactories())
-                                    .values()) {
-                                QualifiedName targetName = sourceFactory.getProxyConfiguration().getTargetName();
-                                RuntimeConfiguration target = configurations.get(targetName.getPartName());
-                                if (target == null) {
-                                    ContextInitException e = new ContextInitException("Target not found");
-                                    e.setIdentifier(targetName.getPartName());
-                                    e.addContextName(name);
-                                    throw e;
-                                }
-                                // get the proxy chain for the target
-                                ProxyFactory targetFactory = target.getTargetProxyFactory(sourceFactory.getProxyConfiguration()
-                                        .getTargetName().getPortName());
-                                boolean downScope = scopeStrategy.downScopeReference(sourceScope, target.getScope());
-                                wireBuilder.wire(sourceFactory, targetFactory, target.getClass(), downScope, scopeContexts
-                                        .get(sourceScope));
-                            }
-                        }
-                        source.prepare();
-                        // /---------------
+                        wireSource(source);
                         scopeIndex.put(source.getName(), scopeContexts.get(sourceScope));
                         List<RuntimeConfiguration<SimpleComponentContext>> list = configurationsByScope.get(sourceScope);
                         if (list == null) {
@@ -193,12 +173,18 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                     ScopeContext scope = scopeContexts.get(entries.getKey());
                     scope.registerConfigurations((List<RuntimeConfiguration<InstanceContext>>) entries.getValue());
                 }
+                initializeProxies();
                 for (ScopeContext scope : scopeContexts.values()) {
                     // register scope contexts as a listeners for events in the aggregate context
                     registerListener(scope);
                     scope.start();
                 }
                 lifecycleState = RUNNING;
+            } catch (ProxyInitializationException e) {
+                lifecycleState = ERROR;
+                ContextInitException cie = new ContextInitException(e);
+                cie.addContextName(getName());
+                throw cie;
             } catch (ConfigurationException e) {
                 lifecycleState = ERROR;
                 throw new ContextInitException(e);
@@ -328,6 +314,30 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 registerConfiguration(configuration);
                 registerAutowire(service);
             }
+            if (lifecycleState == RUNNING) {
+                for (Component component : newModule.getComponents()) {
+                    RuntimeConfiguration<InstanceContext> config = (RuntimeConfiguration<InstanceContext>) component
+                            .getComponentImplementation().getRuntimeConfiguration();
+                    wireSource(config);
+                    try {
+                        if (config.getSourceProxyFactories() != null) {
+                            for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()
+                                    .values()) {
+                                sourceProxyFactory.initialize();
+                            }
+                        }
+                        if (config.getTargetProxyFactories() != null) {
+                            for (ProxyFactory targetProxyFactory : (Collection<ProxyFactory>) config.getTargetProxyFactories()
+                                    .values()) {
+                                targetProxyFactory.initialize();
+                            }
+                        }
+                    } catch (ProxyInitializationException e) {
+                        throw new ConfigurationException(e);
+                    }
+
+                }
+            }
             // merge existing module component assets
             module.getComponents().addAll(oldModule.getComponents());
             module.getEntryPoints().addAll(oldModule.getEntryPoints());
@@ -379,6 +389,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
             }
             scope.registerConfiguration(configuration);
             scopeIndex.put(configuration.getName(), scope);
+            configurations.put(configuration.getName(), configuration); // xcv
         } else {
             if (configurations.get(configuration.getName()) != null) {
                 throw new DuplicateNameException(configuration.getName());
@@ -504,4 +515,44 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
             immutableScopeContexts = Collections.unmodifiableMap(scopeContexts);
         }
     }
+
+    protected void wireSource(RuntimeConfiguration source) {
+        // FIXME scopes are defined at the interface level
+        int sourceScope = source.getScope();
+        if (source.getSourceProxyFactories() != null) {
+            for (ProxyFactory sourceFactory : ((Map<String, ProxyFactory>) source.getSourceProxyFactories()).values()) {
+                QualifiedName targetName = sourceFactory.getProxyConfiguration().getTargetName();
+                RuntimeConfiguration target = configurations.get(targetName.getPartName());
+                if (target == null) {
+                    ContextInitException e = new ContextInitException("Target not found");
+                    e.setIdentifier(targetName.getPartName());
+                    e.addContextName(name);
+                    throw e;
+                }
+                // get the proxy chain for the target
+                ProxyFactory targetFactory = target.getTargetProxyFactory(sourceFactory.getProxyConfiguration().getTargetName()
+                        .getPortName());
+                boolean downScope = scopeStrategy.downScopeReference(sourceScope, target.getScope());
+                configurationContext.wire(sourceFactory, targetFactory, target.getClass(), downScope, scopeContexts
+                        .get(sourceScope));
+            }
+        }
+        source.prepare();
+    }
+
+    protected void initializeProxies() throws ProxyInitializationException {
+        for (RuntimeConfiguration config : configurations.values()) {
+            if (config.getSourceProxyFactories() != null) {
+                for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories().values()) {
+                    sourceProxyFactory.initialize();
+                }
+            }
+            if (config.getSourceProxyFactories() != null) {
+                for (ProxyFactory targetProxyFactory : (Collection<ProxyFactory>) config.getTargetProxyFactories().values()) {
+                    targetProxyFactory.initialize();
+                }
+            }
+        }
+    }
+
 }

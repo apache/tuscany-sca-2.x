@@ -56,11 +56,12 @@ import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
+import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemObjectRuntimeConfiguration;
-import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExtensibleModelObject;
@@ -145,8 +146,8 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         scopeStrategy = new SystemScopeStrategy();
     }
 
-    public SystemAggregateContextImpl(String name, AggregateContext parent, AutowireContext autowire, ScopeStrategy strategy, EventContext ctx,
-                                      ConfigurationContext configCtx, MonitorFactory factory) {
+    public SystemAggregateContextImpl(String name, AggregateContext parent, AutowireContext autowire, ScopeStrategy strategy,
+            EventContext ctx, ConfigurationContext configCtx, MonitorFactory factory) {
         super(name);
         this.parentContext = parent;
         this.autowireContext = autowire;
@@ -165,7 +166,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     public void start() {
         synchronized (initializeLatch) {
             try {
-                if(lifecycleState != UNINITIALIZED && lifecycleState != STOPPED){
+                if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
                     throw new IllegalStateException("Context not in UNINITIALIZED state");
                 }
 
@@ -376,8 +377,8 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         }
     }
 
-    public void registerJavaObject(String name, Object instance) throws ConfigurationException {
-        registerConfiguration(new SystemObjectRuntimeConfiguration(name, instance));
+    public void registerJavaObject(String componentName, Object instance) throws ConfigurationException {
+        registerConfiguration(new SystemObjectRuntimeConfiguration(componentName, instance));
     }
 
     protected void registerConfiguration(RuntimeConfiguration<InstanceContext> configuration) throws ConfigurationException {
@@ -568,6 +569,13 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     public void build(AggregateContext parent, ExtensibleModelObject model) throws BuilderConfigException {
         if (configurationContext != null) {
             configurationContext.build(parent, model);
+        }
+    }
+
+    public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+            ScopeContext targetScopeContext) throws BuilderConfigException {
+        if (configurationContext != null) {
+            configurationContext.wire(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
         }
     }
 
