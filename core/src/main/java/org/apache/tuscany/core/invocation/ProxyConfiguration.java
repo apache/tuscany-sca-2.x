@@ -49,7 +49,6 @@ public class ProxyConfiguration {
     public ProxyConfiguration(QualifiedName targetName, Map<OperationType, InvocationConfiguration> invocationConfigs,
             ClassLoader proxyClassLoader, Map<Integer, ScopeContext> scopeContainers, MessageFactory messageFactory) {
         assert (invocationConfigs != null) : "No invocation configuration map specified";
-        assert (targetName != null) : "No target name specified";
         this.targetName = targetName;
         configurations = invocationConfigs;
         this.scopeContainers = scopeContainers;

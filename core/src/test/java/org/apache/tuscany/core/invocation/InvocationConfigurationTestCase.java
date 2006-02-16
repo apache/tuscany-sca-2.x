@@ -72,8 +72,8 @@ public class InvocationConfigurationTestCase extends TestCase {
         target.addTargetInterceptor(new InvokerInterceptor());
 
         // connect the source to the target
-        source.addTargetRequestChannel(new MessageChannelImpl(target.getRequestHandlers()));
-        source.addTargetResponseChannel(new MessageChannelImpl(target.getResponseHandlers()));
+        source.setTargetRequestChannel(new MessageChannelImpl(target.getRequestHandlers()));
+        source.setTargetResponseChannel(new MessageChannelImpl(target.getResponseHandlers()));
         source.build();
         target.build();
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
@@ -108,8 +108,8 @@ public class InvocationConfigurationTestCase extends TestCase {
         target.addTargetInterceptor(new InvokerInterceptor());
 
         // connect the source to the target
-        source.addTargetRequestChannel(new MessageChannelImpl(target.getRequestHandlers()));
-        source.addTargetResponseChannel(new MessageChannelImpl(target.getResponseHandlers()));
+        source.setTargetRequestChannel(new MessageChannelImpl(target.getRequestHandlers()));
+        source.setTargetResponseChannel(new MessageChannelImpl(target.getResponseHandlers()));
         source.build();
         target.build();
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());

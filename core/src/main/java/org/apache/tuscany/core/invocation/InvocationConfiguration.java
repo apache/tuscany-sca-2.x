@@ -27,14 +27,58 @@ import org.apache.tuscany.core.message.handler.MessageHandler;
 import org.apache.tuscany.model.types.OperationType;
 
 /**
- * Represents the proxy configuration information for an operation on a service reference
+ * Represents the source or target-side of a wire, including proxy configuration information and invocation pipeline
+ * (interceptors and handlers) for an operation. Source and target invocation configurations are "bridged" together by a
+ * set of wire builders with the source-side holding references to the target.
+ * <p>
+ * A set of invocation configurations are used by a {@link org.apache.tuscany.core.invocation.spi.ProxyFactory} to
+ * create proxies representing the business interface of the target that are injected onto source references.
+ * <p>
+ * Invocation configurations must contain at least one interceptor and may have 0 to N handlers. Handlers process an
+ * invocation request or response in a one-way fashion. A typical invocation sequence where interceptors and handlers
+ * are configured for both the source and target-side will proceed as follows:
+ * <ol>
+ * <li>The first source interceptor will be called with a message, which will in turn invoke the next interceptor in
+ * the chain
+ * <li>The last source interceptor, which must be of type
+ * {@link org.apache.tuscany.core.invocation.impl.RequestResponseInterceptor} if there are handlers present, will be
+ * invoked. The RR interceptor will in turn pass the message to a
+ * {@link org.apache.tuscany.core.message.channel.MessageChannel} which will invoke all source-side request handlers.
+ * <li> The RR interceptor will then invoke the target-side request <tt>MessageChannel</tt>.
+ * <li> The last source-side handler, an instance of
+ * {@link org.apache.tuscany.core.message.channel.impl.MessageDispatcher}, will invoke the first source-side
+ * interceptor, which in turn will pass the message down the target-side interceptor chain.
+ * <li> If the target is a component instance the last target-side interceptor, an instance of
+ * {@link org.apache.tuscany.core.invocation.impl.InvokerInterceptor} will retrieve the
+ * {@link org.apache.tuscany.core.invocation.TargetInvoker} from the message and call it to invoke the operation on a
+ * target instance. <tt>TargetInvoker</tt>s are help by the source proxy to enable optimizations such as caching of
+ * target instances.
+ * <li> The response is returned up the invocation stack until it reaches the source-side
+ * <tt>RequestResponseInterceptor</tt>, which invokes the target and source-side response channels respectively.
+ * <li> The response is then passed back up the rest of the invocation stack.
+ * </ol>
+ * <p>
+ * The source-to-target bridge may be constructed in any of the following ways:
+ * <ul>
+ * <li>Source handler-to-target handler
+ * <li>Source handler-to-target interceptor
+ * <li>Source interceptor-to-target handler
+ * <li>Source interceptor-to-target interceptor
+ * </ul>
+ * 
+ * @see org.apache.tuscany.core.builder.WireBuilder
+ * @see org.apache.tuscany.core.invocation.spi.ProxyFactory
+ * @see org.apache.tuscany.core.invocation.TargetInvoker
+ * @see org.apache.tuscany.core.message.channel.impl.MessageDispatcher
  * 
  * @version $Rev$ $Date$
  */
 public class InvocationConfiguration {
 
+    // the operation on the target that will utlimately be invoked
     private OperationType operation;
 
+    // responsible for invoking a target instance, this is held by source-side invocation configurations
     private TargetInvoker targetInvoker;
 
     private Interceptor sourceInterceptorChainHead;
@@ -49,27 +93,46 @@ public class InvocationConfiguration {
 
     private List<MessageHandler> responseHandlers;
 
+    // a source-side pointer to target request handlers, if the exist
     private MessageChannel targetRequestChannel;
 
+    // a source-side pointer to target response handlers, if the exist
     private MessageChannel targetResponseChannel;
 
+    /**
+     * Creates an new invocation configuration for the given target operation
+     */
     public InvocationConfiguration(OperationType operation) {
         assert (operation != null) : "No operation type specified";
         this.operation = operation;
     }
 
+    /**
+     * Returns the target operation for the invocation configuration
+     */
     public OperationType getOperationType() {
         return operation;
     }
 
-    public void addTargetRequestChannel(MessageChannel channel) {
+    /**
+     * Used by source-side configurations, sets a pointer to the target-side request channel. This may be null when no
+     * target request handlers exist.
+     */
+    public void setTargetRequestChannel(MessageChannel channel) {
         targetRequestChannel = channel;
     }
 
-    public void addTargetResponseChannel(MessageChannel channel) {
+    /**
+     * Used by source-side configurations, sets a pointer to the target-side response channel. This may be null when no
+     * target response handlers exist.
+     */
+    public void setTargetResponseChannel(MessageChannel channel) {
         targetResponseChannel = channel;
     }
 
+    /**
+     * Adds an interceptor to the invocation chain for source-side configurations
+     */
     public void addSourceInterceptor(Interceptor interceptor) {
         if (sourceInterceptorChainHead == null) {
             sourceInterceptorChainHead = interceptor;
@@ -79,6 +142,9 @@ public class InvocationConfiguration {
         sourceInterceptorChainTail = interceptor;
     }
 
+    /**
+     * Adds an interceptor to the invocation chain for target-side configurations
+     */
     public void addTargetInterceptor(Interceptor interceptor) {
         if (targetInterceptorChainHead == null) {
             targetInterceptorChainHead = interceptor;
@@ -88,6 +154,9 @@ public class InvocationConfiguration {
         targetInterceptorChainTail = interceptor;
     }
 
+    /**
+     * Adds an request handler to the invocation chain for either a source- or target-side configuration
+     */
     public void addRequestHandler(MessageHandler handler) {
         if (requestHandlers == null) {
             requestHandlers = new ArrayList<MessageHandler>();
@@ -95,6 +164,9 @@ public class InvocationConfiguration {
         requestHandlers.add(handler);
     }
 
+    /**
+     * Adds an response handler to the invocation chain for either a source- or target-side configuration
+     */
     public void addResponseHandler(MessageHandler handler) {
         if (responseHandlers == null) {
             responseHandlers = new ArrayList<MessageHandler>();
@@ -102,37 +174,56 @@ public class InvocationConfiguration {
         responseHandlers.add(handler);
     }
 
-    public void setTargetInvoker(TargetInvoker invoker) {
-        this.targetInvoker = invoker;
-    }
-
-    public TargetInvoker getTargetInvoker() {
-        return targetInvoker;
-    }
-
-    public Interceptor getSourceInterceptor() {
-        return sourceInterceptorChainHead;
-    }
-
-    public Interceptor getTargetInterceptor() {
-        return targetInterceptorChainHead;
-    }
-
+    /**
+     * Returns the request handler chain for either a source- or target-side configuration
+     */
     public List<MessageHandler> getRequestHandlers() {
         return requestHandlers;
     }
 
+    /**
+     * Returns the response handler chain for either a source- or target-side configuration
+     */
     public List<MessageHandler> getResponseHandlers() {
         return responseHandlers;
     }
 
     /**
-     * Build the configuration, link the interceptors and handlers together
+     * Returns the head source-side interceptor. This will be null for target-side configurations
+     */
+    public Interceptor getSourceInterceptor() {
+        return sourceInterceptorChainHead;
+    }
+
+    /**
+     * Returns the head target-side interceptor. On source-side configurations, this will be the head interceptor of the
+     * "bridged" target configuration.
+     */
+    public Interceptor getTargetInterceptor() {
+        return targetInterceptorChainHead;
+    }
+
+    /**
+     * Sets the target invoker to pass down the invocation pipeline on the source-side
+     */
+    public void setTargetInvoker(TargetInvoker invoker) {
+        this.targetInvoker = invoker;
+    }
+
+    /**
+     * Returns the target invoker that is passed down the invocation pipeline on the source-side
+     */
+    public TargetInvoker getTargetInvoker() {
+        return targetInvoker;
+    }
+
+    /**
+     * Prepares the configuration by linking interceptors and handlers
      */
     public void build() {
 
         if (requestHandlers != null && targetInterceptorChainHead != null) {
-            // on target side, connect existing handlers and interceptors
+            // on target-side, connect existing handlers and interceptors
             MessageHandler messageDispatcher = new MessageDispatcher(targetInterceptorChainHead);
             requestHandlers.add(messageDispatcher);
         }
@@ -155,7 +246,7 @@ public class InvocationConfiguration {
                 if (targetInterceptorChainHead != null) {
                     // Connect source interceptor chain directly to target interceptor chain
                     sourceInterceptorChainTail.setNext(targetInterceptorChainHead);
-                    //sourceInterceptorChainTail = targetInterceptorChainHead;
+                    // sourceInterceptorChainTail = targetInterceptorChainHead;
                 } else {
                     // Connect source interceptor chain to the target request channel
                     Interceptor channelInterceptor = new RequestResponseInterceptor(null, targetRequestChannel, null,

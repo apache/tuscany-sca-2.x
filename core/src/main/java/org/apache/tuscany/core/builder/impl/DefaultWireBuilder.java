@@ -64,9 +64,9 @@ public class DefaultWireBuilder implements WireBuilder {
                         .getOperationType());
                 // if handler is configured, add that
                 if (targetInvocationConfig.getRequestHandlers() != null) {
-                    sourceInvocationConfig.addTargetRequestChannel(new MessageChannelImpl(targetInvocationConfig
+                    sourceInvocationConfig.setTargetRequestChannel(new MessageChannelImpl(targetInvocationConfig
                             .getRequestHandlers()));
-                    sourceInvocationConfig.addTargetResponseChannel(new MessageChannelImpl(targetInvocationConfig
+                    sourceInvocationConfig.setTargetResponseChannel(new MessageChannelImpl(targetInvocationConfig
                             .getResponseHandlers()));
                 } else {
                     // no handlers, just connect interceptors
