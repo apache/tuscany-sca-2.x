@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
@@ -69,6 +70,11 @@ public class DefaultWireBuilder implements WireBuilder {
                             .getResponseHandlers()));
                 } else {
                     // no handlers, just connect interceptors
+                    if (targetInvocationConfig.getTargetInterceptor() == null){
+                        BuilderConfigException e = new BuilderConfigException("No target handler or interceptor for operation");
+                        e.setIdentifier(targetInvocationConfig.getOperationType().getName());
+                        throw e;
+                    }
                     sourceInvocationConfig.addTargetInterceptor(targetInvocationConfig.getTargetInterceptor());
                 }
             }
@@ -84,13 +90,6 @@ public class DefaultWireBuilder implements WireBuilder {
             sourceInvocationConfig.build();
             // TODO optimize if no proxy needed using NullProxyFactory
         }
-        //TODO initialize here?
-        //try {
-        //    sourceFactory.initialize();
-        //} catch (Exception e) {
-         //   e.printStackTrace(); FIXME
-        //}
-        //End init here
     }
 
 }

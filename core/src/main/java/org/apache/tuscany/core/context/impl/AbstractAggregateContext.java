@@ -519,6 +519,9 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         }
     }
 
+    /**
+     * Iterates through references and delegates to the configuration context to wire them to their targets
+     */
     protected void wireSource(RuntimeConfiguration source) {
         // FIXME scopes are defined at the interface level
         int sourceScope = source.getScope();
@@ -543,14 +546,15 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         source.prepare();
     }
 
-    protected void buildTarget(RuntimeConfiguration target){
+    /**
+     * Signals to target side of reference configurations to initialize
+     */
+    protected void buildTarget(RuntimeConfiguration target) {
         if (target.getTargetProxyFactories() != null) {
             for (ProxyFactory targetFactory : ((Map<String, ProxyFactory>) target.getTargetProxyFactories()).values()) {
                 for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) targetFactory
                         .getProxyConfiguration().getInvocationConfigurations().values()) {
-                    
                     iConfig.build();
-
                 }
             }
         }

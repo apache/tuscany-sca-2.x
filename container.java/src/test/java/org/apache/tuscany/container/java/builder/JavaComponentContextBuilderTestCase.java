@@ -110,6 +110,10 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
         }
     }
 
+    
+    
+    
+    
     public Module createModule() throws Exception {
         Component sourceComponent = MockAssemblyFactory.createComponent("source", ModuleScopeComponentImpl.class,
                 ScopeEnum.MODULE_LITERAL);

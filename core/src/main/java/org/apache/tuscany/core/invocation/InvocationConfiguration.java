@@ -131,13 +131,12 @@ public class InvocationConfiguration {
      */
     public void build() {
 
-        // Connect source request handler chain directly to target interceptor chain
         if (requestHandlers != null && targetInterceptorChainHead != null) {
+            // on target side, connect existing handlers and interceptors
             MessageHandler messageDispatcher = new MessageDispatcher(targetInterceptorChainHead);
             requestHandlers.add(messageDispatcher);
         }
 
-        // Connect source interceptor chain to source handler chain
         if (requestHandlers != null) {
             MessageChannel requestChannel = new MessageChannelImpl(requestHandlers);
             MessageChannel responseChannel = new MessageChannelImpl(responseHandlers);
@@ -151,20 +150,31 @@ public class InvocationConfiguration {
             }
 
         } else {
-
-            // Connect source interceptor chain directly to target interceptor chain
+            // no request handlers
             if (sourceInterceptorChainHead != null) {
-                sourceInterceptorChainTail.setNext(targetInterceptorChainHead);
-            } else if (targetInterceptorChainHead != targetInvoker) {
-                if (targetInterceptorChainHead == null) {
+                if (targetInterceptorChainHead != null) {
+                    // Connect source interceptor chain directly to target interceptor chain
+                    sourceInterceptorChainTail.setNext(targetInterceptorChainHead);
+                    //sourceInterceptorChainTail = targetInterceptorChainHead;
+                } else {
+                    // Connect source interceptor chain to the target request channel
+                    Interceptor channelInterceptor = new RequestResponseInterceptor(null, targetRequestChannel, null,
+                            targetResponseChannel);
+                    sourceInterceptorChainTail.setNext(channelInterceptor);
+                }
+            } else {
+                // no source interceptor chain or source handlers, conntect to target interceptor chain or channel
+                if (targetInterceptorChainHead != null) {
+                    sourceInterceptorChainHead = targetInterceptorChainHead;
+                    sourceInterceptorChainTail = targetInterceptorChainHead;
+                } else {
                     Interceptor channelInterceptor = new RequestResponseInterceptor(null, targetRequestChannel, null,
                             targetResponseChannel);
                     sourceInterceptorChainHead = channelInterceptor;
-                } else {
-                    sourceInterceptorChainHead = targetInterceptorChainHead;
+                    sourceInterceptorChainTail = channelInterceptor;
                 }
             }
         }
-
     }
+
 }
