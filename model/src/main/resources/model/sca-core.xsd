@@ -3,6 +3,7 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
 		targetNamespace="http://www.osoa.org/xmlns/sca/0.9" 
 		xmlns:sca="http://www.osoa.org/xmlns/sca/0.9"
+		xmlns:sdo="commonj.sdo/xml"
 		elementFormDefault="qualified">
 
 	<element name="componentType" type="sca:ComponentType"/>
@@ -43,7 +44,7 @@
 		    <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</sequence>
   		<attribute name="name" type="NCName" use="required"/>
-   		<attribute name="type" type="QName" use="required"/>		
+   		<attribute name="type" type="QName" use="required" sdo:name="dataType"/>		
   		<attribute name="many" type="boolean" default="false" use="optional"/>
   		<attribute name="required" type="boolean" default="false" use="optional"/>  		
 		<attribute name="default" type="string" use="optional"/>

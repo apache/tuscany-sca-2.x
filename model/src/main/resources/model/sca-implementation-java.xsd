@@ -7,13 +7,14 @@
 
 	<include schemaLocation="sca-core.xsd"/>
 
-	<element name="binding.sca" type="sca:SCABinding" substitutionGroup="sca:binding"/>
-	<complexType name="SCABinding">
+	<element name="implementation.java" type="sca:JavaImplementation" substitutionGroup="sca:implementation"/>
+	<complexType name="JavaImplementation">
 		<complexContent>
-			<extension base="sca:Binding">
+			<extension base="sca:Implementation">
 				<sequence>
 					<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 				</sequence>
+				<attribute name="class" type="NCName" use="required"/>
 				<anyAttribute namespace="##any" processContents="lax"/>
 			</extension>
 		</complexContent>

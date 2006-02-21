@@ -26,6 +26,16 @@
     <description>Data model for the Assembly model defined by the SCA specification.</description>
     <version>SNAPSHOT</version>
 
+    <repositories>
+        <repository>
+            <id>jeremy</id>
+            <url>http://people.apache.org/~jboynes/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.osoa</groupId>
@@ -41,66 +51,65 @@
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>commonj-sdo</artifactId>
-            <version>2.1.0</version>
+            <groupId>commonj</groupId>
+            <artifactId>sdo-api</artifactId>
+            <version>SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
+      <dependency>
+            <groupId>org.apache.tuscany</groupId>
+            <artifactId>tuscany-sdo-impl</artifactId>
+            <version>SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+<!--
+       <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>common</artifactId>
-            <version>2.1.0</version>
+            <version>2.2.0-I200602160000</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>ecore</artifactId>
-            <version>2.1.0</version>
+            <version>2.2.0-I200602160000</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>ecore-change</artifactId>
-            <version>2.1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>ecore-sdo</artifactId>
-            <version>2.1.1</version>
+            <version>2.2.0-I200602160000</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>ecore-xmi</artifactId>
-            <version>2.1.0</version>
+            <version>2.2.0-I200602160000</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.xsd</groupId>
             <artifactId>xsd</artifactId>
-            <version>2.1.1</version>
+            <version>2.2.0-I200602160000</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.wtp</groupId>
-            <artifactId>wsdl</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
-        </dependency>
-
+-->
+        
         <dependency>
             <groupId>axis</groupId>
             <artifactId>axis-wsdl4j</artifactId>
             <version>1.5.1</version>
             <scope>compile</scope>
         </dependency>
+<!--
         <dependency>
             <groupId>stax</groupId>
             <artifactId>stax-api</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
+-->
 
         <dependency>
             <groupId>junit</groupId>
