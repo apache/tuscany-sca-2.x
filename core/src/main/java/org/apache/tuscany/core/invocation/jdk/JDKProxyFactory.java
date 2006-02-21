@@ -26,9 +26,6 @@ import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyInitializationException;
-import org.apache.tuscany.model.types.OperationType;
-import org.apache.tuscany.model.types.java.JavaOperationType;
-import org.apache.tuscany.model.types.wsdl.WSDLOperationType;
 
 /**
  * Creates proxies for handling invocations using JDK dynamic proxies
@@ -44,25 +41,11 @@ public class JDKProxyFactory implements ProxyFactory {
     private ProxyConfiguration configuration;
 
     public void initialize() throws ProxyInitializationException {
-        Map<OperationType, InvocationConfiguration> invocationConfigs = configuration.getInvocationConfigurations();
+        Map<Method, InvocationConfiguration> invocationConfigs = configuration.getInvocationConfigurations();
         methodToInvocationConfig = new HashMap(invocationConfigs.size());
         for (Map.Entry entry : invocationConfigs.entrySet()) {
-            OperationType operation = (OperationType) entry.getKey();
-            if (operation instanceof JavaOperationType) {
-                JavaOperationType javaOperation = (JavaOperationType) operation;
-                Method method = javaOperation.getJavaMethod();
-                methodToInvocationConfig.put(method, (InvocationConfiguration) entry.getValue());
-            } else {
-                WSDLOperationType wsdlOperation = (WSDLOperationType) operation;
-                Method[] methods = businessInterfaceArray[0].getMethods();
-                for (int i = 0; i < methods.length; i++) {
-                    if (methods[i].getName().equals(wsdlOperation.getName())) {
-                        methodToInvocationConfig.put(methods[i], (InvocationConfiguration) entry.getValue());
-                        break;
-                    }
-                }
-            }
-
+            Method method = (Method) entry.getKey();
+            methodToInvocationConfig.put(method, (InvocationConfiguration) entry.getValue());
         }
     }
 

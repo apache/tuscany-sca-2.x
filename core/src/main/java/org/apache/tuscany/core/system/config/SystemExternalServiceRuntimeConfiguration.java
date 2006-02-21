@@ -21,7 +21,7 @@ import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.injection.ObjectFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemExternalServiceContext;
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Creates system type external service contexts
@@ -54,8 +54,8 @@ public class SystemExternalServiceRuntimeConfiguration implements RuntimeConfigu
     // Methods
     // ----------------------------------
 
-    public int getScope() {
-        return ScopeEnum.MODULE;
+    public Scope getScope() {
+        return Scope.MODULE;
     }
 
     public String getName() {

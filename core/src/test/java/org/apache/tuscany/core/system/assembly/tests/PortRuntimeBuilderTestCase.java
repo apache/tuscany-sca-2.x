@@ -24,11 +24,11 @@ import org.apache.tuscany.core.builder.SimpleComponentRuntimeConfiguration;
 import org.apache.tuscany.core.builder.impl.SystemRuntimeConfigurationBuilderImpl;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.message.handler.MessageHandler;
-import org.apache.tuscany.model.assembly.AssemblyLoader;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
 
 /**
  *

@@ -16,147 +16,84 @@
  */
 package org.apache.tuscany.core.system.assembly.impl;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import java.util.List;
 
-import org.osoa.sca.ServiceRuntimeException;
-
-import org.apache.tuscany.common.resource.loader.ResourceLoader;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
-import org.apache.tuscany.model.assembly.AssemblyLoader;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
 import org.apache.tuscany.model.assembly.ComponentType;
-import org.apache.tuscany.model.assembly.Reference;
-import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelVisitorHelperImpl;
+import org.apache.tuscany.model.assembly.impl.ComponentImplementationImpl;
 
 /**
- * An implementation of the model object '<em><b>Java Implementation</b></em>'.
+ * An implementation of the SystemImplementation.
  */
-public class SystemImplementationImpl extends org.apache.tuscany.core.system.assembly.sdo.impl.SystemImplementationImpl implements SystemImplementation {
-    private ComponentType componentType;
-    private Object runtimeConfiguration;
-
-    public String getClass_() {
-        return super.getClass_();
+public class SystemImplementationImpl extends ComponentImplementationImpl implements SystemImplementation {
+    
+    Class implementationClass;
+    
+    /**
+     * Constructs a new SystemImplementationImpl.
+     */
+    protected SystemImplementationImpl() {
     }
 
-    public void setClass(String value) {
-        super.setClass(value);
+    /**
+     * @see org.apache.tuscany.core.system.assembly.SystemImplementation#getImplementationClass()
+     */
+    public Class getImplementationClass() {
+        return implementationClass;
     }
-
+    
+    /**
+     * @see org.apache.tuscany.core.system.assembly.SystemImplementation#setImplementationClass(java.lang.Class)
+     */
+    public void setImplementationClass(Class value) {
+        checkNotFrozen();
+        implementationClass=value;
+    }
+    
+    /**
+     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
+     */
     public void initialize(AssemblyModelContext modelContext) {
-        ResourceLoader resourceLoader = modelContext.getResourceLoader();
-        String className = getClass_();
+        if (isInitialized())
+            return;
 
-        // Load the component type
-        AssemblyLoader assemblyLoader = modelContext.getAssemblyLoader();
-        componentType = loadComponentType(assemblyLoader, resourceLoader, className);
-        componentType.initialize(modelContext);
-    }
-
-    /**
-     * Load the component implementation class
-     *
-     */
-    private static ComponentType loadComponentType(final AssemblyLoader assemblyLoader, final ResourceLoader resourceLoader, final String className) {
-        try {
-            // SECURITY
-            return (ComponentType) AccessController.doPrivileged(new PrivilegedExceptionAction() {
-                public Object run() throws IOException {
-                    String componentTypeName = className.replace('.', '/') + ".componentType";
-                    URL url = resourceLoader.getResource(componentTypeName);
-                    if (url==null)
-                        throw new FileNotFoundException(componentTypeName);
-                    return assemblyLoader.getComponentType(url.toString());
-                }
-            });
-        } catch (PrivilegedActionException e1) {
-            throw new ServiceRuntimeException(e1.getException());
+        // Initialize the component type
+        ComponentType componentType=getComponentType();
+        if (componentType==null) {
+            componentType=createComponentType(modelContext, implementationClass);
+            setComponentType(componentType);
         }
+        
+        super.initialize(modelContext);
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
+     * Create the component type
+     * @param modelContext
+     * @param implementationClass
      */
-    public boolean accept(AssemblyModelVisitor visitor) {
-        return AssemblyModelVisitorHelperImpl.accept(this, visitor);
+    private ComponentType createComponentType(AssemblyModelContext modelContext, Class implementationClass) {
+        String baseName = getBaseName(implementationClass);
+        URL componentTypeFile = implementationClass.getResource(baseName + ".componentType");
+        if (componentTypeFile != null) {
+            return modelContext.getAssemblyLoader().getComponentType(componentTypeFile.toString());
+        } else
+            return null;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#freeze()
+     * Returns the simple name of a class - i.e. the class name devoid of its package qualifier
+     * @param implClass
+     * @return
      */
-    public void freeze() {
+    private String getBaseName(Class implClass) {
+        String baseName = implClass.getName();
+        int lastDot = baseName.lastIndexOf('.');
+        if (lastDot != -1) {
+            baseName = baseName.substring(lastDot + 1);
+        }
+        return baseName;
     }
 
-    public void setComponentType(ComponentType componentType) {
-        this.componentType = componentType;
-    }
-
-    public ComponentType getComponentType() {
-        return componentType;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredRuntimeObject#getRuntimeConfiguration()
-     */
-    public Object getRuntimeConfiguration() {
-        return runtimeConfiguration;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredRuntimeObject#setRuntimeConfiguration(java.lang.Object)
-     */
-    public void setRuntimeConfiguration(Object configuration) {
-        this.runtimeConfiguration = configuration;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ComponentType#getProperties()
-     */
-    public List<org.apache.tuscany.model.assembly.Property> getProperties() {
-        return componentType.getProperties();
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ComponentType#getProperty(java.lang.String)
-     */
-    public org.apache.tuscany.model.assembly.Property getProperty(String name) {
-        return componentType.getProperty(name);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ComponentType#getReference(java.lang.String)
-     */
-    public Reference getReference(String name) {
-        return componentType.getReference(name);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ComponentType#getReferences()
-     */
-    public List<Reference> getReferences() {
-        return componentType.getReferences();
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ComponentType#getService(java.lang.String)
-     */
-    public Service getService(String name) {
-        return componentType.getService(name);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ComponentType#getServices()
-     */
-    public List<Service> getServices() {
-        return componentType.getServices();
-    }
-
-} //TExtensionImplementationImpl
+}

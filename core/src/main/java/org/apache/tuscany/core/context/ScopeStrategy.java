@@ -18,6 +18,8 @@ package org.apache.tuscany.core.context;
 
 import java.util.Map;
 
+import org.apache.tuscany.model.assembly.Scope;
+
 /**
  * Implementations provide scope container creation facilities and scope semantics to the runtime
  * 
@@ -31,11 +33,11 @@ public interface ScopeStrategy {
     /**
      * Creates and returns new instances of configured scope containers
      */
-    public Map<Integer, ScopeContext> createScopes(EventContext eventContext);
+    public Map<Scope, ScopeContext> createScopes(EventContext eventContext);
 
     /**
      * Determines whether a wire proceeds from a source of higher scope to a target of lesser scope
      */
-    public boolean downScopeReference(int sourceScope, int targetScope);
+    public boolean downScopeReference(Scope sourceScope, Scope targetScope);
 
 }

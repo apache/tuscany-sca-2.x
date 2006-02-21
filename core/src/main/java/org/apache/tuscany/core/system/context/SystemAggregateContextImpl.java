@@ -64,11 +64,12 @@ import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemObjectRuntimeConfiguration;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.ExtensibleModelObject;
+import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.Part;
-import org.apache.tuscany.model.assembly.pojo.PojoModule;
+import org.apache.tuscany.model.assembly.AggregatePart;
+import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 
 /**
  * Implements an aggregate context for system components. By default a system context uses the scopes specified by
@@ -112,9 +113,9 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     protected EventContext eventContext;
 
     // The scopes for this context
-    protected Map<Integer, ScopeContext> scopeContexts;
+    protected Map<Scope, ScopeContext> scopeContexts;
 
-    protected Map<Integer, ScopeContext> immutableScopeContexts;
+    protected Map<Scope, ScopeContext> immutableScopeContexts;
 
     // A component context name to scope context index
     protected Map<String, ScopeContext> scopeIndex;
@@ -141,7 +142,8 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     public SystemAggregateContextImpl() {
         super();
         scopeIndex = new ConcurrentHashMap();
-        module = new PojoModule();
+        //FIXME the assembly factory should be injected here
+        module = new AssemblyFactoryImpl().createModule();
         eventContext = new EventContextImpl();
         scopeStrategy = new SystemScopeStrategy();
     }
@@ -156,7 +158,8 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         this.configurationContext = configCtx;
         this.monitorFactory = factory;
         scopeIndex = new ConcurrentHashMap();
-        module = new PojoModule();
+        //FIXME the assembly factory should be injected here
+        module = new AssemblyFactoryImpl().createModule();
     }
 
     // ----------------------------------
@@ -173,11 +176,11 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 lifecycleState = INITIALIZING;
                 initializeScopes();
 
-                Map<Integer, List<RuntimeConfiguration<SimpleComponentContext>>> configurationsByScope = new HashMap();
+                Map<Scope, List<RuntimeConfiguration<SimpleComponentContext>>> configurationsByScope = new HashMap();
                 if (configurations != null) {
                     for (RuntimeConfiguration config : configurations) {
                         // FIXME scopes are defined at the interface level
-                        int scope = config.getScope();
+                        Scope scope = config.getScope();
                         // ensure duplicate names were not added before the context was started
                         if (scopeIndex.get(config.getName()) != null) {
                             throw new DuplicateNameException(config.getName());
@@ -278,14 +281,14 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         return parentContext;
     }
 
-    public void registerModelObjects(List<ExtensibleModelObject> models) throws ConfigurationException {
+    public void registerModelObjects(List<Extensible> models) throws ConfigurationException {
         assert (models != null) : "Model object collection was null";
-        for (ExtensibleModelObject model : models) {
+        for (Extensible model : models) {
             registerModelObject(model);
         }
     }
 
-    public void registerModelObject(ExtensibleModelObject model) throws ConfigurationException {
+    public void registerModelObject(Extensible model) throws ConfigurationException {
         assert (model != null) : "Model object was null";
         initializeScopes();
         if (configurationContext != null) {
@@ -366,8 +369,8 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
             }
             if (configuration == null) {
                 ConfigurationException e = new ConfigurationException("Runtime configuration not set");
-                if (model instanceof Part) {
-                    e.setIdentifier(((Part) model).getName());
+                if (model instanceof AggregatePart) {
+                    e.setIdentifier(((AggregatePart) model).getName());
                 }
                 e.addContextName(getName());
                 throw e;
@@ -471,7 +474,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         }
     }
 
-    public Map<Integer, ScopeContext> getScopeContexts() {
+    public Map<Scope, ScopeContext> getScopeContexts() {
         initializeScopes();
         return immutableScopeContexts;
     }
@@ -533,7 +536,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         return null;
     }
 
-    private void registerAutowire(ExtensibleModelObject model) throws ConfigurationException {
+    private void registerAutowire(Extensible model) throws ConfigurationException {
         if (lifecycleState == INITIALIZING || lifecycleState == INITIALIZED || lifecycleState == RUNNING) {
             // only autowire entry points with system bindings
             if (model instanceof EntryPoint) {
@@ -549,7 +552,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                             throw ce;
                         }
                         NameToScope mapping = new NameToScope(new QualifiedName(ep.getName()), scope);
-                        autowireIndex.put(ep.getInterfaceContract().getInterfaceType().getInstanceClass(), mapping);
+                        autowireIndex.put(ep.getConfiguredService().getService().getServiceContract().getInterface(), mapping);
                     }
                 }
             }
@@ -560,13 +563,13 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     // ConfigurationContext methods
     // ----------------------------------
 
-    public void configure(ExtensibleModelObject model) throws ConfigurationException {
+    public void configure(Extensible model) throws ConfigurationException {
         if (configurationContext != null) {
             configurationContext.configure(model);
         }
     }
 
-    public void build(AggregateContext parent, ExtensibleModelObject model) throws BuilderConfigException {
+    public void build(AggregateContext parent, Extensible model) throws BuilderConfigException {
         if (configurationContext != null) {
             configurationContext.build(parent, model);
         }

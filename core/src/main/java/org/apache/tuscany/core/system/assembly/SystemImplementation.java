@@ -20,18 +20,18 @@ import org.apache.tuscany.model.assembly.ComponentImplementation;
 
 
 /**
- * A representation of the model object '<em><b>Extension Implementation</b></em>'.
+ * Represents a system component implementation.
  */
 public interface SystemImplementation extends ComponentImplementation {
 
     /**
-     * Returns the value of the '<em><b>Class</b></em>' attribute.
+     * Returns the implementation class.
      */
-    String getClass_();
+    Class getImplementationClass();
 
     /**
-     * Sets the value of the '{@link org.apache.tuscany.core.system.assembly.SystemImplementation#getClass_ <em>Class</em>}' attribute.
+     * Sets the implementation class.
      */
-    void setClass(String value);
+    void setImplementationClass(Class value);
 
-} // TExtensionImplementation
+}

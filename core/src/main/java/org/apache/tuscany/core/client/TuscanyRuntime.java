@@ -16,9 +16,6 @@
  */
 package org.apache.tuscany.core.client;
 
-import org.osoa.sca.SCA;
-import org.osoa.sca.ServiceRuntimeException;
-
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.common.resource.loader.ResourceLoader;
@@ -31,11 +28,14 @@ import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.ScopeStrategy;
 import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
-import org.apache.tuscany.core.context.impl.TuscanyModuleComponentContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
+import org.apache.tuscany.model.assembly.loader.impl.AssemblyLoaderImpl;
+import org.osoa.sca.SCA;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Create and initialize a Tuscany SCA runtime environment.
@@ -75,7 +75,8 @@ public class TuscanyRuntime extends SCA {
         // create a resource loader from the current classloader
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         ResourceLoader resourceLoader = ResourceLoaderFactory.getResourceLoader(classLoader);
-        AssemblyModelContext modelContext = new AssemblyModelContextImpl(resourceLoader);
+        AssemblyLoader assemblyLoader = new AssemblyLoaderImpl();
+        AssemblyModelContext modelContext = new AssemblyModelContextImpl(assemblyLoader, resourceLoader);
 
         // load the configuration files using EMF
         ConfigurationLoader loader = new EMFConfigurationLoader(modelContext);
@@ -84,7 +85,10 @@ public class TuscanyRuntime extends SCA {
         // create the module component context
         EventContext context = new EventContextImpl();
         ScopeStrategy scopeStrategy = new DefaultScopeStrategy();
-        ctx = new TuscanyModuleComponentContextImpl(moduleComponent, context, scopeStrategy, modelContext);
+        
+        //FIXME This is going away and will be replaced by Jim's AggregateContext
+        //ctx = new TuscanyModuleComponentContextImpl(moduleComponent, context, scopeStrategy, modelContext);
+        ctx = null;
     }
 
     /**

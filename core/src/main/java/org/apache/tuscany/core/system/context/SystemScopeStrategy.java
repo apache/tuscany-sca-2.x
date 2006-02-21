@@ -29,6 +29,7 @@ import org.apache.tuscany.core.context.scope.AbstractScopeStrategy;
 import org.apache.tuscany.core.context.scope.AggregateScopeContext;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.context.scope.StatelessScopeContext;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Implements a {@link org.apache.tuscany.core.context.ScopeStrategy} for a system aggregate context
@@ -40,11 +41,11 @@ public class SystemScopeStrategy extends AbstractScopeStrategy {
     public SystemScopeStrategy() {
     }
 
-    public Map<Integer, ScopeContext> createScopes(EventContext eventContext) {
+    public Map<Scope, ScopeContext> createScopes(EventContext eventContext) {
         ScopeContext aggregrateScope = new AggregateScopeContext(eventContext);
         ScopeContext moduleScoper = new ModuleScopeContext(eventContext);
         ScopeContext statelessScope = new StatelessScopeContext(eventContext);
-        Map<Integer, ScopeContext> scopes = new HashMap();
+        Map<Scope, ScopeContext> scopes = new HashMap();
         scopes.put(AGGREGATE_SCOPE, aggregrateScope);
         scopes.put(MODULE_SCOPE, moduleScoper);
         scopes.put(STATELESS, statelessScope);

@@ -3,8 +3,8 @@ package org.apache.tuscany.core.context;
 import java.util.List;
 
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.model.assembly.ExtensibleModelObject;
-import org.apache.tuscany.model.assembly.Part;
+import org.apache.tuscany.model.assembly.Extensible;
+import org.apache.tuscany.model.assembly.AggregatePart;
 
 /**
  * A context which contains child component contexts.
@@ -33,7 +33,7 @@ public interface AggregateContext extends InstanceContext {
 
     /**
      * Adds runtime artifacts represented by the set of model objects to the aggregate context by merging them with
-     * existing artifacts. Implementing classes may support only a subset of {@link Part} types.
+     * existing artifacts. Implementing classes may support only a subset of {@link AggregatePart} types.
      * 
      * @see org.apache.tuscany.model.assembly.Component
      * @see org.apache.tuscany.model.assembly.ModuleComponent
@@ -41,11 +41,11 @@ public interface AggregateContext extends InstanceContext {
      * @see org.apache.tuscany.model.assembly.EntryPoint
      * @see org.apache.tuscany.model.assembly.ExternalService
      */
-    public void registerModelObjects(List<ExtensibleModelObject> models) throws ConfigurationException;
+    public void registerModelObjects(List<Extensible> models) throws ConfigurationException;
 
     /**
      * Adds a runtime artifact represented by the model object to the aggregate context by merging it with existing
-     * artifacts. Implementing classes may support only a subset of {@link Part} types.
+     * artifacts. Implementing classes may support only a subset of {@link AggregatePart} types.
      * 
      * @see org.apache.tuscany.model.assembly.Component
      * @see org.apache.tuscany.model.assembly.ModuleComponent
@@ -53,7 +53,7 @@ public interface AggregateContext extends InstanceContext {
      * @see org.apache.tuscany.model.assembly.EntryPoint
      * @see org.apache.tuscany.model.assembly.ExternalService
      */
-    public void registerModelObject(ExtensibleModelObject model) throws ConfigurationException;
+    public void registerModelObject(Extensible model) throws ConfigurationException;
 
     /**
      * Returns the child context associated with a given name

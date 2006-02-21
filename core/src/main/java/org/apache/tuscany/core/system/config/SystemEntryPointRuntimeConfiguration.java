@@ -21,7 +21,7 @@ import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.injection.ObjectFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemEntryPointContext;
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Creates {@link SystemEntryPointContext} instances based on an entry point configuration in an assembly model
@@ -53,8 +53,8 @@ public class SystemEntryPointRuntimeConfiguration implements RuntimeConfiguratio
         return new SystemEntryPointContext(name, factory);
     }
 
-    public int getScope() {
-        return ScopeEnum.MODULE;
+    public Scope getScope() {
+        return Scope.MODULE;
     }
 
     public String getName() {

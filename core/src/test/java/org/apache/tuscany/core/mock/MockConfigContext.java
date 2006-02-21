@@ -24,7 +24,7 @@ import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.model.assembly.ExtensibleModelObject;
+import org.apache.tuscany.model.assembly.Extensible;
 
 /**
  *  A mock configuration context
@@ -39,10 +39,10 @@ public class MockConfigContext implements ConfigurationContext {
         this.builders=builders;
     }
 
-    public void configure(ExtensibleModelObject model) throws ConfigurationException {
+    public void configure(Extensible model) throws ConfigurationException {
     }
 
-    public void build(AggregateContext parent, ExtensibleModelObject model) throws BuilderConfigException {
+    public void build(AggregateContext parent, Extensible model) throws BuilderConfigException {
         AssemblyVisitor visitor = new AssemblyVisitor(parent, builders);
         visitor.start(model);
     }

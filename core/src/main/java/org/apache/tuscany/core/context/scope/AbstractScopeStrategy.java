@@ -13,9 +13,8 @@
  */
 package org.apache.tuscany.core.context.scope;
 
-import static org.apache.tuscany.core.context.ContextConstants.UNDEFINED_SCOPE;
-
 import org.apache.tuscany.core.context.ScopeStrategy;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Implements basic scope strategy functionality
@@ -33,13 +32,17 @@ public abstract class AbstractScopeStrategy implements ScopeStrategy {
      * @param pReferrer the scope of the component making the reference
      * @param pReferee the scope of the component being referred to
      */
-    public boolean downScopeReference(int pReferrer, int pReferee) {
-        if (pReferrer == UNDEFINED_SCOPE || pReferee == UNDEFINED_SCOPE) {
-            return false;
-        } else if ((pReferrer < 0) || (pReferee < 0)) {
+    public boolean downScopeReference(Scope pReferrer, Scope pReferee) {
+        if (pReferrer == Scope.UNDEFINED || pReferee == Scope.UNDEFINED) {
             return false;
         }
-        return (pReferrer > pReferee);
+        //FIXME Jim this does not work with enumerations, what does it mean to have a scope <0?
+//        } else if ((pReferrer < 0) || (pReferee < 0)) {
+//            return false;
+//        }
+//
+//      return (pReferrer > pReferee);
+        return pReferrer != pReferee;
     }
 
 }

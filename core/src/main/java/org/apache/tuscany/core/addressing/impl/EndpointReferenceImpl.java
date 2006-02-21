@@ -16,83 +16,90 @@
  */
 package org.apache.tuscany.core.addressing.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.core.addressing.EndpointReference;
-import org.apache.tuscany.core.addressing.sdo.impl.EndpointReferenceElementImpl;
 import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.handler.MessageHandler;
 import org.apache.tuscany.model.assembly.ConfiguredPort;
 
 /**
- * An implementation of the model object '<em><b>Endpoint Reference</b></em>'.
+ * An implementation of EndpointReference.
  */
-public class EndpointReferenceImpl extends EndpointReferenceElementImpl implements EndpointReference {
+public class EndpointReferenceImpl implements EndpointReference {
 
     private ConfiguredPort configuredPort;
     private MessageHandler messageHandler;
+    private String address;
+    private String portTypeName;
+    private String portName;
+    private String serviceName;
+    private Map<String, Object> referenceParameters;
 
     /**
-     * @see org.apache.tuscany.core.client.addressing.sdo.EndpointReferenceType#getAddress()
+     * @see org.apache.tuscany.core.addressing.EndpointReference#getAddress()
      */
     public String getAddress() {
-        return super.getAddress();
+        return address;
     }
 
     /**
-     * @see org.apache.tuscany.core.client.addressing.sdo.EndpointReferenceType#setAddress(java.lang.String)
+     * @see org.apache.tuscany.core.addressing.EndpointReference#setAddress(java.lang.String)
      */
     public void setAddress(String value) {
-        super.setAddress(value);
+        this.address=value;
     }
 
     /**
-     * @see org.apache.tuscany.core.client.addressing.sdo.EndpointReferenceType#getPortTypeName()
+     * @see org.apache.tuscany.core.addressing.EndpointReference#getPortTypeName()
      */
     public String getPortTypeName() {
-        return super.getPortTypeName();
+        return portTypeName;
     }
 
     /**
-     * @see org.apache.tuscany.core.client.addressing.sdo.EndpointReferenceType#setPortTypeName(java.lang.String)
+     * @see org.apache.tuscany.core.addressing.EndpointReference#setPortTypeName(java.lang.String)
      */
     public void setPortTypeName(String value) {
-        super.setPortName(value);
+        this.portTypeName=value;
     }
 
     /**
-     * @see org.apache.tuscany.core.client.addressing.sdo.EndpointReferenceType#getServiceName()
+     * @see org.apache.tuscany.core.addressing.EndpointReference#getServiceName()
      */
     public String getServiceName() {
-        return super.getServiceName();
+        return serviceName;
     }
 
     /**
-     * @see org.apache.tuscany.core.client.addressing.sdo.EndpointReferenceType#getPortName()
+     * @see org.apache.tuscany.core.addressing.EndpointReference#getPortName()
      */
     public String getPortName() {
-        return super.getPortName();
+        return portName;
     }
 
     /**
-     * @see org.apache.tuscany.core.client.addressing.sdo.EndpointReferenceType#setServiceName(java.lang.String)
+     * @see org.apache.tuscany.core.addressing.EndpointReference#setServiceName(java.lang.String)
      */
     public void setServiceName(String value) {
-        super.setServiceName(value);
+        this.serviceName=value;
     }
 
     /**
-     * @see org.apache.tuscany.core.client.addressing.sdo.EndpointReferenceType#setPortName(java.lang.String)
+     * @see org.apache.tuscany.core.addressing.EndpointReference#setPortName(java.lang.String)
      */
     public void setPortName(String portName) {
-        super.setPortName(portName);
+        this.portName=portName;
     }
 
     /**
-     * @see org.apache.tuscany.core.client.addressing.sdo.EndpointReferenceType#getReferenceParameters()
+     * @see org.apache.tuscany.core.addressing.EndpointReference#getReferenceParameters()
      */
     public Map<String, Object> getReferenceParameters() {
-        return super.getReferenceParameters();
+        if (referenceParameters==null)
+            referenceParameters=new HashMap<String, Object>();
+        return referenceParameters;
     }
 
     /**
@@ -172,4 +179,4 @@ public class EndpointReferenceImpl extends EndpointReferenceElementImpl implemen
         return messageHandler.processMessage(message);
     }
 
-} //EndpointReferenceImpl
+}

@@ -40,7 +40,7 @@ import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
-import org.apache.tuscany.model.assembly.ExtensibleModelObject;
+import org.apache.tuscany.model.assembly.Extensible;
 
 /**
  * Implementation of a RuntimeContext that forms the foundation for a Tuscany environment.
@@ -155,14 +155,14 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         return monitorFactory;
     }
 
-    public void registerModelObject(ExtensibleModelObject model) throws ConfigurationException {
+    public void registerModelObject(Extensible model) throws ConfigurationException {
         assert (model != null) : "Model was null";
         // note do not configure or build model object since the root context will perform a call back
         rootContext.registerModelObject(model);
     }
 
-    public void registerModelObjects(List<ExtensibleModelObject> models) throws ConfigurationException {
-        for (ExtensibleModelObject model : models) {
+    public void registerModelObjects(List<Extensible> models) throws ConfigurationException {
+        for (Extensible model : models) {
             registerModelObject(model);
         }
     }
@@ -203,12 +203,12 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     // ConfigurationContext methods
     // ----------------------------------
 
-    public synchronized void build(AggregateContext parent, ExtensibleModelObject model) throws BuilderConfigException {
+    public synchronized void build(AggregateContext parent, Extensible model) throws BuilderConfigException {
         AssemblyVisitor visitor = new AssemblyVisitor(parent, builders);
         visitor.start(model);
     }
 
-    public void configure(ExtensibleModelObject model) throws ConfigurationException {
+    public void configure(Extensible model) throws ConfigurationException {
     }
 
     public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,

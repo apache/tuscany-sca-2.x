@@ -83,13 +83,13 @@ public class RuntimeContextImplTestCase extends TestCase {
         ep.addBinding(new PojoSystemBinding());
         Service service = new PojoService();
         service.setName("system.child/TestService2EP");
-        ((PojoConfiguredService) ep.getConfiguredReference().getConfiguredServices().get(0)).setService(service);
+        ((PojoConfiguredService) ep.getConfiguredReference().getTargetConfiguredServices().get(0)).setService(service);
         PojoInterface inter = new PojoJavaInterface();
         PojoInterfaceType interType = new PojoInterfaceType();
         interType.setInstanceClass(ModuleScopeSystemComponentImpl.class);
         inter.setInterfaceType(interType);
-        service.setInterfaceContract(inter);
-        ep.setInterfaceContract(inter);
+        service.setServiceContract(inter);
+        ep.setServiceContract(inter);
         system.registerModelObject(ep);
         system.fireEvent(EventContext.MODULE_START, null);
         Assert.assertNotNull(system.locateInstance("TestService1"));

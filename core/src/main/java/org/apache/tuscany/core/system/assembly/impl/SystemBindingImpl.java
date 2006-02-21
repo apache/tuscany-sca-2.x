@@ -17,16 +17,12 @@
 package org.apache.tuscany.core.system.assembly.impl;
 
 import org.apache.tuscany.core.system.assembly.SystemBinding;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelVisitorHelperImpl;
+import org.apache.tuscany.model.assembly.impl.BindingImpl;
 
 /**
- * An implementation of the model object '<em><b>System Binding</b></em>'.
+ * An implementation of SystemBinding.
  */
-public class SystemBindingImpl extends org.apache.tuscany.core.system.assembly.sdo.impl.SystemBindingImpl implements SystemBinding {
-
-    private Object runtimeConfiguration;
+public class SystemBindingImpl extends BindingImpl implements SystemBinding {
 
     /**
      * Constructor
@@ -34,51 +30,4 @@ public class SystemBindingImpl extends org.apache.tuscany.core.system.assembly.s
     protected SystemBindingImpl() {
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.Binding#setURI(java.lang.String)
-     */
-    public void setURI(String value) {
-        super.setUri(value);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.Binding#getURI()
-     */
-    public String getURI() {
-        return super.getUri();
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredRuntimeObject#getRuntimeConfiguration()
-     */
-    public Object getRuntimeConfiguration() {
-        return runtimeConfiguration;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredRuntimeObject#setRuntimeConfiguration(java.lang.Object)
-     */
-    public void setRuntimeConfiguration(Object configuration) {
-        this.runtimeConfiguration = configuration;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
-     */
-    public void initialize(AssemblyModelContext modelContext) {
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#freeze()
-     */
-    public void freeze() {
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
-     */
-    public boolean accept(AssemblyModelVisitor visitor) {
-        return AssemblyModelVisitorHelperImpl.accept(this, visitor);
-    }
-
-} //TWebServiceBindingImpl
+}

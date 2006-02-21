@@ -54,13 +54,13 @@ public class SystemExternalServiceBuilder implements RuntimeConfigurationBuilder
             return;
         }
 
-        if (externalService.getConfiguredService() != null && externalService.getConfiguredService().getPart() != null) {
+        if (externalService.getConfiguredService() != null && externalService.getConfiguredService().getAggregatePart() != null) {
             SystemExternalServiceRuntimeConfiguration config = new SystemExternalServiceRuntimeConfiguration(externalService
                     .getName(), new ReferenceTargetFactory(externalService.getConfiguredService(), context));
             externalService.getConfiguredService().setRuntimeConfiguration(config);
-        } else if (externalService.getInterfaceContract().getInterfaceType() != null) {
+        } else if (externalService.getConfiguredService().getService().getServiceContract().getInterface() != null) {
             // autowire
-            Class<?> claz = externalService.getInterfaceContract().getInterfaceType().getInstanceClass();
+            Class<?> claz = externalService.getConfiguredService().getService().getServiceContract().getInterface();
             if (claz == null) {
                 BuilderException e = new BuilderConfigException("Interface type not specified");
                 e.setIdentifier(externalService.getName());

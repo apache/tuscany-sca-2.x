@@ -34,4 +34,4 @@ public interface AddressingFactory {
      */
     String createMessageID();
 
-} //AddressingFactory
+}

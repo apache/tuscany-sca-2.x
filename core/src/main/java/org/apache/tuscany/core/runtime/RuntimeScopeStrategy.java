@@ -25,6 +25,7 @@ import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.scope.AbstractScopeStrategy;
 import org.apache.tuscany.core.context.scope.AggregateScopeContext;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Implements a {@link org.apache.tuscany.core.context.ScopeStrategy} for a runtime context. Specifically, a runtime
@@ -37,9 +38,9 @@ public class RuntimeScopeStrategy extends AbstractScopeStrategy {
     public RuntimeScopeStrategy() {
     }
 
-    public Map<Integer, ScopeContext> createScopes(EventContext eventContext) {
+    public Map<Scope, ScopeContext> createScopes(EventContext eventContext) {
         ScopeContext aggregrateScope = new AggregateScopeContext(eventContext);
-        Map<Integer, ScopeContext> scopes = new HashMap();
+        Map<Scope, ScopeContext> scopes = new HashMap();
         scopes.put(AGGREGATE_SCOPE, aggregrateScope);
         return scopes;
     }

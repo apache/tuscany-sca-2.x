@@ -26,7 +26,7 @@ import org.apache.tuscany.core.injection.ObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemComponentContext;
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * A RuntimeConfiguration that contains the configuration needed to convert a simple
@@ -54,8 +54,8 @@ public class SystemObjectRuntimeConfiguration implements RuntimeConfiguration {
         return new SystemComponentContext(name, objectFactory, false, null, null, false);
     }
 
-    public int getScope() {
-        return ScopeEnum.MODULE;
+    public Scope getScope() {
+        return Scope.MODULE;
     }
 
     public String getName() {

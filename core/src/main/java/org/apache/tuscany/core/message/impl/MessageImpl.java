@@ -16,20 +16,31 @@
  */
 package org.apache.tuscany.core.message.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.core.addressing.EndpointReference;
-import org.apache.tuscany.core.addressing.sdo.EndpointReferenceElement;
 import org.apache.tuscany.core.invocation.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.channel.MessageChannel;
-import org.apache.tuscany.core.message.sdo.impl.MessageElementImpl;
 
 /**
  */
-public class MessageImpl extends MessageElementImpl implements Message, MessageChannel {
+public class MessageImpl implements Message, MessageChannel {
 
+    private String action;
+    private Object body;
+    private EndpointReference endpointReference;
+    private EndpointReference faultTo;
+    private EndpointReference from;
+    private Map<String, Object> headers;
+    private String messageID;
+    private String operationName;
     private Message relatedCallbackMessage;
+    private String relatesTo;
+    private EndpointReference replyTo;
+    private TargetInvoker invoker;
+    private EndpointReference to;
 
     /**
      * Constructor
@@ -42,175 +53,163 @@ public class MessageImpl extends MessageElementImpl implements Message, MessageC
      * @see org.apache.tuscany.core.message.Message#getAction()
      */
     public String getAction() {
-        return getHeaderFields().getAction();
+        return action;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#getBody()
      */
     public Object getBody() {
-        return super.getBody();
-    }
-
-    /**
-     * @see org.apache.tuscany.core.message.Message#getPayload()
-     */
-    public Object getPayload() {
-        return super.getBody();
+        return body;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#getEndpointReference()
      */
     public EndpointReference getEndpointReference() {
-        return (EndpointReference) getHeaderFields().getEndpointReference();
+        return endpointReference;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#getFaultTo()
      */
     public EndpointReference getFaultTo() {
-        return (EndpointReference) getHeaderFields().getFaultTo();
+        return faultTo;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#getFrom()
      */
     public EndpointReference getFrom() {
-        return (EndpointReference) getHeaderFields().getFrom();
+        return from;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#getHeaders()
      */
     public Map<String, Object> getHeaders() {
-        return super.getHeaders();
+        if (headers==null)
+            headers=new HashMap<String, Object>();
+        return headers;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#getMessageID()
      */
     public String getMessageID() {
-        return getHeaderFields().getMessageID();
+        return messageID;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#getOperationName()
      */
     public String getOperationName() {
-        return super.getOperationName();
+        return operationName;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#getRelatesTo()
      */
     public String getRelatesTo() {
-        return getHeaderFields().getRelatesTo();
+        return relatesTo;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#getReplyTo()
      */
     public EndpointReference getReplyTo() {
-        return (EndpointReference) getHeaderFields().getReplyTo();
+        return replyTo;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#getTo()
      */
     public EndpointReference getTo() {
-        return (EndpointReference) getHeaderFields().getTo();
+        return to;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#isRequest()
      */
     public boolean isRequest() {
-        return getHeaderFields().getRelatesTo() == null;
+        return relatesTo==null;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#isResponse()
      */
     public boolean isResponse() {
-        return getHeaderFields().getRelatesTo() != null;
+        return relatesTo!=null;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#setAction(java.lang.String)
      */
     public void setAction(String action) {
-        getHeaderFields().setAction(action);
+        this.action=action;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#setBody(java.lang.Object)
      */
     public void setBody(Object body) {
-        super.setBody(body);
-    }
-
-    /**
-     * @see org.apache.tuscany.core.message.Message#setPayload(java.lang.Object)
-     */
-    public void setPayload(Object body) {
-        super.setBody(body);
+        this.body=body;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#setEndpointReference(org.apache.tuscany.core.client.runtime.addressing.sdo.EndpointReference)
      */
     public void setEndpointReference(EndpointReference endpointReference) {
-        getHeaderFields().setEndpointReference((EndpointReferenceElement) endpointReference);
+        this.endpointReference=endpointReference;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#setFaultTo(org.apache.tuscany.core.client.runtime.addressing.sdo.EndpointReference)
      */
     public void setFaultTo(EndpointReference faultTo) {
-        getHeaderFields().setFaultTo((EndpointReferenceElement) faultTo);
+        this.faultTo=faultTo;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#setFrom(org.apache.tuscany.core.client.runtime.addressing.sdo.EndpointReference)
      */
     public void setFrom(EndpointReference from) {
-        getHeaderFields().setFrom((EndpointReferenceElement) from);
+        this.from=from;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#setMessageID(java.lang.String)
      */
     public void setMessageID(String messageID) {
-        getHeaderFields().setMessageID(messageID);
+        this.messageID=messageID;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#setOperationName(java.lang.String)
      */
     public void setOperationName(String operationName) {
-        super.setOperationName(operationName);
+        this.operationName=operationName;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#setRelatesTo(java.lang.String)
      */
     public void setRelatesTo(String relatesTo) {
-        getHeaderFields().setRelatesTo(relatesTo);
+        this.relatesTo=relatesTo;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#setReplyTo(org.apache.tuscany.core.client.runtime.addressing.sdo.EndpointReference)
      */
     public void setReplyTo(EndpointReference replyTo) {
-        getHeaderFields().setReplyTo((EndpointReferenceElement) replyTo);
+        this.replyTo=replyTo;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#setTo(org.apache.tuscany.core.client.runtime.addressing.sdo.EndpointReference)
      */
     public void setTo(EndpointReference to) {
-        getHeaderFields().setTo((EndpointReferenceElement) to);
+        this.to=to;
     }
 
     /**
@@ -234,12 +233,16 @@ public class MessageImpl extends MessageElementImpl implements Message, MessageC
         return relatedCallbackMessage;
     }
     
-    private TargetInvoker invoker;
-    
+    /**
+     * @see org.apache.tuscany.core.message.Message#setTargetInvoker(org.apache.tuscany.core.invocation.TargetInvoker)
+     */
     public void setTargetInvoker(TargetInvoker invoker){
         this.invoker = invoker;
     }
 
+    /**
+     * @see org.apache.tuscany.core.message.Message#getTargetInvoker()
+     */
     public TargetInvoker getTargetInvoker(){
         return invoker;
     }

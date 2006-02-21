@@ -13,7 +13,7 @@ import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemComponentContext;
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * A RuntimeConfiguration that handles system component implementation types
@@ -41,7 +41,7 @@ public class SystemComponentRuntimeConfiguration implements RuntimeConfiguration
     private EventInvoker destroy;
 
     // the scope of the implementation instance
-    private int scope;
+    private Scope scope;
 
     // if the component implementation scope is stateless 
     private boolean stateless;
@@ -68,7 +68,7 @@ public class SystemComponentRuntimeConfiguration implements RuntimeConfiguration
      * @param scope the scope of the component implementation type
      */
     public SystemComponentRuntimeConfiguration(String name, Constructor ctr, List<Injector> setters, boolean eagerInit,
-            EventInvoker init, EventInvoker destroy, int scope) {
+            EventInvoker init, EventInvoker destroy, Scope scope) {
         assert (name != null) : "Name was null";
         assert (ctr != null) : "Constructor was null";
         assert (setters != null) : "Setters were null";
@@ -80,7 +80,7 @@ public class SystemComponentRuntimeConfiguration implements RuntimeConfiguration
         this.init = init;
         this.destroy = destroy;
         this.scope = scope;
-        stateless = (scope == ScopeEnum.INSTANCE);
+        stateless = (scope == Scope.INSTANCE);
     }
 
     // ----------------------------------
@@ -91,7 +91,7 @@ public class SystemComponentRuntimeConfiguration implements RuntimeConfiguration
         return name;
     }
 
-    public int getScope() {
+    public Scope getScope() {
         return scope;
     }
 

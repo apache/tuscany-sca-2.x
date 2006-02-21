@@ -45,19 +45,6 @@ public interface Message {
     void setBody(Object body);
 
     /**
-     * Returns the body of the message, which will be the payload or parameters
-     * associated with the invocation
-     * FIXME what is different w/ getBody()?
-     */
-    Object getPayload();
-
-    /**
-     * Sets the body of the message
-     * FIXME what is different w/ setPayload()
-     */
-    void setPayload(Object body);
-
-    /**
      * Returns true if the message is a request message
      * FIXME is this still used?
      */

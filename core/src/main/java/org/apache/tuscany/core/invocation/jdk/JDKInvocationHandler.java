@@ -74,14 +74,14 @@ public class JDKInvocationHandler implements InvocationHandler {
         } else {
             Message msg = messageFactory.createMessage();
             msg.setTargetInvoker(config.getTargetInvoker());
-            msg.setPayload(args);
+            msg.setBody(args);
             // dispatch the invocation down the chain and get the response
             Message resp = headInterceptor.invoke(msg);
 
-            Object payload = resp.getPayload();
-            if (payload instanceof Throwable)
-                throw (Throwable) payload;
-            return payload;
+            Object body = resp.getBody();
+            if (body instanceof Throwable)
+                throw (Throwable) body;
+            return body;
         }
     }
 }

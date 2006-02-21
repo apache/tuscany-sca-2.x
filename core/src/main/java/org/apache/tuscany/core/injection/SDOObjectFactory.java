@@ -1,9 +1,7 @@
 package org.apache.tuscany.core.injection;
 
-import org.apache.tuscany.core.deprecated.sdo.util.CopyHelper;
-import org.apache.tuscany.core.deprecated.sdo.util.impl.CopyHelperImpl;
-
 import commonj.sdo.DataObject;
+import commonj.sdo.helper.CopyHelper;
 
 /**
  * Creates new instances of an SDO
@@ -14,15 +12,12 @@ public class SDOObjectFactory implements ObjectFactory<DataObject> {
 
     private DataObject dataObject;
 
-    private CopyHelper helper;
-
     //----------------------------------
     // Constructors
     //----------------------------------
 
     public SDOObjectFactory(DataObject dataObject) {
         this.dataObject = dataObject;
-        helper = new CopyHelperImpl();
     }
 
     //----------------------------------
@@ -30,7 +25,7 @@ public class SDOObjectFactory implements ObjectFactory<DataObject> {
     //----------------------------------
 
     public DataObject getInstance() throws ObjectCreationException {
-        return helper.copy(dataObject);
+        return CopyHelper.INSTANCE.copy(dataObject);
     }
 
     public void releaseInstance(DataObject instance) {

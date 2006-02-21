@@ -34,7 +34,7 @@ import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.ExtensibleModelObject;
+import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
@@ -115,10 +115,6 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Tu
         throw new UnsupportedOperationException();
     }
 
-    public org.osoa.sca.model.Module getMetaData() {
-        throw new UnsupportedOperationException();
-    }
-
     public RequestContext getRequestContext() {
         throw new UnsupportedOperationException();
     }
@@ -171,7 +167,7 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Tu
     }
 
     @Override
-    protected void registerAutowire(ExtensibleModelObject model) {
+    protected void registerAutowire(Extensible model) {
         // this context only delegates autowiring
     }
 
@@ -179,7 +175,7 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Tu
     // ConfigurationContext methods
     // ----------------------------------
 
-    public void configure(ExtensibleModelObject model) throws ConfigurationException {
+    public void configure(Extensible model) throws ConfigurationException {
         if (configurationContext != null) {
             try {
                 configurationContext.configure(model);
@@ -190,7 +186,7 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Tu
         }
     }
 
-    public void build(AggregateContext parent, ExtensibleModelObject model) throws BuilderConfigException {
+    public void build(AggregateContext parent, Extensible model) throws BuilderConfigException {
         if (configurationContext != null) {
             try {
                 configurationContext.build(parent, model);

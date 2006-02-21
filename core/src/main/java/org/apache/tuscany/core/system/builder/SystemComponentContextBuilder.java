@@ -40,18 +40,18 @@ import org.apache.tuscany.core.injection.ObjectCreationException;
 import org.apache.tuscany.core.injection.ReferenceTargetFactory;
 import org.apache.tuscany.core.injection.SDOObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
+import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.config.SystemComponentRuntimeConfiguration;
-import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.ModuleComponent;
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
 import org.osoa.sca.annotations.ComponentName;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Destroy;
@@ -86,12 +86,12 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
                 && component.getComponentImplementation().getRuntimeConfiguration() == null) {
             SystemImplementation javaImpl = (SystemImplementation) component.getComponentImplementation();
             // FIXME scope
-            ScopeEnum scope = component.getComponentImplementation().getServices().get(0).getInterfaceContract().getScope();
+            Scope scope = component.getComponentImplementation().getComponentType().getServices().get(0).getServiceContract().getScope();
             Class implClass = null;
             Set<Field> fields;
             Set<Method> methods;
             try {
-                implClass = JavaIntrospectionHelper.loadClass(javaImpl.getClass_());
+                implClass = javaImpl.getImplementationClass();
                 fields = JavaIntrospectionHelper.getAllFields(implClass);
                 methods = JavaIntrospectionHelper.getAllUniqueMethods(implClass);
                 String name = component.getName();
@@ -251,14 +251,12 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
                 // decorate the logical model
                 SystemComponentRuntimeConfiguration config = new SystemComponentRuntimeConfiguration(name,
                         JavaIntrospectionHelper.getDefaultConstructor(implClass), injectors, eagerInit, initInvoker,
-                        destroyInvoker, scope.getValue());
+                        destroyInvoker, scope);
                 component.getComponentImplementation().setRuntimeConfiguration(config);
             } catch (BuilderConfigException e) {
                 e.addContextName(component.getName());
                 e.addContextName(parentContext.getName());
                 throw e;
-            } catch (ClassNotFoundException e) {
-                throw new BuilderConfigException(e);
             } catch (NoSuchMethodException e) {
                 BuilderConfigException ce = new BuilderConfigException("Class does not have a no-arg constructor", e);
                 ce.setIdentifier(implClass.getName());
@@ -321,12 +319,12 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
     private Injector createReferenceInjector(String moduleName, String componentName, AggregateContext parentContext, ConfiguredReference reference,
                                              Set<Field> fields, Set<Method> methods) throws NoAccessorException, BuilderConfigException {
         String refName = reference.getReference().getName();
-        List<ConfiguredService> services = reference.getConfiguredServices();
+        List<ConfiguredService> services = reference.getTargetConfiguredServices();
         Class type;
         // FIXME added the size check - do we need to do this?
         if (services.size() == 1) {
             // get the interface
-            type = reference.getReference().getInterfaceContract().getInterfaceType().getInstanceClass();
+            type = reference.getReference().getServiceContract().getInterface();
         } else {
             // FIXME do we support arrays?
             type = List.class;

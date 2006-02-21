@@ -19,11 +19,11 @@ package org.apache.tuscany.core.system.assembly.tests;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.model.assembly.AssemblyLoader;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
 
 /**
  *

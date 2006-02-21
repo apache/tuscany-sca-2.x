@@ -71,7 +71,7 @@ public class RuntimeBootTestCase extends TestCase {
         // start the module scope
         system.fireEvent(EventContext.MODULE_START, null);
         // register the first module
-
+        
         // register the second module
 
         // start the modules

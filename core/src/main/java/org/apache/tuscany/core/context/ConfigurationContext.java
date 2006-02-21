@@ -16,7 +16,7 @@ package org.apache.tuscany.core.context;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.model.assembly.ExtensibleModelObject;
+import org.apache.tuscany.model.assembly.Extensible;
 
 /**
  * Offers configuration services in the runtime. A ConfigurationContext is able to configure a model and then build the
@@ -34,7 +34,7 @@ public interface ConfigurationContext {
      * @param model the model object to be configured
      * @throws ConfigurationException
      */
-    public void configure(ExtensibleModelObject model) throws ConfigurationException;
+    public void configure(Extensible model) throws ConfigurationException;
 
     /**
      * Decorates the supplied model object with a {@link org.apache.tuscany.core.builder.RuntimeConfiguration} that can
@@ -45,7 +45,7 @@ public interface ConfigurationContext {
      * @throws BuilderConfigException
      * @see org.apache.tuscany.core.builder.RuntimeConfiguration
      */
-    public void build(AggregateContext parent, ExtensibleModelObject model) throws BuilderConfigException;
+    public void build(AggregateContext parent, Extensible model) throws BuilderConfigException;
 
     /**
      * Constructs a wire from a source proxy factory to a corresponding target, potentially performing optimizations

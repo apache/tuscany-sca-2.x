@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.ScopeContext;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Implements a {@link org.apache.tuscany.core.context.ScopeStrategy} for the default module scopes: stateless, request, session,
@@ -39,13 +40,13 @@ public class DefaultScopeStrategy  extends AbstractScopeStrategy  {
     public DefaultScopeStrategy() {
     }
 
-    public Map<Integer,ScopeContext> createScopes(EventContext eventContext) {
+    public Map<Scope,ScopeContext> createScopes(EventContext eventContext) {
         ScopeContext moduleScope = new ModuleScopeContext(eventContext);
         ScopeContext sessionScope = new HttpSessionScopeContext(eventContext);
         ScopeContext requestScope = new RequestScopeContext(eventContext);
         ScopeContext statelessScope = new StatelessScopeContext(eventContext);
         ScopeContext aggregrateScope = new AggregateScopeContext(eventContext);
-        Map<Integer,ScopeContext> scopes = new HashMap();
+        Map<Scope,ScopeContext> scopes = new HashMap();
         scopes.put(MODULE_SCOPE,moduleScope);
         scopes.put(SESSION_SCOPE,sessionScope);
         scopes.put(REQUEST_SCOPE,requestScope);

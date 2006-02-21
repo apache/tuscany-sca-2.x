@@ -25,13 +25,13 @@ import org.apache.tuscany.model.assembly.AssemblyFactory;
 public interface SystemAssemblyFactory extends AssemblyFactory {
 
     /**
-     * Returns a new object of class '<em>System Implementation</em>'.
+     * Returns a new SystemImplementation.
      */
     SystemImplementation createSystemImplementation();
 
     /**
-     * Returns a new object of class '<em>System Binding</em>'.
+     * Returns a new SystemBinding.
      */
     SystemBinding createSystemBinding();
 
-} //AssemblyFactory
+}

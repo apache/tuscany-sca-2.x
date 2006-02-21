@@ -27,12 +27,12 @@ import org.apache.tuscany.core.config.ConfigurationLoader;
 import org.apache.tuscany.core.config.InvalidRootElementException;
 import org.apache.tuscany.core.config.MissingResourceException;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.AssemblyLoader;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.ModuleFragment;
+import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
 
 /**
  * Implementation of a {@link ConfigurationLoader} that uses EMF to load the XML documents.

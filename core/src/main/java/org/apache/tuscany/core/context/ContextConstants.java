@@ -16,7 +16,8 @@
  */
 package org.apache.tuscany.core.context;
 
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
+
 
 /**
  * Includes Context-related constants
@@ -25,13 +26,11 @@ import org.apache.tuscany.model.assembly.ScopeEnum;
  */
 public interface ContextConstants {
 
-    public static final int UNDEFINED_SCOPE = -2;
-    public static final int AGGREGATE_SCOPE = -1;
-    public static final ScopeEnum AGGREGATE_SCOPE_ENUM = new ScopeEnum(AGGREGATE_SCOPE,"aggregate");
-    public static final int MODULE_SCOPE = ScopeEnum.MODULE;
-    public static final int SESSION_SCOPE = ScopeEnum.SESSION;
-    public static final int REQUEST_SCOPE = ScopeEnum.REQUEST;
-    public static final int STATELESS = ScopeEnum.INSTANCE;
+    public static final Scope AGGREGATE_SCOPE = Scope.AGGREGATE;
+    public static final Scope MODULE_SCOPE = Scope.MODULE;
+    public static final Scope SESSION_SCOPE = Scope.SESSION;
+    public static final Scope REQUEST_SCOPE = Scope.REQUEST;
+    public static final Scope STATELESS = Scope.INSTANCE;
 
     public static final String NAME_SEPARATOR = "/";
 

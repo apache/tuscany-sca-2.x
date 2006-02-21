@@ -19,7 +19,7 @@ package org.apache.tuscany.core.system.assembly;
 import org.apache.tuscany.model.assembly.Binding;
 
 /**
- * A representation of the model object '<em><b>System Binding</b></em>'.
+ * Represents a system binding.
  */
 public interface SystemBinding extends Binding {
-} // SystemBinding
+}

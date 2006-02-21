@@ -13,9 +13,12 @@
  */
 package org.apache.tuscany.core.builder.impl;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.wsdl.OperationType;
 
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.WireBuilder;
@@ -24,7 +27,6 @@ import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.message.channel.impl.MessageChannelImpl;
-import org.apache.tuscany.model.types.OperationType;
 import org.osoa.sca.annotations.Scope;
 
 /**
@@ -55,24 +57,20 @@ public class DefaultWireBuilder implements WireBuilder {
         // get the proxy chain for the target
         if (targetFactory != null) {
             // if null, the target side has no interceptors or handlers
-            Map<OperationType, InvocationConfiguration> targetInvocationConfigs = targetFactory.getProxyConfiguration()
-                    .getInvocationConfigurations();
+            Map<Method, InvocationConfiguration> targetInvocationConfigs = targetFactory.getProxyConfiguration().getInvocationConfigurations();
             for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration()
                     .getInvocationConfigurations().values()) {
                 // match invocation chains
-                InvocationConfiguration targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig
-                        .getOperationType());
+                InvocationConfiguration targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig.getMethod());
                 // if handler is configured, add that
                 if (targetInvocationConfig.getRequestHandlers() != null) {
-                    sourceInvocationConfig.setTargetRequestChannel(new MessageChannelImpl(targetInvocationConfig
-                            .getRequestHandlers()));
-                    sourceInvocationConfig.setTargetResponseChannel(new MessageChannelImpl(targetInvocationConfig
-                            .getResponseHandlers()));
+                    sourceInvocationConfig.setTargetRequestChannel(new MessageChannelImpl(targetInvocationConfig.getRequestHandlers()));
+                    sourceInvocationConfig.setTargetResponseChannel(new MessageChannelImpl(targetInvocationConfig.getResponseHandlers()));
                 } else {
                     // no handlers, just connect interceptors
                     if (targetInvocationConfig.getTargetInterceptor() == null){
                         BuilderConfigException e = new BuilderConfigException("No target handler or interceptor for operation");
-                        e.setIdentifier(targetInvocationConfig.getOperationType().getName());
+                        e.setIdentifier(targetInvocationConfig.getMethod().getName());
                         throw e;
                     }
                     sourceInvocationConfig.addTargetInterceptor(targetInvocationConfig.getTargetInterceptor());

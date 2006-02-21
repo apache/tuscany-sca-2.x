@@ -15,6 +15,8 @@ package org.apache.tuscany.core.context;
 
 import java.util.Map;
 
+import org.apache.tuscany.model.assembly.Scope;
+
 /**
  * Denotes an aggregate context that supports scopes
  * 
@@ -25,5 +27,5 @@ public interface ScopeAwareContext extends AggregateContext {
     /**
      * Returns an immutable collection of scopes keyed by type for the aggregate context
      */
-    public Map<Integer, ScopeContext> getScopeContexts();
+    public Map<Scope, ScopeContext> getScopeContexts();
 }

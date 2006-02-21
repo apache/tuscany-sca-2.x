@@ -57,15 +57,15 @@ public class ReferenceTargetFactory<T> implements ObjectFactory<T> {
         this.parentContext = parentContext;
         // targetName = reference.getReference().getName();
 
-        ConfiguredService targetService = reference.getConfiguredServices().get(0);
-        if (targetService.getPart() instanceof ExternalService) {
-            targetName = ((ExternalService) targetService.getPart()).getName();
-        } else if (targetService.getPart() instanceof Component) {
-            Component targetComponent = (Component) targetService.getPart();
+        ConfiguredService targetService = reference.getTargetConfiguredServices().get(0);
+        if (targetService.getAggregatePart() instanceof ExternalService) {
+            targetName = ((ExternalService) targetService.getAggregatePart()).getName();
+        } else if (targetService.getAggregatePart() instanceof Component) {
+            Component targetComponent = (Component) targetService.getAggregatePart();
             targetName = targetComponent.getName();
-        } else if (targetService.getPart() instanceof EntryPoint) {
-            targetName = ((EntryPoint) targetService.getPart()).getName();
-        } else if (targetService.getPart() == null) {
+        } else if (targetService.getAggregatePart() instanceof EntryPoint) {
+            targetName = ((EntryPoint) targetService.getAggregatePart()).getName();
+        } else if (targetService.getAggregatePart() == null) {
             // FIXME not correct
             if (targetService.getService() == null) {
                 throw new FactoryInitException("No target service specified");
@@ -89,7 +89,7 @@ public class ReferenceTargetFactory<T> implements ObjectFactory<T> {
         assert (service != null) : "Service was null";
         assert (parentContext != null) : "Parent context was null";
         interModule = true; // an external service with a reference target in another module
-        targetName = service.getPart().getName();
+        targetName = service.getAggregatePart().getName();
         targetComponentName = new QualifiedName(targetName);
         this.parentContext = parentContext;
     }

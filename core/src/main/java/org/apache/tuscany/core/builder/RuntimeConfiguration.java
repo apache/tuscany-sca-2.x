@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Implementations create instance contexts based on a compiled runtime
@@ -22,7 +23,7 @@ public interface RuntimeConfiguration<T extends Context> {
      */
     public T createInstanceContext() throws ContextCreationException;
     
-    public int getScope();
+    public Scope getScope();
     
     public String getName();
     

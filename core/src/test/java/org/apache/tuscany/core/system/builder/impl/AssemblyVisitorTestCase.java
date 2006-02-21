@@ -27,7 +27,7 @@ import org.apache.tuscany.core.system.assembly.pojo.PojoSystemBinding;
 import org.apache.tuscany.core.system.assembly.pojo.PojoSystemImplementation;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.ConfiguredPort;
-import org.apache.tuscany.model.assembly.ConfiguredRuntimeObject;
+import org.apache.tuscany.model.assembly.RuntimeConfigurationHolder;
 import org.apache.tuscany.model.assembly.pojo.PojoConfiguredReference;
 import org.apache.tuscany.model.assembly.pojo.PojoEntryPoint;
 import org.apache.tuscany.model.assembly.pojo.PojoModule;
@@ -84,8 +84,8 @@ public class AssemblyVisitorTestCase extends TestCase {
             if (model instanceof ConfiguredPort) {
                 ((ConfiguredPort) model).setProxyFactory(MARKER);
             }
-            if (model instanceof ConfiguredRuntimeObject) {
-                ((ConfiguredRuntimeObject) model).setRuntimeConfiguration(MARKER);
+            if (model instanceof RuntimeConfigurationHolder) {
+                ((RuntimeConfigurationHolder) model).setRuntimeConfiguration(MARKER);
             }
         }
 

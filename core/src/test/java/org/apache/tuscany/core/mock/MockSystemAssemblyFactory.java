@@ -32,7 +32,7 @@ import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.Part;
+import org.apache.tuscany.model.assembly.AggregatePart;
 import org.apache.tuscany.model.assembly.ScopeEnum;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.pojo.PojoAggregateComponent;
@@ -49,7 +49,7 @@ import org.apache.tuscany.model.assembly.pojo.PojoPart;
 import org.apache.tuscany.model.assembly.pojo.PojoReference;
 import org.apache.tuscany.model.assembly.pojo.PojoService;
 import org.apache.tuscany.model.assembly.pojo.PojoSimpleComponent;
-import org.apache.tuscany.model.types.java.JavaInterface;
+import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
  * Creates test artifacts for system types such as runtime configurations and system components
@@ -93,8 +93,8 @@ public class MockSystemAssemblyFactory {
         impl.setClass(type);
         sc.setComponentImplementation(impl);
         Service s = new PojoService();
-        JavaInterface ji = new PojoJavaInterface();
-        s.setInterfaceContract(ji);
+        JavaServiceContract ji = new PojoJavaInterface();
+        s.setServiceContract(ji);
         ji.setScope(scope);
         impl.getServices().add(s);
         sc.setName(name);
@@ -121,7 +121,7 @@ public class MockSystemAssemblyFactory {
      * @param refName the name of the entry point reference
      * @param referenceTarget the target of the entry point wire
      */
-    public static PojoEntryPoint createEntryPoint(String name, Class interfaz, String refName, Part referenceTarget) {
+    public static PojoEntryPoint createEntryPoint(String name, Class interfaz, String refName, AggregatePart referenceTarget) {
         // create entry point
         PojoEntryPoint ep = new PojoEntryPoint();
         ep.setName(name);
@@ -132,12 +132,12 @@ public class MockSystemAssemblyFactory {
         PojoConfiguredService service = new PojoConfiguredService();
         configuredReference.addConfiguredService(service);
         ep.setConfiguredReference(configuredReference);
-        ep.getConfiguredReference().getConfiguredServices().get(0).setPart(referenceTarget);
+        ep.getConfiguredReference().getTargetConfiguredServices().get(0).setPart(referenceTarget);
         PojoInterfaceType interfaceType = new PojoInterfaceType();
         interfaceType.setInstanceClass(interfaz);
         PojoInterface inter = new PojoJavaInterface();
         inter.setInterfaceType(interfaceType);
-        ep.setInterfaceContract(inter);
+        ep.setServiceContract(inter);
         ep.getBindings().add(new PojoSystemBinding());
         return ep;
     }
@@ -160,7 +160,7 @@ public class MockSystemAssemblyFactory {
         service.setName(componentName);
         PojoConfiguredService cService = new PojoConfiguredService();
         cService.setService(service);
-        cRef.getConfiguredServices().add(cService);
+        cRef.getTargetConfiguredServices().add(cService);
         ep.setConfiguredReference(cRef);
         return ep;
     }
@@ -191,7 +191,7 @@ public class MockSystemAssemblyFactory {
         PojoInterfaceType interType = new PojoInterfaceType();
         interType.setInstanceClass(type);
         inter.setInterfaceType(interType);
-        es.setInterfaceContract(inter);
+        es.setServiceContract(inter);
         es.getBindings().add(new PojoSystemBinding());
         PojoConfiguredService configuredService = new PojoConfiguredService();
         es.setConfiguredService(configuredService);
@@ -212,8 +212,8 @@ public class MockSystemAssemblyFactory {
         impl.setClass(ModuleScopeSystemComponentImpl.class.getName());
         component.setComponentImplementation(impl);
         Service s = new PojoService();
-        JavaInterface ji = new PojoJavaInterface();
-        s.setInterfaceContract(ji);
+        JavaServiceContract ji = new PojoJavaInterface();
+        s.setServiceContract(ji);
         ji.setScope(ScopeEnum.MODULE_LITERAL);
         impl.getServices().add(s);
         component.setComponentImplementation(impl);
@@ -221,7 +221,7 @@ public class MockSystemAssemblyFactory {
         // create the entry point
         EntryPoint ep = createEntryPoint("TestService1EP", ModuleScopeSystemComponent.class, "target");
         // wire the entry point to the component
-        ep.getConfiguredReference().getConfiguredServices().get(0).setPart(component);
+        ep.getConfiguredReference().getTargetConfiguredServices().get(0).setPart(component);
 
         module.addEntryPoint(ep);
         module.addComponent(component);
@@ -242,8 +242,8 @@ public class MockSystemAssemblyFactory {
         impl.setClass(ModuleScopeSystemComponentImpl.class.getName());
         component.setComponentImplementation(impl);
         Service s = new PojoService();
-        JavaInterface ji = new PojoJavaInterface();
-        s.setInterfaceContract(ji);
+        JavaServiceContract ji = new PojoJavaInterface();
+        s.setServiceContract(ji);
         ji.setScope(ScopeEnum.MODULE_LITERAL);
         impl.getServices().add(s);
         component.setComponentImplementation(impl);
@@ -251,7 +251,7 @@ public class MockSystemAssemblyFactory {
         // create the entry point
         EntryPoint ep = createEntryPoint("TestService2EP", ModuleScopeSystemComponent.class, "target");
         // wire the entry point to the component
-        ep.getConfiguredReference().getConfiguredServices().get(0).setPart(component);
+        ep.getConfiguredReference().getTargetConfiguredServices().get(0).setPart(component);
 
         module.addEntryPoint(ep);
         module.addComponent(component);
