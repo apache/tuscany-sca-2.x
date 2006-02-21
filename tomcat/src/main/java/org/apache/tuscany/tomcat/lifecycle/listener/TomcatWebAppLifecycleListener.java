@@ -25,17 +25,15 @@ import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
-import org.osoa.sca.ServiceRuntimeException;
-
 import org.apache.tuscany.common.resource.loader.ResourceLoader;
 import org.apache.tuscany.common.resource.loader.ResourceLoaderFactory;
 import org.apache.tuscany.core.config.ConfigurationLoader;
 import org.apache.tuscany.core.config.impl.EMFConfigurationLoader;
+import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
-import org.apache.tuscany.core.context.impl.TuscanyModuleComponentContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.context.webapp.HTTPSessionExpirationListener;
 import org.apache.tuscany.core.context.webapp.TuscanyRequestFilter;
@@ -43,6 +41,9 @@ import org.apache.tuscany.core.context.webapp.TuscanyWebAppRuntime;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
+import org.apache.tuscany.model.assembly.loader.impl.AssemblyLoaderImpl;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Responsible for initializing web applications as module components in a
@@ -106,7 +107,8 @@ public class TomcatWebAppLifecycleListener implements LifecycleListener {
                     try {
 
                         // Load the module component
-                        AssemblyModelContext modelContext = new AssemblyModelContextImpl(resourceLoader);
+                        AssemblyLoader modelLoader=new AssemblyLoaderImpl();
+                        AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelLoader, resourceLoader);
                         ConfigurationLoader moduleComponentLoader = new EMFConfigurationLoader(modelContext);
                         String uri = context.getPath().substring(1);
                         ModuleComponent moduleComponent = moduleComponentLoader.loadModuleComponent(moduleComponentName, uri);
@@ -114,8 +116,11 @@ public class TomcatWebAppLifecycleListener implements LifecycleListener {
                         // Create the module component context
                         EventContext eventContext = new EventContextImpl();
                         DefaultScopeStrategy scopeStrategy = new DefaultScopeStrategy();
-                        TuscanyModuleComponentContext moduleComponentContext = new TuscanyModuleComponentContextImpl(
-                                moduleComponent, eventContext, scopeStrategy, modelContext);
+                        
+                        //FIXME TuscanyModuleComponentContext replaced by new bootstrap code
+//                        TuscanyModuleComponentContext moduleComponentContext = new TuscanyModuleComponentContextImpl(
+//                                moduleComponent, eventContext, scopeStrategy, modelContext);
+                        TuscanyModuleComponentContext moduleComponentContext=null;
 
                         // Create a Tuscany runtime and store it in the servlet
                         // context
