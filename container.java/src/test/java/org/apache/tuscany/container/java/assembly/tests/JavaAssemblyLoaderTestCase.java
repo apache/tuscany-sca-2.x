@@ -16,20 +16,19 @@
  */
 package org.apache.tuscany.container.java.assembly.tests;
 
-import commonj.sdo.Property;
-import commonj.sdo.Type;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.model.assembly.AssemblyLoader;
+import org.apache.tuscany.common.resource.loader.ResourceLoaderFactory;
+import org.apache.tuscany.container.java.assembly.tests.bigbank.account.services.accountdata.AccountDataService;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.types.InterfaceType;
-import org.apache.tuscany.model.types.OperationType;
+import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
+import org.apache.tuscany.model.assembly.loader.impl.AssemblyLoaderImpl;
 
 /**
  */
@@ -61,14 +60,11 @@ public class JavaAssemblyLoaderTestCase extends TestCase {
         Object value = component.getConfiguredProperty("currency").getValue();
         Assert.assertTrue(value.equals("EURO"));
 
-        ConfiguredService configuredService = component.getConfiguredReference("accountDataService").getConfiguredServices().get(0);
-        Assert.assertTrue(configuredService.getPart().getName().equals("AccountDataServiceComponent"));
+        ConfiguredService configuredService = component.getConfiguredReference("accountDataService").getTargetConfiguredServices().get(0);
+        Assert.assertTrue(configuredService.getAggregatePart().getName().equals("AccountDataServiceComponent"));
 
-        InterfaceType interfaceType = configuredService.getService().getInterfaceContract().getInterfaceType();
-        OperationType operationType = interfaceType.getOperationType("getCheckingAccount");
-        Type type = operationType.getInputType();
-        Property arg = (Property) type.getProperties().get(0);
-        Assert.assertTrue(arg.getType().getInstanceClass() == String.class);
+        Class interfaceClass = configuredService.getService().getServiceContract().getInterface();
+        Assert.assertTrue(interfaceClass == AccountDataService.class);
 
     }
 
@@ -76,7 +72,7 @@ public class JavaAssemblyLoaderTestCase extends TestCase {
         super.setUp();
 
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-        modelContext = new AssemblyModelContextImpl();
+        modelContext = new AssemblyModelContextImpl(new AssemblyLoaderImpl(), ResourceLoaderFactory.getResourceLoader(getClass().getClassLoader()));
     }
 
 }

@@ -20,7 +20,6 @@ import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.model.types.java.JavaOperationType;
 import org.osoa.sca.annotations.Scope;
 
 /**
@@ -41,8 +40,7 @@ public class JavaTargetWireBuilder implements WireBuilder {
         }
         for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations()
                 .values()) {
-            ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(sourceFactory.getProxyConfiguration()
-                    .getTargetName(), ((JavaOperationType) sourceInvocationConfig.getOperationType()).getJavaMethod(),
+            ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(sourceFactory.getProxyConfiguration().getTargetName(), sourceInvocationConfig.getMethod(),
                     targetScopeContext);
             if (downScope) {
                 // the source scope is shorter than the target, so the invoker can cache the target instance

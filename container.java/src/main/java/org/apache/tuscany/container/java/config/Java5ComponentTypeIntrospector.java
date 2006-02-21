@@ -23,20 +23,20 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Remotable;
-
 import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.model.assembly.ComponentType;
-import org.apache.tuscany.model.assembly.Interface;
+import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Property;
 import org.apache.tuscany.model.assembly.Reference;
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.types.java.JavaInterface;
+import org.apache.tuscany.model.assembly.ServiceContract;
+import org.apache.tuscany.model.types.java.JavaServiceContract;
+import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.annotations.Remotable;
 
 /**
  * Introspects Java annotation-based metata data
@@ -68,9 +68,9 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
         // FIXME scopes should be handled at the interface level
         if (compType != null) {
-            ScopeEnum scope = getScope(implClass);
+            Scope scope = getScope(implClass);
             for (Iterator<Service> i = compType.getServices().iterator(); i.hasNext();) {
-                Interface intf = i.next().getInterfaceContract();
+                ServiceContract intf = i.next().getServiceContract();
                 if (intf != null)
                     intf.setScope(scope);
             }
@@ -84,7 +84,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
      * 
      * @throws ConfigurationException
      */
-    private ScopeEnum getScope(Class<?> implClass) throws ConfigurationException {
+    private Scope getScope(Class<?> implClass) throws ConfigurationException {
         org.osoa.sca.annotations.Scope scope = implClass.getAnnotation(org.osoa.sca.annotations.Scope.class);
         if (scope == null) {
             // scope was not defined on the implementation class, look for annotated interfaces
@@ -98,13 +98,13 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         }
 
         if ("MODULE".equalsIgnoreCase(scope.value())) {
-            return (ScopeEnum.MODULE_LITERAL);
+            return (Scope.MODULE);
         } else if ("SESSION".equalsIgnoreCase(scope.value())) {
-            return (ScopeEnum.SESSION_LITERAL);
+            return (Scope.SESSION);
         } else if ("REQUEST".equalsIgnoreCase(scope.value())) {
-            return (ScopeEnum.REQUEST_LITERAL);
+            return (Scope.REQUEST);
         } else {
-            return (ScopeEnum.INSTANCE_LITERAL);
+            return (Scope.INSTANCE);
         }
     }
 
@@ -159,17 +159,17 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
      * @throws ConfigurationException
      */
     protected void addService(List<Service> services, Class<?> serviceClass) throws ConfigurationException {
-        JavaInterface javaInterface = factory.createJavaInterface();
-        javaInterface.setInterface(serviceClass.getName());
+        JavaServiceContract javaInterface = factory.createJavaServiceContract();
+        javaInterface.setInterface(serviceClass);
         Callback callback = serviceClass.getAnnotation(Callback.class);
         if (callback != null && !Void.class.equals(callback.value())) {
-            javaInterface.setCallbackInterface(callback.value().getName());
+            javaInterface.setCallbackInterface(callback.value());
         }
 
         String name = JavaIntrospectionHelper.getBaseName(serviceClass);
         Service service = factory.createService();
         service.setName(name);
-        service.setInterfaceContract(javaInterface);
+        service.setServiceContract(javaInterface);
         services.add(service);
     }
 
@@ -350,7 +350,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         prop.setMany(type.isArray() || Collection.class.isAssignableFrom(type));
 
         // todo how is the default specified using annotations?
-        prop.setDefault(null);
+        prop.setDefaultValue(null);
 
         properties.add(prop);
     }
@@ -405,11 +405,15 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         Reference ref = factory.createReference();
         ref.setName(name);
         boolean many = type.isArray() || Collection.class.isAssignableFrom(type);
-        String multiplicity = (required ? "1.." : "0..") + (many ? "n" : "1");
+        Multiplicity multiplicity;
+        if (required)
+            multiplicity=many? Multiplicity.ONE_N:Multiplicity.ONE_ONE;
+        else
+            multiplicity=many? Multiplicity.ZERO_N:Multiplicity.ZERO_ONE;
         ref.setMultiplicity(multiplicity);
-        Interface javaInterface = factory.createJavaInterface();
-        javaInterface.setInterface(type.getName());
-        ref.setInterfaceContract(javaInterface);
+        ServiceContract javaInterface = factory.createJavaServiceContract();
+        javaInterface.setInterface(type);
+        ref.setServiceContract(javaInterface);
         references.add(ref);
     }
 }

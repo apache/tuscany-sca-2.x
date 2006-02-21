@@ -14,31 +14,19 @@
 package org.apache.tuscany.container.java.config;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.tuscany.container.java.context.JavaComponentContext;
-import org.apache.tuscany.container.java.injection.ReferenceProxyTargetFactory;
-import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextCreationException;
-import org.apache.tuscany.core.builder.NoAccessorException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.injection.EventInvoker;
-import org.apache.tuscany.core.injection.FactoryInitException;
-import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * A RuntimeConfiguration that handles POJO component implementation types
@@ -67,7 +55,7 @@ public class JavaComponentRuntimeConfiguration implements RuntimeConfiguration<S
     private EventInvoker destroy;
 
     // the scope of the implementation instance
-    private int scope;
+    private Scope scope;
 
     private boolean stateless;
 
@@ -90,7 +78,7 @@ public class JavaComponentRuntimeConfiguration implements RuntimeConfiguration<S
      * @param scope the scope of the component implementation type
      */
     public JavaComponentRuntimeConfiguration(String name, Constructor ctr, List<Injector> setters, boolean eagerInit,
-            EventInvoker init, EventInvoker destroy, int scope) {
+            EventInvoker init, EventInvoker destroy, Scope scope) {
         assert (name != null) : "Name was null";
         assert (ctr != null) : "Constructor was null";
         this.name = name;
@@ -100,11 +88,11 @@ public class JavaComponentRuntimeConfiguration implements RuntimeConfiguration<S
         this.init = init;
         this.destroy = destroy;
         this.scope = scope;
-        stateless = (scope == ScopeEnum.INSTANCE);
+        stateless = (scope == Scope.INSTANCE);
     }
 
     public JavaComponentRuntimeConfiguration(String name, Constructor ctr, boolean eagerInit, EventInvoker init,
-            EventInvoker destroy, int scope) {
+            EventInvoker destroy, Scope scope) {
         this(name, ctr, null, eagerInit, init, destroy, scope);
     }
 
@@ -116,7 +104,7 @@ public class JavaComponentRuntimeConfiguration implements RuntimeConfiguration<S
         return name;
     }
 
-    public int getScope() {
+    public Scope getScope() {
         return scope;
     }
 

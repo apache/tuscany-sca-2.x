@@ -21,6 +21,7 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.common.resource.loader.ResourceLoaderFactory;
 import org.apache.tuscany.container.java.assembly.mock.HelloWorldImpl;
 import org.apache.tuscany.container.java.assembly.mock.HelloWorldWithFieldProperties;
 import org.apache.tuscany.container.java.assembly.mock.NakedHelloWorld;
@@ -29,7 +30,7 @@ import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Property;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.assembly.sdo.AssemblyPackage;
+import org.apache.tuscany.model.assembly.loader.impl.AssemblyLoaderImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -38,16 +39,16 @@ public class JavaImplementationTestCase extends TestCase {
     private JavaImplementationImpl impl = (JavaImplementationImpl) new JavaAssemblyFactoryImpl().createJavaImplementation();
 
     public void testFoo() {
-        impl.setClass(HelloWorldImpl.class.getName());
+        impl.setImplementationClass(HelloWorldImpl.class);
 
         // this is not needed anymore
         //assertEquals("org/apache/tuscany/container/java/assembly/mock/HelloWorldImpl.componentType", impl.getComponentTypeName());
     }
 
     public void testNoImplementationClass() {
-        impl.setClass("no.such.Class");
+        impl.setImplementationClass(null);
         try {
-            impl.initialize(new AssemblyModelContextImpl());
+            impl.initialize(new AssemblyModelContextImpl(new AssemblyLoaderImpl(), ResourceLoaderFactory.getResourceLoader(Thread.currentThread().getContextClassLoader())));
             impl.getComponentType();
             fail("Expected IllegalArgumentException");
         } catch (IllegalArgumentException e) {
@@ -56,8 +57,8 @@ public class JavaImplementationTestCase extends TestCase {
     }
 
     public void testNakedHelloWorld() {
-        impl.setClass(NakedHelloWorld.class.getName());
-        impl.initialize(new AssemblyModelContextImpl());
+        impl.setImplementationClass(NakedHelloWorld.class);
+        impl.initialize(new AssemblyModelContextImpl(new AssemblyLoaderImpl(), ResourceLoaderFactory.getResourceLoader(Thread.currentThread().getContextClassLoader())));
         ComponentType type = impl.getComponentType();
         Assert.assertNotNull(type);
         Assert.assertTrue(type.getProperties().isEmpty());
@@ -68,8 +69,8 @@ public class JavaImplementationTestCase extends TestCase {
     }
 
     public void testNakedHelloWorldWithInterface() {
-        impl.setClass(NakedHelloWorldWithInterface.class.getName());
-        impl.initialize(new AssemblyModelContextImpl());
+        impl.setImplementationClass(NakedHelloWorldWithInterface.class);
+        impl.initialize(new AssemblyModelContextImpl(new AssemblyLoaderImpl(), ResourceLoaderFactory.getResourceLoader(Thread.currentThread().getContextClassLoader())));
         ComponentType type = impl.getComponentType();
         Assert.assertNotNull(type);
         Assert.assertTrue(type.getProperties().isEmpty());
@@ -80,8 +81,8 @@ public class JavaImplementationTestCase extends TestCase {
     }
 
     public void testHelloWorldWithSidefile() {
-        impl.setClass(HelloWorldImpl.class.getName());
-        impl.initialize(new AssemblyModelContextImpl());
+        impl.setImplementationClass(HelloWorldImpl.class);
+        impl.initialize(new AssemblyModelContextImpl(new AssemblyLoaderImpl(), ResourceLoaderFactory.getResourceLoader(Thread.currentThread().getContextClassLoader())));
         ComponentType type = impl.getComponentType();
         Assert.assertNotNull(type);
         List<Property> props = type.getProperties();
@@ -96,8 +97,8 @@ public class JavaImplementationTestCase extends TestCase {
     }
 
     public void testHelloWorldWithFieldProperties() {
-        impl.setClass(HelloWorldWithFieldProperties.class.getName());
-        impl.initialize(new AssemblyModelContextImpl());
+        impl.setImplementationClass(HelloWorldWithFieldProperties.class);
+        impl.initialize(new AssemblyModelContextImpl(new AssemblyLoaderImpl(), ResourceLoaderFactory.getResourceLoader(Thread.currentThread().getContextClassLoader())));
         ComponentType type = impl.getComponentType();
         Assert.assertNotNull(type);
         List<Property> props = type.getProperties();
@@ -107,24 +108,19 @@ public class JavaImplementationTestCase extends TestCase {
         Assert.assertNotNull(prop);
         Assert.assertEquals("text", prop.getName());
         Assert.assertEquals(false, prop.isRequired());
-        Assert.assertEquals(String.class, prop.getType_());
+        Assert.assertEquals(String.class, prop.getType());
 
         prop = type.getProperty("text2");
         Assert.assertNotNull(prop);
         Assert.assertEquals("text2", prop.getName());
         Assert.assertEquals(true, prop.isRequired());
-        Assert.assertEquals(Integer.class, prop.getType_());
+        Assert.assertEquals(Integer.class, prop.getType());
 
         prop = type.getProperty("foo");
         Assert.assertNotNull(prop);
         Assert.assertEquals("foo", prop.getName());
         Assert.assertEquals(false, prop.isRequired());
-        Assert.assertEquals(Integer.TYPE, prop.getType_());
-    }
-
-    static {
-        // bootstrap this somehow
-        AssemblyPackage.eINSTANCE.getClass();
+        Assert.assertEquals(Integer.TYPE, prop.getType());
     }
 
     protected void setUp() throws Exception {

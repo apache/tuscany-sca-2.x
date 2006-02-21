@@ -30,7 +30,7 @@ import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.AggregateScopeContext;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ExtensibleModelObject;
+import org.apache.tuscany.model.assembly.Extensible;
 import junit.framework.Assert;
 
 /**
@@ -56,8 +56,8 @@ public class AggregateScopeTestCase extends TestCase {
         scopeContainer.start();
 
         AggregateContext child = (AggregateContext) scopeContainer.getContext("AggregateComponent");
-        List<ExtensibleModelObject> models = MockAggregateAssemblyFactory.createAssembly(moduleComponentCtx);
-        for (ExtensibleModelObject model : models) {
+        List<Extensible> models = MockAggregateAssemblyFactory.createAssembly(moduleComponentCtx);
+        for (Extensible model : models) {
             child.registerModelObject(model);
         }
 
@@ -112,8 +112,8 @@ public class AggregateScopeTestCase extends TestCase {
                 .getComponentImplementation().getRuntimeConfiguration());
         scopeContainer.start();
         AggregateContext child = (AggregateContext) scopeContainer.getContext("AggregateComponent");
-        List<ExtensibleModelObject> parts = MockAggregateAssemblyFactory.createAssembly(moduleComponentCtx);
-        for (ExtensibleModelObject part : parts) {
+        List<Extensible> parts = MockAggregateAssemblyFactory.createAssembly(moduleComponentCtx);
+        for (Extensible part : parts) {
             child.registerModelObject(part);
         }
 

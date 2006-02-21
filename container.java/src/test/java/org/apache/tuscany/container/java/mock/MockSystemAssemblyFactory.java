@@ -43,7 +43,7 @@ import org.apache.tuscany.model.assembly.pojo.PojoPart;
 import org.apache.tuscany.model.assembly.pojo.PojoReference;
 import org.apache.tuscany.model.assembly.pojo.PojoService;
 import org.apache.tuscany.model.assembly.pojo.PojoSimpleComponent;
-import org.apache.tuscany.model.types.java.JavaInterface;
+import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
  * Creates test artifacts for system types such as runtime configurations and system components
@@ -97,11 +97,11 @@ public class MockSystemAssemblyFactory {
             sc = new PojoSimpleComponent();
         }
         SystemImplementation impl = new PojoSystemImplementation();
-        impl.setClass(type);
+        impl.setImplementationClass(type);
         sc.setComponentImplementation(impl);
         Service s = new PojoService();
-        JavaInterface ji = new PojoJavaInterface();
-        s.setInterfaceContract(ji);
+        JavaServiceContract ji = new PojoJavaInterface();
+        s.setServiceContract(ji);
         ji.setScope(scope);
         impl.getServices().add(s);
         sc.setName(name);
@@ -113,7 +113,7 @@ public class MockSystemAssemblyFactory {
             AggregateContext aggregateContext) throws NoSuchMethodException {
 
         EntryPoint ep = createEntryPoint(name, refName);
-        ep.getConfiguredReference().getConfiguredServices().get(0).setPart(component);
+        ep.getConfiguredReference().getTargetConfiguredServices().get(0).setPart(component);
         SystemEntryPointBuilder builder = new SystemEntryPointBuilder();
         builder.build(ep, aggregateContext);
         return ep;

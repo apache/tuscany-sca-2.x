@@ -21,6 +21,7 @@ import org.apache.tuscany.container.java.assembly.JavaImplementation;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 
 /**
+ * A factory for the model.
  */
 public class JavaAssemblyFactoryImpl extends AssemblyFactoryImpl implements JavaAssemblyFactory {
 

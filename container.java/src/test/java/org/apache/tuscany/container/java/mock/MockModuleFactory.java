@@ -40,7 +40,7 @@ public class MockModuleFactory {
         oType.setJavaMethod((Method) JavaIntrospectionHelper.getBeanProperty(GenericComponent.class, "getString", null));
         type.addOperationType(oType);
         inter.setInterfaceType(type);
-        ref.setInterfaceContract(inter);
+        ref.setServiceContract(inter);
         cref.setReference(ref);
         cref.setPart(targetComponent);
         PojoPort port = new PojoPort();
@@ -48,7 +48,7 @@ public class MockModuleFactory {
         cref.setPort(port);
         sourceComponent.getConfiguredReferences().add(cref);
         PojoService sourceService = new PojoService();
-        sourceService.setInterfaceContract(inter);
+        sourceService.setServiceContract(inter);
         sourceService.setName("GenericComponent");
         PojoConfiguredService cService = new PojoConfiguredService();
         cService.setService(sourceService);
@@ -59,7 +59,7 @@ public class MockModuleFactory {
         sourceComponent.getConfiguredServices().add(cService);
 
         PojoService targetService = new PojoService();
-        targetService.setInterfaceContract(inter);
+        targetService.setServiceContract(inter);
         targetService.setName("GenericComponent");
         PojoConfiguredService cTargetService = new PojoConfiguredService();
         cTargetService.setService(targetService);

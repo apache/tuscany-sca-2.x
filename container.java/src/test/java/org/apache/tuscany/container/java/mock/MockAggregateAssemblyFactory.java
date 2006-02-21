@@ -16,13 +16,13 @@ package org.apache.tuscany.container.java.mock;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
+import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder2;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeComponentImpl;
 import org.apache.tuscany.container.java.mock.components.SessionScopeComponentImpl;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.model.assembly.ExtensibleModelObject;
+import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.assembly.ScopeEnum;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 
@@ -42,9 +42,9 @@ public class MockAggregateAssemblyFactory {
      * 
      * @param ctx the parent module context
      */
-    public static List<ExtensibleModelObject> createAssembly(AggregateContext ctx) throws BuilderException {
+    public static List<Extensible> createAssembly(AggregateContext ctx) throws BuilderException {
         try {
-            JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
+            JavaComponentContextBuilder2 builder = new JavaComponentContextBuilder2();
             SimpleComponent component = MockAssemblyFactory.createComponent("TestService1", ModuleScopeComponentImpl.class,
                     ScopeEnum.MODULE_LITERAL);
             SimpleComponent sessionComponent = MockAssemblyFactory.createComponent("TestService2",
@@ -54,7 +54,7 @@ public class MockAggregateAssemblyFactory {
             builder.build(component, ctx);
             builder.build(sessionComponent, ctx);
             builder.build(requestComponent, ctx);
-            List<ExtensibleModelObject> configs = new ArrayList();
+            List<Extensible> configs = new ArrayList();
             configs.add(component);
             configs.add(sessionComponent);
             configs.add(requestComponent);

@@ -22,7 +22,7 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
+import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder2;
 import org.apache.tuscany.container.java.mock.MockAssemblyFactory;
 import org.apache.tuscany.container.java.mock.components.StatelessComponent;
 import org.apache.tuscany.container.java.mock.components.StatelessComponentImpl;
@@ -102,7 +102,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
     // Private methods
     // ----------------------------------
 
-    JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
+    JavaComponentContextBuilder2 builder = new JavaComponentContextBuilder2();
 
     private List<RuntimeConfiguration<InstanceContext>> createConfigurations()
             throws NoSuchMethodException, BuilderException {

@@ -10,7 +10,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.container.java.assembly.pojo.PojoJavaOperationType;
 import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.container.java.mock.MockAssemblyFactory;
 import org.apache.tuscany.container.java.mock.MockConfigContext;
@@ -36,16 +35,7 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.message.impl.PojoMessageFactory;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.ScopeEnum;
-import org.apache.tuscany.model.assembly.pojo.PojoConfiguredReference;
-import org.apache.tuscany.model.assembly.pojo.PojoConfiguredService;
-import org.apache.tuscany.model.assembly.pojo.PojoInterface;
-import org.apache.tuscany.model.assembly.pojo.PojoInterfaceType;
-import org.apache.tuscany.model.assembly.pojo.PojoJavaInterface;
-import org.apache.tuscany.model.assembly.pojo.PojoModule;
-import org.apache.tuscany.model.assembly.pojo.PojoPort;
-import org.apache.tuscany.model.assembly.pojo.PojoReference;
-import org.apache.tuscany.model.assembly.pojo.PojoService;
+import org.apache.tuscany.model.assembly.Scope;
 
 public class JavaComponentContextBuilderTestCase extends TestCase {
 
@@ -115,10 +105,8 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
     
     
     public Module createModule() throws Exception {
-        Component sourceComponent = MockAssemblyFactory.createComponent("source", ModuleScopeComponentImpl.class,
-                ScopeEnum.MODULE_LITERAL);
-        Component targetComponent = MockAssemblyFactory.createComponent("target", ModuleScopeComponentImpl.class,
-                ScopeEnum.MODULE_LITERAL);
+        Component sourceComponent = MockAssemblyFactory.createComponent("source", ModuleScopeComponentImpl.class,Scope.MODULE);
+        Component targetComponent = MockAssemblyFactory.createComponent("target", ModuleScopeComponentImpl.class,Scope.MODULE);
         PojoReference ref = new PojoReference();
         PojoConfiguredReference cref = new PojoConfiguredReference();
         ref.setName("setGenericComponent");
@@ -130,7 +118,7 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
         oType.setJavaMethod((Method) JavaIntrospectionHelper.getBeanProperty(GenericComponent.class, "getString", null));
         type.addOperationType(oType);
         inter.setInterfaceType(type);
-        ref.setInterfaceContract(inter);
+        ref.setServiceContract(inter);
         cref.setReference(ref);
         cref.setPart(targetComponent);
         PojoPort port = new PojoPort();
@@ -138,7 +126,7 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
         cref.setPort(port);
         sourceComponent.getConfiguredReferences().add(cref);
         PojoService sourceService = new PojoService();
-        sourceService.setInterfaceContract(inter);
+        sourceService.setServiceContract(inter);
         sourceService.setName("GenericComponent");
         PojoConfiguredService cService = new PojoConfiguredService();
         cService.setService(sourceService);
@@ -149,7 +137,7 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
         sourceComponent.getConfiguredServices().add(cService);
 
         PojoService targetService = new PojoService();
-        targetService.setInterfaceContract(inter);
+        targetService.setServiceContract(inter);
         targetService.setName("GenericComponent");
         PojoConfiguredService cTargetService = new PojoConfiguredService();
         cTargetService.setService(targetService);

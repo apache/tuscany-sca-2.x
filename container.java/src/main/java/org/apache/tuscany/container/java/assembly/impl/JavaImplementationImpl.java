@@ -16,9 +16,7 @@
  */
 package org.apache.tuscany.container.java.assembly.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+import java.net.URL;
 
 import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
@@ -27,176 +25,73 @@ import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
 import org.apache.tuscany.model.assembly.ComponentType;
-import org.apache.tuscany.model.assembly.Reference;
-import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelVisitorHelperImpl;
-import org.apache.tuscany.model.assembly.impl.ComponentTypeImpl;
-import org.apache.tuscany.model.util.XMLResourceFactoryImpl;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.common.util.WrappedException;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.osoa.sca.model.DocumentRoot;
+import org.apache.tuscany.model.assembly.impl.ComponentImplementationImpl;
 
 /**
- * An implementation of the model object '<em><b>Java Implementation</b></em>'.
+ * An implementation of JavaImplementation.
  */
-public class JavaImplementationImpl extends org.apache.tuscany.container.java.assembly.sdo.impl.JavaImplementationImpl implements JavaImplementation {
+public class JavaImplementationImpl extends ComponentImplementationImpl implements JavaImplementation {
 
-    private ComponentType componentType;
-    private Object runtimeConfiguration;
+    private Class implementationClass;
 
     /**
      * Constructor
      */
     protected JavaImplementationImpl() {
-        componentType = new ComponentTypeImpl();
     }
 
     /**
-     * @see org.apache.tuscany.container.java.assembly.JavaImplementation#getClass_()
+     * @see org.apache.tuscany.container.java.assembly.JavaImplementation#getImplementationClass()
      */
-    public String getClass_() {
-        return super.getClass_();
+    public Class getImplementationClass() {
+        return implementationClass;
     }
 
     /**
-     * @see org.apache.tuscany.container.java.assembly.JavaImplementation#setClass(java.lang.String)
+     * @see org.apache.tuscany.container.java.assembly.JavaImplementation#setImplementationClass(java.lang.Class)
      */
-    public void setClass(String value) {
-        super.setClass(value);
+    public void setImplementationClass(Class value) {
+        checkNotFrozen();
+        implementationClass=value;
     }
 
     /**
      * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
      */
     public void initialize(AssemblyModelContext modelContext) {
-        if (componentType.getServices().isEmpty()) {
-            Class implClass;
-            try {
-                implClass = JavaIntrospectionHelper.loadClass(getClass_());
-            } catch (ClassNotFoundException e) {
-                // todo anything better to throw?
-                throw new IllegalArgumentException("Component implementation class not found: " + getClass_());
-            }
-            createComponentType(modelContext, implClass);
+        if (isInitialized())
+            return;
+
+        // Initialize the component type
+        ComponentType componentType=getComponentType();
+        if (componentType==null) {
+            componentType=createComponentType(modelContext, implementationClass);
+            setComponentType(componentType);
         }
+        
+        super.initialize(modelContext);
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
+     * Create the component type
+     * @param modelContext
+     * @param implementationClass
      */
-    public boolean accept(AssemblyModelVisitor visitor) {
-        return AssemblyModelVisitorHelperImpl.accept(this, visitor);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.RuntimeManagedModelObject#getRuntimeConfiguration()
-     */
-    public Object getRuntimeConfiguration() {
-        return runtimeConfiguration;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.RuntimeManagedModelObject#setRuntimeConfiguration(java.lang.Object)
-     */
-    public void setRuntimeConfiguration(Object configuration) {
-        this.runtimeConfiguration = configuration;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#freeze()
-     */
-    public void freeze() {
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.TImplementation#setComponentType(org.apache.tuscany.model.assembly.ComponentType)
-     */
-    public void setComponentType(ComponentType componentType) {
-        this.componentType = componentType;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.TImplementation#getComponentType()
-     */
-    public ComponentType getComponentType() {
-        return componentType;
-    }
-
-    private void createComponentType(AssemblyModelContext modelContext, Class implClass) {
-        String baseName = JavaIntrospectionHelper.getBaseName(implClass);
-        InputStream sideFile = implClass.getResourceAsStream(baseName + ".componentType");
-        if (sideFile != null) {
-            try {
-                // todo load the sidefile using EMF - should this be using SDO?
-                Resource res = new XMLResourceFactoryImpl().createResource(URI.createURI(implClass.getName()));
-                res.load(sideFile, null);
-                DocumentRoot root = (DocumentRoot) res.getContents().get(0);
-                componentType = (ComponentType) root.getComponentType();
-                componentType.initialize(modelContext);
-            } catch (IOException e) {
-                throw new WrappedException(e);
-            } finally {
-                try {
-                    sideFile.close();
-                } catch (IOException e) {
-                    // ignore
-                }
-            }
+    private ComponentType createComponentType(AssemblyModelContext modelContext, Class implementationClass) {
+        String baseName = JavaIntrospectionHelper.getBaseName(implementationClass);
+        URL componentTypeFile = implementationClass.getResource(baseName + ".componentType");
+        if (componentTypeFile != null) {
+            return modelContext.getAssemblyLoader().getComponentType(componentTypeFile.toString());
         } else {
             JavaAssemblyFactory factory = new JavaAssemblyFactoryImpl();
             ComponentTypeIntrospector introspector = new Java5ComponentTypeIntrospector(factory);
             try {
-                componentType = introspector.introspect(implClass);
-                componentType.initialize(modelContext);
+                return introspector.introspect(implementationClass);
             } catch (ConfigurationException e) {
-                throw new IllegalArgumentException("Unable to introspect implementation class: " + implClass.getName(), e);
+                throw new IllegalArgumentException("Unable to introspect implementation class: " + implementationClass.getName(), e);
             }
         }
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ComponentType#getProperties()
-     */
-    public List<org.apache.tuscany.model.assembly.Property> getProperties() {
-        return componentType.getProperties();
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ComponentType#getProperty(java.lang.String)
-     */
-    public org.apache.tuscany.model.assembly.Property getProperty(String name) {
-        return componentType.getProperty(name);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ComponentType#getReference(java.lang.String)
-     */
-    public Reference getReference(String name) {
-        return componentType.getReference(name);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ComponentType#getReferences()
-     */
-    public List<Reference> getReferences() {
-        return componentType.getReferences();
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ComponentType#getService(java.lang.String)
-     */
-    public Service getService(String name) {
-        return componentType.getService(name);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ComponentType#getServices()
-     */
-    public List<Service> getServices() {
-        return componentType.getServices();
-    }
-
-} //JavaImplementationImpl
+ }

@@ -20,13 +20,13 @@ import org.apache.tuscany.model.assembly.AssemblyFactory;
 
 
 /**
- * The <b>Factory</b> for the model.
+ * The Factory for the model.
  */
 public interface JavaAssemblyFactory extends AssemblyFactory {
 
     /**
-     * Returns a new object of class '<em>Java Implementation</em>'.
+     * Returns a new JavaImplementation.
      */
     JavaImplementation createJavaImplementation();
 
-} //AssemblyFactory
+}

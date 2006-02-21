@@ -39,11 +39,10 @@ import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.Interface;
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.ServiceContract;
 import org.apache.tuscany.model.assembly.SimpleComponent;
-import org.apache.tuscany.model.types.OperationType;
 import org.osoa.sca.annotations.ComponentName;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Destroy;
@@ -98,12 +97,12 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
         if (component.getComponentImplementation() instanceof JavaImplementation) {
             JavaImplementation javaImpl = (JavaImplementation) component.getComponentImplementation();
             // FIXME scope
-            ScopeEnum scope = component.getComponentImplementation().getServices().get(0).getInterfaceContract().getScope();
+            Scope scope = component.getComponentImplementation().getComponentType().getServices().get(0).getServiceContract().getScope();
             Class implClass = null;
             Set<Field> fields;
             Set<Method> methods;
             try {
-                implClass = JavaIntrospectionHelper.loadClass(javaImpl.getClass_());
+                implClass = javaImpl.getImplementationClass();
                 fields = JavaIntrospectionHelper.getAllFields(implClass);
                 methods = JavaIntrospectionHelper.getAllUniqueMethods(implClass);
                 String name = component.getName();
@@ -163,25 +162,26 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
                     }
                 }
                 JavaComponentRuntimeConfiguration config = new JavaComponentRuntimeConfiguration(name, JavaIntrospectionHelper
-                        .getDefaultConstructor(implClass), eagerInit, initInvoker, destroyInvoker, scope.getValue());
+                        .getDefaultConstructor(implClass), eagerInit, initInvoker, destroyInvoker, scope);
                 component.getComponentImplementation().setRuntimeConfiguration(config);
 
                 // create chains for handling incoming requests
                 for (ConfiguredService configuredService : component.getConfiguredServices()) {
                     Service service = configuredService.getService();
-                    Interface interfaze = service.getInterfaceContract();
-                    Map<OperationType, InvocationConfiguration> iConfigMap = new HashMap();
+                    ServiceContract serviceContract = service.getServiceContract();
+                    Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
                     ProxyFactory proxyFactory = factory.createProxyFactory();
                     // FIXME we pass null for scopes since ProxyConfiguration requires scopes - this should be removed
-                    for (OperationType type : interfaze.getInterfaceType().getOperationTypes()) {
-                        InvocationConfiguration iConfig = new InvocationConfiguration(type);
-                        iConfigMap.put(type, iConfig);
+                    Set<Method> javaMethods=JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
+                    for (Method method : javaMethods) {
+                        InvocationConfiguration iConfig = new InvocationConfiguration(method);
+                        iConfigMap.put(method, iConfig);
                     }
                     // @FIXME hardcode separator
 //                    QualifiedName qName = new QualifiedName(configuredService.getPart().getName() + "/"
 //                            + configuredService.getService().getName());
                     ProxyConfiguration pConfiguration = new ProxyConfiguration(null, iConfigMap, null, null, msgFactory);
-                    proxyFactory.setBusinessInterface(interfaze.getInterfaceType().getInstanceClass());
+                    proxyFactory.setBusinessInterface(serviceContract.getInterface());
                     proxyFactory.setProxyConfiguration(pConfiguration);
                     config.addTargetProxyFactory(service.getName(), proxyFactory);
                     configuredService.setProxyFactory(proxyFactory);
@@ -202,21 +202,22 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
                 if (configuredReferences != null) {
                     for (ConfiguredReference reference : configuredReferences) {
                         ProxyFactory proxyFactory = factory.createProxyFactory();
-                        Interface interfaze = reference.getReference().getInterfaceContract();
-                        Map<OperationType, InvocationConfiguration> iConfigMap = new HashMap();
-                        for (OperationType type : interfaze.getInterfaceType().getOperationTypes()) {
-                            InvocationConfiguration iConfig = new InvocationConfiguration(type);
-                            iConfigMap.put(type, iConfig);
+                        ServiceContract serviceContract = reference.getReference().getServiceContract();
+                        Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
+                        Set<Method> javaMethods=JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
+                        for (Method method : javaMethods) {
+                            InvocationConfiguration iConfig = new InvocationConfiguration(method);
+                            iConfigMap.put(method, iConfig);
                         }
 
                         /*
                          * FIXME we pass null for scopes since ProxyConfiguration requires scopes - this should be
                          * removed from the constructor
                          */
-                        QualifiedName qName = new QualifiedName(reference.getPart().getName() + "/"
+                        QualifiedName qName = new QualifiedName(reference.getAggregatePart().getName() + "/"
                                 + reference.getPort().getName());
                         ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, null, msgFactory);
-                        proxyFactory.setBusinessInterface(interfaze.getInterfaceType().getInstanceClass());
+                        proxyFactory.setBusinessInterface(serviceContract.getInterface());
                         proxyFactory.setProxyConfiguration(pConfiguration);
                         config.addSourceProxyFactory(reference.getReference().getName(), proxyFactory);
                         reference.setProxyFactory(proxyFactory);
@@ -234,11 +235,6 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
                 e.addContextName(component.getName());
                 e.addContextName(parentContext.getName());
                 throw e;
-            } catch (ClassNotFoundException e) {
-                BuilderException be = new BuilderConfigException(e);
-                be.addContextName(component.getName());
-                be.addContextName(parentContext.getName());
-                throw be;
             } catch (NoSuchMethodException e) {
                 BuilderConfigException ce = new BuilderConfigException("Class does not have a no-arg constructor", e);
                 ce.setIdentifier(implClass.getName());
