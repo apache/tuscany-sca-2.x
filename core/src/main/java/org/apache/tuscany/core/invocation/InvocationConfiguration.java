@@ -16,6 +16,7 @@
  */
 package org.apache.tuscany.core.invocation;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,6 @@ import org.apache.tuscany.core.message.channel.MessageChannel;
 import org.apache.tuscany.core.message.channel.impl.MessageChannelImpl;
 import org.apache.tuscany.core.message.channel.impl.MessageDispatcher;
 import org.apache.tuscany.core.message.handler.MessageHandler;
-import org.apache.tuscany.model.types.OperationType;
 
 /**
  * Represents the source or target-side of a wire, including proxy configuration information and invocation pipeline
@@ -76,7 +76,7 @@ import org.apache.tuscany.model.types.OperationType;
 public class InvocationConfiguration {
 
     // the operation on the target that will utlimately be invoked
-    private OperationType operation;
+    private Method operation;
 
     // responsible for invoking a target instance, this is held by source-side invocation configurations
     private TargetInvoker targetInvoker;
@@ -102,7 +102,7 @@ public class InvocationConfiguration {
     /**
      * Creates an new invocation configuration for the given target operation
      */
-    public InvocationConfiguration(OperationType operation) {
+    public InvocationConfiguration(Method operation) {
         assert (operation != null) : "No operation type specified";
         this.operation = operation;
     }
@@ -110,7 +110,7 @@ public class InvocationConfiguration {
     /**
      * Returns the target operation for the invocation configuration
      */
-    public OperationType getOperationType() {
+    public Method getMethod() {
         return operation;
     }
 

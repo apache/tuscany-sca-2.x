@@ -15,6 +15,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import javax.wsdl.Part;
+
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
@@ -46,11 +48,11 @@ import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.ExtensibleModelObject;
+import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.Part;
-import org.apache.tuscany.model.assembly.pojo.PojoModule;
+import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 
 /**
  * The base implementation of an aggregate context
@@ -95,9 +97,9 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     protected EventContext eventContext;
 
     // The scopes for this context
-    protected Map<Integer, ScopeContext> scopeContexts;
+    protected Map<Scope, ScopeContext> scopeContexts;
 
-    protected Map<Integer, ScopeContext> immutableScopeContexts;
+    protected Map<Scope, ScopeContext> immutableScopeContexts;
 
     // A component context name to scope context index
     protected Map<String, ScopeContext> scopeIndex;
@@ -117,7 +119,8 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
 
     public AbstractAggregateContext() {
         scopeIndex = new ConcurrentHashMap();
-        module = new PojoModule();
+        //FIXME the factory should be injected
+        module = new AssemblyFactoryImpl().createModule();
     }
 
     public AbstractAggregateContext(String name, AggregateContext parent, ScopeStrategy strategy, EventContext ctx,
@@ -129,7 +132,8 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         this.monitorFactory = factory;
         scopeIndex = new ConcurrentHashMap();
         parentContext = parent;
-        module = new PojoModule();
+        //FIXME the factory should be injected
+        module = new AssemblyFactoryImpl().createModule();
     }
 
     // ----------------------------------
@@ -145,11 +149,11 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 lifecycleState = INITIALIZING;
                 initializeScopes();
 
-                Map<Integer, List<RuntimeConfiguration<SimpleComponentContext>>> configurationsByScope = new HashMap();
+                Map<Scope, List<RuntimeConfiguration<SimpleComponentContext>>> configurationsByScope = new HashMap();
                 if (configurations != null) {
                     for (RuntimeConfiguration source : configurations.values()) {
                         // FIXME scopes are defined at the interface level
-                        int sourceScope = source.getScope();
+                        Scope sourceScope = source.getScope();
                         wireSource(source);
                         buildTarget(source);
                         scopeIndex.put(source.getName(), scopeContexts.get(sourceScope));
@@ -254,14 +258,14 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         return parentContext;
     }
 
-    public void registerModelObjects(List<ExtensibleModelObject> models) throws ConfigurationException {
+    public void registerModelObjects(List<Extensible> models) throws ConfigurationException {
         assert (models != null) : "Model object collection was null";
-        for (ExtensibleModelObject model : models) {
+        for (Extensible model : models) {
             registerModelObject(model);
         }
     }
 
-    public void registerModelObject(ExtensibleModelObject model) throws ConfigurationException {
+    public void registerModelObject(Extensible model) throws ConfigurationException {
         assert (model != null) : "Model object was null";
         initializeScopes();
         if (configurationContext != null) {
@@ -472,7 +476,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         }
     }
 
-    public Map<Integer, ScopeContext> getScopeContexts() {
+    public Map<Scope, ScopeContext> getScopeContexts() {
         initializeScopes();
         return immutableScopeContexts;
     }
@@ -486,7 +490,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
      * 
      * @throws ContextInitException
      */
-    protected abstract void registerAutowire(ExtensibleModelObject model) throws ConfigurationException;
+    protected abstract void registerAutowire(Extensible model) throws ConfigurationException;
 
     // ----------------------------------
     // Protected methods
@@ -524,7 +528,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
      */
     protected void wireSource(RuntimeConfiguration source) {
         // FIXME scopes are defined at the interface level
-        int sourceScope = source.getScope();
+        Scope sourceScope = source.getScope();
         if (source.getSourceProxyFactories() != null) {
             for (ProxyFactory sourceFactory : ((Map<String, ProxyFactory>) source.getSourceProxyFactories()).values()) {
                 QualifiedName targetName = sourceFactory.getProxyConfiguration().getTargetName();

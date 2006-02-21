@@ -16,12 +16,12 @@
  */
 package org.apache.tuscany.core.invocation;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.message.MessageFactory;
-import org.apache.tuscany.model.types.OperationType;
 
 /**
  * Represents configuration information for creating a service reference proxy
@@ -30,7 +30,7 @@ import org.apache.tuscany.model.types.OperationType;
  */
 public class ProxyConfiguration {
 
-    private Map<OperationType, InvocationConfiguration> configurations;
+    private Map<Method, InvocationConfiguration> configurations;
 
     private ClassLoader proxyClassLoader;
 
@@ -46,7 +46,7 @@ public class ProxyConfiguration {
     // ----------------------------------
 
     // TODO add "from"
-    public ProxyConfiguration(QualifiedName targetName, Map<OperationType, InvocationConfiguration> invocationConfigs,
+    public ProxyConfiguration(QualifiedName targetName, Map<Method, InvocationConfiguration> invocationConfigs,
             ClassLoader proxyClassLoader, Map<Integer, ScopeContext> scopeContainers, MessageFactory messageFactory) {
         assert (invocationConfigs != null) : "No invocation configuration map specified";
         this.targetName = targetName;
@@ -72,7 +72,7 @@ public class ProxyConfiguration {
      * Returns a collection of operation types to {@link InvocationConfiguration} mappings that represent the specific
      * proxy configuration information for particular operations
      */
-    public Map<OperationType, InvocationConfiguration> getInvocationConfigurations() {
+    public Map<Method, InvocationConfiguration> getInvocationConfigurations() {
         return configurations;
     }
 
