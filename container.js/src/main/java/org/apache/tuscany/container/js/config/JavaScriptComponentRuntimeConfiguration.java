@@ -36,7 +36,7 @@ public class JavaScriptComponentRuntimeConfiguration implements RuntimeConfigura
 	public JavaScriptComponentRuntimeConfiguration(SimpleComponent component, JavaScriptImplementation implementation) {
 		this.component = component;
 		this.implementation = implementation;
-        this.scope = implementation.getServices().get(0).getInterfaceContract().getScope().getValue();
+        this.scope = implementation.getServices().get(0).getServiceContract().getScope().getValue();
 	}
 
 	public SimpleComponentContext createInstanceContext() throws ContextCreationException {

@@ -172,7 +172,7 @@ public class JavaScriptImplementationImpl extends org.apache.tuscany.container.j
         Map<String, Object> context = new HashMap<String, Object>();
         List<Property> ps = getProperties();
         for (Property p : ps) {
-            context.put(p.getName(), p.getDefault());
+            context.put(p.getName(), p.getDefaultValue());
         }
         return context;
     }

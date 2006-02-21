@@ -58,7 +58,7 @@ public class JavaScriptComponentContext extends AbstractContext implements
 	public synchronized Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
 		//TODO: should this cache the instance?
 		ConfiguredService service = component.getConfiguredServices().get(0);
-		String iface = service.getPort().getInterfaceContract().getInterface();
+		String iface = service.getPort().getServiceContract().getInterface();
 		Class[] ifaces;
 		try {
 			ifaces = new Class[] { implementation.getResourceLoader().loadClass(iface) };

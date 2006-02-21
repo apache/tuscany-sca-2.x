@@ -31,8 +31,8 @@ import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ComponentImplementation;
 import org.apache.tuscany.model.assembly.ConfiguredPort;
 import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.Interface;
-import org.apache.tuscany.model.assembly.Part;
+import org.apache.tuscany.model.assembly.ServiceContract;
+import org.apache.tuscany.model.assembly.AggregatePart;
 import org.apache.tuscany.model.assembly.ScopeEnum;
 import org.apache.tuscany.model.types.InterfaceType;
 import org.apache.tuscany.model.types.OperationType;
@@ -55,7 +55,7 @@ public class JavaScriptComponentConfigurationHandler extends AdapterImpl impleme
             return true;
 
         ConfiguredService serviceEndpoint = (ConfiguredService) portEndpoint;
-        Part part = serviceEndpoint.getPart();
+        AggregatePart part = serviceEndpoint.getPart();
         if (!(part instanceof Component))
             return true;
         Component component = (Component) part;
@@ -75,7 +75,7 @@ public class JavaScriptComponentConfigurationHandler extends AdapterImpl impleme
         Map<OperationType, InvocationConfiguration>invocationConfigurations=proxyConfiguration.getInvocationConfigurations();
         Map<Integer,ScopeContext> scopeContainers = proxyConfiguration.getScopeContainers();
 
-        Interface targetInterface = serviceEndpoint.getService().getInterfaceContract();
+        ServiceContract targetInterface = serviceEndpoint.getService().getServiceContract();
         InterfaceType targetInterfaceType = targetInterface.getInterfaceType();
         ScopeEnum scope = targetInterface.getScope();
         String serviceAddress = serviceEndpoint.getPart().getName(); 
