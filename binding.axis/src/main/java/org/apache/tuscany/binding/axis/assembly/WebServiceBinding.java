@@ -16,20 +16,36 @@
  */
 package org.apache.tuscany.binding.axis.assembly;
 
+import javax.wsdl.Definition;
+import javax.wsdl.Port;
+
 import org.apache.tuscany.model.assembly.Binding;
 
 /**
- * A representation of the model object '<em><b>Web Service Binding</b></em>'.
+ * Represents a Web service binding.
  */
 public interface WebServiceBinding extends Binding {
-    /**
-     * Returns the value of the '<em><b>Port</b></em>' attribute.
-     */
-    String getPort();
 
     /**
-     * Sets the value of the '{@link org.osoa.sca.model.WebServiceBinding#getPort <em>Port</em>}' attribute.
+     * Returns the WSDL port defining this binding.
      */
-    void setPort(String value);
+    Port getWSDLPort();
+    
+    /**
+     * Returns the WSDL definition containing the WSDL port.
+     * @return
+     */
+    Definition getWSDLDefinition();
 
-} // TWebServiceBinding
+    /**
+     * Sets the WSDL port defining this binding.
+     */
+    void setWSDLPort(Port value);
+
+    /**
+     * Sets the WSDL definition containing the WSDL port.
+     * @param definition
+     */
+    void setWSDLDefinition(Definition definition);
+
+}

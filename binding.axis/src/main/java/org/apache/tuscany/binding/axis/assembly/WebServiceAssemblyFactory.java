@@ -16,8 +16,6 @@
  */
 package org.apache.tuscany.binding.axis.assembly;
 
-import org.osoa.sca.model.WebServiceBinding;
-
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 
 /**
@@ -26,13 +24,8 @@ import org.apache.tuscany.model.assembly.AssemblyFactory;
 public interface WebServiceAssemblyFactory extends AssemblyFactory {
 
     /**
-     * Returns a new object of class '<em>Web Service Binding</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     *
-     * @return a new object of class '<em>Web Service Binding</em>'.
-     * @generated
+     * Returns a new WebServiceBinding.
      */
     WebServiceBinding createWebServiceBinding();
 
-} //TWebServiceAssemblyFactory
+}

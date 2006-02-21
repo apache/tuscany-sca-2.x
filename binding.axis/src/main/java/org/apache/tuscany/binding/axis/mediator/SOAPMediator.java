@@ -17,13 +17,13 @@
 package org.apache.tuscany.binding.axis.mediator;
 
 import java.io.IOException;
+
+import javax.wsdl.Operation;
 import javax.xml.soap.SOAPException;
 
 import org.apache.axis.message.SOAPEnvelope;
-import org.osoa.sca.ModuleContext;
-
 import org.apache.tuscany.core.message.Message;
-import org.apache.tuscany.model.types.wsdl.WSDLOperationType;
+import org.osoa.sca.ModuleContext;
 
 /**
  */
@@ -38,7 +38,7 @@ public interface SOAPMediator {
      * @throws IOException
      * @throws SOAPException
      */
-    public void writeRequest(ModuleContext moduleContext, Message message, WSDLOperationType operationType, SOAPEnvelope soapEnvelope) throws IOException, SOAPException;
+    public void writeRequest(ModuleContext moduleContext, Message message, Operation operation, SOAPEnvelope soapEnvelope) throws IOException, SOAPException;
 
     /**
      * Write a response message to a SOAP envelope
@@ -49,7 +49,7 @@ public interface SOAPMediator {
      * @throws IOException
      * @throws SOAPException
      */
-    public void writeResponse(ModuleContext moduleContext, Message message, WSDLOperationType operationType, SOAPEnvelope soapEnvelope) throws IOException, SOAPException;
+    public void writeResponse(ModuleContext moduleContext, Message message, Operation operation, SOAPEnvelope soapEnvelope) throws IOException, SOAPException;
 
     /**
      * Read a request message from a SOAP envelope
@@ -61,7 +61,7 @@ public interface SOAPMediator {
      * @throws IOException
      * @throws SOAPException
      */
-    public void readRequest(ModuleContext moduleContext, SOAPEnvelope soapEnvelope, Message message, WSDLOperationType operationType) throws IOException, SOAPException;
+    public void readRequest(ModuleContext moduleContext, SOAPEnvelope soapEnvelope, Message message, Operation operation) throws IOException, SOAPException;
 
     /**
      * Read a response message from a SOAP envelope
@@ -72,6 +72,6 @@ public interface SOAPMediator {
      * @throws IOException
      * @throws SOAPException
      */
-    public void readResponse(ModuleContext moduleContext, SOAPEnvelope soapEnvelope, Message message, WSDLOperationType operationType) throws IOException, SOAPException;
+    public void readResponse(ModuleContext moduleContext, SOAPEnvelope soapEnvelope, Message message, Operation operation) throws IOException, SOAPException;
 	
 }

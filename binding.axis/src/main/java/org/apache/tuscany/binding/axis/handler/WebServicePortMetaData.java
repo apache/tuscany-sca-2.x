@@ -19,6 +19,7 @@ package org.apache.tuscany.binding.axis.handler;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.wsdl.Binding;
 import javax.wsdl.BindingOperation;
 import javax.wsdl.Definition;
@@ -32,10 +33,8 @@ import javax.xml.soap.Name;
 import javax.xml.soap.SOAPBodyElement;
 import javax.xml.soap.SOAPElement;
 
+import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 import org.w3c.dom.Element;
-
-import org.apache.tuscany.model.types.wsdl.WSDLInterfaceType;
-import org.apache.tuscany.model.types.wsdl.WSDLTypeHelper;
 
 /**
  * Metadata for a WSDL port
@@ -63,7 +62,7 @@ public class WebServicePortMetaData {
 
     private List allOperationMetaData;
 
-    private WSDLInterfaceType interfaceType;
+    private WSDLServiceContract interfaceType;
 
     /**
      * Constructor
@@ -71,42 +70,31 @@ public class WebServicePortMetaData {
      * @param wsdlDefinition
      * @param portName
      */
-    public WebServicePortMetaData(WSDLTypeHelper wsdlTypeHelper, Definition wsdlDefinition, QName portName, String endpoint, boolean managed) {
+    public WebServicePortMetaData(Definition wsdlDefinition, Port wsdlPort, String endpoint, boolean managed) {
 
         // Lookup the named port
-        wsdlPortName = portName;
+        this.wsdlPort=wsdlPort;
+        wsdlPortName = new QName(wsdlDefinition.getTargetNamespace(), wsdlPort.getName());
         for (Iterator i = wsdlDefinition.getServices().values().iterator(); i.hasNext() && wsdlPort == null;) {
             wsdlService = (javax.wsdl.Service) i.next();
-            if (wsdlPortName.getNamespaceURI().equals(wsdlService.getQName().getNamespaceURI())) {
-                wsdlPort = wsdlService.getPort(wsdlPortName.getLocalPart());
-                if (wsdlPort != null) {
-                    wsdlServiceName = wsdlService.getQName();
-                    break;
-                }
+            if (wsdlService.getPorts().containsValue(wsdlPort)) {
+                wsdlServiceName = wsdlService.getQName();
+                break;
             }
-        }
-        if (wsdlPort == null) {
-            throw new IllegalArgumentException("WSDL port cannot be found for " + portName);
         }
 
         // Save the binding
         wsdlBinding = wsdlPort.getBinding();
         if (wsdlBinding == null) {
-            throw new IllegalArgumentException("WSDL binding cannot be found for " + portName);
+            throw new IllegalArgumentException("WSDL binding cannot be found for " + wsdlPortName);
         }
 
         // Save the portType
         wsdlPortType = wsdlBinding.getPortType();
         if (wsdlPortType == null) {
-            throw new IllegalArgumentException("WSDL portType cannot be found for " + portName);
+            throw new IllegalArgumentException("WSDL portType cannot be found for " + wsdlPortName);
         }
         wsdlPortTypeName = wsdlPortType.getQName();
-
-        // Lookup the EClass representing the WSDL portType
-        interfaceType = wsdlTypeHelper.getWSDLInterfaceType(wsdlPortTypeName);
-        if (interfaceType == null) {
-            throw new IllegalArgumentException("WSDL portType interface metadata cannot be found for " + wsdlPortTypeName);
-        }
 
         // Save the endpoint
         this.endpoint = endpoint;
@@ -348,7 +336,7 @@ public class WebServicePortMetaData {
         return null;
     }
 
-    public WSDLInterfaceType getInterfaceType() {
+    public WSDLServiceContract getInterfaceType() {
         return interfaceType;
 	}
 

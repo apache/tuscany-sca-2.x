@@ -19,24 +19,24 @@ package org.apache.tuscany.binding.axis.mediator.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
+
 import javax.xml.soap.SOAPException;
 
-import commonj.sdo.DataObject;
 import org.apache.axis.Constants;
 import org.apache.axis.message.MessageElement;
 import org.apache.axis.message.SOAPEnvelope;
 import org.apache.axis.utils.Mapping;
-import org.osoa.sca.ModuleContext;
-
 import org.apache.tuscany.binding.axis.handler.WebServicePortMetaData;
 import org.apache.tuscany.binding.axis.mediator.SOAPMediator;
 import org.apache.tuscany.common.io.util.UTF8String;
-import org.apache.tuscany.model.util.ConfiguredResourceSet;
 import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
-import org.apache.tuscany.core.deprecated.sdo.util.HelperProvider;
-import org.apache.tuscany.core.deprecated.sdo.util.XMLHelper;
-import org.apache.tuscany.core.deprecated.sdo.util.impl.HelperProviderImpl;
 import org.apache.tuscany.core.message.Message;
+import org.apache.tuscany.sdo.helper.HelperProviderImpl;
+import org.osoa.sca.ModuleContext;
+
+import commonj.sdo.DataObject;
+import commonj.sdo.helper.XMLHelper;
+import commonj.sdo.impl.HelperProvider;
 
 /**
  */
@@ -134,12 +134,5 @@ public abstract class SOAPBaseMediatorImpl
         return helperProvider.getXSDHelper();
     }
     */
-
-    protected static HelperProvider getHelperProvider(ModuleContext moduleContext) {
-        TuscanyModuleComponentContext context = (TuscanyModuleComponentContext) moduleContext;
-        HelperProvider helperProvider = new HelperProviderImpl((ConfiguredResourceSet) context
-                .getAssemblyModelContext().getAssemblyLoader());
-        return helperProvider;
-    }
 
 }

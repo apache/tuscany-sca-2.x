@@ -16,83 +16,54 @@
  */
 package org.apache.tuscany.binding.axis.assembly.impl;
 
+import javax.wsdl.Definition;
+import javax.wsdl.Port;
+
 import org.apache.tuscany.binding.axis.assembly.WebServiceBinding;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelVisitorHelperImpl;
+import org.apache.tuscany.model.assembly.impl.BindingImpl;
 
 /**
- * An implementation of the model object '<em><b>Web Service Binding</b></em>'.
+ * An implementation of WebServiceBinding.
  */
-public class WebServiceBindingImpl extends org.apache.tuscany.binding.axis.assembly.sdo.impl.WebServiceBindingImpl implements WebServiceBinding {
-
-    private Object runtimeConfiguration;
+public class WebServiceBindingImpl extends BindingImpl implements WebServiceBinding {
+    
+    private Definition definition;
+    private Port port;
 
     /**
      * Constructor
      */
     protected WebServiceBindingImpl() {
     }
-
+    
     /**
-     * @see org.apache.tuscany.binding.axis.assembly.sdo.impl.WebServiceBindingImpl#getPort()
+     * @see org.apache.tuscany.binding.axis.assembly.WebServiceBinding#getWSDLPort()
      */
-    public String getPort() {
-        return super.getPort();
+    public Port getWSDLPort() {
+        return port;
+    }
+    
+    /**
+     * @see org.apache.tuscany.binding.axis.assembly.WebServiceBinding#setWSDLPort(javax.wsdl.Port)
+     */
+    public void setWSDLPort(Port value) {
+        checkNotFrozen();
+        this.port=value;
+    }
+    
+    /**
+     * @see org.apache.tuscany.binding.axis.assembly.WebServiceBinding#getWSDLDefinition()
+     */
+    public Definition getWSDLDefinition() {
+        return definition;
+    }
+    
+    /**
+     * @see org.apache.tuscany.binding.axis.assembly.WebServiceBinding#setWSDLDefinition(javax.wsdl.Definition)
+     */
+    public void setWSDLDefinition(Definition definition) {
+        checkNotFrozen();
+        this.definition=definition;
     }
 
-    /**
-     * @see org.apache.tuscany.binding.axis.assembly.sdo.impl.WebServiceBindingImpl#setPort(java.lang.String)
-     */
-    public void setPort(String newPort) {
-        super.setPort(newPort);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.Binding#setURI(java.lang.String)
-     */
-    public void setURI(String value) {
-        super.setUri(value);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.Binding#getURI()
-     */
-    public String getURI() {
-        return super.getUri();
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredRuntimeObject#getRuntimeConfiguration()
-     */
-    public Object getRuntimeConfiguration() {
-        return runtimeConfiguration;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredRuntimeObject#setRuntimeConfiguration(java.lang.Object)
-     */
-    public void setRuntimeConfiguration(Object configuration) {
-        this.runtimeConfiguration = configuration;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
-     */
-    public void initialize(AssemblyModelContext modelContext) {
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#freeze()
-     */
-    public void freeze() {
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
-     */
-    public boolean accept(AssemblyModelVisitor visitor) {
-        return AssemblyModelVisitorHelperImpl.accept(this, visitor);
-    }
-
-} //TWebServiceBindingImpl
+}

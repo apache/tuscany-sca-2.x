@@ -16,9 +16,8 @@
  */
 package org.apache.tuscany.binding.axis.assembly.impl;
 
-import org.osoa.sca.model.WebServiceBinding;
-
 import org.apache.tuscany.binding.axis.assembly.WebServiceAssemblyFactory;
+import org.apache.tuscany.binding.axis.assembly.WebServiceBinding;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 
 /**
@@ -40,4 +39,4 @@ public class WebServiceAssemblyFactoryImpl extends AssemblyFactoryImpl implement
         return new WebServiceBindingImpl();
     }
 
-} //WebServiceAssemblyFactoryImpl
+}

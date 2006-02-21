@@ -50,12 +50,12 @@ import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.Interface;
+import org.apache.tuscany.model.assembly.ServiceContract;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ServiceURI;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.types.InterfaceType;
-import org.apache.tuscany.model.types.wsdl.WSDLInterfaceType;
+import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 import org.apache.tuscany.model.types.wsdl.WSDLOperationType;
 import org.apache.tuscany.model.types.wsdl.WSDLTypeHelper;
 
@@ -65,7 +65,7 @@ import org.apache.tuscany.model.types.wsdl.WSDLTypeHelper;
  */
 public class WebServiceEntryPointBean implements ServiceLifecycle {
     private TuscanyModuleComponentContext moduleContext;
-    private WSDLInterfaceType interfaceType;
+    private WSDLServiceContract interfaceType;
     private WebServicePortMetaData portMetaData;
     private EndpointReference toEndpointReference;
     private EndpointReference fromEndpointReference;
@@ -125,7 +125,7 @@ public class WebServiceEntryPointBean implements ServiceLifecycle {
 
             // Get the target service
             ConfiguredReference referenceValue = entryPoint.getConfiguredReference();
-            ConfiguredService targetServiceEndpoint = referenceValue.getConfiguredServices().get(0);
+            ConfiguredService targetServiceEndpoint = referenceValue.getTargetConfiguredServices().get(0);
 
             // Create a service reference for the target  service
             AssemblyFactory assemblyFactory = new AssemblyFactoryImpl();
@@ -136,7 +136,7 @@ public class WebServiceEntryPointBean implements ServiceLifecycle {
             toEndpointReference.setAddress(serviceAddress.getAddress());
 
             // Get the entry point interface
-            Interface serviceInterface = entryPoint.getInterfaceContract();
+            ServiceContract serviceInterface = entryPoint.getServiceContract();
             InterfaceType interfaceEClass = serviceInterface.getInterfaceType();
             if (interfaceEClass != null)
                 toEndpointReference.setPortTypeName(serviceInterface.getInterface());
@@ -154,7 +154,7 @@ public class WebServiceEntryPointBean implements ServiceLifecycle {
 
             // Get the WSDL port name
             WebServiceBinding wsBinding = (WebServiceBinding) entryPoint.getBindings().get(0);
-            QName wsdlPortName = assemblyFactory.createQName(wsBinding.getPort());
+            QName wsdlPortName = assemblyFactory.createQName(wsBinding.getWSDLPort());
 
             WSDLTypeHelper typeHelper = moduleContext.getAssemblyModelContext().getWSDLTypeHelper();
 

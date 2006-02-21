@@ -20,9 +20,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
+
 import javax.servlet.ServletConfig;
 import javax.wsdl.Definition;
+import javax.wsdl.Message;
 import javax.wsdl.Operation;
+import javax.wsdl.Port;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
@@ -37,13 +40,7 @@ import org.apache.axis.description.OperationDesc;
 import org.apache.axis.description.ParameterDesc;
 import org.apache.axis.handlers.soap.SOAPService;
 import org.apache.axis.providers.java.MsgProvider;
-import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.xsd.util.XSDConstants;
-import org.osoa.sca.ServiceRuntimeException;
-import org.osoa.sca.model.Binding;
-import org.osoa.sca.model.EntryPoint;
-import org.osoa.sca.model.WebServiceBinding;
-
+import org.apache.tuscany.binding.axis.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis.handler.WebServiceEntryPointBean;
 import org.apache.tuscany.binding.axis.handler.WebServiceOperationMetaData;
 import org.apache.tuscany.binding.axis.handler.WebServicePortMetaData;
@@ -52,11 +49,12 @@ import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
 import org.apache.tuscany.core.context.webapp.TuscanyWebAppRuntime;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.Interface;
+import org.apache.tuscany.model.assembly.Binding;
+import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
-import org.apache.tuscany.model.types.InterfaceType;
-import org.apache.tuscany.model.types.wsdl.WSDLTypeHelper;
+import org.eclipse.xsd.util.XSDConstants;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  */
@@ -136,18 +134,11 @@ public class AxisEngineConfigurationFactory implements EngineConfigurationFactor
                 Binding binding = (Binding) entryPoint.getBindings().get(0);
                 if (binding instanceof WebServiceBinding) {
                     WebServiceBinding wsBinding = (WebServiceBinding) binding;
-                    QName qname = assemblyFactory.createQName(wsBinding.getPort());
+                    Definition definition=wsBinding.getWSDLDefinition();
+                    Port port=wsBinding.getWSDLPort();
+                    QName qname = new QName(definition.getTargetNamespace(), port.getName());
                     if (qname != null) {
-
-                        // Get the WSDL port and binding
-                        WSDLTypeHelper typeHelper = moduleContext.getAssemblyModelContext().getWSDLTypeHelper();
-
-                        Definition definition = typeHelper.getWSDLDefinition(qname.getNamespaceURI());
-                        if (definition == null) {
-                            throw new IllegalArgumentException("Unable to locate WSDL package for target namespace " + qname.getNamespaceURI());
-                        }
-
-                        WebServicePortMetaData wsdlPortInfo = new WebServicePortMetaData(typeHelper, definition, qname, null, false);
+                        WebServicePortMetaData wsdlPortInfo = new WebServicePortMetaData(definition, port, null, false);
 
                         // Create a new message SOAP service
                         SOAPService service = new SOAPService(new MsgProvider());
@@ -191,9 +182,8 @@ public class AxisEngineConfigurationFactory implements EngineConfigurationFactor
                                 operationDesc.setElementQName((QName) operationMetaData.getOperationSignature().get(0));
                             }
 
-                            InterfaceType eClass = ((Interface) entryPoint.getInterface()).getInterfaceType();
-                            EOperation eOperation = (EOperation) eClass.getOperationType(wsdlOperation.getName());
-                            if (eOperation.getEParameters().size() != 0) {
+                            Message inputMessage=wsdlOperation.getInput()!=null? wsdlOperation.getInput().getMessage():null;
+                            if (inputMessage!=null & !inputMessage.getParts().isEmpty()) {
                                 ParameterDesc parameterDesc = new ParameterDesc();
                                 QName anyQName = new QName(XSDConstants.SCHEMA_FOR_SCHEMA_URI_2001, "any");
                                 parameterDesc.setTypeQName(anyQName);
@@ -202,7 +192,8 @@ public class AxisEngineConfigurationFactory implements EngineConfigurationFactor
                                 operationDesc.addParameter(parameterDesc);
                             }
 
-                            if (eOperation.getEType() != null) {
+                            Message outputMessage=wsdlOperation.getOutput()!=null? wsdlOperation.getOutput().getMessage():null;
+                            if (outputMessage!=null & !outputMessage.getParts().isEmpty()) {
                                 QName anyQName = new QName(XSDConstants.SCHEMA_FOR_SCHEMA_URI_2001, "any");
                                 operationDesc.setReturnType(anyQName);
                                 operationDesc.setReturnQName(anyQName);

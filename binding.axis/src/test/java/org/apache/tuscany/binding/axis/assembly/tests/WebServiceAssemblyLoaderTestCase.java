@@ -20,7 +20,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.binding.axis.assembly.WebServiceBinding;
-import org.apache.tuscany.model.assembly.AssemblyLoader;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.Component;
@@ -28,6 +27,7 @@ import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
 
 /**
  */

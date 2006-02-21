@@ -16,45 +16,45 @@
  */
 package org.apache.tuscany.binding.axis.handler;
 
+import java.util.Collection;
 import java.util.List;
+
 import javax.wsdl.Definition;
+import javax.wsdl.Input;
+import javax.wsdl.Operation;
+import javax.wsdl.Part;
 import javax.wsdl.Port;
 import javax.xml.namespace.QName;
 import javax.xml.rpc.Service;
 import javax.xml.rpc.ServiceException;
 import javax.xml.rpc.ServiceFactory;
 
-import commonj.sdo.DataObject;
-import commonj.sdo.Property;
-import commonj.sdo.Type;
 import org.apache.axis.client.Call;
 import org.apache.axis.message.SOAPEnvelope;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.sdo.EProperty;
-import org.eclipse.emf.ecore.sdo.EType;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.ecore.util.ExtendedMetaData;
-import org.osoa.sca.ServiceUnavailableException;
-import org.osoa.sca.model.WebServiceBinding;
-
+import org.apache.tuscany.binding.axis.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis.mediator.SOAPMediator;
 import org.apache.tuscany.binding.axis.mediator.impl.SOAPDocumentLiteralMediatorImpl;
 import org.apache.tuscany.binding.axis.mediator.impl.SOAPEnvelopeImpl;
 import org.apache.tuscany.binding.axis.mediator.impl.SOAPRPCEncodedMediatorImpl;
 import org.apache.tuscany.binding.axis.mediator.impl.SOAPRPCLiteralMediatorImpl;
-import org.apache.tuscany.model.util.ConfiguredResourceSet;
 import org.apache.tuscany.core.addressing.EndpointReference;
 import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
-import org.apache.tuscany.core.deprecated.sdo.util.HelperProvider;
-import org.apache.tuscany.core.deprecated.sdo.util.impl.HelperProviderImpl;
 import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.handler.MessageHandler;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
-import org.apache.tuscany.model.types.wsdl.WSDLOperationType;
-import org.apache.tuscany.model.types.wsdl.WSDLTypeHelper;
+import org.apache.tuscany.sdo.helper.HelperProviderImpl;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.ecore.util.ExtendedMetaData;
+import org.osoa.sca.ServiceUnavailableException;
+
+import commonj.sdo.DataObject;
+import commonj.sdo.Property;
+import commonj.sdo.Type;
+import commonj.sdo.impl.HelperProvider;
 
 /**
  *         Operation handler
@@ -63,9 +63,8 @@ public class ExternalWebServiceHandler implements MessageHandler {
     private TuscanyModuleComponentContext moduleContext;
     private Service jaxrpcService;
     private WebServicePortMetaData portMetaData;
-    private WSDLTypeHelper typeHelper;
     private Call call;
-    private WSDLOperationType wsdlOperationType;
+    private Operation wsdlOperation;
     private boolean rpcStyle;
     private boolean rpcEncoded;
     private SOAPMediator mediator;
@@ -79,7 +78,7 @@ public class ExternalWebServiceHandler implements MessageHandler {
         call = (Call) jaxrpcService.createCall(portName);
 
         // set operation name
-        WebServiceOperationMetaData operationMetaData = portMetaData.getOperationMetaData(wsdlOperationType.getName());
+        WebServiceOperationMetaData operationMetaData = portMetaData.getOperationMetaData(wsdlOperation.getName());
 
         call.setOperationName(operationMetaData.getRPCOperationName());
 
@@ -119,28 +118,29 @@ public class ExternalWebServiceHandler implements MessageHandler {
 
     private boolean isWrappedStyle() {
         if (wrapped == null) {
-            wrapped = Boolean.valueOf(isWrappedStyle(wsdlOperationType));
+            wrapped = Boolean.valueOf(isWrappedStyle(wsdlOperation));
         }
         return wrapped.booleanValue();
     }
 
-    public static boolean isWrappedStyle(WSDLOperationType wsdlOperationType) {
-        Type inputType = wsdlOperationType.getInputType();
-        if (inputType == null)
+    public static boolean isWrappedStyle(Operation wsdlOperation) {
+        Input input = wsdlOperation.getInput();
+        if (input == null)
             return false;
-        List properties = inputType.getProperties();
-        if (properties.size() != 1)
+        javax.wsdl.Message message = input.getMessage();
+        if (message == null)
             return false;
-        Property property = (Property) properties.get(0);
-        EProperty p = (EProperty) property;
-        EType eType = (EType) inputType;
-
-        String elementName = ExtendedMetaData.INSTANCE.getName(p.getEStructuralFeature());
-        String operationName = wsdlOperationType.getName();
-        if (!operationName.equals(elementName))
+        Collection<Part> parts=message.getParts().values();
+        if (parts.size() != 1)
             return false;
-        List attrs = ExtendedMetaData.INSTANCE.getAttributes((EClass) eType.getEClassifier());
-        return attrs.isEmpty();
+        Part part = parts.iterator().next();
+        QName elementName=part.getElementName();
+        if (elementName == null)
+            return false;
+        if (elementName.getLocalPart().equals(wsdlOperation.getName()))
+            return true;
+        else
+            return false;
     }
 
     /**
@@ -152,10 +152,10 @@ public class ExternalWebServiceHandler implements MessageHandler {
             SOAPEnvelope requestEnvelope = new SOAPEnvelopeImpl();
 
             Object input=message.getBody();
-            Message requestMessage = createRequestMessage(moduleContext, wsdlOperationType, input);
+            Message requestMessage = createRequestMessage(moduleContext, wsdlOperation, input);
 
             // Write the SCA message into the SOAP envelope
-            mediator.writeRequest(moduleContext, requestMessage, wsdlOperationType, requestEnvelope);
+            mediator.writeRequest(moduleContext, requestMessage, wsdlOperation, requestEnvelope);
 
             // Invoke the SOAP operation
             call.setRequestMessage(new org.apache.axis.Message(requestEnvelope));
@@ -164,9 +164,9 @@ public class ExternalWebServiceHandler implements MessageHandler {
             // Create an SCA message from the response envelope
             SOAPEnvelope responseEnvelope = call.getResponseMessage().getSOAPEnvelope();
             Message responseMessage = new MessageFactoryImpl().createMessage();
-            mediator.readResponse(moduleContext, responseEnvelope, responseMessage, wsdlOperationType);
+            mediator.readResponse(moduleContext, responseEnvelope, responseMessage, wsdlOperation);
 
-            Object output=getResponse(responseMessage, wsdlOperationType);
+            Object output=getResponse(responseMessage, wsdlOperation);
             responseMessage.setBody(output);
             
             // Generate a message ID
@@ -186,13 +186,13 @@ public class ExternalWebServiceHandler implements MessageHandler {
         }
     }
 
-    public static Object getResponse(Message responseMessage, WSDLOperationType wsdlOperationType) {
+    public static Object getResponse(Message responseMessage, Operation wsdlOperation) {
         Object result = responseMessage.getBody();
         if (result == null)
             return null;
 
         List properties = wsdlOperationType.getOutputType().getProperties();
-        if (isWrappedStyle(wsdlOperationType)) {
+        if (isWrappedStyle(wsdlOperation)) {
             DataObject outputBody = ((DataObject) result).getDataObject(0);
             Property property = (Property) properties.get(0); // the single part
             List argList = property.getType().getProperties();
@@ -212,13 +212,13 @@ public class ExternalWebServiceHandler implements MessageHandler {
         }
     }
 
-    public static Object[] getRequest(Message requestMessage, WSDLOperationType wsdlOperationType) {
+    public static Object[] getRequest(Message requestMessage, Operation wsdlOperation) {
         Object request = requestMessage.getBody();
         if (request == null)
             return null;
 
         List properties = wsdlOperationType.getInputType().getProperties();
-        if (isWrappedStyle(wsdlOperationType)) {
+        if (isWrappedStyle(wsdlOperation)) {
             DataObject inputPart = ((DataObject) request).getDataObject(0); // Get the single part
             Property property = (Property) properties.get(0); // Type of the part
             List argList = property.getType().getProperties();
@@ -242,7 +242,7 @@ public class ExternalWebServiceHandler implements MessageHandler {
     /**
      * @param input
      */
-    public static Message createRequestMessage(TuscanyModuleComponentContext context, WSDLOperationType operationType, Object input) {
+    public static Message createRequestMessage(TuscanyModuleComponentContext context, Operation operation, Object input) {
         Message message = new MessageFactoryImpl().createMessage();
         HelperProvider provider = new HelperProviderImpl((ConfiguredResourceSet) context.getAssemblyModelContext().getAssemblyLoader());
         Type inputType = operationType.getInputType();
@@ -265,7 +265,7 @@ public class ExternalWebServiceHandler implements MessageHandler {
     /**
      * @param response
      */
-    public static Message createResponseMessage(TuscanyModuleComponentContext context, WSDLOperationType operationType, Object response) {
+    public static Message createResponseMessage(TuscanyModuleComponentContext context, Operation operation, Object response) {
         Message message = new MessageFactoryImpl().createMessage();
         HelperProvider provider = new HelperProviderImpl((ConfiguredResourceSet) context.getAssemblyModelContext().getAssemblyLoader());
         Type outputType = operationType.getOutputType();
@@ -293,15 +293,14 @@ public class ExternalWebServiceHandler implements MessageHandler {
      * @param wsBinding
      * @param endpointReference
      */
-    public ExternalWebServiceHandler(TuscanyModuleComponentContext moduleContext, WSDLOperationType operationType, ExternalService externalService, WebServiceBinding wsBinding,
+    public ExternalWebServiceHandler(TuscanyModuleComponentContext moduleContext, Operation wsdlOperation, ExternalService externalService, WebServiceBinding wsBinding,
                              EndpointReference endpointReference) {
 
         this.moduleContext = moduleContext;
-        this.typeHelper = moduleContext.getAssemblyModelContext().getWSDLTypeHelper();
-        this.wsdlOperationType = operationType;
+        this.wsdlOperation = wsdlOperation;
 
         // Get the WSDL port name
-        String portName = wsBinding.getPort();
+        String portName = wsBinding.getWSDLPort();
         if (portName != null) {
 
             // A port name is specified, create a port handler for this port and cache it in the binding model
@@ -413,35 +412,15 @@ public class ExternalWebServiceHandler implements MessageHandler {
         Port wsdlPort = portMetaData.getPort();
         if (wsdlPort != null) {
             // Create the method handler
-            WebServiceOperationMetaData operationMetaData = portMetaData.getOperationMetaData(wsdlOperationType.getName());
+            WebServiceOperationMetaData operationMetaData = portMetaData.getOperationMetaData(wsdlOperation.getName());
             String soapAction = operationMetaData.getSOAPAction();
             return (soapAction);
         } else {
 
             // No WSDL binding, assume a default SOAP document literal binding from the operation type
             // Derive the SOAP action from the input type
-            String namespace;
-            String name;
-            if (wsdlOperationType.getInputType() != null) {
-                Type type = wsdlOperationType.getInputType();
-                namespace = type.getURI();
-                name = type.getName();
-
-                // TODO: [rfeng]
-                // XSD2Ecore will create an extended metadata for anonymous complex type with key name
-                // and value <elementName>_._type or <elementName>_._<index>_._type" if there's
-                // a duplicate
-
-                if (name.indexOf("_._") != -1)
-                    name = name.substring(0, name.indexOf("_._"));
-
-            } else {
-
-                // Derive the SOAP action from the operation name
-                // FIXME:
-                namespace = "";
-                name = wsdlOperationType.getName();
-            }
+            String namespace = "";
+            String name = wsdlOperation.getName();
             String soapAction = namespace + '/' + name;
 
             // Create the method handler

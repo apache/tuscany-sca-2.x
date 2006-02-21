@@ -41,13 +41,13 @@ import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.AssemblyLoader;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.types.wsdl.WSDLInterfaceType;
+import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
+import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 import org.apache.tuscany.model.types.wsdl.WSDLOperationType;
 import org.apache.tuscany.model.types.wsdl.WSDLTypeHelper;
 
@@ -106,7 +106,7 @@ public class SOAPMediatorTestCase extends TestCase {
         MessageFactory messageFactory = new MessageFactoryImpl();
         Message message = messageFactory.createMessage();
 
-        WSDLInterfaceType interfaceType = modelContext.getWSDLTypeHelper().getWSDLInterfaceType("http://www.example.org/Test/DocLitWrapped#Test");
+        WSDLServiceContract interfaceType = modelContext.getWSDLTypeHelper().getWSDLInterfaceType("http://www.example.org/Test/DocLitWrapped#Test");
         WSDLOperationType operationType = (WSDLOperationType) interfaceType.getOperationType("indexOf");
 
         DataObject input = provider.getDataFactory().create(operationType.getInputType());
@@ -154,7 +154,7 @@ public class SOAPMediatorTestCase extends TestCase {
         MessageFactory messageFactory = new MessageFactoryImpl();
         Message message = messageFactory.createMessage();
 
-        WSDLInterfaceType interfaceType = modelContext.getWSDLTypeHelper().getWSDLInterfaceType("http://www.example.org/Test/DocLit#Test");
+        WSDLServiceContract interfaceType = modelContext.getWSDLTypeHelper().getWSDLInterfaceType("http://www.example.org/Test/DocLit#Test");
         WSDLOperationType operationType = (WSDLOperationType) interfaceType.getOperationType("indexOf");
 
         DataObject input = provider.getDataFactory().create(operationType.getInputType());
@@ -200,7 +200,7 @@ public class SOAPMediatorTestCase extends TestCase {
         MessageFactory messageFactory = new MessageFactoryImpl();
         Message message = messageFactory.createMessage();
 
-        WSDLInterfaceType interfaceType = modelContext.getWSDLTypeHelper().getWSDLInterfaceType("http://www.example.org/Test/RpcLit#Test");
+        WSDLServiceContract interfaceType = modelContext.getWSDLTypeHelper().getWSDLInterfaceType("http://www.example.org/Test/RpcLit#Test");
         WSDLOperationType operationType = (WSDLOperationType) interfaceType.getOperationType("indexOf");
 
         DataObject input = provider.getDataFactory().create(operationType.getInputType());
