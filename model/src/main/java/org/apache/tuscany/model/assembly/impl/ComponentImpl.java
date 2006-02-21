@@ -38,11 +38,11 @@ import org.apache.tuscany.model.assembly.Service;
  */
 public class ComponentImpl extends AggregatePartImpl implements Component {
     
-    private List<ConfiguredReference> configuredReferences;
+    private List<ConfiguredReference> configuredReferences=new ArrayList<ConfiguredReference>();
     private Map<String, ConfiguredReference> configuredReferencesMap;
-    private List<ConfiguredService> configuredServices;
+    private List<ConfiguredService> configuredServices=new ArrayList<ConfiguredService>();
     private Map<String, ConfiguredService> configuredServicesMap;
-    private List<ConfiguredProperty> configuredProperties;
+    private List<ConfiguredProperty> configuredProperties=new ArrayList<ConfiguredProperty>();
     private Map<String, ConfiguredProperty> configuredPropertiesMap;
     private ComponentImplementation implementation;
 
@@ -71,7 +71,6 @@ public class ComponentImpl extends AggregatePartImpl implements Component {
      * @see org.apache.tuscany.model.assembly.Component#getConfiguredServices()
      */
     public List<ConfiguredService> getConfiguredServices() {
-        checkInitialized();
         return configuredServices;
     }
 
@@ -84,7 +83,6 @@ public class ComponentImpl extends AggregatePartImpl implements Component {
      * @see org.apache.tuscany.model.assembly.Component#getConfiguredReferences()
      */
     public List<ConfiguredReference> getConfiguredReferences() {
-        checkInitialized();
         return configuredReferences;
     }
 
@@ -100,7 +98,6 @@ public class ComponentImpl extends AggregatePartImpl implements Component {
      * @see org.apache.tuscany.model.assembly.Component#getConfiguredProperties()
      */
     public List<ConfiguredProperty> getConfiguredProperties() {
-        checkInitialized();
         return configuredProperties;
     }
 
@@ -127,67 +124,89 @@ public class ComponentImpl extends AggregatePartImpl implements Component {
         }
 
         // Derive the configured services, references and properties from the component implementation
-        configuredServices = new ArrayList<ConfiguredService>();
+        //FIXME we have two options here: either just index the configured services, references and properties
+        // that we find in the corresponding lists, or derive them from the services, references and properties on
+        // the component type, for now just check if the lists are empty or not to determine which option to go with
         configuredServicesMap = new HashMap<String, ConfiguredService>();
-        configuredReferences = new ArrayList<ConfiguredReference>();
         configuredReferencesMap = new HashMap<String, ConfiguredReference>();
-        configuredProperties = new ArrayList<ConfiguredProperty>();
         configuredPropertiesMap = new HashMap<String, ConfiguredProperty>();
-        if (implementation != null) {
-            AssemblyFactory factory = modelContext.getAssemblyFactory();
-            for (Service service : implementation.getComponentType().getServices()) {
-                ConfiguredService configuredService = factory.createConfiguredService();
-                configuredService.setPort(service);
-                configuredServices.add(configuredService);
-                configuredServicesMap.put(service.getName(), configuredService);
+        if (configuredServices.isEmpty() && configuredReferences.isEmpty() && configuredProperties.isEmpty()) {
+            if (implementation != null) {
+                AssemblyFactory factory = modelContext.getAssemblyFactory();
+                for (Service service : implementation.getComponentType().getServices()) {
+                    ConfiguredService configuredService = factory.createConfiguredService();
+                    configuredService.setPort(service);
+                    configuredServices.add(configuredService);
+                    configuredServicesMap.put(service.getName(), configuredService);
+                    ((ConfiguredPortImpl)configuredService).setAggregatePart(this);
+                    configuredService.initialize(modelContext);
+                }
+    
+                for (Reference reference : implementation.getComponentType().getReferences()) {
+                    ConfiguredReference configuredReference = factory.createConfiguredReference();
+                    configuredReference.setPort(reference);
+                    configuredReferences.add(configuredReference);
+                    configuredReferencesMap.put(reference.getName(), configuredReference);
+                    ((ConfiguredPortImpl)configuredReference).setAggregatePart(this);
+                    configuredReference.initialize(modelContext);
+                }
+    
+                // Derive configured properties from the properties on the component type 
+                //FIXME
+    //            if (super.getPropertyValues() != null) {
+    //                Sequence sequence = super.getPropertyValues().getAny();
+    //                for (int p = 0, n = sequence.size(); p < n; p++) {
+    //
+    //                    // Get each property value element
+    //                    commonj.sdo.Property propertyElementDef = sequence.getProperty(p);
+    //                    DataObject propertyElement = (DataObject) sequence.getValue(p);
+    //
+    //                    // Get the corresponding property definition
+    //                    String propertyName = propertyElementDef.getName();
+    //                    Property property = implementation.getProperty(propertyName);
+    //                    if (property == null) {
+    //                        throw new IllegalArgumentException("Undefined property " + propertyName);
+    //                    }
+    //
+    //                    // Create a property value object
+    //                    ConfiguredProperty propertyValue = factory.createConfiguredProperty();
+    //                    propertyValue.setComponent(this);
+    //                    propertyValue.setProperty(property);
+    //
+    //                    // Get the property value text and convert to the expected java type
+    //                    Sequence text = propertyElement.getSequence(0);
+    //                    if (text != null && text.size() != 0) {
+    //                        Object rawValue = text.getValue(0);
+    //                        propertyValue.setValue(rawValue);
+    //                    }
+    //
+    //                    // Add the property value object to the map
+    //                    configuredProperties.add(propertyValue);
+    //                    configuredPropertiesMap.put(propertyName, propertyValue);
+    //                }
+    //            }
+                
+            }
+        } else {
+            
+            // Just populate the maps of services, references and properties from the contents of
+            // the corresponding lists
+            for (ConfiguredService configuredService : configuredServices) {
+                configuredServicesMap.put(configuredService.getService().getName(), configuredService);
                 ((ConfiguredPortImpl)configuredService).setAggregatePart(this);
                 configuredService.initialize(modelContext);
             }
 
-            for (Reference reference : implementation.getComponentType().getReferences()) {
-                ConfiguredReference configuredReference = factory.createConfiguredReference();
-                configuredReference.setPort(reference);
-                configuredReferences.add(configuredReference);
-                configuredReferencesMap.put(reference.getName(), configuredReference);
+            for (ConfiguredReference configuredReference : configuredReferences) {
+                configuredReferencesMap.put(configuredReference.getReference().getName(), configuredReference);
                 ((ConfiguredPortImpl)configuredReference).setAggregatePart(this);
                 configuredReference.initialize(modelContext);
             }
 
-            // Populate property values map
-            //TODO Fix this
-//            if (super.getPropertyValues() != null) {
-//                Sequence sequence = super.getPropertyValues().getAny();
-//                for (int p = 0, n = sequence.size(); p < n; p++) {
-//
-//                    // Get each property value element
-//                    commonj.sdo.Property propertyElementDef = sequence.getProperty(p);
-//                    DataObject propertyElement = (DataObject) sequence.getValue(p);
-//
-//                    // Get the corresponding property definition
-//                    String propertyName = propertyElementDef.getName();
-//                    Property property = implementation.getProperty(propertyName);
-//                    if (property == null) {
-//                        throw new IllegalArgumentException("Undefined property " + propertyName);
-//                    }
-//
-//                    // Create a property value object
-//                    ConfiguredProperty propertyValue = factory.createConfiguredProperty();
-//                    propertyValue.setComponent(this);
-//                    propertyValue.setProperty(property);
-//
-//                    // Get the property value text and convert to the expected java type
-//                    Sequence text = propertyElement.getSequence(0);
-//                    if (text != null && text.size() != 0) {
-//                        Object rawValue = text.getValue(0);
-//                        propertyValue.setValue(rawValue);
-//                    }
-//
-//                    // Add the property value object to the map
-//                    configuredProperties.add(propertyValue);
-//                    configuredPropertiesMap.put(propertyName, propertyValue);
-//                }
-//            }
-            
+            for (ConfiguredProperty configuredProperty : configuredProperties) {
+                configuredPropertiesMap.put(configuredProperty.getProperty().getName(), configuredProperty);
+                configuredProperty.initialize(modelContext);
+            }
         }
     }
 
