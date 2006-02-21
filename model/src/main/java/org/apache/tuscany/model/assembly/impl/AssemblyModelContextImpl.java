@@ -17,21 +17,14 @@
 package org.apache.tuscany.model.assembly.impl;
 
 import org.apache.tuscany.common.resource.loader.ResourceLoader;
-import org.apache.tuscany.common.resource.loader.ResourceLoaderFactory;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.AssemblyLoader;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.types.java.JavaTypeHelper;
-import org.apache.tuscany.model.types.java.impl.JavaTypeHelperImpl;
-import org.apache.tuscany.model.types.wsdl.WSDLTypeHelper;
-import org.apache.tuscany.model.types.wsdl.impl.WSDLTypeHelperImpl;
+import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
 
 /**
  */
 public class AssemblyModelContextImpl implements AssemblyModelContext {
 
-    private JavaTypeHelper javaTypeHelper;
-    private WSDLTypeHelper wsdlTypeHelper;
     private AssemblyFactory assemblyFactory;
     private AssemblyLoader assemblyLoader;
     private ResourceLoader resourceLoader;
@@ -41,44 +34,10 @@ public class AssemblyModelContextImpl implements AssemblyModelContext {
      *
      * @param resourceLoader
      */
-    public AssemblyModelContextImpl(ResourceLoader resourceLoader) {
-        initialize(resourceLoader);
-    }
-
-    /**
-     * Constructor
-     */
-    public AssemblyModelContextImpl() {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        resourceLoader = ResourceLoaderFactory.getResourceLoader(classLoader);
-        initialize(resourceLoader);
-    }
-
-    /**
-     * Initialize
-     *
-     * @param resourceLoader
-     */
-    private void initialize(ResourceLoader resourceLoader) {
+    public AssemblyModelContextImpl(AssemblyLoader assemblyLoader, ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
-        javaTypeHelper = new JavaTypeHelperImpl(this);
-        wsdlTypeHelper = new WSDLTypeHelperImpl(this);
+        this.assemblyLoader = assemblyLoader;
         assemblyFactory = new AssemblyFactoryImpl();
-        assemblyLoader = new AssemblyLoaderImpl(this, resourceLoader);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelContext#getJavaTypeHelper()
-     */
-    public JavaTypeHelper getJavaTypeHelper() {
-        return javaTypeHelper;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelContext#getWSDLTypeHelper()
-     */
-    public WSDLTypeHelper getWSDLTypeHelper() {
-        return wsdlTypeHelper;
     }
 
     /**
@@ -89,16 +48,16 @@ public class AssemblyModelContextImpl implements AssemblyModelContext {
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelContext#getAssemblyLoader()
-     */
-    public AssemblyLoader getAssemblyLoader() {
-        return assemblyLoader;
-    }
-
-    /**
      * @see org.apache.tuscany.model.assembly.AssemblyModelContext#getResourceLoader()
      */
     public ResourceLoader getResourceLoader() {
         return resourceLoader;
+    }
+    
+    /**
+     * @see org.apache.tuscany.model.assembly.AssemblyModelContext#getAssemblyLoader()
+     */
+    public AssemblyLoader getAssemblyLoader() {
+        return assemblyLoader;
     }
 }

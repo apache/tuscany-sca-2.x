@@ -16,27 +16,25 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.emf.ecore.sdo.EDataObject;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-
-import org.apache.tuscany.model.assembly.Aggregate;
-import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
+import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.Interface;
-import org.apache.tuscany.model.assembly.Reference;
 
 /**
- * An implementation of the model object '<em><b>Entry Point</b></em>'.
+ * An implementation of EntryPoint.
  */
-public class EntryPointImpl extends org.apache.tuscany.model.assembly.sdo.impl.EntryPointImpl implements EntryPoint {
+public class EntryPointImpl extends AggregatePartImpl implements EntryPoint {
+    
+    private ConfiguredService configuredService;
     private ConfiguredReference configuredReference;
+    private List<Binding> bindings=new ArrayList<Binding>();
 
     /**
      * Constructor
@@ -45,91 +43,99 @@ public class EntryPointImpl extends org.apache.tuscany.model.assembly.sdo.impl.E
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.sdo.impl.EntryPointImpl#getName()
+     * @see org.apache.tuscany.model.assembly.EntryPoint#getConfiguredReference()
      */
-    public String getName() {
-        return super.getName();
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.sdo.impl.EntryPointImpl#setName(java.lang.String)
-     */
-    public void setName(String newName) {
-        super.setName(newName);
-    }
-
     public ConfiguredReference getConfiguredReference() {
         return configuredReference;
     }
-
+    
     /**
-     * @see org.apache.tuscany.model.assembly.EntryPoint#getInterfaceContract()
+     * @see org.apache.tuscany.model.assembly.EntryPoint#setConfiguredReference(org.apache.tuscany.model.assembly.ConfiguredReference)
      */
-    public Interface getInterfaceContract() {
-        return (Interface) super.getInterface();
+    public void setConfiguredReference(ConfiguredReference configuredReference) {
+        checkNotFrozen();
+        this.configuredReference=configuredReference;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.EntryPoint#setInterfaceContract(org.apache.tuscany.model.assembly.Interface)
+     * @see org.apache.tuscany.model.assembly.EntryPoint#getConfiguredService()
      */
-    public void setInterfaceContract(Interface value) {
-        super.setInterface((org.osoa.sca.model.Interface) value);
+    public ConfiguredService getConfiguredService() {
+        return configuredService;
     }
-
+    
+    /**
+     * @see org.apache.tuscany.model.assembly.EntryPoint#setConfiguredService(org.apache.tuscany.model.assembly.ConfiguredService)
+     */
+    public void setConfiguredService(ConfiguredService configuredService) {
+        checkNotFrozen();
+        this.configuredService=configuredService;
+    }
+    
     /**
      * @see org.apache.tuscany.model.assembly.EntryPoint#getBindings()
      */
     public List<Binding> getBindings() {
-        return super.getBindings();
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.Part#getAggregate()
-     */
-    public Aggregate getAggregate() {
-        return (Aggregate) super.getContainer();
+        return bindings;
     }
 
     /**
      * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
      */
     public void initialize(AssemblyModelContext modelContext) {
-        // Initialize the interface
-        Interface iface = getInterfaceContract();
-        if (iface != null)
-            iface.initialize(modelContext);
+        if (isInitialized())
+            return;
+        super.initialize(modelContext);
+
+        // Initialize the service contract and reference to the published service
+        if (configuredReference != null)
+            configuredReference.initialize(modelContext);
+        if (configuredService != null)
+            configuredService.initialize(modelContext);
 
         // Initialize the bindings
-        for (Iterator<Binding> i = getBindings().iterator(); i.hasNext();) {
-            Binding binding = i.next();
-            binding.initialize(modelContext);
-        }
-
-        // Create a configured reference
-        AssemblyFactory factory = new AssemblyFactoryImpl();
-        Reference reference = factory.createReference();
-        reference.setName("reference");
-        if (iface != null)
-            reference.setInterfaceContract((Interface) EcoreUtil.copy((EDataObject) iface));
-        reference.setMultiplicity(super.getMultiplicity());
-        reference.initialize(modelContext);
-        configuredReference = factory.createConfiguredReference();
-        configuredReference.setPort(reference);
-        configuredReference.setPart(this);
-        configuredReference.initialize(modelContext);
+        initialize(bindings, modelContext);
     }
 
     /**
      * @see org.apache.tuscany.model.assembly.AssemblyModelObject#freeze()
      */
     public void freeze() {
+        if (isFrozen())
+            return;
+        super.freeze();
+
+        // Freeze the service contract and configured reference
+        if (configuredReference != null)
+            configuredReference.freeze();
+        if (configuredService != null)
+            configuredService.freeze();
+
+        // Freeze the bindings
+        bindings=Collections.unmodifiableList(bindings);
+        freeze(bindings);
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
+     * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
      */
     public boolean accept(AssemblyModelVisitor visitor) {
-        return AssemblyModelVisitorHelperImpl.accept(this, visitor);
+        if (!super.accept(visitor))
+            return false;
+        
+        if (configuredReference!=null) {
+            if (!configuredReference.accept(visitor))
+                return false;
+        }
+        
+        if (configuredService!=null) {
+            if (!configuredService.accept(visitor))
+                return false;
+        }
+        
+        if (!accept(bindings, visitor))
+            return false;
+        
+        return true;
     }
-
-} //EntryPointImpl
+}

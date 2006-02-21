@@ -16,8 +16,9 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -29,30 +30,35 @@ import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.Service;
 
 /**
- * An implementation of the model object '<em><b>Component Type</b></em>'.
+ * An implementation of ComponentType.
  */
-public class ComponentTypeImpl extends org.apache.tuscany.model.assembly.sdo.impl.ComponentTypeImpl implements ComponentType {
+public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType {
+    
+    private List<Reference> references=new ArrayList<Reference>();
     private Map<String, Reference> referencesMap;
+    private List<Service> services=new ArrayList<Service>();
     private Map<String, Service> servicesMap;
+    private List<Property> properties=new ArrayList<Property>();
     private Map<String, Property> propertiesMap;
 
     /**
      * Constructor
      */
-    public ComponentTypeImpl() {
+    protected ComponentTypeImpl() {
     }
 
     /**
      * @see org.apache.tuscany.model.assembly.ComponentType#getReferences()
      */
     public List<Reference> getReferences() {
-        return super.getReferences();
+        return references;
     }
 
     /**
      * @see org.apache.tuscany.model.assembly.ComponentType#getReference(java.lang.String)
      */
     public Reference getReference(String name) {
+        checkInitialized();
         return referencesMap.get(name);
     }
 
@@ -60,13 +66,14 @@ public class ComponentTypeImpl extends org.apache.tuscany.model.assembly.sdo.imp
      * @see org.apache.tuscany.model.assembly.ComponentType#getServices()
      */
     public List<Service> getServices() {
-        return super.getServices();
+        return services;
     }
 
     /**
      * @see org.apache.tuscany.model.assembly.ComponentType#getService(java.lang.String)
      */
     public Service getService(String name) {
+        checkInitialized();
         return servicesMap.get(name);
     }
 
@@ -74,13 +81,14 @@ public class ComponentTypeImpl extends org.apache.tuscany.model.assembly.sdo.imp
      * @see org.apache.tuscany.model.assembly.ComponentType#getProperties()
      */
     public List<Property> getProperties() {
-        return super.getProperties();
+        return properties;
     }
 
     /**
      * @see org.apache.tuscany.model.assembly.ComponentType#getProperty(java.lang.String)
      */
     public Property getProperty(String name) {
+        checkInitialized();
         return propertiesMap.get(name);
     }
 
@@ -88,35 +96,57 @@ public class ComponentTypeImpl extends org.apache.tuscany.model.assembly.sdo.imp
      * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
      */
     public void initialize(AssemblyModelContext modelContext) {
+        if (isInitialized())
+            return;
+        super.initialize(modelContext);
+
         // Populate maps of references, properties and services
         referencesMap = new HashMap<String, Reference>();
-        for (Iterator<Reference> i = getReferences().iterator(); i.hasNext();) {
-            Reference reference = i.next();
+        for (Reference reference : references) {
             referencesMap.put(reference.getName(), reference);
             reference.initialize(modelContext);
         }
         propertiesMap = new HashMap<String, Property>();
-        for (Iterator<Property> i = getProperties().iterator(); i.hasNext();) {
-            Property property = i.next();
+        for (Property property : properties) {
             propertiesMap.put(property.getName(), property);
             property.initialize(modelContext);
         }
         servicesMap = new HashMap<String, Service>();
-        for (Iterator<Service> i = getServices().iterator(); i.hasNext();) {
-            Service service = i.next();
+        for (Service service : services) {
             servicesMap.put(service.getName(), service);
             service.initialize(modelContext);
         }
     }
 
     public void freeze() {
+        if (isFrozen())
+            return;
+        super.freeze();
+        
+        // Freeze lists of services, references and properties
+        services=Collections.unmodifiableList(services);
+        freeze(services);
+        references=Collections.unmodifiableList(references);
+        freeze(references);
+        properties=Collections.unmodifiableList(properties);
+        freeze(properties);
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
+     * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
      */
     public boolean accept(AssemblyModelVisitor visitor) {
-        return AssemblyModelVisitorHelperImpl.accept(this, visitor);
+        if (!super.accept(visitor))
+            return false;
+        
+        if (!accept(services, visitor))
+            return false;
+        if (!accept(references, visitor))
+            return false;
+        if (!accept(properties, visitor))
+            return false;
+    
+        return true;
     }
-
-} //ComponentTypeImpl
+    
+}

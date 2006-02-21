@@ -16,18 +16,17 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
-import org.eclipse.emf.ecore.sdo.impl.EDataObjectImpl;
-
+import org.apache.tuscany.model.assembly.AggregatePart;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
 import org.apache.tuscany.model.assembly.ConfiguredPort;
-import org.apache.tuscany.model.assembly.Part;
 import org.apache.tuscany.model.assembly.Port;
 
 /**
+ * Implementation of ConfiguredPort.
  */
-public class ConfiguredPortImpl extends EDataObjectImpl implements ConfiguredPort {
-    private Part part;
+public abstract class ConfiguredPortImpl extends AssemblyModelObjectImpl implements ConfiguredPort {
+    private AggregatePart aggregatePart;
     private Port port;
 
     private Object runtimeConfiguration;
@@ -40,50 +39,35 @@ public class ConfiguredPortImpl extends EDataObjectImpl implements ConfiguredPor
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredReference#getPart()
-     */
-    public Part getPart() {
-        return part;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredPort#setPart(org.apache.tuscany.model.assembly.Part)
-     */
-    public void setPart(Part part) {
-        this.part = part;
-    }
-
-    /**
      * @see org.apache.tuscany.model.assembly.ConfiguredPort#getPort()
      */
     public Port getPort() {
         return port;
     }
-
+    
     /**
      * @see org.apache.tuscany.model.assembly.ConfiguredPort#setPort(org.apache.tuscany.model.assembly.Port)
      */
     public void setPort(Port port) {
+        checkNotFrozen();
         this.port = port;
     }
-
+    
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
+     * @see org.apache.tuscany.model.assembly.ConfiguredPort#getAggregatePart()
      */
-    public void initialize(AssemblyModelContext modelContext) {
+    public AggregatePart getAggregatePart() {
+        checkInitialized();
+        return aggregatePart;
     }
-
+    
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#freeze()
+     * Sets the aggregate part containing this configured port.
+     * @param aggregatePart
      */
-    public void freeze() {
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
-     */
-    public boolean accept(AssemblyModelVisitor visitor) {
-        return AssemblyModelVisitorHelperImpl.accept(this, visitor);
+    protected void setAggregatePart(AggregatePart aggregatePart) {
+        checkNotFrozen();
+        this.aggregatePart=aggregatePart;
     }
 
     /**
@@ -97,21 +81,62 @@ public class ConfiguredPortImpl extends EDataObjectImpl implements ConfiguredPor
      * @see org.apache.tuscany.model.assembly.ConfiguredPort#setProxyFactory(java.lang.Object)
      */
     public void setProxyFactory(Object proxyFactory) {
+        checkNotFrozen();
         this.proxyFactory = proxyFactory;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredRuntimeObject#getRuntimeConfiguration()
+     * @see org.apache.tuscany.model.assembly.RuntimeConfigurationHolder#getRuntimeConfiguration()
      */
     public Object getRuntimeConfiguration() {
         return runtimeConfiguration;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredRuntimeObject#setRuntimeConfiguration(java.lang.Object)
+     * @see org.apache.tuscany.model.assembly.RuntimeConfigurationHolder#setRuntimeConfiguration(java.lang.Object)
      */
     public void setRuntimeConfiguration(Object configuration) {
+        checkNotFrozen();
         runtimeConfiguration = configuration;
     }
 
+    /**
+     * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
+     */
+    public void initialize(AssemblyModelContext modelContext) {
+        if (isInitialized())
+            return;
+        super.initialize(modelContext);
+        
+        if (port!=null)
+            port.initialize(modelContext);
+    }
+    
+    /**
+     * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#freeze()
+     */
+    public void freeze() {
+        if (isFrozen())
+            return;
+        super.freeze();
+        
+        if (port!=null)
+            port.freeze();
+    }
+    
+    /**
+     * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
+     */
+    public boolean accept(AssemblyModelVisitor visitor) {
+        if (!super.accept(visitor))
+            return false;
+        
+        if (port!=null) {
+            if (!port.accept(visitor))
+                return false;
+        }
+        
+        return true;
+    }
+    
 }

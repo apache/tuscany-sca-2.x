@@ -17,6 +17,7 @@
 package org.apache.tuscany.model.assembly.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.tuscany.model.assembly.ConfiguredReference;
@@ -24,10 +25,11 @@ import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.Reference;
 
 /**
+ * An implementation of ConfiguredReference.
  */
 public class ConfiguredReferenceImpl extends ConfiguredPortImpl implements ConfiguredReference {
 
-    private List<ConfiguredService> configuredServices = new ArrayList<ConfiguredService>();
+    private List<ConfiguredService> targetConfiguredServices = new ArrayList<ConfiguredService>();
 
     /**
      * Constructor
@@ -43,10 +45,28 @@ public class ConfiguredReferenceImpl extends ConfiguredPortImpl implements Confi
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredReference#getConfiguredServices()
+     * @see org.apache.tuscany.model.assembly.ConfiguredReference#setReference(org.apache.tuscany.model.assembly.Reference)
      */
-    public List<ConfiguredService> getConfiguredServices() {
-        return configuredServices;
+    public void setReference(Reference reference) {
+        checkNotFrozen();
+        super.setPort(reference);
+    }
+    
+    /**
+     * @see org.apache.tuscany.model.assembly.ConfiguredReference#getTargetConfiguredServices()
+     */
+    public List<ConfiguredService> getTargetConfiguredServices() {
+        return targetConfiguredServices;
+    }
+    
+    /**
+     * @see org.apache.tuscany.model.assembly.impl.ConfiguredPortImpl#freeze()
+     */
+    public void freeze() {
+        super.freeze();
+        
+        // Freeze list of configured services
+        targetConfiguredServices=Collections.unmodifiableList(targetConfiguredServices);
     }
 
 }

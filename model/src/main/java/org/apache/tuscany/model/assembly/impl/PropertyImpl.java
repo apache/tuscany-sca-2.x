@@ -16,14 +16,19 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
 import org.apache.tuscany.model.assembly.Property;
 
 /**
- * An implementation of the model object '<em><b>Property</b></em>'.
+ * An implementation of Property.
  */
-public class PropertyImpl extends org.apache.tuscany.model.assembly.sdo.impl.PropertyImpl implements Property {
+public class PropertyImpl extends ExtensibleImpl implements Property {
+    
+    private Object defaultValue; 
+    private String name;
+    private boolean many;
+    private boolean required;
+    private Class type;
+
     /**
      * Constructor
      */
@@ -31,89 +36,77 @@ public class PropertyImpl extends org.apache.tuscany.model.assembly.sdo.impl.Pro
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.sdo.impl.PropertyImpl#getName()
+     * @see org.apache.tuscany.model.assembly.Property#getDefaultValue()
+     */
+    public Object getDefaultValue() {
+        return defaultValue;
+    }
+
+    /**
+     * @see org.apache.tuscany.model.assembly.Property#getName()
      */
     public String getName() {
-        return super.getName();
+        return name;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.sdo.impl.PropertyImpl#setName(java.lang.String)
+     * @see org.apache.tuscany.model.assembly.Property#getType()
      */
-    public void setName(String newName) {
-        super.setName(newName);
+    public Class getType() {
+        return type;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.sdo.impl.PropertyImpl#getDefault()
-     */
-    public String getDefault() {
-        return super.getDefault();
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.sdo.impl.PropertyImpl#setDefault(java.lang.String)
-     */
-    public void setDefault(String newDefault) {
-        super.setDefault(newDefault);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.sdo.impl.PropertyImpl#isMany()
+     * @see org.apache.tuscany.model.assembly.Property#isMany()
      */
     public boolean isMany() {
-        return super.isMany();
+        return many;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.sdo.impl.PropertyImpl#setMany(boolean)
-     */
-    public void setMany(boolean newMany) {
-        super.setMany(newMany);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.sdo.impl.PropertyImpl#isRequired()
+     * @see org.apache.tuscany.model.assembly.Property#isRequired()
      */
     public boolean isRequired() {
-        return super.isRequired();
+        return required;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.sdo.impl.PropertyImpl#setRequired(boolean)
+     * @see org.apache.tuscany.model.assembly.Property#setDefaultValue(java.lang.Object)
      */
-    public void setRequired(boolean newRequired) {
-        super.setRequired(newRequired);
+    public void setDefaultValue(Object value) {
+        defaultValue=value;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.Property#getType_()
+     * @see org.apache.tuscany.model.assembly.Property#setMany(boolean)
      */
-    public Object getType_() {
-        return super.getType_();
-    }
-
-    public void setType(Object value) {
-        super.setType(value);
+    public void setMany(boolean value) {
+        checkNotFrozen();
+        many=value;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
+     * @see org.apache.tuscany.model.assembly.Property#setName(java.lang.String)
      */
-    public void initialize(AssemblyModelContext modelContext) {
+    public void setName(String value) {
+        checkNotFrozen();
+        name=value;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#freeze()
+     * @see org.apache.tuscany.model.assembly.Property#setRequired(boolean)
      */
-    public void freeze() {
+    public void setRequired(boolean value) {
+        checkNotFrozen();
+        required=value;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
+     * @see org.apache.tuscany.model.assembly.Property#setType(java.lang.Class)
      */
-    public boolean accept(AssemblyModelVisitor visitor) {
-        return AssemblyModelVisitorHelperImpl.accept(this, visitor);
+    public void setType(Class value) {
+        checkNotFrozen();
+        type=value;
     }
-
-} //PropertyImpl
+    
+}

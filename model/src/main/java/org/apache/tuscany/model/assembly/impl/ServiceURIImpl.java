@@ -22,11 +22,12 @@ import org.apache.tuscany.model.assembly.ConfiguredPort;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.ModuleComponent;
-import org.apache.tuscany.model.assembly.Part;
+import org.apache.tuscany.model.assembly.AggregatePart;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceURI;
 
 /**
+ * An implementation of ServiceURI.
  */
 public class ServiceURIImpl implements ServiceURI {
 
@@ -48,29 +49,29 @@ public class ServiceURIImpl implements ServiceURI {
      * Constructor
      *
      * @param moduleComponent
-     * @param portEndpoint
+     * @param configuredPort
      */
-    protected ServiceURIImpl(ModuleComponent moduleComponent, ConfiguredPort portEndpoint) {
+    protected ServiceURIImpl(ModuleComponent moduleComponent, ConfiguredPort configuredPort) {
         if (moduleComponent != null)
             moduleComponentName = moduleComponent.getName();
         else
             moduleComponentName = "";
-        if (portEndpoint instanceof ConfiguredService) {
-            ConfiguredService serviceEndpoint = (ConfiguredService) portEndpoint;
-            partName = serviceEndpoint.getPart().getName();
-            Service service = serviceEndpoint.getService();
+        if (configuredPort instanceof ConfiguredService) {
+            ConfiguredService configuredService = (ConfiguredService) configuredPort;
+            partName = configuredService.getAggregatePart().getName();
+            Service service = configuredService.getService();
             if (service != null) {
-                serviceName = serviceEndpoint.getService().getName();
+                serviceName = configuredService.getService().getName();
                 address = "sca:///" + moduleComponentName + '/' + partName + '/' + serviceName;
             } else {
                 address = "sca:///" + moduleComponentName + '/' + partName;
             }
 
-        } else if (portEndpoint instanceof ConfiguredReference) {
-            ConfiguredReference referenceValue = (ConfiguredReference) portEndpoint;
-            Part part = referenceValue.getPart();
+        } else if (configuredPort instanceof ConfiguredReference) {
+            ConfiguredReference configuredReference = (ConfiguredReference) configuredPort;
+            AggregatePart part = configuredReference.getAggregatePart();
             partName = part.getName();
-            serviceName = "reference." + referenceValue.getReference().getName();
+            serviceName = "reference." + configuredReference.getReference().getName();
             address = "sca:///" + moduleComponentName + '/' + partName + '/' + serviceName;
         }
 

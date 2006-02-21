@@ -18,52 +18,53 @@ package org.apache.tuscany.model.assembly.impl;
 
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
-import org.apache.tuscany.model.assembly.ConfiguredProperty;
-import org.apache.tuscany.model.assembly.Property;
+import org.apache.tuscany.model.assembly.Port;
+import org.apache.tuscany.model.assembly.ServiceContract;
 
 /**
- * Implementation of ConfiguredProperty
+ * An implementation of Port.
  */
-public class ConfiguredPropertyImpl extends AssemblyModelObjectImpl implements ConfiguredProperty {
-    private Property property;
-    private Object value;
+public abstract class PortImpl extends AssemblyModelObjectImpl implements Port {
+    
+    private ServiceContract serviceContract;
+    private String name;
 
     /**
      * Constructor
      */
-    protected ConfiguredPropertyImpl() {
+    protected PortImpl() {
     }
-
+    
     /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredProperty#getProperty()
+     * @see org.apache.tuscany.model.assembly.Port#getName()
      */
-    public Property getProperty() {
-        return property;
+    public String getName() {
+        return name;
     }
-
+    
     /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredProperty#setProperty(org.apache.tuscany.model.assembly.Property)
+     * @see org.apache.tuscany.model.assembly.Port#setName(java.lang.String)
      */
-    public void setProperty(Property property) {
+    public void setName(String value) {
         checkNotFrozen();
-        this.property = property;
+        name=value;
     }
-
+    
     /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredProperty#getValue()
+     * @see org.apache.tuscany.model.assembly.Port#getServiceContract()
      */
-    public Object getValue() {
-        return value;
+    public ServiceContract getServiceContract() {
+        return serviceContract;
     }
-
+    
     /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredProperty#setValue(java.lang.Object)
+     * @see org.apache.tuscany.model.assembly.Port#setServiceContract(org.apache.tuscany.model.assembly.ServiceContract)
      */
-    public void setValue(Object value) {
+    public void setServiceContract(ServiceContract value) {
         checkNotFrozen();
-        this.value = value;
+        serviceContract=value;
     }
-
+    
     /**
      * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
      */
@@ -72,8 +73,8 @@ public class ConfiguredPropertyImpl extends AssemblyModelObjectImpl implements C
             return;
         super.initialize(modelContext);
         
-        if (property!=null)
-            property.initialize(modelContext);
+        if (serviceContract!=null)
+            serviceContract.initialize(modelContext);
     }
     
     /**
@@ -84,8 +85,8 @@ public class ConfiguredPropertyImpl extends AssemblyModelObjectImpl implements C
             return;
         super.freeze();
         
-        if (property!=null)
-            property.freeze();
+        if (serviceContract!=null)
+            serviceContract.freeze();
     }
     
     /**
@@ -95,12 +96,11 @@ public class ConfiguredPropertyImpl extends AssemblyModelObjectImpl implements C
         if (!super.accept(visitor))
             return false;
         
-        if (property!=null) {
-            if (!property.accept(visitor))
+        if (serviceContract!=null) {
+            if (!serviceContract.accept(visitor))
                 return false;
         }
         
         return true;
     }
-    
 }

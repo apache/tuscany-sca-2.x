@@ -35,10 +35,10 @@ import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceURI;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 import org.apache.tuscany.model.assembly.Subsystem;
-import org.apache.tuscany.model.types.java.JavaInterface;
-import org.apache.tuscany.model.types.java.impl.JavaInterfaceImpl;
-import org.apache.tuscany.model.types.wsdl.WSDLPortType;
-import org.apache.tuscany.model.types.wsdl.impl.WSDLPortTypeImpl;
+import org.apache.tuscany.model.types.java.JavaServiceContract;
+import org.apache.tuscany.model.types.java.impl.JavaServiceContractImpl;
+import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
+import org.apache.tuscany.model.types.wsdl.impl.WSDLServiceContractImpl;
 
 /**
  */
@@ -80,10 +80,10 @@ public class AssemblyFactoryImpl implements AssemblyFactory {
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyFactory#createJavaInterface()
+     * @see org.apache.tuscany.model.assembly.AssemblyFactory#createJavaServiceContract()
      */
-    public JavaInterface createJavaInterface() {
-        return new JavaInterfaceImpl();
+    public JavaServiceContract createJavaServiceContract() {
+        return new JavaServiceContractImpl();
     }
 
     /**
@@ -157,10 +157,10 @@ public class AssemblyFactoryImpl implements AssemblyFactory {
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyFactory#createWSDLPortType()
+     * @see org.apache.tuscany.model.assembly.AssemblyFactory#createWSDLServiceContract()
      */
-    public WSDLPortType createWSDLPortType() {
-        return new WSDLPortTypeImpl();
+    public WSDLServiceContract createWSDLServiceContract() {
+        return new WSDLServiceContractImpl();
     }
 
     /**

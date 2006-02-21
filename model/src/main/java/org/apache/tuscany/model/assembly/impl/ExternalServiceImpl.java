@@ -16,28 +16,25 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.emf.ecore.sdo.EDataObject;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-
-import org.apache.tuscany.model.assembly.Aggregate;
-import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.ExternalService;
-import org.apache.tuscany.model.assembly.Interface;
-import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.sdo.OverrideOptions;
+import org.apache.tuscany.model.assembly.OverrideOption;
 
 /**
- * An implementation of the model object '<em><b>External Service</b></em>'.
+ * An implementation ExternalService.
  */
-public class ExternalServiceImpl extends org.apache.tuscany.model.assembly.sdo.impl.ExternalServiceImpl implements ExternalService {
+public class ExternalServiceImpl extends AggregatePartImpl implements ExternalService {
+
     private ConfiguredService configuredService;
+    private OverrideOption overrideOption;
+    private List<Binding> bindings=new ArrayList<Binding>();
 
     /**
      * Constructor
@@ -46,56 +43,25 @@ public class ExternalServiceImpl extends org.apache.tuscany.model.assembly.sdo.i
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.sdo.impl.ExternalServiceImpl#getName()
+     * @see org.apache.tuscany.model.assembly.sdo.impl.ExternalServiceImpl#getOverrideOption()
      */
-    public String getName() {
-        return super.getName();
+    public OverrideOption getOverrideOption() {
+        return overrideOption;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.sdo.impl.ExternalServiceImpl#setName(java.lang.String)
+     * @see org.apache.tuscany.model.assembly.ExternalService#setOverrideOption(org.apache.tuscany.model.assembly.OverrideOption)
      */
-    public void setName(String newName) {
-        super.setName(newName);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.sdo.impl.ExternalServiceImpl#getOverridable()
-     */
-    public OverrideOptions getOverridable() {
-        return super.getOverridable();
-    }
-
-    public void setOverridable(OverrideOptions newOverridable) {
-        super.setOverridable(newOverridable);
+    public void setOverrideOption(OverrideOption newOverridable) {
+        checkNotFrozen();
+        overrideOption=newOverridable;
     }
 
     /**
      * @see org.apache.tuscany.model.assembly.ExternalService#getBindings()
      */
     public List<Binding> getBindings() {
-        return super.getBindings();
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.Port#getInterfaceContract()
-     */
-    public Interface getInterfaceContract() {
-        return (Interface) super.getInterface();
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.Port#setInterfaceContract(org.apache.tuscany.model.assembly.Interface)
-     */
-    public void setInterfaceContract(Interface value) {
-        super.setInterface((org.osoa.sca.model.Interface) value);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.Part#getAggregate()
-     */
-    public Aggregate getAggregate() {
-        return (Aggregate) super.getContainer();
+        return bindings;
     }
 
     /**
@@ -104,46 +70,64 @@ public class ExternalServiceImpl extends org.apache.tuscany.model.assembly.sdo.i
     public ConfiguredService getConfiguredService() {
         return configuredService;
     }
+    
+    /**
+     * @see org.apache.tuscany.model.assembly.ExternalService#setConfiguredService(org.apache.tuscany.model.assembly.ConfiguredService)
+     */
+    public void setConfiguredService(ConfiguredService configuredService) {
+        checkNotFrozen();
+        this.configuredService=configuredService;
+    }
 
     /**
      * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
      */
     public void initialize(AssemblyModelContext modelContext) {
-        // Initialize the interface
-        Interface iface = getInterfaceContract();
-        if (iface != null)
-            iface.initialize(modelContext);
+        if (isInitialized())
+            return;
+        super.initialize(modelContext);
 
+        // Initialize the configured service 
+        if (configuredService != null)
+            configuredService.initialize(modelContext);
+        
         // Initialize the bindings
-        for (Iterator<Binding> i = getBindings().iterator(); i.hasNext();) {
-            Binding binding = i.next();
-            binding.initialize(modelContext);
-        }
-
-        // Create a configured service for this external service
-        AssemblyFactory factory = new AssemblyFactoryImpl();
-        configuredService = factory.createConfiguredService();
-        configuredService.setPart(this);
-        Service service = factory.createService();
-        service.setName("service");
-        if (iface != null)
-            service.setInterfaceContract((Interface) EcoreUtil.copy((EDataObject) iface));
-        service.initialize(modelContext);
-        configuredService.setPort(service);
-        configuredService.initialize(modelContext);
+        initialize(bindings, modelContext);
     }
 
     /**
      * @see org.apache.tuscany.model.assembly.AssemblyModelObject#freeze()
      */
     public void freeze() {
-    }
+        if (isFrozen())
+            return;
+        super.freeze();
 
+        // Freeze the configured service
+        if (configuredService!= null)
+            configuredService.freeze();
+
+        // Freeze the bindings
+        bindings=Collections.unmodifiableList(bindings);
+        freeze(bindings);
+    }
+    
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
+     * @see org.apache.tuscany.model.assembly.impl.ExtensibleImpl#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
      */
     public boolean accept(AssemblyModelVisitor visitor) {
-        return AssemblyModelVisitorHelperImpl.accept(this, visitor);
+        if (!super.accept(visitor))
+            return false;
+        
+        if (configuredService!=null) {
+            if (!configuredService.accept(visitor))
+                return false;
+        }
+        
+        if (!accept(bindings, visitor))
+            return false;
+        
+        return true;
     }
 
-} //ExternalServiceImpl
+}

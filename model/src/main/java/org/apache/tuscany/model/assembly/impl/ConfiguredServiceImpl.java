@@ -20,6 +20,7 @@ import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.Service;
 
 /**
+ * An implementation of ConfiguredService.
  */
 public class ConfiguredServiceImpl extends ConfiguredPortImpl implements ConfiguredService {
 
@@ -34,6 +35,14 @@ public class ConfiguredServiceImpl extends ConfiguredPortImpl implements Configu
      */
     public Service getService() {
         return (Service) super.getPort();
+    }
+    
+    /**
+     * @see org.apache.tuscany.model.assembly.ConfiguredService#setService(org.apache.tuscany.model.assembly.Service)
+     */
+    public void setService(Service service) {
+        checkNotFrozen();
+        super.setPort(service);
     }
 
 }
