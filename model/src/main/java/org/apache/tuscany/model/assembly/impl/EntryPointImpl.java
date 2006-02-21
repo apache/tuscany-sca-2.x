@@ -88,10 +88,14 @@ public class EntryPointImpl extends AggregatePartImpl implements EntryPoint {
         super.initialize(modelContext);
 
         // Initialize the service contract and reference to the published service
-        if (configuredReference != null)
+        if (configuredReference != null) {
+            ((ConfiguredPortImpl)configuredReference).setAggregatePart(this);
             configuredReference.initialize(modelContext);
-        if (configuredService != null)
+        }
+        if (configuredService != null) {
+            ((ConfiguredPortImpl)configuredService).setAggregatePart(this);
             configuredService.initialize(modelContext);
+        }
 
         // Initialize the bindings
         initialize(bindings, modelContext);

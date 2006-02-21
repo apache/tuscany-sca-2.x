@@ -88,8 +88,10 @@ public class ExternalServiceImpl extends AggregatePartImpl implements ExternalSe
         super.initialize(modelContext);
 
         // Initialize the configured service 
-        if (configuredService != null)
+        if (configuredService != null) {
+            ((ConfiguredPortImpl)configuredService).setAggregatePart(this);
             configuredService.initialize(modelContext);
+        }
         
         // Initialize the bindings
         initialize(bindings, modelContext);
