@@ -18,7 +18,6 @@ package org.apache.tuscany.container.js.assembly.impl;
 
 import org.apache.tuscany.container.js.assembly.JavaScriptAssemblyFactory;
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
-import org.apache.tuscany.container.js.assembly.pojo.PojoJavaScriptImplementation;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 
 public class JavaScriptAssemblyFactoryImpl extends AssemblyFactoryImpl implements JavaScriptAssemblyFactory {

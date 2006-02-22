@@ -22,7 +22,7 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.js.assembly.pojo.PojoJavaScriptImplementation;
+import org.apache.tuscany.container.js.assembly.impl.PojoJavaScriptImplementation;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.impl.EMFConfigurationLoader;
 import org.apache.tuscany.model.assembly.Component;

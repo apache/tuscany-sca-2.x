@@ -1,4 +1,4 @@
-package org.apache.tuscany.container.js.assembly.pojo;
+package org.apache.tuscany.container.js.assembly.impl;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -22,7 +22,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.common.resource.loader.ResourceLoaderFactory;
-import org.apache.tuscany.container.js.assembly.pojo.PojoJavaScriptImplementation;
 import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Property;
 import org.apache.tuscany.model.assembly.Service;

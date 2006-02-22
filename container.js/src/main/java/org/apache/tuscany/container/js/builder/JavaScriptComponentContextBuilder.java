@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
-import org.apache.tuscany.container.js.assembly.pojo.PojoJavaScriptImplementation;
+import org.apache.tuscany.container.js.assembly.impl.PojoJavaScriptImplementation;
 import org.apache.tuscany.container.js.config.JavaScriptComponentRuntimeConfiguration;
 import org.apache.tuscany.container.js.rhino.RhinoInvoker;
 import org.apache.tuscany.core.builder.BuilderConfigException;
