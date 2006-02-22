@@ -45,6 +45,7 @@ public interface ResourceLoader {
      * @return the resulting Class object
      * @throws ClassNotFoundException if the class was not found
      * @see ClassLoader#loadClass(String)
+     * @deprecated use JavaIntrospectionHelper instead
      */
     Class<?> loadClass(String name) throws ClassNotFoundException;
 

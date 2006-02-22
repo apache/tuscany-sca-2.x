@@ -14,31 +14,37 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.model.assembly;
+package org.apache.tuscany.container.js.invocation.mock;
+
+import org.apache.tuscany.core.invocation.Interceptor;
+import org.apache.tuscany.core.message.Message;
 
 /**
- * Base interface for assembly model objects.
+ * A test interceptor
+ * 
+ * @version $Rev$ $Date$
  */
-public interface AssemblyModelObject {
+public class MockSyncInterceptor implements Interceptor {
 
-    /**
-     * Initialize this model object.
-     * 
-     * @param modelContext
-     * @throws ModelInitException if an error ocurrs initializing the artifact
-     */
-    void initialize(AssemblyModelContext modelContext) throws ModelInitException;
+    private int count;
 
-    /**
-     * Freeze this model object.
-     */
-    void freeze();
+    private Interceptor next;
 
-    /**
-     * Accept a visitor
-     * 
-     * @param visitor
-     */
-    boolean accept(AssemblyModelVisitor visitor);
+    public MockSyncInterceptor() {
+    }
 
+    public Message invoke(Message msg) {
+        ++count;
+        //System.out.println("Invoking interceptor");
+        return next.invoke(msg);
+    }
+
+    public int getCount() {
+        return count;
+    }
+    
+    public void setNext(Interceptor next) {
+        this.next=next;
+    }
 }
+

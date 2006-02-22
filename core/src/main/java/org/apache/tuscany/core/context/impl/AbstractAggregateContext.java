@@ -527,7 +527,6 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
      * Iterates through references and delegates to the configuration context to wire them to their targets
      */
     protected void wireSource(RuntimeConfiguration source) {
-        // FIXME scopes are defined at the interface level
         Scope sourceScope = source.getScope();
         if (source.getSourceProxyFactories() != null) {
             for (ProxyFactory sourceFactory : ((Map<String, ProxyFactory>) source.getSourceProxyFactories()).values()) {

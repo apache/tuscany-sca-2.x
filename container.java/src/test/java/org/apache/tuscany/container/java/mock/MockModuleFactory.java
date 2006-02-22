@@ -59,56 +59,6 @@ public class MockModuleFactory {
         return module;
     }
 
-//    public static Module createModule() throws Exception {
-//        Component sourceComponent = MockAssemblyFactory.createComponent("source", ModuleScopeComponentImpl.class,
-//                Scope.MODULE);
-//        Component targetComponent = MockAssemblyFactory.createComponent("target", ModuleScopeComponentImpl.class,
-//                Scope.MODULE);
-//        PojoReference ref = new PojoReference();
-//        PojoConfiguredReference cref = new PojoConfiguredReference();
-//        ref.setName("setGenericComponent");
-//        PojoInterface inter = new PojoJavaInterface();
-//        PojoInterfaceType type = new PojoInterfaceType();
-//        type.setInstanceClass(GenericComponent.class);
-//        PojoJavaOperationType oType = new PojoJavaOperationType();
-//        oType.setName("getString");
-//        oType.setJavaMethod((Method) JavaIntrospectionHelper.getBeanProperty(GenericComponent.class, "getString", null));
-//        type.addOperationType(oType);
-//        inter.setInterfaceType(type);
-//        ref.setServiceContract(inter);
-//        cref.setReference(ref);
-//        cref.setPart(targetComponent);
-//        PojoPort port = new PojoPort();
-//        port.setName("GenericComponent");
-//        cref.setPort(port);
-//        sourceComponent.getConfiguredReferences().add(cref);
-//        PojoService sourceService = new PojoService();
-//        sourceService.setServiceContract(inter);
-//        sourceService.setName("GenericComponent");
-//        PojoConfiguredService cService = new PojoConfiguredService();
-//        cService.setService(sourceService);
-//        //cService.setPart(targetComponent);
-//        //cService.setPort(targetService);
-//
-//        sourceComponent.getComponentImplementation().getServices().add(sourceService);
-//        sourceComponent.getConfiguredServices().add(cService);
-//
-//        PojoService targetService = new PojoService();
-//        targetService.setServiceContract(inter);
-//        targetService.setName("GenericComponent");
-//        PojoConfiguredService cTargetService = new PojoConfiguredService();
-//        cTargetService.setService(targetService);
-//        //cTargetService.setPart(targetComponent);
-//       // cTargetService.setPort(targetService);
-//        targetComponent.getComponentImplementation().getServices().add(targetService);
-//        targetComponent.getConfiguredServices().add(cTargetService);
-//
-//        PojoModule module = new PojoModule();
-//        module.setName("test.module");
-//        module.addComponent(sourceComponent);
-//        module.addComponent(targetComponent);
-//        return module;
-//    }
 
 }
 

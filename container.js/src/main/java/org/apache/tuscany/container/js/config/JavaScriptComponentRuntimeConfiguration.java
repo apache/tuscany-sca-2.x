@@ -19,37 +19,52 @@ package org.apache.tuscany.container.js.config;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
 import org.apache.tuscany.container.js.context.JavaScriptComponentContext;
+import org.apache.tuscany.container.js.rhino.RhinoInvoker;
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.model.assembly.SimpleComponent;
+import org.apache.tuscany.model.assembly.Scope;
 
+/**
+ * Creates instance contexts for JavaScript component types
+ * 
+ * @version $Rev$ $Date$
+ */
 public class JavaScriptComponentRuntimeConfiguration implements RuntimeConfiguration<SimpleComponentContext> {
 
-	private int scope;
-    private SimpleComponent component;
-    private JavaScriptImplementation implementation;
-    
-	public JavaScriptComponentRuntimeConfiguration(SimpleComponent component, JavaScriptImplementation implementation) {
-		this.component = component;
-		this.implementation = implementation;
-        this.scope = implementation.getServices().get(0).getServiceContract().getScope().getValue();
-	}
+    private Scope scope;
 
-	public SimpleComponentContext createInstanceContext() throws ContextCreationException {
-        return new JavaScriptComponentContext(component, implementation);
-	}
+    private String name;
 
-	public int getScope() {
-		return scope;
-	}
+    private Map<String, Class> services;
 
-	public String getName() {
-		return component.getName();
-	}
+    private Map<String, Object> properties;
+
+    private RhinoInvoker invoker;
+
+    public JavaScriptComponentRuntimeConfiguration(String name, Scope scope, Map<String, Class> services,
+            Map<String, Object> properties, RhinoInvoker invoker) {
+        this.name = name;
+        this.scope = scope;
+        this.services = services;
+        this.properties = properties;
+        this.invoker = invoker;
+    }
+
+    public SimpleComponentContext createInstanceContext() throws ContextCreationException {
+        return new JavaScriptComponentContext(name, services, properties, sourceProxyFactories, targetProxyFactories, invoker
+                .copy());
+    }
+
+    public Scope getScope() {
+        return scope;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     private Map<String, ProxyFactory> targetProxyFactories = new HashMap<String, ProxyFactory>();
 
@@ -79,8 +94,8 @@ public class JavaScriptComponentRuntimeConfiguration implements RuntimeConfigura
         return sourceProxyFactories;
     }
 
-    public void prepare(){
-        
+    public void prepare() {
+
     }
-        
+
 }

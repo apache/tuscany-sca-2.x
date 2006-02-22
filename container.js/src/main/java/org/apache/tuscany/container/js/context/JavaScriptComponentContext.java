@@ -16,16 +16,10 @@
  */
 package org.apache.tuscany.container.js.context;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
-import org.apache.tuscany.container.js.injection.ReferenceProxyTargetFactory;
 import org.apache.tuscany.container.js.rhino.RhinoInvoker;
 import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
@@ -33,112 +27,126 @@ import org.apache.tuscany.core.context.LifecycleEventListener;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.model.assembly.ConfiguredProperty;
-import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.SimpleComponent;
+import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
+import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 
-public class JavaScriptComponentContext extends AbstractContext implements
-		SimpleComponentContext {
+public class JavaScriptComponentContext extends AbstractContext implements SimpleComponentContext {
 
-	private SimpleComponent component;
-	private JavaScriptImplementation implementation;
+    private Map<String, Class> services;
 
-	public JavaScriptComponentContext(SimpleComponent component,
-			JavaScriptImplementation implementation) {
-		super(component.getName());
-		this.component = component;
-		this.implementation = implementation;
-	}
+    private RhinoInvoker rhinoInvoker;
 
-	public Object getInstance(QualifiedName qName) throws TargetException {
-		return getInstance(qName, true);
-	}
+    private Map<String, Object> properties;
 
-	public synchronized Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
-		//TODO: should this cache the instance?
-		ConfiguredService service = component.getConfiguredServices().get(0);
-		String iface = service.getPort().getServiceContract().getInterface();
-		Class[] ifaces;
-		try {
-			ifaces = new Class[] { implementation.getResourceLoader().loadClass(iface) };
-		} catch (ClassNotFoundException e) {
-			throw new TargetException(qName.getPartName() + ": ClassNotFoundException creating interface: " + iface);
-		}
-		Object proxy = createProxy(ifaces);
+    private Map<String, ProxyFactory> sourceProxyFactories;
 
-        notifyListeners(notify);
-		
-		return proxy;
-	}
+    private Map<String, ProxyFactory> targetProxyFactories;
 
-	private Object createProxy(Class[] ifaces) {
+    private Object instance;
 
-		final RhinoInvoker rhinoInvoker = implementation.getRhinoInvoker().copy();
-		rhinoInvoker.updateScriptScope(createPropertyValues());
+    public JavaScriptComponentContext(String name, Map<String, Class> services, Map<String, Object> properties,
+            Map<String, ProxyFactory> sourceProxyFactories, Map<String, ProxyFactory> targetProxyFactories, RhinoInvoker invoker) {
+        super(name);
+        assert (services != null) : "No service interface mapping specified";
+        assert (properties != null) : "No properties specified";
+        this.services = services;
+        this.properties = properties;
+        this.rhinoInvoker = invoker;
+        this.sourceProxyFactories = sourceProxyFactories;
+        this.targetProxyFactories = targetProxyFactories;
+    }
 
-		InvocationHandler ih = new InvocationHandler() {
-			public Object invoke(Object proxy, Method method, Object[] args) {
-				return rhinoInvoker.invoke(method.getName(), args, method.getReturnType(), createInvocationContext());
-			}
-		};
+    public Object getInstance(QualifiedName qName) throws TargetException {
+        return getInstance(qName, true);
+    }
 
-		Object proxy = Proxy.newProxyInstance(ifaces[0].getClassLoader(), ifaces, ih);
+    public synchronized Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
+        ProxyFactory targetFactory = targetProxyFactories.get(qName.getPortName());
+        if (targetFactory == null) {
+            TargetException e = new TargetException("Target interface not found");
+            e.setIdentifier(qName.getPortName());
+            e.addContextName(getName());
+            throw e;
+        }
+        try {
+            Object proxy = targetFactory.createProxy(); //createProxy(new Class[] { iface });
+            notifyListeners(notify);
+            return proxy;
+        } catch (ProxyCreationException e) {
+            TargetException te = new TargetException("Error returning target", e);
+            e.setIdentifier(qName.getPortName());
+            e.addContextName(getName());
+            throw te;
+        }
+    }
 
-		return proxy;
-	}
-	
-	private void notifyListeners(boolean notify) {
-		if (notify) {
+    public Object getImplementationInstance() throws TargetException {
+        return getImplementationInstance(true);
+    }
+
+    public Object getImplementationInstance(boolean notify) throws TargetException {
+        rhinoInvoker.updateScriptScope(properties); // create prop values
+        return rhinoInvoker;
+    }
+
+//    private Object createProxy(Class[] ifaces) throws ProxyCreationException {
+//        // final RhinoInvoker rhinoInvoker = implementation.getRhinoInvoker().copy();
+//        rhinoInvoker.updateScriptScope(properties); // create prop values
+//        final Map refs = createInvocationContext();
+//        InvocationHandler ih = new InvocationHandler() {
+//            public Object invoke(Object proxy, Method method, Object[] args) {
+//                return rhinoInvoker.invoke(method.getName(), args, method.getReturnType(), refs);
+//                // return rhinoInvoker.invoke(method.getName(), args, method.getReturnType(),createInvocationContext());
+//            }
+//        };
+//        return Proxy.newProxyInstance(ifaces[0].getClassLoader(), ifaces, ih);
+//    }
+
+    private void notifyListeners(boolean notify) {
+        if (notify) {
             for (Iterator iter = contextListener.iterator(); iter.hasNext();) {
                 LifecycleEventListener listener = (LifecycleEventListener) iter.next();
                 listener.onInstanceCreate(this);
             }
         }
-	}
+    }
 
-	/**
-	 * Creates a map containing any properties and their values
-	 */
-	private Map createPropertyValues() {
-		Map<String,Object> context = new HashMap<String,Object>();
-		List<ConfiguredProperty> configuredProperties = component.getConfiguredProperties();
-        if (configuredProperties != null) {
-            for (ConfiguredProperty property : configuredProperties) {
-            	context.put(property.getProperty().getName(), property.getValue());
-            }
+    /**
+     * Creates a map containing any properties and their values
+     */
+    // private Map createPropertyValues() {
+    // Map<String,Object> context = new HashMap<String,Object>();
+    // List<ConfiguredProperty> configuredProperties = component.getConfiguredProperties();
+    // if (configuredProperties != null) {
+    // for (ConfiguredProperty property : configuredProperties) {
+    // context.put(property.getProperty().getName(), property.getValue());
+    // }
+    // }
+    // return context;
+    // }
+    /**
+     * Creates a map containing any ServiceReferences
+     */
+    private Map createInvocationContext() throws ProxyCreationException {
+        Map<String, Object> context = new HashMap<String, Object>();
+        for (Map.Entry<String, ProxyFactory> entry : sourceProxyFactories.entrySet()) {
+            context.put(entry.getKey(), entry.getValue().createProxy());
         }
         return context;
-	}
+    }
 
-	/**
-	 * Creates a map containing any ServiceReferences
-	 */
-	private Map createInvocationContext() {
-		Map<String,Object> context = new HashMap<String,Object>();
-        List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
-        if (configuredReferences != null) {
-            for (ConfiguredReference reference : configuredReferences) {
-                ReferenceProxyTargetFactory rptf = new ReferenceProxyTargetFactory(reference);
-                String refName = reference.getReference().getName();
-                context.put(refName, rptf.getInstance());
-            }
-        }
-        return context;
-	}
+    public boolean isEagerInit() {
+        return false;
+    }
 
-	public boolean isEagerInit() {
-		return false;
-	}
+    public boolean isDestroyable() {
+        return false;
+    }
 
-	public boolean isDestroyable() {
-		return false;
-	}
+    public void start() throws CoreRuntimeException {
+    }
 
-	public void start() throws CoreRuntimeException {
-	}
-
-	public void stop() throws CoreRuntimeException {
-	}
+    public void stop() throws CoreRuntimeException {
+    }
 
 }

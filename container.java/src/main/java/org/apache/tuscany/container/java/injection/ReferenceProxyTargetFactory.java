@@ -1,18 +1,11 @@
 package org.apache.tuscany.container.java.injection;
 
-import java.util.List;
-
-import org.apache.tuscany.container.java.assembly.JavaImplementation;
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.injection.FactoryInitException;
 import org.apache.tuscany.core.injection.ObjectCreationException;
 import org.apache.tuscany.core.injection.ObjectFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.ExternalService;
 
 /**
  * Returns a service component reference target for injection onto a component implementation instance. The target may

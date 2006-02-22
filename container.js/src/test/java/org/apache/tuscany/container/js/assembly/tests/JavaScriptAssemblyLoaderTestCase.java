@@ -16,20 +16,10 @@
  */
 package org.apache.tuscany.container.js.assembly.tests;
 
-import commonj.sdo.Property;
-import commonj.sdo.Type;
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
-import org.apache.tuscany.model.types.InterfaceType;
-import org.apache.tuscany.model.types.OperationType;
 
 /**
  */
@@ -78,7 +68,7 @@ public class JavaScriptAssemblyLoaderTestCase extends TestCase {
         super.setUp();
 
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-        modelContext = new AssemblyModelContextImpl();
+        modelContext = new AssemblyModelContextImpl(null,null);
     }
 
 }

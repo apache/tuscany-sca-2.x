@@ -54,12 +54,12 @@ public abstract class AbstractJavaScriptComponentInvoker implements TargetInvoke
 
     public Message invoke(Message msg) {
         try {
-            Object resp = invokeTarget(msg.getPayload());
-            msg.setPayload(resp);
+            Object resp = invokeTarget(msg.getBody());
+            msg.setBody(resp);
         } catch (InvocationTargetException e) {
-            msg.setPayload(e.getCause());
+            msg.setBody(e.getCause());
         } catch (Throwable e) {
-            msg.setPayload(e);
+            msg.setBody(e);
         }
         return msg;
     }
