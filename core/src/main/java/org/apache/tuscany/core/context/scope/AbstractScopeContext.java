@@ -93,6 +93,18 @@ public abstract class AbstractScopeContext  extends AbstractContext implements S
         return getInstance(qName);
     }
     
+    //----------------------------------
+    // InstanceContext methods
+    //----------------------------------
+
+    public Object getImplementationInstance() throws TargetException{
+        return this;
+    }
+
+    public Object getImplementationInstance(boolean notify) throws TargetException{
+        return this;
+    }
+    
     // ----------------------------------
     // Protected methods
     // ----------------------------------

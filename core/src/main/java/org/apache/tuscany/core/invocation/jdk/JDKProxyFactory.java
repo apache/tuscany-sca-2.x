@@ -44,8 +44,29 @@ public class JDKProxyFactory implements ProxyFactory {
         Map<Method, InvocationConfiguration> invocationConfigs = configuration.getInvocationConfigurations();
         methodToInvocationConfig = new HashMap(invocationConfigs.size());
         for (Map.Entry entry : invocationConfigs.entrySet()) {
+//<<<<<<< .mine
+//            OperationType operation = (OperationType) entry.getKey();
+//            if (operation instanceof JavaOperationType) {
+//                JavaOperationType javaOperation = (JavaOperationType) operation;
+//                Method method = javaOperation.getJavaMethod();
+//                methodToInvocationConfig.put(method, (InvocationConfiguration) entry.getValue());
+//            } else {
+//                if (businessInterfaceArray == null || businessInterfaceArray.length <1){
+//                    throw new ProxyInitializationException("No interface configured for proxy");
+//                }
+//                Method[] methods = businessInterfaceArray[0].getMethods();
+//                for (int i = 0; i < methods.length; i++) {
+//                    if (methods[i].getName().equals(operation.getName())) {
+//                        methodToInvocationConfig.put(methods[i], (InvocationConfiguration) entry.getValue());
+//                        break;
+//                    }
+//                }
+//            }
+//
+//=======
             Method method = (Method) entry.getKey();
             methodToInvocationConfig.put(method, (InvocationConfiguration) entry.getValue());
+//>>>>>>> .r379382
         }
     }
 
@@ -77,5 +98,5 @@ public class JDKProxyFactory implements ProxyFactory {
     public Class[] getImplementatedInterfaces() {
         return businessInterfaceArray;
     }
-    
+
 }

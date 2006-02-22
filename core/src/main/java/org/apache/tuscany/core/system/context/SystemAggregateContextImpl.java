@@ -474,6 +474,18 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         }
     }
 
+    // ----------------------------------
+    // InstanceContext methods
+    // ----------------------------------
+
+    public Object getImplementationInstance() throws TargetException {
+        return this;
+    }
+
+    public Object getImplementationInstance(boolean notify) throws TargetException {
+        return this;
+    }
+
     public Map<Scope, ScopeContext> getScopeContexts() {
         initializeScopes();
         return immutableScopeContexts;
@@ -578,7 +590,23 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) throws BuilderConfigException {
         if (configurationContext != null) {
-            configurationContext.wire(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
+            try {
+                configurationContext.wire(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
+            } catch (BuilderConfigException e) {
+                e.addContextName(getName());
+                throw e;
+            }
+        }
+    }
+
+    public void wire(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
+        if (configurationContext != null) {
+            try {
+                configurationContext.wire(targetFactory, targetType, targetScopeContext);
+            } catch (BuilderConfigException e) {
+                e.addContextName(getName());
+                throw e;
+            }
         }
     }
 

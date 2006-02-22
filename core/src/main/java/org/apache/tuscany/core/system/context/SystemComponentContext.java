@@ -135,6 +135,16 @@ public class SystemComponentContext extends AbstractContext implements SimpleCom
         }
 
     }
+    
+    public Object getImplementationInstance() throws TargetException{
+        return getInstance(null);
+    }
+
+    public Object getImplementationInstance(boolean notify) throws TargetException{
+        return getInstance(null,notify);
+    }
+    
+
 
     public boolean isEagerInit() {
         return eagerInit;

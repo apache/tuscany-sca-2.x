@@ -78,7 +78,7 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
     // ----------------------------------
 
     public void build(AssemblyModelObject modelObject, AggregateContext parentContext) throws BuilderException {
-        if (!(modelObject instanceof Component) || (modelObject instanceof ModuleComponent)) {
+        if (!(modelObject instanceof Component) ){//|| (modelObject instanceof ModuleComponent)) {
             return;
         }
         Component component = (Component) modelObject;

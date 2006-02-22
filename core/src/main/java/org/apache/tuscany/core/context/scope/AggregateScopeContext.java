@@ -167,6 +167,14 @@ public class AggregateScopeContext extends AbstractContext implements ScopeConte
             context.fireEvent(type, message);
         }
     }
+    
+    public Object getImplementationInstance() throws TargetException{
+        return this;
+    }
+
+    public Object getImplementationInstance(boolean notify) throws TargetException{
+        return this;
+    }
 
     private void checkInit() {
         if (lifecycleState != RUNNING) {

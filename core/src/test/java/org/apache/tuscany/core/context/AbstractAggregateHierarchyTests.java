@@ -18,6 +18,7 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
@@ -28,9 +29,7 @@ import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.ScopeEnum;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-
+import org.apache.tuscany.model.assembly.Scope;
 import org.osoa.sca.ModuleContext;
 
 /**
@@ -45,7 +44,7 @@ public abstract class AbstractAggregateHierarchyTests extends TestCase {
         AggregateContext parent = createContextHierachy();
         AggregateContext child = (AggregateContext) parent.getContext("test.child");
         Component component = MockSystemAssemblyFactory.createComponent("TestService1", ModuleScopeSystemComponentImpl.class
-                .getName(), ScopeEnum.MODULE_LITERAL);
+                .getName(), Scope.MODULE);
         parent.registerModelObject(component);
         EntryPoint ep = MockSystemAssemblyFactory.createEntryPoint("TestService1EP", ModuleScopeSystemComponent.class,
                 "TestService1", component);
@@ -72,10 +71,10 @@ public abstract class AbstractAggregateHierarchyTests extends TestCase {
         AggregateContext parent = new AggregateContextImpl("test.parent", null, new DefaultScopeStrategy(),
                 new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
         parent.registerModelObject(MockSystemAssemblyFactory.createComponent("test.child", AggregateContextImpl.class.getName(),
-                ContextConstants.AGGREGATE_SCOPE_ENUM));
+                Scope.AGGREGATE));
         try {
             parent.registerModelObject(MockSystemAssemblyFactory.createComponent("test.child", AggregateContextImpl.class
-                    .getName(), ContextConstants.AGGREGATE_SCOPE_ENUM));
+                    .getName(), Scope.AGGREGATE));
             parent.start();
             fail("Expected " + DuplicateNameException.class.getName());
         } catch (DuplicateNameException e) {
@@ -90,13 +89,13 @@ public abstract class AbstractAggregateHierarchyTests extends TestCase {
         AggregateContext parent = new AggregateContextImpl("test.parent", null, new DefaultScopeStrategy(),
                 new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
         parent.registerModelObject(MockSystemAssemblyFactory.createComponent("test.child", AggregateContextImpl.class.getName(),
-                ContextConstants.AGGREGATE_SCOPE_ENUM));
+                Scope.AGGREGATE));
         parent.start();
         AggregateContext child = (AggregateContext) parent.getContext("test.child");
         Assert.assertNotNull(child);
         try {
             parent.registerModelObject(MockSystemAssemblyFactory.createComponent("test.child", AggregateContextImpl.class
-                    .getName(), ContextConstants.AGGREGATE_SCOPE_ENUM));
+                    .getName(), Scope.AGGREGATE));
             fail("Expected " + DuplicateNameException.class.getName());
         } catch (DuplicateNameException e) {
             // expected

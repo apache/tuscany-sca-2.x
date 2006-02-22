@@ -22,4 +22,8 @@ import org.apache.tuscany.model.assembly.Binding;
  * Represents a system binding.
  */
 public interface SystemBinding extends Binding {
+
+    public String getTargetName();
+
+    public void setTargetName(String name);
 }

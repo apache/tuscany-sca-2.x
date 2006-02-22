@@ -54,9 +54,15 @@ public class SystemExternalServiceBuilder implements RuntimeConfigurationBuilder
             return;
         }
 
-        if (externalService.getConfiguredService() != null && externalService.getConfiguredService().getAggregatePart() != null) {
+//        if (externalService.getConfiguredService() != null && externalService.getConfiguredService().getAggregatePart() != null) {
+//            SystemExternalServiceRuntimeConfiguration config = new SystemExternalServiceRuntimeConfiguration(externalService
+//                    .getName(), new ReferenceTargetFactory(externalService.getConfiguredService(), context));
+//            externalService.getConfiguredService().setRuntimeConfiguration(config);
+        SystemBinding binding = (SystemBinding)externalService.getBindings().get(0);
+        
+        if (binding.getTargetName() != null) {
             SystemExternalServiceRuntimeConfiguration config = new SystemExternalServiceRuntimeConfiguration(externalService
-                    .getName(), new ReferenceTargetFactory(externalService.getConfiguredService(), context));
+                    .getName(), new ReferenceTargetFactory(binding.getTargetName(), context));
             externalService.getConfiguredService().setRuntimeConfiguration(config);
         } else if (externalService.getConfiguredService().getService().getServiceContract().getInterface() != null) {
             // autowire

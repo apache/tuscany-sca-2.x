@@ -13,7 +13,7 @@
  */
 package org.apache.tuscany.core.context.scope;
 
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -28,25 +28,25 @@ public class DefaultScopeStrategyTestCase extends TestCase {
     public void testDownScopeReferences() throws Exception{
         DefaultScopeStrategy strategy = new DefaultScopeStrategy();
         
-        Assert.assertTrue(!strategy.downScopeReference(ScopeEnum.MODULE,ScopeEnum.MODULE));
-        Assert.assertTrue(strategy.downScopeReference(ScopeEnum.MODULE,ScopeEnum.SESSION));
-        Assert.assertTrue(strategy.downScopeReference(ScopeEnum.MODULE,ScopeEnum.REQUEST));
-        Assert.assertTrue(strategy.downScopeReference(ScopeEnum.MODULE,ScopeEnum.INSTANCE));
+        Assert.assertTrue(!strategy.downScopeReference(Scope.MODULE,Scope.MODULE));
+        Assert.assertTrue(strategy.downScopeReference(Scope.MODULE,Scope.SESSION));
+        Assert.assertTrue(strategy.downScopeReference(Scope.MODULE,Scope.REQUEST));
+        Assert.assertTrue(strategy.downScopeReference(Scope.MODULE,Scope.INSTANCE));
 
-        Assert.assertTrue(!strategy.downScopeReference(ScopeEnum.SESSION,ScopeEnum.MODULE));
-        Assert.assertTrue(!strategy.downScopeReference(ScopeEnum.SESSION,ScopeEnum.SESSION));
-        Assert.assertTrue(strategy.downScopeReference(ScopeEnum.SESSION,ScopeEnum.REQUEST));
-        Assert.assertTrue(strategy.downScopeReference(ScopeEnum.SESSION,ScopeEnum.INSTANCE));
+        Assert.assertTrue(!strategy.downScopeReference(Scope.SESSION,Scope.MODULE));
+        Assert.assertTrue(!strategy.downScopeReference(Scope.SESSION,Scope.SESSION));
+        Assert.assertTrue(strategy.downScopeReference(Scope.SESSION,Scope.REQUEST));
+        Assert.assertTrue(strategy.downScopeReference(Scope.SESSION,Scope.INSTANCE));
 
-        Assert.assertTrue(!strategy.downScopeReference(ScopeEnum.REQUEST,ScopeEnum.MODULE));
-        Assert.assertTrue(!strategy.downScopeReference(ScopeEnum.REQUEST,ScopeEnum.SESSION));
-        Assert.assertTrue(!strategy.downScopeReference(ScopeEnum.REQUEST,ScopeEnum.REQUEST));
-        Assert.assertTrue(strategy.downScopeReference(ScopeEnum.REQUEST,ScopeEnum.INSTANCE));
+        Assert.assertTrue(!strategy.downScopeReference(Scope.REQUEST,Scope.MODULE));
+        Assert.assertTrue(!strategy.downScopeReference(Scope.REQUEST,Scope.SESSION));
+        Assert.assertTrue(!strategy.downScopeReference(Scope.REQUEST,Scope.REQUEST));
+        Assert.assertTrue(strategy.downScopeReference(Scope.REQUEST,Scope.INSTANCE));
 
-        Assert.assertTrue(!strategy.downScopeReference(ScopeEnum.REQUEST,ScopeEnum.MODULE));
-        Assert.assertTrue(!strategy.downScopeReference(ScopeEnum.REQUEST,ScopeEnum.SESSION));
-        Assert.assertTrue(!strategy.downScopeReference(ScopeEnum.REQUEST,ScopeEnum.REQUEST));
-        Assert.assertTrue(!strategy.downScopeReference(ScopeEnum.INSTANCE,ScopeEnum.INSTANCE));
+        Assert.assertTrue(!strategy.downScopeReference(Scope.REQUEST,Scope.MODULE));
+        Assert.assertTrue(!strategy.downScopeReference(Scope.REQUEST,Scope.SESSION));
+        Assert.assertTrue(!strategy.downScopeReference(Scope.REQUEST,Scope.REQUEST));
+        Assert.assertTrue(!strategy.downScopeReference(Scope.INSTANCE,Scope.INSTANCE));
     }
 }
 

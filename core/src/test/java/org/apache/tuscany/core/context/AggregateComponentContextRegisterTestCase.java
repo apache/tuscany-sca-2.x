@@ -18,6 +18,7 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
@@ -30,8 +31,7 @@ import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.ScopeEnum;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Tests registration of model objects for an aggregate context
@@ -71,7 +71,7 @@ public class AggregateComponentContextRegisterTestCase extends TestCase {
     public void testRegistration() throws Exception {
         AggregateContext moduleContext = createContext();
         Component component = MockSystemAssemblyFactory.createComponent("TestService1", ModuleScopeSystemComponentImpl.class
-                .getName(), ScopeEnum.MODULE_LITERAL);
+                .getName(), Scope.MODULE);
         moduleContext.registerModelObject(component);
         EntryPoint ep = MockSystemAssemblyFactory.createEntryPoint("TestService1EP", ModuleScopeSystemComponent.class,
                 "TestService1", component);
@@ -89,7 +89,7 @@ public class AggregateComponentContextRegisterTestCase extends TestCase {
     public void testRegistrationAfterStart() throws Exception {
         AggregateContext moduleContext = createContext();
         Component component = MockSystemAssemblyFactory.createComponent("TestService1", ModuleScopeSystemComponentImpl.class
-                .getName(), ScopeEnum.MODULE_LITERAL);
+                .getName(), Scope.MODULE);
         moduleContext.start();
         moduleContext.registerModelObject(component);
         EntryPoint ep = MockSystemAssemblyFactory.createEntryPoint("TestService1EP", ModuleScopeSystemComponent.class,
@@ -107,7 +107,7 @@ public class AggregateComponentContextRegisterTestCase extends TestCase {
     public void testEPRegistrationAfterModuleStart() throws Exception {
         AggregateContext moduleContext = createContext();
         Component component = MockSystemAssemblyFactory.createComponent("TestService1", ModuleScopeSystemComponentImpl.class
-                .getName(), ScopeEnum.MODULE_LITERAL);
+                .getName(), Scope.MODULE);
         moduleContext.start();
         moduleContext.registerModelObject(component);
         moduleContext.fireEvent(EventContext.MODULE_START, null);

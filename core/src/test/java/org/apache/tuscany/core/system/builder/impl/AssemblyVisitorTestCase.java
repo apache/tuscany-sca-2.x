@@ -23,16 +23,24 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.system.assembly.pojo.PojoSystemBinding;
-import org.apache.tuscany.core.system.assembly.pojo.PojoSystemImplementation;
+import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
+import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
+import org.apache.tuscany.core.system.assembly.SystemBinding;
+import org.apache.tuscany.core.system.assembly.SystemImplementation;
+import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
+import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredPort;
+import org.apache.tuscany.model.assembly.ConfiguredReference;
+import org.apache.tuscany.model.assembly.ConfiguredService;
+import org.apache.tuscany.model.assembly.EntryPoint;
+import org.apache.tuscany.model.assembly.Module;
+import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.RuntimeConfigurationHolder;
-import org.apache.tuscany.model.assembly.pojo.PojoConfiguredReference;
-import org.apache.tuscany.model.assembly.pojo.PojoEntryPoint;
-import org.apache.tuscany.model.assembly.pojo.PojoModule;
-import org.apache.tuscany.model.assembly.pojo.PojoReference;
-import org.apache.tuscany.model.assembly.pojo.PojoSimpleComponent;
+import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
  * Tests decorating a logical configuration model
@@ -43,30 +51,44 @@ public class AssemblyVisitorTestCase extends TestCase {
 
     private static final Object MARKER = new Object();
 
+    private SystemAssemblyFactory factory = new SystemAssemblyFactoryImpl();
+    private AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(null,null);
+     
     public void testModelVisit() throws Exception {
-        PojoSimpleComponent component = new PojoSimpleComponent();
-        PojoSystemImplementation impl = new PojoSystemImplementation();
+        Component component = factory.createSimpleComponent();
+        SystemImplementation impl = factory.createSystemImplementation();
+        impl.setComponentType(factory.createComponentType());
         component.setComponentImplementation(impl);
-        PojoConfiguredReference cRef = new PojoConfiguredReference();
-        PojoReference ref = new PojoReference();
+        ConfiguredReference cRef = factory.createConfiguredReference();
+        Reference ref = factory.createReference();
         cRef.setReference(ref);
         component.getConfiguredReferences().add(cRef);
 
-        PojoEntryPoint ep = new PojoEntryPoint();
-        PojoSystemBinding binding = new PojoSystemBinding();
-        ep.addBinding(binding);
-        PojoConfiguredReference cEpRef = new PojoConfiguredReference();
-        PojoReference epRef = new PojoReference();
+        EntryPoint ep = factory.createEntryPoint();
+        JavaServiceContract contract = factory.createJavaServiceContract();
+        contract.setInterface(ModuleScopeSystemComponent.class);
+        Service service = factory.createService();
+        service.setServiceContract(contract);
+        ConfiguredService cService = factory.createConfiguredService();
+        cService.setService(service);
+        cService.initialize(assemblyContext);
+        ep.setConfiguredService(cService);
+        SystemBinding binding = factory.createSystemBinding();
+        ep.getBindings().add(binding);
+        ConfiguredReference cEpRef = factory.createConfiguredReference();
+        Reference epRef = factory.createReference();
         cEpRef.setReference(epRef);
         ep.setConfiguredReference(cEpRef);
-
-        PojoModule module = new PojoModule();
+        
+        ep.initialize(assemblyContext);
+        Module module = factory.createModule();
         module.getComponents().add(component);
         module.getEntryPoints().add(ep);
 
         List<RuntimeConfigurationBuilder> builders = new ArrayList();
         builders.add(new TestBuilder());
         AssemblyVisitor visitor = new AssemblyVisitor(null, builders);
+        module.initialize(assemblyContext);
         visitor.start(module);
 
         Assert.assertSame(MARKER, impl.getRuntimeConfiguration());

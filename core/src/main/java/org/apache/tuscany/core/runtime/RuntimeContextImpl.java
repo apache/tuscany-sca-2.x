@@ -218,6 +218,11 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         }
     }
 
+    public void wire(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
+        for (WireBuilder wireBuilder : wireBuilders) {
+            wireBuilder.wire(targetFactory, targetType, targetScopeContext);
+        }
+    }
     // ----------------------------------
     // AutowireContext methods
     // ----------------------------------
@@ -237,6 +242,18 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         }
     }
 
+    //----------------------------------
+    // InstanceContext methods
+    //----------------------------------
+
+    public Object getImplementationInstance() throws TargetException{
+        return this;
+    }
+
+    public Object getImplementationInstance(boolean notify) throws TargetException{
+        return this;
+    }
+    
     // ----------------------------------
     // Private methods
     // ----------------------------------

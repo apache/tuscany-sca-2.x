@@ -17,25 +17,27 @@
 package org.apache.tuscany.core.invocation.spi;
 
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
-import org.apache.tuscany.core.invocation.TargetInvoker;
 
 /**
- * Implementations are responsible for creating service reference proxies using
- * a proxying strategy.
- *
+ * Implementations are responsible for creating service proxies using a particular proxy strategy. Service proxies may
+ * represent a wire between two components or a reference to a service resolved through a locate operation. When
+ * representing a wire, a proxy is injected on reference in a component implementation. In this case the proxy will
+ * implement the interface required by the reference and pass invocation messages down source- and target-side
+ * invocation chains for processing. These source- and target-side invocation chains will be derived from metadata
+ * decorating the source reference and target service definition and implementation respectively.
+ * <p>
+ * The second type of proxy will be generated when non-component client code (such as a JSP) locates a service. In this
+ * case, the proxy will implement the requested service interface but will only contain a target-side invocation chain.
+ * 
  * @version $Rev$ $Date$
  */
 public interface ProxyFactory<T> {
 
     /**
-     * Prepares the factory with information required for generating the proxy of
-     * a particular reference type
-     *
-     * @param businessInterface the business interface of the service reference
-     *                          the proxy must implement
-     * @param config            the configuration information for the proxy
-     * @throws ProxyInitializationException if an error generating a proxy is
-     *                                      encountered
+     * Prepares the factory for generating the proxy of a particular reference type. This will typically be called when
+     * construction of the proxy configuration is complete, including linking of source and target invocation chains.
+     * 
+     * @throws ProxyInitializationException if an error is encountered during initialization
      */
     public void initialize() throws ProxyInitializationException;
 
@@ -44,16 +46,34 @@ public interface ProxyFactory<T> {
      */
     public T createProxy() throws ProxyCreationException;
 
+    /**
+     * Returns the configuration information used to create a proxy
+     */
     public ProxyConfiguration getProxyConfiguration();
-    
+
+    /**
+     * Sets the configuration information used to create a proxy
+     */
     public void setProxyConfiguration(ProxyConfiguration config);
 
+    /**
+     * Sets the primary interface type generated proxies should implement
+     */
     public void setBusinessInterface(Class interfaze);
-    
+
+    /**
+     * Returns the primary interface type implemented by generated proxies
+     */
     public Class getBusinessInterface();
-    
+
+    /**
+     * Adds an interface type generated proxies should implement
+     */
     public void addInterface(Class claz);
-    
+
+    /**
+     * Returns an array of all interfaces implemented by generated proxies
+     */
     public Class[] getImplementatedInterfaces();
-    
+
 }

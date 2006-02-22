@@ -56,7 +56,6 @@ public class ReferenceTargetFactory<T> implements ObjectFactory<T> {
 
         this.parentContext = parentContext;
         // targetName = reference.getReference().getName();
-
         ConfiguredService targetService = reference.getTargetConfiguredServices().get(0);
         if (targetService.getAggregatePart() instanceof ExternalService) {
             targetName = ((ExternalService) targetService.getAggregatePart()).getName();
@@ -85,11 +84,11 @@ public class ReferenceTargetFactory<T> implements ObjectFactory<T> {
      * @param parentContext
      * @throws FactoryInitException
      */
-    public ReferenceTargetFactory(ConfiguredService service, AggregateContext parentContext) throws FactoryInitException {
-        assert (service != null) : "Service was null";
+    public ReferenceTargetFactory(String targetName, AggregateContext parentContext) throws FactoryInitException {
+        //assert (service != null) : "Service was null";
         assert (parentContext != null) : "Parent context was null";
         interModule = true; // an external service with a reference target in another module
-        targetName = service.getAggregatePart().getName();
+        this.targetName = targetName;// service.getAggregatePart().getName();
         targetComponentName = new QualifiedName(targetName);
         this.parentContext = parentContext;
     }

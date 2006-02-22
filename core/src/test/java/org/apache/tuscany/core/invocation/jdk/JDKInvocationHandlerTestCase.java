@@ -10,14 +10,12 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.mock.MockHandler;
-import org.apache.tuscany.core.invocation.mock.MockJavaOperationType;
 import org.apache.tuscany.core.invocation.mock.MockStaticInvoker;
 import org.apache.tuscany.core.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.core.invocation.mock.SimpleTarget;
 import org.apache.tuscany.core.invocation.mock.SimpleTargetImpl;
 import org.apache.tuscany.core.message.channel.impl.MessageChannelImpl;
-import org.apache.tuscany.core.message.impl.PojoMessageFactory;
-import org.apache.tuscany.model.types.OperationType;
+import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 
 public class JDKInvocationHandlerTestCase extends TestCase {
 
@@ -41,14 +39,14 @@ public class JDKInvocationHandlerTestCase extends TestCase {
     public void testBasicInvoke() throws Throwable {
         Map<Method, InvocationConfiguration> configs = new HashMap();
         configs.put(hello, getInvocationHandler(hello));
-        JDKInvocationHandler handler = new JDKInvocationHandler(new PojoMessageFactory(), configs);
+        JDKInvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), configs);
         Assert.assertEquals("foo", handler.invoke(null, hello, new Object[] { "foo" }));
     }
 
     public void testErrorInvoke() throws Throwable {
         Map<Method, InvocationConfiguration> configs = new HashMap();
         configs.put(hello, getInvocationHandler(hello));
-        JDKInvocationHandler handler = new JDKInvocationHandler(new PojoMessageFactory(), configs);
+        JDKInvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), configs);
         try {
             Assert.assertEquals("foo", handler.invoke(null, hello, new Object[] {}));
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -58,14 +56,13 @@ public class JDKInvocationHandlerTestCase extends TestCase {
     }
 
     public void testDirectErrorInvoke() throws Throwable {
-        OperationType operation = new MockJavaOperationType(hello);
-        InvocationConfiguration source = new InvocationConfiguration(operation);
+        InvocationConfiguration source = new InvocationConfiguration(hello);
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
         Map<Method, InvocationConfiguration> configs = new HashMap();
         configs.put(hello, source);
-        JDKInvocationHandler handler = new JDKInvocationHandler(new PojoMessageFactory(), configs);
+        JDKInvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), configs);
         try {
             Assert.assertEquals("foo", handler.invoke(null, hello, new Object[] {}));
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -75,20 +72,18 @@ public class JDKInvocationHandlerTestCase extends TestCase {
     }
 
     public void testDirectInvoke() throws Throwable {
-        OperationType operation = new MockJavaOperationType(hello);
-        InvocationConfiguration source = new InvocationConfiguration(operation);
+        InvocationConfiguration source = new InvocationConfiguration(hello);
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
         Map<Method, InvocationConfiguration> configs = new HashMap();
         configs.put(hello, source);
-        JDKInvocationHandler handler = new JDKInvocationHandler(new PojoMessageFactory(), configs);
+        JDKInvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), configs);
         Assert.assertEquals("foo", handler.invoke(null, hello, new Object[] { "foo" }));
     }
 
     private InvocationConfiguration getInvocationHandler(Method m) {
-        OperationType operation = new MockJavaOperationType(m);
-        InvocationConfiguration source = new InvocationConfiguration(operation);
+        InvocationConfiguration source = new InvocationConfiguration(m);
         MockHandler sourceRequestHandler = new MockHandler();
         MockHandler sourceResponseHandler = new MockHandler();
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
@@ -96,7 +91,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         source.addResponseHandler(sourceResponseHandler);
         source.addSourceInterceptor(sourceInterceptor);
 
-        InvocationConfiguration target = new InvocationConfiguration(operation);
+        InvocationConfiguration target = new InvocationConfiguration(m);
         MockHandler targetRequestHandler = new MockHandler();
         MockHandler targetResponseHandler = new MockHandler();
         MockSyncInterceptor targetInterceptor = new MockSyncInterceptor();

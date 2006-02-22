@@ -72,4 +72,11 @@ public class ExternalServiceImpl extends AbstractContext implements ExternalServ
         targetProxy = null;
     }
 
+    public Object getImplementationInstance() throws TargetException{
+        return null;
+    }
+
+    public Object getImplementationInstance(boolean notify) throws TargetException{
+        return null;
+    }
 }

@@ -36,13 +36,32 @@ public abstract class AbstractScopeStrategy implements ScopeStrategy {
         if (pReferrer == Scope.UNDEFINED || pReferee == Scope.UNDEFINED) {
             return false;
         }
+        if (pReferee == pReferrer){
+            return false;
+        }else if(pReferrer == Scope.INSTANCE){
+            return false;
+        }else if(pReferee == Scope.INSTANCE){
+            return true;
+        }else if (pReferrer == Scope.REQUEST && pReferee == Scope.SESSION){
+            return false;
+        }else if (pReferrer == Scope.REQUEST && pReferee == Scope.MODULE){
+            return false;
+//        }else if (pReferrer == Scope.SESSION && pReferee == Scope.REQUEST){
+//            return true;
+        }else if (pReferrer == Scope.SESSION && pReferee == Scope.MODULE){
+            return false;
+//        }else if (pReferrer == Scope.MODULE){
+//            return true;
+        }else{
+            return true;
+        }
         //FIXME Jim this does not work with enumerations, what does it mean to have a scope <0?
 //        } else if ((pReferrer < 0) || (pReferee < 0)) {
 //            return false;
 //        }
 //
 //      return (pReferrer > pReferee);
-        return pReferrer != pReferee;
+//        return pReferrer != pReferee;
     }
 
 }

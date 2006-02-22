@@ -28,11 +28,9 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.jdk.JDKInvocationHandler;
 import org.apache.tuscany.core.invocation.mock.MockHandler;
-import org.apache.tuscany.core.invocation.mock.MockJavaOperationType;
 import org.apache.tuscany.core.invocation.mock.MockStaticInvoker;
 import org.apache.tuscany.core.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
-import org.apache.tuscany.model.types.OperationType;
 
 /**
  * Tests handling of exceptions thrown during an invocation
@@ -88,9 +86,8 @@ public class InvocationErrorTestCase extends TestCase {
     }
 
     private InvocationConfiguration getConfiguration(Method m) {
-        OperationType operation = new MockJavaOperationType(m);
         MockStaticInvoker invoker = new MockStaticInvoker(m, new TestBeanImpl());
-        InvocationConfiguration invocationConfiguration=new InvocationConfiguration(operation);
+        InvocationConfiguration invocationConfiguration=new InvocationConfiguration(m);
         invocationConfiguration.addSourceInterceptor(new MockSyncInterceptor());
         invocationConfiguration.addRequestHandler(new MockHandler());
         invocationConfiguration.setTargetInvoker(invoker);

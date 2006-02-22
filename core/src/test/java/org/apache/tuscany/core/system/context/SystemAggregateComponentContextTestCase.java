@@ -18,10 +18,10 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.ContextConstants;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.mock.MockConfigContext;
@@ -30,8 +30,7 @@ import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.ScopeEnum;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Tests the system aggregate context
@@ -48,13 +47,13 @@ public class SystemAggregateComponentContextTestCase extends TestCase {
         system.start();
 
         Component aggregateComponent = MockSystemAssemblyFactory.createComponent("system.child",
-                AggregateContextImpl.class.getName(), ContextConstants.AGGREGATE_SCOPE_ENUM);
+                AggregateContextImpl.class.getName(), Scope.AGGREGATE);
         system.registerModelObject(aggregateComponent);
         AggregateContext childContext = (AggregateContext) system.getContext("system.child");
         Assert.assertNotNull(childContext);
 
         Component component = MockSystemAssemblyFactory.createComponent("TestService1", ModuleScopeSystemComponentImpl.class.getName(),
-                ScopeEnum.MODULE_LITERAL);
+                Scope.MODULE);
         EntryPoint ep = MockSystemAssemblyFactory.createEntryPoint("TestService1EP", ModuleScopeSystemComponent.class,
                 "TestService1", component);
         childContext.registerModelObject(component);
@@ -71,7 +70,7 @@ public class SystemAggregateComponentContextTestCase extends TestCase {
                 null, new SystemScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
 
         Component component = MockSystemAssemblyFactory.createComponent("TestService1", ModuleScopeSystemComponentImpl.class
-                .getName(), ScopeEnum.MODULE_LITERAL);
+                .getName(), Scope.MODULE);
         EntryPoint ep = MockSystemAssemblyFactory.createEntryPoint("TestService1EP", ModuleScopeSystemComponent.class,
                 "TestService1", component);
         system.registerModelObject(component);
@@ -90,7 +89,7 @@ public class SystemAggregateComponentContextTestCase extends TestCase {
                 null, new SystemScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
 
         Component component = MockSystemAssemblyFactory.createComponent("TestService1", ModuleScopeSystemComponentImpl.class
-                .getName(), ScopeEnum.MODULE_LITERAL);
+                .getName(), Scope.MODULE);
         system.registerModelObject(component);
         system.start();
         system.fireEvent(EventContext.MODULE_START, null);

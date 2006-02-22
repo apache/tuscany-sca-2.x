@@ -16,21 +16,21 @@ package org.apache.tuscany.core.system.builder;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.InstanceContext;
-import org.apache.tuscany.core.context.ContextConstants;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.mock.MockConfigContext;
 import org.apache.tuscany.core.mock.MockSystemAssemblyFactory;
+import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
+import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.Property;
-import org.apache.tuscany.model.assembly.pojo.PojoConfiguredProperty;
-import org.apache.tuscany.model.assembly.pojo.PojoProperty;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Tests to that system components are built properly
@@ -39,62 +39,64 @@ import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
  */
 public class SystemComponentContextBuilderTestCase extends TestCase {
 
+    private SystemAssemblyFactory factory = new SystemAssemblyFactoryImpl();
+    
     public void testComponentContextBuilder() throws Exception {
         SystemComponentContextBuilder builder = new SystemComponentContextBuilder();
         Component component = MockSystemAssemblyFactory.createComponent("test", SystemComponentImpl.class.getName(),
-                ContextConstants.AGGREGATE_SCOPE_ENUM);
+                Scope.AGGREGATE);
 
-        ConfiguredProperty cProp = new PojoConfiguredProperty();
-        Property prop = new PojoProperty();
+        ConfiguredProperty cProp = factory.createConfiguredProperty();
+        Property prop = factory.createProperty();
         prop.setName("testInt");
         cProp.setValue(1);
         cProp.setProperty(prop);
         component.getConfiguredProperties().add(cProp);
 
-        cProp = new PojoConfiguredProperty();
-        prop = new PojoProperty();
+        cProp = factory.createConfiguredProperty();
+        prop = factory.createProperty();
         prop.setName("testString");
         cProp.setValue("test");
         cProp.setProperty(prop);
         component.getConfiguredProperties().add(cProp);
 
-        cProp = new PojoConfiguredProperty();
-        prop = new PojoProperty();
+        cProp = factory.createConfiguredProperty();
+        prop = factory.createProperty();
         prop.setName("testDouble");
         cProp.setValue(1d);
         cProp.setProperty(prop);
         component.getConfiguredProperties().add(cProp);
 
-        cProp = new PojoConfiguredProperty();
-        prop = new PojoProperty();
+        cProp = factory.createConfiguredProperty();
+        prop = factory.createProperty();
         prop.setName("testFloat");
         cProp.setValue(1f);
         cProp.setProperty(prop);
         component.getConfiguredProperties().add(cProp);
 
-        cProp = new PojoConfiguredProperty();
-        prop = new PojoProperty();
+        cProp = factory.createConfiguredProperty();
+        prop = factory.createProperty();
         prop.setName("testShort");
         cProp.setValue((short) 1);
         cProp.setProperty(prop);
         component.getConfiguredProperties().add(cProp);
 
-        cProp = new PojoConfiguredProperty();
-        prop = new PojoProperty();
+        cProp = factory.createConfiguredProperty();
+        prop = factory.createProperty();
         prop.setName("testByte");
         cProp.setValue((byte) 1);
         cProp.setProperty(prop);
         component.getConfiguredProperties().add(cProp);
 
-        cProp = new PojoConfiguredProperty();
-        prop = new PojoProperty();
+        cProp = factory.createConfiguredProperty();
+        prop = factory.createProperty();
         prop.setName("testBoolean");
         cProp.setValue(Boolean.TRUE);
         cProp.setProperty(prop);
         component.getConfiguredProperties().add(cProp);
 
-        cProp = new PojoConfiguredProperty();
-        prop = new PojoProperty();
+        cProp = factory.createConfiguredProperty();
+        prop = factory.createProperty();
         prop.setName("testChar");
         cProp.setValue('1');
         cProp.setProperty(prop);

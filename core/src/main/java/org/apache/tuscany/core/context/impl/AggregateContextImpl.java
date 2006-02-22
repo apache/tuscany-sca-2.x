@@ -209,4 +209,27 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Tu
         }
     }
 
+    public void wire(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
+        if (configurationContext != null) {
+            try {
+                configurationContext.wire(targetFactory, targetType, targetScopeContext);
+            } catch (BuilderConfigException e) {
+                e.addContextName(getName());
+                throw e;
+            }
+        }
+    }
+
+    // ----------------------------------
+    // InstanceContext methods
+    // ----------------------------------
+
+    public Object getImplementationInstance() throws TargetException {
+        return this;
+    }
+
+    public Object getImplementationInstance(boolean notify) throws TargetException {
+        return this;
+    }
+
 }

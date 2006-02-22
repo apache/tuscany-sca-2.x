@@ -69,4 +69,11 @@ public class SystemExternalServiceContext extends AbstractContext implements Ext
         lifecycleState = STOPPED;
     }
 
+    public Object getImplementationInstance() throws TargetException{
+        return null;
+    }
+
+    public Object getImplementationInstance(boolean notify) throws TargetException{
+        return null;
+    }
 }

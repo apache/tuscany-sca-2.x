@@ -17,8 +17,8 @@
 package org.apache.tuscany.core.context;
 
 /**
- * Manages instances of a runtime artifact. An <code>InstanceContext</code> may contain child contexts which themselves
- * manage implementation instances or it may be a leaf context.
+ * Manages instances of a runtime artifact. An <code>InstanceContext</code> may contain child contexts which
+ * themselves manage implementation instances or it may be a leaf context.
  * 
  * @see org.apache.tuscany.core.context.SimpleComponentContext
  * @see org.apache.tuscany.core.context.AggregateContext
@@ -30,9 +30,9 @@ package org.apache.tuscany.core.context;
 public interface InstanceContext extends Context {
 
     /**
-     * Returns the implementation instance associated with the requested name, which may be in a simple or compound
-     * form. Simple (i.e. leaf) contexts will return an instance associated with the service name part of the compound
-     * name, which may be null.
+     * Returns the instance associated with the requested name, which may be in a simple or compound form. Simple (i.e.
+     * leaf) contexts will return an instance associated with the service name part of the compound name, which may be
+     * null.
      * <p>
      * Aggregate contexts will return an instance (likely a proxy) of a contained entry point context. In this case, the
      * port name on the qualified name will correspond to the aggregate context name and the part name will be used to
@@ -61,5 +61,15 @@ public interface InstanceContext extends Context {
      * @see LifecycleEventListener
      */
     public Object getInstance(QualifiedName qName, boolean notify) throws TargetException;
+
+    /**
+     * Returns the implementation instance associated witht he component. An implementation instance does not
+     * have a proxy invocation chainXXX
+     * @return
+     * @throws TargetException
+     */
+    public Object getImplementationInstance() throws TargetException;
+
+    public Object getImplementationInstance(boolean notify) throws TargetException;
 
 }

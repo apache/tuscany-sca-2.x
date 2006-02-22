@@ -24,13 +24,11 @@ import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
-import org.apache.tuscany.core.invocation.mock.MockJavaOperationType;
 import org.apache.tuscany.core.invocation.mock.MockStaticInvoker;
 import org.apache.tuscany.core.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.core.invocation.mock.SimpleTarget;
 import org.apache.tuscany.core.invocation.mock.SimpleTargetImpl;
-import org.apache.tuscany.core.message.impl.PojoMessageFactory;
-import org.apache.tuscany.model.types.OperationType;
+import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 
 public class JDKProxyFactoryTestCase extends TestCase {
 
@@ -48,18 +46,16 @@ public class JDKProxyFactoryTestCase extends TestCase {
     }
 
     public void testProxyFactory() throws Exception {
-
-        OperationType operation = new MockJavaOperationType(hello);
-        InvocationConfiguration source = new InvocationConfiguration(operation);
+        InvocationConfiguration source = new InvocationConfiguration(hello);
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addSourceInterceptor(sourceInterceptor);
         source.addTargetInterceptor(new InvokerInterceptor());
         source.setTargetInvoker(new MockStaticInvoker(hello, new SimpleTargetImpl()));
         source.build();
-        Map<OperationType, InvocationConfiguration> configs = new HashMap();
-        configs.put(operation, source);
+        Map<Method, InvocationConfiguration> configs = new HashMap();
+        configs.put(hello, source);
         ProxyConfiguration config = new ProxyConfiguration(new QualifiedName("foo"), configs, Thread.currentThread()
-                .getContextClassLoader(), null, new PojoMessageFactory());
+                .getContextClassLoader(), new MessageFactoryImpl());
         JDKProxyFactory factory = new JDKProxyFactory();
         factory.setProxyConfiguration(config);
         factory.setBusinessInterface(SimpleTarget.class);

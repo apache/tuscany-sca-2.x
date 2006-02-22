@@ -102,6 +102,18 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
         lifecycleState = STOPPED;
     }
 
+    //----------------------------------
+    // InstanceContext methods
+    //----------------------------------
+
+    public Object getImplementationInstance() throws TargetException{
+        return null;
+    }
+
+    public Object getImplementationInstance(boolean notify) throws TargetException{
+        return null;
+    }
+    
     // ----------------------------------
     // Private classes
     // ----------------------------------

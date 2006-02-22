@@ -20,11 +20,13 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.message.MessageFactory;
 
 /**
- * Represents configuration information for creating a service reference proxy
+ * Represents configuration information for creating a service proxy. When a client component implementation is injected
+ * with a service proxy representing a wire, source- and target-side proxy configurations are "bridged" together. This
+ * concatenated configuration may then be used to generate a proxy implemented a particular business interface required
+ * by the client.
  * 
  * @version $Rev$ $Date$
  */
@@ -36,22 +38,25 @@ public class ProxyConfiguration {
 
     private MessageFactory messageFactory;
 
-    //FIXME Remove
-    private Map<Integer, ScopeContext> scopeContainers;
-
-    private QualifiedName targetName;
+    private QualifiedName serviceName;
 
     // ----------------------------------
     // Constructors
     // ----------------------------------
 
-    // TODO add "from"
-    public ProxyConfiguration(QualifiedName targetName, Map<Method, InvocationConfiguration> invocationConfigs,
-            ClassLoader proxyClassLoader, Map<Integer, ScopeContext> scopeContainers, MessageFactory messageFactory) {
+    /**
+     * Creates a configuration used to generate proxies representing a service.
+     * 
+     * @param serviceName the qualified name of the service represented by this configuration
+     * @param invocationConfigs a collection of operation-to-invocation configuration mappings for the service
+     * @param proxyClassLoader the classloader to use when creating a proxy
+     * @param messageFactory the factory used to create invocation messages
+     */
+    public ProxyConfiguration(QualifiedName serviceName, Map<Method, InvocationConfiguration> invocationConfigs,
+            ClassLoader proxyClassLoader, MessageFactory messageFactory) {
         assert (invocationConfigs != null) : "No invocation configuration map specified";
-        this.targetName = targetName;
+        this.serviceName = serviceName;
         configurations = invocationConfigs;
-        this.scopeContainers = scopeContainers;
         this.messageFactory = messageFactory;
         if (proxyClassLoader == null) {
             this.proxyClassLoader = Thread.currentThread().getContextClassLoader();
@@ -64,8 +69,11 @@ public class ProxyConfiguration {
     // Methods
     // ----------------------------------
 
+    /**
+     * Returns the qualified service name the configuration is associated with
+     */
     public QualifiedName getTargetName() {
-        return targetName;
+        return serviceName;
     }
 
     /**
@@ -76,23 +84,18 @@ public class ProxyConfiguration {
         return configurations;
     }
 
+    /**
+     * Returns the classloader to use in creating proxies
+     */
     public ClassLoader getProxyClassLoader() {
         return proxyClassLoader;
     }
 
     /**
-     * @return Returns the messageFactory.
+     * Returns the factory used to create invocation messages
      */
     public MessageFactory getMessageFactory() {
         return messageFactory;
-    }
-
-    /**
-     * @return Returns the scopeContainers.
-     * @deprecated
-     */
-    public Map<Integer, ScopeContext> getScopeContainers() {
-        return scopeContainers;
     }
 
 }

@@ -547,6 +547,12 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                         .get(sourceScope));
             }
         }
+        // wire invokers when the proxy only contains the target chain
+        if(source.getTargetProxyFactories() != null){
+            for (ProxyFactory targetFactory : ((Map<String, ProxyFactory>) source.getTargetProxyFactories()).values()) {
+                configurationContext.wire(targetFactory,source.getClass(),scopeContexts.get(sourceScope));
+            }
+        }
         source.prepare();
     }
 

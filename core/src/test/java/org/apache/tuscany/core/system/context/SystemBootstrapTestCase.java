@@ -18,30 +18,28 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.ContextConstants;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.mock.MockSystemAssemblyFactory;
 import org.apache.tuscany.core.mock.component.GenericSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
-import org.apache.tuscany.core.system.assembly.pojo.PojoSystemBinding;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
+import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
+import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.ConfiguredService;
+import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
+import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.pojo.PojoConfiguredService;
-import org.apache.tuscany.model.assembly.pojo.PojoEntryPoint;
-import org.apache.tuscany.model.assembly.pojo.PojoInterface;
-import org.apache.tuscany.model.assembly.pojo.PojoInterfaceType;
-import org.apache.tuscany.model.assembly.pojo.PojoJavaInterface;
-import org.apache.tuscany.model.assembly.pojo.PojoService;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
+import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
  * Tests bootstrapping a system module
@@ -50,6 +48,8 @@ import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
  */
 public class SystemBootstrapTestCase extends TestCase {
     private List<RuntimeConfigurationBuilder> builders;
+    
+    private SystemAssemblyFactory factory = new SystemAssemblyFactoryImpl();
 
     /**
      * Simulates booting a runtime process
@@ -66,7 +66,7 @@ public class SystemBootstrapTestCase extends TestCase {
 
         // create a test module
         Component moduleComponent = MockSystemAssemblyFactory.createComponent("module", AggregateContextImpl.class
-                .getName(), ContextConstants.AGGREGATE_SCOPE_ENUM);
+                .getName(), Scope.AGGREGATE);
         runtimeContext.registerModelObject(moduleComponent);
         AggregateContextImpl moduleContext = (AggregateContextImpl) runtimeContext.getContext("module");
         Assert.assertNotNull(moduleContext);
@@ -93,30 +93,27 @@ public class SystemBootstrapTestCase extends TestCase {
         AggregateContext system = runtime.getSystemContext();
         system.registerModelObject(MockSystemAssemblyFactory.createSystemModule());
         system.registerModelObject(MockSystemAssemblyFactory.createComponent("module2", SystemAggregateContextImpl.class
-                .getName(), ContextConstants.AGGREGATE_SCOPE_ENUM));
+                .getName(), Scope.AGGREGATE));
         AggregateContext systemModule2 = (AggregateContext) system.getContext("module2");
         systemModule2.registerModelObject(MockSystemAssemblyFactory.createSystemChildModule());
 
-        PojoEntryPoint ep = MockSystemAssemblyFactory.createEntryPoint("TestService2EP", ModuleScopeSystemComponent.class, "ref");
-        ep.addBinding(new PojoSystemBinding());
-        Service service = new PojoService();
+        EntryPoint ep = MockSystemAssemblyFactory.createEntryPoint("TestService2EP", ModuleScopeSystemComponent.class, "ref");
+        ep.getBindings().add(factory.createSystemBinding());
+        Service service = factory.createService();
         service.setName("module2/TestService2EP");
-        ((PojoConfiguredService) ep.getConfiguredReference().getTargetConfiguredServices().get(0)).setService(service);
-        PojoInterface inter = new PojoJavaInterface();
-        PojoInterfaceType interType = new PojoInterfaceType();
-        interType.setInstanceClass(ModuleScopeSystemComponentImpl.class);
-        inter.setInterfaceType(interType);
+        JavaServiceContract inter = factory.createJavaServiceContract();
+        inter.setInterface(ModuleScopeSystemComponentImpl.class);
         service.setServiceContract(inter);
-        ep.setServiceContract(inter);
+        ((ConfiguredService) ep.getConfiguredReference().getTargetConfiguredServices().get(0)).setService(service);
         system.registerModelObject(ep);
         system.fireEvent(EventContext.MODULE_START, null);
         Assert.assertNotNull(system.locateInstance("TestService1"));
         Assert.assertNotNull(system.locateInstance("TestService2EP"));
 
-        Assert.assertNotNull(((AutowireContext) system).resolveInstance(ModuleScopeSystemComponentImpl.class));
+        Assert.assertNotNull(((AutowireContext) system).resolveInstance(ModuleScopeSystemComponent.class));
         // create a test module
         Component moduleComponent = MockSystemAssemblyFactory.createComponent("test.module", AggregateContextImpl.class
-                .getName(), ContextConstants.AGGREGATE_SCOPE_ENUM);
+                .getName(), Scope.AGGREGATE);
         runtime.registerModelObject(moduleComponent);
         AggregateContextImpl moduleContext = (AggregateContextImpl) runtime.getContext("test.module");
         Assert.assertNotNull(moduleContext);
@@ -129,41 +126,6 @@ public class SystemBootstrapTestCase extends TestCase {
         system.fireEvent(EventContext.MODULE_STOP, null);
         runtime.stop();
     }
-
-//    public void testT() throws Exception{
-//        
-//        List<RuntimeConfigurationBuilder> builders = new ArrayList();
-//        builders.add((new SystemComponentContextBuilder()));
-//        builders.add(new SystemEntryPointBuilder());
-//        builders.add(new SystemExternalServiceBuilder());
-//
-//        RuntimeContext runtimeContext = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
-//        runtimeContext.start();
-//        // create the system context
-//        Component component = MockSystemAssemblyFactory.createComponent(RuntimeContext.SYSTEM,
-//                SystemAggregateComponentContextImpl.class.getName(), ModuleConstants.AGGREGATE_SCOPE_ENUM);
-//        runtimeContext.registerModelObject(component);
-//        AggregateComponentContext systemContext = runtimeContext.getSystemContext();
-//        Assert.assertNotNull(systemContext);
-//        Module systemModule = MockSystemAssemblyFactory.createSystemModule();
-//        systemContext.registerModelObject(systemModule);
-//
-//        // create a test module
-//        Component moduleComponent = MockSystemAssemblyFactory.createComponent("module", AggregateComponentContextImpl.class
-//                .getName(), ModuleConstants.AGGREGATE_SCOPE_ENUM);
-//        runtimeContext.registerModelObject(moduleComponent);
-//        AggregateComponentContextImpl moduleContext = (AggregateComponentContextImpl) runtimeContext.getContext("module");
-//        Assert.assertNotNull(moduleContext);
-//        ExternalService es = MockSystemAssemblyFactory.createExternalService("TestServiceES", "tuscany.system/TestService1xEP");
-//        moduleContext.registerModelObject(es);
-//
-//        // start the modules and test inter-module system wires
-//        systemContext.fireEvent(EventContext.MODULE_START, null);
-//        moduleContext.fireEvent(EventContext.MODULE_START, null);
-//
-//        moduleContext.locateService("TestServiceES");
-//    }
-
 
     protected void setUp() throws Exception {
         super.setUp();

@@ -17,10 +17,11 @@ import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 
 /**
- * Responsible for creating a wire between a reference on a source component to a target service. Wires consist of a set
- * of source invocation configurations held by a proxy factory conntected to corresponding target invocation
- * configurations held by a proxy factory. Wire builders may optimize the invocation chains based on certain characteristics of th wire, such as
- * source and target scopes.
+ * Responsible finalizing target-side proxy factories and bridging
+ * {@link org.apache.tuscany.core.invocation.InvocationConfiguration}s held by source- and target-side proxy factories.
+ * <p>
+ * Wire builders may optimize the invocation chains based on certain characteristics of th wire, such as source and
+ * target scopes.
  * 
  * @version $Rev$ $Date$
  */
@@ -28,16 +29,28 @@ public interface WireBuilder {
 
     /**
      * Connects invocation configurations of the source proxy factory to corresponding ones in the target proxy to
-     * factory to form a wire
+     * factory
      * 
-     * @param sourceFactory the source proxy factory
-     * @param targetFactory
-     * @param targetType
-     * @param downScope
-     * @param targetScopeContext
-     * @throws BuilderConfigException
+     * @param sourceFactory the proxy factory used in constructing the source side of the invocation chain
+     * @param targetFactory the proxy factory used in constructing the target side of the invocation chain
+     * @param targetType the context type of the target. Used to determine if a paricular wire builder should construct
+     *        the wire
+     * @param downScope true if the component containing the reference (source side) is of a lesser scope than the
+     *        target service
+     * @param targetScopeContext the scope context responsible for managing intance contexts of the target component
+     *        type
+     * @throws BuilderConfigException if an error occurs during the wire build process
      */
     public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) throws BuilderConfigException;
+
+    /**
+     * 
+     * @param targetFactory
+     * @param targetType
+     * @param targetScopeContext
+     * @throws BuilderConfigException
+     */
+    public void wire(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException;
 
 }

@@ -29,5 +29,14 @@ public class SystemBindingImpl extends BindingImpl implements SystemBinding {
      */
     protected SystemBindingImpl() {
     }
+    
+    private String name;
+    
+    public String getTargetName(){
+        return name;
+    }
 
+    public void setTargetName(String name){
+        this.name = name;
+    }
 }

@@ -59,6 +59,14 @@ public class SystemComponentContextImpl implements SimpleComponentContext {
         return instance;
     }
 
+    public Object getImplementationInstance() throws TargetException{
+        return instance;
+    }
+
+    public Object getImplementationInstance(boolean notify) throws TargetException{
+        return instance;
+    }
+    
 
     /**
      * @see org.apache.tuscany.core.context.SimpleComponentContext#getScope()

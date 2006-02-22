@@ -27,12 +27,11 @@ import org.apache.tuscany.core.message.channel.impl.MessageDispatcher;
 import org.apache.tuscany.core.message.handler.MessageHandler;
 
 /**
- * Represents the source or target-side of a wire, including proxy configuration information and invocation pipeline
- * (interceptors and handlers) for an operation. Source and target invocation configurations are "bridged" together by a
- * set of wire builders with the source-side holding references to the target.
+ * Contains a source- or target-side invocation pipeline for a service operation. Source and target invocation pipelines
+ * are "bridged" together by a set of wire builders with the source-side holding references to the target.
  * <p>
  * A set of invocation configurations are used by a {@link org.apache.tuscany.core.invocation.spi.ProxyFactory} to
- * create proxies representing the business interface of the target that are injected onto source references.
+ * create service proxies.
  * <p>
  * Invocation configurations must contain at least one interceptor and may have 0 to N handlers. Handlers process an
  * invocation request or response in a one-way fashion. A typical invocation sequence where interceptors and handlers
@@ -65,6 +64,10 @@ import org.apache.tuscany.core.message.handler.MessageHandler;
  * <li>Source interceptor-to-target handler
  * <li>Source interceptor-to-target interceptor
  * </ul>
+ * <p>
+ * In some scenarios, a service proxy may only contain target-side invocaton chains, for example, when a service is
+ * resolved through a locate operation by a non-component client. In this case, there will be no source-side invocation
+ * chains and the target invoker will be held by the target-side and passed down the pipeline.
  * 
  * @see org.apache.tuscany.core.builder.WireBuilder
  * @see org.apache.tuscany.core.invocation.spi.ProxyFactory
@@ -78,7 +81,7 @@ public class InvocationConfiguration {
     // the operation on the target that will utlimately be invoked
     private Method operation;
 
-    // responsible for invoking a target instance, this is held by source-side invocation configurations
+    // responsible for invoking a target instance
     private TargetInvoker targetInvoker;
 
     private Interceptor sourceInterceptorChainHead;
@@ -204,14 +207,16 @@ public class InvocationConfiguration {
     }
 
     /**
-     * Sets the target invoker to pass down the invocation pipeline on the source-side
+     * Sets the target invoker to pass down the invocation pipeline. When a service proxy represents a wire,
+     * the target invoker is set on the source-side.
      */
     public void setTargetInvoker(TargetInvoker invoker) {
         this.targetInvoker = invoker;
     }
 
     /**
-     * Returns the target invoker that is passed down the invocation pipeline on the source-side
+     * Returns the target invoker that is passed down the invocation pipeline. When a service proxy represents a wire,
+     * the target invoker is cached on the source-side.
      */
     public TargetInvoker getTargetInvoker() {
         return targetInvoker;

@@ -17,6 +17,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
@@ -27,9 +28,7 @@ import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.ScopeEnum;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-
+import org.apache.tuscany.model.assembly.Scope;
 import org.osoa.sca.ModuleContext;
 import org.osoa.sca.ServiceUnavailableException;
 
@@ -40,11 +39,16 @@ import org.osoa.sca.ServiceUnavailableException;
  */
 public class AggregateHierarchyTestCase extends AbstractAggregateHierarchyTests {
 
+    /**
+     * FIXME model 
+     * Tests adding a component, accessing it and then exposing it as an entry point after the first access
+     * @throws Exception
+     */
     public void testChildContextIsolation() throws Exception {
         AggregateContext parent = createContextHierachy();
         AggregateContext child = (AggregateContext) parent.getContext("test.child");
-        Component component = MockSystemAssemblyFactory.createComponent("TestService1", ModuleScopeSystemComponentImpl.class
-                .getName(), ScopeEnum.MODULE_LITERAL);
+        Component component = MockSystemAssemblyFactory.createInitializedComponent("TestService1", ModuleScopeSystemComponentImpl.class
+                .getName(), Scope.MODULE);
         child.registerModelObject(component);
         parent.fireEvent(EventContext.MODULE_START, null);
         child.fireEvent(EventContext.MODULE_START, null);
@@ -58,6 +62,9 @@ public class AggregateHierarchyTestCase extends AbstractAggregateHierarchyTests 
         }
 
         // now expose the service as an entry point
+        //FIXME hack to get around initialization of component - just create another one ;-)
+        component = MockSystemAssemblyFactory.createComponent("TestService1", ModuleScopeSystemComponentImpl.class
+                .getName(), Scope.MODULE);
         EntryPoint ep = MockSystemAssemblyFactory.createEntryPoint("TestService1EP", ModuleScopeSystemComponent.class,
                 "TestService1", component);
         child.registerModelObject(ep);
@@ -76,15 +83,15 @@ public class AggregateHierarchyTestCase extends AbstractAggregateHierarchyTests 
     }
 
     protected AggregateContext createContextHierachy() throws Exception {
-        List<RuntimeConfigurationBuilder> builders = MockSystemAssemblyFactory.createBuilders();
+        List<RuntimeConfigurationBuilder> systemBuilders = MockSystemAssemblyFactory.createBuilders();
         AggregateContext parent = new AggregateContextImpl(
                 "test.parent",
                 null,
                 new DefaultScopeStrategy(),
                 new EventContextImpl(),
-                new MockConfigContext(builders),
+                new MockConfigContext(systemBuilders),
                 new NullMonitorFactory());
-        Component component = MockSystemAssemblyFactory.createComponent("test.child", AggregateContextImpl.class.getName(), ContextConstants.AGGREGATE_SCOPE_ENUM);
+        Component component = MockSystemAssemblyFactory.createComponent("test.child", AggregateContextImpl.class.getName(), Scope.AGGREGATE);
         parent.registerModelObject(component);
         parent.start();
         AggregateContext child = (AggregateContext) parent.getContext("test.child");

@@ -72,4 +72,11 @@ public class SystemEntryPointContext extends AbstractContext implements EntryPoi
         lifecycleState = STOPPED;
     }
 
+    public Object getImplementationInstance() throws TargetException{
+        return getInstance(null);
+    }
+
+    public Object getImplementationInstance(boolean notify) throws TargetException{
+        return getInstance(null,notify);
+    }
 }
