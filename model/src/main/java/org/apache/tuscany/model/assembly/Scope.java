@@ -26,7 +26,6 @@ public enum Scope {
     REQUEST,
     SESSION,
     MODULE,
-    //FIXME Jim do we really need this?
     AGGREGATE,
     UNDEFINED;
 
