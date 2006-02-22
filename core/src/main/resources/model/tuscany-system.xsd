@@ -17,15 +17,14 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
         targetNamespace="http://org.apache.tuscany/xmlns/system/0.9"
         xmlns:sca="http://www.osoa.org/xmlns/sca/0.9"
-        xmlns:ext="http://org.apache.tuscany/xmlns/system/0.9"
-        xmlns:codegen="http://www.eclipse.org/emf/2002/Ecore"
-        codegen:nsPrefix="ext"
-        codegen:package="org.apache.tuscany.core.system.assembly"
-        elementFormDefault="qualified">
+        xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
+		xmlns:sdojava="commonj.sdo/java"
+        elementFormDefault="qualified"
+		sdojava:package="org.apache.tuscany.assembly.core.system.assembly.scdl">
 
-    <import namespace="http://www.osoa.org/xmlns/sca/0.9" schemaLocation="sca-core.xsd"/>
+    <import namespace="http://www.osoa.org/xmlns/sca/0.9" schemaLocation="../../../../../model/src/main/resources/model/sca-core.xsd"/>
 
-    <element name="implementation.system" type="ext:SystemImplementation" substitutionGroup="sca:implementation"/>
+    <element name="implementation.system" type="system:SystemImplementation" substitutionGroup="sca:implementation"/>
     <complexType name="SystemImplementation">
         <complexContent>
             <extension base="sca:Implementation">
@@ -38,7 +37,7 @@
         </complexContent>
     </complexType>
 
-    <element name="binding.system" type="ext:SystemBinding" substitutionGroup="sca:binding"/>
+    <element name="binding.system" type="system:SystemBinding" substitutionGroup="sca:binding"/>
     <complexType name="SystemBinding">
         <complexContent>
             <extension base="sca:Binding">
