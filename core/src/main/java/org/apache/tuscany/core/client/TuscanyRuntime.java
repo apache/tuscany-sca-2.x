@@ -16,24 +16,32 @@
  */
 package org.apache.tuscany.core.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.common.resource.loader.ResourceLoader;
 import org.apache.tuscany.common.resource.loader.ResourceLoaderFactory;
+import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ConfigurationLoader;
 import org.apache.tuscany.core.config.impl.EMFConfigurationLoader;
+import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.ScopeStrategy;
-import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
-import org.apache.tuscany.core.context.impl.EventContextImpl;
-import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
+import org.apache.tuscany.core.runtime.RuntimeContext;
+import org.apache.tuscany.core.runtime.RuntimeContextImpl;
+import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
+import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
+import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
 import org.apache.tuscany.model.assembly.loader.impl.AssemblyLoaderImpl;
+import org.osoa.sca.ModuleContext;
 import org.osoa.sca.SCA;
 import org.osoa.sca.ServiceRuntimeException;
 
@@ -44,8 +52,11 @@ import org.osoa.sca.ServiceRuntimeException;
  */
 public class TuscanyRuntime extends SCA {
     private final Monitor monitor;
-    private final TuscanyModuleComponentContext ctx;
     private final Object sessionKey = new Object();
+    
+    private final RuntimeContext runtime;
+    private AggregateContext ctx;
+    
 
     /**
      * Construct a runtime using a null MonitorFactory.
@@ -82,13 +93,17 @@ public class TuscanyRuntime extends SCA {
         ConfigurationLoader loader = new EMFConfigurationLoader(modelContext);
         ModuleComponent moduleComponent = loader.loadModuleComponent(name, uri);
 
-        // create the module component context
-        EventContext context = new EventContextImpl();
-        ScopeStrategy scopeStrategy = new DefaultScopeStrategy();
+        List<RuntimeConfigurationBuilder> configBuilders = new ArrayList();
+        configBuilders.add((new SystemComponentContextBuilder()));
+        configBuilders.add(new SystemEntryPointBuilder());
+        configBuilders.add(new SystemExternalServiceBuilder());
+
+        List<WireBuilder> wireBuilders = new ArrayList();
         
-        //FIXME This is going away and will be replaced by Jim's AggregateContext
-        //ctx = new TuscanyModuleComponentContextImpl(moduleComponent, context, scopeStrategy, modelContext);
-        ctx = null;
+        runtime = new RuntimeContextImpl(monitorFactory,configBuilders,wireBuilders);
+        //TODO Come up with a configuration mechanism for registering Java builders
+        //TODO register an aggregate context under the root
+        //runtime.getRootContext().registerModelObject()
     }
 
     /**
@@ -96,8 +111,11 @@ public class TuscanyRuntime extends SCA {
      */
     @Override
     public void start() {
-        setModuleContext(ctx);
+        setModuleContext((ModuleContext)ctx);
         try {
+            runtime.start();
+            monitor.started(runtime);
+            ctx = null;
             ctx.start();
             ctx.fireEvent(EventContext.MODULE_START, null);
             ctx.fireEvent(EventContext.REQUEST_START, null);
@@ -122,6 +140,8 @@ public class TuscanyRuntime extends SCA {
         ctx.fireEvent(EventContext.MODULE_STOP, null);
         ctx.stop();
         monitor.stopped(ctx);
+        runtime.stop();
+        monitor.stopped(runtime);
     }
 
     /**
@@ -133,7 +153,7 @@ public class TuscanyRuntime extends SCA {
          *
          * @param ctx the runtime's module component context
          */
-        void started(TuscanyModuleComponentContext ctx);
+        void started(AggregateContext ctx);
 
         /**
          * Event emitted when an attempt to start the runtime failed.
@@ -141,13 +161,13 @@ public class TuscanyRuntime extends SCA {
          * @param ctx the runtime's module component context
          * @param e   the exception that caused the failure
          */
-        void startFailed(TuscanyModuleComponentContext ctx, CoreRuntimeException e);
+        void startFailed(AggregateContext ctx, CoreRuntimeException e);
 
         /**
          * Event emitted after the runtime has been stopped.
          *
          * @param ctx the runtime's module component context
          */
-        void stopped(TuscanyModuleComponentContext ctx);
+        void stopped(AggregateContext ctx);
     }
 }

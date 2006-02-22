@@ -19,25 +19,25 @@ package org.apache.tuscany.core.context.webapp;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
 
 /**
  * Cleans up resources used by expired sessions
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class HTTPSessionExpirationListener implements HttpSessionListener {
-    //----------------------------------
+    // ----------------------------------
     // Constructors
-    //----------------------------------
+    // ----------------------------------
 
     public HTTPSessionExpirationListener() {
     }
 
-    //----------------------------------
+    // ----------------------------------
     // Methods
-    //----------------------------------
+    // ----------------------------------
 
     public void sessionCreated(HttpSessionEvent event) {
         // do nothing since sessions are lazily created in {@link
@@ -52,8 +52,8 @@ public class HTTPSessionExpirationListener implements HttpSessionListener {
             tuscanyRuntime.start();
 
             // End the session
-            TuscanyModuleComponentContext moduleComponentContext = tuscanyRuntime.getModuleComponentContext();
-            moduleComponentContext.fireEvent(EventContext.SESSION_END, event.getSession());
+            AggregateContext context = tuscanyRuntime.getModuleComponentContext();
+            context.fireEvent(EventContext.SESSION_END, event.getSession());
         } finally {
             if (tuscanyRuntime != null)
                 tuscanyRuntime.stop();

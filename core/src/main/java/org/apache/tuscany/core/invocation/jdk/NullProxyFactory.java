@@ -1,35 +1,33 @@
 package org.apache.tuscany.core.invocation.jdk;
 
-import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
+import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
 import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyInitializationException;
 
 /**
- * Passes back an actual instance as opposed to a proxy. Used in cases where proxying may be optimized away.
+ * Returns an actual implementation instance as opposed to a proxy. Used in cases where proxying may be optimized away.
  * 
- * @FIXME optimize to support scope containers
  * @version $Rev$ $Date$
  */
 public class NullProxyFactory implements ProxyFactory {
 
-    private TuscanyModuleComponentContext ctx;
+    private AggregateContext parentContext;
 
-    private String serviceName;
+    private String targetName;
 
-    public NullProxyFactory(String serviceName, TuscanyModuleComponentContext ctx) {
-        assert (serviceName != null) : "Service name was null";
-        assert (ctx != null) : "Module component context was null";
-        this.serviceName = serviceName;
-        this.ctx = ctx;
+    public NullProxyFactory(String componentName, AggregateContext parentContext) {
+        assert (parentContext != null) : "Parent context was null";
+        this.targetName = componentName;
+        this.parentContext = parentContext;
     }
 
     public void initialize(Class businessInterface, ProxyConfiguration config) throws ProxyInitializationException {
     }
 
     public Object createProxy() throws ProxyCreationException {
-        return ctx.locateService(serviceName);
+        return parentContext.getContext(targetName);
     }
 
     public void initialize() throws ProxyInitializationException {

@@ -32,7 +32,6 @@ import org.apache.tuscany.core.config.impl.EMFConfigurationLoader;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.context.webapp.HTTPSessionExpirationListener;
@@ -120,19 +119,19 @@ public class TomcatWebAppLifecycleListener implements LifecycleListener {
                         //FIXME TuscanyModuleComponentContext replaced by new bootstrap code
 //                        TuscanyModuleComponentContext moduleComponentContext = new TuscanyModuleComponentContextImpl(
 //                                moduleComponent, eventContext, scopeStrategy, modelContext);
-                        TuscanyModuleComponentContext moduleComponentContext=null;
+                        AggregateContext aggregateContext=null;
 
                         // Create a Tuscany runtime and store it in the servlet
                         // context
-                        TuscanyWebAppRuntime tuscanyRuntime = new TuscanyWebAppRuntime(moduleComponentContext);
+                        TuscanyWebAppRuntime tuscanyRuntime = new TuscanyWebAppRuntime(aggregateContext);
                         context.getServletContext().setAttribute(TuscanyWebAppRuntime.class.getName(), tuscanyRuntime);
 
                         // Start the runtime and the module component context
                         tuscanyRuntime.start();
                         try {
-                            moduleComponentContext.start();
+                            aggregateContext.start();
 
-                            moduleComponentContext.fireEvent(EventContext.MODULE_START, null);
+                            aggregateContext.fireEvent(EventContext.MODULE_START, null);
 
                         } finally {
                             tuscanyRuntime.stop();
@@ -177,14 +176,10 @@ public class TomcatWebAppLifecycleListener implements LifecycleListener {
                         // Start the runtime
                         tuscanyRuntime.start();
                         try {
-
                             // Stop the module context
-                            TuscanyModuleComponentContext moduleComponentContext = tuscanyRuntime.getModuleComponentContext();
-
-                            moduleComponentContext.fireEvent(EventContext.MODULE_STOP, null);
-
-                            moduleComponentContext.stop();
-
+                            AggregateContext aggregateContext = tuscanyRuntime.getModuleComponentContext();
+                            aggregateContext.fireEvent(EventContext.MODULE_STOP, null);
+                            aggregateContext.stop();
                         } finally {
 
                             // Stop the runtime

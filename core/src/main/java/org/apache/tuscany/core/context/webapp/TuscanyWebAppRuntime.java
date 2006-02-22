@@ -16,9 +16,9 @@
  */
 package org.apache.tuscany.core.context.webapp;
 
+import org.apache.tuscany.core.context.AggregateContext;
+import org.osoa.sca.ModuleContext;
 import org.osoa.sca.SCA;
-
-import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
 
 /**
  * An implementation of the SCA runtime for use in a Web app
@@ -26,13 +26,13 @@ import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
  * @version $Rev$ $Date$
  */
 public class TuscanyWebAppRuntime extends SCA {
-    private TuscanyModuleComponentContext moduleComponentContext;
+    private AggregateContext moduleComponentContext;
 
     // ----------------------------------
     // Constructors
     // ----------------------------------
 
-    public TuscanyWebAppRuntime(TuscanyModuleComponentContext moduleComponentContext) {
+    public TuscanyWebAppRuntime(AggregateContext moduleComponentContext) {
         this.moduleComponentContext = moduleComponentContext;
     }
 
@@ -43,13 +43,13 @@ public class TuscanyWebAppRuntime extends SCA {
     /**
      * Returns the module component context associated with this runtime
      */
-    public TuscanyModuleComponentContext getModuleComponentContext() {
+    public AggregateContext getModuleComponentContext() {
         return moduleComponentContext;
     }
 
     public void start() {
         // Associate it with the current thread
-        setModuleContext(moduleComponentContext);
+        setModuleContext((ModuleContext) moduleComponentContext);
     }
 
     public void stop() {

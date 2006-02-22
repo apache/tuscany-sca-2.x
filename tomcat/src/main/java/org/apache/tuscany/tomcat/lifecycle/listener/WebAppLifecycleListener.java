@@ -26,13 +26,13 @@ import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
 import org.apache.tuscany.core.TuscanyRuntimeException;
-import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.config.ConfigurationException;
+import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
 import org.apache.tuscany.core.context.webapp.HTTPSessionExpirationListener;
 import org.apache.tuscany.core.context.webapp.TuscanyRequestFilter;
 import org.apache.tuscany.core.context.webapp.TuscanyWebAppRuntime;
+import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeMonitor;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 
@@ -81,21 +81,20 @@ public class WebAppLifecycleListener implements LifecycleListener {
             Context context = (Context) lifecycleEventSource;
             String name = context.getPath().substring(1);
             try {
-                ModuleComponent moduleComponent = null;//FIXME runtime.loadModuleComponent(name, "sca.module");
+                ModuleComponent moduleComponent = null;// FIXME runtime.loadModuleComponent(name, "sca.module");
                 if (moduleComponent == null) {
                     return; // not an SCA module component
                 }
                 // create the module component
                 runtime.registerModelObject(moduleComponent);
-                TuscanyModuleComponentContext moduleComponentContext = (TuscanyModuleComponentContext) runtime
-                        .getContext(moduleComponent.getName());
-                TuscanyWebAppRuntime tuscanyRuntime = new TuscanyWebAppRuntime(moduleComponentContext);
+                AggregateContext aggregateContext = (AggregateContext) runtime.getContext(moduleComponent.getName());
+                TuscanyWebAppRuntime tuscanyRuntime = new TuscanyWebAppRuntime(aggregateContext);
                 context.getServletContext().setAttribute(TuscanyWebAppRuntime.class.getName(), tuscanyRuntime);
                 // Start the runtime and the module component context
                 tuscanyRuntime.start();
                 try {
-                    moduleComponentContext.start();
-                    moduleComponentContext.fireEvent(EventContext.MODULE_START, null);
+                    aggregateContext.start();
+                    aggregateContext.fireEvent(EventContext.MODULE_START, null);
                 } finally {
                     tuscanyRuntime.stop();
                 }
@@ -132,9 +131,9 @@ public class WebAppLifecycleListener implements LifecycleListener {
             try {
                 // Stop the module context
                 tuscanyRuntime.start();
-                TuscanyModuleComponentContext moduleComponentContext = tuscanyRuntime.getModuleComponentContext();
-                moduleComponentContext.fireEvent(EventContext.MODULE_STOP, null);
-                moduleComponentContext.stop();
+                AggregateContext aggregateContext = tuscanyRuntime.getModuleComponentContext();
+                aggregateContext.fireEvent(EventContext.MODULE_STOP, null);
+                aggregateContext.stop();
             } catch (TuscanyRuntimeException e) {
                 monitor.log(e);
             } finally {

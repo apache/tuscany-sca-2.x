@@ -30,12 +30,10 @@ import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.ScopeStrategy;
 import org.apache.tuscany.core.context.ServiceNotFoundException;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Extensible;
-import org.apache.tuscany.model.assembly.ModuleComponent;
+import org.osoa.sca.ModuleContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceUnavailableException;
@@ -45,7 +43,7 @@ import org.osoa.sca.ServiceUnavailableException;
  * 
  * @version $Rev$ $Date$
  */
-public class AggregateContextImpl extends AbstractAggregateContext implements TuscanyModuleComponentContext, ConfigurationContext {
+public class AggregateContextImpl extends AbstractAggregateContext implements ConfigurationContext, ModuleContext {
 
     // ----------------------------------
     // Fields
@@ -53,9 +51,6 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Tu
 
     @Autowire(required = false)
     private AutowireContext autowireContext;
-
-    // FIXME remove
-    private AssemblyModelContext modelContext;
 
     // ----------------------------------
     // Constructors
@@ -132,14 +127,6 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Tu
     }
 
     public ServiceReference newSession(String serviceName, Object sessionId) {
-        throw new UnsupportedOperationException();
-    }
-
-    public AssemblyModelContext getAssemblyModelContext() {
-        return modelContext;
-    }
-
-    public ModuleComponent getModuleComponent() {
         throw new UnsupportedOperationException();
     }
 
