@@ -23,7 +23,7 @@ public class JavaScriptTargetWireBuilder implements WireBuilder {
     public JavaScriptTargetWireBuilder() {
     }
 
-    public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+    public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) throws BuilderConfigException {
         if (!(JavaScriptComponentRuntimeConfiguration.class.isAssignableFrom(targetType))) {
             return;
@@ -43,7 +43,7 @@ public class JavaScriptTargetWireBuilder implements WireBuilder {
         }
     }
 
-    public void wire(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
+    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
         if (!(JavaScriptComponentRuntimeConfiguration.class.isAssignableFrom(targetType))) {
             return;
         }

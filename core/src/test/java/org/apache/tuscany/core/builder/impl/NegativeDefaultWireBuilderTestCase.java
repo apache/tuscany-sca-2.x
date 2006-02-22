@@ -61,7 +61,7 @@ public class NegativeDefaultWireBuilderTestCase extends TestCase {
         // connect the source to the target
         DefaultWireBuilder builder = new DefaultWireBuilder();
         try {
-            builder.wire(sourceFactory, targetFactory, null, true, null);
+            builder.connect(sourceFactory, targetFactory, null, true, null);
             fail("Expected " + BuilderConfigException.class.getName());
         } catch (BuilderConfigException e) {
             // success

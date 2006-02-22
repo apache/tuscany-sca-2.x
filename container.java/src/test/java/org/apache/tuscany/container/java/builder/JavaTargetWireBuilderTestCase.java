@@ -91,7 +91,7 @@ public class JavaTargetWireBuilderTestCase extends TestCase {
         DefaultWireBuilder builder = new DefaultWireBuilder();
         builder.addWireBuilder(new JavaTargetWireBuilder());
         
-        builder.wire(sourceFactory, targetFactory, JavaComponentRuntimeConfiguration.class, true, scopeCtx);
+        builder.connect(sourceFactory, targetFactory, JavaComponentRuntimeConfiguration.class, true, scopeCtx);
         source.build();
         target.build();
         Assert.assertNotNull(source.getTargetInvoker());

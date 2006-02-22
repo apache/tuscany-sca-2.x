@@ -49,7 +49,7 @@ public class DefaultWireBuilder implements WireBuilder {
         builders.add(builder);
     }
 
-    public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+    public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) {
         QualifiedName targetName = sourceFactory.getProxyConfiguration().getTargetName();
         // get the proxy chain for the target
@@ -90,7 +90,7 @@ public class DefaultWireBuilder implements WireBuilder {
         }
         // delegate to other wire builders
         for (WireBuilder builder : builders) {
-            builder.wire(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
+            builder.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
         }
         // signal that wire build process is complete
         boolean optimizable = true;
@@ -101,10 +101,10 @@ public class DefaultWireBuilder implements WireBuilder {
         }
     }
     
-    public void wire(ProxyFactory targetFactory, Class targetType,ScopeContext targetScopeContext) throws BuilderConfigException {
+    public void completeTargetChain(ProxyFactory targetFactory, Class targetType,ScopeContext targetScopeContext) throws BuilderConfigException {
         // delegate to other wire builders
         for (WireBuilder builder : builders) {
-            builder.wire(targetFactory, targetType, targetScopeContext);
+            builder.completeTargetChain(targetFactory, targetType, targetScopeContext);
         }
     }
 

@@ -214,13 +214,13 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) throws BuilderConfigException {
         for (WireBuilder wireBuilder : wireBuilders) {
-            wireBuilder.wire(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
+            wireBuilder.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
         }
     }
 
     public void wire(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
         for (WireBuilder wireBuilder : wireBuilders) {
-            wireBuilder.wire(targetFactory, targetType, targetScopeContext);
+            wireBuilder.completeTargetChain(targetFactory, targetType, targetScopeContext);
         }
     }
     // ----------------------------------

@@ -81,7 +81,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         // connect the source to the target
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
-        builder.wire(sourceFactory, targetFactory, null, true, null);
+        builder.connect(sourceFactory, targetFactory, null, true, null);
        // source.build();
         target.build();
         // set a static invoker
@@ -136,7 +136,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         // connect the source to the target
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
-        builder.wire(sourceFactory, targetFactory, null, true, null);
+        builder.connect(sourceFactory, targetFactory, null, true, null);
         //source.build();
         target.build();
         // set a static invoker
@@ -190,7 +190,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         // connect the source to the target
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
-        builder.wire(sourceFactory, targetFactory, null, true, null);
+        builder.connect(sourceFactory, targetFactory, null, true, null);
         //source.build();
         target.build();
         // set a static invoker
@@ -239,7 +239,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         // connect the source to the target
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
-        builder.wire(sourceFactory, targetFactory, null, true, null);
+        builder.connect(sourceFactory, targetFactory, null, true, null);
         //source.build();
         target.build();
         // set a static invoker
@@ -291,7 +291,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         // connect the source to the target
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
-        builder.wire(sourceFactory, targetFactory, null, true, null);
+        builder.connect(sourceFactory, targetFactory, null, true, null);
         //source.build();
         target.build();
         // set a static invoker
@@ -343,7 +343,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         // connect the source to the target
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
-        builder.wire(sourceFactory, targetFactory, null, true, null);
+        builder.connect(sourceFactory, targetFactory, null, true, null);
 //        source.build();
         target.build();
         // set a static invoker
@@ -389,7 +389,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         // connect the source to the target
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
-        builder.wire(sourceFactory, targetFactory, null, true, null);
+        builder.connect(sourceFactory, targetFactory, null, true, null);
         target.build();
         // set a static invoker
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());

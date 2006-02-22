@@ -91,7 +91,7 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
                     RuntimeConfiguration targetConfig = (RuntimeConfiguration) target.getComponentImplementation()
                             .getRuntimeConfiguration();
                     boolean downScope = strategy.downScopeReference(source.getScope(), targetConfig.getScope());
-                    wireBuilder.wire(pFactory, targetConfig.getTargetProxyFactory(pFactory.getProxyConfiguration().getTargetName()
+                    wireBuilder.connect(pFactory, targetConfig.getTargetProxyFactory(pFactory.getProxyConfiguration().getTargetName()
                             .getPortName()), targetConfig.getClass(), downScope, scopeContext);
                 }
                 pFactory.initialize();

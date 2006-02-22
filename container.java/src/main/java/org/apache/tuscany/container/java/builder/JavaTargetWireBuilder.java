@@ -33,7 +33,7 @@ public class JavaTargetWireBuilder implements WireBuilder {
     public JavaTargetWireBuilder() {
     }
 
-    public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+    public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) throws BuilderConfigException {
         if (!(JavaComponentRuntimeConfiguration.class.isAssignableFrom(targetType))) {
             return;
@@ -52,7 +52,7 @@ public class JavaTargetWireBuilder implements WireBuilder {
         }
     }
 
-    public void wire(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
+    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
         //TODO implement. 
 //        if (!(JavaComponentRuntimeConfiguration.class.isAssignableFrom(targetType))) {
 //            return;

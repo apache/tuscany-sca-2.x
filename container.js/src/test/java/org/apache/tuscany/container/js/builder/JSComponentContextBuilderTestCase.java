@@ -40,7 +40,7 @@ public class JSComponentContextBuilderTestCase extends TestCase {
         context.start();
         context.onEvent(EventContext.MODULE_START, null);
         for (ProxyFactory proxyFactory : (Collection<ProxyFactory>) config.getTargetProxyFactories().values()) {
-            jsWireBuilder.wire(proxyFactory, JavaScriptComponentRuntimeConfiguration.class, context);
+            jsWireBuilder.completeTargetChain(proxyFactory, JavaScriptComponentRuntimeConfiguration.class, context);
             proxyFactory.initialize();
         }
         InstanceContext ctx = config.createInstanceContext();
