@@ -77,7 +77,11 @@
                     <execution>
                         <configuration>
                             <schemaFile>${basedir}/src/main/resources/model/sca.xsd</schemaFile>
-                            <javaPackage>org.apache.tuscany.model.assembly.test</javaPackage>
+                            <javaPackage>org.apache.tuscany.model.assembly.scdl</javaPackage>
+                            <prefix>SCDL</prefix>
+                            <generateLoader>true</generateLoader>
+                            <generateSwitch>true</generateSwitch>
+                            <noNotification>true</noNotification>
                         </configuration>
                         <goals>
                             <goal>generate</goal>

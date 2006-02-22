@@ -24,6 +24,8 @@ import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
 /**
  */
 public class AssemblyLoaderImpl implements AssemblyLoader {
+    
+    private SCDLXMLLoader scdlLoader=new SCDLXMLLoader();
 
     /**
      * Constructor
@@ -35,7 +37,10 @@ public class AssemblyLoaderImpl implements AssemblyLoader {
      * @see org.apache.tuscany.model.assembly.loader.AssemblyLoader#getComponentType(java.lang.String)
      */
     public ComponentType getComponentType(String uri) {
-        // TODO Auto-generated method stub
+
+        // Load the SCDL component type
+        org.apache.tuscany.model.assembly.scdl.ComponentType scdlComponentType=scdlLoader.getComponentType(uri);
+        
         return null;
     }
 
