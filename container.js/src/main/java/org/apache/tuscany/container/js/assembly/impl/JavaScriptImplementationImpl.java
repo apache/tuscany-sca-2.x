@@ -12,11 +12,11 @@ import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.ModelInitException;
 import org.apache.tuscany.model.assembly.impl.ComponentImplementationImpl;
 
-public class PojoJavaScriptImplementation extends ComponentImplementationImpl implements JavaScriptImplementation {
+public class JavaScriptImplementationImpl extends ComponentImplementationImpl implements JavaScriptImplementation {
 
     private ResourceLoader resourceLoader;
 
-    public PojoJavaScriptImplementation() {
+    public JavaScriptImplementationImpl() {
         super();
     }
 

@@ -36,7 +36,7 @@ import org.apache.tuscany.model.assembly.loader.impl.AssemblyLoaderImpl;
  */
 public class JavaScriptImplementationTestCase extends TestCase {
 
-    private PojoJavaScriptImplementation impl = (PojoJavaScriptImplementation) new JavaScriptAssemblyFactoryImpl()
+    private JavaScriptImplementationImpl impl = (JavaScriptImplementationImpl) new JavaScriptAssemblyFactoryImpl()
             .createJavaScriptImplementation();
 
     public void testDummy(){} // remove when tests added back

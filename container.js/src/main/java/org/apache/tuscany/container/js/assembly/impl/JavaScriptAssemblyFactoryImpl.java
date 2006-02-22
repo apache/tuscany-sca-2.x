@@ -27,7 +27,7 @@ public class JavaScriptAssemblyFactoryImpl extends AssemblyFactoryImpl implement
     }
 
     public JavaScriptImplementation createJavaScriptImplementation() {
-        return new PojoJavaScriptImplementation();
+        return new JavaScriptImplementationImpl();
     }
 
 }

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
-import org.apache.tuscany.container.js.assembly.impl.PojoJavaScriptImplementation;
+import org.apache.tuscany.container.js.assembly.impl.JavaScriptImplementationImpl;
 import org.apache.tuscany.container.js.config.JavaScriptComponentRuntimeConfiguration;
 import org.apache.tuscany.container.js.rhino.RhinoInvoker;
 import org.apache.tuscany.core.builder.BuilderConfigException;
@@ -114,9 +114,9 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
                 Map<String, Object> properties = new HashMap();
                 // TODO support properties
                 String script = null;
-                if (impl instanceof PojoJavaScriptImplementation) { // fixme
+                if (impl instanceof JavaScriptImplementationImpl) { // fixme
                     try {
-                        script = ((PojoJavaScriptImplementation) impl).getScript();
+                        script = ((JavaScriptImplementationImpl) impl).getScript();
                     } catch (ModelInitException e) {
                         throw new BuilderConfigException(e);
                     }
