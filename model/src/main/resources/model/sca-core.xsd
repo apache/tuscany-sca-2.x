@@ -4,6 +4,8 @@
 		targetNamespace="http://www.osoa.org/xmlns/sca/0.9" 
 		xmlns:sca="http://www.osoa.org/xmlns/sca/0.9"
 		xmlns:sdo="commonj.sdo/xml"
+		xmlns:sdojava="commonj.sdo/java"
+		sdojava:package="org.apache.tuscany.model.assembly.scdl"
 		elementFormDefault="qualified">
 
 	<element name="componentType" type="sca:ComponentType"/>

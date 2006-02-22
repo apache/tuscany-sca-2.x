@@ -2,7 +2,9 @@
 <!-- (c) Copyright BEA Systems Inc. and IBM Corporation 2005 -->
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
 		targetNamespace="http://www.osoa.org/xmlns/sca/0.9" 
-		xmlns:sca="http://www.osoa.org/xmlns/sca/0.9">
+		xmlns:sdojava="commonj.sdo/java"
+		xmlns:sca="http://www.osoa.org/xmlns/sca/0.9"
+		sdojava:package="org.apache.tuscany.model.assembly.scdl">
 
 	<include schemaLocation="sca-core.xsd"/>
 

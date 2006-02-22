@@ -41,6 +41,9 @@ public class AssemblyLoaderImpl implements AssemblyLoader {
         // Load the SCDL component type
         org.apache.tuscany.model.assembly.scdl.ComponentType scdlComponentType=scdlLoader.getComponentType(uri);
         
+        // Transform it to an assembly component type
+        
+        
         return null;
     }
 

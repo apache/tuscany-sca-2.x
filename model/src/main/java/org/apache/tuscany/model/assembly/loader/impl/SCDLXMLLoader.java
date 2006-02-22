@@ -25,8 +25,8 @@ import org.apache.tuscany.model.assembly.scdl.DocumentRoot;
 import org.apache.tuscany.model.assembly.scdl.Module;
 import org.apache.tuscany.model.assembly.scdl.ModuleFragment;
 import org.apache.tuscany.model.assembly.scdl.Subsystem;
-import org.apache.tuscany.model.assembly.scdl.impl.SCDLPackageImpl;
-import org.apache.tuscany.model.assembly.scdl.util.SCDLResourceFactoryImpl;
+import org.apache.tuscany.model.assembly.scdl.impl.ScdlPackageImpl;
+import org.apache.tuscany.model.assembly.scdl.util.ScdlResourceFactoryImpl;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -44,14 +44,14 @@ public class SCDLXMLLoader extends ResourceSetImpl {
         
         // Register resource factories
         Map extensionToFactoryMap=getResourceFactoryRegistry().getExtensionToFactoryMap();
-        SCDLResourceFactoryImpl resourceFactory=new SCDLResourceFactoryImpl(); 
+        ScdlResourceFactoryImpl resourceFactory=new ScdlResourceFactoryImpl(); 
         extensionToFactoryMap.put("module", resourceFactory);
         extensionToFactoryMap.put("fragment", resourceFactory);
         extensionToFactoryMap.put("subsystem", resourceFactory);
         extensionToFactoryMap.put("componentType", resourceFactory);
         
         // Initialize SCDL package
-        SCDLPackageImpl.eINSTANCE.eClass();
+        ScdlPackageImpl.eINSTANCE.eClass();
         
     }
 
