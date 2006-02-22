@@ -15,6 +15,7 @@ package org.apache.tuscany.container.java.scopes;
 
 import java.util.List;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.container.java.mock.MockAggregateAssemblyFactory;
@@ -22,16 +23,15 @@ import org.apache.tuscany.container.java.mock.MockSystemAssemblyFactory;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.ContextConstants;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.AggregateScopeContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.Extensible;
-import junit.framework.Assert;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Tests component nesting. This test need to be in the container.java progject since it relies on Java POJOs for scope
@@ -50,7 +50,7 @@ public class AggregateScopeTestCase extends TestCase {
         moduleComponentCtx.setName("testMC");
         AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
         Component aggregateComponent = MockSystemAssemblyFactory.createDecoratedComponent("AggregateComponent",
-                AggregateContextImpl.class.getName(), ContextConstants.AGGREGATE_SCOPE_ENUM, moduleComponentCtx);
+                AggregateContextImpl.class.getName(), Scope.AGGREGATE, moduleComponentCtx);
         scopeContainer.registerConfiguration((RuntimeConfiguration<InstanceContext>) aggregateComponent
                 .getComponentImplementation().getRuntimeConfiguration());
         scopeContainer.start();
@@ -107,7 +107,7 @@ public class AggregateScopeTestCase extends TestCase {
         moduleComponentCtx.setName("testMC");
         AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
         Component aggregateComponent = MockSystemAssemblyFactory.createDecoratedComponent("AggregateComponent",
-                AggregateContextImpl.class.getName(), ContextConstants.AGGREGATE_SCOPE_ENUM, moduleComponentCtx);
+                AggregateContextImpl.class.getName(), Scope.AGGREGATE, moduleComponentCtx);
         scopeContainer.registerConfiguration((RuntimeConfiguration<InstanceContext>) aggregateComponent
                 .getComponentImplementation().getRuntimeConfiguration());
         scopeContainer.start();
@@ -133,7 +133,7 @@ public class AggregateScopeTestCase extends TestCase {
         moduleComponentCtx.setName("testMC");
         AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
         Component aggregateComponent = MockSystemAssemblyFactory.createDecoratedComponent("AggregateComponent",
-                AggregateContextImpl.class.getName(), ContextConstants.AGGREGATE_SCOPE_ENUM, moduleComponentCtx);
+                AggregateContextImpl.class.getName(), Scope.AGGREGATE, moduleComponentCtx);
         scopeContainer.registerConfiguration((RuntimeConfiguration<InstanceContext>) aggregateComponent
                 .getComponentImplementation().getRuntimeConfiguration());
         scopeContainer.start();
@@ -155,7 +155,7 @@ public class AggregateScopeTestCase extends TestCase {
         moduleComponentCtx.setName("testMC");
         AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
         Component aggregateComponent = MockSystemAssemblyFactory.createDecoratedComponent("AggregateComponent",
-                AggregateContextImpl.class.getName(), ContextConstants.AGGREGATE_SCOPE_ENUM, moduleComponentCtx);
+                AggregateContextImpl.class.getName(), Scope.AGGREGATE, moduleComponentCtx);
         scopeContainer.start();
 
         scopeContainer.onEvent(EventContext.MODULE_START, null);

@@ -33,17 +33,17 @@ import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.ContextConstants;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
-import org.apache.tuscany.core.message.impl.PojoMessageFactory;
+import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Verifies that the aggregate context implementation and java component builders construct references properly
@@ -65,7 +65,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     }
 
     public void testRefWithSourceInterceptor() throws Exception {
-        MessageFactory msgFactory = new PojoMessageFactory();
+        MessageFactory msgFactory = new MessageFactoryImpl();
 
         List<RuntimeConfigurationBuilder> builders = new ArrayList();
         builders.add((new SystemComponentContextBuilder()));
@@ -92,8 +92,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         RuntimeContext runtime = new RuntimeContextImpl(null, builders, wireBuilders);
         runtime.start();
         runtime.getRootContext().registerModelObject(
-                MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),
-                        ContextConstants.AGGREGATE_SCOPE_ENUM));
+                MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(), Scope.AGGREGATE));
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockModuleFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);
@@ -108,7 +107,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     }
 
     public void testRefWithSourceInterceptorHandler() throws Exception {
-        MessageFactory msgFactory = new PojoMessageFactory();
+        MessageFactory msgFactory = new MessageFactoryImpl();
 
         List<RuntimeConfigurationBuilder> builders = new ArrayList();
         builders.add((new SystemComponentContextBuilder()));
@@ -124,9 +123,9 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         HierarchicalBuilder refBuilder = new HierarchicalBuilder();
         refBuilder.addBuilder(interceptorBuilder);
         MockHandler mockHandler = new MockHandler();
-        MockHandlerBuilder handlerBuilder = new MockHandlerBuilder(mockHandler,true,true);
+        MockHandlerBuilder handlerBuilder = new MockHandlerBuilder(mockHandler, true, true);
         refBuilder.addBuilder(handlerBuilder);
-        
+
         javaBuilder.setReferenceBuilder(refBuilder);
         builders.add(javaBuilder);
 
@@ -139,7 +138,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         runtime.start();
         runtime.getRootContext().registerModelObject(
                 MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),
-                        ContextConstants.AGGREGATE_SCOPE_ENUM));
+                        Scope.AGGREGATE));
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockModuleFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);
@@ -155,9 +154,8 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         runtime.stop();
     }
 
-    
     public void testRefWithTargetInterceptorHandler() throws Exception {
-        MessageFactory msgFactory = new PojoMessageFactory();
+        MessageFactory msgFactory = new MessageFactoryImpl();
 
         List<RuntimeConfigurationBuilder> builders = new ArrayList();
         builders.add((new SystemComponentContextBuilder()));
@@ -173,9 +171,9 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         HierarchicalBuilder refBuilder = new HierarchicalBuilder();
         refBuilder.addBuilder(interceptorBuilder);
         MockHandler mockHandler = new MockHandler();
-        MockHandlerBuilder handlerBuilder = new MockHandlerBuilder(mockHandler,false,true);
+        MockHandlerBuilder handlerBuilder = new MockHandlerBuilder(mockHandler, false, true);
         refBuilder.addBuilder(handlerBuilder);
-        
+
         javaBuilder.setReferenceBuilder(refBuilder);
         builders.add(javaBuilder);
 
@@ -188,7 +186,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         runtime.start();
         runtime.getRootContext().registerModelObject(
                 MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),
-                        ContextConstants.AGGREGATE_SCOPE_ENUM));
+                        Scope.AGGREGATE));
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockModuleFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);
@@ -204,9 +202,8 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         runtime.stop();
     }
 
-    
     public void testRefWithTargetInterceptor() throws Exception {
-        MessageFactory msgFactory = new PojoMessageFactory();
+        MessageFactory msgFactory = new MessageFactoryImpl();
 
         List<RuntimeConfigurationBuilder> builders = new ArrayList();
         builders.add((new SystemComponentContextBuilder()));
@@ -221,7 +218,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
         HierarchicalBuilder refBuilder = new HierarchicalBuilder();
         refBuilder.addBuilder(interceptorBuilder);
-        
+
         javaBuilder.setReferenceBuilder(refBuilder);
         builders.add(javaBuilder);
 
@@ -234,7 +231,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         runtime.start();
         runtime.getRootContext().registerModelObject(
                 MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),
-                        ContextConstants.AGGREGATE_SCOPE_ENUM));
+                        Scope.AGGREGATE));
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockModuleFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);

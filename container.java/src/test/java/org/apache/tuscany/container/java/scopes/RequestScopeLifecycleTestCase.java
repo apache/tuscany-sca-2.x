@@ -29,11 +29,11 @@ import org.apache.tuscany.container.java.mock.components.SessionScopeInitDestroy
 import org.apache.tuscany.container.java.mock.components.SessionScopeInitOnlyComponent;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
-import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.RequestScopeContext;
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 
 /**
@@ -43,14 +43,9 @@ import org.apache.tuscany.model.assembly.SimpleComponent;
  */
 public class RequestScopeLifecycleTestCase extends TestCase {
 
-    // static public junit.framework.Test suite(){
-    // return new JUnit4TestAdapter(HttpSessionScopeLifecycleTestCase.class);
-    // }
-
     /**
      * Tests instance identity is properly maintained
      */
-    // @Test
     public void testInitDestroy() throws Exception {
         EventContext ctx = new EventContextImpl();
         RequestScopeContext scope = new RequestScopeContext(ctx);
@@ -119,11 +114,11 @@ public class RequestScopeLifecycleTestCase extends TestCase {
     private List<RuntimeConfiguration<InstanceContext>> createComponents() throws NoSuchMethodException, BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
         ca[0] = MockAssemblyFactory.createComponent("TestServiceInitDestroy", SessionScopeInitDestroyComponent.class,
-                ScopeEnum.REQUEST_LITERAL);
+                Scope.REQUEST);
         ca[1] = MockAssemblyFactory.createComponent("TestServiceInitOnly", SessionScopeInitOnlyComponent.class,
-                ScopeEnum.REQUEST_LITERAL);
+                Scope.REQUEST);
         ca[2] = MockAssemblyFactory.createComponent("TestServiceDestroyOnly", SessionScopeDestroyOnlyComponent.class,
-                ScopeEnum.REQUEST_LITERAL);
+                Scope.REQUEST);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
             builder.build(ca[i], null);
@@ -136,9 +131,9 @@ public class RequestScopeLifecycleTestCase extends TestCase {
     private List<RuntimeConfiguration<InstanceContext>> createOrderedInitComponents() throws NoSuchMethodException,
             BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
-        ca[0] = MockAssemblyFactory.createComponent("one", OrderedInitPojo.class, ScopeEnum.REQUEST_LITERAL);
-        ca[1] = MockAssemblyFactory.createComponent("two", OrderedInitPojo.class, ScopeEnum.REQUEST_LITERAL);
-        ca[2] = MockAssemblyFactory.createComponent("three", OrderedInitPojo.class, ScopeEnum.REQUEST_LITERAL);
+        ca[0] = MockAssemblyFactory.createComponent("one", OrderedInitPojo.class, Scope.REQUEST);
+        ca[1] = MockAssemblyFactory.createComponent("two", OrderedInitPojo.class, Scope.REQUEST);
+        ca[2] = MockAssemblyFactory.createComponent("three", OrderedInitPojo.class, Scope.REQUEST);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
             builder.build(ca[i], null);

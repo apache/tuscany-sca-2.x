@@ -23,7 +23,7 @@ import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.model.assembly.Extensible;
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 
 /**
@@ -46,11 +46,11 @@ public class MockAggregateAssemblyFactory {
         try {
             JavaComponentContextBuilder2 builder = new JavaComponentContextBuilder2();
             SimpleComponent component = MockAssemblyFactory.createComponent("TestService1", ModuleScopeComponentImpl.class,
-                    ScopeEnum.MODULE_LITERAL);
+                    Scope.MODULE);
             SimpleComponent sessionComponent = MockAssemblyFactory.createComponent("TestService2",
-                    SessionScopeComponentImpl.class, ScopeEnum.SESSION_LITERAL);
+                    SessionScopeComponentImpl.class, Scope.SESSION);
             SimpleComponent requestComponent = MockAssemblyFactory.createComponent("TestService3",
-                    SessionScopeComponentImpl.class, ScopeEnum.REQUEST_LITERAL);
+                    SessionScopeComponentImpl.class, Scope.REQUEST);
             builder.build(component, ctx);
             builder.build(sessionComponent, ctx);
             builder.build(requestComponent, ctx);

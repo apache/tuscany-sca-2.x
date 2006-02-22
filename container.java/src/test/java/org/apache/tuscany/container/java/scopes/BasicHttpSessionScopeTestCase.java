@@ -29,11 +29,11 @@ import org.apache.tuscany.container.java.mock.components.SessionScopeComponentIm
 import org.apache.tuscany.container.java.mock.components.SessionScopeInitDestroyComponent;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
-import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.HttpSessionScopeContext;
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 
 /**
@@ -208,7 +208,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     JavaComponentContextBuilder2 builder = new JavaComponentContextBuilder2();
 
     private List<RuntimeConfiguration<InstanceContext>> createConfigurations() throws NoSuchMethodException, BuilderException {
-        SimpleComponent component = MockAssemblyFactory.createComponent("TestService1", SessionScopeComponentImpl.class, ScopeEnum.SESSION_LITERAL);
+        SimpleComponent component = MockAssemblyFactory.createComponent("TestService1", SessionScopeComponentImpl.class, Scope.SESSION);
         builder.build(component, null);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         configs.add((RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration());
@@ -216,7 +216,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     }
 
     private RuntimeConfiguration<InstanceContext> createConfiguration(String name) throws NoSuchMethodException, BuilderException {
-        SimpleComponent component = MockAssemblyFactory.createComponent(name, SessionScopeInitDestroyComponent.class, ScopeEnum.SESSION_LITERAL);
+        SimpleComponent component = MockAssemblyFactory.createComponent(name, SessionScopeInitDestroyComponent.class, Scope.SESSION);
         builder.build(component, null);
         return (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration();
     }

@@ -51,8 +51,11 @@ import org.osoa.sca.annotations.Init;
 import commonj.sdo.DataObject;
 
 /**
- * Decorates components whose implementation type is a
- * {@link org.apache.tuscany.container.java.assembly.JavaImplementation} with the appropriate runtime configuration
+ * Builds runtime configurations for component implementations that map to
+ * {@link org.apache.tuscany.container.java.assembly.JavaImplementation}. The logical model is then decorated with the
+ * runtime configuration.
+ * 
+ * @see org.apache.tuscany.core.builder.RuntimeConfiguration
  * 
  * @version $Rev: 368822 $ $Date: 2006-01-13 10:54:38 -0800 (Fri, 13 Jan 2006) $
  */
@@ -60,6 +63,9 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
 
     private ProxyFactoryFactory factory;
 
+    /**
+     * Sets the factory used to construct proxies implmementing the business interface required by a reference
+     */
     @Autowire
     public void setProxyFactoryFactory(ProxyFactoryFactory factory) {
         this.factory = factory;
@@ -67,6 +73,11 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
 
     private MessageFactory msgFactory;
 
+    /**
+     * Sets the factory used to construct invocation messages
+     * 
+     * @param msgFactory
+     */
     @Autowire
     public void setMessageFactory(MessageFactory msgFactory) {
         this.msgFactory = msgFactory;
@@ -74,6 +85,13 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
 
     private RuntimeConfigurationBuilder referenceBuilder;
 
+    /**
+     * Sets a builder responsible for creating source-side and target-side invocation chains for a reference. The
+     * reference builder may be hierarchical, containing other child reference builders that operate on specific
+     * metadata used to construct and invocation chain.
+     * 
+     * @see org.apache.tuscany.core.builder.impl.HierarchicalBuilder
+     */
     public void setReferenceBuilder(RuntimeConfigurationBuilder builder) {
         this.referenceBuilder = builder;
     }
@@ -97,7 +115,8 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
         if (component.getComponentImplementation() instanceof JavaImplementation) {
             JavaImplementation javaImpl = (JavaImplementation) component.getComponentImplementation();
             // FIXME scope
-            Scope scope = component.getComponentImplementation().getComponentType().getServices().get(0).getServiceContract().getScope();
+            Scope scope = component.getComponentImplementation().getComponentType().getServices().get(0).getServiceContract()
+                    .getScope();
             Class implClass = null;
             Set<Field> fields;
             Set<Method> methods;
@@ -165,34 +184,30 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
                         .getDefaultConstructor(implClass), eagerInit, initInvoker, destroyInvoker, scope);
                 component.getComponentImplementation().setRuntimeConfiguration(config);
 
-                // create chains for handling incoming requests
+                // create target-side invocation chains for each service offered by the implementation
                 for (ConfiguredService configuredService : component.getConfiguredServices()) {
                     Service service = configuredService.getService();
                     ServiceContract serviceContract = service.getServiceContract();
                     Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
                     ProxyFactory proxyFactory = factory.createProxyFactory();
-                    // FIXME we pass null for scopes since ProxyConfiguration requires scopes - this should be removed
-                    Set<Method> javaMethods=JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
+                    Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
                     for (Method method : javaMethods) {
                         InvocationConfiguration iConfig = new InvocationConfiguration(method);
                         iConfigMap.put(method, iConfig);
                     }
-                    // @FIXME hardcode separator
-//                    QualifiedName qName = new QualifiedName(configuredService.getPart().getName() + "/"
-//                            + configuredService.getService().getName());
-                    ProxyConfiguration pConfiguration = new ProxyConfiguration(null, iConfigMap, null, null, msgFactory);
+                    QualifiedName qName = new QualifiedName(component.getName() + "/" + service.getName());
+                    ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, msgFactory);
                     proxyFactory.setBusinessInterface(serviceContract.getInterface());
                     proxyFactory.setProxyConfiguration(pConfiguration);
                     config.addTargetProxyFactory(service.getName(), proxyFactory);
                     configuredService.setProxyFactory(proxyFactory);
                     if (referenceBuilder != null) {
-                        // invoke another builder to add interceptors, etc.
+                        // invoke the reference builder to handle target-side metadata
                         referenceBuilder.build(configuredService, parentContext);
                     }
                     // add tail interceptor
                     for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
                         iConfig.addTargetInterceptor(new InvokerInterceptor());
-                        // iConfig.build();
                     }
 
                 }
@@ -204,25 +219,24 @@ public class JavaComponentContextBuilder2 implements RuntimeConfigurationBuilder
                         ProxyFactory proxyFactory = factory.createProxyFactory();
                         ServiceContract serviceContract = reference.getReference().getServiceContract();
                         Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
-                        Set<Method> javaMethods=JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
+                        Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
                         for (Method method : javaMethods) {
                             InvocationConfiguration iConfig = new InvocationConfiguration(method);
                             iConfigMap.put(method, iConfig);
                         }
+                        String targetCompName = reference.getTargetConfiguredServices().get(0).getAggregatePart().getName();
+                        String targetSerivceName = reference.getTargetConfiguredServices().get(0).getService().getName();
 
-                        /*
-                         * FIXME we pass null for scopes since ProxyConfiguration requires scopes - this should be
-                         * removed from the constructor
-                         */
-                        QualifiedName qName = new QualifiedName(reference.getAggregatePart().getName() + "/"
-                                + reference.getPort().getName());
-                        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, null, msgFactory);
+                        QualifiedName qName = new QualifiedName(targetCompName + "/" + targetSerivceName);
+                        // QualifiedName qName = new QualifiedName(reference.getAggregatePart().getName() + "/"
+                        // + reference.getPort().getName());
+                        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, msgFactory);
                         proxyFactory.setBusinessInterface(serviceContract.getInterface());
                         proxyFactory.setProxyConfiguration(pConfiguration);
                         config.addSourceProxyFactory(reference.getReference().getName(), proxyFactory);
                         reference.setProxyFactory(proxyFactory);
                         if (referenceBuilder != null) {
-                            // invoke another builder to add interceptors, etc.
+                            // invoke the reference builder to handle metadata associated with the reference
                             referenceBuilder.build(reference, parentContext);
                         }
                         Injector injector = createReferenceInjector(reference.getReference().getName(), proxyFactory, fields,

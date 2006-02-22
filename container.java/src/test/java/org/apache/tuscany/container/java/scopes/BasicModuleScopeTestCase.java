@@ -28,11 +28,11 @@ import org.apache.tuscany.container.java.mock.components.ModuleScopeComponentImp
 import org.apache.tuscany.container.java.mock.components.ModuleScopeInitDestroyComponent;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
-import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 
 /**
@@ -109,7 +109,7 @@ public class BasicModuleScopeTestCase extends TestCase {
     JavaComponentContextBuilder2 builder = new JavaComponentContextBuilder2();
 
     private List<RuntimeConfiguration<InstanceContext>> createConfigurations() throws NoSuchMethodException, BuilderException {
-        SimpleComponent component = MockAssemblyFactory.createComponent("TestService1", ModuleScopeComponentImpl.class, ScopeEnum.MODULE_LITERAL);
+        SimpleComponent component = MockAssemblyFactory.createComponent("TestService1", ModuleScopeComponentImpl.class, Scope.MODULE);
         builder.build(component, null);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         configs.add((RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration());
@@ -119,7 +119,7 @@ public class BasicModuleScopeTestCase extends TestCase {
     private RuntimeConfiguration<InstanceContext> createConfiguration(String name)
             throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockAssemblyFactory.createComponent(name, ModuleScopeInitDestroyComponent.class,
-                ScopeEnum.MODULE_LITERAL);
+                Scope.MODULE);
         builder.build(component, null);
         return (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration();
     }

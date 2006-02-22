@@ -33,7 +33,7 @@ import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 import org.osoa.sca.annotations.ComponentName;
 import org.osoa.sca.annotations.Context;
@@ -51,7 +51,7 @@ public class TestContextFactory {
         super();
     }
 
-    public static JavaComponentContext createPojoContext(String name, Class implType, ScopeEnum scope,
+    public static JavaComponentContext createPojoContext(String name, Class implType, Scope scope,
                                                          AggregateContext moduleComponentContext) throws NoSuchMethodException {
         SimpleComponent component = MockAssemblyFactory.createComponent(name, implType, scope);
 
@@ -98,7 +98,7 @@ public class TestContextFactory {
             }
         }
 
-        boolean stateless = (scope.getValue() == ScopeEnum.INSTANCE);
+        boolean stateless = (scope == Scope.INSTANCE);
         JavaComponentContext context = new JavaComponentContext("foo", new PojoObjectFactory(JavaIntrospectionHelper
                 .getDefaultConstructor(implType), null, injectors), eagerInit, initInvoker, destroyInvoker, stateless);
 

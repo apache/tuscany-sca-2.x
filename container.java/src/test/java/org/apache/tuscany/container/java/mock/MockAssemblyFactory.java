@@ -16,10 +16,14 @@
  */
 package org.apache.tuscany.container.java.mock;
 
+import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
+import org.apache.tuscany.container.java.assembly.impl.JavaAssemblyFactoryImpl;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
+import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
@@ -33,16 +37,20 @@ import org.apache.tuscany.model.types.java.JavaServiceContract;
  */
 public class MockAssemblyFactory {
 
+    private static JavaAssemblyFactory factory = new JavaAssemblyFactoryImpl();
+    private static SystemAssemblyFactory systemFactory = new SystemAssemblyFactoryImpl();
+    
     public static SimpleComponent createComponent(String name, Class type, Scope scope) throws NoSuchMethodException {
-        SimpleComponent sc = new PojoSimpleComponent();
-        JavaImplementation impl = new PojoJavaImplementation();
-        impl.setImplementationClass(type.getName());
+        SimpleComponent sc = factory.createSimpleComponent();
+        JavaImplementation impl = factory.createJavaImplementation();
+        impl.setComponentType(factory.createComponentType());
+        impl.setImplementationClass(type);
         sc.setComponentImplementation(impl);
-        Service s = new PojoService();
-        JavaServiceContract ji = new PojoJavaInterface();
+        Service s = factory.createService();
+        JavaServiceContract ji = factory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(scope);
-        impl.getServices().add(s);
+        impl.getComponentType().getServices().add(s);
         sc.setName(name);
         sc.setComponentImplementation(impl);
         return sc;
@@ -50,22 +58,22 @@ public class MockAssemblyFactory {
 
     public static Component createSystemComponent(String name, String type, Scope scope) throws NoSuchMethodException,
             ClassNotFoundException {
-
         Class claz = JavaIntrospectionHelper.loadClass(type);
-        PojoComponent sc = null;
+        Component sc = null;
         if (AggregateContext.class.isAssignableFrom(claz)) {
-            sc = new PojoAggregateComponent();
+            sc = systemFactory.createModuleComponent();
         } else {
-            sc = new PojoSimpleComponent();
+            sc = systemFactory.createSimpleComponent();
         }
-        SystemImplementation impl = new PojoSystemImplementation();
-        impl.setImplementationClass(type);
+        SystemImplementation impl = systemFactory.createSystemImplementation();
+        impl.setImplementationClass(claz);
         sc.setComponentImplementation(impl);
-        Service s = new PojoService();
-        JavaServiceContract ji = new PojoJavaInterface();
+        Service s = systemFactory.createService();
+        JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(scope);
-        impl.getServices().add(s);
+        impl.setComponentType(systemFactory.createComponentType());
+        impl.getComponentType().getServices().add(s);
         sc.setName(name);
         sc.setComponentImplementation(impl);
         return sc;

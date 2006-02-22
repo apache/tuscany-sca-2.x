@@ -51,4 +51,18 @@ public class JavaTargetWireBuilder implements WireBuilder {
             sourceInvocationConfig.setTargetInvoker(invoker);
         }
     }
+
+    public void wire(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
+        //TODO implement. 
+//        if (!(JavaComponentRuntimeConfiguration.class.isAssignableFrom(targetType))) {
+//            return;
+//        }
+//        for (InvocationConfiguration targetInvocationConfig : targetFactory.getProxyConfiguration().getInvocationConfigurations()
+//                .values()) {
+//            ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(targetFactory.getProxyConfiguration()
+//                    .getTargetName(), ((JavaOperationType) targetInvocationConfig.getOperationType()).getJavaMethod(),
+//                    targetScopeContext);
+//            targetInvocationConfig.setTargetInvoker(invoker);
+//        }
+    }
 }

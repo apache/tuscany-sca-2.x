@@ -100,6 +100,7 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
     }
 
     public synchronized Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
+        //TODO implement returning of proxy and invocation chain for service
         if (cachedTargetInstance != null) {
             return cachedTargetInstance; // already cached, just return
         }
@@ -134,6 +135,17 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
         }
 
     }
+
+    public Object getImplementationInstance() throws TargetException{
+        //TODO refactor when getInstance() returns a proxy
+        return getInstance(null);
+    }
+
+    public Object getImplementationInstance(boolean notify) throws TargetException{
+        //TODO refactor when getInstance() returns a proxy
+        return getInstance(null,notify);
+    }
+    
 
     public boolean isEagerInit() {
         return eagerInit;

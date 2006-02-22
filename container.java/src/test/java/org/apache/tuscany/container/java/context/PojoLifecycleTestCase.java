@@ -23,7 +23,7 @@ import org.apache.tuscany.container.java.mock.components.ModuleScopeInitOnlyComp
 import org.apache.tuscany.container.java.model.TestContextFactory;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Tests <code>@Init</code> method called, <code>@Context</code> set for ModuleContext, <code>@ComponentName</code> set
@@ -36,7 +36,7 @@ public class PojoLifecycleTestCase extends TestCase {
         AggregateContext mc = new AggregateContextImpl();
         mc.setName("mc");
         JavaComponentContext context = TestContextFactory.createPojoContext("TestServiceInit",
-                ModuleScopeInitOnlyComponent.class, ScopeEnum.MODULE_LITERAL, mc);
+                ModuleScopeInitOnlyComponent.class, Scope.MODULE, mc);
         context.start();
         ModuleScopeInitOnlyComponent instance = (ModuleScopeInitOnlyComponent) context.getInstance(null);
         Assert.assertNotNull(instance);
@@ -48,7 +48,7 @@ public class PojoLifecycleTestCase extends TestCase {
         AggregateContext mc = new AggregateContextImpl();
         mc.setName("mc");
         JavaComponentContext context = TestContextFactory.createPojoContext("TestServiceInit",
-                ModuleScopeInitOnlyComponent.class, ScopeEnum.MODULE_LITERAL, mc);
+                ModuleScopeInitOnlyComponent.class, Scope.MODULE, mc);
         context.start();
         ModuleScopeInitOnlyComponent instance = (ModuleScopeInitOnlyComponent) context.getInstance(null);
         Assert.assertNotNull(instance);
@@ -60,7 +60,7 @@ public class PojoLifecycleTestCase extends TestCase {
         AggregateContext mc = new AggregateContextImpl();
         mc.setName("mc");
         JavaComponentContext context = TestContextFactory.createPojoContext("TestServiceInit",
-                ModuleScopeInitOnlyComponent.class, ScopeEnum.MODULE_LITERAL, mc);
+                ModuleScopeInitOnlyComponent.class, Scope.MODULE, mc);
         context.start();
         ModuleScopeInitOnlyComponent instance = (ModuleScopeInitOnlyComponent) context.getInstance(null);
         Assert.assertNotNull(instance);

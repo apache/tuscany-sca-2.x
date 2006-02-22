@@ -122,5 +122,15 @@ public class MockScopeContext implements ScopeContext {
 
     public void removeContextListener(LifecycleEventListener listener) {
     }
+
+    public Object getImplementationInstance() throws TargetException{
+        return this;
+    }
+
+    public Object getImplementationInstance(boolean notify) throws TargetException{
+        return this;
+    }
+    
+
 }
 

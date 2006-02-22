@@ -29,11 +29,11 @@ import org.apache.tuscany.container.java.mock.components.SessionScopeInitDestroy
 import org.apache.tuscany.container.java.mock.components.SessionScopeInitOnlyComponent;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
-import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.HttpSessionScopeContext;
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 
 /**
@@ -126,16 +126,14 @@ public class HttpSessionScopeLifecycleTestCase extends TestCase {
     private List<RuntimeConfiguration<InstanceContext>> createComponents() throws NoSuchMethodException, BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
         ca[0] = MockAssemblyFactory.createComponent("TestServiceInitDestroy", SessionScopeInitDestroyComponent.class,
-                ScopeEnum.SESSION_LITERAL);
-        ca[1] = MockAssemblyFactory.createComponent("TestServiceInitOnly", SessionScopeInitOnlyComponent.class,
-                ScopeEnum.SESSION_LITERAL);
+                Scope.SESSION);
+        ca[1] = MockAssemblyFactory.createComponent("TestServiceInitOnly", SessionScopeInitOnlyComponent.class, Scope.SESSION);
         ca[2] = MockAssemblyFactory.createComponent("TestServiceDestroyOnly", SessionScopeDestroyOnlyComponent.class,
-                ScopeEnum.SESSION_LITERAL);
+                Scope.SESSION);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
             builder.build(ca[i], null);
-            configs.add((RuntimeConfiguration<InstanceContext>) ca[i].getComponentImplementation()
-                    .getRuntimeConfiguration());
+            configs.add((RuntimeConfiguration<InstanceContext>) ca[i].getComponentImplementation().getRuntimeConfiguration());
 
         }
         return configs;
@@ -144,14 +142,13 @@ public class HttpSessionScopeLifecycleTestCase extends TestCase {
     private List<RuntimeConfiguration<InstanceContext>> createOrderedInitComponents() throws NoSuchMethodException,
             BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
-        ca[0] = MockAssemblyFactory.createComponent("one", OrderedInitPojo.class, ScopeEnum.SESSION_LITERAL);
-        ca[1] = MockAssemblyFactory.createComponent("two", OrderedInitPojo.class, ScopeEnum.SESSION_LITERAL);
-        ca[2] = MockAssemblyFactory.createComponent("three", OrderedInitPojo.class, ScopeEnum.SESSION_LITERAL);
+        ca[0] = MockAssemblyFactory.createComponent("one", OrderedInitPojo.class, Scope.SESSION);
+        ca[1] = MockAssemblyFactory.createComponent("two", OrderedInitPojo.class, Scope.SESSION);
+        ca[2] = MockAssemblyFactory.createComponent("three", OrderedInitPojo.class, Scope.SESSION);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
             builder.build(ca[i], null);
-            configs.add((RuntimeConfiguration<InstanceContext>) ca[i].getComponentImplementation()
-                    .getRuntimeConfiguration());
+            configs.add((RuntimeConfiguration<InstanceContext>) ca[i].getComponentImplementation().getRuntimeConfiguration());
 
         }
         return configs;

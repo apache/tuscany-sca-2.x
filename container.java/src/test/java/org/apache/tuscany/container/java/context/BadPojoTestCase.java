@@ -23,7 +23,7 @@ import org.apache.tuscany.container.java.model.BadNamePojo;
 import org.apache.tuscany.container.java.model.TestContextFactory;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
-import org.apache.tuscany.model.assembly.ScopeEnum;
+import org.apache.tuscany.model.assembly.Scope;
 
 public class BadPojoTestCase extends TestCase {
 
@@ -38,7 +38,7 @@ public class BadPojoTestCase extends TestCase {
         mc.setName("mc");
         try {
             JavaComponentContext context = TestContextFactory.createPojoContext("BadNamePojo", BadNamePojo.class,
-                    ScopeEnum.MODULE_LITERAL, mc);
+                    Scope.MODULE, mc);
         } catch (NoSuchMethodException e) {
             if (e.getMessage().indexOf("@ComponentName") < 0) {
                 throw e;
@@ -58,7 +58,7 @@ public class BadPojoTestCase extends TestCase {
         mc.setName("mc");
         try {
             JavaComponentContext context = TestContextFactory.createPojoContext("BadContextPojo", BadContextPojo.class,
-                    ScopeEnum.MODULE_LITERAL, mc);
+                    Scope.MODULE, mc);
         } catch (NoSuchMethodException e) {
             if (e.getMessage().indexOf("@Context") < 0) {
                 throw e;

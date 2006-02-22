@@ -1,6 +1,5 @@
 package org.apache.tuscany.container.java.builder;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +18,6 @@ import org.apache.tuscany.container.java.mock.components.ModuleScopeComponentImp
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.InstanceContext;
@@ -32,19 +30,32 @@ import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.core.message.impl.PojoMessageFactory;
+import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
+import org.apache.tuscany.model.assembly.AssemblyFactory;
+import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.ConfiguredReference;
+import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.Module;
+import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
+import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 public class JavaComponentContextBuilderTestCase extends TestCase {
 
+    private AssemblyFactory factory = new AssemblyFactoryImpl();
+    
+    private AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(null,null); 
+    
     public JavaComponentContextBuilderTestCase() {
     }
 
     public void testBuilder() throws Exception {
         JavaComponentContextBuilder2 builder = new JavaComponentContextBuilder2();
-        builder.setMessageFactory(new PojoMessageFactory());
+        builder.setMessageFactory(new MessageFactoryImpl());
         HierarchicalBuilder refBuilder = new HierarchicalBuilder();
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
         refBuilder.addBuilder(new MockInterceptorBuilder(interceptor, true));
@@ -72,18 +83,18 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
         for (Component component : components) {
             RuntimeConfiguration source = (RuntimeConfiguration) component.getComponentImplementation().getRuntimeConfiguration();
             Assert.assertNotNull(source);
-            for (ProxyFactory factory : (Collection<ProxyFactory>) source.getSourceProxyFactories().values()) {
-                ProxyConfiguration pConfig = factory.getProxyConfiguration();
+            for (ProxyFactory pFactory : (Collection<ProxyFactory>) source.getSourceProxyFactories().values()) {
+                ProxyConfiguration pConfig = pFactory.getProxyConfiguration();
                 Component target = compMap.get(pConfig.getTargetName().getPartName());
 
                 if (target != null) {
                     RuntimeConfiguration targetConfig = (RuntimeConfiguration) target.getComponentImplementation()
                             .getRuntimeConfiguration();
                     boolean downScope = strategy.downScopeReference(source.getScope(), targetConfig.getScope());
-                    wireBuilder.wire(factory, targetConfig.getTargetProxyFactory(factory.getProxyConfiguration().getTargetName()
+                    wireBuilder.wire(pFactory, targetConfig.getTargetProxyFactory(pFactory.getProxyConfiguration().getTargetName()
                             .getPortName()), targetConfig.getClass(), downScope, scopeContext);
                 }
-                factory.initialize();
+                pFactory.initialize();
             }
 
             scopeContext.registerConfiguration(source);
@@ -107,49 +118,34 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
     public Module createModule() throws Exception {
         Component sourceComponent = MockAssemblyFactory.createComponent("source", ModuleScopeComponentImpl.class,Scope.MODULE);
         Component targetComponent = MockAssemblyFactory.createComponent("target", ModuleScopeComponentImpl.class,Scope.MODULE);
-        PojoReference ref = new PojoReference();
-        PojoConfiguredReference cref = new PojoConfiguredReference();
+
+        Service targetService = factory.createService();
+        JavaServiceContract targetContract = factory.createJavaServiceContract();
+        targetContract.setInterface(GenericComponent.class);
+        targetService.setServiceContract(targetContract);
+        targetService.setName("GenericComponent");
+        ConfiguredService cTargetService = factory.createConfiguredService();
+        cTargetService.setService(targetService);
+        cTargetService.initialize(assemblyContext);
+        targetComponent.getConfiguredServices().add(cTargetService);
+        targetComponent.initialize(assemblyContext);
+        
+        Reference ref = factory.createReference();
+        ConfiguredReference cref = factory.createConfiguredReference();
         ref.setName("setGenericComponent");
-        PojoInterface inter = new PojoJavaInterface();
-        PojoInterfaceType type = new PojoInterfaceType();
-        type.setInstanceClass(GenericComponent.class);
-        PojoJavaOperationType oType = new PojoJavaOperationType();
-        oType.setName("getString");
-        oType.setJavaMethod((Method) JavaIntrospectionHelper.getBeanProperty(GenericComponent.class, "getString", null));
-        type.addOperationType(oType);
-        inter.setInterfaceType(type);
+        JavaServiceContract inter = factory.createJavaServiceContract();
+        inter.setInterface(GenericComponent.class);
         ref.setServiceContract(inter);
         cref.setReference(ref);
-        cref.setPart(targetComponent);
-        PojoPort port = new PojoPort();
-        port.setName("GenericComponent");
-        cref.setPort(port);
+        cref.getTargetConfiguredServices().add(cTargetService);
+        cref.initialize(assemblyContext);
         sourceComponent.getConfiguredReferences().add(cref);
-        PojoService sourceService = new PojoService();
-        sourceService.setServiceContract(inter);
-        sourceService.setName("GenericComponent");
-        PojoConfiguredService cService = new PojoConfiguredService();
-        cService.setService(sourceService);
-        cService.setPart(sourceComponent);
-        cService.setPort(sourceService);
+        sourceComponent.initialize(assemblyContext);
 
-        sourceComponent.getComponentImplementation().getServices().add(sourceService);
-        sourceComponent.getConfiguredServices().add(cService);
-
-        PojoService targetService = new PojoService();
-        targetService.setServiceContract(inter);
-        targetService.setName("GenericComponent");
-        PojoConfiguredService cTargetService = new PojoConfiguredService();
-        cTargetService.setService(targetService);
-        cTargetService.setPart(targetComponent);
-        cTargetService.setPort(targetService);
-        targetComponent.getComponentImplementation().getServices().add(targetService);
-        targetComponent.getConfiguredServices().add(cTargetService);
-
-        PojoModule module = new PojoModule();
+        Module module = factory.createModule();
         module.setName("test.module");
-        module.addComponent(sourceComponent);
-        module.addComponent(targetComponent);
+        module.getComponents().add(sourceComponent);
+        module.getComponents().add(targetComponent);
         return module;
     }
 
