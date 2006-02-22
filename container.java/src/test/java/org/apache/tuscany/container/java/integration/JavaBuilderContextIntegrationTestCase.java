@@ -19,7 +19,7 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder2;
+import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
 import org.apache.tuscany.container.java.builder.JavaTargetWireBuilder;
 import org.apache.tuscany.container.java.builder.MockHandlerBuilder;
 import org.apache.tuscany.container.java.builder.MockInterceptorBuilder;
@@ -72,7 +72,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
 
-        JavaComponentContextBuilder2 javaBuilder = new JavaComponentContextBuilder2();
+        JavaComponentContextBuilder javaBuilder = new JavaComponentContextBuilder();
         javaBuilder.setMessageFactory(msgFactory);
         javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
 
@@ -114,7 +114,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
 
-        JavaComponentContextBuilder2 javaBuilder = new JavaComponentContextBuilder2();
+        JavaComponentContextBuilder javaBuilder = new JavaComponentContextBuilder();
         javaBuilder.setMessageFactory(msgFactory);
         javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
 
@@ -162,7 +162,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
 
-        JavaComponentContextBuilder2 javaBuilder = new JavaComponentContextBuilder2();
+        JavaComponentContextBuilder javaBuilder = new JavaComponentContextBuilder();
         javaBuilder.setMessageFactory(msgFactory);
         javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
 
@@ -210,7 +210,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
 
-        JavaComponentContextBuilder2 javaBuilder = new JavaComponentContextBuilder2();
+        JavaComponentContextBuilder javaBuilder = new JavaComponentContextBuilder();
         javaBuilder.setMessageFactory(msgFactory);
         javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
 

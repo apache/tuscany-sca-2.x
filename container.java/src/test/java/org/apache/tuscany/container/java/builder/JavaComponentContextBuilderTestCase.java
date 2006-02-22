@@ -54,7 +54,7 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
     }
 
     public void testBuilder() throws Exception {
-        JavaComponentContextBuilder2 builder = new JavaComponentContextBuilder2();
+        JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
         builder.setMessageFactory(new MessageFactoryImpl());
         HierarchicalBuilder refBuilder = new HierarchicalBuilder();
         MockSyncInterceptor interceptor = new MockSyncInterceptor();

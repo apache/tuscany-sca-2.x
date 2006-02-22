@@ -16,7 +16,7 @@ package org.apache.tuscany.container.java.mock;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder2;
+import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeComponentImpl;
 import org.apache.tuscany.container.java.mock.components.SessionScopeComponentImpl;
 import org.apache.tuscany.core.builder.BuilderConfigException;
@@ -44,7 +44,7 @@ public class MockAggregateAssemblyFactory {
      */
     public static List<Extensible> createAssembly(AggregateContext ctx) throws BuilderException {
         try {
-            JavaComponentContextBuilder2 builder = new JavaComponentContextBuilder2();
+            JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
             SimpleComponent component = MockAssemblyFactory.createComponent("TestService1", ModuleScopeComponentImpl.class,
                     Scope.MODULE);
             SimpleComponent sessionComponent = MockAssemblyFactory.createComponent("TestService2",

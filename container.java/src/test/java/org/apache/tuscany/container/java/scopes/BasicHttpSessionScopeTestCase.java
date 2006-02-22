@@ -22,7 +22,7 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder2;
+import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
 import org.apache.tuscany.container.java.mock.MockAssemblyFactory;
 import org.apache.tuscany.container.java.mock.components.SessionScopeComponent;
 import org.apache.tuscany.container.java.mock.components.SessionScopeComponentImpl;
@@ -205,7 +205,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     // ----------------------------------
     // Private methods
     // ----------------------------------
-    JavaComponentContextBuilder2 builder = new JavaComponentContextBuilder2();
+    JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
 
     private List<RuntimeConfiguration<InstanceContext>> createConfigurations() throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockAssemblyFactory.createComponent("TestService1", SessionScopeComponentImpl.class, Scope.SESSION);
