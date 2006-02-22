@@ -26,16 +26,6 @@
     <description>Data model for the Assembly model defined by the SCA specification.</description>
     <version>SNAPSHOT</version>
 
-    <repositories>
-        <repository>
-            <id>jeremy</id>
-            <url>http://people.apache.org/~jboynes/maven2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.osoa</groupId>
@@ -56,60 +46,19 @@
             <version>SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-      <dependency>
+        <dependency>
             <groupId>org.apache.tuscany</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
             <version>SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
-<!--
-       <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>common</artifactId>
-            <version>2.2.0-I200602160000</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>ecore</artifactId>
-            <version>2.2.0-I200602160000</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>ecore-change</artifactId>
-            <version>2.2.0-I200602160000</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>ecore-xmi</artifactId>
-            <version>2.2.0-I200602160000</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.xsd</groupId>
-            <artifactId>xsd</artifactId>
-            <version>2.2.0-I200602160000</version>
-            <scope>compile</scope>
-        </dependency>
--->
-        
         <dependency>
             <groupId>axis</groupId>
             <artifactId>axis-wsdl4j</artifactId>
             <version>1.5.1</version>
             <scope>compile</scope>
         </dependency>
-<!--
-        <dependency>
-            <groupId>stax</groupId>
-            <artifactId>stax-api</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
--->
 
         <dependency>
             <groupId>junit</groupId>
@@ -118,4 +67,24 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tuscany</groupId>
+                <artifactId>tuscany-sdo-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <schemaFile>${basedir}/src/main/resources/model/sca.xsd</schemaFile>
+                            <javaPackage>org.apache.tuscany.model.assembly.test</javaPackage>
+                        </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
