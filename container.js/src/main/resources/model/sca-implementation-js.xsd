@@ -14,9 +14,15 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  -->
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:codegen="http://www.eclipse.org/emf/2002/Ecore" xmlns:js="http://org.apache.tuscany/xmlns/js/0.9" xmlns:sca="http://www.osoa.org/xmlns/sca/0.9" codegen:nsPrefix="js" codegen:package="org.apache.tuscany.container.js.assembly" elementFormDefault="qualified" targetNamespace="http://org.apache.tuscany/xmlns/js/0.9">
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:js="http://org.apache.tuscany/xmlns/js/0.9"
+	xmlns:sca="http://www.osoa.org/xmlns/sca/0.9" 
+	elementFormDefault="qualified"
+	xmlns:sdojava="commonj.sdo/java"
+	sdojava:package="org.apache.tuscany.container.js.assembly.scdl"
+	targetNamespace="http://org.apache.tuscany/xmlns/js/0.9">
 
-    <import namespace="http://www.osoa.org/xmlns/sca/0.9" schemaLocation="sca-core.xsd"/>
+    <import namespace="http://www.osoa.org/xmlns/sca/0.9" schemaLocation="../../../../../model/src/main/resources/model/sca-core.xsd"/>
 
     <element name="implementation.js" substitutionGroup="sca:implementation" type="js:JavaScriptImplementation"/>
 
