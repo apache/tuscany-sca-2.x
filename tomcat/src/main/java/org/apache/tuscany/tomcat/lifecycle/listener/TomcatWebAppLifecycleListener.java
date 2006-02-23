@@ -27,8 +27,8 @@ import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
-import org.apache.tuscany.core.config.ConfigurationLoader;
-import org.apache.tuscany.core.config.impl.EMFConfigurationLoader;
+import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
+import org.apache.tuscany.core.config.impl.ModuleComponentConfigurationLoaderImpl;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
@@ -111,7 +111,7 @@ public class TomcatWebAppLifecycleListener implements LifecycleListener {
                         AssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl();
                         AssemblyFactory factory=new AssemblyFactoryImpl();
                         AssemblyModelContext modelContext = new AssemblyModelContextImpl(factory, modelLoader, resourceLoader);
-                        ConfigurationLoader moduleComponentLoader = new EMFConfigurationLoader(modelContext);
+                        ModuleComponentConfigurationLoader moduleComponentLoader = new ModuleComponentConfigurationLoaderImpl(modelContext);
                         String uri = context.getPath().substring(1);
                         ModuleComponent moduleComponent = moduleComponentLoader.loadModuleComponent(moduleComponentName, uri);
 

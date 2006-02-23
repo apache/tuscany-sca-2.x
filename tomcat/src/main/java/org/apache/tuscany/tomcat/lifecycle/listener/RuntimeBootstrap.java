@@ -25,7 +25,7 @@ import javax.naming.spi.ObjectFactory;
 
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
-import org.apache.tuscany.core.config.ConfigurationLoader;
+import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
@@ -63,7 +63,7 @@ public class RuntimeBootstrap implements ObjectFactory {
             throw new BootstrapConfigurationException("Tuscany Runtime must be configured with JNDI address of " + RUNTIME_NAME);
         }
         MonitorFactory monitorFactory = null;
-        ConfigurationLoader configurationLoader = null;
+        ModuleComponentConfigurationLoader configurationLoader = null;
 
         Reference ref = (Reference) obj;
         if (!RuntimeContext.class.getName().equals(ref.getClassName())) {
