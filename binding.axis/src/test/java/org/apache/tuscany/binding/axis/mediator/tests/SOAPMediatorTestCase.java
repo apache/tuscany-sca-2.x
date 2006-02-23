@@ -46,7 +46,7 @@ import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
+import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 import org.apache.tuscany.model.types.wsdl.WSDLOperationType;
 import org.apache.tuscany.model.types.wsdl.WSDLTypeHelper;
@@ -69,7 +69,7 @@ public class SOAPMediatorTestCase extends TestCase {
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         modelContext = new AssemblyModelContextImpl();
 
-        AssemblyLoader loader = modelContext.getAssemblyLoader();
+        AssemblyModelLoader loader = modelContext.getAssemblyLoader();
         Module module = loader.getModule(getClass().getResource("sca.module").toString());
         module.initialize(modelContext);
 

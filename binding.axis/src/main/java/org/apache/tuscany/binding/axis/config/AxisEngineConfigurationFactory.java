@@ -44,7 +44,7 @@ import org.apache.tuscany.binding.axis.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis.handler.WebServiceEntryPointBean;
 import org.apache.tuscany.binding.axis.handler.WebServiceOperationMetaData;
 import org.apache.tuscany.binding.axis.handler.WebServicePortMetaData;
-import org.apache.tuscany.common.resource.loader.ResourceLoader;
+import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
 import org.apache.tuscany.core.context.webapp.TuscanyWebAppRuntime;
 import org.apache.tuscany.model.assembly.AssemblyFactory;

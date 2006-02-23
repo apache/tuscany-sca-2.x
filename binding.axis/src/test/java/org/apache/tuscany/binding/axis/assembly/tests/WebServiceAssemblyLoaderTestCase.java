@@ -27,7 +27,7 @@ import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
+import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 
 /**
  */
@@ -44,7 +44,7 @@ public class WebServiceAssemblyLoaderTestCase extends TestCase {
 
     public void testLoader() {
 
-        AssemblyLoader loader = modelContext.getAssemblyLoader();
+        AssemblyModelLoader loader = modelContext.getAssemblyLoader();
         Module module = loader.getModule(getClass().getResource("sca.module").toString());
         module.initialize(modelContext);
 
