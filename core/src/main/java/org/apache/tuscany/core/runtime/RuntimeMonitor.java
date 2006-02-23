@@ -13,8 +13,9 @@
  */
 package org.apache.tuscany.core.runtime;
 
-import org.apache.tuscany.core.TuscanyException;
-import org.apache.tuscany.core.TuscanyRuntimeException;
+import org.apache.tuscany.common.TuscanyException;
+import org.apache.tuscany.common.TuscanyRuntimeException;
+
 
 /**
  * Serves as a top-level error logging monitor

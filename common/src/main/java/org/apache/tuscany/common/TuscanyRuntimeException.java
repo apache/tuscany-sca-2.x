@@ -1,30 +1,35 @@
-package org.apache.tuscany.core;
+package org.apache.tuscany.common;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The root checked exception for the Tuscany rubntime
+ * The root unchecked exception for the Tuscany runtime
  * 
- * @version $Rev$ $Date$
+ * @version $Rev: 368822 $ $Date: 2006-01-13 10:54:38 -0800 (Fri, 13 Jan 2006) $
  */
-public abstract class TuscanyException extends Exception {
+
+public abstract class TuscanyRuntimeException extends RuntimeException {
 
     protected List<String> contextStack;
 
-    public TuscanyException() {
+    protected String moduleComponentName;
+
+    protected String componentName;
+
+    public TuscanyRuntimeException() {
         super();
     }
 
-    public TuscanyException(String message) {
+    public TuscanyRuntimeException(String message) {
         super(message);
     }
 
-    public TuscanyException(String message, Throwable cause) {
+    public TuscanyRuntimeException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public TuscanyException(Throwable cause) {
+    public TuscanyRuntimeException(Throwable cause) {
         super(cause);
     }
 
@@ -82,4 +87,5 @@ public abstract class TuscanyException extends Exception {
         return super.getMessage() + b.toString();
 
     }
+
 }

@@ -13,7 +13,7 @@
  */
 package org.apache.tuscany.tomcat.lifecycle.listener;
 
-import org.apache.tuscany.core.TuscanyException;
+import org.apache.tuscany.common.TuscanyException;
 
 /**
  * Signals an exception booting the Tuscany runtime hosted in a Tomcat instance

@@ -1,6 +1,6 @@
 package org.apache.tuscany.container.java.config;
 
-import org.apache.tuscany.core.TuscanyRuntimeException;
+import org.apache.tuscany.common.TuscanyRuntimeException;
 
 public class IntrospectionException extends TuscanyRuntimeException {
 

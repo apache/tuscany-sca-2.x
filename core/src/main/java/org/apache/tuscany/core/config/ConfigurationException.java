@@ -16,7 +16,8 @@
  */
 package org.apache.tuscany.core.config;
 
-import org.apache.tuscany.core.TuscanyException;
+import org.apache.tuscany.common.TuscanyException;
+
 
 /**
  * Base class for exceptions that pertain to configuration.

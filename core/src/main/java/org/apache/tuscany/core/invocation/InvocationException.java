@@ -1,6 +1,6 @@
 package org.apache.tuscany.core.invocation;
 
-import org.apache.tuscany.core.TuscanyException;
+import org.apache.tuscany.common.TuscanyException;
 
 /**
  * The root checked exception for the invocation framework 
