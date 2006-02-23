@@ -97,6 +97,8 @@ public class ModuleImpl extends AggregateImpl implements Module {
             getComponents().addAll(moduleFragment.getComponents());
             getEntryPoints().addAll(moduleFragment.getEntryPoints());
             getExternalServices().addAll(moduleFragment.getExternalServices());
+            
+            moduleFragment.initialize(modelContext);
         }
         
         // Initialize the aggregate

@@ -56,7 +56,11 @@ import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
+import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
+import org.apache.tuscany.core.message.MessageFactory;
+import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
@@ -524,6 +528,10 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     // ----------------------------------
     // AutowireContext methods
     // ----------------------------------
+    
+    //FIXME These should be removed and configured
+    private static final MessageFactory messageFactory=new MessageFactoryImpl();
+    private static final ProxyFactoryFactory proxyFactoryFactory=new JDKProxyFactoryFactory(); 
 
     public <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException {
         if (RuntimeContext.class.equals(instanceInterface)) {
@@ -534,7 +542,12 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
             return instanceInterface.cast(this);
         } else if (AggregateContext.class.equals(instanceInterface)) {
             return instanceInterface.cast(this);
+        } else if (MessageFactory.class.equals(instanceInterface)) {
+            return instanceInterface.cast(messageFactory);
+        } else if (ProxyFactoryFactory.class.equals(instanceInterface)) {
+            return instanceInterface.cast(proxyFactoryFactory);
         }
+
         NameToScope mapping = autowireIndex.get(instanceInterface);
         if (mapping != null) {
             try {

@@ -77,6 +77,8 @@ public class ModelTransformerImpl implements ModelTransformer {
 			// Pass 1: compile, visit the source model and create target model objects
 			for (; iterator.hasNext(); ) {
 				Object source=iterator.next();
+                if (source==null)
+                    System.out.println("Ooops");
 				Object target=handler.doSwitch(source);
 
 				// Record source to target associations

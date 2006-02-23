@@ -27,6 +27,7 @@ import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.OverrideOption;
+import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.ServiceContract;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 import org.apache.tuscany.model.scdl.Binding;
@@ -232,6 +233,7 @@ public class SCDLContentHandlerImpl extends ScdlSwitch implements ModelContentHa
         final JavaServiceContract serviceContract=factory.createJavaServiceContract();
         serviceContract.setInterface(null);
         serviceContract.setCallbackInterface(null);
+        serviceContract.setScope(Scope.INSTANCE);
         
         linkServiceContract(object, serviceContract);
         
@@ -245,6 +247,7 @@ public class SCDLContentHandlerImpl extends ScdlSwitch implements ModelContentHa
         final WSDLServiceContract serviceContract=factory.createWSDLServiceContract();
         serviceContract.setInterface(null);
         serviceContract.setCallbackInterface(null);
+        serviceContract.setScope(Scope.INSTANCE);
         
         linkServiceContract(object, serviceContract);
 

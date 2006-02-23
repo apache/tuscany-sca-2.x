@@ -39,6 +39,16 @@ public interface ModuleComponentConfigurationLoader {
     ModuleComponent loadModuleComponent(String name, String uri) throws ConfigurationLoadException;
     
     /**
+     * Load a System SCDL module component.
+     *
+     * @param name      the name of the module component
+     * @param uri
+     * @return a new module component definition
+     * @throws ConfigurationException if there was a problem loading the module component.
+     */
+    ModuleComponent loadSystemModuleComponent(String name, String uri) throws ConfigurationLoadException;
+    
+    /**
      * Load a SCDL module component.
      *
      * @param name      the name of the module component

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ASCII"?>
 <!--
   Copyright (c) 2005 The Apache Software Foundation or its licensors, as applicable.
 
@@ -14,8 +14,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  -->
-<config:modelConfiguration xmlns:config="http://org.apache.tuscany/xmlns/model/config/0.9">
+<moduleFragment xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
+        xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
+		name="org.apache.tuscany.container.java">
 
-    <generatedPackage packageClassName="org.apache.tuscany.container.java.assembly.sdo.JavaAssemblyPackage" uri="http://org.apache.tuscany/xmlns/java/0.9" preLoad="true"/>
+    <component name="org.apache.tuscany.container.java.builder.JavaComponentContextBuilder">
+        <system:implementation.system class="org.apache.tuscany.container.java.builder.JavaComponentContextBuilder"/>
+    </component>
 
-</config:modelConfiguration>
+</moduleFragment>

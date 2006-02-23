@@ -34,6 +34,7 @@ import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
+import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
@@ -59,10 +60,25 @@ import commonj.sdo.DataObject;
  * 
  * @version $Rev: 368822 $ $Date: 2006-01-13 10:54:38 -0800 (Fri, 13 Jan 2006) $
  */
+@org.osoa.sca.annotations.Scope("MODULE")
 public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
-
+    
+    private RuntimeContext runtimeContext;
     private ProxyFactoryFactory factory;
 
+    @Init(eager=true)
+    public void init() {
+        runtimeContext.addBuilder(this);
+    }
+
+    /**
+     * @param runtimeContext The runtimeContext to set.
+     */
+    @Autowire
+    public void setRuntimeContext(RuntimeContext runtimeContext) {
+        this.runtimeContext = runtimeContext;
+    }
+    
     /**
      * Sets the factory used to construct proxies implmementing the business interface required by a reference
      */
@@ -71,7 +87,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
         this.factory = factory;
     }
 
-    private MessageFactory msgFactory;
+    private MessageFactory messageFactory;
 
     /**
      * Sets the factory used to construct invocation messages
@@ -80,7 +96,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
      */
     @Autowire
     public void setMessageFactory(MessageFactory msgFactory) {
-        this.msgFactory = msgFactory;
+        this.messageFactory = msgFactory;
     }
 
     private RuntimeConfigurationBuilder referenceBuilder;
@@ -196,7 +212,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                         iConfigMap.put(method, iConfig);
                     }
                     QualifiedName qName = new QualifiedName(component.getName() + "/" + service.getName());
-                    ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, msgFactory);
+                    ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, messageFactory);
                     proxyFactory.setBusinessInterface(serviceContract.getInterface());
                     proxyFactory.setProxyConfiguration(pConfiguration);
                     config.addTargetProxyFactory(service.getName(), proxyFactory);
@@ -230,7 +246,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                         QualifiedName qName = new QualifiedName(targetCompName + "/" + targetSerivceName);
                         // QualifiedName qName = new QualifiedName(reference.getAggregatePart().getName() + "/"
                         // + reference.getPort().getName());
-                        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, msgFactory);
+                        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, messageFactory);
                         proxyFactory.setBusinessInterface(serviceContract.getInterface());
                         proxyFactory.setProxyConfiguration(pConfiguration);
                         config.addSourceProxyFactory(reference.getReference().getName(), proxyFactory);

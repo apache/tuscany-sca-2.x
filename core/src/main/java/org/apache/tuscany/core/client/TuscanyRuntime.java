@@ -16,6 +16,7 @@
  */
 package org.apache.tuscany.core.client;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,6 @@ import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
-import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.config.impl.ModuleComponentConfigurationLoaderImpl;
@@ -36,12 +36,14 @@ import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
+import org.apache.tuscany.core.system.loader.SystemSCDLModelLoader;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
+import org.apache.tuscany.model.scdl.loader.SCDLAssemblyModelLoader;
+import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 import org.osoa.sca.ModuleContext;
 import org.osoa.sca.SCA;
@@ -56,9 +58,11 @@ public class TuscanyRuntime extends SCA {
     private final Monitor monitor;
     private final Object sessionKey = new Object();
     
-    private final RuntimeContext runtime;
-    private AggregateContext ctx;
+    private final RuntimeContext runtimeContext;
+    private AggregateContext systemModuleComponentContext;
+    private AggregateContext moduleContext;
     
+    private final static String SYSTEM_MODULE_COMPONENT = "org.apache.tuscany.core.system";
 
     /**
      * Construct a runtime using a null MonitorFactory.
@@ -89,24 +93,49 @@ public class TuscanyRuntime extends SCA {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         ResourceLoader resourceLoader = new ResourceLoaderImpl(classLoader);
         AssemblyFactory modelFactory=new AssemblyFactoryImpl();
-        AssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl();
+        SCDLAssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl();
         AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, resourceLoader);
-
-        // Load the SCDL configuration
-        ModuleComponentConfigurationLoader loader = new ModuleComponentConfigurationLoaderImpl(modelContext);
-        ModuleComponent moduleComponent = loader.loadModuleComponent(name, uri);
+        modelLoader.getSCDLModelLoaders().add(new SystemSCDLModelLoader(modelContext));
+        try {
+            Class clazz=classLoader.loadClass("org.apache.tuscany.container.java.loader.JavaSCDLModelLoader");
+            Constructor constructor=clazz.getConstructor(new Class[]{AssemblyModelContext.class});
+            modelLoader.getSCDLModelLoaders().add((SCDLModelLoader)constructor.newInstance(new Object[]{modelContext}));
+        } catch (Exception e) {
+            System.out.println(e);
+        }
 
         List<RuntimeConfigurationBuilder> configBuilders = new ArrayList();
         configBuilders.add((new SystemComponentContextBuilder()));
         configBuilders.add(new SystemEntryPointBuilder());
         configBuilders.add(new SystemExternalServiceBuilder());
 
-        List<WireBuilder> wireBuilders = new ArrayList();
+        runtimeContext = new RuntimeContextImpl(monitorFactory,configBuilders,null);
+        runtimeContext.start();
+        monitor.started(runtimeContext);
+
+        // Get the system context
+        AggregateContext systemContext = runtimeContext.getSystemContext();
         
-        runtime = new RuntimeContextImpl(monitorFactory,configBuilders,wireBuilders);
-        //TODO Come up with a configuration mechanism for registering Java builders
-        //TODO register an aggregate context under the root
-        //runtime.getRootContext().registerModelObject()
+        // Load the system module component
+        ModuleComponentConfigurationLoader loader = new ModuleComponentConfigurationLoaderImpl(modelContext);
+        ModuleComponent systemModuleComponent = loader.loadSystemModuleComponent(SYSTEM_MODULE_COMPONENT, SYSTEM_MODULE_COMPONENT);
+        
+        // Register it with the system context
+        systemContext.registerModelObject(systemModuleComponent);
+
+        // Get the aggregate context representing the system module component
+        systemModuleComponentContext = (AggregateContext) systemContext.getContext(SYSTEM_MODULE_COMPONENT);
+        systemModuleComponentContext.registerModelObject(systemModuleComponent.getComponentImplementation());
+        systemModuleComponentContext.fireEvent(EventContext.MODULE_START, null);
+        
+        // Load the SCDL configuration of the application module
+        ModuleComponent moduleComponent = loader.loadModuleComponent(name, uri);
+        
+        // Register it under the root application context
+        runtimeContext.getRootContext().registerModelObject(moduleComponent);
+        moduleContext=(AggregateContext)runtimeContext.getContext(moduleComponent.getName());
+        moduleContext.registerModelObject(moduleComponent.getComponentImplementation());
+
     }
 
     /**
@@ -114,19 +143,16 @@ public class TuscanyRuntime extends SCA {
      */
     @Override
     public void start() {
-        setModuleContext((ModuleContext)ctx);
+        setModuleContext((ModuleContext)moduleContext);
         try {
-            runtime.start();
-            monitor.started(runtime);
-            ctx = null;
-            ctx.start();
-            ctx.fireEvent(EventContext.MODULE_START, null);
-            ctx.fireEvent(EventContext.REQUEST_START, null);
-            ctx.fireEvent(EventContext.SESSION_NOTIFY, sessionKey);
-            monitor.started(ctx);
+            //moduleContext.start();
+            moduleContext.fireEvent(EventContext.MODULE_START, null);
+            moduleContext.fireEvent(EventContext.REQUEST_START, null);
+            moduleContext.fireEvent(EventContext.SESSION_NOTIFY, sessionKey);
+            monitor.started(moduleContext);
         } catch (CoreRuntimeException e) {
             setModuleContext(null);
-            monitor.startFailed(ctx, e);
+            monitor.startFailed(moduleContext, e);
             //FIXME throw a better exception
             throw new ServiceRuntimeException(e);
         }
@@ -138,13 +164,13 @@ public class TuscanyRuntime extends SCA {
     @Override
     public void stop() {
         setModuleContext(null);
-        ctx.fireEvent(EventContext.REQUEST_END, null);
-        ctx.fireEvent(EventContext.SESSION_END, sessionKey);
-        ctx.fireEvent(EventContext.MODULE_STOP, null);
-        ctx.stop();
-        monitor.stopped(ctx);
-        runtime.stop();
-        monitor.stopped(runtime);
+        moduleContext.fireEvent(EventContext.REQUEST_END, null);
+        moduleContext.fireEvent(EventContext.SESSION_END, sessionKey);
+        moduleContext.fireEvent(EventContext.MODULE_STOP, null);
+        moduleContext.stop();
+        monitor.stopped(moduleContext);
+        runtimeContext.stop();
+        monitor.stopped(runtimeContext);
     }
 
     /**

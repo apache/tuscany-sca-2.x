@@ -94,7 +94,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
             }
         }
         if (scope == null) {
-            return null;
+            return Scope.INSTANCE;
         }
 
         if ("MODULE".equalsIgnoreCase(scope.value())) {

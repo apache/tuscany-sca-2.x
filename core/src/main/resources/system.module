@@ -14,16 +14,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  -->
-<moduleFragment xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
-                name="org.apache.tuscany.container.java">
+<module xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
+               name="org.apache.tuscany.core.system">
 
-    <component name="org.apache.tuscany.container.java.handler.JavaComponentConfigurationHandler">
-        <implementation.system class="org.apache.tuscany.container.java.handler.JavaComponentConfigurationHandler"/>
-    </component>
-
-    <wire>
-        <source.uri>org.apache.tuscany.core.pipeline.ImplementationExtensionPoint/extensions</source.uri>
-        <target.uri>org.apache.tuscany.container.java.handler.JavaComponentConfigurationHandler</target.uri>
-    </wire>
-
-</moduleFragment>
+</module>

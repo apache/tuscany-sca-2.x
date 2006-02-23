@@ -19,8 +19,12 @@ package org.apache.tuscany.core.system.assembly.impl;
 import java.net.URL;
 
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
+import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.ServiceContract;
 import org.apache.tuscany.model.assembly.impl.ComponentImplementationImpl;
 
 /**
@@ -67,8 +71,19 @@ public class SystemImplementationImpl extends ComponentImplementationImpl implem
         URL componentTypeFile = implClass.getResource(baseName + ".componentType");
         if (componentTypeFile != null) {
             return modelContext.getAssemblyLoader().getComponentType(componentTypeFile.toString());
-        } else
-            return null;
+        } else {
+            //FIXME Return a made-up component type for now
+            // We need to introspect the component implementation class, support a subset of what
+            // we support for java components.
+            AssemblyFactory factory=modelContext.getAssemblyFactory();
+            ComponentType componentType=factory.createComponentType();
+            Service service=factory.createService();
+            ServiceContract serviceContract=factory.createJavaServiceContract();
+            serviceContract.setScope(Scope.MODULE);
+            service.setServiceContract(serviceContract);
+            componentType.getServices().add(service);
+            return componentType;
+        }
     }
 
     /**

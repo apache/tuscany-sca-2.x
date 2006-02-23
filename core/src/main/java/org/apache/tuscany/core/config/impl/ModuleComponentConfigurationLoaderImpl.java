@@ -40,6 +40,9 @@ public class ModuleComponentConfigurationLoaderImpl implements ModuleComponentCo
     private static final String SCA_MODULE_FILE_NAME = "sca.module";
     //FIXME can fragments have a variable prefix name?
     private static final String SCA_FRAGMENT_FILE_NAME = "sca.fragment";
+    private static final String SYSTEM_MODULE_FILE_NAME = "system.module";
+    //FIXME can fragments have a variable prefix name?
+    private static final String SYSTEM_FRAGMENT_FILE_NAME = "system.fragment";
     
     private AssemblyModelContext modelContext;
     private ResourceLoader resourceLoader;
@@ -59,26 +62,40 @@ public class ModuleComponentConfigurationLoaderImpl implements ModuleComponentCo
     /**
      * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#loadModuleComponent(java.lang.String, java.lang.String)
      */
+    public ModuleComponent loadSystemModuleComponent(String name, String uri) throws ConfigurationLoadException {
+        return loadModuleComponent(SYSTEM_MODULE_FILE_NAME, SYSTEM_FRAGMENT_FILE_NAME, name, uri);
+    }
+
+    /**
+     * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#loadModuleComponent(java.lang.String, java.lang.String)
+     */
     public ModuleComponent loadModuleComponent(String name, String uri) throws ConfigurationLoadException {
+        return loadModuleComponent(SCA_MODULE_FILE_NAME, SCA_FRAGMENT_FILE_NAME, name, uri);
+    }
+
+    /**
+     * Load a module component.
+     */
+    private ModuleComponent loadModuleComponent(String moduleFileName, String fragmentFileName, String name, String uri) throws ConfigurationLoadException {
 
         // Load the sca.module file
         URL moduleUrl;
         try {
-            moduleUrl = resourceLoader.getResource(SCA_MODULE_FILE_NAME);
+            moduleUrl = resourceLoader.getResource(moduleFileName);
         } catch (IOException e) {
-            throw new ConfigurationLoadException(SCA_MODULE_FILE_NAME, e);
+            throw new ConfigurationLoadException(moduleFileName, e);
         }
         if (moduleUrl == null) {
-            throw new ConfigurationLoadException(SCA_MODULE_FILE_NAME);
+            throw new ConfigurationLoadException(moduleFileName);
         }
         String moduleUri=moduleUrl.toString();
 
         // Load the sca.fragment files
         Iterator<URL> i;
         try {
-            i = resourceLoader.getAllResources(SCA_FRAGMENT_FILE_NAME);
+            i = resourceLoader.getAllResources(fragmentFileName);
         } catch (IOException e) {
-            throw new ConfigurationLoadException(SCA_FRAGMENT_FILE_NAME, e);
+            throw new ConfigurationLoadException(fragmentFileName, e);
         }
         List<String> moduleFragmentUris=new ArrayList<String>();
         for (; i.hasNext(); ) {
@@ -93,7 +110,7 @@ public class ModuleComponentConfigurationLoaderImpl implements ModuleComponentCo
      * @see org.apache.tuscany.core.config.ModuleComponentConfigurationLoader#loadModuleComponent(java.lang.String, java.lang.String, java.lang.String)
      */
     public ModuleComponent loadModuleComponent(String name, String uri, String url) throws ConfigurationLoadException {
-        return loadModuleComponent(name, uri, url, null);
+        return loadModuleComponent( name, uri, url, (Collection)null);
     }
     
     /**

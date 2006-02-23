@@ -37,7 +37,11 @@ import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
+import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
+import org.apache.tuscany.core.message.MessageFactory;
+import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
 import org.apache.tuscany.model.assembly.Extensible;
@@ -226,7 +230,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     // ----------------------------------
     // AutowireContext methods
     // ----------------------------------
-
+    
     public <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException {
         if (MonitorFactory.class.equals(instanceInterface)) {
             return instanceInterface.cast(monitorFactory);

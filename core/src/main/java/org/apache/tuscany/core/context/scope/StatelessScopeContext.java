@@ -60,6 +60,7 @@ public class StatelessScopeContext extends AbstractScopeContext implements Runti
         }
         super.start();
         lifecycleState = RUNNING;
+        prepare();
     }
 
     public synchronized void stop() {
@@ -92,22 +93,18 @@ public class StatelessScopeContext extends AbstractScopeContext implements Runti
     }
 
     public InstanceContext getContext(String ctxName) {
-        prepare();
         return contextMap.get(ctxName);
     }
 
     public InstanceContext getContextByKey(String ctxName, Object key) {
-        prepare();
         return getContext(ctxName);
     }
 
     public void removeContext(String ctxName) {
-        prepare();
         removeContextByKey(ctxName, null);
     }
 
     public void removeContextByKey(String ctxName, Object key) {
-        prepare();
         contextMap.remove(ctxName);
     }
 
