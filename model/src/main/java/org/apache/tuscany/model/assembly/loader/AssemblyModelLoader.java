@@ -19,6 +19,7 @@ package org.apache.tuscany.model.assembly.loader;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Module;
+import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.ModuleFragment;
 import org.apache.tuscany.model.assembly.Subsystem;
 
@@ -61,4 +62,12 @@ public interface AssemblyModelLoader {
      */
     Subsystem getSubsystem(String uri);
 
+    /**
+     * Load a module component.
+     * @param name
+     * @param uri
+     * @return
+     */
+    ModuleComponent loadModuleComponent(String name, String uri);
+    
 }

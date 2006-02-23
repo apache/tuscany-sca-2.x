@@ -19,6 +19,7 @@ package org.apache.tuscany.model.scdl.loader.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ComponentImplementation;
@@ -37,6 +38,7 @@ import org.apache.tuscany.model.scdl.Implementation;
 import org.apache.tuscany.model.scdl.JavaInterface;
 import org.apache.tuscany.model.scdl.Module;
 import org.apache.tuscany.model.scdl.ModuleComponent;
+import org.apache.tuscany.model.scdl.ModuleFragment;
 import org.apache.tuscany.model.scdl.ModuleWire;
 import org.apache.tuscany.model.scdl.Multiplicity;
 import org.apache.tuscany.model.scdl.OverrideOptions;
@@ -75,6 +77,7 @@ public class SCDLContentHandlerImpl extends ScdlSwitch implements ModelContentHa
     private org.apache.tuscany.model.assembly.Service currentService;
     private org.apache.tuscany.model.assembly.Reference currentReference;
     private org.apache.tuscany.model.assembly.Module currentModule;
+    private Aggregate currentAggregate;
     private SimpleComponent currentComponent;
     private org.apache.tuscany.model.assembly.ExternalService currentExternalService;
     private org.apache.tuscany.model.assembly.EntryPoint currentEntryPoint;
@@ -325,7 +328,20 @@ public class SCDLContentHandlerImpl extends ScdlSwitch implements ModelContentHa
         module.setName(object.getName());
         contents.add(module);
         currentModule=module;
+        currentAggregate=module;
         return module;
+    }
+
+    /**
+     * @see org.apache.tuscany.model.scdl.util.ScdlSwitch#caseModuleFragment(org.apache.tuscany.model.scdl.ModuleFragment)
+     */
+    public Object caseModuleFragment(ModuleFragment object) {
+        org.apache.tuscany.model.assembly.ModuleFragment moduleFragment=factory.createModuleFragment();
+        moduleFragment.setName(object.getName());
+        contents.add(moduleFragment);
+        currentModuleFragment=moduleFragment;
+        currentAggregate=moduleFragment;
+        return moduleFragment;
     }
     
     /**
@@ -336,7 +352,7 @@ public class SCDLContentHandlerImpl extends ScdlSwitch implements ModelContentHa
         component.setName(object.getName());
         linkers.add(new Runnable() {
             public void run() {
-                currentModule.getComponents().add(component);
+                currentAggregate.getComponents().add(component);
                 component.initialize(modelContext);
             };
         });
@@ -447,10 +463,9 @@ public class SCDLContentHandlerImpl extends ScdlSwitch implements ModelContentHa
         configuredReference.setReference(reference);
         entryPoint.setConfiguredReference(configuredReference);
         
-        
         linkers.add(new Runnable() {
             public void run() {
-                currentModule.getEntryPoints().add(entryPoint);
+                currentAggregate.getEntryPoints().add(entryPoint);
             };
         });
         
@@ -484,7 +499,7 @@ public class SCDLContentHandlerImpl extends ScdlSwitch implements ModelContentHa
         
         linkers.add(new Runnable() {
             public void run() {
-                currentModule.getExternalServices().add(externalService);
+                currentAggregate.getExternalServices().add(externalService);
             };
         });
         currentExternalService=externalService;
@@ -499,6 +514,7 @@ public class SCDLContentHandlerImpl extends ScdlSwitch implements ModelContentHa
         subsystem.setName(object.getName());
         subsystem.setURI(object.getUri());
         currentSubsystem=subsystem;
+        currentAggregate=subsystem;
         return subsystem;
     }
     
@@ -512,7 +528,7 @@ public class SCDLContentHandlerImpl extends ScdlSwitch implements ModelContentHa
 
         linkers.add(new Runnable() {
             public void run() {
-                currentSubsystem.getComponents().add(moduleComponent);
+                currentAggregate.getComponents().add(moduleComponent);
             };
         });
         

@@ -161,39 +161,6 @@ public class ComponentImpl extends AggregatePartImpl implements Component {
                     configuredProperty.initialize(modelContext);
                 }
     
-    //            if (super.getPropertyValues() != null) {
-    //                Sequence sequence = super.getPropertyValues().getAny();
-    //                for (int p = 0, n = sequence.size(); p < n; p++) {
-    //
-    //                    // Get each property value element
-    //                    commonj.sdo.Property propertyElementDef = sequence.getProperty(p);
-    //                    DataObject propertyElement = (DataObject) sequence.getValue(p);
-    //
-    //                    // Get the corresponding property definition
-    //                    String propertyName = propertyElementDef.getName();
-    //                    Property property = implementation.getProperty(propertyName);
-    //                    if (property == null) {
-    //                        throw new IllegalArgumentException("Undefined property " + propertyName);
-    //                    }
-    //
-    //                    // Create a property value object
-    //                    ConfiguredProperty propertyValue = factory.createConfiguredProperty();
-    //                    propertyValue.setComponent(this);
-    //                    propertyValue.setProperty(property);
-    //
-    //                    // Get the property value text and convert to the expected java type
-    //                    Sequence text = propertyElement.getSequence(0);
-    //                    if (text != null && text.size() != 0) {
-    //                        Object rawValue = text.getValue(0);
-    //                        propertyValue.setValue(rawValue);
-    //                    }
-    //
-    //                    // Add the property value object to the map
-    //                    configuredProperties.add(propertyValue);
-    //                    configuredPropertiesMap.put(propertyName, propertyValue);
-    //                }
-    //            }
-                
             }
         } else {
             

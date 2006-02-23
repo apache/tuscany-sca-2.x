@@ -24,8 +24,11 @@ import java.util.Map;
 import org.apache.tuscany.model.scdl.ComponentType;
 import org.apache.tuscany.model.scdl.Module;
 import org.apache.tuscany.model.scdl.ModuleFragment;
+import org.apache.tuscany.model.scdl.ScdlFactory;
 import org.apache.tuscany.model.scdl.Subsystem;
 import org.apache.tuscany.model.scdl.impl.ScdlPackageImpl;
+import org.apache.tuscany.sdo.util.DataObjectUtil;
+import org.apache.tuscany.sdo.util.SDOUtil;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import commonj.sdo.helper.XMLDocument;
@@ -36,6 +39,12 @@ import commonj.sdo.helper.XMLHelper;
 public class SCDLXMLReader extends ResourceSetImpl {
     
     private Map<String, Object> cache=new HashMap<String, Object>();
+
+    // Initialize the SDO runtime and register the SCDL model
+    static {
+        DataObjectUtil.initRuntime();
+        SDOUtil.registerStaticTypes(ScdlFactory.class);
+    }
 
     /**
      * Constructor
@@ -92,7 +101,7 @@ public class SCDLXMLReader extends ResourceSetImpl {
         if (object==null) {
             try {
                 XMLDocument document=XMLHelper.INSTANCE.load(new URL(uri).openStream());
-                return (Module)document.getRootObject();
+                return document.getRootObject();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
