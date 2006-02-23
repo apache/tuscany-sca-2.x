@@ -19,7 +19,7 @@ public class MockModuleFactory {
 
     private static AssemblyFactory factory = new AssemblyFactoryImpl();
     
-    private static AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(null,null); 
+    private static AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(null, null,null); 
 
     private MockModuleFactory() {
     }

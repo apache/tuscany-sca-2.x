@@ -48,7 +48,7 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
 
     private AssemblyFactory factory = new AssemblyFactoryImpl();
     
-    private AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(null,null); 
+    private AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(null, null,null); 
     
     public JavaComponentContextBuilderTestCase() {
     }

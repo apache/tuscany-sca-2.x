@@ -21,7 +21,7 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.common.resource.loader.ResourceLoaderFactory;
+import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.container.java.assembly.mock.HelloWorldImpl;
 import org.apache.tuscany.container.java.assembly.mock.HelloWorldWithFieldProperties;
 import org.apache.tuscany.container.java.assembly.mock.NakedHelloWorld;
@@ -29,8 +29,9 @@ import org.apache.tuscany.container.java.assembly.mock.NakedHelloWorldWithInterf
 import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Property;
 import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.assembly.loader.impl.AssemblyLoaderImpl;
+import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -59,7 +60,7 @@ public class JavaImplementationTestCase extends TestCase {
 
     public void testNakedHelloWorld() {
         impl.setImplementationClass(NakedHelloWorld.class);
-        impl.initialize(new AssemblyModelContextImpl(new AssemblyLoaderImpl(), ResourceLoaderFactory.getResourceLoader(Thread.currentThread().getContextClassLoader())));
+        impl.initialize(new AssemblyModelContextImpl(new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader())));
         ComponentType type = impl.getComponentType();
         Assert.assertNotNull(type);
         Assert.assertTrue(type.getProperties().isEmpty());
@@ -71,7 +72,7 @@ public class JavaImplementationTestCase extends TestCase {
 
     public void testNakedHelloWorldWithInterface() {
         impl.setImplementationClass(NakedHelloWorldWithInterface.class);
-        impl.initialize(new AssemblyModelContextImpl(new AssemblyLoaderImpl(), ResourceLoaderFactory.getResourceLoader(Thread.currentThread().getContextClassLoader())));
+        impl.initialize(new AssemblyModelContextImpl(new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader())));
         ComponentType type = impl.getComponentType();
         Assert.assertNotNull(type);
         Assert.assertTrue(type.getProperties().isEmpty());
@@ -100,7 +101,7 @@ public class JavaImplementationTestCase extends TestCase {
 
     public void testHelloWorldWithFieldProperties() {
         impl.setImplementationClass(HelloWorldWithFieldProperties.class);
-        impl.initialize(new AssemblyModelContextImpl(new AssemblyLoaderImpl(), ResourceLoaderFactory.getResourceLoader(Thread.currentThread().getContextClassLoader())));
+        impl.initialize(new AssemblyModelContextImpl(new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader())));
         ComponentType type = impl.getComponentType();
         Assert.assertNotNull(type);
         List<Property> props = type.getProperties();

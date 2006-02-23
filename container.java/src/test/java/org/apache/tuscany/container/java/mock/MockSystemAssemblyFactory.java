@@ -54,7 +54,7 @@ public class MockSystemAssemblyFactory {
 
     private static SystemAssemblyFactory systemFactory = new SystemAssemblyFactoryImpl();
 
-    private static AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(null, null);
+    private static AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(null, null, null);
 
     private MockSystemAssemblyFactory() {
     }

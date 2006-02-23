@@ -16,18 +16,26 @@
  */
 package org.apache.tuscany.container.java.assembly.tests;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.common.resource.loader.ResourceLoaderFactory;
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
+import org.apache.tuscany.container.java.assembly.tests.bigbank.account.services.accountdata.AccountDataService;
+import org.apache.tuscany.container.java.loader.JavaSCDLModelLoader;
+import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.EntryPoint;
+import org.apache.tuscany.model.assembly.Module;
+import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.assembly.loader.impl.AssemblyLoaderImpl;
+import org.apache.tuscany.model.scdl.loader.SCDLAssemblyModelLoader;
+import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 
 /**
  */
 public class JavaAssemblyLoaderTestCase extends TestCase {
-
-    private AssemblyModelContext modelContext;
 
     /**
      *
@@ -37,35 +45,39 @@ public class JavaAssemblyLoaderTestCase extends TestCase {
     }
 
     public void testLoader() {
-        //FIXME this test fails with NPE
-//        AssemblyLoader loader = modelContext.getAssemblyLoader();
-//        Module module = loader.getModule(getClass().getResource("sca.module").toString());
-//        module.initialize(modelContext);
-//
-//        Assert.assertTrue(module.getName().equals("tuscany.container.java.assembly.tests.bigbank.account"));
-//
-//        Component component = module.getComponent("AccountServiceComponent");
-//        Assert.assertTrue(component != null);
-//
-//        EntryPoint entryPoint = module.getEntryPoint("AccountService");
-//        Assert.assertTrue(entryPoint != null);
-//
-//        Object value = component.getConfiguredProperty("currency").getValue();
-//        Assert.assertTrue(value.equals("EURO"));
-//
-//        ConfiguredService configuredService = component.getConfiguredReference("accountDataService").getTargetConfiguredServices().get(0);
-//        Assert.assertTrue(configuredService.getAggregatePart().getName().equals("AccountDataServiceComponent"));
-//
-//        Class interfaceClass = configuredService.getService().getServiceContract().getInterface();
-//        Assert.assertTrue(interfaceClass == AccountDataService.class);
 
+        ResourceLoader resourceLoader=new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader());
+        SCDLAssemblyModelLoader assemblyLoader=new SCDLAssemblyModelLoaderImpl();
+        AssemblyFactory assemblyFactory=new AssemblyFactoryImpl();
+        AssemblyModelContext modelContext=new AssemblyModelContextImpl(assemblyFactory, assemblyLoader, resourceLoader);
+        
+        assemblyLoader.getSCDLModelLoaders().add(new JavaSCDLModelLoader(modelContext));
+
+        Module module = assemblyLoader.getModule(getClass().getResource("sca.module").toString());
+        module.initialize(modelContext);
+        Assert.assertTrue(module.getName().equals("tuscany.container.java.assembly.tests.bigbank.account"));
+
+        Component component=module.getComponent("AccountServiceComponent");
+        Assert.assertTrue(component!= null);
+
+        EntryPoint entryPoint=module.getEntryPoint("AccountService");
+        Assert.assertTrue(entryPoint!= null);
+        
+      Object value = component.getConfiguredProperty("currency").getValue();
+      Assert.assertTrue(value.equals("EURO"));
+
+      //ConfiguredService configuredService = component.getConfiguredReference("accountDataService").getTargetConfiguredServices().get(0);
+      //Assert.assertTrue(configuredService.getAggregatePart().getName().equals("AccountDataServiceComponent"));
+
+      Class interfaceClass = component.getConfiguredReference("accountDataService").getReference().getServiceContract().getInterface();
+      Assert.assertTrue(interfaceClass == AccountDataService.class);
+        
     }
 
     protected void setUp() throws Exception {
         super.setUp();
 
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-        modelContext = new AssemblyModelContextImpl(new AssemblyLoaderImpl(), ResourceLoaderFactory.getResourceLoader(getClass().getClassLoader()));
     }
 
 }
