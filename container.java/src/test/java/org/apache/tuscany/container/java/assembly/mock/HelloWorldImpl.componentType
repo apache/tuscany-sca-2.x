@@ -18,5 +18,5 @@
     <service name="HelloWorldService">
         <interface.java interface="org.apache.tuscany.container.java.assembly.mock.HelloWorldService" remoteable="true"/>
     </service>
-    <property name="text"/>
+    <!--  <property name="text"/> -->
 </componentType>
