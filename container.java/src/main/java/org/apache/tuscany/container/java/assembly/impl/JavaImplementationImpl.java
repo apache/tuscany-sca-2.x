@@ -78,18 +78,18 @@ public class JavaImplementationImpl extends ComponentImplementationImpl implemen
      * @param modelContext
      * @param implementationClass
      */
-    private ComponentType createComponentType(AssemblyModelContext modelContext, Class implementationClass) {
-        String baseName = JavaIntrospectionHelper.getBaseName(implementationClass);
-        URL componentTypeFile = implementationClass.getResource(baseName + ".componentType");
+    private ComponentType createComponentType(AssemblyModelContext modelContext, Class implClass) {
+        String baseName = JavaIntrospectionHelper.getBaseName(implClass);
+        URL componentTypeFile = implClass.getResource(baseName + ".componentType");
         if (componentTypeFile != null) {
             return modelContext.getAssemblyLoader().getComponentType(componentTypeFile.toString());
         } else {
             JavaAssemblyFactory factory = new JavaAssemblyFactoryImpl();
             ComponentTypeIntrospector introspector = new Java5ComponentTypeIntrospector(factory);
             try {
-                return introspector.introspect(implementationClass);
+                return introspector.introspect(implClass);
             } catch (ConfigurationException e) {
-                throw new IllegalArgumentException("Unable to introspect implementation class: " + implementationClass.getName(), e);
+                throw new IllegalArgumentException("Unable to introspect implementation class: " + implClass.getName(), e);
             }
         }
     }
