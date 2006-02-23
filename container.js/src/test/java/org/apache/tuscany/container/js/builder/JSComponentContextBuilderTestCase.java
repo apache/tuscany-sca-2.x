@@ -5,7 +5,7 @@ import java.util.Collection;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.common.resource.loader.ResourceLoaderFactory;
+import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.container.js.assembly.mock.HelloWorldService;
 import org.apache.tuscany.container.js.config.JavaScriptComponentRuntimeConfiguration;
 import org.apache.tuscany.container.js.mock.MockAssemblyFactory;
@@ -19,8 +19,9 @@ import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.SimpleComponent;
+import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.assembly.loader.impl.AssemblyLoaderImpl;
+import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 
 public class JSComponentContextBuilderTestCase extends TestCase {
 
@@ -30,8 +31,7 @@ public class JSComponentContextBuilderTestCase extends TestCase {
         JavaScriptTargetWireBuilder jsWireBuilder = new JavaScriptTargetWireBuilder();
         SimpleComponent component = MockAssemblyFactory.createComponent("foo",
                 "org/apache/tuscany/container/js/assembly/mock/HelloWorldImpl.js", HelloWorldService.class, Scope.MODULE);
-        component.initialize(new AssemblyModelContextImpl(new AssemblyLoaderImpl(), ResourceLoaderFactory
-                .getResourceLoader(Thread.currentThread().getContextClassLoader())));
+        component.initialize(new AssemblyModelContextImpl(new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader())));
         jsBuilder.build(component, null);
         ModuleScopeContext context = new ModuleScopeContext(new EventContextImpl());
         RuntimeConfiguration<InstanceContext> config = (RuntimeConfiguration) component.getComponentImplementation()

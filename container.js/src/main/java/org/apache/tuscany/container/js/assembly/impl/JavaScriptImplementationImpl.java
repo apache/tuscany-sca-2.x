@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.apache.tuscany.common.resource.loader.ResourceLoader;
+import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
 import org.apache.tuscany.container.js.rhino.RhinoInvoker;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;

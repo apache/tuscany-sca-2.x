@@ -18,7 +18,9 @@ package org.apache.tuscany.container.js.assembly.tests;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 
 /**
@@ -68,7 +70,7 @@ public class JavaScriptAssemblyLoaderTestCase extends TestCase {
         super.setUp();
 
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-        modelContext = new AssemblyModelContextImpl(null,null);
+        modelContext = new AssemblyModelContextImpl(null, null,null);
     }
 
 }

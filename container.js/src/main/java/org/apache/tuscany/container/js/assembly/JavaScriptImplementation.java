@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.container.js.assembly;
 
-import org.apache.tuscany.common.resource.loader.ResourceLoader;
+import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.container.js.rhino.RhinoInvoker;
 import org.apache.tuscany.model.assembly.ComponentImplementation;
 

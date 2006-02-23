@@ -16,18 +16,7 @@
  */
 package org.apache.tuscany.container.js.assembly.impl;
 
-import java.util.List;
-
-import junit.framework.Assert;
 import junit.framework.TestCase;
-
-import org.apache.tuscany.common.resource.loader.ResourceLoaderFactory;
-import org.apache.tuscany.model.assembly.ComponentType;
-import org.apache.tuscany.model.assembly.Property;
-import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
-import org.apache.tuscany.model.assembly.loader.impl.AssemblyLoaderImpl;
 
 /**
  * FIXME commented out until SCDL loading works

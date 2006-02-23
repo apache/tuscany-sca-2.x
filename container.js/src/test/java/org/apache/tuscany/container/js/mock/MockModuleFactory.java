@@ -13,7 +13,7 @@
  */
 package org.apache.tuscany.container.js.mock;
 
-import org.apache.tuscany.common.resource.loader.ResourceLoaderFactory;
+import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.container.js.assembly.mock.HelloWorldService;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
@@ -26,7 +26,7 @@ import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.assembly.loader.impl.AssemblyLoaderImpl;
+import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
@@ -38,8 +38,8 @@ public class MockModuleFactory {
 
     private static AssemblyFactory factory = new AssemblyFactoryImpl();
 
-    private static AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(new AssemblyLoaderImpl(),
-            ResourceLoaderFactory.getResourceLoader(Thread.currentThread().getContextClassLoader()));
+    private static AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(),
+            new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader()));
 
     private MockModuleFactory() {
     }
