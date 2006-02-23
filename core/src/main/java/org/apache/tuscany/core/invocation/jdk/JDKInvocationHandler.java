@@ -79,11 +79,11 @@ public class JDKInvocationHandler implements InvocationHandler {
             Message resp = headInterceptor.invoke(msg);
 
             Object body = resp.getBody();
-            if (body instanceof Throwable)
+            if (body instanceof Throwable) {
                 throw (Throwable) body;
+            }
             return body;
         }
     }
-
 
 }

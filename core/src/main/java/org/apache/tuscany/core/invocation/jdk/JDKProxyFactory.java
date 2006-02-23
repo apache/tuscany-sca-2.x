@@ -34,6 +34,14 @@ import org.apache.tuscany.core.invocation.spi.ProxyInitializationException;
  */
 public class JDKProxyFactory implements ProxyFactory {
 
+    private static final int UNINITIALIZED = 0;
+
+    private static final int INITIALIZED = 1;
+
+    private static final int ERROR = -1;
+
+    private int state = UNINITIALIZED;
+
     private Class[] businessInterfaceArray;
 
     private Map<Method, InvocationConfiguration> methodToInvocationConfig;
@@ -41,15 +49,22 @@ public class JDKProxyFactory implements ProxyFactory {
     private ProxyConfiguration configuration;
 
     public void initialize() throws ProxyInitializationException {
+        if (state != UNINITIALIZED) {
+            throw new IllegalStateException("Proxy factory in wrong state [" + state + "]");
+        }
         Map<Method, InvocationConfiguration> invocationConfigs = configuration.getInvocationConfigurations();
         methodToInvocationConfig = new HashMap(invocationConfigs.size());
         for (Map.Entry entry : invocationConfigs.entrySet()) {
             Method method = (Method) entry.getKey();
             methodToInvocationConfig.put(method, (InvocationConfiguration) entry.getValue());
         }
+        state = INITIALIZED;
     }
 
     public Object createProxy() {
+        if (state != INITIALIZED) {
+            throw new IllegalStateException("Proxy factory not INITIALIZED [" + state + "]");
+        }
         InvocationHandler handler = new JDKInvocationHandler(configuration.getMessageFactory(), methodToInvocationConfig);
         return Proxy.newProxyInstance(configuration.getProxyClassLoader(), businessInterfaceArray, handler);
     }

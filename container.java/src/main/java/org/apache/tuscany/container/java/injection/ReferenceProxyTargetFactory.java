@@ -15,14 +15,6 @@ import org.apache.tuscany.model.assembly.ConfiguredReference;
  */
 public class ReferenceProxyTargetFactory<T> implements ObjectFactory<T> {
 
-    //FIXME we don't need to cache this information here
-    // the logical model reference
-    private ConfiguredReference reference;
-
-    //FIXME we don't need to cache this information here
-    // the SCDL name of the target component/service for this reference
-    private String targetName;
-
     // the proxy factory for the reference
     private ProxyFactory<T> factory;
 
@@ -31,10 +23,7 @@ public class ReferenceProxyTargetFactory<T> implements ObjectFactory<T> {
     // ----------------------------------
 
     public ReferenceProxyTargetFactory(ConfiguredReference reference) throws FactoryInitException {
-        // FIXME how to handle a reference that is a list - may take different proxy factories for each entry
         assert (reference != null) : "Reference was null";
-        this.reference = reference;
-        // FIXME should not need the cast to ProxyFactory
         factory = (ProxyFactory) reference.getProxyFactory();
         if (factory == null) {
             throw new FactoryInitException("No proxy factory found");

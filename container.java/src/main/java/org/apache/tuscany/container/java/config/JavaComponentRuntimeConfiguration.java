@@ -42,7 +42,6 @@ public class JavaComponentRuntimeConfiguration implements RuntimeConfiguration<S
     private Constructor ctr;
 
     // injectors for properties, references and other metadata values such as
-    // @Context
     private List<Injector> setters;
 
     // an invoker for a method decorated with @Init
@@ -113,8 +112,6 @@ public class JavaComponentRuntimeConfiguration implements RuntimeConfiguration<S
         return new JavaComponentContext(name, objectFactory, eagerInit, init, destroy, stateless);
     }
 
-    // //
-
     private Map<String, ProxyFactory> targetProxyFactories = new HashMap();
 
     public void addTargetProxyFactory(String serviceName, ProxyFactory factory) {
@@ -150,45 +147,5 @@ public class JavaComponentRuntimeConfiguration implements RuntimeConfiguration<S
     public void prepare(){
         
     }
-    
-    
-//    
-//    private Injector createReferenceInjector(ProxyFactory factory,
-//            Set<Field> fields, Set<Method> methods) throws NoAccessorException, BuilderConfigException {
-//        String refName = reference.getReference().getName();
-//        List<ConfiguredService> services = reference.getConfiguredServices();
-//        Class type;
-//        // FIXME added the size check - do we need to do this?
-//        if (services.size() == 1) {
-//            // get the interface
-//            type = reference.getReference().getInterfaceContract().getInterfaceType().getInstanceClass();
-//        } else {
-//            // FIXME do we support arrays?
-//            type = List.class;
-//        }
-//
-//        Method method = null;
-//
-//        Field field = JavaIntrospectionHelper.findClosestMatchingField(refName, type, fields);
-//        if (field == null) {
-//            method = JavaIntrospectionHelper.findClosestMatchingMethod(refName, new Class[] { type }, methods);
-//            if (method == null) {
-//                throw new NoAccessorException(refName);
-//            }
-//        }
-//        Injector injector;
-//        try {
-//            if (field != null) {
-//                injector = new FieldInjector(field, new ReferenceProxyTargetFactory(reference));
-//            } else {
-//                injector = new MethodInjector(method, new ReferenceProxyTargetFactory(reference));
-//            }
-//        } catch (FactoryInitException e) {
-//            BuilderConfigException ce = new BuilderConfigException("Error configuring reference", e);
-//            ce.setIdentifier(refName);
-//            throw ce;
-//        }
-//        return injector;
-//    }
-    
+  
 }

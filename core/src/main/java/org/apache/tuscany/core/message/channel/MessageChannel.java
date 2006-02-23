@@ -19,8 +19,7 @@ package org.apache.tuscany.core.message.channel;
 import org.apache.tuscany.core.message.Message;
 
 /**
- * Represents a one-way pipeline through which messages are sent during an
- * invocation
+ * Represents a one-way pipeline through which messages are sent during an invocation
  * 
  * @see org.apache.tuscany.core.message.Message
  */

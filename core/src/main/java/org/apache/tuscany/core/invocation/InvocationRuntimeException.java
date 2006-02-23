@@ -19,7 +19,7 @@ package org.apache.tuscany.core.invocation;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
- * Denotes an exception thrown during the processign of an invocation
+ * Denotes an exception thrown during invocation processing
  * 
  * @version $Rev$ $Date$
  */

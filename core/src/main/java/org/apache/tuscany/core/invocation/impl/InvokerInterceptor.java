@@ -14,6 +14,7 @@
 package org.apache.tuscany.core.invocation.impl;
 
 import org.apache.tuscany.core.invocation.Interceptor;
+import org.apache.tuscany.core.invocation.InvocationRuntimeException;
 import org.apache.tuscany.core.invocation.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
 
@@ -30,11 +31,10 @@ public class InvokerInterceptor implements Interceptor {
     public InvokerInterceptor() {
     }
 
-    public Message invoke(Message msg) {
+    public Message invoke(Message msg) throws InvocationRuntimeException {
         TargetInvoker invoker = msg.getTargetInvoker();
         if (invoker == null) {
-            // FIXME
-            // throw new ProxyOperationException("No target invoker specified on message");
+            throw new InvocationRuntimeException("No target invoker specified on message");
         }
         return invoker.invoke(msg);
     }

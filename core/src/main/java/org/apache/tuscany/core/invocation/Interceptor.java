@@ -24,6 +24,7 @@ import org.apache.tuscany.core.message.Message;
  * @version $Rev$ $Date$
  */
 public interface Interceptor {
+    
     /**
      * Process a synchronous invocation.
      * 

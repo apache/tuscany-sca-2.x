@@ -21,9 +21,9 @@ import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.handler.MessageHandler;
 
 /**
- * A message handler that dispatches the message through an interceptor stack
- * and the uses the response channel to return the invocation result.
- *
+ * A message handler that dispatches the message through an interceptor stack and the uses the response channel to
+ * return the invocation result.
+ * 
  * @version $Rev$ $Date$
  */
 public class MessageDispatcher implements MessageHandler {
@@ -31,7 +31,7 @@ public class MessageDispatcher implements MessageHandler {
 
     /**
      * Construct a handler that dispatches messages to an Interceptor stack.
-     *
+     * 
      * @param head the interceptor at the head of the stack
      */
     public MessageDispatcher(Interceptor head) {

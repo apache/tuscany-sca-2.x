@@ -37,22 +37,6 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
 
     public boolean cacheable;
 
-    /**
-     * Constructs a new component invoker for a given operation.
-     * 
-     * @param serviceName the name of the target service
-     * @param operation the method on the target object to invoke corresponding to the operation
-     * @param container the scope container managing the service instance
-     * @deprecated
-     */
-    public ScopedJavaComponentInvoker(String serviceName, Method operation, ScopeContext container) {
-        super(operation);
-        assert (serviceName != null) : "No service name specified";
-        assert (container != null) : "No scope container specified";
-        name = new QualifiedName(serviceName);
-        this.container = container;
-    }
-
     public ScopedJavaComponentInvoker(QualifiedName serviceName, Method operation, ScopeContext container) {
         super(operation);
         assert (serviceName != null) : "No service name specified";

@@ -19,19 +19,19 @@ package org.apache.tuscany.core.invocation;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Implementations are responsible for resolving a target and performing the actual invocation on it, for example, a service
- * component implementation instance or an external service client.
+ * Implementations are responsible for resolving a target and performing the actual invocation on it, for example, a
+ * service component implementation instance or an external service client.
  * 
  * @version $Rev$ $Date$
  */
-public interface TargetInvoker extends Interceptor{
+public interface TargetInvoker extends Interceptor {
 
     /**
      * Responsible for invoking an operation on a target with the given payload
      * 
      * @param payload the parameters of the target operation or null
-     * @throws InvocationTargetException if the target operation itself throws an exception. The root cause will be set to that
-     *         exception
+     * @throws InvocationTargetException if the target operation itself throws an exception. The root cause will be set
+     *         to that exception
      */
     public Object invokeTarget(Object payload) throws InvocationTargetException;
 
