@@ -16,17 +16,17 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
-import org.apache.tuscany.common.resource.loader.ResourceLoader;
+import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
+import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 
 /**
  */
 public class AssemblyModelContextImpl implements AssemblyModelContext {
 
     private AssemblyFactory assemblyFactory;
-    private AssemblyLoader assemblyLoader;
+    private AssemblyModelLoader assemblyLoader;
     private ResourceLoader resourceLoader;
 
     /**
@@ -34,10 +34,15 @@ public class AssemblyModelContextImpl implements AssemblyModelContext {
      *
      * @param resourceLoader
      */
-    public AssemblyModelContextImpl(AssemblyLoader assemblyLoader, ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
+    public AssemblyModelContextImpl(AssemblyFactory assemblyFactory, AssemblyModelLoader assemblyLoader, ResourceLoader resourceLoader) {
+        if (assemblyFactory!=null)
+            this.assemblyFactory = assemblyFactory;
+        else
+            this.assemblyFactory = new AssemblyFactoryImpl();
         this.assemblyLoader = assemblyLoader;
-        assemblyFactory = new AssemblyFactoryImpl();
+        if (assemblyLoader!=null)
+            assemblyLoader.setModelContext(this);
+        this.resourceLoader = resourceLoader;
     }
 
     /**
@@ -57,7 +62,7 @@ public class AssemblyModelContextImpl implements AssemblyModelContext {
     /**
      * @see org.apache.tuscany.model.assembly.AssemblyModelContext#getAssemblyLoader()
      */
-    public AssemblyLoader getAssemblyLoader() {
+    public AssemblyModelLoader getAssemblyLoader() {
         return assemblyLoader;
     }
 }

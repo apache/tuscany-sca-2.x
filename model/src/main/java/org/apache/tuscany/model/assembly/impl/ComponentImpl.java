@@ -30,6 +30,7 @@ import org.apache.tuscany.model.assembly.ComponentImplementation;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
+import org.apache.tuscany.model.assembly.Property;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.Service;
 
@@ -152,7 +153,14 @@ public class ComponentImpl extends AggregatePartImpl implements Component {
                 }
     
                 // Derive configured properties from the properties on the component type 
-                //FIXME
+                for (Property property : implementation.getComponentType().getProperties()) {
+                    ConfiguredProperty configuredProperty = factory.createConfiguredProperty();
+                    configuredProperty.setProperty(property);
+                    configuredProperties.add(configuredProperty);
+                    configuredPropertiesMap.put(property.getName(), configuredProperty);
+                    configuredProperty.initialize(modelContext);
+                }
+    
     //            if (super.getPropertyValues() != null) {
     //                Sequence sequence = super.getPropertyValues().getAny();
     //                for (int p = 0, n = sequence.size(); p < n; p++) {
