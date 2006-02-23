@@ -3,9 +3,12 @@ package org.apache.tuscany.container.js.loader;
 import org.apache.tuscany.container.js.assembly.JavaScriptAssemblyFactory;
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
 import org.apache.tuscany.container.js.assembly.impl.JavaScriptAssemblyFactoryImpl;
+import org.apache.tuscany.container.js.scdl.ScdlFactory;
+import org.apache.tuscany.container.js.scdl.impl.ScdlPackageImpl;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
+import org.apache.tuscany.sdo.util.SDOUtil;
 
 /**
  * Populates the assembly model from an SCDL model
@@ -15,6 +18,12 @@ public class JavaScriptSCDLModelLoader implements SCDLModelLoader {
     private AssemblyModelContext modelContext;
     private JavaScriptAssemblyFactory jsFactory;
 
+    static {
+        // Register the JavaScript SCDL model
+        ScdlPackageImpl.eINSTANCE.eClass();
+        SDOUtil.registerStaticTypes(ScdlFactory.class);
+    }
+    
     /**
      * Constructs a new JavaSCDLModelLoader.
      */

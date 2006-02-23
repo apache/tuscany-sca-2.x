@@ -16,9 +16,10 @@
  -->
 <module xmlns="http://www.osoa.org/xmlns/sca/0.9"
         xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
-        name="EMFLoaderTest1">
+		xmlns:js="http://org.apache.tuscany/xmlns/js/0.9"
+        name="ModuleComponentLoaderTest1">
 
     <component name="HelloWorldServiceComponent">
-        <implementation.js scriptFile="org.apache.tuscany.container.js.assembly.mock.HelloWorldImpl.js"/>
+        <js:implementation.js scriptFile="org.apache.tuscany.container.js.assembly.mock.HelloWorldImpl.js"/>
     </component>
 </module>

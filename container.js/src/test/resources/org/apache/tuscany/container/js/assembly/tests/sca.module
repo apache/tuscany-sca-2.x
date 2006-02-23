@@ -15,7 +15,7 @@
   limitations under the License.
  -->
 <module xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
-
+		xmlns:js="http://org.apache.tuscany/xmlns/js/0.9"
         name="tuscany.container.js.assembly.tests.bigbank.account">
 
     <entryPoint name="AccountService">
@@ -25,7 +25,7 @@
     </entryPoint>
 
     <component name="AccountServiceComponent">
-        <implementation.js scriptFile="org/apache/tuscany/container/js/assembly/tests/bigbank/account/services/account/AccountServiceImpl.js"/>
+        <js:implementation.js scriptFile="org/apache/tuscany/container/js/assembly/tests/bigbank/account/services/account/AccountServiceImpl.js"/>
         <properties>
             <v:currency>EURO</v:currency>
         </properties>
@@ -36,11 +36,11 @@
     </component>
 
     <component name="AccountDataServiceComponent">
-        <implementation.js scriptFile="org/apache/tuscany/container/js/assembly/tests/bigbank/account/services/accountdata/AccountDataServiceImpl.js"/>
+        <js:implementation.js scriptFile="org/apache/tuscany/container/js/assembly/tests/bigbank/account/services/accountdata/AccountDataServiceImpl.js"/>
     </component>
 
     <component name="StockQuoteService">
-        <implementation.js scriptFile="org/apache/tuscany/container/js/assembly/tests/bigbank/account/services/stockquote/StockQuoteServiceImpl.js"/>
+        <js:implementation.js scriptFile="org/apache/tuscany/container/js/assembly/tests/bigbank/account/services/stockquote/StockQuoteServiceImpl.js"/>
     </component>
 
     <!--
