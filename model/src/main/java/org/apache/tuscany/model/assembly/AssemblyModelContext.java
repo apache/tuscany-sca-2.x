@@ -16,8 +16,8 @@
  */
 package org.apache.tuscany.model.assembly;
 
-import org.apache.tuscany.common.resource.loader.ResourceLoader;
-import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 
 
 /**
@@ -41,6 +41,6 @@ public interface AssemblyModelContext {
      * Returns an assembly loader.
      * @return
      */
-    AssemblyLoader getAssemblyLoader();
+    AssemblyModelLoader getAssemblyLoader();
     
 }
