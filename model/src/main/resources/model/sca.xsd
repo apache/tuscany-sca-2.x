@@ -4,7 +4,7 @@
 		targetNamespace="http://www.osoa.org/xmlns/sca/0.9" 
 		xmlns:sdojava="commonj.sdo/java"
 		xmlns:sca="http://www.osoa.org/xmlns/sca/0.9"
-		sdojava:package="org.apache.tuscany.model.assembly.scdl">
+		sdojava:package="org.apache.tuscany.model.scdl">
 
 	<include schemaLocation="sca-core.xsd"/>
 
