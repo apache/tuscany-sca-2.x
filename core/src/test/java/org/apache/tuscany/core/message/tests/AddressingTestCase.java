@@ -20,16 +20,6 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.common.resource.loader.ResourceLoaderFactory;
-import org.apache.tuscany.core.addressing.EndpointReference;
-import org.apache.tuscany.core.addressing.impl.AddressingFactoryImpl;
-import org.apache.tuscany.core.message.Message;
-import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
-import org.apache.tuscany.sdo.helper.HelperProviderImpl;
-
-import commonj.sdo.DataObject;
-import commonj.sdo.helper.XMLHelper;
-
 /**
  * FIXME commented out
  */

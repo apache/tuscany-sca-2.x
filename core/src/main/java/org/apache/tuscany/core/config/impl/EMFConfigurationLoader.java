@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
 
-import org.apache.tuscany.common.resource.loader.ResourceLoader;
+import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.ConfigurationLoader;
@@ -32,7 +32,7 @@ import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.ModuleFragment;
-import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
+import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 
 /**
  * Implementation of a {@link ConfigurationLoader} that uses EMF to load the XML documents.
@@ -47,7 +47,7 @@ public class EMFConfigurationLoader implements ConfigurationLoader {
 
     private final AssemblyModelContext modelContext;
     private final AssemblyFactory factory;
-    private final AssemblyLoader loader;
+    private final AssemblyModelLoader loader;
     private final ResourceLoader resourceLoader;
 
     public EMFConfigurationLoader(AssemblyModelContext modelContext) {

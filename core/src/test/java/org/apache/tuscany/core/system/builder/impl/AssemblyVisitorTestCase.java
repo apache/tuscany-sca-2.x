@@ -19,6 +19,8 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
@@ -28,6 +30,7 @@ import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
+import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.Component;
@@ -39,7 +42,10 @@ import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.RuntimeConfigurationHolder;
 import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
+import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
@@ -52,9 +58,10 @@ public class AssemblyVisitorTestCase extends TestCase {
     private static final Object MARKER = new Object();
 
     private SystemAssemblyFactory factory = new SystemAssemblyFactoryImpl();
-    private AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(null,null);
+    private AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(factory, null, null);
      
     public void testModelVisit() throws Exception {
+        
         Component component = factory.createSimpleComponent();
         SystemImplementation impl = factory.createSystemImplementation();
         impl.setComponentType(factory.createComponentType());

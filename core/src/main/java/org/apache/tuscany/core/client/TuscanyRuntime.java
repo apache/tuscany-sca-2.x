@@ -21,8 +21,8 @@ import java.util.List;
 
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.common.resource.loader.ResourceLoader;
-import org.apache.tuscany.common.resource.loader.ResourceLoaderFactory;
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
@@ -36,11 +36,13 @@ import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
+import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
+import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
-import org.apache.tuscany.model.assembly.loader.impl.AssemblyLoaderImpl;
+import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
+import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 import org.osoa.sca.ModuleContext;
 import org.osoa.sca.SCA;
 import org.osoa.sca.ServiceRuntimeException;
@@ -85,9 +87,10 @@ public class TuscanyRuntime extends SCA {
 
         // create a resource loader from the current classloader
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        ResourceLoader resourceLoader = ResourceLoaderFactory.getResourceLoader(classLoader);
-        AssemblyLoader assemblyLoader = new AssemblyLoaderImpl();
-        AssemblyModelContext modelContext = new AssemblyModelContextImpl(assemblyLoader, resourceLoader);
+        ResourceLoader resourceLoader = new ResourceLoaderImpl(classLoader);
+        AssemblyFactory modelFactory=new AssemblyFactoryImpl();
+        AssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl();
+        AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, resourceLoader);
 
         // load the configuration files using EMF
         ConfigurationLoader loader = new EMFConfigurationLoader(modelContext);

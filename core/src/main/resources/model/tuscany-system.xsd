@@ -20,7 +20,7 @@
         xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
 		xmlns:sdojava="commonj.sdo/java"
         elementFormDefault="qualified"
-		sdojava:package="org.apache.tuscany.assembly.core.system.assembly.scdl">
+		sdojava:package="org.apache.tuscany.core.system.scdl">
 
     <import namespace="http://www.osoa.org/xmlns/sca/0.9" schemaLocation="../../../../../model/src/main/resources/model/sca-core.xsd"/>
 
