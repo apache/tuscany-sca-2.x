@@ -17,7 +17,7 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
 
 /**
- * 
+ * Creates JDK Dynamic Proxy-based proxy factories
  * 
  * @version $Rev$ $Date$
  */
