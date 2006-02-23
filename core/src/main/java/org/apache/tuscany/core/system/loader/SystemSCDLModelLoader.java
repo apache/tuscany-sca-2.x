@@ -3,10 +3,12 @@ package org.apache.tuscany.core.system.loader;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
+import org.apache.tuscany.core.system.scdl.ScdlFactory;
 import org.apache.tuscany.core.system.scdl.SystemImplementation;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
+import org.apache.tuscany.sdo.util.SDOUtil;
 
 /**
  * Populates the assembly model from an SCDL model
@@ -16,6 +18,11 @@ public class SystemSCDLModelLoader implements SCDLModelLoader {
     private AssemblyModelContext modelContext;
     private SystemAssemblyFactory systemFactory;
     private ResourceLoader resourceLoader;
+    
+    static {
+        // Register the system SCDL model
+        SDOUtil.registerStaticTypes(ScdlFactory.class);
+    }
 
     /**
      * Constructs a new JavaSCDLModelLoader.

@@ -16,7 +16,7 @@
  -->
 <module xmlns="http://www.osoa.org/xmlns/sca/0.9"
         xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
-        name="EMFLoaderTest1">
+        name="ModuleComponentLoaderTest1">
 
     <component name="HelloWorldServiceComponent">
         <implementation.java class="org.apache.tuscany.samples.helloworld.HelloWorldServiceComponentImpl"/>

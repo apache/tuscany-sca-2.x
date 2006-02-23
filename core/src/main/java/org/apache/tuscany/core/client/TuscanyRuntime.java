@@ -26,8 +26,8 @@ import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.config.ConfigurationLoader;
-import org.apache.tuscany.core.config.impl.EMFConfigurationLoader;
+import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
+import org.apache.tuscany.core.config.impl.ModuleComponentConfigurationLoaderImpl;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
@@ -92,8 +92,8 @@ public class TuscanyRuntime extends SCA {
         AssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl();
         AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, resourceLoader);
 
-        // load the configuration files using EMF
-        ConfigurationLoader loader = new EMFConfigurationLoader(modelContext);
+        // Load the SCDL configuration
+        ModuleComponentConfigurationLoader loader = new ModuleComponentConfigurationLoaderImpl(modelContext);
         ModuleComponent moduleComponent = loader.loadModuleComponent(name, uri);
 
         List<RuntimeConfigurationBuilder> configBuilders = new ArrayList();

@@ -24,6 +24,7 @@ import java.io.IOException;
  * @version $Rev$ $Date$
  */
 public class ConfigurationLoadException extends ConfigurationException {
+
     /**
      * Constructor specifying the resource that was being loaded and the IOException that resulted.
      * These are returned as the message and cause respectively.
@@ -33,5 +34,14 @@ public class ConfigurationLoadException extends ConfigurationException {
      */
     public ConfigurationLoadException(String resource, IOException cause) {
         super(resource, cause);
+    }
+
+    /**
+     * Constructor specifying the resource that was being loaded.
+     *
+     * @param resource the resource being loaded
+     */
+    public ConfigurationLoadException(String resource) {
+        super(resource);
     }
 }
