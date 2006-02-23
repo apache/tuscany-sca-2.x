@@ -1,4 +1,4 @@
-package org.apache.tuscany.core.invocation.jdk;
+package org.apache.tuscany.core.invocation.impl;
 
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
@@ -9,7 +9,7 @@ import org.apache.tuscany.core.invocation.spi.ProxyInitializationException;
 /**
  * Returns an actual implementation instance as opposed to a proxy. Used in cases where proxying may be optimized away.
  * 
- * @version $Rev$ $Date$
+ * @version $Rev: 379957 $ $Date: 2006-02-22 14:58:24 -0800 (Wed, 22 Feb 2006) $
  */
 public class NullProxyFactory implements ProxyFactory {
 
