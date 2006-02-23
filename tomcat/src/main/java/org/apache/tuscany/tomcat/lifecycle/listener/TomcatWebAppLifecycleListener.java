@@ -25,8 +25,8 @@ import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
-import org.apache.tuscany.common.resource.loader.ResourceLoader;
-import org.apache.tuscany.common.resource.loader.ResourceLoaderFactory;
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.config.ConfigurationLoader;
 import org.apache.tuscany.core.config.impl.EMFConfigurationLoader;
 import org.apache.tuscany.core.context.AggregateContext;
@@ -37,11 +37,13 @@ import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.context.webapp.HTTPSessionExpirationListener;
 import org.apache.tuscany.core.context.webapp.TuscanyRequestFilter;
 import org.apache.tuscany.core.context.webapp.TuscanyWebAppRuntime;
+import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
+import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.assembly.loader.AssemblyLoader;
-import org.apache.tuscany.model.assembly.loader.impl.AssemblyLoaderImpl;
+import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
+import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
@@ -90,7 +92,7 @@ public class TomcatWebAppLifecycleListener implements LifecycleListener {
 
                 // Get the application classloader
                 ClassLoader applicationClassLoader = Thread.currentThread().getContextClassLoader();
-                ResourceLoader resourceLoader = ResourceLoaderFactory.getResourceLoader(applicationClassLoader);
+                ResourceLoader resourceLoader = new ResourceLoaderImpl(applicationClassLoader);
 
                 // Check if the web app contains an sca.module file
                 URL url;
@@ -106,8 +108,9 @@ public class TomcatWebAppLifecycleListener implements LifecycleListener {
                     try {
 
                         // Load the module component
-                        AssemblyLoader modelLoader=new AssemblyLoaderImpl();
-                        AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelLoader, resourceLoader);
+                        AssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl();
+                        AssemblyFactory factory=new AssemblyFactoryImpl();
+                        AssemblyModelContext modelContext = new AssemblyModelContextImpl(factory, modelLoader, resourceLoader);
                         ConfigurationLoader moduleComponentLoader = new EMFConfigurationLoader(modelContext);
                         String uri = context.getPath().substring(1);
                         ModuleComponent moduleComponent = moduleComponentLoader.loadModuleComponent(moduleComponentName, uri);
