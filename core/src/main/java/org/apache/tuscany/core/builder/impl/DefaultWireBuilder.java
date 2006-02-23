@@ -59,20 +59,7 @@ public class DefaultWireBuilder implements WireBuilder {
             for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration()
                     .getInvocationConfigurations().values()) {
                 // match invocation chains
-//<<<<<<< .mine
-////                InvocationConfiguration targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig
-////                        .getOperationType());
-//                // should be done w/.equals():
-//                InvocationConfiguration targetInvocationConfig = null;
-//                for (Map.Entry<OperationType,InvocationConfiguration> entry : targetInvocationConfigs.entrySet()) {
-//                    if (entry.getKey().getName().equals(sourceInvocationConfig.getOperationType().getName())){
-//                        targetInvocationConfig = entry.getValue();
-//                        break;
-//                    }
-//                }  
-//=======
                 InvocationConfiguration targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig.getMethod());
-//>>>>>>> .r379382
                 // if handler is configured, add that
                 if (targetInvocationConfig.getRequestHandlers() != null) {
                     sourceInvocationConfig.setTargetRequestChannel(new MessageChannelImpl(targetInvocationConfig.getRequestHandlers()));
