@@ -21,25 +21,25 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.model.assembly.loader.impl.SCDLXMLLoader;
-import org.apache.tuscany.model.assembly.scdl.Component;
-import org.apache.tuscany.model.assembly.scdl.EntryPoint;
-import org.apache.tuscany.model.assembly.scdl.Module;
+import org.apache.tuscany.model.scdl.Component;
+import org.apache.tuscany.model.scdl.EntryPoint;
+import org.apache.tuscany.model.scdl.Module;
+import org.apache.tuscany.model.scdl.loader.impl.SCDLXMLReader;
 
 /**
  */
-public class SCDLXMLLoaderTestCase extends TestCase {
+public class SCDLXMLReaderTestCase extends TestCase {
 
     /**
      *
      */
-    public SCDLXMLLoaderTestCase() {
+    public SCDLXMLReaderTestCase() {
         super();
     }
 
     public void testLoader() {
 
-        SCDLXMLLoader loader = new SCDLXMLLoader();
+        SCDLXMLReader loader = new SCDLXMLReader();
         Module module = loader.getModule(getClass().getResource("sca.module").toString());
         Assert.assertTrue(module.getName().equals("tuscany.model.assembly.tests.bigbank.account"));
 
