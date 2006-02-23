@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.common.resource.loader;
+package org.apache.tuscany.common.resource;
 
 import java.io.IOException;
 import java.net.URL;
@@ -27,7 +27,7 @@ import java.util.List;
  * API rather than a ClassLoader directly in order to reduce the risk of
  * memory leaks due to ClassLoader references.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 379878 $ $Date: 2006-02-22 12:45:50 -0800 (Wed, 22 Feb 2006) $
  */
 public interface ResourceLoader {
 
@@ -45,7 +45,6 @@ public interface ResourceLoader {
      * @return the resulting Class object
      * @throws ClassNotFoundException if the class was not found
      * @see ClassLoader#loadClass(String)
-     * @deprecated use JavaIntrospectionHelper instead
      */
     Class<?> loadClass(String name) throws ClassNotFoundException;
 

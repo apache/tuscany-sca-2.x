@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.common.resource.loader.impl;
+package org.apache.tuscany.common.resource.impl;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -26,18 +26,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.tuscany.common.resource.loader.ResourceLoader;
+import org.apache.tuscany.common.resource.ResourceLoader;
 
 /**
  * Default implementation of the ResourceLoader interface.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 369102 $ $Date: 2006-01-14 13:48:56 -0800 (Sat, 14 Jan 2006) $
  */
 public class ResourceLoaderImpl implements ResourceLoader {
     private final WeakReference<ClassLoader> classLoaderReference;
     private final List<ResourceLoader> parents;
 
-    protected ResourceLoaderImpl(ClassLoader classLoader) {
+    /**
+     * Constructs a new ResourceLoaderImpl.
+     * @param classLoader
+     */
+    public ResourceLoaderImpl(ClassLoader classLoader) {
         classLoaderReference = new WeakReference(classLoader);
         ClassLoader parentCL = classLoader.getParent();
         parents = parentCL == null ? Collections.EMPTY_LIST : Collections.singletonList(new ResourceLoaderImpl(parentCL));
