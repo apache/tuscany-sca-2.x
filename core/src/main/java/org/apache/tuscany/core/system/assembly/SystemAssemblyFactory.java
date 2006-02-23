@@ -18,19 +18,20 @@ package org.apache.tuscany.core.system.assembly;
 
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 
-
 /**
- * The <b>Factory</b> for the model.
+ * A factory for building system assembly model artifacts
+ * 
+ * @version $Rev$ $Date$
  */
 public interface SystemAssemblyFactory extends AssemblyFactory {
 
     /**
-     * Returns a new SystemImplementation.
+     * Returns an assembly model artifact representing a system component implementation
      */
-    SystemImplementation createSystemImplementation();
+    SystemImplementation createSystemImplementation(); 
 
     /**
-     * Returns a new SystemBinding.
+     * Returns an assembly model artifact representing a system binding
      */
     SystemBinding createSystemBinding();
 

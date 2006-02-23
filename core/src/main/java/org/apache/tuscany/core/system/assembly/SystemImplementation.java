@@ -18,19 +18,20 @@ package org.apache.tuscany.core.system.assembly;
 
 import org.apache.tuscany.model.assembly.ComponentImplementation;
 
-
 /**
- * Represents a system component implementation.
+ * Represents a system component implementation
+ * 
+ * @version $Rev$ $Date$
  */
 public interface SystemImplementation extends ComponentImplementation {
 
     /**
-     * Returns the implementation class.
+     * Returns the implementation class of the system component
      */
     Class getImplementationClass();
 
     /**
-     * Sets the implementation class.
+     * Sets the implementation class of the system component
      */
     void setImplementationClass(Class value);
 

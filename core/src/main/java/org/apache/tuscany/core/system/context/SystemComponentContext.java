@@ -34,8 +34,6 @@ import org.apache.tuscany.core.injection.ObjectFactory;
 /**
  * Manages system component implementation instances
  * 
- * TODO Merge with {@link org.apache.tuscany.core.system.context.SystemComponentContextImpl}
- * 
  * @version $Rev$ $Date$
  */
 public class SystemComponentContext extends AbstractContext implements SimpleComponentContext {
@@ -55,8 +53,7 @@ public class SystemComponentContext extends AbstractContext implements SimpleCom
     // the cached target instance
     private Object cachedTargetInstance;
 
-    // responsible for creating a new implementation instance with injected
-    // references and properties
+    // responsible for creating a new implementation instance with injected references and properties
     private ObjectFactory objectFactory;
 
     // ----------------------------------
@@ -128,23 +125,21 @@ public class SystemComponentContext extends AbstractContext implements SimpleCom
                 }
             } catch (ObjectCreationException e) {
                 setLifecycleState(Context.ERROR);
-                TargetException te= new TargetException("Error creating instance for component", e);
+                TargetException te = new TargetException("Error creating instance for component", e);
                 te.setIdentifier(getName());
                 throw te;
             }
         }
 
     }
-    
-    public Object getImplementationInstance() throws TargetException{
+
+    public Object getImplementationInstance() throws TargetException {
         return getInstance(null);
     }
 
-    public Object getImplementationInstance(boolean notify) throws TargetException{
-        return getInstance(null,notify);
+    public Object getImplementationInstance(boolean notify) throws TargetException {
+        return getInstance(null, notify);
     }
-    
-
 
     public boolean isEagerInit() {
         return eagerInit;

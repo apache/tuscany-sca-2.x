@@ -20,14 +20,17 @@ import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.injection.ObjectFactory;
 
 /**
- * 
+ * An implementation of an external service for system wiring. As system components are not proxied and the system
+ * binding is by-reference, the implementation caches a reference to its configured target.
  * 
  * @version $Rev$ $Date$
  */
 public class SystemExternalServiceContext extends AbstractContext implements ExternalServiceContext {
 
+    // a factory for retrieving the target of the external service wire 
     private ObjectFactory factory;
 
+    // the cached target
     private Object cachedInstance;
 
     // ----------------------------------
@@ -69,11 +72,11 @@ public class SystemExternalServiceContext extends AbstractContext implements Ext
         lifecycleState = STOPPED;
     }
 
-    public Object getImplementationInstance() throws TargetException{
-        return null;
+    public Object getImplementationInstance() throws TargetException {
+        return this;
     }
 
-    public Object getImplementationInstance(boolean notify) throws TargetException{
-        return null;
+    public Object getImplementationInstance(boolean notify) throws TargetException {
+        return this;
     }
 }

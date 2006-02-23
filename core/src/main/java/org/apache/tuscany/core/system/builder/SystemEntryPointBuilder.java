@@ -53,7 +53,6 @@ public class SystemEntryPointBuilder implements RuntimeConfigurationBuilder<Aggr
         try {
             SystemEntryPointRuntimeConfiguration config = new SystemEntryPointRuntimeConfiguration(entryPoint.getName(),
                     new ReferenceTargetFactory(entryPoint.getConfiguredReference(), context));
-            // FIXME this should decorate the entry point
             entryPoint.getConfiguredReference().setRuntimeConfiguration(config);
         } catch (FactoryInitException e) {
             e.addContextName(entryPoint.getName());

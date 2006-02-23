@@ -70,7 +70,7 @@ public class SystemExternalServiceRuntimeConfiguration implements RuntimeConfigu
     public void prepare() {
     }
 
-    public void addTargetProxyFactory(String serviceName, ProxyFactory factory) {
+    public void addTargetProxyFactory(String serviceName, ProxyFactory pFactory) {
         throw new UnsupportedOperationException();
     }
 
@@ -82,7 +82,7 @@ public class SystemExternalServiceRuntimeConfiguration implements RuntimeConfigu
         return null;
     }
 
-    public void addSourceProxyFactory(String referenceName, ProxyFactory factory) {
+    public void addSourceProxyFactory(String referenceName, ProxyFactory pFactory) {
         throw new UnsupportedOperationException();
     }
 

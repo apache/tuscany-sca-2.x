@@ -22,27 +22,19 @@ import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 
 /**
- * @author delfinoj
+ * The default implementation of the system assembly factory
+ * 
+ * @version $Rev$ $Date$
  */
 public class SystemAssemblyFactoryImpl extends AssemblyFactoryImpl implements SystemAssemblyFactory {
 
-    /**
-     * Constructor
-     */
     public SystemAssemblyFactoryImpl() {
-        super();
     }
 
-    /**
-     * @see org.apache.tuscany.core.system.assembly.SystemAssemblyFactory#createSystemImplementation()
-     */
     public SystemImplementation createSystemImplementation() {
         return new SystemImplementationImpl();
     }
-    
-    /**
-     * @see org.apache.tuscany.core.system.assembly.SystemAssemblyFactory#createSystemBinding()
-     */
+
     public SystemBinding createSystemBinding() {
         return new SystemBindingImpl();
     }

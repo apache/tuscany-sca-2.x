@@ -20,23 +20,22 @@ import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.model.assembly.impl.BindingImpl;
 
 /**
- * An implementation of SystemBinding.
+ * The default implementation of the system binding assembly artifact
+ * 
+ * @version $Rev$ $Date$
  */
 public class SystemBindingImpl extends BindingImpl implements SystemBinding {
 
-    /**
-     * Constructor
-     */
     protected SystemBindingImpl() {
     }
-    
+
     private String name;
-    
-    public String getTargetName(){
+
+    public String getTargetName() {
         return name;
     }
 
-    public void setTargetName(String name){
+    public void setTargetName(String name) {
         this.name = name;
     }
 }

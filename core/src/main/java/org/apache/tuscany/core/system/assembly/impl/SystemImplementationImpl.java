@@ -24,58 +24,47 @@ import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.impl.ComponentImplementationImpl;
 
 /**
- * An implementation of the SystemImplementation.
+ * The default implementation of the system implementation assembly artifact
+ * 
+ * @version $Rev$ $Date$
  */
 public class SystemImplementationImpl extends ComponentImplementationImpl implements SystemImplementation {
+
+    private Class implementationClass;
     
-    Class implementationClass;
+    private AssemblyModelContext modelContext;
     
-    /**
-     * Constructs a new SystemImplementationImpl.
-     */
     protected SystemImplementationImpl() {
     }
 
-    /**
-     * @see org.apache.tuscany.core.system.assembly.SystemImplementation#getImplementationClass()
-     */
     public Class getImplementationClass() {
         return implementationClass;
     }
-    
-    /**
-     * @see org.apache.tuscany.core.system.assembly.SystemImplementation#setImplementationClass(java.lang.Class)
-     */
+
     public void setImplementationClass(Class value) {
         checkNotFrozen();
-        implementationClass=value;
+        implementationClass = value;
     }
-    
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
-     */
-    public void initialize(AssemblyModelContext modelContext) {
+
+    public void initialize(AssemblyModelContext context) {
         if (isInitialized())
             return;
-
+        this.modelContext = context;
         // Initialize the component type
-        ComponentType componentType=getComponentType();
-        if (componentType==null) {
-            componentType=createComponentType(modelContext, implementationClass);
+        ComponentType componentType = getComponentType();
+        if (componentType == null) {
+            componentType = createComponentType(implementationClass);
             setComponentType(componentType);
         }
-        
         super.initialize(modelContext);
     }
 
     /**
-     * Create the component type
-     * @param modelContext
-     * @param implementationClass
+     * Creates the component type
      */
-    private ComponentType createComponentType(AssemblyModelContext modelContext, Class implementationClass) {
-        String baseName = getBaseName(implementationClass);
-        URL componentTypeFile = implementationClass.getResource(baseName + ".componentType");
+    private ComponentType createComponentType(Class implClass) {
+        String baseName = getBaseName(implClass);
+        URL componentTypeFile = implClass.getResource(baseName + ".componentType");
         if (componentTypeFile != null) {
             return modelContext.getAssemblyLoader().getComponentType(componentTypeFile.toString());
         } else
@@ -84,8 +73,6 @@ public class SystemImplementationImpl extends ComponentImplementationImpl implem
 
     /**
      * Returns the simple name of a class - i.e. the class name devoid of its package qualifier
-     * @param implClass
-     * @return
      */
     private String getBaseName(Class implClass) {
         String baseName = implClass.getName();

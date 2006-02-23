@@ -32,7 +32,12 @@ import org.apache.tuscany.core.context.scope.StatelessScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
- * Implements a {@link org.apache.tuscany.core.context.ScopeStrategy} for a system aggregate context
+ * Implements a {@link org.apache.tuscany.core.context.ScopeStrategy} for a system aggregate context with the following scopes:
+ * <ul>
+ * <li>{@link org.apache.tuscany.model.assembly.Scope#AGGREGATE</li>
+ * <li>{@link org.apache.tuscany.model.assembly.Scope#MODULE</li>
+ * <li>{@link org.apache.tuscany.model.assembly.Scope#INSTANCE</li>
+ * </ul>
  * 
  * @version $Rev$ $Date$
  */

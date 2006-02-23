@@ -50,7 +50,6 @@ import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.Scope;
 import org.osoa.sca.annotations.ComponentName;
 import org.osoa.sca.annotations.Context;
@@ -61,7 +60,8 @@ import commonj.sdo.DataObject;
 
 /**
  * Decorates components whose implementation type is a
- * {@link org.apache.tuscany.core.system.assembly.SystemImplementation} with the appropriate runtime configuration
+ * {@link org.apache.tuscany.core.system.assembly.SystemImplementation} with the appropriate runtime configuration.
+ * System components are not proxied.
  * 
  * @version $Rev$ $Date$
  */
@@ -78,7 +78,7 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
     // ----------------------------------
 
     public void build(AssemblyModelObject modelObject, AggregateContext parentContext) throws BuilderException {
-        if (!(modelObject instanceof Component) ){//|| (modelObject instanceof ModuleComponent)) {
+        if (!(modelObject instanceof Component)) {
             return;
         }
         Component component = (Component) modelObject;
@@ -86,7 +86,8 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
                 && component.getComponentImplementation().getRuntimeConfiguration() == null) {
             SystemImplementation javaImpl = (SystemImplementation) component.getComponentImplementation();
             // FIXME scope
-            Scope scope = component.getComponentImplementation().getComponentType().getServices().get(0).getServiceContract().getScope();
+            Scope scope = component.getComponentImplementation().getComponentType().getServices().get(0).getServiceContract()
+                    .getScope();
             Class implClass = null;
             Set<Field> fields;
             Set<Method> methods;
@@ -101,7 +102,6 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
 
                 // handle properties
                 List<ConfiguredProperty> configuredProperties = component.getConfiguredProperties();
-                // FIXME should return empty properties - does it?
                 if (configuredProperties != null) {
                     for (ConfiguredProperty property : configuredProperties) {
                         Injector injector = createPropertyInjector(property, fields, methods);
@@ -111,24 +111,18 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
 
                 // handle references
                 List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
-                // FIXME should return empty refs - does it?
                 if (configuredReferences != null) {
                     for (ConfiguredReference reference : configuredReferences) {
-                        Injector injector = createReferenceInjector(parentContext.getName(), component.getName(), parentContext, reference,
-                                fields, methods);
+                        Injector injector = createReferenceInjector(parentContext.getName(), component.getName(), parentContext,
+                                reference, fields, methods);
                         injectors.add(injector);
                     }
                 }
 
-                /*
-                 * TODO if the specs support constructor injection, this would be determined here from the property
-                 * config
-                 */
                 // create factory for the component implementation type
                 EventInvoker initInvoker = null;
                 boolean eagerInit = false;
                 EventInvoker destroyInvoker = null;
-                // FIXME this should be run as part of the LCM load
                 for (Field field : fields) {
                     ComponentName compName = field.getAnnotation(ComponentName.class);
                     if (compName != null) {
@@ -181,7 +175,6 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
                     }
                 }
                 for (Method method : methods) {
-                    // FIXME Java5
                     Init init = method.getAnnotation(Init.class);
                     if (init != null && initInvoker == null) {
                         initInvoker = new MethodEventInvoker(method);
@@ -316,12 +309,12 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
     /**
      * Creates an <code>Injector</code> for service references
      */
-    private Injector createReferenceInjector(String moduleName, String componentName, AggregateContext parentContext, ConfiguredReference reference,
-                                             Set<Field> fields, Set<Method> methods) throws NoAccessorException, BuilderConfigException {
+    private Injector createReferenceInjector(String moduleName, String componentName, AggregateContext parentContext,
+            ConfiguredReference reference, Set<Field> fields, Set<Method> methods) throws NoAccessorException,
+            BuilderConfigException {
         String refName = reference.getReference().getName();
         List<ConfiguredService> services = reference.getTargetConfiguredServices();
         Class type;
-        // FIXME added the size check - do we need to do this?
         if (services.size() == 1) {
             // get the interface
             type = reference.getReference().getServiceContract().getInterface();
@@ -329,9 +322,7 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
             // FIXME do we support arrays?
             type = List.class;
         }
-
         Method method = null;
-
         Field field = JavaIntrospectionHelper.findClosestMatchingField(refName, type, fields);
         if (field == null) {
             method = JavaIntrospectionHelper.findClosestMatchingMethod(refName, new Class[] { type }, methods);

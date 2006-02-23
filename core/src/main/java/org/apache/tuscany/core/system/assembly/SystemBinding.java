@@ -19,11 +19,19 @@ package org.apache.tuscany.core.system.assembly;
 import org.apache.tuscany.model.assembly.Binding;
 
 /**
- * Represents a system binding.
+ * Represents a system binding
+ * 
+ * @version $Rev$ $Date$
  */
 public interface SystemBinding extends Binding {
 
+    /**
+     * Returns the qualified name of the wire target the binding is associated with in component/service form
+     */
     public String getTargetName();
 
+    /**
+     * Sets the qualified name of the wire target the binding is associated with in component/service form
+     */
     public void setTargetName(String name);
 }
