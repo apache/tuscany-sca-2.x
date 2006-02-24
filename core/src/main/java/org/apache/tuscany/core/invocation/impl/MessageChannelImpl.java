@@ -14,13 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.message.channel.impl;
+package org.apache.tuscany.core.invocation.impl;
 
 import java.util.List;
 
+import org.apache.tuscany.core.invocation.MessageChannel;
+import org.apache.tuscany.core.invocation.MessageHandler;
 import org.apache.tuscany.core.message.Message;
-import org.apache.tuscany.core.message.channel.MessageChannel;
-import org.apache.tuscany.core.message.handler.MessageHandler;
 
 /**
  * A channel comprising an ordered collection of message handlers.

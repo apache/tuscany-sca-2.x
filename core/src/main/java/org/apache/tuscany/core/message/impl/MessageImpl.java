@@ -20,9 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.core.addressing.EndpointReference;
+import org.apache.tuscany.core.invocation.MessageChannel;
 import org.apache.tuscany.core.invocation.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
-import org.apache.tuscany.core.message.channel.MessageChannel;
 
 /**
  */
@@ -220,7 +220,7 @@ public class MessageImpl implements Message, MessageChannel {
     }
 
     /**
-     * @see org.apache.tuscany.core.message.channel.MessageChannel#send(org.apache.tuscany.core.message.Message)
+     * @see org.apache.tuscany.core.invocation.MessageChannel#send(org.apache.tuscany.core.message.Message)
      */
     public void send(Message message) {
         relatedCallbackMessage = message;

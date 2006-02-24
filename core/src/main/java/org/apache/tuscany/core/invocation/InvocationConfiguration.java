@@ -20,11 +20,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.core.invocation.impl.MessageChannelImpl;
+import org.apache.tuscany.core.invocation.impl.MessageDispatcher;
 import org.apache.tuscany.core.invocation.impl.RequestResponseInterceptor;
-import org.apache.tuscany.core.message.channel.MessageChannel;
-import org.apache.tuscany.core.message.channel.impl.MessageChannelImpl;
-import org.apache.tuscany.core.message.channel.impl.MessageDispatcher;
-import org.apache.tuscany.core.message.handler.MessageHandler;
 
 /**
  * Contains a source- or target-side invocation pipeline for a service operation. Source and target invocation pipelines
@@ -42,10 +40,10 @@ import org.apache.tuscany.core.message.handler.MessageHandler;
  * <li>The last source interceptor, which must be of type
  * {@link org.apache.tuscany.core.invocation.impl.RequestResponseInterceptor} if there are handlers present, will be
  * invoked. The RR interceptor will in turn pass the message to a
- * {@link org.apache.tuscany.core.message.channel.MessageChannel} which will invoke all source-side request handlers.
+ * {@link org.apache.tuscany.core.invocation.MessageChannel} which will invoke all source-side request handlers.
  * <li> The RR interceptor will then invoke the target-side request <tt>MessageChannel</tt>.
  * <li> The last source-side handler, an instance of
- * {@link org.apache.tuscany.core.message.channel.impl.MessageDispatcher}, will invoke the first source-side
+ * {@link org.apache.tuscany.core.invocation.impl.MessageDispatcher}, will invoke the first source-side
  * interceptor, which in turn will pass the message down the target-side interceptor chain.
  * <li> If the target is a component instance the last target-side interceptor, an instance of
  * {@link org.apache.tuscany.core.invocation.impl.InvokerInterceptor} will retrieve the
@@ -72,7 +70,7 @@ import org.apache.tuscany.core.message.handler.MessageHandler;
  * @see org.apache.tuscany.core.builder.WireBuilder
  * @see org.apache.tuscany.core.invocation.spi.ProxyFactory
  * @see org.apache.tuscany.core.invocation.TargetInvoker
- * @see org.apache.tuscany.core.message.channel.impl.MessageDispatcher
+ * @see org.apache.tuscany.core.invocation.impl.MessageDispatcher
  * 
  * @version $Rev$ $Date$
  */

@@ -17,8 +17,8 @@
 package org.apache.tuscany.core.invocation.impl;
 
 import org.apache.tuscany.core.invocation.Interceptor;
+import org.apache.tuscany.core.invocation.MessageChannel;
 import org.apache.tuscany.core.message.Message;
-import org.apache.tuscany.core.message.channel.MessageChannel;
 
 /**
  * An interceptor that sends the invocation Message down its request channel and does not expect a response.

@@ -23,8 +23,8 @@ import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
+import org.apache.tuscany.core.invocation.impl.MessageChannelImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.core.message.channel.impl.MessageChannelImpl;
 import org.osoa.sca.annotations.Scope;
 
 /**

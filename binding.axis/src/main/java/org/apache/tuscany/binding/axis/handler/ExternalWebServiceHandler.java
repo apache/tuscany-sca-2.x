@@ -39,8 +39,8 @@ import org.apache.tuscany.binding.axis.mediator.impl.SOAPRPCEncodedMediatorImpl;
 import org.apache.tuscany.binding.axis.mediator.impl.SOAPRPCLiteralMediatorImpl;
 import org.apache.tuscany.core.addressing.EndpointReference;
 import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
+import org.apache.tuscany.core.invocation.MessageHandler;
 import org.apache.tuscany.core.message.Message;
-import org.apache.tuscany.core.message.handler.MessageHandler;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.ExternalService;
@@ -144,7 +144,7 @@ public class ExternalWebServiceHandler implements MessageHandler {
     }
 
     /**
-     * @see org.apache.tuscany.core.message.handler.MessageHandler#processMessage(org.apache.tuscany.core.message.Message)
+     * @see org.apache.tuscany.core.invocation.MessageHandler#processMessage(org.apache.tuscany.core.message.Message)
      */
     public boolean processMessage(Message message) {
         try {

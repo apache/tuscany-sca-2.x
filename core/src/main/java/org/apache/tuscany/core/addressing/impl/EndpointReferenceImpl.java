@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.core.addressing.EndpointReference;
+import org.apache.tuscany.core.invocation.MessageHandler;
 import org.apache.tuscany.core.message.Message;
-import org.apache.tuscany.core.message.handler.MessageHandler;
 import org.apache.tuscany.model.assembly.ConfiguredPort;
 
 /**
@@ -124,7 +124,7 @@ public class EndpointReferenceImpl implements EndpointReference {
     }
 
     /**
-     * @see org.apache.tuscany.core.addressing.EndpointReference#setMessageHandler(org.apache.tuscany.core.message.handler.MessageHandler)
+     * @see org.apache.tuscany.core.addressing.EndpointReference#setMessageHandler(org.apache.tuscany.core.invocation.MessageHandler)
      */
     public void setMessageHandler(MessageHandler messageHandler) {
         this.messageHandler = messageHandler;
@@ -173,7 +173,7 @@ public class EndpointReferenceImpl implements EndpointReference {
     }
 
     /**
-     * @see org.apache.tuscany.core.message.handler.MessageHandler#processMessage(org.apache.tuscany.core.message.Message)
+     * @see org.apache.tuscany.core.invocation.MessageHandler#processMessage(org.apache.tuscany.core.message.Message)
      */
     public boolean processMessage(Message message) {
         return messageHandler.processMessage(message);

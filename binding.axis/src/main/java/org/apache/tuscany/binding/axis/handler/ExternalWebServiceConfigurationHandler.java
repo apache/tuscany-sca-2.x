@@ -21,9 +21,9 @@ import java.util.Map;
 import org.apache.tuscany.core.addressing.EndpointReference;
 import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
+import org.apache.tuscany.core.invocation.MessageHandler;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
 import org.apache.tuscany.core.message.Message;
-import org.apache.tuscany.core.message.handler.MessageHandler;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.ExternalService;
@@ -46,7 +46,7 @@ public class ExternalWebServiceConfigurationHandler implements MessageHandler {
     }
 
     /**
-     * @see org.apache.tuscany.core.message.handler.MessageHandler#processMessage(org.apache.tuscany.core.message.Message)
+     * @see org.apache.tuscany.core.invocation.MessageHandler#processMessage(org.apache.tuscany.core.message.Message)
      */
     public boolean processMessage(Message message) {
         // Get the endpoint reference of the target service and the service model element

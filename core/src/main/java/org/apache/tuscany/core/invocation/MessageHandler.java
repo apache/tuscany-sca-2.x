@@ -14,20 +14,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.message.channel;
+package org.apache.tuscany.core.invocation;
 
 import org.apache.tuscany.core.message.Message;
 
+
 /**
- * Represents a one-way pipeline through which messages are sent during an invocation
- * 
+ * Performs a uni-directional mediation on a message
+ *
  * @see org.apache.tuscany.core.message.Message
  */
-public interface MessageChannel {
+public interface MessageHandler {
 
     /**
-     * Sends a message
+     * Process a message.
      */
-    void send(Message message);
+    boolean processMessage(Message message);
 
 }

@@ -14,11 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.message.channel.impl;
+package org.apache.tuscany.core.invocation.impl;
 
 import org.apache.tuscany.core.invocation.Interceptor;
+import org.apache.tuscany.core.invocation.MessageHandler;
 import org.apache.tuscany.core.message.Message;
-import org.apache.tuscany.core.message.handler.MessageHandler;
 
 /**
  * A message handler that dispatches the message through an interceptor stack and the uses the response channel to

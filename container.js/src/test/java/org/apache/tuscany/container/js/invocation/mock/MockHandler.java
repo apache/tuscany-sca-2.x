@@ -3,8 +3,8 @@
  */
 package org.apache.tuscany.container.js.invocation.mock;
 
+import org.apache.tuscany.core.invocation.MessageHandler;
 import org.apache.tuscany.core.message.Message;
-import org.apache.tuscany.core.message.handler.MessageHandler;
 
 /**
  * A test handler
