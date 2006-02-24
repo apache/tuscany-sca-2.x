@@ -22,8 +22,20 @@
         <system:implementation.system class="org.apache.tuscany.container.java.builder.JavaComponentContextBuilder"/>
     </component>
 
+    <component name="org.apache.tuscany.container.java.builder.JavaTargetWireBuilder">
+        <system:implementation.system class="org.apache.tuscany.container.java.builder.JavaTargetWireBuilder"/>
+    </component>
+    <!-- this needs to be wired to the defailt wire builder in the core system.fragment
+    <wire>
+        <source.uri>org.apache.tuscany.core.builder.impl.DefaultWireBuilder/wireBuilders</source.uri>
+        <target.uri>org.apache.tuscany.container.java.builder.JavaTargetWireBuilder</target.uri>
+    </wire>
+    -->
     <component name="org.apache.tuscany.container.java.loader.JavaSCDLModelLoader">
         <system:implementation.system class="org.apache.tuscany.container.java.loader.JavaSCDLModelLoader"/>
     </component>
+    
+    
+    
 
 </moduleFragment>

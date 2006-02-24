@@ -15,6 +15,7 @@ package org.apache.tuscany.core.runtime;
 
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
@@ -59,6 +60,11 @@ public interface RuntimeContext extends AutowireContext, ConfigurationContext {
      * Adds a configuration builder to the runtime
      */
     public void addBuilder(RuntimeConfigurationBuilder builder);
+
+    /**
+     * Adds a wire builder to the runtime
+     */
+    public void addBuilder(WireBuilder builder);
 
     /**
      * Adds an SCDL model loader to the runtime

@@ -135,7 +135,12 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         assert (builder != null) : "Builder was null";
         builders.add(builder);
     }
-    
+
+    public void addBuilder(WireBuilder builder) {
+        assert (builder != null) : "Builder was null";
+        wireBuilders.add(builder);
+    }
+
     public void addLoader(SCDLModelLoader loader) {
         assert (loader != null) : "Loader was null";
         loaders.add(loader);

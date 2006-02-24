@@ -25,6 +25,9 @@ import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.impl.MessageChannelImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.apache.tuscany.core.runtime.RuntimeContext;
+import org.apache.tuscany.core.system.annotation.Autowire;
+import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
 /**
@@ -36,11 +39,23 @@ import org.osoa.sca.annotations.Scope;
 @Scope("MODULE")
 public class DefaultWireBuilder implements WireBuilder {
 
+    // collection configured wire builders
+    private List<WireBuilder> builders = new ArrayList();
+
+    private RuntimeContext runtimeContext;
+
+    @Autowire
+    public void setRuntimeContext(RuntimeContext ctx) {
+        runtimeContext = ctx;
+    }
+
     public DefaultWireBuilder() {
     }
 
-    // other configured wire builders
-    private List<WireBuilder> builders = new ArrayList();
+    @Init(eager = true)
+    public void init() {
+        runtimeContext.addBuilder(this);
+    }
 
     /**
      * Adds a wire builder to delegate to
@@ -49,24 +64,31 @@ public class DefaultWireBuilder implements WireBuilder {
         builders.add(builder);
     }
 
+    public void setWireBuilders(List<WireBuilder> builders) {
+        builders.addAll(builders);
+    }
+    
     public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) {
         QualifiedName targetName = sourceFactory.getProxyConfiguration().getTargetName();
         // get the proxy chain for the target
         if (targetFactory != null) {
             // if null, the target side has no interceptors or handlers
-            Map<Method, InvocationConfiguration> targetInvocationConfigs = targetFactory.getProxyConfiguration().getInvocationConfigurations();
+            Map<Method, InvocationConfiguration> targetInvocationConfigs = targetFactory.getProxyConfiguration()
+                    .getInvocationConfigurations();
             for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration()
                     .getInvocationConfigurations().values()) {
                 // match invocation chains
                 InvocationConfiguration targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig.getMethod());
                 // if handler is configured, add that
                 if (targetInvocationConfig.getRequestHandlers() != null) {
-                    sourceInvocationConfig.setTargetRequestChannel(new MessageChannelImpl(targetInvocationConfig.getRequestHandlers()));
-                    sourceInvocationConfig.setTargetResponseChannel(new MessageChannelImpl(targetInvocationConfig.getResponseHandlers()));
+                    sourceInvocationConfig.setTargetRequestChannel(new MessageChannelImpl(targetInvocationConfig
+                            .getRequestHandlers()));
+                    sourceInvocationConfig.setTargetResponseChannel(new MessageChannelImpl(targetInvocationConfig
+                            .getResponseHandlers()));
                 } else {
                     // no handlers, just connect interceptors
-                    if (targetInvocationConfig.getTargetInterceptor() == null){
+                    if (targetInvocationConfig.getTargetInterceptor() == null) {
                         BuilderConfigException e = new BuilderConfigException("No target handler or interceptor for operation");
                         e.setIdentifier(targetInvocationConfig.getMethod().getName());
                         throw e;
@@ -87,8 +109,9 @@ public class DefaultWireBuilder implements WireBuilder {
             // TODO optimize if no proxy needed using NullProxyFactory
         }
     }
-    
-    public void completeTargetChain(ProxyFactory targetFactory, Class targetType,ScopeContext targetScopeContext) throws BuilderConfigException {
+
+    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
+            throws BuilderConfigException {
         // delegate to other wire builders
         for (WireBuilder builder : builders) {
             builder.completeTargetChain(targetFactory, targetType, targetScopeContext);
