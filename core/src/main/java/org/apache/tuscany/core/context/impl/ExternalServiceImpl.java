@@ -29,7 +29,7 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
  */
 public class ExternalServiceImpl extends AbstractContext implements ExternalServiceContext {
 
-    private ProxyFactory targetFactory;
+    private ProxyFactory targetProxyFactory;
 
     private ObjectFactory targetInstanceFactory;
 
@@ -37,9 +37,22 @@ public class ExternalServiceImpl extends AbstractContext implements ExternalServ
     // Constructors
     // ----------------------------------
 
-    public ExternalServiceImpl(String name, ProxyFactory targetFactory) {
+    /**
+     * Creates an external service context
+     * 
+     * @param name the name of the external service
+     * @param targetProxyFactory the target proxy factory which creates proxies implementing the configured service
+     *        interface for the entry point. There is always only one proxy factory as an external service is configured
+     *        with one service
+     * @param targetInstanceFactory the object factory that creates an artifact capabile of communicating over the
+     *        binding transport configured on the external service. The object factory may implement a caching strategy.
+     */
+    public ExternalServiceImpl(String name, ProxyFactory targetProxyFactory, ObjectFactory targetInstanceFactory) {
         super(name);
-        this.targetFactory = targetFactory;
+        assert (targetProxyFactory != null) : "Target proxy factory was null";
+        assert (targetInstanceFactory != null) : "Target instance factory was null";
+        this.targetProxyFactory = targetProxyFactory;
+        this.targetInstanceFactory = targetInstanceFactory;
     }
 
     // ----------------------------------
@@ -48,7 +61,7 @@ public class ExternalServiceImpl extends AbstractContext implements ExternalServ
 
     public Object getInstance(QualifiedName qName) throws TargetException {
         try {
-            return targetFactory.createProxy();
+            return targetProxyFactory.createProxy();
             // TODO do we cache the proxy, (assumes stateful capabilities will be provided in an interceptor)
         } catch (ProxyCreationException e) {
             TargetException te = new TargetException(e);
