@@ -14,14 +14,7 @@
 package org.apache.tuscany.core.context.impl;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
-import org.apache.tuscany.core.binding.BindingChannel;
-import org.apache.tuscany.core.binding.BindingHandler;
-import org.apache.tuscany.core.binding.MessageContext;
 import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.ContextInitException;
@@ -29,9 +22,8 @@ import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
+import org.apache.tuscany.core.invocation.jdk.JDKInvocationHandler;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.MessageFactory;
 
 /**
@@ -41,33 +33,38 @@ import org.apache.tuscany.core.message.MessageFactory;
  */
 public class EntryPointContextImpl extends AbstractContext implements EntryPointContext {
 
-    private BindingChannel channel = new BindingChannelImpl();
-
-    private List<BindingHandler> bindingHandlers = new ArrayList();
-
     private MessageFactory messageFactory;
 
     private AggregateContext parentContext;
 
-    private ProxyFactory targetFactory;
+    private ProxyFactory proxyFactory;
 
     private Object target;
 
-    private InvocationHandler targetInvocationHandler;
+    private InvocationHandler invocationHandler;
 
     // ----------------------------------
     // Constructors
     // ----------------------------------
 
-    public EntryPointContextImpl(String name, ProxyFactory targetFactory, AggregateContext parentContext,
-            MessageFactory messageFctory, List<BindingHandler> bindingHandlers) throws ContextInitException {
+    /**
+     * Creates a new entry point
+     * 
+     * @param name the entry point name
+     * @param proxyFactory the proxy factory containing the invocation chains for the entry point
+     * @param parentContext the containing aggregate of the entry point
+     * @param messageFactory a factory for generating invocation messages
+     * @throws ContextInitException if an error occurs creating the entry point
+     */
+    public EntryPointContextImpl(String name, ProxyFactory proxyFactory, AggregateContext parentContext,
+            MessageFactory messageFactory) throws ContextInitException {
         super(name);
-        assert (targetFactory != null) : "Proxy factory was null";
-        assert (messageFctory != null) : "Message factory was null";
-        this.targetFactory = targetFactory;
+        assert (proxyFactory != null) : "Proxy factory was null";
+        assert (messageFactory != null) : "Message factory was null";
+        this.proxyFactory = proxyFactory;
         this.parentContext = parentContext;
-        this.messageFactory = messageFctory;
-        this.bindingHandlers.addAll(bindingHandlers);
+        this.messageFactory = messageFactory;
+        invocationHandler = new JDKInvocationHandler(messageFactory,proxyFactory.getProxyConfiguration().getInvocationConfigurations());
     }
 
     // ----------------------------------
@@ -75,7 +72,7 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
     // ----------------------------------
 
     public Object getInstance(QualifiedName qName) throws TargetException {
-        return channel;
+        return invocationHandler;
     }
 
     public Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
@@ -83,68 +80,23 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
     }
 
     public void start() throws ContextInitException {
-        try {
-            target = targetFactory.createProxy();
-            if (Proxy.isProxyClass(target.getClass())) {
-                // if this is a proxy, short-circuit proxy invocation
-                targetInvocationHandler = Proxy.getInvocationHandler(target);
-            }
-            lifecycleState = RUNNING;
-        } catch (ProxyCreationException e) {
-            lifecycleState = ERROR;
-            ContextInitException ce = new ContextInitException(e);
-            ce.setIdentifier(getName());
-            throw ce;
-        }
+        lifecycleState = RUNNING;
     }
 
     public void stop() throws CoreRuntimeException {
         lifecycleState = STOPPED;
     }
 
-    //----------------------------------
+    // ----------------------------------
     // InstanceContext methods
-    //----------------------------------
-
-    public Object getImplementationInstance() throws TargetException{
-        return null;
-    }
-
-    public Object getImplementationInstance(boolean notify) throws TargetException{
-        return null;
-    }
-    
-    // ----------------------------------
-    // Private classes
     // ----------------------------------
 
-    /**
-     * Initiates message processing through the entry point
-     */
-    private class BindingChannelImpl implements BindingChannel {
+    public Object getImplementationInstance() throws TargetException {
+        return invocationHandler;
+    }
 
-        public void send(MessageContext ctx) throws TargetException {
-            Message msg = messageFactory.createMessage();
-            ctx.setMessage(msg);
-            for (Iterator iter = bindingHandlers.iterator(); iter.hasNext();) {
-                BindingHandler handler = (BindingHandler) iter.next();
-                if (!handler.process(ctx)) {
-                    break;
-                }
-            }
-            try {
-                if (targetInvocationHandler != null) {
-                    // short-circuit invocation
-                    // TODO in JDKInvocationHandler, we should check to see if args[0] instanceof Message, and if so
-                    // short-circuit message creation
-                    targetInvocationHandler.invoke(target, ctx.getTargetMethod(), new Object[] { msg });
-                } else {
-                    ctx.getTargetMethod().invoke(target, new Object[] { msg });
-                }
-            } catch (Throwable e) {
-                // handle client response and log error
-            }
-        }
+    public Object getImplementationInstance(boolean notify) throws TargetException {
+        return getImplementationInstance();
     }
 
 }

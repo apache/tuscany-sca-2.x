@@ -14,11 +14,11 @@
 package org.apache.tuscany.core.context.impl;
 
 import org.apache.tuscany.core.context.AbstractContext;
-import org.apache.tuscany.core.context.ContextInitException;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.injection.ObjectFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 
@@ -29,16 +29,17 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
  */
 public class ExternalServiceImpl extends AbstractContext implements ExternalServiceContext {
 
-    private ProxyFactory factory;
+    private ProxyFactory targetFactory;
 
-    private Object targetProxy;
+    private ObjectFactory targetInstanceFactory;
 
     // ----------------------------------
     // Constructors
     // ----------------------------------
 
-    public ExternalServiceImpl(String name, ProxyFactory factory) {
+    public ExternalServiceImpl(String name, ProxyFactory targetFactory) {
         super(name);
+        this.targetFactory = targetFactory;
     }
 
     // ----------------------------------
@@ -46,7 +47,15 @@ public class ExternalServiceImpl extends AbstractContext implements ExternalServ
     // ----------------------------------
 
     public Object getInstance(QualifiedName qName) throws TargetException {
-        return targetProxy;
+        try {
+            return targetFactory.createProxy();
+            // TODO do we cache the proxy, (assumes stateful capabilities will be provided in an interceptor)
+        } catch (ProxyCreationException e) {
+            TargetException te = new TargetException(e);
+            te.addContextName(getName());
+            throw te;
+        }
+
     }
 
     public Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
@@ -54,29 +63,18 @@ public class ExternalServiceImpl extends AbstractContext implements ExternalServ
     }
 
     public void start() throws CoreRuntimeException {
-        try {
-            // create the target proxy at startup since it is stateless
-            // (assumes stateful capabilities will be provided in an interceptor)
-            targetProxy = factory.createProxy();
-            lifecycleState = RUNNING;
-        } catch (ProxyCreationException e) {
-            lifecycleState = ERROR;
-            ContextInitException ce = new ContextInitException(e);
-            ce.setIdentifier(getName());
-            throw ce;
-        }
+        lifecycleState = RUNNING;
     }
 
     public void stop() throws CoreRuntimeException {
         lifecycleState = STOPPED;
-        targetProxy = null;
     }
 
-    public Object getImplementationInstance() throws TargetException{
-        return null;
+    public Object getImplementationInstance() throws TargetException {
+        return targetInstanceFactory.getInstance();
     }
 
-    public Object getImplementationInstance(boolean notify) throws TargetException{
-        return null;
+    public Object getImplementationInstance(boolean notify) throws TargetException {
+        return getImplementationInstance();
     }
 }

@@ -56,7 +56,6 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
     private final List<SCDLModelLoader> loaders;
 
-    // private final List<WireBuilder> wireBuilders;
     // the top-level wire builder in the runtime
     private final HierarchicalWireBuilder wireBuilder;
 
@@ -80,7 +79,8 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
      * 
      * @param monitorFactory the default {@link MonitorFactory} for this runtime
      * @param builders a list of builders automatically made available; may be null
-     * @param wireBuilder the top-level hierarchical wire builder for the runtime; may be null
+     * @param wireBuilder the top-level hierarchical wire builder for the runtime; if not specified, a default
+     *        implementation will be used
      */
     public RuntimeContextImpl(MonitorFactory monitorFactory, List<SCDLModelLoader> loaders,
             List<RuntimeConfigurationBuilder> builders, HierarchicalWireBuilder wireBuilder) {
@@ -97,14 +97,15 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     }
 
     /**
-     * Specicalized constructor that allows the default implementations of the root and system contexts to be
+     * Specialized constructor that allows the default implementations of the root and system contexts to be
      * overridden.
      * 
      * @param monitorFactory the default {@link MonitorFactory} for this runtime
      * @param rootContext the context to use for the root of the user context tree
      * @param systemContext the context to use for the root of the system context tree
      * @param builders a list of builders automatically made available; may be null
-     * @param wireBuilder the top-level hierarchical wire builder for the runtime; may be null
+     * @param wireBuilder the top-level hierarchical wire builder for the runtime; if not specified, a default
+     *        implementation will be used
      */
     public RuntimeContextImpl(MonitorFactory monitorFactory, AggregateContext rootContext, SystemAggregateContext systemContext,
             List<SCDLModelLoader> loaders, List<RuntimeConfigurationBuilder> builders, HierarchicalWireBuilder wireBuilder) {
