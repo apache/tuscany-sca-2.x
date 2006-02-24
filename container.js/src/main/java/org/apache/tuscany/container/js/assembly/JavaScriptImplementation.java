@@ -17,9 +17,13 @@
 package org.apache.tuscany.container.js.assembly;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.container.js.rhino.RhinoInvoker;
 import org.apache.tuscany.model.assembly.ComponentImplementation;
 
+/**
+ * A representation of a JavaScript component implementation type
+ * 
+ * @version $Rev$ $Date$
+ */
 public interface JavaScriptImplementation extends ComponentImplementation {
 
     public ResourceLoader getResourceLoader();
@@ -27,6 +31,4 @@ public interface JavaScriptImplementation extends ComponentImplementation {
     public String getScriptFile();
 
     public void setScriptFile(String fn);
-
-    public RhinoInvoker getRhinoInvoker();
 }

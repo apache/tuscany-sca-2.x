@@ -39,13 +39,13 @@ public class RhinoInvokerTestCase extends TestCase {
     }
 
     public void testSimpleInvocation() {
-        RhinoInvoker ri = new RhinoInvoker(scriptName, script);
+        RhinoScript ri = new RhinoScript(scriptName, script);
         Object x = ri.invoke("echo", "petra", null);
         assertEquals("petra", x);
     }
 
     public void testCopy() {
-        RhinoInvoker ri = new RhinoInvoker(scriptName, script);
+        RhinoScript ri = new RhinoScript(scriptName, script);
         Object x = ri.invoke("echo", "petra", null);
         assertEquals("petra", x);
 
@@ -56,7 +56,7 @@ public class RhinoInvokerTestCase extends TestCase {
     }
 
     public void testContexts1() {
-        RhinoInvoker ri = new RhinoInvoker(scriptName, script);
+        RhinoScript ri = new RhinoScript(scriptName, script);
         Map<String, Object> contexts = new HashMap<String, Object>();
         contexts.put("a", "petra");
         Object x = ri.invoke("getA", null, contexts);
@@ -67,7 +67,7 @@ public class RhinoInvokerTestCase extends TestCase {
      * Tests context not accessable across invocations
      */
     public void testContexts2() {
-        RhinoInvoker ri = new RhinoInvoker(scriptName, script);
+        RhinoScript ri = new RhinoScript(scriptName, script);
         Map<String, Object> contexts = new HashMap<String, Object>();
         contexts.put("a", "petra");
         Object x = ri.invoke("getA", null, contexts);
@@ -85,7 +85,7 @@ public class RhinoInvokerTestCase extends TestCase {
      * Tests shared scope is accessable across invocations
      */
     public void testScopes1() {
-        RhinoInvoker ri = new RhinoInvoker(scriptName, script);
+        RhinoScript ri = new RhinoScript(scriptName, script);
         ri.invoke("setGlobalVarY", "petra", null);
 
         Object x = ri.invoke("getGlobalVarY", null, null);
@@ -96,7 +96,7 @@ public class RhinoInvokerTestCase extends TestCase {
      * Tests local vars are NOT accessable across invocations
      */
     public void testScopes2() {
-        RhinoInvoker ri = new RhinoInvoker(scriptName, script);
+        RhinoScript ri = new RhinoScript(scriptName, script);
         ri.invoke("setLocalVarY", "petra", null);
 
         try {
@@ -111,7 +111,7 @@ public class RhinoInvokerTestCase extends TestCase {
      * Tests shared scope is accessable when using contexts (ie an invocation scope)
      */
     public void testScopes3() {
-        RhinoInvoker ri = new RhinoInvoker(scriptName, script);
+        RhinoScript ri = new RhinoScript(scriptName, script);
         ri.invoke("setGlobalVarY", "petra", null);
 
         Map<String, Object> contexts = new HashMap<String, Object>();
@@ -128,7 +128,7 @@ public class RhinoInvokerTestCase extends TestCase {
      * Tests a copy only retains the script scope not the shared scope
      */
     public void testScopes4() {
-        RhinoInvoker ri = new RhinoInvoker(scriptName, script);
+        RhinoScript ri = new RhinoScript(scriptName, script);
         ri.invoke("setGlobalVarY", "petra", null);
 
         ri = ri.copy();
@@ -148,7 +148,7 @@ public class RhinoInvokerTestCase extends TestCase {
     }
 
     public void testGetInt() {
-        RhinoInvoker ri = new RhinoInvoker(scriptName, script);
+        RhinoScript ri = new RhinoScript(scriptName, script);
         Object x = ri.invoke("getInt", null, Integer.TYPE, null);
         assertEquals(Integer.class, x.getClass());
     }

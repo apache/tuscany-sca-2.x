@@ -6,12 +6,16 @@ import java.net.URL;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
-import org.apache.tuscany.container.js.rhino.RhinoInvoker;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.ModelInitException;
 import org.apache.tuscany.model.assembly.impl.ComponentImplementationImpl;
 
+/**
+ * Default implementation of a JavScript component implementation type
+ * 
+ * @version $Rev$ $Date$
+ */
 public class JavaScriptImplementationImpl extends ComponentImplementationImpl implements JavaScriptImplementation {
 
     private ResourceLoader resourceLoader;
@@ -57,11 +61,6 @@ public class JavaScriptImplementationImpl extends ComponentImplementationImpl im
 
     public void setScriptFile(String fn) {
         script = fn;
-    }
-
-    // TODO remove this signature
-    public RhinoInvoker getRhinoInvoker() {
-        return null;
     }
 
     private String scriptCode;

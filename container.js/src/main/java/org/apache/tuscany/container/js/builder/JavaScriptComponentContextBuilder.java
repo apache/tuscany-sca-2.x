@@ -25,7 +25,7 @@ import java.util.Map;
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
 import org.apache.tuscany.container.js.assembly.impl.JavaScriptImplementationImpl;
 import org.apache.tuscany.container.js.config.JavaScriptComponentRuntimeConfiguration;
-import org.apache.tuscany.container.js.rhino.RhinoInvoker;
+import org.apache.tuscany.container.js.rhino.RhinoScript;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
@@ -122,7 +122,7 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
                     }
                 }
 
-                RhinoInvoker invoker = createRhinoInvoker(component.getName(), script, properties);
+                RhinoScript invoker = createRhinoInvoker(component.getName(), script, properties);
                 JavaScriptComponentRuntimeConfiguration config = new JavaScriptComponentRuntimeConfiguration(component.getName(),
                         scope, services, properties, invoker);
 
@@ -194,8 +194,8 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
      * @param properties configured properties for the component
      * @return
      */
-    private RhinoInvoker createRhinoInvoker(String name, String script, Map properties) {
-        RhinoInvoker ri = new RhinoInvoker(name, script, properties);
+    private RhinoScript createRhinoInvoker(String name, String script, Map properties) {
+        RhinoScript ri = new RhinoScript(name, script, properties);
         return ri;
     }
 }

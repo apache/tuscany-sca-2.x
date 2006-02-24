@@ -27,12 +27,9 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Wrapper;
 
 /**
- * RhinoInvoker simplifies invoking JavaScript functions with Rhino.
- * <p>
- * TODO We should probably change the name from "invoker" since this is confusing with TargetInvoker. This really wraps
- * the scipt
+ * Represents, and is responsible for dispatching to, a JavaScript artifact in Rhino
  */
-public class RhinoInvoker {
+public class RhinoScript {
 
     private String scriptName;
 
@@ -65,7 +62,7 @@ public class RhinoInvoker {
      * @param scriptName the name of the script. Can be anything, only used in messages to identify the script
      * @param script the complete script
      */
-    public RhinoInvoker(String scriptName, String script) {
+    public RhinoScript(String scriptName, String script) {
         this(scriptName, script, (Map) null);
     }
 
@@ -77,7 +74,7 @@ public class RhinoInvoker {
      * @param context name-value pairs that are added in to the scope where the script is compiled. May be null. The
      *        value objects are made available to the script by using a variable with the name.
      */
-    public RhinoInvoker(String scriptName, String script, Map context) {
+    public RhinoScript(String scriptName, String script, Map context) {
         this.scriptName = scriptName;
         this.script = script;
         initScriptScope(scriptName, script, context);
@@ -88,7 +85,7 @@ public class RhinoInvoker {
      * Construct a RhinoInvoker from another RhinoInvoker object. This uses the original script scope so the script
      * doesn't need to be recompiled.
      */
-    protected RhinoInvoker(String scriptName, String script, Scriptable scriptScope) {
+    protected RhinoScript(String scriptName, String script, Scriptable scriptScope) {
         this.scriptName = scriptName;
         this.script = script;
         this.scriptScope = scriptScope;
@@ -280,8 +277,8 @@ public class RhinoInvoker {
      * Make a copy of this RhinoScript object. This shares the script scope to avoid the overhead of recompiling the
      * script, and to allow any initialization done by the script to be shared.
      */
-    public RhinoInvoker copy() {
-        return new RhinoInvoker(scriptName, script, scriptScope);
+    public RhinoScript copy() {
+        return new RhinoScript(scriptName, script, scriptScope);
     }
 
     /**

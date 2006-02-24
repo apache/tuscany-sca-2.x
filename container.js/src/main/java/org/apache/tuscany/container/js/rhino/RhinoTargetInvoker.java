@@ -16,7 +16,7 @@ public class RhinoTargetInvoker implements TargetInvoker {
 
     private String operation;
 
-    private RhinoInvoker target;
+    private RhinoScript target;
 
     public RhinoTargetInvoker(String serviceName, String operation, ScopeContext container) {
         assert (serviceName != null) : "No service name specified";
@@ -30,11 +30,11 @@ public class RhinoTargetInvoker implements TargetInvoker {
     public Object invokeTarget(Object payload) throws InvocationTargetException {
         if (cacheable) {
             if (target == null) {
-                target = (RhinoInvoker) container.getContext(name.getPartName()).getImplementationInstance();
+                target = (RhinoScript) container.getContext(name.getPartName()).getImplementationInstance();
             }
             return target.invoke(operation, payload);
         } else {
-            return ((RhinoInvoker) container.getContext(name.getPartName()).getImplementationInstance()).invoke(operation,
+            return ((RhinoScript) container.getContext(name.getPartName()).getImplementationInstance()).invoke(operation,
                     payload);
         }
     }

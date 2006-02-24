@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.tuscany.container.js.rhino.RhinoInvoker;
+import org.apache.tuscany.container.js.rhino.RhinoScript;
 import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.LifecycleEventListener;
@@ -34,7 +34,7 @@ public class JavaScriptComponentContext extends AbstractContext implements Simpl
 
     private Map<String, Class> services;
 
-    private RhinoInvoker rhinoInvoker;
+    private RhinoScript rhinoInvoker;
 
     private Map<String, Object> properties;
 
@@ -45,7 +45,7 @@ public class JavaScriptComponentContext extends AbstractContext implements Simpl
     private Object instance;
 
     public JavaScriptComponentContext(String name, Map<String, Class> services, Map<String, Object> properties,
-            Map<String, ProxyFactory> sourceProxyFactories, Map<String, ProxyFactory> targetProxyFactories, RhinoInvoker invoker) {
+            Map<String, ProxyFactory> sourceProxyFactories, Map<String, ProxyFactory> targetProxyFactories, RhinoScript invoker) {
         super(name);
         assert (services != null) : "No service interface mapping specified";
         assert (properties != null) : "No properties specified";

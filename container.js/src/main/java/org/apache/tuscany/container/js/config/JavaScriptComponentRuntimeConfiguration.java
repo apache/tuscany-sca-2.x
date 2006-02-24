@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.container.js.context.JavaScriptComponentContext;
-import org.apache.tuscany.container.js.rhino.RhinoInvoker;
+import org.apache.tuscany.container.js.rhino.RhinoScript;
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.context.SimpleComponentContext;
@@ -42,10 +42,10 @@ public class JavaScriptComponentRuntimeConfiguration implements RuntimeConfigura
 
     private Map<String, Object> properties;
 
-    private RhinoInvoker invoker;
+    private RhinoScript invoker;
 
     public JavaScriptComponentRuntimeConfiguration(String name, Scope scope, Map<String, Class> services,
-            Map<String, Object> properties, RhinoInvoker invoker) {
+            Map<String, Object> properties, RhinoScript invoker) {
         this.name = name;
         this.scope = scope;
         this.services = services;
