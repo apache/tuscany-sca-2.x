@@ -31,7 +31,7 @@ public class JSComponentContextBuilderTestCase extends TestCase {
         JavaScriptTargetWireBuilder jsWireBuilder = new JavaScriptTargetWireBuilder();
         SimpleComponent component = MockAssemblyFactory.createComponent("foo",
                 "org/apache/tuscany/container/js/assembly/mock/HelloWorldImpl.js", HelloWorldService.class, Scope.MODULE);
-        component.initialize(new AssemblyModelContextImpl(new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader())));
+        component.initialize(new AssemblyModelContextImpl(new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(null), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader())));
         jsBuilder.build(component, null);
         ModuleScopeContext context = new ModuleScopeContext(new EventContextImpl());
         RuntimeConfiguration<InstanceContext> config = (RuntimeConfiguration) component.getComponentImplementation()

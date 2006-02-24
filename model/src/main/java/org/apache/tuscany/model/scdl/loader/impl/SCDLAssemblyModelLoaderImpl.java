@@ -21,8 +21,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Module;
@@ -38,21 +36,16 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  */
 public class SCDLAssemblyModelLoaderImpl implements AssemblyModelLoader {
     
-    private static final String SCA_MODULE_FILE_NAME = "sca.module";
-    //FIXME can fragments have a variable prefix name?
-    private static final String SCA_FRAGMENT_FILE_NAME = "sca.fragment";
-    
     private SCDLXMLReader xmlReader=new SCDLXMLReader();
     private AssemblyModelContext modelContext;
-    private ResourceLoader resourceLoader;
-    private AssemblyFactory assemblyFactory;
     
-    private List<SCDLModelLoader> scdlModelLoaders=new ArrayList<SCDLModelLoader>();
+    private List<SCDLModelLoader> scdlModelLoaders;
     
     /**
      * Constructor
      */
-    public SCDLAssemblyModelLoaderImpl() {
+    public SCDLAssemblyModelLoaderImpl(List<SCDLModelLoader> loaders) {
+        scdlModelLoaders=loaders!=null? loaders:new ArrayList<SCDLModelLoader>(); 
     }
     
     /**
@@ -110,23 +103,16 @@ public class SCDLAssemblyModelLoaderImpl implements AssemblyModelLoader {
     }
 
     /**
-     * @see org.apache.tuscany.model.scdl.loader.SCDLAssemblyModelLoader#getSCDLModelLoaders()
-     */
-    public List<SCDLModelLoader> getSCDLModelLoaders() {
-        return scdlModelLoaders;
-    }
-    
-    /**
      * Transform a model and return the handler containing the result of the transformation.
      * @param object
      * @return
      */
-    private SCDLContentHandlerImpl transform(Object object) {
+    private SCDLModelContentHandlerImpl transform(Object object) {
         //FIXME Remove this dependency on EMF
         Iterator contents=EcoreUtil.getAllContents(Collections.singleton(object), true);
         
         ModelTransformer transformer=new ModelTransformerImpl();
-        SCDLContentHandlerImpl handler=new SCDLContentHandlerImpl(modelContext,scdlModelLoaders);
+        SCDLModelContentHandlerImpl handler=new SCDLModelContentHandlerImpl(modelContext, scdlModelLoaders);
         transformer.transform(contents, handler);
         return handler;
     }

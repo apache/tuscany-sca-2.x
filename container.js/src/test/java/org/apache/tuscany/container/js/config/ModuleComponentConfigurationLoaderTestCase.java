@@ -17,6 +17,7 @@
 package org.apache.tuscany.container.js.config;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -36,6 +37,7 @@ import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
+import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 
 /**
@@ -65,9 +67,10 @@ public class ModuleComponentConfigurationLoaderTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-        AssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl();
+        List<SCDLModelLoader> scdlLoaders=new ArrayList<SCDLModelLoader>();
         JavaScriptSCDLModelLoader jsLoader=new JavaScriptSCDLModelLoader();
-        modelLoader.getSCDLModelLoaders().add(jsLoader);
+        scdlLoaders.add(jsLoader);
+        AssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl(scdlLoaders);
         AssemblyModelContext modelContext=new AssemblyModelContextImpl(
                 new AssemblyFactoryImpl(), modelLoader,new ResourceLoaderImpl(this.getClass().getClassLoader()));
           loader = new ModuleComponentConfigurationLoaderImpl(modelContext);

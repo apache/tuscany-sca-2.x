@@ -45,7 +45,7 @@ public class SCDLAssemblyLoaderTestCase extends TestCase {
     public void testLoader() {
 
         ResourceLoader resourceLoader=new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader());
-        AssemblyModelLoader assemblyLoader=new SCDLAssemblyModelLoaderImpl();
+        AssemblyModelLoader assemblyLoader=new SCDLAssemblyModelLoaderImpl(null);
         AssemblyFactory assemblyFactory=new AssemblyFactoryImpl();
         AssemblyModelContext modelContext=new AssemblyModelContextImpl(assemblyFactory, assemblyLoader, resourceLoader);
 

@@ -60,7 +60,7 @@ public class JavaImplementationTestCase extends TestCase {
 
     public void testNakedHelloWorld() {
         impl.setImplementationClass(NakedHelloWorld.class);
-        impl.initialize(new AssemblyModelContextImpl(new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader())));
+        impl.initialize(new AssemblyModelContextImpl(new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(null), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader())));
         ComponentType type = impl.getComponentType();
         Assert.assertNotNull(type);
         Assert.assertTrue(type.getProperties().isEmpty());
@@ -72,7 +72,7 @@ public class JavaImplementationTestCase extends TestCase {
 
     public void testNakedHelloWorldWithInterface() {
         impl.setImplementationClass(NakedHelloWorldWithInterface.class);
-        impl.initialize(new AssemblyModelContextImpl(new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader())));
+        impl.initialize(new AssemblyModelContextImpl(new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(null), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader())));
         ComponentType type = impl.getComponentType();
         Assert.assertNotNull(type);
         Assert.assertTrue(type.getProperties().isEmpty());
@@ -101,7 +101,7 @@ public class JavaImplementationTestCase extends TestCase {
 
     public void testHelloWorldWithFieldProperties() {
         impl.setImplementationClass(HelloWorldWithFieldProperties.class);
-        impl.initialize(new AssemblyModelContextImpl(new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader())));
+        impl.initialize(new AssemblyModelContextImpl(new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(null), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader())));
         ComponentType type = impl.getComponentType();
         Assert.assertNotNull(type);
         List<Property> props = type.getProperties();

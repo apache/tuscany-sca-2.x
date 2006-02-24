@@ -159,8 +159,7 @@ public class ModuleImpl extends AggregateImpl implements Module {
                 }
             }
             if (configuredReference == null) {
-                //FIXME
-                //throw new IllegalArgumentException("Cannot find wire source " + sourceURI.getAddress());
+                throw new IllegalArgumentException("Cannot find wire source " + sourceURI.getAddress());
             } else {
 
                 // Resolve the target service endpoint
@@ -177,8 +176,7 @@ public class ModuleImpl extends AggregateImpl implements Module {
                         configuredReference.getTargetConfiguredServices().add(configuredService);
                     }
                 } else {
-                    //FIXME
-                    //throw new IllegalArgumentException("Cannot find service for " + targetURI.getAddress());
+                    throw new IllegalArgumentException("Cannot find service for " + targetURI.getAddress());
                 }
             }
         }

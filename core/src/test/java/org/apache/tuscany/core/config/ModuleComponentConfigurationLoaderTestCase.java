@@ -61,7 +61,7 @@ public class ModuleComponentConfigurationLoaderTestCase extends TestCase {
         super.setUp();
         Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
         AssemblyModelContext modelContext=new AssemblyModelContextImpl(
-              new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(),
+              new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(null),
               new ResourceLoaderImpl(this.getClass().getClassLoader()));
         loader = new ModuleComponentConfigurationLoaderImpl(modelContext);
     }

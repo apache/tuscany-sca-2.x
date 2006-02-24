@@ -16,6 +16,9 @@
  */
 package org.apache.tuscany.container.java.assembly.tests;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -31,6 +34,7 @@ import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
+import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 
 /**
@@ -47,9 +51,10 @@ public class JavaAssemblyLoaderTestCase extends TestCase {
     public void testLoader() {
 
         ResourceLoader resourceLoader=new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader());
-        AssemblyModelLoader assemblyLoader=new SCDLAssemblyModelLoaderImpl();
         JavaSCDLModelLoader javaLoader=new JavaSCDLModelLoader();
-        assemblyLoader.getSCDLModelLoaders().add(javaLoader);
+        List<SCDLModelLoader> scdlLoaders=new ArrayList<SCDLModelLoader>();
+        scdlLoaders.add(javaLoader);
+        AssemblyModelLoader assemblyLoader=new SCDLAssemblyModelLoaderImpl(scdlLoaders);
         AssemblyFactory assemblyFactory=new AssemblyFactoryImpl();
         AssemblyModelContext modelContext=new AssemblyModelContextImpl(assemblyFactory, assemblyLoader, resourceLoader);
 

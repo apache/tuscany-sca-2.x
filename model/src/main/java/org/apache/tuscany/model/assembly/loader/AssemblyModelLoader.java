@@ -16,14 +16,11 @@
  */
 package org.apache.tuscany.model.assembly.loader;
 
-import java.util.List;
-
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleFragment;
 import org.apache.tuscany.model.assembly.Subsystem;
-import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 
 /**
  * An assembly model loader.
@@ -63,11 +60,5 @@ public interface AssemblyModelLoader {
      * @return
      */
     Subsystem getSubsystem(String uri);
-
-    /**
-     * Returns the SCDL model loaders 
-     * @return
-     */
-    List<SCDLModelLoader> getSCDLModelLoaders();
     
 }

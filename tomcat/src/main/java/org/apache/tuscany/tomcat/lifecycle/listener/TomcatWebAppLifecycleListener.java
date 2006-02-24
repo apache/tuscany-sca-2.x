@@ -108,7 +108,7 @@ public class TomcatWebAppLifecycleListener implements LifecycleListener {
                     try {
 
                         // Load the module component
-                        AssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl();
+                        AssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl(null);
                         AssemblyFactory factory=new AssemblyFactoryImpl();
                         AssemblyModelContext modelContext = new AssemblyModelContextImpl(factory, modelLoader, resourceLoader);
                         ModuleComponentConfigurationLoader moduleComponentLoader = new ModuleComponentConfigurationLoaderImpl(modelContext);

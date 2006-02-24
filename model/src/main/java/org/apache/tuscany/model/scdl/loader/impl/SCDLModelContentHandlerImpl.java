@@ -66,7 +66,7 @@ import commonj.sdo.Sequence;
 /**
  * A model content handler that transforms an SCDL model into an assembly model.
  */
-public class SCDLContentHandlerImpl extends ScdlSwitch implements ModelContentHandler {
+public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelContentHandler {
 
     private List contents;
     private List linkers;
@@ -91,7 +91,7 @@ public class SCDLContentHandlerImpl extends ScdlSwitch implements ModelContentHa
     /**
      * Constructor
      */
-    public SCDLContentHandlerImpl(AssemblyModelContext modelContext, List<SCDLModelLoader> scdlModelLoaders) {
+    public SCDLModelContentHandlerImpl(AssemblyModelContext modelContext, List<SCDLModelLoader> scdlModelLoaders) {
         this.modelContext=modelContext;
         this.factory=modelContext.getAssemblyFactory();
         this.scdlModelLoaders=scdlModelLoaders;
@@ -439,7 +439,7 @@ public class SCDLContentHandlerImpl extends ScdlSwitch implements ModelContentHa
                     FeatureMap text = (FeatureMap)referenceElement.get(0);
                     if (text != null && text.size() != 0) {
                         String uri = text.getValue(0).toString();
-                        ServiceURI serviceURI=factory.createServiceURI(uri);
+                        ServiceURI serviceURI=factory.createServiceURI(null, uri);
                         
                         // Create a wire
                         Wire wire=factory.createWire();

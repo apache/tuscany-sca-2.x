@@ -42,6 +42,7 @@ import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
+import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 import org.osoa.sca.ModuleContext;
 import org.osoa.sca.SCA;
@@ -87,20 +88,29 @@ public class TuscanyRuntime extends SCA {
     public TuscanyRuntime(String name, String uri, MonitorFactory monitorFactory) throws ConfigurationException {
         this.monitor = monitorFactory.getMonitor(Monitor.class);
 
-        // create a resource loader from the current classloader
+        // Create a resource loader from the current classloader
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         ResourceLoader resourceLoader = new ResourceLoaderImpl(classLoader);
+        
+        // Create an assembly model factory
         AssemblyFactory modelFactory=new AssemblyFactoryImpl();
-        AssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl();
+        
+        // Create an assembly model loader
+        List<SCDLModelLoader> scdlLoaders=new ArrayList<SCDLModelLoader>();
+        scdlLoaders.add(new SystemSCDLModelLoader());
+        AssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl(scdlLoaders);
+        
+        // Create an assembly model context
         AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, resourceLoader);
-        modelLoader.getSCDLModelLoaders().add(new SystemSCDLModelLoader());
 
+        // Create system configuration builders
         List<RuntimeConfigurationBuilder> configBuilders = new ArrayList();
         configBuilders.add((new SystemComponentContextBuilder()));
         configBuilders.add(new SystemEntryPointBuilder());
         configBuilders.add(new SystemExternalServiceBuilder());
 
-        runtimeContext = new RuntimeContextImpl(monitorFactory, modelLoader.getSCDLModelLoaders(), configBuilders,null);
+        // Create a runtime context and start it
+        runtimeContext = new RuntimeContextImpl(monitorFactory, scdlLoaders, configBuilders,null);
         runtimeContext.start();
         monitor.started(runtimeContext);
 

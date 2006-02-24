@@ -71,7 +71,7 @@ public class ServiceURIImpl implements ServiceURI {
             ConfiguredReference configuredReference = (ConfiguredReference) configuredPort;
             AggregatePart part = configuredReference.getAggregatePart();
             partName = part.getName();
-            serviceName = "reference." + configuredReference.getReference().getName();
+            serviceName = configuredReference.getReference().getName();
             address = "sca:///" + moduleComponentName + '/' + partName + '/' + serviceName;
         }
 
