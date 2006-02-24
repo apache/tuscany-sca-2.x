@@ -17,6 +17,7 @@
 package org.apache.tuscany.model.assembly;
 
 
+
 /**
  * Represents a module fragment.
  */

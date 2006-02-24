@@ -64,7 +64,9 @@ import commonj.sdo.DataObject;
 public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
     
     private RuntimeContext runtimeContext;
-    private ProxyFactoryFactory factory;
+    private ProxyFactoryFactory proxyFactoryFactory;
+    private MessageFactory messageFactory;
+    private RuntimeConfigurationBuilder referenceBuilder;
 
     @Init(eager=true)
     public void init() {
@@ -84,10 +86,8 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
      */
     @Autowire
     public void setProxyFactoryFactory(ProxyFactoryFactory factory) {
-        this.factory = factory;
+        this.proxyFactoryFactory = factory;
     }
-
-    private MessageFactory messageFactory;
 
     /**
      * Sets the factory used to construct invocation messages
@@ -98,8 +98,6 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
     public void setMessageFactory(MessageFactory msgFactory) {
         this.messageFactory = msgFactory;
     }
-
-    private RuntimeConfigurationBuilder referenceBuilder;
 
     /**
      * Sets a builder responsible for creating source-side and target-side invocation chains for a reference. The
@@ -205,7 +203,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                     Service service = configuredService.getService();
                     ServiceContract serviceContract = service.getServiceContract();
                     Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
-                    ProxyFactory proxyFactory = factory.createProxyFactory();
+                    ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
                     Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
                     for (Method method : javaMethods) {
                         InvocationConfiguration iConfig = new InvocationConfiguration(method);
@@ -232,7 +230,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                 List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
                 if (configuredReferences != null) {
                     for (ConfiguredReference reference : configuredReferences) {
-                        ProxyFactory proxyFactory = factory.createProxyFactory();
+                        ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
                         ServiceContract serviceContract = reference.getReference().getServiceContract();
                         Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
                         Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());

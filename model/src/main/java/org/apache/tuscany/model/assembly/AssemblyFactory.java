@@ -153,4 +153,9 @@ public interface AssemblyFactory {
      */
     QName createQName(String uri);
 
+    /**
+     * Create a wire
+     * @return
+     */
+    Wire createWire();
 }

@@ -35,6 +35,7 @@ import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceURI;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 import org.apache.tuscany.model.assembly.Subsystem;
+import org.apache.tuscany.model.assembly.Wire;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 import org.apache.tuscany.model.types.java.impl.JavaServiceContractImpl;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
@@ -192,4 +193,10 @@ public class AssemblyFactoryImpl implements AssemblyFactory {
         return new QName(uri.substring(0, h), uri.substring(h + 1));
     }
 
+    /**
+     * @see org.apache.tuscany.model.assembly.AssemblyFactory#createWire()
+     */
+    public Wire createWire() {
+        return new WireImpl();
+    }
 }

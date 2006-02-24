@@ -16,6 +16,7 @@
  */
 package org.apache.tuscany.model.scdl.loader;
 
+import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 
 /**
@@ -25,9 +26,10 @@ public interface SCDLModelLoader {
 
     /**
      * Load an SCDL model object into an assembly model.
+     * @param modelContext
      * @param object
      * @return
      */
-    AssemblyModelObject load(Object object);
+    AssemblyModelObject load(AssemblyModelContext modelContext, Object object);
     
 }

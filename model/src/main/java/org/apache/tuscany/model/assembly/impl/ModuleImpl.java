@@ -26,14 +26,20 @@ import java.util.Map;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
+import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.ConfiguredReference;
+import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleFragment;
+import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceContract;
+import org.apache.tuscany.model.assembly.ServiceURI;
+import org.apache.tuscany.model.assembly.Wire;
 
 /**
  * An implementation of Module.
@@ -98,13 +104,14 @@ public class ModuleImpl extends AggregateImpl implements Module {
             getEntryPoints().addAll(moduleFragment.getEntryPoints());
             getExternalServices().addAll(moduleFragment.getExternalServices());
             
+            // Add all the wires from the module fragments
+            getWires().addAll(moduleFragment.getWires());
+            
             moduleFragment.initialize(modelContext);
         }
         
         // Initialize the aggregate
         super.initialize(modelContext);
-
-        //FIXME derive the module properties from the overridable properties of the components in the module
 
         // Derive the component type from the entry points and external services in the module
         if (componentType==null) {
@@ -130,138 +137,53 @@ public class ModuleImpl extends AggregateImpl implements Module {
         }
         componentType.initialize(modelContext);
 
-        //FIXME add wiring later
-//        
-//        // Resolve the references and the wires
-//        AssemblyFactory factory = modelContext.getAssemblyFactory();
-//
-//        // Resolve entry point references
-//        for (Iterator<EntryPoint> i = entryPointsMap.values().iterator(); i.hasNext();) {
-//            EntryPoint entryPoint = i.next();
-//            ConfiguredReference configuredReference = entryPoint.getConfiguredReference();
-//            for (Iterator<DataObject> r = ((org.osoa.sca.model.EntryPoint) entryPoint).getReferences().iterator(); r.hasNext();) {
-//                DataObject targetURIElement = r.next();
-//                ConfiguredService configuredService = resolveURIElement(factory, targetURIElement);
-//                if (configuredService != null) {
-//                    if (!configuredReference.getReference().isMultiplicityN() && !configuredReference.getTargetConfiguredServices().isEmpty()) {
-//                        // FIXME shouldn't we be throwing an exception here
-//                        // log.error("Attempting to wire multiple targets to reference " + configuredReference.getReference().getName());
-//                    } else {
-//                        configuredReference.getTargetConfiguredServices().add(configuredService);
-//                    }
-//                }
-//            }
-//        }
-//
-//        // Resolve component references
-//        for (Iterator<Component> i = componentsMap.values().iterator(); i.hasNext();) {
-//            Component component = i.next();
-//            ReferenceValues referenceValues = ((org.osoa.sca.model.Component) component).getReferenceValues();
-//            if (referenceValues == null)
-//                continue;
-//            Sequence sequence = referenceValues.getAny();
-//            for (int p = 0, n = sequence.size(); p < n; p++) {
-//                Property property = sequence.getProperty(p);
-//                DataObject targetURIElement = (DataObject) sequence.getValue(p);
-//
-//                // Get the named reference
-//                ConfiguredReference configuredReference = component.getConfiguredReference(property.getName());
-//                if (configuredReference != null) {
-//                    ConfiguredService configuredService = resolveURIElement(factory, targetURIElement);
-//                    if (configuredService != null) {
-//                        if (!configuredReference.getReference().isMultiplicityN() && !configuredReference.getTargetConfiguredServices().isEmpty()) {
-//                            // FIXME shouldn't we be throwing an exception here
-//                            // log.error("Attempting to wire multiple targets to reference " + configuredReference.getReference().getName());
-//                        } else {
-//                            configuredReference.getTargetConfiguredServices().add(configuredService);
-//                        }
-//                    }
-//                } else {
-//                    // FIXME shouldn't we be throwing an exception here
-//                    // log.error("Undefined reference " + property.getName());
-//                }
-//            }
-//        }
-//
-//        // Resolve wires from this module and its module fragments
-//        resolveWires(factory, getWires());
-//        for (Iterator<ModuleFragment> i = getModuleFragments().iterator(); i.hasNext();) {
-//            ModuleFragment moduleFragment = i.next();
-//            resolveWires(factory, ((org.osoa.sca.model.ModuleFragment) moduleFragment).getWires());
-//        }
+        //FIXME derive the module properties from the overridable properties of the components in the module
+
+        // Wire the module parts
+        for (Wire wire : getWires()) {
+
+            // Get the source reference
+            ServiceURI sourceURI=wire.getSource();
+            ConfiguredReference configuredReference = null;
+            String partName = sourceURI.getPartName();
+            String referenceName = sourceURI.getServiceName();
+            if (referenceName != null) {
+                Component component = getComponent(partName);
+                if (component != null) {
+                    configuredReference = component.getConfiguredReference(referenceName);
+                }
+            } else {
+                EntryPoint entryPoint = getEntryPoint(partName);
+                if (entryPoint != null) {
+                    configuredReference = entryPoint.getConfiguredReference();
+                }
+            }
+            if (configuredReference == null) {
+                //FIXME
+                //throw new IllegalArgumentException("Cannot find wire source " + sourceURI.getAddress());
+            } else {
+
+                // Resolve the target service endpoint
+                ServiceURI targetURI = wire.getTarget();
+                ConfiguredService configuredService = getConfiguredService(targetURI);
+                if (configuredService != null) {
+
+                    // Wire the reference to the target
+                    Multiplicity multiplicity=configuredReference.getReference().getMultiplicity();
+                    if (multiplicity==Multiplicity.ZERO_N || multiplicity==Multiplicity.ONE_N) {
+                        configuredReference.getTargetConfiguredServices().add(configuredService);
+                    } else {
+                        configuredReference.getTargetConfiguredServices().clear();
+                        configuredReference.getTargetConfiguredServices().add(configuredService);
+                    }
+                } else {
+                    //FIXME
+                    //throw new IllegalArgumentException("Cannot find service for " + targetURI.getAddress());
+                }
+            }
+        }
     }
-
-//    /**
-//     * Resolve a target URI
-//     *
-//     * @param factory
-//     * @param targetURIElement
-//     */
-//    private ConfiguredService resolveURIElement(AssemblyFactory factory, DataObject targetURIElement) {
-//        Sequence sequence = targetURIElement.getSequence(0);
-//        String targetURI = (String) sequence.getValue(0);
-//        ServiceURI serviceURI = factory.createServiceURI(null, targetURI);
-//        ConfiguredService configuredService = getConfiguredService(serviceURI);
-//        if (configuredService == null) {
-//            // FIXME shouldn't we be throwing an exception here
-//            // log.error("Cannot find service for " + targetURI);
-//        }
-//        return configuredService;
-//    }
-//
-//    /**
-//     * Resolve the given wires
-//     *
-//     * @param factory
-//     * @param wires
-//     */
-//    private void resolveWires(AssemblyFactory factory, List<ModuleWire> wires) {
-//
-//        // Loop through the wires
-//        for (Iterator<ModuleWire> i = wires.iterator(); i.hasNext();) {
-//            ModuleWire wire = i.next();
-//
-//            // Get the source reference
-//            ServiceURI sourceURI = factory.createServiceURI(null, wire.getSourceUri());
-//            ConfiguredReference configuredReference = null;
-//            String partName = sourceURI.getPartName();
-//            String referenceName = sourceURI.getServiceName();
-//            if (referenceName != null) {
-//                Component component = getComponent(partName);
-//                if (component != null) {
-//                    configuredReference = component.getConfiguredReference(referenceName);
-//                }
-//            } else {
-//                EntryPoint entryPoint = getEntryPoint(partName);
-//                if (entryPoint != null) {
-//                    configuredReference = entryPoint.getConfiguredReference();
-//                }
-//            }
-//            if (configuredReference == null) {
-//                // FIXME shouldn't we be throwing an exception here
-//                // log.error("Cannot find wire source " + sourceURI);
-//            } else {
-//
-//                // Resolve the target service endpoint
-//                ServiceURI targetURI = factory.createServiceURI(null, wire.getTargetUri());
-//                ConfiguredService configuredService = getConfiguredService(targetURI);
-//                if (configuredService != null) {
-//
-//                    // Wire the reference to the target
-//                    if (configuredReference.getReference().isMultiplicityN()) {
-//                        configuredReference.getTargetConfiguredServices().add(configuredService);
-//                    } else {
-//                        configuredReference.getTargetConfiguredServices().clear();
-//                        configuredReference.getTargetConfiguredServices().add(configuredService);
-//                    }
-//                } else {
-//                    // FIXME shouldn't we be throwing an exception here
-//                    // log.error("Cannot find service for " + targetURI.getAddress());
-//                }
-//            }
-//        }
-//    }
-
+        
     /**
      * @see org.apache.tuscany.model.assembly.AssemblyModelObject#freeze()
      */

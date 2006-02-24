@@ -28,7 +28,7 @@ import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.scdl.loader.SCDLAssemblyModelLoader;
+import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 
 /**
@@ -45,7 +45,7 @@ public class SCDLAssemblyLoaderTestCase extends TestCase {
     public void testLoader() {
 
         ResourceLoader resourceLoader=new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader());
-        SCDLAssemblyModelLoader assemblyLoader=new SCDLAssemblyModelLoaderImpl();
+        AssemblyModelLoader assemblyLoader=new SCDLAssemblyModelLoaderImpl();
         AssemblyFactory assemblyFactory=new AssemblyFactoryImpl();
         AssemblyModelContext modelContext=new AssemblyModelContextImpl(assemblyFactory, assemblyLoader, resourceLoader);
 

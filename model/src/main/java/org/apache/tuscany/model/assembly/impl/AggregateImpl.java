@@ -31,6 +31,7 @@ import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.ServiceURI;
+import org.apache.tuscany.model.assembly.Wire;
 
 /**
  * An implementation of Aggregate.
@@ -45,6 +46,7 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
     private List<ExternalService> externalServices=new ArrayList<ExternalService>();
     private Map<String, ExternalService> externalServicesMap;
     private List<AggregatePart> aggregateParts;
+    private List<Wire> wires=new ArrayList<Wire>();
 
     /**
      * Constructor
@@ -121,6 +123,13 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
     }
 
     /**
+     * @see org.apache.tuscany.model.assembly.Aggregate#getWires()
+     */
+    public List<Wire> getWires() {
+        return wires;
+    }
+    
+    /**
      * @see org.apache.tuscany.model.assembly.Aggregate#getConfiguredService(org.apache.tuscany.model.assembly.ServiceURI)
      */
     public ConfiguredService getConfiguredService(ServiceURI address) {
@@ -179,6 +188,9 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
             externalService.initialize(modelContext);
             ((AggregatePartImpl)externalService).setAggregate(this);
         }
+        for (Wire wire : wires) {
+            wire.initialize(modelContext);
+        }
     }
 
     /**
@@ -196,6 +208,8 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
         freeze(entryPoints);
         externalServices=Collections.unmodifiableList(externalServices);
         freeze(externalServices);
+        wires=Collections.unmodifiableList(wires);
+        freeze(wires);
     }
 
     /**
@@ -206,6 +220,9 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
             return false;
         
         if (!accept(aggregateParts, visitor))
+            return false;
+        
+        if (!accept(wires, visitor))
             return false;
         
         return true;

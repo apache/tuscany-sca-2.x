@@ -29,7 +29,9 @@ import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.OverrideOption;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.ServiceContract;
+import org.apache.tuscany.model.assembly.ServiceURI;
 import org.apache.tuscany.model.assembly.SimpleComponent;
+import org.apache.tuscany.model.assembly.Wire;
 import org.apache.tuscany.model.scdl.Binding;
 import org.apache.tuscany.model.scdl.Component;
 import org.apache.tuscany.model.scdl.ComponentType;
@@ -429,15 +431,21 @@ public class SCDLContentHandlerImpl extends ScdlSwitch implements ModelContentHa
                     if (configuredReference == null) {
                         throw new IllegalArgumentException("Undefined reference " + referenceName);
                     }
+                    ServiceURI referenceURI=factory.createServiceURI(null, configuredReference);
 
                     // Get the reference value text
                     //FIXME SDO returns a featuremap instead of a sequence
                     //Sequence text = propertyElement.getSequence(0);
                     FeatureMap text = (FeatureMap)referenceElement.get(0);
                     if (text != null && text.size() != 0) {
-                        Object rawValue = text.getValue(0);
-                        //FIXME
-                        //configuredReference.setValue(rawValue);
+                        String uri = text.getValue(0).toString();
+                        ServiceURI serviceURI=factory.createServiceURI(uri);
+                        
+                        // Create a wire
+                        Wire wire=factory.createWire();
+                        wire.setSource(referenceURI);
+                        wire.setTarget(serviceURI);
+                        currentAggregate.getWires().add(wire);
                     }
                 }
             }
@@ -543,16 +551,34 @@ public class SCDLContentHandlerImpl extends ScdlSwitch implements ModelContentHa
      * @see org.apache.tuscany.model.scdl.util.ScdlSwitch#caseModuleWire(org.apache.tuscany.model.scdl.ModuleWire)
      */
     public Object caseModuleWire(ModuleWire object) {
-        // TODO Auto-generated method stub
-        return super.caseModuleWire(object);
+        final Wire wire=factory.createWire();
+        wire.setSource(factory.createServiceURI(object.getSourceUri()));
+        wire.setTarget(factory.createServiceURI(object.getTargetUri()));
+
+        linkers.add(new Runnable() {
+            public void run() {
+                currentAggregate.getWires().add(wire);
+            };
+        });
+        
+        return wire; 
     }
     
     /**
      * @see org.apache.tuscany.model.scdl.util.ScdlSwitch#caseSystemWire(org.apache.tuscany.model.scdl.SystemWire)
      */
     public Object caseSystemWire(SystemWire object) {
-        // TODO Auto-generated method stub
-        return super.caseSystemWire(object);
+        final Wire wire=factory.createWire();
+        wire.setSource(factory.createServiceURI(object.getSource().toString()));
+        wire.setTarget(factory.createServiceURI(object.getTarget().toString()));
+
+        linkers.add(new Runnable() {
+            public void run() {
+                currentAggregate.getWires().add(wire);
+            };
+        });
+        
+        return wire; 
     }
     
     /**
@@ -564,7 +590,7 @@ public class SCDLContentHandlerImpl extends ScdlSwitch implements ModelContentHa
         for (SCDLModelLoader scdlModelLoader : scdlModelLoaders) {
                 
             // Invoke an SCDL loader to handle the specific implementation type
-            final ComponentImplementation implementation=(ComponentImplementation)scdlModelLoader.load(object);
+            final ComponentImplementation implementation=(ComponentImplementation)scdlModelLoader.load(modelContext, object);
             if (implementation!=null) {
                 component.setComponentImplementation(implementation);
                 return implementation;
@@ -591,7 +617,7 @@ public class SCDLContentHandlerImpl extends ScdlSwitch implements ModelContentHa
         for (SCDLModelLoader scdlModelLoader : scdlModelLoaders) {
                 
             // Invoke an SCDL loader to handle the specific binding type
-            final org.apache.tuscany.model.assembly.Binding binding=(org.apache.tuscany.model.assembly.Binding)scdlModelLoader.load(object);
+            final org.apache.tuscany.model.assembly.Binding binding=(org.apache.tuscany.model.assembly.Binding)scdlModelLoader.load(modelContext, object);
             if (binding!=null) {
                 bindings.add(binding);
                 return binding;

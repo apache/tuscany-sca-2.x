@@ -14,16 +14,36 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.model.scdl.loader;
+package org.apache.tuscany.model.assembly;
 
-import java.util.List;
-
-import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 
 /**
- * An assembly model loader.
+ * Represents a wire.
  */
-public interface SCDLAssemblyModelLoader extends AssemblyModelLoader {
+public interface Wire extends  Extensible {
 
-    List<SCDLModelLoader> getSCDLModelLoaders();
+    /**
+     * Returns the source URI
+     * @return
+     */
+    ServiceURI getSource();
+    
+    /**
+     * Sets the source URI
+     * @param uri
+     */
+    void setSource(ServiceURI uri);
+    
+    /**
+     * Returns the target URI
+     * @return
+     */
+    ServiceURI getTarget();
+    
+    /**
+     * Sets the target URI
+     * @param uri
+     */
+    void setTarget(ServiceURI uri);
+    
 }

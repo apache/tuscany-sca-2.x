@@ -55,7 +55,7 @@ public class SystemBootstrapTestCase extends TestCase {
      * Simulates booting a runtime process
      */
     public void testBoot() throws Exception {
-        RuntimeContext runtimeContext = new RuntimeContextImpl(new NullMonitorFactory(), builders,null);
+        RuntimeContext runtimeContext = new RuntimeContextImpl(new NullMonitorFactory(), null, builders,null);
         runtimeContext.start();
 
         AggregateContext systemContext = runtimeContext.getSystemContext();
@@ -86,7 +86,7 @@ public class SystemBootstrapTestCase extends TestCase {
     }
 
     public void testRuntimeBoot() throws Exception {
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders,null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), null, builders,null);
         runtime.start();
         runtime.getRootContext();
 

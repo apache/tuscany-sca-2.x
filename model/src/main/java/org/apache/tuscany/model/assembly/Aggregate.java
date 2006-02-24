@@ -87,4 +87,10 @@ public interface Aggregate extends Extensible {
      */
     List<AggregatePart> getAggregateParts();
 
+    /**
+     * Returns the wires.
+     * @return
+     */
+    List<Wire> getWires();
+    
 }

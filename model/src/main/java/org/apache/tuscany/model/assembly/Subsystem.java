@@ -17,6 +17,7 @@
 package org.apache.tuscany.model.assembly;
 
 
+
 /**
  * Represents a subsystem.
  */
@@ -34,4 +35,4 @@ public interface Subsystem extends Aggregate {
      */
     void setURI(String value);
 
-} // Subsystem
+}

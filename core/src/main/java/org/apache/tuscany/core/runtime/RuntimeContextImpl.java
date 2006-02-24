@@ -37,14 +37,11 @@ import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
-import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
-import org.apache.tuscany.core.message.MessageFactory;
-import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
 import org.apache.tuscany.model.assembly.Extensible;
+import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 
 /**
  * Implementation of a RuntimeContext that forms the foundation for a Tuscany environment.
@@ -54,6 +51,8 @@ import org.apache.tuscany.model.assembly.Extensible;
 public class RuntimeContextImpl extends AbstractContext implements RuntimeContext {
 
     private final List<RuntimeConfigurationBuilder> builders;
+
+    private final List<SCDLModelLoader> loaders;
 
     private final List<WireBuilder> wireBuilders;
 
@@ -69,7 +68,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
      * Default constructor that creates a runtime with a NullMonitorFactory and no builders.
      */
     public RuntimeContextImpl() {
-        this(new NullMonitorFactory(), null, null);
+        this(new NullMonitorFactory(), null, null, null);
     }
 
     /**
@@ -79,12 +78,13 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
      * @param builders a list of builders automatically made available; may be null
      * @param wireBuilders a list of wire builders automatically made available; may be null
      */
-    public RuntimeContextImpl(MonitorFactory monitorFactory, List<RuntimeConfigurationBuilder> builders,
+    public RuntimeContextImpl(MonitorFactory monitorFactory, List<SCDLModelLoader> loaders, List<RuntimeConfigurationBuilder> builders,
             List<WireBuilder> wireBuilders) {
         super(RUNTIME);
         this.monitorFactory = monitorFactory;
-        this.builders = (builders == null) ? new ArrayList(1) : new ArrayList(builders);
-        this.wireBuilders = (wireBuilders == null) ? new ArrayList(1) : new ArrayList(wireBuilders);
+        this.builders = (builders == null) ? new ArrayList(1) : builders;
+        this.loaders = (loaders == null) ? new ArrayList(1) : loaders;
+        this.wireBuilders = (wireBuilders == null) ? new ArrayList(1) : wireBuilders;
 
         rootContext = new AggregateContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this,
                 monitorFactory);
@@ -103,13 +103,14 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
      * @param wireBuilders a list of wire builders automatically made available; may be null
      */
     public RuntimeContextImpl(MonitorFactory monitorFactory, AggregateContext rootContext, SystemAggregateContext systemContext,
-            List<RuntimeConfigurationBuilder> builders, List<WireBuilder> wireBuilders) {
+            List<SCDLModelLoader> loaders, List<RuntimeConfigurationBuilder> builders, List<WireBuilder> wireBuilders) {
         super(RUNTIME);
         this.rootContext = rootContext;
         this.systemContext = systemContext;
         this.monitorFactory = monitorFactory;
-        this.builders = (builders == null) ? new ArrayList(1) : new ArrayList(builders);
-        this.wireBuilders = (wireBuilders == null) ? new ArrayList(1) : new ArrayList(wireBuilders);
+        this.loaders = (loaders == null) ? new ArrayList(1) : loaders;
+        this.builders = (builders == null) ? new ArrayList(1) : builders;
+        this.wireBuilders = (wireBuilders == null) ? new ArrayList(1) : wireBuilders;
     }
 
     public void start() throws CoreRuntimeException {
@@ -133,6 +134,11 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     public void addBuilder(RuntimeConfigurationBuilder builder) {
         assert (builder != null) : "Builder was null";
         builders.add(builder);
+    }
+    
+    public void addLoader(SCDLModelLoader loader) {
+        assert (loader != null) : "Loader was null";
+        loaders.add(loader);
     }
 
     public AggregateContext getContext(String ctxName) {

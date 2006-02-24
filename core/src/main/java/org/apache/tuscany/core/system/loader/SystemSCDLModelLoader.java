@@ -1,6 +1,5 @@
 package org.apache.tuscany.core.system.loader;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.scdl.ScdlFactory;
@@ -15,9 +14,7 @@ import org.apache.tuscany.sdo.util.SDOUtil;
  */
 public class SystemSCDLModelLoader implements SCDLModelLoader {
     
-    private AssemblyModelContext modelContext;
     private SystemAssemblyFactory systemFactory;
-    private ResourceLoader resourceLoader;
     
     static {
         // Register the system SCDL model
@@ -27,22 +24,20 @@ public class SystemSCDLModelLoader implements SCDLModelLoader {
     /**
      * Constructs a new JavaSCDLModelLoader.
      */
-    public SystemSCDLModelLoader(AssemblyModelContext modelContext) {
-        this.modelContext=modelContext;
-        this.resourceLoader=this.modelContext.getResourceLoader();
+    public SystemSCDLModelLoader() {
         this.systemFactory=new SystemAssemblyFactoryImpl();
     }
 
     /**
-     * @see org.apache.tuscany.model.scdl.loader.SCDLModelLoader#load(java.lang.Object)
+     * @see org.apache.tuscany.model.scdl.loader.SCDLModelLoader#load(org.apache.tuscany.model.assembly.AssemblyModelContext, java.lang.Object)
      */
-    public AssemblyModelObject load(Object object) {
+    public AssemblyModelObject load(AssemblyModelContext modelContext, Object object) {
         if (object instanceof SystemImplementation) {
             SystemImplementation scdlImplementation=(SystemImplementation)object;
             org.apache.tuscany.core.system.assembly.SystemImplementation implementation=systemFactory.createSystemImplementation();
             Class implementationClass;
             try {
-                implementationClass=resourceLoader.loadClass(scdlImplementation.getClass_());
+                implementationClass=modelContext.getResourceLoader().loadClass(scdlImplementation.getClass_());
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException(e);
             }

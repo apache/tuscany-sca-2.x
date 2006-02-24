@@ -89,7 +89,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
 
         wireBuilders.add(defaultWireBuilder);
 
-        RuntimeContext runtime = new RuntimeContextImpl(null, builders, wireBuilders);
+        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, wireBuilders);
         runtime.start();
         runtime.getRootContext().registerModelObject(
                 MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(), Scope.AGGREGATE));
@@ -134,7 +134,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         defaultWireBuilder.addWireBuilder(new JavaTargetWireBuilder());
         wireBuilders.add(defaultWireBuilder);
 
-        RuntimeContext runtime = new RuntimeContextImpl(null, builders, wireBuilders);
+        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, wireBuilders);
         runtime.start();
         runtime.getRootContext().registerModelObject(
                 MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),
@@ -182,7 +182,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         defaultWireBuilder.addWireBuilder(new JavaTargetWireBuilder());
         wireBuilders.add(defaultWireBuilder);
 
-        RuntimeContext runtime = new RuntimeContextImpl(null, builders, wireBuilders);
+        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, wireBuilders);
         runtime.start();
         runtime.getRootContext().registerModelObject(
                 MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),
@@ -227,7 +227,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         defaultWireBuilder.addWireBuilder(new JavaTargetWireBuilder());
         wireBuilders.add(defaultWireBuilder);
 
-        RuntimeContext runtime = new RuntimeContextImpl(null, builders, wireBuilders);
+        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, wireBuilders);
         runtime.start();
         runtime.getRootContext().registerModelObject(
                 MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),

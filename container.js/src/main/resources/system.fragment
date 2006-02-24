@@ -14,10 +14,16 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  -->
-<componentType xmlns="http://www.osoa.org/xmlns/sca/0.9">
+<moduleFragment xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
+        xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
+		name="org.apache.tuscany.container.js">
 
-    <service name="handler">
-        <interface.java interface="org.apache.tuscany.core.message.handler.MessageHandler"/>
-    </service>
+    <component name="org.apache.tuscany.container.js.builder.JavaScriptComponentContextBuilder">
+        <system:implementation.system class="org.apache.tuscany.container.js.builder.JavaScriptComponentContextBuilder"/>
+    </component>
 
-</componentType>
+    <component name="org.apache.tuscany.container.js.loader.JavaScriptSCDLModelLoader">
+        <system:implementation.system class="org.apache.tuscany.container.js.loader.JavaScriptSCDLModelLoader"/>
+    </component>
+
+</moduleFragment>

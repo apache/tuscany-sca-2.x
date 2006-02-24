@@ -35,7 +35,7 @@ import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.scdl.loader.SCDLAssemblyModelLoader;
+import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 
 /**
@@ -67,10 +67,11 @@ public class ModuleComponentConfigurationLoaderTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-        SCDLAssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl();
+        AssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl();
+        JavaSCDLModelLoader javaLoader=new JavaSCDLModelLoader();
+        modelLoader.getSCDLModelLoaders().add(javaLoader);
         modelContext=new AssemblyModelContextImpl(new AssemblyFactoryImpl(), modelLoader,
                 new ResourceLoaderImpl(this.getClass().getClassLoader()));
           loader = new ModuleComponentConfigurationLoaderImpl(modelContext);
-          modelLoader.getSCDLModelLoaders().add(new JavaSCDLModelLoader(modelContext));
     }
 }

@@ -19,6 +19,7 @@ import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.SystemAggregateContext;
+import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 
 /**
  * Represents a top-level component context in the runtime, that is the bootstrap context.
@@ -58,6 +59,11 @@ public interface RuntimeContext extends AutowireContext, ConfigurationContext {
      * Adds a configuration builder to the runtime
      */
     public void addBuilder(RuntimeConfigurationBuilder builder);
+
+    /**
+     * Adds an SCDL model loader to the runtime
+     */
+    public void addLoader(SCDLModelLoader loader);
 
     /**
      * Returns the monitor factory in use by the runtime

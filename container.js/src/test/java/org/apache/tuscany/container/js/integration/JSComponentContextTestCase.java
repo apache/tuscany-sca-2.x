@@ -75,7 +75,7 @@ public class JSComponentContextTestCase extends TestCase {
 
         wireBuilders.add(defaultWireBuilder);
 
-        RuntimeContext runtime = new RuntimeContextImpl(null, builders, wireBuilders);
+        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, wireBuilders);
         runtime.start();
         runtime.getRootContext().registerModelObject(
                 MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),

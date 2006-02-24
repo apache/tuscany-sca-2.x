@@ -30,7 +30,7 @@ import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.scdl.loader.SCDLAssemblyModelLoader;
+import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 
 /**
@@ -47,11 +47,11 @@ public class JavaAssemblyLoaderTestCase extends TestCase {
     public void testLoader() {
 
         ResourceLoader resourceLoader=new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader());
-        SCDLAssemblyModelLoader assemblyLoader=new SCDLAssemblyModelLoaderImpl();
+        AssemblyModelLoader assemblyLoader=new SCDLAssemblyModelLoaderImpl();
+        JavaSCDLModelLoader javaLoader=new JavaSCDLModelLoader();
+        assemblyLoader.getSCDLModelLoaders().add(javaLoader);
         AssemblyFactory assemblyFactory=new AssemblyFactoryImpl();
         AssemblyModelContext modelContext=new AssemblyModelContextImpl(assemblyFactory, assemblyLoader, resourceLoader);
-        
-        assemblyLoader.getSCDLModelLoaders().add(new JavaSCDLModelLoader(modelContext));
 
         Module module = assemblyLoader.getModule(getClass().getResource("sca.module").toString());
         module.initialize(modelContext);

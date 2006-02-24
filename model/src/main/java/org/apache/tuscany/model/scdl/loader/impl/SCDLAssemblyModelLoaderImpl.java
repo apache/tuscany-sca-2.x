@@ -16,8 +16,6 @@
  */
 package org.apache.tuscany.model.scdl.loader.impl;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -28,10 +26,9 @@ import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.ModuleFragment;
 import org.apache.tuscany.model.assembly.Subsystem;
-import org.apache.tuscany.model.scdl.loader.SCDLAssemblyModelLoader;
+import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 import org.apache.tuscany.model.util.ModelTransformer;
 import org.apache.tuscany.model.util.ModelTransformerImpl;
@@ -39,7 +36,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  */
-public class SCDLAssemblyModelLoaderImpl implements SCDLAssemblyModelLoader {
+public class SCDLAssemblyModelLoaderImpl implements AssemblyModelLoader {
     
     private static final String SCA_MODULE_FILE_NAME = "sca.module";
     //FIXME can fragments have a variable prefix name?
@@ -112,45 +109,6 @@ public class SCDLAssemblyModelLoaderImpl implements SCDLAssemblyModelLoader {
         return transform(scdlSubsystem).getSubsystem();
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#loadModuleComponent(java.lang.String, java.lang.String)
-     */
-    public ModuleComponent loadModuleComponent(String name, String uri) throws AssemblyModelLoadException {
-
-        // Load the sca.module file
-        URL url;
-        try {
-            url = resourceLoader.getResource(SCA_MODULE_FILE_NAME);
-        } catch (IOException e) {
-            throw new AssemblyModelLoadException(e);
-        }
-        if (url == null) {
-            throw new AssemblyModelLoadException(SCA_MODULE_FILE_NAME);
-        }
-        Module module=getModule(url.toString());
-
-        // Load the sca.fragment files
-        Iterator<URL> i;
-        try {
-            i = resourceLoader.getAllResources(SCA_FRAGMENT_FILE_NAME);
-        } catch (IOException e) {
-            throw new AssemblyModelLoadException(SCA_FRAGMENT_FILE_NAME, e);
-        }
-        while (i.hasNext()) {
-            ModuleFragment moduleFragment=getModuleFragment(i.next().toString());
-            module.getModuleFragments().add(moduleFragment);
-        }
-
-        // Create the module component
-        ModuleComponent moduleComponent=assemblyFactory.createModuleComponent();
-        moduleComponent.setName(name);
-        moduleComponent.setURI(uri);
-        moduleComponent.setComponentImplementation(module);
-        moduleComponent.initialize(modelContext);
-
-        return moduleComponent;
-    }
-    
     /**
      * @see org.apache.tuscany.model.scdl.loader.SCDLAssemblyModelLoader#getSCDLModelLoaders()
      */
