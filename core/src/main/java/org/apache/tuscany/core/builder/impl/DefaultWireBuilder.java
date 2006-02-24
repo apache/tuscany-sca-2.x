@@ -19,16 +19,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.core.builder.BuilderConfigException;
+import org.apache.tuscany.core.builder.HierarchicalWireBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.impl.MessageChannelImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.core.runtime.RuntimeContext;
-import org.apache.tuscany.core.system.annotation.Autowire;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
 
 /**
  * The top-most wire builder configured in a runtime. Responsible for constructing wires from source and target chains,
@@ -36,25 +33,13 @@ import org.osoa.sca.annotations.Scope;
  * 
  * @version $Rev$ $Date$
  */
-@Scope("MODULE")
-public class DefaultWireBuilder implements WireBuilder {
+public class DefaultWireBuilder implements HierarchicalWireBuilder {
 
     // collection configured wire builders
     private List<WireBuilder> builders = new ArrayList();
 
-    private RuntimeContext runtimeContext;
-
-    @Autowire
-    public void setRuntimeContext(RuntimeContext ctx) {
-        runtimeContext = ctx;
-    }
 
     public DefaultWireBuilder() {
-    }
-
-    @Init(eager = true)
-    public void init() {
-        runtimeContext.addBuilder(this);
     }
 
     /**

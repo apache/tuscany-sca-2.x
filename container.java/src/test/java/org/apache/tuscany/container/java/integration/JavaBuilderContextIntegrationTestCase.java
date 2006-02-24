@@ -29,7 +29,6 @@ import org.apache.tuscany.container.java.mock.MockAssemblyFactory;
 import org.apache.tuscany.container.java.mock.MockModuleFactory;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
-import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
@@ -83,13 +82,10 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         javaBuilder.setReferenceBuilder(refBuilder);
         builders.add(javaBuilder);
 
-        List<WireBuilder> wireBuilders = new ArrayList();
         DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
-        defaultWireBuilder.addWireBuilder(new JavaTargetWireBuilder());
 
-        wireBuilders.add(defaultWireBuilder);
-
-        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, wireBuilders);
+        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, defaultWireBuilder);
+        runtime.addBuilder(new JavaTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
                 MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(), Scope.AGGREGATE));
@@ -129,12 +125,9 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         javaBuilder.setReferenceBuilder(refBuilder);
         builders.add(javaBuilder);
 
-        List<WireBuilder> wireBuilders = new ArrayList();
         DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
-        defaultWireBuilder.addWireBuilder(new JavaTargetWireBuilder());
-        wireBuilders.add(defaultWireBuilder);
-
-        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, wireBuilders);
+        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, defaultWireBuilder);
+        runtime.addBuilder(new JavaTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
                 MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),
@@ -177,12 +170,10 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         javaBuilder.setReferenceBuilder(refBuilder);
         builders.add(javaBuilder);
 
-        List<WireBuilder> wireBuilders = new ArrayList();
         DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
-        defaultWireBuilder.addWireBuilder(new JavaTargetWireBuilder());
-        wireBuilders.add(defaultWireBuilder);
 
-        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, wireBuilders);
+        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, defaultWireBuilder);
+        runtime.addBuilder(new JavaTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
                 MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),
@@ -222,12 +213,11 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         javaBuilder.setReferenceBuilder(refBuilder);
         builders.add(javaBuilder);
 
-        List<WireBuilder> wireBuilders = new ArrayList();
         DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
-        defaultWireBuilder.addWireBuilder(new JavaTargetWireBuilder());
-        wireBuilders.add(defaultWireBuilder);
 
-        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, wireBuilders);
+        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, defaultWireBuilder);
+        runtime.addBuilder(new JavaTargetWireBuilder());
+        
         runtime.start();
         runtime.getRootContext().registerModelObject(
                 MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),

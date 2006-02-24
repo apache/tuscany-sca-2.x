@@ -9,6 +9,9 @@ import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.apache.tuscany.core.runtime.RuntimeContext;
+import org.apache.tuscany.core.system.annotation.Autowire;
+import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
 /**
@@ -20,7 +23,19 @@ import org.osoa.sca.annotations.Scope;
 @Scope("MODULE")
 public class JavaScriptTargetWireBuilder implements WireBuilder {
 
+    private RuntimeContext runtimeContext;
+
+    @Autowire
+    public void setRuntimeContext(RuntimeContext context) {
+        runtimeContext = context;
+    }
+
     public JavaScriptTargetWireBuilder() {
+    }
+
+    @Init(eager=true)
+    public void init() {
+        runtimeContext.addBuilder(this);
     }
 
     public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
@@ -43,7 +58,8 @@ public class JavaScriptTargetWireBuilder implements WireBuilder {
         }
     }
 
-    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
+    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
+            throws BuilderConfigException {
         if (!(JavaScriptComponentRuntimeConfiguration.class.isAssignableFrom(targetType))) {
             return;
         }

@@ -24,6 +24,7 @@ import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.config.impl.ModuleComponentConfigurationLoaderImpl;
@@ -110,7 +111,7 @@ public class TuscanyRuntime extends SCA {
         configBuilders.add(new SystemExternalServiceBuilder());
 
         // Create a runtime context and start it
-        runtimeContext = new RuntimeContextImpl(monitorFactory, scdlLoaders, configBuilders,null);
+        runtimeContext = new RuntimeContextImpl(monitorFactory, scdlLoaders, configBuilders,new DefaultWireBuilder());
         runtimeContext.start();
         monitor.started(runtimeContext);
 

@@ -19,9 +19,11 @@ import java.util.List;
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
+import org.apache.tuscany.core.builder.HierarchicalWireBuilder;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
+import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.core.context.AggregateContext;
@@ -54,7 +56,9 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
     private final List<SCDLModelLoader> loaders;
 
-    private final List<WireBuilder> wireBuilders;
+    // private final List<WireBuilder> wireBuilders;
+    // the top-level wire builder in the runtime
+    private final HierarchicalWireBuilder wireBuilder;
 
     private final List<RuntimeEventListener> listeners = new ArrayList(1);
 
@@ -76,15 +80,15 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
      * 
      * @param monitorFactory the default {@link MonitorFactory} for this runtime
      * @param builders a list of builders automatically made available; may be null
-     * @param wireBuilders a list of wire builders automatically made available; may be null
+     * @param wireBuilder the top-level hierarchical wire builder for the runtime; may be null
      */
-    public RuntimeContextImpl(MonitorFactory monitorFactory, List<SCDLModelLoader> loaders, List<RuntimeConfigurationBuilder> builders,
-            List<WireBuilder> wireBuilders) {
+    public RuntimeContextImpl(MonitorFactory monitorFactory, List<SCDLModelLoader> loaders,
+            List<RuntimeConfigurationBuilder> builders, HierarchicalWireBuilder wireBuilder) {
         super(RUNTIME);
         this.monitorFactory = monitorFactory;
         this.builders = (builders == null) ? new ArrayList(1) : builders;
         this.loaders = (loaders == null) ? new ArrayList(1) : loaders;
-        this.wireBuilders = (wireBuilders == null) ? new ArrayList(1) : wireBuilders;
+        this.wireBuilder = (wireBuilder == null) ? new DefaultWireBuilder() : wireBuilder;
 
         rootContext = new AggregateContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this,
                 monitorFactory);
@@ -100,17 +104,17 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
      * @param rootContext the context to use for the root of the user context tree
      * @param systemContext the context to use for the root of the system context tree
      * @param builders a list of builders automatically made available; may be null
-     * @param wireBuilders a list of wire builders automatically made available; may be null
+     * @param wireBuilder the top-level hierarchical wire builder for the runtime; may be null
      */
     public RuntimeContextImpl(MonitorFactory monitorFactory, AggregateContext rootContext, SystemAggregateContext systemContext,
-            List<SCDLModelLoader> loaders, List<RuntimeConfigurationBuilder> builders, List<WireBuilder> wireBuilders) {
+            List<SCDLModelLoader> loaders, List<RuntimeConfigurationBuilder> builders, HierarchicalWireBuilder wireBuilder) {
         super(RUNTIME);
         this.rootContext = rootContext;
         this.systemContext = systemContext;
         this.monitorFactory = monitorFactory;
         this.loaders = (loaders == null) ? new ArrayList(1) : loaders;
         this.builders = (builders == null) ? new ArrayList(1) : builders;
-        this.wireBuilders = (wireBuilders == null) ? new ArrayList(1) : wireBuilders;
+        this.wireBuilder = (wireBuilder == null) ? new DefaultWireBuilder() : wireBuilder;
     }
 
     public void start() throws CoreRuntimeException {
@@ -138,7 +142,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
     public void addBuilder(WireBuilder builder) {
         assert (builder != null) : "Builder was null";
-        wireBuilders.add(builder);
+        wireBuilder.addWireBuilder(builder);
     }
 
     public void addLoader(SCDLModelLoader loader) {
@@ -228,20 +232,17 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
     public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) throws BuilderConfigException {
-        for (WireBuilder wireBuilder : wireBuilders) {
-            wireBuilder.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
-        }
+        wireBuilder.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
     }
 
     public void wire(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
-        for (WireBuilder wireBuilder : wireBuilders) {
-            wireBuilder.completeTargetChain(targetFactory, targetType, targetScopeContext);
-        }
+        wireBuilder.completeTargetChain(targetFactory, targetType, targetScopeContext);
     }
+
     // ----------------------------------
     // AutowireContext methods
     // ----------------------------------
-    
+
     public <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException {
         if (MonitorFactory.class.equals(instanceInterface)) {
             return instanceInterface.cast(monitorFactory);
@@ -257,18 +258,18 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         }
     }
 
-    //----------------------------------
+    // ----------------------------------
     // InstanceContext methods
-    //----------------------------------
+    // ----------------------------------
 
-    public Object getImplementationInstance() throws TargetException{
+    public Object getImplementationInstance() throws TargetException {
         return this;
     }
 
-    public Object getImplementationInstance(boolean notify) throws TargetException{
+    public Object getImplementationInstance(boolean notify) throws TargetException {
         return this;
     }
-    
+
     // ----------------------------------
     // Private methods
     // ----------------------------------
