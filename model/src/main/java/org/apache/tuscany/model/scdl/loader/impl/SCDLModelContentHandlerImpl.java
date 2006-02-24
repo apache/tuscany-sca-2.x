@@ -552,8 +552,8 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
      */
     public Object caseModuleWire(ModuleWire object) {
         final Wire wire=factory.createWire();
-        wire.setSource(factory.createServiceURI(object.getSourceUri()));
-        wire.setTarget(factory.createServiceURI(object.getTargetUri()));
+        wire.setSource(factory.createServiceURI(null, object.getSourceUri()));
+        wire.setTarget(factory.createServiceURI(null, object.getTargetUri()));
 
         linkers.add(new Runnable() {
             public void run() {
