@@ -1,12 +1,5 @@
 package org.apache.tuscany.binding.axis.loader;
 
-import java.util.Collection;
-import java.util.List;
-
-import javax.wsdl.Definition;
-import javax.wsdl.Port;
-import javax.wsdl.Service;
-
 import org.apache.tuscany.binding.axis.assembly.WebServiceAssemblyFactory;
 import org.apache.tuscany.binding.axis.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis.assembly.impl.WebServiceAssemblyFactoryImpl;

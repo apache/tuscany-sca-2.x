@@ -31,7 +31,7 @@ import org.apache.axis.EngineConfiguration;
 import org.apache.axis.server.AxisServer;
 import org.apache.axis.transport.http.AxisServlet;
 
-import org.apache.tuscany.binding.axis.config.AxisEngineConfigurationFactory;
+import org.apache.tuscany.binding.axis.engine.config.AxisEngineConfigurationFactory;
 import org.apache.tuscany.core.context.webapp.TuscanyWebAppRuntime;
 
 /**

@@ -119,11 +119,11 @@ public class WebServiceOperationMetaData {
             if (message.getQName().equals(msgName)) {
                 part = message.getPart(soapHeader.getPart());
             }
-        } else if (extensibilityElement instanceof org.eclipse.wst.wsdl.binding.soap.SOAPHeader) {
-            org.eclipse.wst.wsdl.binding.soap.SOAPHeader soapHeader = (org.eclipse.wst.wsdl.binding.soap.SOAPHeader) extensibilityElement;
-            QName msgName = soapHeader.getMessage().getQName();
+        } else if (extensibilityElement instanceof SOAPHeader) {
+            SOAPHeader soapHeader = (SOAPHeader) extensibilityElement;
+            QName msgName = soapHeader.getMessage();
             if (message.getQName().equals(msgName)) {
-                part = soapHeader.getPart();
+                part = message.getPart(soapHeader.getPart());
             }
         }
         return part;

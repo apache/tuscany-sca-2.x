@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.binding.axis.config;
+package org.apache.tuscany.binding.axis.engine.config;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,7 +45,7 @@ import org.apache.tuscany.binding.axis.handler.WebServiceEntryPointBean;
 import org.apache.tuscany.binding.axis.handler.WebServiceOperationMetaData;
 import org.apache.tuscany.binding.axis.handler.WebServicePortMetaData;
 import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
+import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.webapp.TuscanyWebAppRuntime;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
@@ -107,7 +107,7 @@ public class AxisEngineConfigurationFactory implements EngineConfigurationFactor
         AssemblyFactory assemblyFactory = new AssemblyFactoryImpl();
 
         // Get the current SCA module context
-        TuscanyModuleComponentContext moduleContext = tuscanyRuntime.getModuleComponentContext();
+        AggregateContext moduleContext = tuscanyRuntime.getModuleComponentContext();
         tuscanyRuntime.start();
         try {
 

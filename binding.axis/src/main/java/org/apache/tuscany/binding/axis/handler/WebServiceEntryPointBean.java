@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import javax.wsdl.Definition;
 import javax.wsdl.Operation;
 import javax.xml.namespace.QName;
@@ -31,18 +32,11 @@ import org.apache.axis.MessageContext;
 import org.apache.axis.message.MessageElement;
 import org.apache.axis.message.SOAPBody;
 import org.apache.axis.message.SOAPEnvelope;
-import org.osoa.sca.CurrentModuleContext;
-import org.osoa.sca.ServiceRuntimeException;
-import org.osoa.sca.model.WebServiceBinding;
-
+import org.apache.tuscany.binding.axis.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis.mediator.SOAPMediator;
 import org.apache.tuscany.binding.axis.mediator.impl.SOAPDocumentLiteralMediatorImpl;
-import org.apache.tuscany.binding.axis.mediator.impl.SOAPEnvelopeImpl;
-import org.apache.tuscany.binding.axis.mediator.impl.SOAPRPCEncodedMediatorImpl;
-import org.apache.tuscany.binding.axis.mediator.impl.SOAPRPCLiteralMediatorImpl;
 import org.apache.tuscany.core.addressing.EndpointReference;
 import org.apache.tuscany.core.addressing.impl.AddressingFactoryImpl;
-import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
@@ -50,14 +44,13 @@ import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.ServiceContract;
 import org.apache.tuscany.model.assembly.Module;
+import org.apache.tuscany.model.assembly.ServiceContract;
 import org.apache.tuscany.model.assembly.ServiceURI;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
-import org.apache.tuscany.model.types.InterfaceType;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
-import org.apache.tuscany.model.types.wsdl.WSDLOperationType;
-import org.apache.tuscany.model.types.wsdl.WSDLTypeHelper;
+import org.osoa.sca.CurrentModuleContext;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  *         <p/>

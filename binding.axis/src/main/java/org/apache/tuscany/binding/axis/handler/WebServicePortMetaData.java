@@ -34,14 +34,13 @@ import javax.xml.soap.SOAPBodyElement;
 import javax.xml.soap.SOAPElement;
 
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
-import org.w3c.dom.Element;
 
 /**
  * Metadata for a WSDL port
  *
  */
 public class WebServicePortMetaData {
-    private final static String SOAP_ENCODING_URI = "http://schemas.xmlsoap.org/wsdl/soap/";
+    
     private Service wsdlService;
 
     private QName wsdlServiceName;
@@ -275,14 +274,6 @@ public class WebServicePortMetaData {
             }
         }
         return signature;
-    }
-
-    public static String getSOAPEncodingAttribute(org.eclipse.wst.wsdl.ExtensibilityElement extensibilityElement, String elementName, String attributeName) {
-        Element element = extensibilityElement.getElement();
-        if (SOAP_ENCODING_URI.equals(element.getNamespaceURI()) && elementName.equals(element.getLocalName())) {
-            return element.getAttribute(attributeName);
-        } else
-            return null;
     }
 
     public WebServiceOperationMetaData getOperationMetaData(javax.xml.soap.SOAPBody body) {

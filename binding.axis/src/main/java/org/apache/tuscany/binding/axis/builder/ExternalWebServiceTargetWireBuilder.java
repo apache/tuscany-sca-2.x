@@ -13,8 +13,7 @@
  */
 package org.apache.tuscany.binding.axis.builder;
 
-import org.apache.tuscany.container.java.config.JavaComponentRuntimeConfiguration;
-import org.apache.tuscany.container.java.handler.ScopedJavaComponentInvoker;
+import org.apache.tuscany.binding.axis.config.ExternalWebServiceRuntimeConfiguration;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.ScopeContext;
@@ -24,14 +23,14 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
 /**
- * Completes a wire to a Java-based target component by adding a scoped java invoker to the source chain
+ * Completes a wire to an external web service by adding a scoped invoker to the source chain
  * 
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class JavaTargetWireBuilder implements WireBuilder {
+public class ExternalWebServiceTargetWireBuilder implements WireBuilder {
 
-    public JavaTargetWireBuilder() {
+    public ExternalWebServiceTargetWireBuilder() {
     }
 
     @Init(eager = true)
@@ -40,7 +39,7 @@ public class JavaTargetWireBuilder implements WireBuilder {
 
     public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) throws BuilderConfigException {
-        if (!(JavaComponentRuntimeConfiguration.class.isAssignableFrom(targetType))) {
+        if (!(ExternalWebServiceRuntimeConfiguration.class.isAssignableFrom(targetType))) {
             return;
         }
         for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations()
