@@ -20,37 +20,45 @@ import java.util.List;
 
 
 /**
- * Represents an entry point.
+ * An entry point exposed by its containing {@link Aggregate}.
+ * References from outside the Aggregate can only be connected to its entry points.
  */
 public interface EntryPoint extends AggregatePart, Extensible {
 
     /**
-     * Returns the bindings used by this entry point.
+     * Returns the bindings supported by this entry point.
+     * A single entry point may be bound to multiple transports.
+     *
+     * @return a list of bindings supported by this entry point
      */
     List<Binding> getBindings();
 
     /**
-     * Returns the configured service exposed by this external service.
-     * @return
+     * Returns the configured service exposed by this entry point.
+     *
+     * @return the configured service exposed by this entry point
      */
     ConfiguredService getConfiguredService();
 
     /**
-     * Sets the configured service exposed by this external service.
-     * @param configuredService
+     * Sets the configured service exposed by this entry point.
+     *
+     * @param configuredService the configured service exposed by this entry point
      */
     void setConfiguredService(ConfiguredService configuredService);
 
     /**
-     * Returns the configured reference wiring this entry point to the published service.
-     * @return
+     * Returns the configured reference that wires this entry point to the published service inside the aggregate.
+     *
+     * @return the reference that wires this entry point to the published service
      */
     ConfiguredReference getConfiguredReference();
 
     /**
-     * Sets the configured reference wiring this entry point to the published service.
-     * @param configuredReference
+     * Sets the configured reference that wires this entry point to the published service inside the aggregate.
+     *
+     * @param configuredReference the configured reference that wires this entry point to the published service inside the aggregate
      */
     void setConfiguredReference(ConfiguredReference configuredReference);
-    
+
 }

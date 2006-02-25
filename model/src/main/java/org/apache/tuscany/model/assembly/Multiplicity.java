@@ -21,10 +21,27 @@ package org.apache.tuscany.model.assembly;
  * Enumeration for multiplicity.
  */
 public enum Multiplicity {
-
+    /**
+     * Indicates a relationship that is optionally connected to the requestor and which, if supplied,
+     * must be connected to exactly one provider.
+     */
     ZERO_ONE,
+
+    /**
+     * Indicates a relationship that must be connected between exactly one requestor and
+     * exactly one provider.
+     */
     ONE_ONE,
+
+    /**
+     * Indicates a relationship that is optionally connects the requestor to zero to unbounded providers.
+     */
     ZERO_N,
-    ONE_N,
+
+    /**
+     * Indicates a relationship that must be connected at the requestor and which connects it to
+     * zero to unbounded providers.
+     */
+    ONE_N
 
 }

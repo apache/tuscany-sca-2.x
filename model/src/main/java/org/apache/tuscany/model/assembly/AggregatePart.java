@@ -17,24 +17,24 @@
 package org.apache.tuscany.model.assembly;
 
 /**
- * Represents a part of an aggregate (a component, an external service or an entry point).
+ * A configured object that is contained inside an {@link Aggregate}.
  */
 public interface AggregatePart extends AssemblyModelObject {
-
     /**
-     * Returns the name of the part.
+     * Returns the name that uniquely identifies this part within its containing aggregate.
+     * @return the name that uniquely identifies this part within its containing aggregate
      */
     String getName();
 
     /**
-     * Sets name of the part.
+     * Sets the name that uniquely identifies this part within its containing aggregate.
+     * @param value the name that uniquely identifies this part within its containing aggregate
      */
     void setName(String value);
 
     /**
-     * Returns the aggregate containing this aggregate part.
-     * @return
+     * Returns the aggregate that contains this part.
+     * @return the aggregate that contains this part
      */
     Aggregate getAggregate();
-    
 }

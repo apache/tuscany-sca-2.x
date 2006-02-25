@@ -17,27 +17,28 @@
 package org.apache.tuscany.model.assembly;
 
 /**
- * Base interface for assembly model objects.
+ * Base interface for all assembly model objects providing methods for managing the model itself.
  */
 public interface AssemblyModelObject {
 
     /**
      * Initialize this model object.
      * 
-     * @param modelContext
+     * @param modelContext context providing access to the environment in which this model is being used
      * @throws ModelInitException if an error ocurrs initializing the artifact
      */
     void initialize(AssemblyModelContext modelContext) throws ModelInitException;
 
     /**
-     * Freeze this model object.
+     * Freeze this model object preventing any additional changes.
      */
     void freeze();
 
     /**
      * Accept a visitor
      * 
-     * @param visitor
+     * @param visitor a visitor that is visiting the model
+     * @return true if processing is complete and the visitor should stop traversing the model
      */
     boolean accept(AssemblyModelVisitor visitor);
 

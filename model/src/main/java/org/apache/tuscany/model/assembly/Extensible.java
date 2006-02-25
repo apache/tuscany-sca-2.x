@@ -19,19 +19,19 @@ package org.apache.tuscany.model.assembly;
 import java.util.List;
 
 /**
- * Represents an extensible model object.
+ * An extensible model object.
+ * TODO do we actually need this given we have the ability to load specializations of individual model objects
+ * TODO is this the bext interface for this?
  */
 public interface Extensible extends AssemblyModelObject {
 
     /**
      * Returns the extensibility elements.
-     * @return
      */
     List getExtensibilityElements();
 
     /**
      * Returns the extensibility attributes.
-     * @return
      */
     List getExtensibilityAttributes();
 

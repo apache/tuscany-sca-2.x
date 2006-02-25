@@ -19,28 +19,30 @@ package org.apache.tuscany.model.assembly;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 
-
 /**
+ * Context object supplied by visitors that are processing the model.
  */
 public interface AssemblyModelContext {
 
     /**
-     * Returns a model factory.
+     * Returns a factory that can be used to create other model objects
      *
-     * @return
+     * @return a factory for model objects
      */
     AssemblyFactory getAssemblyFactory();
 
     /**
-     * Returns a resource loader
-     * @return
+     * Returns a loader for resources in the current environment
+     *
+     * @return a resource loader
      */
     ResourceLoader getResourceLoader();
-    
+
     /**
-     * Returns an assembly loader.
-     * @return
+     * Returns a loader that can be used to load sub-models.
+     *
+     * @return a loader for sub-models
      */
     AssemblyModelLoader getAssemblyLoader();
-    
+
 }

@@ -16,33 +16,32 @@
  */
 package org.apache.tuscany.model.assembly;
 
-
 /**
- * Represents a configured property.
+ * The configured value of a {@link Property}.
  */
 public interface ConfiguredProperty extends AssemblyModelObject {
 
     /**
-     * Returns the property definition.
-     * @return
+     * Returns the {@link Property} whose value is being set.
+     * @return the {@link Property} whose value is being set
      */
     Property getProperty();
 
     /**
-     * Sets the property definition
-     * @param property
+     * Sets the {@link Property} whose value is being set.
+     * @param property the {@link Property} whose value is being set
      */
     void setProperty(Property property);
 
     /**
-     * Returns the property value
-     * @return
+     * Returns the value being set for this usage of the {@link Property}.
+     * @return the value being set for this usage of the {@link Property}
      */
     Object getValue();
 
     /**
-     * Sets the property value
-     * @param value
+     * Sets the value being set for this usage of the {@link Property}.
+     * @param value the value being set for this usage of the {@link Property}
      */
     void setValue(Object value);
 	

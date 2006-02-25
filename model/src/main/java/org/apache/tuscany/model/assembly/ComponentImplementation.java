@@ -18,19 +18,22 @@ package org.apache.tuscany.model.assembly;
 
 
 /**
- * Represents a component implementation.
+ * The implementation for a specific component instance.
+ * This interface will typically be extended by component type implementations to indicate the
+ * specific implementation to be used by a runtime and to allow for additional runtime configuration
+ * properties.
  */
 public interface ComponentImplementation extends Extensible, RuntimeConfigurationHolder {
 
     /**
-     * Returns the component type describing this implementation.
-     * @return
+     * Returns the generic component type corresponding to this implementation.
+     * @return the generic component type corresponding to this implementation
      */
     ComponentType getComponentType();
     
     /**
-     * Sets the component type describing this implementation.
-     * @param componentType
+     * Sets the generic component type corresponding to this implementation.
+     * @param componentType the generic component type corresponding to this implementation
      */
     void setComponentType(ComponentType componentType);
 

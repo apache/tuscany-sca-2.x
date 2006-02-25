@@ -21,25 +21,31 @@ import java.util.List;
 import javax.wsdl.Import;
 
 /**
- * Represents an aggregate. An aggregate contains AggregateParts (e.g. components, entry points
- * and external services).
+ * A model object that describes a container for other module objects, which must be {@link AggregatePart}s.
  */
 public interface Aggregate extends Extensible {
 
     /**
      * Returns the name of the aggregate.
-     * @return
+     * @return the name of the aggregate
      */
     String getName();
 
     /**
      * Sets the name of the aggregate.
-     * @param value
+     * @param name the name of the aggregate
      */
-    void setName(String value);
+    void setName(String name);
 
     /**
-     * Returns the entry points contained in this aggregate.
+     * Returns the AggregatePart objects that are contained in this aggregate.
+     * @return the AggregatePart objects that are contained in this aggregate
+     */
+    List<AggregatePart> getAggregateParts();
+
+    /**
+     * Helper method that returns all entry points contained in this aggregate.
+     * @return a list of all EntryPoint model objects driectly contained in this aggregate
      */
     List<EntryPoint> getEntryPoints();
 
@@ -51,7 +57,7 @@ public interface Aggregate extends Extensible {
     EntryPoint getEntryPoint(String name);
 
     /**
-     * Returns the components contained in this aggregate.
+     * Helper method that returns all entry points contained in this aggregate.
      * @return
      */
     List<Component> getComponents();
@@ -82,12 +88,6 @@ public interface Aggregate extends Extensible {
      * @return
      */
     ConfiguredService getConfiguredService(ServiceURI address);
-
-    /**
-     * Returns the AggregateParts in this aggregate
-     * @return
-     */
-    List<AggregatePart> getAggregateParts();
 
     /**
      * Returns the wires.

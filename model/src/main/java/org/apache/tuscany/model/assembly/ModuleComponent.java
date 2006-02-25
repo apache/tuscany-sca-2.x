@@ -17,30 +17,31 @@
 package org.apache.tuscany.model.assembly;
 
 /**
- * Represents a module component.
+ * Specialization of Component that represents a configured {@link Module}.
  */
 public interface ModuleComponent extends Component {
-
+    // todo do we need this or can we just override getComponentImplementation() ?
     /**
      * Returns the module implementing this module component.
-     * @return
+     * @return the module implementing this module component
      */
     Module getModuleImplementation();
 
     /**
      * Set the module implementing this module component.
-     * @param module
+     * @param module the module implementing this module component
      */
     void setModuleImplementation(Module module);
 
     /**
-     * Returns the uri of the module component.
+     * Returns the uri that uniquely identifies this module component.
+     * @return the uri that uniquely identifies this module component
      */
     String getURI();
 
     /**
-     * Sets the uri of the module component.
+     * Sets the uri that uniquely identifies this module component.
+     * @param uri the uri that uniquely identifies this module component
      */
-    void setURI(String value);
-
+    void setURI(String uri);
 }

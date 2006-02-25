@@ -23,32 +23,34 @@ package org.apache.tuscany.model.assembly;
 public interface ConfiguredPort extends AssemblyModelObject, RuntimeConfigurationHolder {
 
     /**
-     * Returns the port definition.
-     * @return
+     * Returns the port that is being configured.
+     * @return the port that is being configured
      */
     Port getPort();
 
     /**
-     * Sets the port definition.
-     * @param port
+     * Sets the port that is being configured.
+     * @param port the port that is being configured
      */
     void setPort(Port port);
 
     /**
      * Returns the aggregate part containing this port.
-     * @return
+     * @return the aggregate part that contains this port
      */
     AggregatePart getAggregatePart();
     
     /**
      * Returns the port's proxy factory
-     * @return
+     * @return the port's proxy factory
+     * todo should this be here or should it be provided in a sub-interface?
      */
     Object getProxyFactory();
 
     /**
      * Sets the port's proxy factory
-     * @param proxyFactory
+     * @param proxyFactory the port's proxy factory
+     * todo should this be here or should it be provided in a sub-interface?
      */
     void setProxyFactory(Object proxyFactory);
 	

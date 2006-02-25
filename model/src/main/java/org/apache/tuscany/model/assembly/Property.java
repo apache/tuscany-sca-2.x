@@ -18,68 +18,73 @@ package org.apache.tuscany.model.assembly;
 
 
 /**
- * Represents a property definition.
+ * A description of a property that can be used to configure a component.
  */
 public interface Property extends Extensible {
-    
-    /**
-     * Returns the default value of the property.
-     * @return
-     */
-    Object getDefaultValue();
-
-    /**
-     * Sets the default value of the property.
-     * @param value
-     */
-    void setDefaultValue(Object value);
-
-    /**
-     * Returns true if the property allows multiple values.
-     * @return
-     */
-    boolean isMany();
-
-    /**
-     * Sets whether or not the property allows many values.
-     * @param value
-     */
-    void setMany(boolean value);
+    // todo should we decalre this as Property<T> where T would be the type of this Property?
 
     /**
      * Returns the property name.
-     * @return
+     * @return the property name
      */
     String getName();
 
     /**
      * Sets the property name.
-     * @param value
+     * @param name the property name
      */
-    void setName(String value);
+    void setName(String name);
 
     /**
-     * Returns true if the property is required.
-     * @return
+     * Returns the default value of the property.
+     * @return the default value of ths property
+     */
+    Object getDefaultValue();
+
+    /**
+     * Sets the default value of the property.
+     * @param value the default value of ths property
+     */
+    void setDefaultValue(Object value);
+
+    /**
+     * Returns true if the property allows multiple values.
+     * @return true if the property allows multiple values
+     */
+    boolean isMany();
+
+    /**
+     * Sets whether or not the property allows multiple values.
+     * @param value true if the property should allow multiple values
+     */
+    void setMany(boolean value);
+
+    /**
+     * Returns true if a value must be supplied for the property.
+     * @return true is a value must be supplied for the property
      */
     boolean isRequired();
 
     /**
-     * Sets the whether or not the property is required.
-     * @param value
+     * Sets whether a value must be supplied for the property.
+     * For ease of use, it is recommended that a meaningful default value should
+     * be supplied for all properties; users should only be required to specify
+     * a value if there is no reasonable default.
+     *
+     * @param value set to true to require that a value be supplied for uses of this property
      */
     void setRequired(boolean value);
 
     /**
-     * Returns the property type.
-     * @return
+     * Returns the type of this property as used by the runtime.
+     * @return the type of this property as used by the runtime
      */
     Class getType();
 
     /**
-     * Sets the property type.
-     * @param value
+     * Sets the type of this property as used by the runtime
+     * @param value the type of this property as used by the runtime
      */
     void setType(Class value);
 
-} // Property
+}

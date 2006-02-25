@@ -16,46 +16,46 @@
  */
 package org.apache.tuscany.model.assembly;
 
-
-
 /**
- * Represents service contract.
+ * The contract specified by a requestor or provider for invocations across a port.
  */
 public interface ServiceContract extends Extensible {
 
     /**
-     * Returns the interface.
-     * @return
+     * Returns the interface for invocations from the requestor to the provider.
+     * @return the interface for invocations from the requestor to the provider
      */
     Class getInterface();
 
     /**
-     * Sets the interface.
-     * @param value
+     * Sets the interface for invocations from the requestor to the provider.
+     * @param value the interface for invocations from the requestor to the provider
      */
     void setInterface(Class value);
     
     /**
-     * Returns the callback interface.
-     * @return
+     * Returns the callback interface for invocation from the provider back to its requestor.
+     * @return the callback interface for invocation from the provider back to its requestor
      */
     Class getCallbackInterface();
 
     /**
-     * Sets the callback interface.
-     * @param value
+     * Sets the callback interface for invocation from the provider back to its requestor.
+     * @param value the callback interface for invocation from the provider back to its requestor
      */
     void setCallbackInterface(Class value);
     
     /**
      * Returns the scope of this service contract.
      * @return
+     * todo missing javadoc
      */
     Scope getScope();
 
     /**
      * Sets the scope.
      * @param scope of this service contract.
+     * todo missing javadoc
      */
     void setScope(Scope scope);
 

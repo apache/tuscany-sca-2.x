@@ -20,34 +20,40 @@ import java.util.List;
 
 
 /**
- * Represents an external service.
+ * An external service consumed by its containing {@link Aggregate}.
+ * All references used by the aggregate are specified as external services.
  */
 public interface ExternalService extends AggregatePart, Extensible {
 
     /**
-     * Returns the bindings configured on this external service.
+     * Returns the bindings that can be used by operations on this external service.
+     * A single external service may be bound to multiple transports.
      */
     List<Binding> getBindings();
 
     /**
-     * Returns the override option.
+     * Returns the override option that determines if any wiring for this external service
+     * that is contained in this aggregate can be overridden by wired supplied from outside.
      */
     OverrideOption getOverrideOption();
 
     /**
-     * Sets the override option.
+     * Set the override option that determines if any wiring for this external service
+     * that is contained in this aggregate can be overridden by wired supplied from outside.
+     *
+     * @param value the option that determines how wires can be overriden
      */
     void setOverrideOption(OverrideOption value);
 
     /**
-     * Returns the configured service exposed by this external service.
-     * @return
+     * Returns the configured service that this external service provides to other parts of the containing aggregate.
+     * @return the configured service that this external service provides to other parts of the containing aggregate
      */
     ConfiguredService getConfiguredService();
 
     /**
-     * Sets the configured service exposed by this external service.
-     * @param configuredService
+     * Sets  the configured service that this external service provides to other parts of the containing aggregate
+     * @param configuredService the configured service that this external service provides to other parts of the containing aggregate
      */
     void setConfiguredService(ConfiguredService configuredService);
 }

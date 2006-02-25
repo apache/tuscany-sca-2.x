@@ -18,12 +18,23 @@
 package org.apache.tuscany.model.assembly;
 
 /**
- * Enumeration for override options.
+ * Enumeration for override options that are used to control whether configuration information
+ * can be overridden by larger grained definitions.
  */
 public enum OverrideOption {
-    
+    /**
+     * Indicates that the supplied configuration cannot be overridden.
+     */
     NO,
+
+    /**
+     * Indicates that the supplied configuration may be overriden.
+     */
     MAY,
-    MUST;
+
+    /**
+     * Indicates that the supplied configuration must be overriden.
+     */
+    MUST
 
 }

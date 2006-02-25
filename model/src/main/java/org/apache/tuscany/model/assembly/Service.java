@@ -18,8 +18,7 @@ package org.apache.tuscany.model.assembly;
 
 
 /**
- * Represents a service.
+ * The association of a port with a provider.
  */
 public interface Service extends Port {
-
 }

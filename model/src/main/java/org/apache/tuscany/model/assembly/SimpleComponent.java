@@ -18,9 +18,8 @@ package org.apache.tuscany.model.assembly;
 
 
 /**
- * Represents a simple component (as opposed to a component implemented by an aggregate, like a module component)
+ * A simple component, specifically not an {@link Aggregate}.
  */
 public interface SimpleComponent extends Component {
-
 }
  

@@ -17,19 +17,19 @@
 package org.apache.tuscany.model.assembly;
 
 /**
- * Represents a model object that can hold a runtime configuration object.
+ * A model object that can hold a runtime configuration object.
  */
 public interface RuntimeConfigurationHolder {
 
     /**
-     * Sets the runtime configuration
-     * @param configuration
+     * Sets the runtime configuration object.
+     * @param configuration the runtime configuration object
      */
     void setRuntimeConfiguration(Object configuration);
 
     /**
-     * Returns the runtime configuration
-     * @return
+     * Returns the runtime configuration object.
+     * @return the runtime configuration object
      */
     Object getRuntimeConfiguration();
 

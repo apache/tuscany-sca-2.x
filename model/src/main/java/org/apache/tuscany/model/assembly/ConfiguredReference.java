@@ -19,25 +19,25 @@ package org.apache.tuscany.model.assembly;
 import java.util.List;
 
 /**
- * Represents a configured reference.
+ * A configured reference associated with a particular usage.
  */
 public interface ConfiguredReference extends ConfiguredPort {
 
     /**
-     * Returns the reference definition.
-     * @return
+     * Returns the {@link Reference} that is being configured.
+     * @return the {@link Reference} that is being configured
      */
     Reference getReference();
 
     /**
-     * Sets the reference definition.
-     * @return
+     * Sets the {@link Reference} that is being configured.
+     * @param reference the {@link Reference} that is being configured
      */
     void setReference(Reference reference);
 
     /**
-     * Returns the target configured services wired to this configured reference.
-     * @return
+     * Returns the list of configured services that are wired to this configured reference.
+     * @return the list of configured services that are wired to this configured reference
      */
     List<ConfiguredService> getTargetConfiguredServices();
 

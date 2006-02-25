@@ -16,11 +16,10 @@
  */
 package org.apache.tuscany.model.assembly;
 
-
-
 /**
- * Represents a module fragment.
+ * A fragment of assembly configuration within a module.
+ * To support flexibility and reuse, modules can be defined in multiple fragments that are
+ * then combined by the runtime to form the complete module definition.
  */
 public interface ModuleFragment extends Aggregate {
-
 }

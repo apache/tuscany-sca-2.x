@@ -18,22 +18,21 @@ package org.apache.tuscany.model.assembly;
 
 import java.util.List;
 
-
 /**
- * Represents a module.
+ * A specialized {@link ComponentImplementation} that defines a modular unit of assembly.
+ * A Module denotes the extent of assembly in which pass-by-reference semantics are supported.
  */
 public interface Module extends Aggregate, ComponentImplementation {
-
     /**
-     * Returns the module fragments
-     * @return
+     * Returns a list of assembly fragments that combine to form a single module.
+     * @return a list of assembly fragments that combine to form a single module
      */
     List<ModuleFragment> getModuleFragments();
 
     /**
-     * Returns the named module fragment
-     * @param name
-     * @return
+     * Returns the specified assembly fragment.
+     * @param name the name of the fragment
+     * @return the fragment with the specified name, or null if there is no fragment with that name
      */
     ModuleFragment getModuleFragment(String name);
 

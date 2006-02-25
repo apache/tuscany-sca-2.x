@@ -17,32 +17,31 @@
 package org.apache.tuscany.model.assembly;
 
 /**
- * Represents a port (e.g. a service or reference).
+ * Abstraction for the association of a service contract with a requestor or provider.
  */
 public interface Port extends AssemblyModelObject {
-
     /**
-     * Returns the port's service contract (interface and callback interface).
-     * @return 
+     * Returns the contract for invocations of a service using this port.
+     * @return the oontract for invocations of a service using this port
      */
     ServiceContract getServiceContract();
 
     /**
-     * Returns the port's service contract (interface and callback interface).
-     * @param value 
+     * Set the contract for invocations of a service using this port.
+     * @param contract the contract for invocations of a service using this port
      */
-    void setServiceContract(ServiceContract value);
+    void setServiceContract(ServiceContract contract);
 
     /**
-     * Returns the name of the port.
-     * @return
+     * Returns the name of the port where it is associated with a requestor or provider.
+     * @return the name of the port
      */
     String getName();
 
     /**
-     * Sets the name of the port.
-     * @param value
+     * Sets the name of the port where it is associated with a requestor or provider.
+     * @param name the name of the port where it is associated with a requestor or provider
      */
-    void setName(String value);
+    void setName(String name);
 
 }

@@ -18,19 +18,18 @@ package org.apache.tuscany.model.assembly;
 
 
 /**
- * Represents a configured service.
+ * A configured service associated with a particular usage.
  */
 public interface ConfiguredService extends ConfiguredPort {
-
     /**
-     * Returns the service definition.
-     * @return
+     * Returns the {@link Service} that is being configured.
+     * @return the {@link Service} that is being configured
      */
     Service getService();
 
     /**
-     * Sets the service definition.
-     * @param service
+     * Sets the {@link Service} that is being configured.
+     * @param service the {@link Service} that is being configured
      */
     void setService(Service service);
     

@@ -18,31 +18,30 @@ package org.apache.tuscany.model.assembly;
 
 
 /**
- * Represents a wire.
+ * A connection between a requestor (source) and a provider (target).
  */
 public interface Wire extends  Extensible {
-
     /**
-     * Returns the source URI
-     * @return
+     * Returns the URI for the source of the request.
+     * @return the URI for the source of the request
      */
     ServiceURI getSource();
     
     /**
-     * Sets the source URI
-     * @param uri
+     * Sets the URI for the source of the request.
+     * @param uri the URI for the source of the request
      */
     void setSource(ServiceURI uri);
     
     /**
-     * Returns the target URI
-     * @return
+     * Returns the URI for the target of the request.
+     * @return the URI for the target of the request
      */
     ServiceURI getTarget();
     
     /**
-     * Sets the target URI
-     * @param uri
+     * Sets the URI for the target of the request.
+     * @param uri the URI for the target of the request
      */
     void setTarget(ServiceURI uri);
     

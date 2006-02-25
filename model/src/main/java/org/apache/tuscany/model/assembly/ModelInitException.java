@@ -21,7 +21,8 @@ import org.apache.tuscany.model.ModelRuntimeException;
  * @version $Rev$ $Date$
  */
 public class ModelInitException extends ModelRuntimeException {
-
+    // todo serialuid
+    
     public ModelInitException() {
         super();
     }

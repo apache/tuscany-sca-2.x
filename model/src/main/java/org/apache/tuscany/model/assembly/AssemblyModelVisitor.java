@@ -17,14 +17,15 @@
 package org.apache.tuscany.model.assembly;
 
 /**
+ * A visitor that traverses the model performing some operation.
  */
 public interface AssemblyModelVisitor {
 
     /**
      * Visit the given model object.
      *
-     * @param modelObject
-     * @return
+     * @param modelObject the assembly model object to visit
+     * @return true if processing is complete
      */
     boolean visit(AssemblyModelObject modelObject);
 

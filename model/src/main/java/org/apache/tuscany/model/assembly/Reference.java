@@ -18,19 +18,18 @@ package org.apache.tuscany.model.assembly;
 
 
 /**
- * Represents a reference.
+ * The association of a port with a requestor.
  */
 public interface Reference extends Port {
-
     /**
-     * Returns the multiplicity.
-     * @return
+     * Returns the multiplicity allowed for wires connected to this reference.
+     * @return the multiplicity allowed for wires connected to this reference
      */
     Multiplicity getMultiplicity();
 
     /**
-     * Sets the multiplicity.
-     * @param multiplicity
+     * Sets the multiplicity allowed for wires connected to this reference.
+     * @param multiplicity the multiplicity allowed for wires connected to this reference
      */
     void setMultiplicity(Multiplicity multiplicity);
 

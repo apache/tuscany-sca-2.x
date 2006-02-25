@@ -20,58 +20,60 @@ import java.util.List;
 
 
 /**
- * Represents a component.
+ * A component is a configured instance of a generic {@link ComponentImplementation}.
  */
 public interface Component extends Extensible, AggregatePart {
 
     /**
-     * Returns the component implementation.
-     * @return
+     * Returns the ComponentImplementation for this configured instance.
+     * @return the ComponentImplementation for this configured instance
      */
     ComponentImplementation getComponentImplementation();
 
     /**
-     * Sets the component implementation.
-     * @param value
+     * Sets the ComponentImplementation for this configured instance
+     * @param value the ComponentImplementation for this configured instance
      */
     void setComponentImplementation(ComponentImplementation value);
 
     /**
-     * Returns the configured properties.
-     * @return
+     * Returns a list of configured property values for this configured instance.
+     * These values will be used to initialize the component when it is activated.
+     * @return a list of ConfiguredProperty values
      */
     List<ConfiguredProperty> getConfiguredProperties();
 
     /**
-     * Returns the named configured property.
-     * @param name
-     * @return
+     * Returns the ConfiguredProperty value for the specified property.
+     *
+     * @param name the name of the Property
+     * @return the configured property value for the named property
      */
     ConfiguredProperty getConfiguredProperty(String name);
 
     /**
-     * Returns the configured references.
-     * @return
+     * Returns a list of configured reference values for the configured instance.
+     * @return a list of configured reference values for the configured instance
      */
     List<ConfiguredReference> getConfiguredReferences();
 
     /**
-     * Returns the named configured reference.
-     * @param name
-     * @return
+     * Returns the ConfiguredReference value for the specified reference.
+     * @param name the name of the Property
+     * @return the configured reference value for the named reference
      */
     ConfiguredReference getConfiguredReference(String name);
 
     /**
-     * Returns the configured services.
-     * @return
+     * Returns the configured services for the configured instance.
+     * @return the configured services for the configured instance
      */
     List<ConfiguredService> getConfiguredServices();
 
     /**
-     * Returns the named configured service.
-     * @param name
-     * @return
+     * Returns the ConfiguredService value for the specified property.
+     * @param name the name of the Property
+     * @return the configured service value for the named service
      */
     ConfiguredService getConfiguredService(String name);
 	

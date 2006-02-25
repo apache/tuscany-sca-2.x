@@ -20,46 +20,46 @@ import java.util.List;
 
 
 /**
- * Represents a component type.
+ * A logical definition of a type of component separate from any specific implementation.
  */
 public interface ComponentType extends Extensible {
 
     /**
-     * Returns the declared services.
-     * @return
+     * Returns a list of services exposed by this component type.
+     * @return a list of services exposed by this component type
      */
     List<Service> getServices();
 
     /**
-     * Returns the named service.
-     * @param name
-     * @return
+     * Returns the specfied service if exposed by this component type.
+     * @param name the name of the service
+     * @return the service identified by the supplied name, or null if there is no service with that name
      */
     Service getService(String name);
 
     /**
-     * Returns the declared references.
-     * @return
+     * Returns the list of references this component type consumes.
+     * @return the list of references this component type consumes
      */
     List<Reference> getReferences();
 
     /**
-     * Returns the named reference.
-     * @param name
-     * @return
+     * Returns the specified reference.
+     * @param name the name of the reference
+     * @return the reference identified by the supplied name, or null if there is no reference with that name
      */
     Reference getReference(String name);
 
     /**
-     * Returns the properties declared by the component type.
-     * @return
+     * Returns the list of properties that can be used to configure components with this component type.
+     * @return the list of properties that can be used to configure components with this component type
      */
     List<Property> getProperties();
 
     /**
-     * Returns the named property.
-     * @param name
-     * @return
+     * Returns the specified property
+     * @param name the name of the property
+     * @return the property with the supplied name, or null if there is no property with that name
      */
     Property getProperty(String name);
 
