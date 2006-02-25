@@ -13,12 +13,12 @@
  */
 package org.apache.tuscany.core.context.impl;
 
+import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.injection.ObjectFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 
@@ -27,7 +27,7 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class ExternalServiceImpl extends AbstractContext implements ExternalServiceContext {
+public class ExternalServiceContextImpl extends AbstractContext implements ExternalServiceContext {
 
     private ProxyFactory targetProxyFactory;
 
@@ -41,13 +41,13 @@ public class ExternalServiceImpl extends AbstractContext implements ExternalServ
      * Creates an external service context
      * 
      * @param name the name of the external service
-     * @param targetProxyFactory the target proxy factory which creates proxies implementing the configured service
-     *        interface for the entry point. There is always only one proxy factory as an external service is configured
-     *        with one service
+     * @param targetProxyFactory the factory which creates proxies implementing the configured service interface for the
+     *        external service. There is always only one proxy factory as an external service is configured with one
+     *        service
      * @param targetInstanceFactory the object factory that creates an artifact capabile of communicating over the
      *        binding transport configured on the external service. The object factory may implement a caching strategy.
      */
-    public ExternalServiceImpl(String name, ProxyFactory targetProxyFactory, ObjectFactory targetInstanceFactory) {
+    public ExternalServiceContextImpl(String name, ProxyFactory targetProxyFactory, ObjectFactory targetInstanceFactory) {
         super(name);
         assert (targetProxyFactory != null) : "Target proxy factory was null";
         assert (targetInstanceFactory != null) : "Target instance factory was null";
@@ -68,7 +68,6 @@ public class ExternalServiceImpl extends AbstractContext implements ExternalServ
             te.addContextName(getName());
             throw te;
         }
-
     }
 
     public Object getInstance(QualifiedName qName, boolean notify) throws TargetException {

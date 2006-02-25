@@ -20,9 +20,9 @@ package org.apache.tuscany.core.system.config;
 import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
+import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.injection.ObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemComponentContext;

@@ -2,6 +2,8 @@ package org.apache.tuscany.core.injection;
 
 import java.lang.reflect.Field;
 
+import org.apache.tuscany.core.builder.ObjectFactory;
+
 /**
  * Injects a value created by an {@link ObjectFactory} on a given field
  *

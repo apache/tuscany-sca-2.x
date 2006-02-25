@@ -13,6 +13,7 @@
  */
 package org.apache.tuscany.core.injection;
 
+import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.QualifiedName;

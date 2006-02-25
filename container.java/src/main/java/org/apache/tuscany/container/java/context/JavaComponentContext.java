@@ -18,6 +18,7 @@ package org.apache.tuscany.container.java.context;
 
 import java.util.Iterator;
 
+import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.ContextInitException;
@@ -29,7 +30,6 @@ import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.ObjectCreationException;
-import org.apache.tuscany.core.injection.ObjectFactory;
 
 /**
  * Manages Java service component implementation instances

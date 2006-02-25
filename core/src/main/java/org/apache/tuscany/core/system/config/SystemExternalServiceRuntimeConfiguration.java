@@ -16,9 +16,9 @@ package org.apache.tuscany.core.system.config;
 import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
+import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.context.ExternalServiceContext;
-import org.apache.tuscany.core.injection.ObjectFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemExternalServiceContext;
 import org.apache.tuscany.model.assembly.Scope;

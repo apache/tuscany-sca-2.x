@@ -1,5 +1,7 @@
 package org.apache.tuscany.core.injection;
 
+import org.apache.tuscany.core.builder.ObjectFactory;
+
 /**
  * Implementation of ObjectFactory that returns a single instance, typically an immutable type.
  * 

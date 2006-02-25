@@ -1,8 +1,8 @@
 package org.apache.tuscany.container.java.injection;
 
+import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.injection.FactoryInitException;
 import org.apache.tuscany.core.injection.ObjectCreationException;
-import org.apache.tuscany.core.injection.ObjectFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.model.assembly.ConfiguredReference;

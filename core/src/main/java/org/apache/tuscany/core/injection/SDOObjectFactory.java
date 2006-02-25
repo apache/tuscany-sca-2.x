@@ -1,5 +1,7 @@
 package org.apache.tuscany.core.injection;
 
+import org.apache.tuscany.core.builder.ObjectFactory;
+
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.CopyHelper;
 

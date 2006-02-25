@@ -1,12 +1,11 @@
-package org.apache.tuscany.core.injection;
+package org.apache.tuscany.core.builder;
+
+import org.apache.tuscany.core.injection.ObjectCreationException;
 
 /**
  * Implementations create new instances of a particular type
  *
  * @version $Rev$ $Date$
- * @see PojoObjectFactory
- * @see SingletonObjectFactory
- * @see SDOObjectFactory
  */
 public interface ObjectFactory<T> {
 
