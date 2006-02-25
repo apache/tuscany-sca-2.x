@@ -84,7 +84,7 @@ public class XMLNameUtil {
                 if (qualifiedPackageName.length() > 0) {
                     qualifiedPackageName.append('.');
                 }
-                qualifiedPackageName.append(getValidNameFromXMLName(packageName, false));
+                qualifiedPackageName.append(getJavaNameFromXMLName(packageName, false));
             }
         }
         return qualifiedPackageName.toString();
@@ -151,13 +151,13 @@ public class XMLNameUtil {
     }
 
     /**
-     * Returns a valid name from an XML Name
+     * Returns a valid Java name from an XML Name
      *
      * @param name
      * @param isUpperCase
      * @return
      */
-    public static String getValidNameFromXMLName(String name, boolean isUpperCase) {
+    public static String getJavaNameFromXMLName(String name, boolean isUpperCase) {
         List parsedName = parseName(name, '_');
         StringBuffer result = new StringBuffer();
         for (Iterator i = parsedName.iterator(); i.hasNext();) {
@@ -175,6 +175,16 @@ public class XMLNameUtil {
         return result.length() == 0 ? "_" : Character.isJavaIdentifierStart(result.charAt(0)) ? isUpperCase ? result.toString() : decapitalizeName(result.toString()) : "_" + result;
     }
 
+    /**
+     * Returns a valid fully qualified class name from a QName
+     * @param namespace
+     * @param name
+     * @return
+     */
+    public static String getFullyQualifiedClassNameFromQName(String namespace, String name) {
+        return XMLNameUtil.getPackageNameFromNamespace(namespace)+'.'+XMLNameUtil.getJavaNameFromXMLName(name, true);
+    }
+    
     /**
      * Decapitalize a name.
      * @param name

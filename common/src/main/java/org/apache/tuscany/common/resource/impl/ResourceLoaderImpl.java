@@ -35,7 +35,31 @@ import org.apache.tuscany.common.resource.ResourceLoader;
  */
 public class ResourceLoaderImpl implements ResourceLoader {
     private final WeakReference<ClassLoader> classLoaderReference;
+    private WeakReference<GeneratedClassLoader> generatedClassLoaderReference;
     private final List<ResourceLoader> parents;
+
+    /**
+     * A class loader that allows new classes to be defined from an array of bytes
+     */
+    private class GeneratedClassLoader extends ClassLoader {
+        
+        /**
+         * Constructs a new ResourceLoaderImpl.GeneratedClassLoader.
+         */
+        public GeneratedClassLoader(ClassLoader classLoader) {
+            super(classLoader);
+        }
+
+        /**
+         * Converts an array of bytes into a Class.
+         * @param bytes
+         * @return
+         */
+        private Class<?> addClass(byte[] bytes) {
+            return defineClass(null, bytes, 0, bytes.length);
+        }
+        
+    }
 
     /**
      * Constructs a new ResourceLoaderImpl.
@@ -43,6 +67,7 @@ public class ResourceLoaderImpl implements ResourceLoader {
      */
     public ResourceLoaderImpl(ClassLoader classLoader) {
         classLoaderReference = new WeakReference(classLoader);
+        generatedClassLoaderReference = new WeakReference(new GeneratedClassLoader(classLoader));
         ClassLoader parentCL = classLoader.getParent();
         parents = parentCL == null ? Collections.EMPTY_LIST : Collections.singletonList(new ResourceLoaderImpl(parentCL));
     }
@@ -68,6 +93,15 @@ public class ResourceLoaderImpl implements ResourceLoader {
 
     public Class loadClass(String name) throws ClassNotFoundException {
         return getClassLoader().loadClass(name);
+    }
+    
+    public Class<?> addClass(byte[] bytes) {
+        GeneratedClassLoader cl = generatedClassLoaderReference.get();
+        if (cl == null) {
+            cl=new GeneratedClassLoader(getClassLoader());
+            generatedClassLoaderReference = new WeakReference(cl);
+        }
+        return cl.addClass(bytes);
     }
 
     public Iterator<URL> getResources(String name) throws IOException {

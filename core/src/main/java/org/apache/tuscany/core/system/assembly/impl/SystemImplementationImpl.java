@@ -70,7 +70,7 @@ public class SystemImplementationImpl extends ComponentImplementationImpl implem
         String baseName = getBaseName(implClass);
         URL componentTypeFile = implClass.getResource(baseName + ".componentType");
         if (componentTypeFile != null) {
-            return modelContext.getAssemblyLoader().getComponentType(componentTypeFile.toString());
+            return modelContext.getAssemblyLoader().loadComponentType(componentTypeFile.toString());
         } else {
             //FIXME Return a made-up component type for now
             // We need to introspect the component implementation class, support a subset of what

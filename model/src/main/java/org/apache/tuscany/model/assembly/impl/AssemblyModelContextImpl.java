@@ -39,10 +39,10 @@ public class AssemblyModelContextImpl implements AssemblyModelContext {
             this.assemblyFactory = assemblyFactory;
         else
             this.assemblyFactory = new AssemblyFactoryImpl();
+        this.resourceLoader = resourceLoader;
         this.assemblyLoader = assemblyLoader;
         if (assemblyLoader!=null)
             assemblyLoader.setModelContext(this);
-        this.resourceLoader = resourceLoader;
     }
 
     /**

@@ -16,24 +16,32 @@
  */
 package org.apache.tuscany.binding.axis.assembly.tests;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.binding.axis.assembly.WebServiceBinding;
+import org.apache.tuscany.binding.axis.loader.WebServiceSCDLModelLoader;
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
+import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
+import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
+import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
+import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 
 /**
  */
 public class WebServiceAssemblyLoaderTestCase extends TestCase {
-
-    private AssemblyModelContext modelContext;
 
     /**
      *
@@ -44,8 +52,15 @@ public class WebServiceAssemblyLoaderTestCase extends TestCase {
 
     public void testLoader() {
 
-        AssemblyModelLoader loader = modelContext.getAssemblyLoader();
-        Module module = loader.getModule(getClass().getResource("sca.module").toString());
+        ResourceLoader resourceLoader=new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader());
+        WebServiceSCDLModelLoader wsLoader=new WebServiceSCDLModelLoader();
+        List<SCDLModelLoader> scdlLoaders=new ArrayList<SCDLModelLoader>();
+        scdlLoaders.add(wsLoader);
+        AssemblyModelLoader assemblyLoader=new SCDLAssemblyModelLoaderImpl(scdlLoaders);
+        AssemblyFactory assemblyFactory=new AssemblyFactoryImpl();
+        AssemblyModelContext modelContext=new AssemblyModelContextImpl(assemblyFactory, assemblyLoader, resourceLoader);
+
+        Module module = assemblyLoader.loadModule(getClass().getResource("sca.module").toString());
         module.initialize(modelContext);
 
         Assert.assertTrue(module.getName().equals("tuscany.binding.axis.assembly.tests.bigbank.account"));
@@ -67,7 +82,6 @@ public class WebServiceAssemblyLoaderTestCase extends TestCase {
         super.setUp();
 
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-        modelContext = new AssemblyModelContextImpl();
     }
 
 }

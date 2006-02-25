@@ -20,19 +20,18 @@
 
     <entryPoint name="AccountService">
         <interface.java interface="org.apache.tuscany.binding.axis.assembly.tests.bigbank.account.services.account.AccountService"/>
-        <binding.ws port="http://www.bigbank.com/AccountService#AccountServiceSOAP"/>
+        <binding.ws port="http://www.bigbank.com/AccountService/#AccountServiceSOAP"/>
+        <reference>AccountServiceComponent</reference>
+    </entryPoint>
+
+    <entryPoint name="AccountService2">
+        <interface.wsdl interface="http://www.bigbank.com/AccountService/#AccountService"/>
+        <binding.ws port="http://www.bigbank.com/AccountService/#AccountServiceSOAP"/>
         <reference>AccountServiceComponent</reference>
     </entryPoint>
 
     <component name="AccountServiceComponent">
         <implementation.java class="org.apache.tuscany.binding.axis.assembly.tests.bigbank.account.services.account.AccountServiceImpl"/>
-        <properties>
-            <v:currency>EURO</v:currency>
-        </properties>
-        <references>
-            <v:accountDataService>AccountDataServiceComponent</v:accountDataService>
-            <v:stockQuoteService>StockQuoteService</v:stockQuoteService>
-        </references>
     </component>
 
     <component name="AccountDataServiceComponent">
@@ -47,8 +46,16 @@
 
     <externalService name="StockQuoteService">
         <interface.java interface="org.apache.tuscany.binding.axis.assembly.tests.bigbank.account.services.stockquote.StockQuoteService"/>
-        <binding.ws port="http://www.quickstockquote.com/StockQuoteService#StockQuoteServiceSOAP"/>
+        <binding.ws port="http://webservice.stockquote#StockQuoteWebService"/>
     </externalService>
+    
+	<import.wsdl
+		location="org/apache/tuscany/binding/axis/assembly/tests/bigbank/account/services/account/AccountService.wsdl"
+		namespace="http://www.bigbank.com/AccountService/"/>
+
+	<import.wsdl
+		location="org/apache/tuscany/binding/axis/assembly/tests/bigbank/account/services/stockquote/StockQuoteWebService.wsdl"
+		namespace="http://webservice.stockquote"/>
 
 </module>
 	

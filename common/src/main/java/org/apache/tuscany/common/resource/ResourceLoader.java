@@ -49,6 +49,13 @@ public interface ResourceLoader {
     Class<?> loadClass(String name) throws ClassNotFoundException;
 
     /**
+     * Converts an array of bytes into a Class.
+     * @param bytes
+     * @return
+     */
+    Class<?> addClass(byte[] bytes);
+    
+    /**
      * Finds the first resource with the given name.
      * <p/>
      * Each parent is searched first (in the order returned by {@link #getParents()})

@@ -16,12 +16,19 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.wsdl.Definition;
+import javax.wsdl.Import;
+import javax.wsdl.xml.WSDLReader;
+
+import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.AggregatePart;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
@@ -47,6 +54,8 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
     private Map<String, ExternalService> externalServicesMap;
     private List<AggregatePart> aggregateParts;
     private List<Wire> wires=new ArrayList<Wire>();
+    private List<Import> wsdlImports=new ArrayList<Import>();
+    private Map<String, List<Import>> wsdlImportsMap;
 
     /**
      * Constructor
@@ -130,6 +139,21 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
     }
     
     /**
+     * @see org.apache.tuscany.model.assembly.Aggregate#getWSDLImports()
+     */
+    public List<Import> getWSDLImports() {
+        return wsdlImports;
+    }
+    
+    /**
+     * @see org.apache.tuscany.model.assembly.Aggregate#getWSDLImports(java.lang.String)
+     */
+    public List<Import> getWSDLImports(String namespace) {
+        checkInitialized();
+        return wsdlImportsMap.get(namespace);
+    }
+    
+    /**
      * @see org.apache.tuscany.model.assembly.Aggregate#getConfiguredService(org.apache.tuscany.model.assembly.ServiceURI)
      */
     public ConfiguredService getConfiguredService(ServiceURI address) {
@@ -164,6 +188,35 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
         if (isInitialized())
             return;
         super.initialize(modelContext);
+        
+        // Populate map of WSDL imports
+        ResourceLoader resourceLoader=modelContext.getResourceLoader();
+        WSDLReader reader=null;
+        wsdlImportsMap = new HashMap<String, List<Import>>();
+        for (Import wsdlImport : wsdlImports) {
+            String namespace=wsdlImport.getNamespaceURI();
+            List<Import> list=wsdlImportsMap.get(namespace);
+            if (list==null) {
+                list=new ArrayList<Import>();
+                wsdlImportsMap.put(namespace, list);
+            }
+            list.add(wsdlImport);
+            
+            // Load the WSDL definition if necessary
+            if (wsdlImport.getDefinition()==null) {
+                String location=wsdlImport.getLocationURI();
+                Definition definition;
+                try {
+                    URL url=resourceLoader.getResource(location);
+                    if (url==null)
+                        throw new IllegalArgumentException("Cannot find "+location);
+                    definition = modelContext.getAssemblyLoader().loadDefinition(url.toString());
+                } catch (IOException e) {
+                    throw new IllegalArgumentException(e);
+                }
+                wsdlImport.setDefinition(definition);
+            }
+        }
 
         // Populate maps of components, entry points and external services
         aggregateParts = new ArrayList<AggregatePart>();
@@ -202,6 +255,8 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
         super.freeze();
         
         // Freeze lists
+        wsdlImports=Collections.unmodifiableList(wsdlImports);
+        freeze(wsdlImports);
         components=Collections.unmodifiableList(components);
         freeze(components);
         entryPoints=Collections.unmodifiableList(entryPoints);

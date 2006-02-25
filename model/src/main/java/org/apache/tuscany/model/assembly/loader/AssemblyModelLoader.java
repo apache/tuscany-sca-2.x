@@ -16,6 +16,11 @@
  */
 package org.apache.tuscany.model.assembly.loader;
 
+import java.util.List;
+
+import javax.wsdl.Definition;
+import javax.wsdl.PortType;
+
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Module;
@@ -38,27 +43,46 @@ public interface AssemblyModelLoader {
      * @param uri
      * @return
      */
-    Module getModule(String uri);
+    Module loadModule(String uri);
 
     /**
      * Returns the module at the given uri
      * @param uri
      * @return
      */
-    ModuleFragment getModuleFragment(String uri);
+    ModuleFragment loadModuleFragment(String uri);
 
     /**
      * Returns the component type at the given uri
      * @param uri
      * @return
      */
-    ComponentType getComponentType(String uri);
+    ComponentType loadComponentType(String uri);
 
     /**
      * Returns the subsystem at the given uri.
      * @param uri
      * @return
      */
-    Subsystem getSubsystem(String uri);
+    Subsystem loadSubsystem(String uri);
+
+    /**
+     * Load a WSDL definition
+     */
+    Definition loadDefinition(String uri);
+    
+    /**
+     * Load definitions by namespace
+     * @param uri
+     * @return
+     */
+    List<Definition> loadDefinitions(String namespace);
+    
+    /**
+     * Load a class
+     * @param uri
+     * @return
+     */
+    Class loadClass(String className) throws ClassNotFoundException;
     
 }

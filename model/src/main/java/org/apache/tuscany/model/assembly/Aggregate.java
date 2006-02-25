@@ -18,6 +18,8 @@ package org.apache.tuscany.model.assembly;
 
 import java.util.List;
 
+import javax.wsdl.Import;
+
 /**
  * Represents an aggregate. An aggregate contains AggregateParts (e.g. components, entry points
  * and external services).
@@ -92,5 +94,18 @@ public interface Aggregate extends Extensible {
      * @return
      */
     List<Wire> getWires();
+    
+    /**
+     * Returns the WSDL imports.
+     * @return
+     */
+    List<Import> getWSDLImports();
+    
+    /**
+     * Returns the WSDL imports for the given namespace. 
+     * @param namespace
+     * @return
+     */
+    List<Import> getWSDLImports(String namespace);
     
 }

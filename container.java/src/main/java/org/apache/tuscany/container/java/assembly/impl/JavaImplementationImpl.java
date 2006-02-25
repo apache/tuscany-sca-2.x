@@ -82,7 +82,7 @@ public class JavaImplementationImpl extends ComponentImplementationImpl implemen
         String baseName = JavaIntrospectionHelper.getBaseName(implClass);
         URL componentTypeFile = implClass.getResource(baseName + ".componentType");
         if (componentTypeFile != null) {
-            return modelContext.getAssemblyLoader().getComponentType(componentTypeFile.toString());
+            return modelContext.getAssemblyLoader().loadComponentType(componentTypeFile.toString());
         } else {
             JavaAssemblyFactory factory = new JavaAssemblyFactoryImpl();
             ComponentTypeIntrospector introspector = new Java5ComponentTypeIntrospector(factory);

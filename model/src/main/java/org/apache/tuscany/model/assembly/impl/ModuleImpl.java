@@ -99,7 +99,8 @@ public class ModuleImpl extends AggregateImpl implements Module {
         for (ModuleFragment moduleFragment : moduleFragments) {
             moduleFragmentsMap.put(moduleFragment.getName(), moduleFragment);
             
-            // Add all components, entry points and external services from the module fragments
+            // Add all WSDL imports, components, entry points and external services from the module fragments
+            getWSDLImports().addAll(moduleFragment.getWSDLImports());
             getComponents().addAll(moduleFragment.getComponents());
             getEntryPoints().addAll(moduleFragment.getEntryPoints());
             getExternalServices().addAll(moduleFragment.getExternalServices());

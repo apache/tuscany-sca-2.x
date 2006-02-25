@@ -105,7 +105,7 @@ public class JavaScriptImplementationImpl extends ComponentImplementationImpl im
         String prefix = script.substring(0,script.lastIndexOf('.'));
         URL componentTypeFile = resourceLoader.getResource(prefix + ".componentType");
         if (componentTypeFile != null) {
-            return modelContext.getAssemblyLoader().getComponentType(componentTypeFile.toString());
+            return modelContext.getAssemblyLoader().loadComponentType(componentTypeFile.toString());
         } else {
             // TODO we could introspect the JavaScript source
             return modelContext.getAssemblyFactory().createComponentType();

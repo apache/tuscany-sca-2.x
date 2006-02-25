@@ -18,9 +18,17 @@ package org.apache.tuscany.model.scdl.loader.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import javax.wsdl.Definition;
+import javax.wsdl.WSDLException;
+import javax.wsdl.factory.WSDLFactory;
+import javax.wsdl.xml.WSDLReader;
+
+import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Module;
@@ -37,9 +45,18 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 public class SCDLAssemblyModelLoaderImpl implements AssemblyModelLoader {
     
     private SCDLXMLReader xmlReader=new SCDLXMLReader();
+    private WSDLReader wsdlReader;
     private AssemblyModelContext modelContext;
+    private ResourceLoader resourceLoader;
     
     private List<SCDLModelLoader> scdlModelLoaders;
+    
+    private Map<String, ComponentType> componentTypes=new HashMap<String, ComponentType>();
+    private Map<String, Module> modules=new HashMap<String, Module>();
+    private Map<String, ModuleFragment> moduleFragments=new HashMap<String, ModuleFragment>();
+    private Map<String, Subsystem> subsystems=new HashMap<String, Subsystem>();
+    private Map<String, Definition> definitions=new HashMap<String, Definition>();
+    private Map<String, List<Definition>> definitionsByNamespace=new HashMap<String, List<Definition>>();
     
     /**
      * Constructor
@@ -53,55 +70,125 @@ public class SCDLAssemblyModelLoaderImpl implements AssemblyModelLoader {
      */
     public void setModelContext(AssemblyModelContext modelContext) {
         this.modelContext = modelContext;
+        this.resourceLoader=this.modelContext.getResourceLoader();
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#getComponentType(java.lang.String)
+     * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#loadComponentType(java.lang.String)
      */
-    public ComponentType getComponentType(String uri) {
+    public ComponentType loadComponentType(String uri) {
+        ComponentType componentType=componentTypes.get(uri);
+        if (componentType!=null)
+            return componentType;
 
         // Load the SCDL component type
         org.apache.tuscany.model.scdl.ComponentType scdlComponentType=xmlReader.getComponentType(uri);
         
         // Transform it to an assembly component type
-        return transform(scdlComponentType).getComponentType();
+        componentType=transform(scdlComponentType).getComponentType();
+        
+        componentTypes.put(uri, componentType);
+        return componentType;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#getModule(java.lang.String)
+     * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#loadModule(java.lang.String)
      */
-    public Module getModule(String uri) {
+    public Module loadModule(String uri) {
+        Module module=modules.get(uri);
+        if (module!=null)
+            return module;
 
         // Load the SCDL module
         org.apache.tuscany.model.scdl.Module scdlModule=xmlReader.getModule(uri);
         
         // Transform it to an assembly module
-        return transform(scdlModule).getModule();
+        module=transform(scdlModule).getModule();
+        
+        modules.put(uri, module);
+        return module;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#getModuleFragment(java.lang.String)
+     * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#loadModuleFragment(java.lang.String)
      */
-    public ModuleFragment getModuleFragment(String uri) {
+    public ModuleFragment loadModuleFragment(String uri) {
+        ModuleFragment moduleFragment=moduleFragments.get(uri);
+        if (moduleFragment!=null)
+            return moduleFragment;
 
         // Load the SCDL module fragment
         org.apache.tuscany.model.scdl.ModuleFragment scdlFragment=xmlReader.getModuleFragment(uri);
         
         // Transform it to an assembly module fragment
-        return transform(scdlFragment).getModuleFragment();
+        moduleFragment=transform(scdlFragment).getModuleFragment();
+        
+        moduleFragments.put(uri, moduleFragment);
+        return moduleFragment;
     }
     
     /**
-     * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#getSubsystem(java.lang.String)
+     * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#loadSubsystem(java.lang.String)
      */
-    public Subsystem getSubsystem(String uri) {
+    public Subsystem loadSubsystem(String uri) {
+        Subsystem subsystem=subsystems.get(uri);
+        if (subsystem!=null)
+            return subsystem;
 
         // Load the SCDL subsystem
         org.apache.tuscany.model.scdl.Subsystem scdlSubsystem=xmlReader.getSubsystem(uri);
         
-        return transform(scdlSubsystem).getSubsystem();
+        subsystem=transform(scdlSubsystem).getSubsystem();
+        
+        subsystems.put(uri, subsystem);
+        return subsystem;
+    }
+    
+    /**
+     * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#loadDefinition(java.lang.String)
+     */
+    public Definition loadDefinition(String uri) {
+        Definition definition=definitions.get(uri);
+        if (definition!=null)
+            return definition;
+        
+        try {
+            if (wsdlReader==null)
+                wsdlReader=WSDLFactory.newInstance().newWSDLReader();
+            definition = wsdlReader.readWSDL(uri);
+        } catch (WSDLException e) {
+            throw new IllegalArgumentException(e);
+        }
+        if (definition==null)
+            throw new IllegalArgumentException("Could not load WSDL definition at "+uri);
+        
+        definitions.put(uri, definition);
+        
+        String namespace=definition.getTargetNamespace();
+        List<Definition> list=definitionsByNamespace.get(namespace);
+        if (list==null) {
+            list=new ArrayList<Definition>();
+            definitionsByNamespace.put(namespace, list);
+        }
+        list.add(definition);
+       
+        return definition;
+    }
+    
+    /**
+     * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#loadDefinitions(java.lang.String)
+     */
+    public List<Definition> loadDefinitions(String namespace) {
+        return definitionsByNamespace.get(namespace);
     }
 
+    /**
+     * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#loadClass(java.lang.String)
+     */
+    public Class loadClass(String className) throws ClassNotFoundException {
+        return resourceLoader.loadClass(className);
+    }
+    
     /**
      * Transform a model and return the handler containing the result of the transformation.
      * @param object

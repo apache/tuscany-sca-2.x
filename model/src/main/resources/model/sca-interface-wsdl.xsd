@@ -20,4 +20,20 @@
 			</extension>
 		</complexContent>
 	</complexType>
+	
+	<!-- This is a Tuscany extension -->
+	<element name="import.wsdl" type="sca:WSDLImport" substitutionGroup="sca:import"/>
+	<complexType name="WSDLImport">
+		<complexContent>
+			<extension base="sca:Import">
+				<sequence>
+					<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+				</sequence>
+				<attribute name="namespace" type="anyURI" use="required"/>
+				<attribute name="location" type="anyURI" use="required"/>
+				<anyAttribute namespace="##any" processContents="lax"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	
 </schema>

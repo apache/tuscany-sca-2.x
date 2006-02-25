@@ -19,6 +19,11 @@ package org.apache.tuscany.model.scdl.loader.impl;
 import java.util.List;
 import java.util.Map;
 
+import javax.wsdl.Definition;
+import javax.wsdl.Import;
+import javax.wsdl.WSDLException;
+import javax.wsdl.factory.WSDLFactory;
+
 import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
@@ -51,11 +56,13 @@ import org.apache.tuscany.model.scdl.Reference;
 import org.apache.tuscany.model.scdl.Service;
 import org.apache.tuscany.model.scdl.Subsystem;
 import org.apache.tuscany.model.scdl.SystemWire;
+import org.apache.tuscany.model.scdl.WSDLImport;
 import org.apache.tuscany.model.scdl.WSDLPortType;
 import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 import org.apache.tuscany.model.scdl.util.ScdlSwitch;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
+import org.apache.tuscany.model.types.wsdl.impl.WSDLServiceContractImpl;
 import org.apache.tuscany.model.util.ModelContentHandler;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.FeatureMap;
@@ -87,6 +94,7 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
     private org.apache.tuscany.model.assembly.ModuleFragment currentModuleFragment;
     private org.apache.tuscany.model.assembly.Subsystem currentSubsystem;
     private org.apache.tuscany.model.assembly.ModuleComponent currentModuleComponent;
+    private Definition definition;
     
     /**
      * Constructor
@@ -247,15 +255,42 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
      */
     public Object caseWSDLPortType(WSDLPortType object) {
         final WSDLServiceContract serviceContract=factory.createWSDLServiceContract();
-        serviceContract.setInterface(null);
-        serviceContract.setCallbackInterface(null);
         serviceContract.setScope(Scope.INSTANCE);
+        
+        ((WSDLServiceContractImpl)serviceContract).setPortTypeURI(object.getInterface());
+        ((WSDLServiceContractImpl)serviceContract).setCallbackPortTypeURI(object.getCallbackInterface());
         
         linkServiceContract(object, serviceContract);
 
         return serviceContract;
     }
 
+    /**
+     * @see org.apache.tuscany.model.scdl.util.ScdlSwitch#caseWSDLImport(org.apache.tuscany.model.scdl.WSDLImport)
+     */
+    public Object caseWSDLImport(WSDLImport object) {
+        if (definition==null) {
+            try {
+                WSDLFactory wsdlFactory=WSDLFactory.newInstance();
+                definition=wsdlFactory.newDefinition();
+            } catch (WSDLException e) {
+                throw new IllegalStateException(e);
+            }
+            
+        }
+        final Import wsdlImport=definition.createImport();
+        wsdlImport.setNamespaceURI(object.getNamespace());
+        wsdlImport.setLocationURI(object.getLocation());
+
+        linkers.add(new Runnable() {
+            public void run() {
+                currentAggregate.getWSDLImports().add(wsdlImport);
+            };
+        });
+
+        return wsdlImport;
+    }
+    
     /**
      * Link a service contract with the correct owner.
      * @param object

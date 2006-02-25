@@ -49,7 +49,7 @@ public class SCDLAssemblyLoaderTestCase extends TestCase {
         AssemblyFactory assemblyFactory=new AssemblyFactoryImpl();
         AssemblyModelContext modelContext=new AssemblyModelContextImpl(assemblyFactory, assemblyLoader, resourceLoader);
 
-        Module module = assemblyLoader.getModule(getClass().getResource("sca.module").toString());
+        Module module = assemblyLoader.loadModule(getClass().getResource("sca.module").toString());
         module.initialize(modelContext);
         Assert.assertTrue(module.getName().equals("tuscany.model.assembly.tests.bigbank.account"));
 

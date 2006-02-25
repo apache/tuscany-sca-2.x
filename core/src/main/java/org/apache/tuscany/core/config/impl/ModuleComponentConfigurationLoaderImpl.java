@@ -119,12 +119,12 @@ public class ModuleComponentConfigurationLoaderImpl implements ModuleComponentCo
     public ModuleComponent loadModuleComponent(String name, String uri, String moduleUri, Collection<String> moduleFragmentUris) throws ConfigurationLoadException {
 
         // Load the module file
-        Module module=modelLoader.getModule(moduleUri);
+        Module module=modelLoader.loadModule(moduleUri);
 
         // Load the sca.fragment files
         if (moduleFragmentUris!=null) {
             for (String moduleFragmentUri : moduleFragmentUris) {
-                ModuleFragment moduleFragment=modelLoader.getModuleFragment(moduleFragmentUri);
+                ModuleFragment moduleFragment=modelLoader.loadModuleFragment(moduleFragmentUri);
                 module.getModuleFragments().add(moduleFragment);
             }
         }

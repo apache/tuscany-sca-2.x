@@ -70,7 +70,7 @@ public class SOAPMediatorTestCase extends TestCase {
         modelContext = new AssemblyModelContextImpl();
 
         AssemblyModelLoader loader = modelContext.getAssemblyLoader();
-        Module module = loader.getModule(getClass().getResource("sca.module").toString());
+        Module module = loader.loadModule(getClass().getResource("sca.module").toString());
         module.initialize(modelContext);
 
         AssemblyFactory factory = new AssemblyFactoryImpl();

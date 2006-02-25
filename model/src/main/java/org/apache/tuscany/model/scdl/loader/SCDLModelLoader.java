@@ -16,6 +16,7 @@
  */
 package org.apache.tuscany.model.scdl.loader;
 
+import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 
