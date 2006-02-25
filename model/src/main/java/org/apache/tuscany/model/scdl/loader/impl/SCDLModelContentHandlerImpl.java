@@ -64,8 +64,8 @@ import org.apache.tuscany.model.types.java.JavaServiceContract;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 import org.apache.tuscany.model.types.wsdl.impl.WSDLServiceContractImpl;
 import org.apache.tuscany.model.util.ModelContentHandler;
+//FIXME remove this EMF dependency
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.FeatureMap;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Sequence;
@@ -426,10 +426,8 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
                     }
 
                     // Get the property value text and convert to the expected java type
-                    //FIXME just handle string for now
-                    //FIXME SDO returns a featuremap instead of a sequence
-                    //Sequence text = propertyElement.getSequence(0);
-                    FeatureMap text = (FeatureMap)propertyElement.get(0);
+                    //FIXME just handle strings for now
+                    Sequence text = propertyElement.getSequence(0);
                     if (text != null && text.size() != 0) {
                         Object rawValue = text.getValue(0);
                         configuredProperty.setValue(rawValue);
@@ -469,9 +467,7 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
                     ServiceURI referenceURI=factory.createServiceURI(null, configuredReference);
 
                     // Get the reference value text
-                    //FIXME SDO returns a featuremap instead of a sequence
-                    //Sequence text = propertyElement.getSequence(0);
-                    FeatureMap text = (FeatureMap)referenceElement.get(0);
+                    Sequence text = referenceElement.getSequence(0);
                     if (text != null && text.size() != 0) {
                         String uri = text.getValue(0).toString();
                         ServiceURI serviceURI=factory.createServiceURI(null, uri);
