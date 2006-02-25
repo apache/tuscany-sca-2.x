@@ -62,13 +62,17 @@ import commonj.sdo.DataObject;
  */
 @org.osoa.sca.annotations.Scope("MODULE")
 public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
-    
-    private RuntimeContext runtimeContext;
-    private ProxyFactoryFactory proxyFactoryFactory;
-    private MessageFactory messageFactory;
-    private RuntimeConfigurationBuilder referenceBuilder;
 
-    @Init(eager=true)
+    private RuntimeContext runtimeContext;
+
+    private ProxyFactoryFactory proxyFactoryFactory;
+
+    private MessageFactory messageFactory;
+
+    /* the top-level builder responsible for evaluating policies */
+    private RuntimeConfigurationBuilder policyBuilder;
+
+    @Init(eager = true)
     public void init() {
         runtimeContext.addBuilder(this);
     }
@@ -80,7 +84,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
     public void setRuntimeContext(RuntimeContext runtimeContext) {
         this.runtimeContext = runtimeContext;
     }
-    
+
     /**
      * Sets the factory used to construct proxies implmementing the business interface required by a reference
      */
@@ -106,8 +110,8 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
      * 
      * @see org.apache.tuscany.core.builder.impl.HierarchicalBuilder
      */
-    public void setReferenceBuilder(RuntimeConfigurationBuilder builder) {
-        this.referenceBuilder = builder;
+    public void setPolicyBuilder(RuntimeConfigurationBuilder builder) {
+        this.policyBuilder = builder;
     }
 
     // ----------------------------------
@@ -215,9 +219,9 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                     proxyFactory.setProxyConfiguration(pConfiguration);
                     config.addTargetProxyFactory(service.getName(), proxyFactory);
                     configuredService.setProxyFactory(proxyFactory);
-                    if (referenceBuilder != null) {
+                    if (policyBuilder != null) {
                         // invoke the reference builder to handle target-side metadata
-                        referenceBuilder.build(configuredService, parentContext);
+                        policyBuilder.build(configuredService, parentContext);
                     }
                     // add tail interceptor
                     for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
@@ -249,9 +253,9 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                         proxyFactory.setProxyConfiguration(pConfiguration);
                         config.addSourceProxyFactory(reference.getReference().getName(), proxyFactory);
                         reference.setProxyFactory(proxyFactory);
-                        if (referenceBuilder != null) {
+                        if (policyBuilder != null) {
                             // invoke the reference builder to handle metadata associated with the reference
-                            referenceBuilder.build(reference, parentContext);
+                            policyBuilder.build(reference, parentContext);
                         }
                         Injector injector = createReferenceInjector(reference.getReference().getName(), proxyFactory, fields,
                                 methods);

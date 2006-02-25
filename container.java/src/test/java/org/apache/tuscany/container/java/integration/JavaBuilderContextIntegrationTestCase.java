@@ -82,7 +82,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, true);
         HierarchicalBuilder refBuilder = new HierarchicalBuilder();
         refBuilder.addBuilder(interceptorBuilder);
-        javaBuilder.setReferenceBuilder(refBuilder);
+        javaBuilder.setPolicyBuilder(refBuilder);
         builders.add(javaBuilder);
 
         DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
@@ -125,7 +125,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         MockHandlerBuilder handlerBuilder = new MockHandlerBuilder(mockHandler, true, true);
         refBuilder.addBuilder(handlerBuilder);
 
-        javaBuilder.setReferenceBuilder(refBuilder);
+        javaBuilder.setPolicyBuilder(refBuilder);
         builders.add(javaBuilder);
 
         DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
@@ -170,7 +170,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         MockHandlerBuilder handlerBuilder = new MockHandlerBuilder(mockHandler, false, true);
         refBuilder.addBuilder(handlerBuilder);
 
-        javaBuilder.setReferenceBuilder(refBuilder);
+        javaBuilder.setPolicyBuilder(refBuilder);
         builders.add(javaBuilder);
 
         DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
@@ -213,7 +213,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         HierarchicalBuilder refBuilder = new HierarchicalBuilder();
         refBuilder.addBuilder(interceptorBuilder);
 
-        javaBuilder.setReferenceBuilder(refBuilder);
+        javaBuilder.setPolicyBuilder(refBuilder);
         builders.add(javaBuilder);
 
         DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();

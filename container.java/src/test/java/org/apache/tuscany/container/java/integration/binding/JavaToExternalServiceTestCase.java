@@ -69,7 +69,7 @@ public class JavaToExternalServiceTestCase extends TestCase {
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, true);
         HierarchicalBuilder refBuilder = new HierarchicalBuilder();
         refBuilder.addBuilder(interceptorBuilder);
-        javaBuilder.setReferenceBuilder(refBuilder);
+        javaBuilder.setPolicyBuilder(refBuilder);
         builders.add(javaBuilder);
 
         FooBindingBuilder fooBindingBuilder = new FooBindingBuilder();

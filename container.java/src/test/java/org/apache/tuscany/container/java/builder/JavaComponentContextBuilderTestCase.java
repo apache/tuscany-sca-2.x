@@ -59,7 +59,7 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
         HierarchicalBuilder refBuilder = new HierarchicalBuilder();
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
         refBuilder.addBuilder(new MockInterceptorBuilder(interceptor, true));
-        builder.setReferenceBuilder(refBuilder);
+        builder.setPolicyBuilder(refBuilder);
         AggregateContext ctx = createContext();
         builder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
         JavaTargetWireBuilder javaWireBuilder = new JavaTargetWireBuilder();

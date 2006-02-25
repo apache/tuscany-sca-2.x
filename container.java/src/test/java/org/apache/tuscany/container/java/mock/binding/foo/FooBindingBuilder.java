@@ -92,6 +92,13 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
         this.messageFactory = msgFactory;
     }
 
+    /**
+     * Sets a builder responsible for creating source-side and target-side invocation chains for a reference. The
+     * reference builder may be hierarchical, containing other child reference builders that operate on specific
+     * metadata used to construct and invocation chain.
+     * 
+     * @see org.apache.tuscany.core.builder.impl.HierarchicalBuilder
+     */
     public void setPolicyBuilder(RuntimeConfigurationBuilder builder) {
         policyBuilder = builder;
     }
