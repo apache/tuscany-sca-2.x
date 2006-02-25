@@ -16,6 +16,9 @@ package org.apache.tuscany.container.java.integration.binding;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
 import org.apache.tuscany.container.java.assembly.mock.HelloWorldService;
 import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
 import org.apache.tuscany.container.java.builder.JavaTargetWireBuilder;
@@ -25,7 +28,6 @@ import org.apache.tuscany.container.java.mock.MockAssemblyFactory;
 import org.apache.tuscany.container.java.mock.MockModuleFactory;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBindingBuilder;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBindingWireBuilder;
-import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
@@ -42,9 +44,6 @@ import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 import org.apache.tuscany.model.assembly.Scope;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 /**
  * 

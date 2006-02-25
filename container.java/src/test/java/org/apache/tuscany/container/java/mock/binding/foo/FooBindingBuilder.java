@@ -1,3 +1,16 @@
+/**
+ * 
+ * Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
 package org.apache.tuscany.container.java.mock.binding.foo;
 
 import java.lang.reflect.Method;
@@ -29,6 +42,11 @@ import org.apache.tuscany.model.assembly.ServiceContract;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
+/**
+ * Creates a <code>RuntimeConfigurationBuilder</code> for an external service configured with the {@link FooBinding}
+ * 
+ * @version $Rev$ $Date$
+ */
 @Scope("MODULE")
 public class FooBindingBuilder implements RuntimeConfigurationBuilder {
 
@@ -38,7 +56,7 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
 
     private MessageFactory messageFactory;
 
-    private RuntimeConfigurationBuilder referenceBuilder;
+    private RuntimeConfigurationBuilder policyBuilder;
 
     public FooBindingBuilder() {
     }
@@ -74,6 +92,10 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
         this.messageFactory = msgFactory;
     }
 
+    public void setPolicyBuilder(RuntimeConfigurationBuilder builder) {
+        policyBuilder = builder;
+    }
+
     public void build(AssemblyModelObject object, Context context) throws BuilderException {
         if (!(object instanceof ExternalService)) {
             return;
@@ -102,10 +124,10 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
         proxyFactory.setProxyConfiguration(pConfiguration);
         config.addTargetProxyFactory(service.getName(), proxyFactory);
         configuredService.setProxyFactory(proxyFactory);
-//        if (referenceBuilder != null) {
-//            // invoke the reference builder to handle target-side metadata
-//            referenceBuilder.build(configuredService, parentContext);
-//        }
+        if (policyBuilder != null) {
+            // invoke the reference builder to handle additional policy metadata
+            policyBuilder.build(configuredService, context);
+        }
         // add tail interceptor
         for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
             iConfig.addTargetInterceptor(new InvokerInterceptor());

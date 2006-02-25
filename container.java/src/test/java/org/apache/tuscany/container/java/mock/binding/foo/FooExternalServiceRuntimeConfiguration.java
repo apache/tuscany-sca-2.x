@@ -13,91 +13,20 @@
  */
 package org.apache.tuscany.container.java.mock.binding.foo;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
-import org.apache.tuscany.core.context.ExternalServiceContext;
-import org.apache.tuscany.core.context.impl.ExternalServiceContextImpl;
-import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.core.builder.impl.BaseExternalServiceRuntimeConfiguration;
 
 /**
  * Creates instances of {@link org.apache.tuscany.core.context.ExternalServiceContext} configured with the appropriate
- * invocation chains and bindings
+ * invocation chains and bindings. This implementation serves as a marker for
+ * {@link org.apache.tuscany.container.java.mock.binding.foo.FooBindingWireBuilder}
  * 
  * @version $Rev$ $Date$
  */
-public class FooExternalServiceRuntimeConfiguration implements RuntimeConfiguration<ExternalServiceContext> {
+public class FooExternalServiceRuntimeConfiguration extends BaseExternalServiceRuntimeConfiguration {
 
-    private String name;
-
-    private ProxyFactory proxyFactory;
-
-    private ObjectFactory objectFactory;
-
-    private String targetServiceName;
-
-    private Map targetProxyFactories;
-
-    public FooExternalServiceRuntimeConfiguration(String name,ObjectFactory objectFactory) {
-        assert (name != null) : "Name was null";
-        assert (objectFactory != null) : "Object factory was null";
-        this.name = name;
-        this.objectFactory = objectFactory;
-    }
-
-    public ExternalServiceContext createInstanceContext() throws ContextCreationException {
-        return new ExternalServiceContextImpl(name, proxyFactory, objectFactory);
-    }
-
-    public Scope getScope() {
-        return Scope.MODULE;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void prepare() {
-    }
-
-    public void addTargetProxyFactory(String serviceName, ProxyFactory factory) {
-        assert (serviceName != null) : "No service name specified";
-        assert (factory != null) : "Proxy factory was null";
-        this.targetServiceName = serviceName; // external services are configured with only one service
-        this.proxyFactory = factory;
-    }
-
-    public ProxyFactory getTargetProxyFactory(String serviceName) {
-        if (this.targetServiceName.equals(serviceName)) {
-            return proxyFactory;
-        } else {
-            return null;
-        }
-    }
-
-    public Map getTargetProxyFactories() {
-        if (targetProxyFactories == null) {
-            targetProxyFactories = new HashMap(1);
-            targetProxyFactories.put(targetServiceName, proxyFactory);
-        }
-        return targetProxyFactories;
-    }
-
-    public void addSourceProxyFactory(String referenceName, ProxyFactory factory) {
-        // no wires inside an aggregate from an external service
-    }
-
-    public ProxyFactory getSourceProxyFactory(String referenceName) {
-        return null;
-    }
-
-    public Map getSourceProxyFactories() {
-        return Collections.EMPTY_MAP;
+    public FooExternalServiceRuntimeConfiguration(String name, ObjectFactory objectFactory) {
+        super(name, objectFactory);
     }
 
 }
