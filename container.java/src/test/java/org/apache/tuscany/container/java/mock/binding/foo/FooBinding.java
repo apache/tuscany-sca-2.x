@@ -27,12 +27,15 @@ public class FooBinding implements Binding {
         return false;
     }
 
+    private Object config;
+
     public void setRuntimeConfiguration(Object configuration) {
+        config = configuration;
     }
 
     public Object getRuntimeConfiguration() {
-        return null;
+        System.out.println("retting");
+        return config;
     }
 
 }
-

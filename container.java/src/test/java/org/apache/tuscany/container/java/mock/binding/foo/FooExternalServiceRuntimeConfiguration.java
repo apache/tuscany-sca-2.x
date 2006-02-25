@@ -68,7 +68,7 @@ public class FooExternalServiceRuntimeConfiguration implements RuntimeConfigurat
     public void addTargetProxyFactory(String serviceName, ProxyFactory factory) {
         assert (serviceName != null) : "No service name specified";
         assert (factory != null) : "Proxy factory was null";
-        this.targetServiceName = name; // external services are configured with only one service
+        this.targetServiceName = serviceName; // external services are configured with only one service
         this.proxyFactory = factory;
     }
 

@@ -23,7 +23,7 @@ import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 
 /**
- * The default implementation of an external service
+ * The default implementation of an external service context
  * 
  * @version $Rev$ $Date$
  */

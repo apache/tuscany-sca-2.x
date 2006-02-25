@@ -19,12 +19,15 @@ package org.apache.tuscany.container.java.mock;
 import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
 import org.apache.tuscany.container.java.assembly.impl.JavaAssemblyFactoryImpl;
+import org.apache.tuscany.container.java.mock.binding.foo.FooBinding;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.ConfiguredService;
+import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.SimpleComponent;
@@ -38,8 +41,9 @@ import org.apache.tuscany.model.types.java.JavaServiceContract;
 public class MockAssemblyFactory {
 
     private static JavaAssemblyFactory factory = new JavaAssemblyFactoryImpl();
+
     private static SystemAssemblyFactory systemFactory = new SystemAssemblyFactoryImpl();
-    
+
     public static SimpleComponent createComponent(String name, Class type, Scope scope) throws NoSuchMethodException {
         SimpleComponent sc = factory.createSimpleComponent();
         JavaImplementation impl = factory.createJavaImplementation();
@@ -77,6 +81,26 @@ public class MockAssemblyFactory {
         sc.setName(name);
         sc.setComponentImplementation(impl);
         return sc;
+    }
+
+    /**
+     * Creates an external service configured with the 'Foo' test binding
+     */
+    public static ExternalService createFooBindingExternalService(String name, Class interfaz) throws NoSuchMethodException,
+            ClassNotFoundException {
+        ExternalService es = factory.createExternalService();
+        es.setName(name);
+        Service s = factory.createService();
+        JavaServiceContract ji = factory.createJavaServiceContract();
+        ji.setScope(Scope.MODULE);
+        ji.setInterface(interfaz);
+        s.setServiceContract(ji);
+        ConfiguredService configuredService = factory.createConfiguredService();
+        es.setConfiguredService(configuredService);
+
+        FooBinding binding = new FooBinding();
+        es.getBindings().add(binding);
+        return es;
     }
 
 }

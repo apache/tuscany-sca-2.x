@@ -24,6 +24,7 @@ import org.apache.tuscany.core.invocation.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
 
 /**
+ * Responsible for invoking a mock transport binding client
  * 
  * @version $Rev$ $Date$
  */
@@ -34,8 +35,6 @@ public class FooTargetInvoker implements TargetInvoker {
     private ScopeContext container;
 
     private ExternalServiceContext context;
-
-    public boolean cacheable;
 
     public FooTargetInvoker(String esName, ScopeContext container) {
         assert (esName != null) : "No external service name specified";
@@ -56,7 +55,11 @@ public class FooTargetInvoker implements TargetInvoker {
             context = (ExternalServiceContext) iContext;
         }
         FooClient client = (FooClient) context.getImplementationInstance(true);
-        return client.invoke(payload.toString());
+        if (payload != null) {
+            return client.invoke(payload);
+        } else {
+            return client.invoke(null);
+        }
     }
 
     public boolean isCacheable() {

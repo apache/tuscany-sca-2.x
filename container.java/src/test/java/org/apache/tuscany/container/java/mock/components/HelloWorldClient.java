@@ -11,27 +11,29 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.container.java.mock.binding.foo;
+package org.apache.tuscany.container.java.mock.components;
 
-import java.lang.reflect.Array;
-
-import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.container.java.assembly.mock.HelloWorldService;
 
 /**
- * A mock client for a transport binding
+ * 
  * 
  * @version $Rev$ $Date$
  */
-public class FooClient {
+public class HelloWorldClient implements HelloWorldService{
 
-    public FooClient() {
+    public HelloWorldClient() {
     }
 
-    public Object invoke(Object msg) {
-        if (msg!=null && msg.getClass().isArray() && Array.getLength(msg) == 1){
-            return Array.get(msg,0);
-        }else{
-            throw new TargetException("This binding only understands operations with a single parameter");
-        }
+    private HelloWorldService service;
+    
+    public void setHelloWorldService(HelloWorldService service){
+        this.service = service;
     }
+
+    public String hello(String name) {
+        return service.hello(name);
+    }
+    
 }
+

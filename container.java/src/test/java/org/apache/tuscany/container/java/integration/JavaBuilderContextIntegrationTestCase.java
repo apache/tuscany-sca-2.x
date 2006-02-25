@@ -35,6 +35,7 @@ import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
+import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
@@ -71,9 +72,11 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
 
+        ProxyFactoryFactory proxyFactoryFactory =new JDKProxyFactoryFactory();
+        
         JavaComponentContextBuilder javaBuilder = new JavaComponentContextBuilder();
         javaBuilder.setMessageFactory(msgFactory);
-        javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
+        javaBuilder.setProxyFactoryFactory(proxyFactoryFactory);
 
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, true);
