@@ -61,10 +61,10 @@ import org.apache.tuscany.model.scdl.WSDLPortType;
 import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 import org.apache.tuscany.model.scdl.util.ScdlSwitch;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
+import org.apache.tuscany.model.types.java.impl.JavaServiceContractImpl;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 import org.apache.tuscany.model.types.wsdl.impl.WSDLServiceContractImpl;
 import org.apache.tuscany.model.util.ModelContentHandler;
-//FIXME remove this EMF dependency
 import org.eclipse.emf.ecore.EObject;
 
 import commonj.sdo.DataObject;
@@ -241,9 +241,10 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
      */
     public Object caseJavaInterface(JavaInterface object) {
         final JavaServiceContract serviceContract=factory.createJavaServiceContract();
-        serviceContract.setInterface(null);
-        serviceContract.setCallbackInterface(null);
         serviceContract.setScope(Scope.INSTANCE);
+
+        ((JavaServiceContractImpl)serviceContract).setInterfaceName(object.getInterface());
+        ((JavaServiceContractImpl)serviceContract).setCallbackInterfaceName(object.getCallbackInterface());
         
         linkServiceContract(object, serviceContract);
         

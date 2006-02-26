@@ -16,6 +16,7 @@
  */
 package org.apache.tuscany.model.types.java.impl;
 
+import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.impl.ServiceContractImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 
@@ -23,11 +24,58 @@ import org.apache.tuscany.model.types.java.JavaServiceContract;
  * An implementation of JavaServiceContract.
  */
 public class JavaServiceContractImpl extends ServiceContractImpl implements JavaServiceContract {
+    
+    private String interfaceName;
+    private String callbackInterfaceName;
 
     /**
      * Constructor
      */
     public JavaServiceContractImpl() {
+    }
+    
+    /**
+     * @param interfaceName The interfaceName to set.
+     */
+    public void setInterfaceName(String interfaceName) {
+        this.interfaceName = interfaceName;
+    }
+    
+    /**
+     * @param callbackInterfaceName The callbackInterfaceName to set.
+     */
+    public void setCallbackInterfaceName(String callbackInterfaceName) {
+        this.callbackInterfaceName = callbackInterfaceName;
+    }
+    
+    /**
+     * @see org.apache.tuscany.model.assembly.impl.ExtensibleImpl#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
+     */
+    public void initialize(AssemblyModelContext modelContext) {
+        if (isInitialized())
+            return;
+        
+        // Load the interface
+        if (getInterface()==null && interfaceName!=null) {
+            try {
+                Class interfaceClass=modelContext.getAssemblyLoader().loadClass(interfaceName);
+                setInterface(interfaceClass);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+
+        // Load the callback interface
+        if (getCallbackInterface()==null && callbackInterfaceName!=null) {
+            try {
+                Class callbackInterfaceClass=modelContext.getAssemblyLoader().loadClass(callbackInterfaceName);
+                setInterface(callbackInterfaceClass);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+        
+        super.initialize(modelContext);
     }
 
 }
