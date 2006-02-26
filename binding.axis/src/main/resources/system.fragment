@@ -18,24 +18,16 @@
         xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
 		name="org.apache.tuscany.binding.axis">
 
-    <component name="org.apache.tuscany.container.java.builder.JavaComponentContextBuilder">
-        <system:implementation.system class="org.apache.tuscany.container.java.builder.JavaComponentContextBuilder"/>
+    <component name="org.apache.tuscany.binding.axis.builder.ExternalWebServiceConfigurationBuilder">
+        <system:implementation.system class="org.apache.tuscany.binding.axis.builder.ExternalWebServiceConfigurationBuilder"/>
     </component>
 
-    <component name="org.apache.tuscany.container.java.builder.JavaTargetWireBuilder">
-        <system:implementation.system class="org.apache.tuscany.container.java.builder.JavaTargetWireBuilder"/>
+    <component name="org.apache.tuscany.binding.axis.builder.ExternalWebServiceWireBuilder">
+        <system:implementation.system class="org.apache.tuscany.binding.axis.builder.ExternalWebServiceWireBuilder"/>
     </component>
-    <!-- this needs to be wired to the defailt wire builder in the core system.fragment
-    <wire>
-        <source.uri>org.apache.tuscany.core.builder.impl.DefaultWireBuilder/wireBuilders</source.uri>
-        <target.uri>org.apache.tuscany.container.java.builder.JavaTargetWireBuilder</target.uri>
-    </wire>
-    -->
-    <component name="org.apache.tuscany.container.java.loader.JavaSCDLModelLoader">
-        <system:implementation.system class="org.apache.tuscany.container.java.loader.JavaSCDLModelLoader"/>
+
+    <component name="org.apache.tuscany.binding.axis.loader.WebServiceSCDLModelLoader">
+        <system:implementation.system class="org.apache.tuscany.binding.axis.loader.WebServiceSCDLModelLoader"/>
     </component>
-    
-    
-    
 
 </moduleFragment>
