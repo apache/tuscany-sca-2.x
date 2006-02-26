@@ -66,6 +66,7 @@ import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemObjectRuntimeConfiguration;
+import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Extensible;
@@ -436,6 +437,13 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         }
         return scope.getContext(componentName);
 
+    }
+    
+    /**
+     * @see org.apache.tuscany.core.context.AggregateContext#getAggregate()
+     */
+    public Aggregate getAggregate() {
+        return module;
     }
 
     public Object getInstance(QualifiedName qName) throws TargetException {
