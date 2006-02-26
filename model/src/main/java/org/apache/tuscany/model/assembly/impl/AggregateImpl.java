@@ -56,6 +56,7 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
     private List<Wire> wires=new ArrayList<Wire>();
     private List<Import> wsdlImports=new ArrayList<Import>();
     private Map<String, List<Import>> wsdlImportsMap;
+    private AssemblyModelContext modelContext;
 
     /**
      * Constructor
@@ -154,6 +155,14 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
     }
     
     /**
+     * @see org.apache.tuscany.model.assembly.Aggregate#getAssemblyModelContext()
+     */
+    public AssemblyModelContext getAssemblyModelContext() {
+        checkInitialized();
+        return modelContext;
+    }
+    
+    /**
      * @see org.apache.tuscany.model.assembly.Aggregate#getConfiguredService(org.apache.tuscany.model.assembly.ServiceURI)
      */
     public ConfiguredService getConfiguredService(ServiceURI address) {
@@ -188,6 +197,9 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
         if (isInitialized())
             return;
         super.initialize(modelContext);
+        
+        // Save the model context
+        this.modelContext=modelContext;
         
         // Populate map of WSDL imports
         ResourceLoader resourceLoader=modelContext.getResourceLoader();

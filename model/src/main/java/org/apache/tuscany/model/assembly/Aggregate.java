@@ -107,5 +107,11 @@ public interface Aggregate extends Extensible {
      * @return
      */
     List<Import> getWSDLImports(String namespace);
+
+    /**
+     * Returns the assembly model context used by this aggregate.
+     * @return
+     */
+    AssemblyModelContext getAssemblyModelContext();
     
 }
