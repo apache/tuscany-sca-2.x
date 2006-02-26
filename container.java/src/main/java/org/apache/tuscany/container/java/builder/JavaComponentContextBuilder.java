@@ -29,6 +29,7 @@ import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.SDOObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
+import org.apache.tuscany.core.invocation.MethodHashMap;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -206,7 +207,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                 for (ConfiguredService configuredService : component.getConfiguredServices()) {
                     Service service = configuredService.getService();
                     ServiceContract serviceContract = service.getServiceContract();
-                    Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
+                    Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
                     ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
                     Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
                     for (Method method : javaMethods) {

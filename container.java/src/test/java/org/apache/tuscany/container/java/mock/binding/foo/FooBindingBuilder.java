@@ -15,7 +15,6 @@ package org.apache.tuscany.container.java.mock.binding.foo;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,6 +26,7 @@ import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.injection.ObjectCreationException;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
+import org.apache.tuscany.core.invocation.MethodHashMap;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -118,7 +118,7 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
         ConfiguredService configuredService = es.getConfiguredService();
         Service service = configuredService.getService();
         ServiceContract serviceContract = service.getServiceContract();
-        Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
+        Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
         ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
         Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
         for (Method method : javaMethods) {
