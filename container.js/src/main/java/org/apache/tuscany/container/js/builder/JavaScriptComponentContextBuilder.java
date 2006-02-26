@@ -32,6 +32,7 @@ import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
+import org.apache.tuscany.core.invocation.MethodHashMap;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -130,7 +131,7 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
                 for (ConfiguredService configuredService : component.getConfiguredServices()) {
                     Service service = configuredService.getService();
                     ServiceContract contract = service.getServiceContract();
-                    Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
+                    Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
                     ProxyFactory proxyFactory = factory.createProxyFactory();
                     for (Method method : contract.getInterface().getMethods()) {
                         InvocationConfiguration iConfig = new InvocationConfiguration(method);
@@ -158,7 +159,7 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
                     for (ConfiguredReference reference : configuredReferences) {
                         ProxyFactory proxyFactory = factory.createProxyFactory();
                         ServiceContract interfaze = reference.getReference().getServiceContract();
-                        Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
+                        Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
                         for (Method method : interfaze.getInterface().getMethods()) {
                             InvocationConfiguration iConfig = new InvocationConfiguration(method);
                             iConfigMap.put(method, iConfig);
