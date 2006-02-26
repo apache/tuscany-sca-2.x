@@ -19,10 +19,10 @@ package org.apache.tuscany.core.invocation.jdk;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
+import org.apache.tuscany.core.invocation.MethodHashMap;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyInitializationException;
@@ -53,7 +53,7 @@ public class JDKProxyFactory implements ProxyFactory {
             throw new IllegalStateException("Proxy factory in wrong state [" + state + "]");
         }
         Map<Method, InvocationConfiguration> invocationConfigs = configuration.getInvocationConfigurations();
-        methodToInvocationConfig = new HashMap(invocationConfigs.size());
+        methodToInvocationConfig = new MethodHashMap(invocationConfigs.size());
         for (Map.Entry entry : invocationConfigs.entrySet()) {
             Method method = (Method) entry.getKey();
             methodToInvocationConfig.put(method, (InvocationConfiguration) entry.getValue());
