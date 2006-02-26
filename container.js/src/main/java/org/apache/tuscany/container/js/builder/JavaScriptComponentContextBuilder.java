@@ -38,6 +38,7 @@ import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
+import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.ComponentImplementation;
@@ -48,6 +49,7 @@ import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceContract;
 import org.apache.tuscany.model.assembly.SimpleComponent;
+import org.osoa.sca.annotations.Init;
 
 /**
  * Builds {@link org.apache.tuscany.container.js.config.JavaScriptComponentRuntimeConfiguration}s from a JavaScript
@@ -55,13 +57,13 @@ import org.apache.tuscany.model.assembly.SimpleComponent;
  * 
  * @version $Rev$ $Date$
  */
+@org.osoa.sca.annotations.Scope("MODULE")
 public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
 
     private ProxyFactoryFactory factory;
-
     private MessageFactory msgFactory;
-
     private RuntimeConfigurationBuilder referenceBuilder;
+    private RuntimeContext runtimeContext;
 
     // ----------------------------------
     // Constructors
@@ -73,6 +75,19 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
     // ----------------------------------
     // Methods
     // ----------------------------------
+
+    @Init(eager = true)
+    public void init() {
+        runtimeContext.addBuilder(this);
+    }
+
+    /**
+     * @param runtimeContext The runtimeContext to set.
+     */
+    @Autowire
+    public void setRuntimeContext(RuntimeContext runtimeContext) {
+        this.runtimeContext = runtimeContext;
+    }
 
     /**
      * Sets the factory used to construct proxies implmementing the business interface required by a reference

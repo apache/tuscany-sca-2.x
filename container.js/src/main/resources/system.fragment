@@ -26,4 +26,8 @@
         <system:implementation.system class="org.apache.tuscany.container.js.loader.JavaScriptSCDLModelLoader"/>
     </component>
 
+    <component name="org.apache.tuscany.container.js.builder.JavaScriptTargetWireBuilder">
+        <system:implementation.system class="org.apache.tuscany.container.js.builder.JavaScriptTargetWireBuilder"/>
+    </component>
+
 </moduleFragment>

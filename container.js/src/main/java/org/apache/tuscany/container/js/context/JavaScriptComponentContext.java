@@ -61,9 +61,18 @@ public class JavaScriptComponentContext extends AbstractContext implements Simpl
     }
 
     public synchronized Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
-        ProxyFactory targetFactory = targetProxyFactories.get(qName.getPortName());
+        String portName=qName.getPortName();
+        ProxyFactory targetFactory;
+        if (portName!=null) {
+            targetFactory = targetProxyFactories.get(portName);
+        }  else {
+            //FIXME The port name is null here, either locateService needs more information (the expected interface) to
+            // select the correct port, or we need to return a factory that matches the whole set of services exposed by
+            // the component.
+            targetFactory = targetProxyFactories.values().iterator().next();
+        }
         if (targetFactory == null) {
-            TargetException e = new TargetException("Target interface not found");
+            TargetException e = new TargetException("Target service not found");
             e.setIdentifier(qName.getPortName());
             e.addContextName(getName());
             throw e;
