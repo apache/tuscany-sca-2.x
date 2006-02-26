@@ -193,8 +193,8 @@ public class WSDLServiceContractImpl extends ServiceContractImpl implements WSDL
             String methodName=XMLNameUtil.getJavaNameFromXMLName(operation.getName(), false);
             
             //FIXME integrate XSD to Java type mapping here
-            String inputType = Type.getDescriptor(DataObject.class);
-            String outputType = Type.getDescriptor(DataObject.class);
+            String inputType = Type.getDescriptor(Object.class);
+            String outputType = Type.getDescriptor(Object.class);
             
             cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, methodName, "("+inputType+")"+outputType, null, null).visitEnd();
         }
