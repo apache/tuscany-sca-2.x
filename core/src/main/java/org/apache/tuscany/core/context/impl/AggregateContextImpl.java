@@ -51,7 +51,7 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Co
 
     @Autowire(required = false)
     private AutowireContext autowireContext;
-
+    
     // ----------------------------------
     // Constructors
     // ----------------------------------

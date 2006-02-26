@@ -3,6 +3,7 @@ package org.apache.tuscany.core.context;
 import java.util.List;
 
 import org.apache.tuscany.core.config.ConfigurationException;
+import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.assembly.AggregatePart;
 
@@ -74,4 +75,10 @@ public interface AggregateContext extends InstanceContext {
      */
     public Object locateInstance(String name) throws TargetException;
 
+    /**
+     * Returns the aggregate managed by this aggregate context 
+     * @return
+     */
+    public Aggregate getAggregate();
+    
 }

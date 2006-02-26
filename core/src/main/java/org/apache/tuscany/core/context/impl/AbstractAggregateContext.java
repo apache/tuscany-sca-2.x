@@ -46,6 +46,7 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyInitializationException;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
+import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Extensible;
@@ -584,4 +585,10 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         }
     }
 
+    /**
+     * @see org.apache.tuscany.core.context.AggregateContext#getAggregate()
+     */
+    public Aggregate getAggregate() {
+        return module;
+    }
 }
