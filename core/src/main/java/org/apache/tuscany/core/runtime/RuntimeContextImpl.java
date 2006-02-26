@@ -42,6 +42,7 @@ import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
+import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 
@@ -66,7 +67,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     private final SystemAggregateContext systemContext;
 
     private final MonitorFactory monitorFactory;
-
+    
     /**
      * Default constructor that creates a runtime with a NullMonitorFactory and no builders.
      */
@@ -90,10 +91,8 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         this.loaders = (loaders == null) ? new ArrayList(1) : loaders;
         this.wireBuilder = (wireBuilder == null) ? new DefaultWireBuilder() : wireBuilder;
 
-        rootContext = new AggregateContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this,
-                monitorFactory);
-        systemContext = new SystemAggregateContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(),
-                this, monitorFactory);
+        rootContext = new AggregateContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this, monitorFactory);
+        systemContext = new SystemAggregateContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(), this, monitorFactory);
     }
 
     /**
@@ -269,6 +268,10 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
     public Object getImplementationInstance(boolean notify) throws TargetException {
         return this;
+    }
+    
+    public Aggregate getAggregate() {
+        return systemContext.getAggregate();
     }
 
     // ----------------------------------
