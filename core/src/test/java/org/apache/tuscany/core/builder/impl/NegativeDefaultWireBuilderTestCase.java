@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
+import org.apache.tuscany.core.invocation.MethodHashMap;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactory;
 import org.apache.tuscany.core.invocation.mock.SimpleTarget;
@@ -41,7 +42,7 @@ public class NegativeDefaultWireBuilderTestCase extends TestCase {
         InvocationConfiguration source = new InvocationConfiguration(hello);
 
         ProxyFactory sourceFactory = new JDKProxyFactory();
-        Map<Method, InvocationConfiguration> sourceInvocationConfigs = new HashMap();
+        Map<Method, InvocationConfiguration> sourceInvocationConfigs = new MethodHashMap();
         sourceInvocationConfigs.put(hello, source);
         ProxyConfiguration sourceConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
@@ -51,7 +52,7 @@ public class NegativeDefaultWireBuilderTestCase extends TestCase {
         InvocationConfiguration target = new InvocationConfiguration(hello);
 
         ProxyFactory targetFactory = new JDKProxyFactory();
-        Map<Method, InvocationConfiguration> targetInvocationConfigs = new HashMap();
+        Map<Method, InvocationConfiguration> targetInvocationConfigs = new MethodHashMap();
         targetInvocationConfigs.put(hello, target);
         ProxyConfiguration targetConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
                 targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);

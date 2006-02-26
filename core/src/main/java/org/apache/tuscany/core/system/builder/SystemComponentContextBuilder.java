@@ -55,6 +55,7 @@ import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.impl.AggregateImpl;
 import org.osoa.sca.annotations.ComponentName;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Destroy;
@@ -141,13 +142,16 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
                 }
             }
 
-            // handle references
-            List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
-            if (configuredReferences != null) {
-                for (ConfiguredReference reference : configuredReferences) {
-                    Injector injector = createReferenceInjector(parentContext.getName(), component.getName(), parentContext,
-                            reference, fields, methods);
-                    injectors.add(injector);
+            //FIXME do not inject references on an application module yet
+            if (implClass!=AggregateContextImpl.class) {
+                // handle references
+                List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
+                if (configuredReferences != null) {
+                    for (ConfiguredReference reference : configuredReferences) {
+                        Injector injector = createReferenceInjector(parentContext.getName(), component.getName(), parentContext,
+                                reference, fields, methods);
+                        injectors.add(injector);
+                    }
                 }
             }
 

@@ -58,7 +58,7 @@ public class InvocationErrorTestCase extends TestCase {
     }
 
     public void testCheckedException() throws Exception {
-        Map<Method, InvocationConfiguration> config = new HashMap();
+        Map<Method, InvocationConfiguration> config = new MethodHashMap();
         config.put(checkedMethod, getConfiguration(checkedMethod));
         InvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), config);
         try {
@@ -72,7 +72,7 @@ public class InvocationErrorTestCase extends TestCase {
     }
 
     public void testRuntimeException() throws Exception {
-        Map<Method, InvocationConfiguration> config = new HashMap();
+        Map<Method, InvocationConfiguration> config = new MethodHashMap();
         config.put(runtimeMethod, getConfiguration(runtimeMethod));
         InvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), config);
         try {

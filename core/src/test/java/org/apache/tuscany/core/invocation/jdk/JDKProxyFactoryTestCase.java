@@ -14,7 +14,6 @@
 package org.apache.tuscany.core.invocation.jdk;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -22,6 +21,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
+import org.apache.tuscany.core.invocation.MethodHashMap;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.mock.MockStaticInvoker;
@@ -52,7 +52,7 @@ public class JDKProxyFactoryTestCase extends TestCase {
         source.addTargetInterceptor(new InvokerInterceptor());
         source.setTargetInvoker(new MockStaticInvoker(hello, new SimpleTargetImpl()));
         source.build();
-        Map<Method, InvocationConfiguration> configs = new HashMap();
+        Map<Method, InvocationConfiguration> configs = new MethodHashMap();
         configs.put(hello, source);
         ProxyConfiguration config = new ProxyConfiguration(new QualifiedName("foo"), configs, Thread.currentThread()
                 .getContextClassLoader(), new MessageFactoryImpl());

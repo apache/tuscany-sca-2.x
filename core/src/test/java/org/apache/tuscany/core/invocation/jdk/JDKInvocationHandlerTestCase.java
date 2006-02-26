@@ -8,6 +8,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
+import org.apache.tuscany.core.invocation.MethodHashMap;
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.impl.MessageChannelImpl;
 import org.apache.tuscany.core.invocation.mock.MockHandler;
@@ -37,14 +38,14 @@ public class JDKInvocationHandlerTestCase extends TestCase {
     }
 
     public void testBasicInvoke() throws Throwable {
-        Map<Method, InvocationConfiguration> configs = new HashMap();
+        Map<Method, InvocationConfiguration> configs = new MethodHashMap();
         configs.put(hello, getInvocationHandler(hello));
         JDKInvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), configs);
         Assert.assertEquals("foo", handler.invoke(null, hello, new Object[] { "foo" }));
     }
 
     public void testErrorInvoke() throws Throwable {
-        Map<Method, InvocationConfiguration> configs = new HashMap();
+        Map<Method, InvocationConfiguration> configs = new MethodHashMap();
         configs.put(hello, getInvocationHandler(hello));
         JDKInvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), configs);
         try {
@@ -60,7 +61,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
-        Map<Method, InvocationConfiguration> configs = new HashMap();
+        Map<Method, InvocationConfiguration> configs = new MethodHashMap();
         configs.put(hello, source);
         JDKInvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), configs);
         try {
@@ -76,7 +77,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
-        Map<Method, InvocationConfiguration> configs = new HashMap();
+        Map<Method, InvocationConfiguration> configs = new MethodHashMap();
         configs.put(hello, source);
         JDKInvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), configs);
         Assert.assertEquals("foo", handler.invoke(null, hello, new Object[] { "foo" }));

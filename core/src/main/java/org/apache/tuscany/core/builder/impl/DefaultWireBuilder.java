@@ -59,8 +59,7 @@ public class DefaultWireBuilder implements HierarchicalWireBuilder {
         // get the proxy chain for the target
         if (targetFactory != null) {
             // if null, the target side has no interceptors or handlers
-            Map<Method, InvocationConfiguration> targetInvocationConfigs = targetFactory.getProxyConfiguration()
-                    .getInvocationConfigurations();
+            Map<Method, InvocationConfiguration> targetInvocationConfigs = targetFactory.getProxyConfiguration().getInvocationConfigurations();
             for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration()
                     .getInvocationConfigurations().values()) {
                 // match invocation chains
