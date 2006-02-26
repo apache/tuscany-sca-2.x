@@ -41,26 +41,18 @@ import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
  */
 public class WebServicePortMetaData {
     
+    private final static String SOAP_ENCODING_URI = "http://schemas.xmlsoap.org/wsdl/soap/";
+    
     private Service wsdlService;
-
     private QName wsdlServiceName;
-
     private Port wsdlPort;
-
     private Binding wsdlBinding;
-
     private QName wsdlPortName;
-
     private PortType wsdlPortType;
-
     private QName wsdlPortTypeName;
-
     private String endpoint;
-
     private boolean managed;
-
     private List allOperationMetaData;
-
     private WSDLServiceContract interfaceType;
 
     /**
@@ -192,6 +184,10 @@ public class WebServicePortMetaData {
         return null;
     }
 
+    /**
+     * Returns the SOAP binding style.
+     * @return
+     */
     public String getStyle() {
 
         // Find the binding style
@@ -207,6 +203,10 @@ public class WebServicePortMetaData {
         return (style == null) ? "document" : style;
     }
 
+    /**
+     * Returns the use attribute
+     * @return
+     */
     public String getUse() {
         List list = getAllOperationMetaData();
         WebServiceOperationMetaData operationMetaData = (WebServiceOperationMetaData) list.get(0);
@@ -214,12 +214,28 @@ public class WebServicePortMetaData {
     }
 
     /**
-     * @return Returns the managed.
+     * Returns the encoding attribute
+     * @return
+     */
+    public String getEncoding() {
+        List list = getAllOperationMetaData();
+        WebServiceOperationMetaData operationMetaData = (WebServiceOperationMetaData) list.get(0);
+        return operationMetaData.getEncoding();
+    }
+
+    /**
+     * @return Returns true if this is a managed web service.
      */
     public boolean isManaged() {
         return managed;
     }
 
+    /**
+     * Returns the first extensibility element of the given type.
+     * @param elements
+     * @param type
+     * @return
+     */
     public static Object getExtensibilityElement(List elements, Class type) {
         for (Iterator i = elements.iterator(); i.hasNext();) {
             Object element = i.next();
@@ -229,6 +245,12 @@ public class WebServicePortMetaData {
         return null;
     }
 
+    /**
+     * Returns the extensibility elements of the given type.
+     * @param elements
+     * @param type
+     * @return
+     */
     public static List getExtensibilityElements(List elements, Class type) {
         List result = new ArrayList();
         for (Iterator i = elements.iterator(); i.hasNext();) {
@@ -241,7 +263,6 @@ public class WebServicePortMetaData {
 
     /**
      * Get the operation signature from the SOAP Body
-     *
      * @param body
      * @return A list of QNames
      */
@@ -327,6 +348,10 @@ public class WebServicePortMetaData {
         return null;
     }
 
+    /**
+     * Returns the WSDL service contract
+     * @return
+     */
     public WSDLServiceContract getInterfaceType() {
         return interfaceType;
 	}

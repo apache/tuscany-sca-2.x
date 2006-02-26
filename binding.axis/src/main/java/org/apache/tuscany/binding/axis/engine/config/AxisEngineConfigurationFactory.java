@@ -111,8 +111,8 @@ public class AxisEngineConfigurationFactory implements EngineConfigurationFactor
         tuscanyRuntime.start();
         try {
 
-            AssemblyModelContext modelContext = moduleContext.getAssemblyModelContext();
-            Module module = moduleContext.getModuleComponent().getModuleImplementation();
+            Module module = (Module)moduleContext.getAggregate();
+            AssemblyModelContext modelContext = module.getAssemblyModelContext();
 
             // Load the .wsdd configuration
             ResourceLoader bundleContext = modelContext.getResourceLoader();

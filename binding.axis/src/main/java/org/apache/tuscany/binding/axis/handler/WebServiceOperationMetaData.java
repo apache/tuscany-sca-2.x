@@ -52,6 +52,7 @@ public class WebServiceOperationMetaData {
     private transient String use;
     private transient String soapAction;
     private transient List signature;
+    private String encoding;
     private transient QName rpcOperationName;
 
     public WebServiceOperationMetaData(Binding binding, BindingOperation bindingOperation) {
@@ -59,11 +60,12 @@ public class WebServiceOperationMetaData {
         this.bindingOperation = bindingOperation;
     }
 
-    public WebServiceOperationMetaData(Binding binding, BindingOperation bindingOperation, String style, String use, String soapAction) {
+    public WebServiceOperationMetaData(Binding binding, BindingOperation bindingOperation, String style, String use, String encoding, String soapAction) {
         this.binding = binding;
         this.bindingOperation = bindingOperation;
         this.style = style;
         this.use = use;
+        this.encoding = encoding;
         this.soapAction = soapAction;
     }
 
@@ -208,7 +210,7 @@ public class WebServiceOperationMetaData {
     }
 
     /**
-     * Returns true if the given binding operation is RPC encoded
+     * Returns the use attribute
      *
      * @param wsdlOperation
      * @return
@@ -225,6 +227,20 @@ public class WebServiceOperationMetaData {
         return use;
     }
 
+    public String getEncoding() {
+        if (encoding == null) {
+            javax.wsdl.extensions.soap.SOAPBody soapBody = getSOAPBody(true);
+            if (soapBody != null) {
+                List<String> styles=(List<String>)soapBody.getEncodingStyles();
+                if (styles!=null && !styles.isEmpty())
+                    encoding = styles.get(0);
+            }
+            if (encoding == null)
+                encoding = "";
+        }
+        return encoding;
+    }
+    
     public boolean isDocLitWrapped() {
         boolean flag = getStyle().equals("document") && getUse().equals("literal");
         if (!flag)
