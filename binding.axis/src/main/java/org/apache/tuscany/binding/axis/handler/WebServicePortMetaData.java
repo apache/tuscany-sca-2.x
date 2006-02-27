@@ -17,6 +17,7 @@
 package org.apache.tuscany.binding.axis.handler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -66,10 +67,12 @@ public class WebServicePortMetaData {
         // Lookup the named port
         this.wsdlPort=wsdlPort;
         wsdlPortName = new QName(wsdlDefinition.getTargetNamespace(), wsdlPort.getName());
-        for (Iterator i = wsdlDefinition.getServices().values().iterator(); i.hasNext() && wsdlPort == null;) {
-            wsdlService = (javax.wsdl.Service) i.next();
-            if (wsdlService.getPorts().containsValue(wsdlPort)) {
-                wsdlServiceName = wsdlService.getQName();
+        
+        Collection<Service> services=(Collection<Service>)wsdlDefinition.getServices().values();
+        for (Service service : services) {
+            if (service.getPorts().containsValue(wsdlPort)) {
+                wsdlService = service;
+                wsdlServiceName = service.getQName();
                 break;
             }
         }

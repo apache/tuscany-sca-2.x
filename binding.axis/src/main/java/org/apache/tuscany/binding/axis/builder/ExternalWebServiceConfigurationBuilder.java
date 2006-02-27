@@ -15,7 +15,6 @@ package org.apache.tuscany.binding.axis.builder;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,12 +22,11 @@ import org.apache.tuscany.binding.axis.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis.config.ExternalWebServiceRuntimeConfiguration;
 import org.apache.tuscany.binding.axis.handler.ExternalWebServiceClient;
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.injection.ObjectCreationException;
+import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.MethodHashMap;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
@@ -111,15 +109,17 @@ public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurat
         if (!(object instanceof ExternalService)) {
             return;
         }
-        ExternalService es = (ExternalService) object;
-        if (es.getBindings().size() < 1 || !(es.getBindings().get(0) instanceof WebServiceBinding)) {
+        ExternalService externalService = (ExternalService) object;
+        if (externalService.getBindings().size() < 1 || !(externalService.getBindings().get(0) instanceof WebServiceBinding)) {
             return;
         }
 
-        ExternalWebServiceRuntimeConfiguration config = new ExternalWebServiceRuntimeConfiguration(es.getName(),
-                new ExternalWebServiceClientFactory());
+        WebServiceBinding wsBinding=(WebServiceBinding)externalService.getBindings().get(0);
+        
+        ExternalWebServiceClient externalWebServiceClient=new ExternalWebServiceClient(externalService, wsBinding);
+        ExternalWebServiceRuntimeConfiguration config = new ExternalWebServiceRuntimeConfiguration(externalService.getName(), new SingletonObjectFactory<ExternalWebServiceClient>(externalWebServiceClient));
 
-        ConfiguredService configuredService = es.getConfiguredService();
+        ConfiguredService configuredService = externalService.getConfiguredService();
         Service service = configuredService.getService();
         ServiceContract serviceContract = service.getServiceContract();
         Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
@@ -129,7 +129,7 @@ public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurat
             InvocationConfiguration iConfig = new InvocationConfiguration(method);
             iConfigMap.put(method, iConfig);
         }
-        QualifiedName qName = new QualifiedName(es.getName() + "/" + service.getName());
+        QualifiedName qName = new QualifiedName(externalService.getName() + "/" + service.getName());
         ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
         proxyFactory.setProxyConfiguration(pConfiguration);
@@ -144,13 +144,7 @@ public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurat
             iConfig.addTargetInterceptor(new InvokerInterceptor());
         }
 
-        es.getConfiguredService().setRuntimeConfiguration(config);
+        externalService.getConfiguredService().setRuntimeConfiguration(config);
     }
 
-    private class ExternalWebServiceClientFactory implements ObjectFactory {
-
-        public Object getInstance() throws ObjectCreationException {
-            return new ExternalWebServiceClient();
-        }
-    }
 }

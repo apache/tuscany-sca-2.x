@@ -13,9 +13,23 @@
  */
 package org.apache.tuscany.binding.axis.handler;
 
-import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.rmi.RemoteException;
+import java.util.Map;
+import java.util.Set;
 
-import org.apache.tuscany.core.context.TargetException;
+import javax.xml.namespace.QName;
+import javax.xml.rpc.Call;
+import javax.xml.rpc.Service;
+import javax.xml.rpc.ServiceException;
+import javax.xml.rpc.ServiceFactory;
+
+import org.apache.tuscany.binding.axis.assembly.WebServiceBinding;
+import org.apache.tuscany.core.config.JavaIntrospectionHelper;
+import org.apache.tuscany.core.invocation.MethodHashMap;
+import org.apache.tuscany.model.assembly.ExternalService;
+import org.osoa.sca.ServiceRuntimeException;
+import org.osoa.sca.ServiceUnavailableException;
 
 /**
  * A mock client for a transport binding
@@ -23,15 +37,96 @@ import org.apache.tuscany.core.context.TargetException;
  * @version $Rev$ $Date$
  */
 public class ExternalWebServiceClient {
+    
+    
+    private WebServicePortMetaData portMetaData;
+    private Service jaxrpcService;
+    private Map<Method, Call> calls=new MethodHashMap();
 
-    public ExternalWebServiceClient() {
+    /**
+     * Constructs a new ExternalWebServiceClient.
+     * @param externalService
+     * @param wsBinding
+     */
+    public ExternalWebServiceClient(ExternalService externalService, WebServiceBinding wsBinding) {
+        
+        // Create a port metadata info object to hold the port information
+        portMetaData = new WebServicePortMetaData(wsBinding.getWSDLDefinition(), wsBinding.getWSDLPort(), wsBinding.getURI(), false);
+
+        // Create a JAX-RPC service
+        QName wsdlServiceName = portMetaData.getService().getQName();
+        try {
+            jaxrpcService = ServiceFactory.newInstance().createService(wsdlServiceName);
+        } catch (ServiceException e) {
+            throw new ServiceUnavailableException(e);
+        }
+
+        // Create JAX-RPC calls for all the methods on the service contract
+        Set<Method> methods=JavaIntrospectionHelper.getAllUniqueMethods(externalService.getConfiguredService().getService().getServiceContract().getInterface());
+        for (Method method : methods) {
+            Call call=createCall(method);
+            calls.put(method, call);
+        }
+        
     }
 
-    public Object invoke(Object msg) {
-        if (msg!=null && msg.getClass().isArray() && Array.getLength(msg) == 1){
-            return Array.get(msg,0);
-        }else{
-            throw new TargetException("This binding only understands operations with a single parameter");
+    /**
+     * Create a JAX-RPC call for the given method.
+     * @param method
+     * @return
+     */
+    private Call createCall(Method method) {
+
+        // Create a JAX RPC call object
+        QName portName = portMetaData.getPortName();
+        Call call;
+        try {
+            call = (Call) jaxrpcService.createCall(portName);
+        } catch (ServiceException e) {
+            throw new IllegalArgumentException(e);
+        }
+
+        // Set the operation name
+        WebServiceOperationMetaData operationMetaData = portMetaData.getOperationMetaData(method.getName());
+        call.setOperationName(operationMetaData.getRPCOperationName());
+
+        // Set the target endpoint address
+        String endpoint = portMetaData.getEndpoint();
+        if (endpoint != null) {
+            String originalEndpoint = call.getTargetEndpointAddress();
+            if (!endpoint.equals(originalEndpoint))
+                call.setTargetEndpointAddress(endpoint);
+        }
+
+        // Set the SOAP action
+        String soapAction = operationMetaData.getSOAPAction();
+        if (soapAction != null) {
+            call.setProperty(Call.SOAPACTION_USE_PROPERTY, Boolean.TRUE);
+            call.setProperty(Call.SOAPACTION_URI_PROPERTY, soapAction);
+        }
+
+        // Set the operation style
+        String bindingStyle = operationMetaData.getStyle();
+        boolean rpcStyle = "rpc".equals(bindingStyle);
+        //String bindingUse = operationMetaData.getUse();
+        //boolean rpcEncoded = "encoded".equals(bindingUse);
+        call.setProperty(Call.OPERATION_STYLE_PROPERTY, (rpcStyle) ? "rpc" : "document");
+
+        return call;
+    }
+
+    /**
+     * Invoke an operation on the external Web service.
+     * @param method
+     * @param args
+     * @return
+     */
+    public Object invoke(Method method,  Object[] args) {
+        Call call=calls.get(method);
+        try {
+            return call.invoke(args);
+        } catch (RemoteException e) {
+            throw new ServiceRuntimeException(e);
         }
     }
 }

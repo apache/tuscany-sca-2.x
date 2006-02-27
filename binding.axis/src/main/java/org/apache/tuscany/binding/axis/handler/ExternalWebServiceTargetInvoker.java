@@ -67,9 +67,9 @@ public class ExternalWebServiceTargetInvoker implements TargetInvoker {
         }
         ExternalWebServiceClient client = (ExternalWebServiceClient) context.getImplementationInstance(true);
         if (payload != null) {
-            return client.invoke(payload);
+            return client.invoke(method, (Object[])payload);
         } else {
-            return client.invoke(null);
+            return client.invoke(method, null);
         }
     }
 
