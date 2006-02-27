@@ -19,14 +19,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.binding.axis.assembly.WebServiceBinding;
-import org.apache.tuscany.binding.axis.config.ExternalWebServiceRuntimeConfiguration;
-import org.apache.tuscany.binding.axis.handler.ExternalWebServiceClient;
+import org.apache.tuscany.binding.axis.config.WebServiceEntryPointRuntimeConfiguration;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
-import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.MethodHashMap;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
@@ -38,19 +36,19 @@ import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.ExternalService;
+import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceContract;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
 /**
- * Creates a <code>RuntimeConfigurationBuilder</code> for an external service configured with the {@link WebServiceBinding}
+ * Creates a <code>RuntimeConfigurationBuilder</code> for an entry point configured with the {@link WebServiceBinding}
  * 
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurationBuilder {
+public class WebServiceEntryPointConfigurationBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
 
     private RuntimeContext runtimeContext;
 
@@ -60,7 +58,7 @@ public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurat
 
     private RuntimeConfigurationBuilder policyBuilder;
 
-    public ExternalWebServiceConfigurationBuilder() {
+    public WebServiceEntryPointConfigurationBuilder() {
     }
 
     @Init(eager = true)
@@ -105,21 +103,20 @@ public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurat
         policyBuilder = builder;
     }
 
-    public void build(AssemblyModelObject object, Context context) throws BuilderException {
-        if (!(object instanceof ExternalService)) {
+    public void build(AssemblyModelObject object, AggregateContext parentContext) throws BuilderException {
+        if (!(object instanceof EntryPoint)) {
             return;
         }
-        ExternalService externalService = (ExternalService) object;
-        if (externalService.getBindings().size() < 1 || !(externalService.getBindings().get(0) instanceof WebServiceBinding)) {
+        EntryPoint entryPoint = (EntryPoint) object;
+        if (entryPoint.getBindings().size() < 1 || !(entryPoint.getBindings().get(0) instanceof WebServiceBinding)) {
             return;
         }
 
-        WebServiceBinding wsBinding=(WebServiceBinding)externalService.getBindings().get(0);
+        WebServiceBinding wsBinding=(WebServiceBinding)entryPoint.getBindings().get(0);
         
-        ExternalWebServiceClient externalWebServiceClient=new ExternalWebServiceClient(externalService, wsBinding);
-        ExternalWebServiceRuntimeConfiguration config = new ExternalWebServiceRuntimeConfiguration(externalService.getName(), new SingletonObjectFactory<ExternalWebServiceClient>(externalWebServiceClient));
+        WebServiceEntryPointRuntimeConfiguration config = new WebServiceEntryPointRuntimeConfiguration(entryPoint.getName(), parentContext, messageFactory);
 
-        ConfiguredService configuredService = externalService.getConfiguredService();
+        ConfiguredService configuredService = entryPoint.getConfiguredService();
         Service service = configuredService.getService();
         ServiceContract serviceContract = service.getServiceContract();
         Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
@@ -129,7 +126,7 @@ public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurat
             InvocationConfiguration iConfig = new InvocationConfiguration(method);
             iConfigMap.put(method, iConfig);
         }
-        QualifiedName qName = new QualifiedName(externalService.getName() + "/" + service.getName());
+        QualifiedName qName = new QualifiedName(entryPoint.getName() + "/" + service.getName());
         ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
         proxyFactory.setProxyConfiguration(pConfiguration);
@@ -137,14 +134,14 @@ public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurat
         configuredService.setProxyFactory(proxyFactory);
         if (policyBuilder != null) {
             // invoke the reference builder to handle additional policy metadata
-            policyBuilder.build(configuredService, context);
+            policyBuilder.build(configuredService, parentContext);
         }
         // add tail interceptor
         for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
             iConfig.addTargetInterceptor(new InvokerInterceptor());
         }
 
-        externalService.getConfiguredService().setRuntimeConfiguration(config);
+        entryPoint.getConfiguredReference().setRuntimeConfiguration(config);
     }
 
 }

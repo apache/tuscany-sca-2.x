@@ -30,4 +30,8 @@
         <system:implementation.system class="org.apache.tuscany.binding.axis.loader.WebServiceSCDLModelLoader"/>
     </component>
 
+    <component name="org.apache.tuscany.binding.axis.builder.WebServiceEntryPointConfigurationBuilder">
+        <system:implementation.system class="org.apache.tuscany.binding.axis.builder.WebServiceEntryPointConfigurationBuilder"/>
+    </component>
+
 </moduleFragment>

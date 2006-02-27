@@ -118,7 +118,7 @@ public class AxisEngineConfigurationFactory implements EngineConfigurationFactor
             ResourceLoader bundleContext = modelContext.getResourceLoader();
             InputStream wsdd;
             try {
-                URL url = bundleContext.getResource("org/apache/tuscany/binding/axis/config/impl/server-config.wsdd");
+                URL url = bundleContext.getResource("org/apache/tuscany/binding/axis/engine/config/server-config.wsdd");
                 wsdd = url.openStream();
             } catch (IOException e1) {
                 throw new ServiceRuntimeException(e1);
