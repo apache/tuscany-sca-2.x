@@ -80,6 +80,7 @@
                             <generateLoader>true</generateLoader>
                             <generateSwitch>true</generateSwitch>
                             <noNotification>true</noNotification>
+                            <noUnsettable>true</noUnsettable>
                         </configuration>
                         <goals>
                             <goal>generate</goal>
