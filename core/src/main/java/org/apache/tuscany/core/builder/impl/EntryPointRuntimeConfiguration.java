@@ -46,6 +46,7 @@ public abstract class EntryPointRuntimeConfiguration implements RuntimeConfigura
         assert (name != null) : "Entry point name was null";
         assert (msgFactory != null) : "Message factory was null";
         this.name = name;
+        this.epServiceName = serviceName;
         this.msgFactory = msgFactory;
     }
 

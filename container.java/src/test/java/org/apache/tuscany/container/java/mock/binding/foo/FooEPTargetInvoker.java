@@ -59,7 +59,7 @@ public class FooEPTargetInvoker implements TargetInvoker {
             context = (EntryPointContext) iContext;
         }
         try {
-            InvocationHandler handler = (InvocationHandler) context.getInstance(null);
+            InvocationHandler handler = (InvocationHandler) context.getImplementationInstance();
             if (payload != null) {
                 return handler.invoke(null, operation, new Object[] { payload });
             } else {

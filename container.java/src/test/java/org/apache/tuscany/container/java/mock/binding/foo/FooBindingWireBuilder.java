@@ -25,9 +25,9 @@ public class FooBindingWireBuilder implements WireBuilder {
                         .getPartName(), targetScopeContext);
                 sourceInvocationConfig.setTargetInvoker(invoker);
             } else {
-                FooEPTargetInvoker invoker = new FooEPTargetInvoker(sourceFactory.getProxyConfiguration().getTargetName()
-                        .getPartName(), sourceInvocationConfig.getMethod(), targetScopeContext);
-                sourceInvocationConfig.setTargetInvoker(invoker);
+//                FooEPTargetInvoker invoker = new FooEPTargetInvoker(sourceFactory.getProxyConfiguration().getTargetName()
+//                        .getPartName(), sourceInvocationConfig.getMethod(), targetScopeContext);
+//                sourceInvocationConfig.setTargetInvoker(invoker);
 
             }
             // if (downScope) {

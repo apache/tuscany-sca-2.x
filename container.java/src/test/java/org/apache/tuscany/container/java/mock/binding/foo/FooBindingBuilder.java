@@ -127,7 +127,7 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
                 InvocationConfiguration iConfig = new InvocationConfiguration(method);
                 iConfigMap.put(method, iConfig);
             }
-            QualifiedName qName = new QualifiedName(ep.getName() + "/" + service.getName());
+            QualifiedName qName = new QualifiedName(ep.getConfiguredReference().getTargetConfiguredServices().get(0).getAggregatePart().getName() + "/" + service.getName());
             ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, messageFactory);
             proxyFactory.setBusinessInterface(serviceContract.getInterface());
             proxyFactory.setProxyConfiguration(pConfiguration);

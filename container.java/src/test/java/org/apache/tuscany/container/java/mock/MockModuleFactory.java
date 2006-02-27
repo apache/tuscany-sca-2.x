@@ -124,7 +124,9 @@ public class MockModuleFactory {
         cref.getTargetConfiguredServices().add(cTargetService);
         cref.initialize(assemblyContext);
         sourceEP.setConfiguredReference(cref);
+        sourceEP.getConfiguredService().getService().setName("HelloWorldService");
         sourceEP.initialize(assemblyContext);
+        
 
         Module module = factory.createModule();
         module.setName("test.module");
