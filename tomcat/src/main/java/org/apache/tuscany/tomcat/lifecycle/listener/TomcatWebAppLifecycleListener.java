@@ -18,6 +18,8 @@ package org.apache.tuscany.tomcat.lifecycle.listener;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.Lifecycle;
@@ -25,26 +27,37 @@ import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
+import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.config.impl.ModuleComponentConfigurationLoaderImpl;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.impl.EventContextImpl;
-import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.context.webapp.HTTPSessionExpirationListener;
 import org.apache.tuscany.core.context.webapp.TuscanyRequestFilter;
 import org.apache.tuscany.core.context.webapp.TuscanyWebAppRuntime;
+import org.apache.tuscany.core.runtime.RuntimeContext;
+import org.apache.tuscany.core.runtime.RuntimeContextImpl;
+import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
+import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
+import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
+import org.apache.tuscany.core.system.loader.SystemSCDLModelLoader;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
+import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 import org.osoa.sca.ServiceRuntimeException;
+
+//FIXME This is a temporary hack to bootstrap the runtime in a Tomcat environment and do some bringup testing, the real bootstrap code is
+// still under construction
 
 /**
  * Responsible for initializing web applications as module components in a
@@ -67,6 +80,8 @@ import org.osoa.sca.ServiceRuntimeException;
  */
 public class TomcatWebAppLifecycleListener implements LifecycleListener {
 
+    private final static String SYSTEM_MODULE_COMPONENT = "org.apache.tuscany.core.system";
+    
     /**
      * Constructor
      */
@@ -107,34 +122,62 @@ public class TomcatWebAppLifecycleListener implements LifecycleListener {
                     String moduleComponentName = context.getPath().substring(1);
                     try {
 
-                        // Load the module component
-                        AssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl(null);
-                        AssemblyFactory factory=new AssemblyFactoryImpl();
-                        AssemblyModelContext modelContext = new AssemblyModelContextImpl(factory, modelLoader, resourceLoader);
-                        ModuleComponentConfigurationLoader moduleComponentLoader = new ModuleComponentConfigurationLoaderImpl(modelContext);
-                        String uri = context.getPath().substring(1);
-                        ModuleComponent moduleComponent = moduleComponentLoader.loadModuleComponent(moduleComponentName, uri);
-
-                        // Create the module component context
-                        EventContext eventContext = new EventContextImpl();
-                        DefaultScopeStrategy scopeStrategy = new DefaultScopeStrategy();
+                        // Create an assembly model factory
+                        AssemblyFactory modelFactory=new AssemblyFactoryImpl();
                         
-                        //FIXME TuscanyModuleComponentContext replaced by new bootstrap code
-//                        TuscanyModuleComponentContext moduleComponentContext = new TuscanyModuleComponentContextImpl(
-//                                moduleComponent, eventContext, scopeStrategy, modelContext);
-                        AggregateContext aggregateContext=null;
+                        // Create an assembly model loader
+                        List<SCDLModelLoader> scdlLoaders=new ArrayList<SCDLModelLoader>();
+                        scdlLoaders.add(new SystemSCDLModelLoader());
+                        AssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl(scdlLoaders);
+                        
+                        // Create an assembly model context
+                        AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, resourceLoader);
+
+                        // Create system configuration builders
+                        List<RuntimeConfigurationBuilder> configBuilders = new ArrayList();
+                        configBuilders.add((new SystemComponentContextBuilder()));
+                        configBuilders.add(new SystemEntryPointBuilder());
+                        configBuilders.add(new SystemExternalServiceBuilder());
+
+                        // Create a runtime context and start it
+                        RuntimeContext runtimeContext = new RuntimeContextImpl(new NullMonitorFactory(), scdlLoaders, configBuilders,new DefaultWireBuilder());
+                        runtimeContext.start();
+
+                        // Get the system context
+                        AggregateContext systemContext = runtimeContext.getSystemContext();
+                        
+                        // Load the system module component
+                        ModuleComponentConfigurationLoader loader = new ModuleComponentConfigurationLoaderImpl(modelContext);
+                        ModuleComponent systemModuleComponent = loader.loadSystemModuleComponent(SYSTEM_MODULE_COMPONENT, SYSTEM_MODULE_COMPONENT);
+                        
+                        // Register it with the system context
+                        systemContext.registerModelObject(systemModuleComponent);
+
+                        // Get the aggregate context representing the system module component
+                        AggregateContext systemModuleComponentContext = (AggregateContext) systemContext.getContext(SYSTEM_MODULE_COMPONENT);
+                        systemModuleComponentContext.registerModelObject(systemModuleComponent.getComponentImplementation());
+                        systemModuleComponentContext.fireEvent(EventContext.MODULE_START, null);
+                        
+                        // Load the SCDL configuration of the application module
+                        String uri = context.getPath().substring(1);
+                        ModuleComponent moduleComponent = loader.loadModuleComponent(moduleComponentName, uri);
+                        
+                        // Register it under the root application context
+                        runtimeContext.getRootContext().registerModelObject(moduleComponent);
+                        AggregateContext moduleContext=(AggregateContext)runtimeContext.getContext(moduleComponent.getName());
+                        moduleContext.registerModelObject(moduleComponent.getComponentImplementation());
 
                         // Create a Tuscany runtime and store it in the servlet
                         // context
-                        TuscanyWebAppRuntime tuscanyRuntime = new TuscanyWebAppRuntime(aggregateContext);
+                        TuscanyWebAppRuntime tuscanyRuntime = new TuscanyWebAppRuntime(moduleContext);
                         context.getServletContext().setAttribute(TuscanyWebAppRuntime.class.getName(), tuscanyRuntime);
 
                         // Start the runtime and the module component context
                         tuscanyRuntime.start();
                         try {
-                            aggregateContext.start();
+                            //moduleContext.start();
 
-                            aggregateContext.fireEvent(EventContext.MODULE_START, null);
+                            moduleContext.fireEvent(EventContext.MODULE_START, null);
 
                         } finally {
                             tuscanyRuntime.stop();
