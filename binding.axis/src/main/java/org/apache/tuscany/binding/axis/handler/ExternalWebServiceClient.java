@@ -76,19 +76,15 @@ public class ExternalWebServiceClient {
      * @return
      */
     private Call createCall(Method method) {
-
+        
         // Create a JAX RPC call object
         QName portName = portMetaData.getPortName();
         Call call;
         try {
-            call = (Call) jaxrpcService.createCall(portName);
+            call = (Call) jaxrpcService.createCall(portName, method.getName());
         } catch (ServiceException e) {
             throw new IllegalArgumentException(e);
         }
-
-        // Set the operation name
-        WebServiceOperationMetaData operationMetaData = portMetaData.getOperationMetaData(method.getName());
-        call.setOperationName(operationMetaData.getRPCOperationName());
 
         // Set the target endpoint address
         String endpoint = portMetaData.getEndpoint();
@@ -97,21 +93,7 @@ public class ExternalWebServiceClient {
             if (!endpoint.equals(originalEndpoint))
                 call.setTargetEndpointAddress(endpoint);
         }
-
-        // Set the SOAP action
-        String soapAction = operationMetaData.getSOAPAction();
-        if (soapAction != null) {
-            call.setProperty(Call.SOAPACTION_USE_PROPERTY, Boolean.TRUE);
-            call.setProperty(Call.SOAPACTION_URI_PROPERTY, soapAction);
-        }
-
-        // Set the operation style
-        String bindingStyle = operationMetaData.getStyle();
-        boolean rpcStyle = "rpc".equals(bindingStyle);
-        //String bindingUse = operationMetaData.getUse();
-        //boolean rpcEncoded = "encoded".equals(bindingUse);
-        call.setProperty(Call.OPERATION_STYLE_PROPERTY, (rpcStyle) ? "rpc" : "document");
-
+        
         return call;
     }
 
