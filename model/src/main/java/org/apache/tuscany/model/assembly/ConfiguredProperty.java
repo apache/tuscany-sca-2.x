@@ -44,5 +44,19 @@ public interface ConfiguredProperty extends AssemblyModelObject {
      * @param value the value being set for this usage of the {@link Property}
      */
     void setValue(Object value);
-	
+
+    /**
+     * Returns the override option that determines if any configuration for this property
+     * that is contained in this aggregate can be overridden by configuration supplied from outside.
+     */
+    OverrideOption getOverrideOption();
+
+    /**
+     * Set the override option that determines if any configuration for this property
+     * that is contained in this aggregate can be overridden by configuration supplied from outside.
+     *
+     * @param value the option that determines how property configuration can be overriden
+     */
+    void setOverrideOption(OverrideOption value);
+
 }

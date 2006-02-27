@@ -19,7 +19,6 @@ package org.apache.tuscany.model.assembly.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +27,7 @@ import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
@@ -35,6 +35,7 @@ import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleFragment;
 import org.apache.tuscany.model.assembly.Multiplicity;
+import org.apache.tuscany.model.assembly.OverrideOption;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceContract;
@@ -115,6 +116,7 @@ public class ModuleImpl extends AggregateImpl implements Module {
         super.initialize(modelContext);
 
         // Derive the component type from the entry points and external services in the module
+        // Also derive properties from the overridable properties of the components in the module
         if (componentType==null) {
             AssemblyFactory factory = modelContext.getAssemblyFactory();
             componentType = factory.createComponentType();
@@ -126,8 +128,9 @@ public class ModuleImpl extends AggregateImpl implements Module {
                     service.setServiceContract(serviceContract);
                 componentType.getServices().add(service);
             }
-            for (Iterator<ExternalService> i = getExternalServices().iterator(); i.hasNext();) {
-                ExternalService externalService = i.next();
+            for (ExternalService externalService : getExternalServices()) {
+                if (externalService.getOverrideOption()==null || externalService.getOverrideOption()==OverrideOption.NO)
+                    continue;
                 Reference reference = factory.createReference();
                 reference.setName(externalService.getName());
                 ServiceContract serviceContract = externalService.getConfiguredService().getService().getServiceContract();
@@ -135,10 +138,16 @@ public class ModuleImpl extends AggregateImpl implements Module {
                     reference.setServiceContract(serviceContract);
                 componentType.getReferences().add(reference);
             }
+            for (Component component : getComponents()) {
+                for (ConfiguredProperty configuredProperty : component.getConfiguredProperties()) {
+                    if (configuredProperty.getOverrideOption()==null || configuredProperty.getOverrideOption()==OverrideOption.NO)
+                        continue;
+                    componentType.getProperties().add(configuredProperty.getProperty());
+                }
+            }
         }
         componentType.initialize(modelContext);
 
-        //FIXME derive the module properties from the overridable properties of the components in the module
 
         // Wire the module parts
         for (Wire wire : getWires()) {

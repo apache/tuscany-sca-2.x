@@ -425,10 +425,25 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
                     if (configuredProperty == null) {
                         throw new IllegalArgumentException("Undefined property " + propertyName);
                     }
+                    
+                    // Check if the property is overridable
+                    Sequence attrs=propertyElement.getSequence("anyAttribute");
+                    if (attrs!=null && attrs.size()!=0) {
+                        commonj.sdo.Property attr=attrs.getProperty(0);
+                        if (attr!=null && attr.getName().equals("overridable")) {
+                            Object overridable=attrs.getValue(0);
+                            if ("may".equals(overridable))
+                                configuredProperty.setOverrideOption(OverrideOption.MAY);
+                            else if ("must".equals(overridable))
+                                configuredProperty.setOverrideOption(OverrideOption.MUST);
+                            else if ("no".equals(overridable))
+                                configuredProperty.setOverrideOption(OverrideOption.NO);
+                        }
+                    }
 
                     // Get the property value text and convert to the expected java type
                     //FIXME just handle strings for now
-                    Sequence text = propertyElement.getSequence(0);
+                    Sequence text = propertyElement.getSequence("any");
                     if (text != null && text.size() != 0) {
                         Object rawValue = text.getValue(0);
                         configuredProperty.setValue(rawValue);

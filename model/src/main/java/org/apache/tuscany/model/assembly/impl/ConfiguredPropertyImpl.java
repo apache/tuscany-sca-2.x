@@ -19,6 +19,7 @@ package org.apache.tuscany.model.assembly.impl;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
+import org.apache.tuscany.model.assembly.OverrideOption;
 import org.apache.tuscany.model.assembly.Property;
 
 /**
@@ -26,6 +27,7 @@ import org.apache.tuscany.model.assembly.Property;
  */
 public class ConfiguredPropertyImpl extends AssemblyModelObjectImpl implements ConfiguredProperty {
     private Property property;
+    private OverrideOption overrideOption;
     private Object value;
 
     /**
@@ -64,6 +66,21 @@ public class ConfiguredPropertyImpl extends AssemblyModelObjectImpl implements C
         this.value = value;
     }
 
+    /*
+     * @see org.apache.tuscany.model.assembly.ConfiguredProperty#getOverrideOption()
+     */
+    public OverrideOption getOverrideOption() {
+        return overrideOption;
+    }
+    
+    /*
+     * @see org.apache.tuscany.model.assembly.ConfiguredProperty#setOverrideOption(org.apache.tuscany.model.assembly.OverrideOption)
+     */
+    public void setOverrideOption(OverrideOption value) {
+        checkNotFrozen();
+        this.overrideOption=value;
+    }
+    
     /**
      * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
      */

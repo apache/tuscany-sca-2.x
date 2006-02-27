@@ -27,7 +27,7 @@
     <component name="AccountServiceComponent">
         <implementation.java class="org.apache.tuscany.container.java.assembly.tests.bigbank.account.services.account.AccountServiceImpl"/>
         <properties>
-            <v:currency>EURO</v:currency>
+            <v:currency overridable="may">EURO</v:currency>
         </properties>
         <references>
             <v:accountDataService>AccountDataServiceComponent</v:accountDataService>
