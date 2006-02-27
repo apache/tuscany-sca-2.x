@@ -13,8 +13,7 @@
  */
 package org.apache.tuscany.binding.axis.config;
 
-import org.apache.tuscany.core.builder.impl.BaseEntryPointRuntimeConfiguration;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.builder.impl.EntryPointRuntimeConfiguration;
 import org.apache.tuscany.core.message.MessageFactory;
 
 /**
@@ -24,10 +23,10 @@ import org.apache.tuscany.core.message.MessageFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class WebServiceEntryPointRuntimeConfiguration extends BaseEntryPointRuntimeConfiguration {
+public class WebServiceEntryPointRuntimeConfiguration extends EntryPointRuntimeConfiguration {
 
-    public WebServiceEntryPointRuntimeConfiguration(String name, AggregateContext parentContext, MessageFactory messageFactory) {
-        super(name, parentContext, messageFactory);
+    public WebServiceEntryPointRuntimeConfiguration(String name, String serviceName, MessageFactory messageFactory) {
+        super(name, serviceName, messageFactory);
     }
 
 }

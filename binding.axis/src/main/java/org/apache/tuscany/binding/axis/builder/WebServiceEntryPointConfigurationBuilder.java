@@ -114,7 +114,8 @@ public class WebServiceEntryPointConfigurationBuilder implements RuntimeConfigur
 
         WebServiceBinding wsBinding=(WebServiceBinding)entryPoint.getBindings().get(0);
         
-        WebServiceEntryPointRuntimeConfiguration config = new WebServiceEntryPointRuntimeConfiguration(entryPoint.getName(), parentContext, messageFactory);
+        WebServiceEntryPointRuntimeConfiguration config = new WebServiceEntryPointRuntimeConfiguration(entryPoint.getName(), entryPoint.getConfiguredService()
+                .getService().getName(), messageFactory);
 
         ConfiguredService configuredService = entryPoint.getConfiguredService();
         Service service = configuredService.getService();
