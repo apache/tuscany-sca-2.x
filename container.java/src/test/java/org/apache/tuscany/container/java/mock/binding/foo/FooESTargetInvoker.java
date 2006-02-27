@@ -24,11 +24,11 @@ import org.apache.tuscany.core.invocation.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
 
 /**
- * Responsible for invoking a mock transport binding client
+ * Responsible for invoking a mock transport binding client configured for an external service
  * 
  * @version $Rev$ $Date$
  */
-public class FooTargetInvoker implements TargetInvoker {
+public class FooESTargetInvoker implements TargetInvoker {
 
     private String name;
 
@@ -36,7 +36,7 @@ public class FooTargetInvoker implements TargetInvoker {
 
     private ExternalServiceContext context;
 
-    public FooTargetInvoker(String esName, ScopeContext container) {
+    public FooESTargetInvoker(String esName, ScopeContext container) {
         assert (esName != null) : "No external service name specified";
         assert (container != null) : "No scope container specified";
         name = esName;

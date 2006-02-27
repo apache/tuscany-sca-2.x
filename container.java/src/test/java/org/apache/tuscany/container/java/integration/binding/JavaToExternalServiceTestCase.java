@@ -86,7 +86,7 @@ public class JavaToExternalServiceTestCase extends TestCase {
         runtime.getRootContext().registerModelObject(
                 MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(), Scope.AGGREGATE));
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
-        child.registerModelObject(MockModuleFactory.createModuleWithExerntalService());
+        child.registerModelObject(MockModuleFactory.createModuleWithExternalService());
         child.fireEvent(EventContext.MODULE_START, null);
         HelloWorldService source = (HelloWorldService) child.locateInstance("source");
         Assert.assertNotNull(source);

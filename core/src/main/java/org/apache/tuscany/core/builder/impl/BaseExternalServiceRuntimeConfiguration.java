@@ -44,7 +44,7 @@ public abstract class BaseExternalServiceRuntimeConfiguration implements Runtime
 
     private String targetServiceName;
 
-    private Map targetProxyFactories;
+    private Map<String,ProxyFactory> targetProxyFactories;
 
     public BaseExternalServiceRuntimeConfiguration(String name, ObjectFactory objectFactory) {
         assert (name != null) : "Name was null";
@@ -83,7 +83,7 @@ public abstract class BaseExternalServiceRuntimeConfiguration implements Runtime
         }
     }
 
-    public Map getTargetProxyFactories() {
+    public Map<String,ProxyFactory> getTargetProxyFactories() {
         if (targetProxyFactories == null) {
             targetProxyFactories = new HashMap(1);
             targetProxyFactories.put(targetServiceName, proxyFactory);

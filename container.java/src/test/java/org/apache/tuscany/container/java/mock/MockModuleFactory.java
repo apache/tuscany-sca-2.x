@@ -1,5 +1,6 @@
 package org.apache.tuscany.container.java.mock;
 
+import org.apache.tuscany.container.java.assembly.mock.HelloWorldImpl;
 import org.apache.tuscany.container.java.assembly.mock.HelloWorldService;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.container.java.mock.components.HelloWorldClient;
@@ -9,6 +10,7 @@ import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
+import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Reference;
@@ -63,7 +65,7 @@ public class MockModuleFactory {
     }
 
     
-    public static Module createModuleWithExerntalService() throws Exception {
+    public static Module createModuleWithExternalService() throws Exception {
         Component sourceComponent = MockAssemblyFactory.createComponent("source", HelloWorldClient.class,Scope.MODULE);
         ExternalService targetES = MockAssemblyFactory.createFooBindingExternalService("target",HelloWorldService.class);
 
@@ -97,5 +99,41 @@ public class MockModuleFactory {
         return module;
     }
 
+    
+    public static Module createModuleWithEntryPoint() throws Exception {
+        EntryPoint sourceEP = MockAssemblyFactory.createFooBindingEntryPoint("source", HelloWorldService.class);
+        Component targetComponent = MockAssemblyFactory.createComponent("target",HelloWorldImpl.class,Scope.MODULE);
+
+        Service targetService = factory.createService();
+        JavaServiceContract targetContract = factory.createJavaServiceContract();
+        targetContract.setInterface(HelloWorldService.class);
+        targetService.setServiceContract(targetContract);
+        targetService.setName("HelloWorld");
+        ConfiguredService cTargetService = factory.createConfiguredService();
+        cTargetService.setService(targetService);
+        targetComponent.getConfiguredServices().add(cTargetService);
+        targetComponent.initialize(assemblyContext);
+        
+        Reference ref = factory.createReference();
+        ConfiguredReference cref = factory.createConfiguredReference();
+        ref.setName("setHelloWorldService");
+        JavaServiceContract inter = factory.createJavaServiceContract();
+        inter.setInterface(HelloWorldService.class);
+        ref.setServiceContract(inter);
+        cref.setReference(ref);
+        cref.getTargetConfiguredServices().add(cTargetService);
+        cref.initialize(assemblyContext);
+        sourceEP.setConfiguredReference(cref);
+        sourceEP.initialize(assemblyContext);
+
+        Module module = factory.createModule();
+        module.setName("test.module");
+        module.getEntryPoints().add(sourceEP);
+        module.getComponents().add(targetComponent);
+        module.initialize(assemblyContext);
+        return module;
+    }
+
+    
 }
 

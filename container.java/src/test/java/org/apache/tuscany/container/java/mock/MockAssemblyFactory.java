@@ -27,6 +27,7 @@ import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredService;
+import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
@@ -103,4 +104,20 @@ public class MockAssemblyFactory {
         return es;
     }
 
+    public static EntryPoint createFooBindingEntryPoint(String name, Class interfaz) throws NoSuchMethodException,
+            ClassNotFoundException {
+        EntryPoint ep = factory.createEntryPoint();
+        ep.setName(name);
+        Service s = factory.createService();
+        JavaServiceContract ji = factory.createJavaServiceContract();
+        ji.setScope(Scope.MODULE);
+        ji.setInterface(interfaz);
+        s.setServiceContract(ji);
+        ConfiguredService configuredService = factory.createConfiguredService();
+        configuredService.setService(s);
+        ep.setConfiguredService(configuredService);
+        FooBinding binding = new FooBinding();
+        ep.getBindings().add(binding);
+        return ep;
+    }
 }

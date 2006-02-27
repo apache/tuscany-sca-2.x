@@ -16,7 +16,6 @@ package org.apache.tuscany.core.context.impl;
 import java.lang.reflect.InvocationHandler;
 
 import org.apache.tuscany.core.context.AbstractContext;
-import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.ContextInitException;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EntryPointContext;
@@ -34,8 +33,6 @@ import org.apache.tuscany.core.message.MessageFactory;
 public class EntryPointContextImpl extends AbstractContext implements EntryPointContext {
 
     private MessageFactory messageFactory;
-
-    private AggregateContext parentContext;
 
     private ProxyFactory proxyFactory;
 
@@ -56,15 +53,15 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
      * @param messageFactory a factory for generating invocation messages
      * @throws ContextInitException if an error occurs creating the entry point
      */
-    public EntryPointContextImpl(String name, ProxyFactory proxyFactory, AggregateContext parentContext,
-            MessageFactory messageFactory) throws ContextInitException {
+    public EntryPointContextImpl(String name, ProxyFactory proxyFactory, MessageFactory messageFactory)
+            throws ContextInitException {
         super(name);
         assert (proxyFactory != null) : "Proxy factory was null";
         assert (messageFactory != null) : "Message factory was null";
         this.proxyFactory = proxyFactory;
-        this.parentContext = parentContext;
         this.messageFactory = messageFactory;
-        invocationHandler = new JDKInvocationHandler(messageFactory,proxyFactory.getProxyConfiguration().getInvocationConfigurations());
+        invocationHandler = new JDKInvocationHandler(messageFactory, proxyFactory.getProxyConfiguration()
+                .getInvocationConfigurations());
     }
 
     // ----------------------------------

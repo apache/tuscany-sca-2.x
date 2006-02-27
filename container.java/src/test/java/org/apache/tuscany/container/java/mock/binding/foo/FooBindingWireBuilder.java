@@ -14,27 +14,35 @@ public class FooBindingWireBuilder implements WireBuilder {
 
     public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) throws BuilderConfigException {
-        if (!(FooExternalServiceRuntimeConfiguration.class.isAssignableFrom(targetType))) {
+        if (!(FooExternalServiceRuntimeConfiguration.class.isAssignableFrom(targetType) || FooEntryPointRuntimeConfiguration.class
+                .isAssignableFrom(targetType))) {
             return;
         }
         for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations()
                 .values()) {
-            FooTargetInvoker invoker = new FooTargetInvoker(sourceFactory.getProxyConfiguration().getTargetName().getPartName(),
-                    targetScopeContext);
+            if (FooExternalServiceRuntimeConfiguration.class.isAssignableFrom(targetType)) {
+                FooESTargetInvoker invoker = new FooESTargetInvoker(sourceFactory.getProxyConfiguration().getTargetName()
+                        .getPartName(), targetScopeContext);
+                sourceInvocationConfig.setTargetInvoker(invoker);
+            } else {
+                FooEPTargetInvoker invoker = new FooEPTargetInvoker(sourceFactory.getProxyConfiguration().getTargetName()
+                        .getPartName(), sourceInvocationConfig.getMethod(), targetScopeContext);
+                sourceInvocationConfig.setTargetInvoker(invoker);
+
+            }
             // if (downScope) {
             // // the source scope is shorter than the target, so the invoker can cache the target instance
             // invoker.setCacheable(true);
             // } else {
             // invoker.setCacheable(false);
             // }
-            sourceInvocationConfig.setTargetInvoker(invoker);
         }
 
     }
 
     public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
             throws BuilderConfigException {
-        //TODO implement
+        // TODO implement
     }
 
 }

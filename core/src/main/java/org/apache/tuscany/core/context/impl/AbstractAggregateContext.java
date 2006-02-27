@@ -120,7 +120,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
 
     public AbstractAggregateContext() {
         scopeIndex = new ConcurrentHashMap();
-        //FIXME the factory should be injected
+        // FIXME the factory should be injected
         module = new AssemblyFactoryImpl().createModule();
     }
 
@@ -133,7 +133,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         this.monitorFactory = factory;
         scopeIndex = new ConcurrentHashMap();
         parentContext = parent;
-        //FIXME the factory should be injected
+        // FIXME the factory should be injected
         module = new AssemblyFactoryImpl().createModule();
     }
 
@@ -345,6 +345,52 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                     }
 
                 }
+                for (EntryPoint ep : newModule.getEntryPoints()) {
+                    RuntimeConfiguration<InstanceContext> config = (RuntimeConfiguration<InstanceContext>) ep
+                            .getConfiguredReference().getRuntimeConfiguration();
+                    wireSource(config);
+                    buildTarget(config);
+                    try {
+                        if (config.getSourceProxyFactories() != null) {
+                            for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()
+                                    .values()) {
+                                sourceProxyFactory.initialize();
+                            }
+                        }
+                        if (config.getTargetProxyFactories() != null) {
+                            for (ProxyFactory targetProxyFactory : (Collection<ProxyFactory>) config.getTargetProxyFactories()
+                                    .values()) {
+                                targetProxyFactory.initialize();
+                            }
+                        }
+                    } catch (ProxyInitializationException e) {
+                        throw new ConfigurationException(e);
+                    }
+
+                }
+                for (ExternalService es : newModule.getExternalServices()) {
+                    RuntimeConfiguration<InstanceContext> config = (RuntimeConfiguration<InstanceContext>) es
+                            .getConfiguredService().getRuntimeConfiguration();
+                    buildTarget(config);
+                    try {
+                        if (config.getSourceProxyFactories() != null) {
+                            for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()
+                                    .values()) {
+                                sourceProxyFactory.initialize();
+                            }
+                        }
+                        if (config.getTargetProxyFactories() != null) {
+                            for (ProxyFactory targetProxyFactory : (Collection<ProxyFactory>) config.getTargetProxyFactories()
+                                    .values()) {
+                                targetProxyFactory.initialize();
+                            }
+                        }
+                    } catch (ProxyInitializationException e) {
+                        throw new ConfigurationException(e);
+                    }
+
+                }
+
             }
             // merge existing module component assets
             module.getComponents().addAll(oldModule.getComponents());
@@ -544,13 +590,13 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                         .getPortName());
                 boolean downScope = scopeStrategy.downScopeReference(sourceScope, target.getScope());
                 configurationContext.wire(sourceFactory, targetFactory, target.getClass(), downScope, scopeContexts
-                        .get(sourceScope));
+                        .get(target.getScope()));
             }
         }
         // wire invokers when the proxy only contains the target chain
-        if(source.getTargetProxyFactories() != null){
+        if (source.getTargetProxyFactories() != null) {
             for (ProxyFactory targetFactory : ((Map<String, ProxyFactory>) source.getTargetProxyFactories()).values()) {
-                configurationContext.wire(targetFactory,source.getClass(),scopeContexts.get(sourceScope));
+                configurationContext.wire(targetFactory, source.getClass(), scopeContexts.get(sourceScope));
             }
         }
         source.prepare();
