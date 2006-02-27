@@ -17,41 +17,17 @@
 package org.apache.tuscany.binding.axis.handler;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
-import javax.wsdl.Definition;
-import javax.wsdl.Operation;
-import javax.xml.namespace.QName;
 import javax.xml.rpc.ServiceException;
 import javax.xml.rpc.server.ServiceLifecycle;
 import javax.xml.rpc.server.ServletEndpointContext;
 
 import org.apache.axis.MessageContext;
-import org.apache.axis.message.MessageElement;
-import org.apache.axis.message.SOAPBody;
 import org.apache.axis.message.SOAPEnvelope;
-import org.apache.tuscany.binding.axis.assembly.WebServiceBinding;
-import org.apache.tuscany.binding.axis.mediator.SOAPMediator;
-import org.apache.tuscany.binding.axis.mediator.impl.SOAPDocumentLiteralMediatorImpl;
 import org.apache.tuscany.core.addressing.EndpointReference;
-import org.apache.tuscany.core.addressing.impl.AddressingFactoryImpl;
 import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.core.message.Message;
-import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
-import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.ServiceContract;
-import org.apache.tuscany.model.assembly.ServiceURI;
-import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
-import org.osoa.sca.CurrentModuleContext;
-import org.osoa.sca.ServiceRuntimeException;
 
 //FIXME most of this class is commented out for now
 

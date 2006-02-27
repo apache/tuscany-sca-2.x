@@ -34,11 +34,7 @@ import org.apache.axis.message.SOAPEnvelope;
 import org.apache.tuscany.binding.axis.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis.mediator.SOAPMediator;
 import org.apache.tuscany.binding.axis.mediator.impl.SOAPDocumentLiteralMediatorImpl;
-import org.apache.tuscany.binding.axis.mediator.impl.SOAPEnvelopeImpl;
-import org.apache.tuscany.binding.axis.mediator.impl.SOAPRPCEncodedMediatorImpl;
-import org.apache.tuscany.binding.axis.mediator.impl.SOAPRPCLiteralMediatorImpl;
 import org.apache.tuscany.core.addressing.EndpointReference;
-import org.apache.tuscany.core.context.TuscanyModuleComponentContext;
 import org.apache.tuscany.core.invocation.MessageHandler;
 import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
@@ -46,9 +42,7 @@ import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.sdo.helper.HelperProviderImpl;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.osoa.sca.ServiceUnavailableException;
 
 import commonj.sdo.DataObject;
@@ -104,15 +98,16 @@ public class ExternalWebServiceHandler implements MessageHandler {
         call.setProperty(Call.OPERATION_STYLE_PROPERTY, (rpcStyle) ? "rpc" : "document");
 
         // Create the appropriate mediator
-        if (rpcStyle) {
-            if (rpcEncoded) {
-                mediator = new SOAPRPCEncodedMediatorImpl(portMetaData);
-            } else {
-                mediator = new SOAPRPCLiteralMediatorImpl(portMetaData);
-            }
-        } else {
+//FIXME only support document style for now 
+//        if (rpcStyle) {
+//            if (rpcEncoded) {
+//                mediator = new SOAPRPCEncodedMediatorImpl(portMetaData);
+//            } else {
+//                mediator = new SOAPRPCLiteralMediatorImpl(portMetaData);
+//            }
+//        } else {
             mediator = new SOAPDocumentLiteralMediatorImpl(portMetaData);
-        }
+//        }
 
     }
 
