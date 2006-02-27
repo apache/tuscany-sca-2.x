@@ -67,23 +67,28 @@ public class SystemImplementationImpl extends ComponentImplementationImpl implem
      * Creates the component type
      */
     private ComponentType createComponentType(Class implClass) {
+        ComponentType componentType;
         String baseName = getBaseName(implClass);
         URL componentTypeFile = implClass.getResource(baseName + ".componentType");
         if (componentTypeFile != null) {
-            return modelContext.getAssemblyLoader().loadComponentType(componentTypeFile.toString());
+            componentType = modelContext.getAssemblyLoader().loadComponentType(componentTypeFile.toString());
+            // FIXME workaround for TUSCANY-46 where the scope is not read - default system implementations to MODULE scope
+            for (Service service : componentType.getServices()) {
+                service.getServiceContract().setScope(Scope.MODULE);
+            }
         } else {
             //FIXME Return a made-up component type for now
             // We need to introspect the component implementation class, support a subset of what
             // we support for java components.
             AssemblyFactory factory=modelContext.getAssemblyFactory();
-            ComponentType componentType=factory.createComponentType();
+            componentType=factory.createComponentType();
             Service service=factory.createService();
             ServiceContract serviceContract=factory.createJavaServiceContract();
             serviceContract.setScope(Scope.MODULE);
             service.setServiceContract(serviceContract);
             componentType.getServices().add(service);
-            return componentType;
         }
+        return componentType;
     }
 
     /**
