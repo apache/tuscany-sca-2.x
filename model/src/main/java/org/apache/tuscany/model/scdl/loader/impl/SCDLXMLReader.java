@@ -103,7 +103,7 @@ public class SCDLXMLReader extends ResourceSetImpl {
                 XMLDocument document=XMLHelper.INSTANCE.load(new URL(uri).openStream());
                 return document.getRootObject();
            } catch (IOException e) {
-               throw new RuntimeException(e);
+               throw new RuntimeException(uri, e);
            }
         }
         return object;
