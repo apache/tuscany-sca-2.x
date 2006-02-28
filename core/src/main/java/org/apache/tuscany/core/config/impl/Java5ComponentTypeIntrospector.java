@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.java.config;
+package org.apache.tuscany.core.config.impl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -23,10 +23,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
+import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.annotations.Remotable;
+
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
+import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Property;
@@ -35,24 +38,22 @@ import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceContract;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Remotable;
 
 /**
  * Introspects Java annotation-based metata data
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector {
-    private final JavaAssemblyFactory factory;
+    private final AssemblyFactory factory;
 
-    public Java5ComponentTypeIntrospector(JavaAssemblyFactory factory) {
+    public Java5ComponentTypeIntrospector(AssemblyFactory factory) {
         this.factory = factory;
     }
 
     /**
      * Returns a component type for the given class
-     * 
+     *
      * @throws ConfigurationException
      */
     public ComponentType introspect(Class<?> implClass) throws ConfigurationException {
@@ -81,10 +82,9 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
     /**
      * Returns the scope for a given class
-     * 
-     * @throws ConfigurationException
+     *
      */
-    private Scope getScope(Class<?> implClass) throws ConfigurationException {
+    private static Scope getScope(Class<?> implClass) {
         org.osoa.sca.annotations.Scope scope = implClass.getAnnotation(org.osoa.sca.annotations.Scope.class);
         if (scope == null) {
             // scope was not defined on the implementation class, look for annotated interfaces
@@ -110,7 +110,8 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
     /**
      * Adds the supported services for a component implementation type to its component type
-     * @param compType the component type being generated
+     *
+     * @param compType  the component type being generated
      * @param implClass the component implementation type class
      * @throws ConfigurationException
      */
@@ -156,6 +157,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
     /**
      * Recursively adds supported services to a component type by walking the class hierarchy
+     *
      * @throws ConfigurationException
      */
     protected void addService(List<Service> services, Class<?> serviceClass) throws ConfigurationException {
@@ -175,6 +177,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
     /**
      * Root method for determining public field and method metadata
+     *
      * @throws ConfigurationException
      */
     protected void introspectAnnotatedMembers(ComponentType compType, Class<?> implClass) throws ConfigurationException {
@@ -188,6 +191,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
     /**
      * Introspects metdata for all public fields and methods for a class hierarchy
+     *
      * @throws ConfigurationException
      */
     protected void introspectMembers(ComponentType compType, Class<?> implClass) throws ConfigurationException {
@@ -373,7 +377,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
     }
 
     protected void addReference(List<Reference> references, Method method) throws ConfigurationException {
-        if (!Void.class.equals(method.getReturnType())) {
+        if (!Void.TYPE.equals(method.getReturnType())) {
             throw new ConfigurationException("Reference setter method does not return void: " + method.toString());
         }
         Class<?>[] params = method.getParameterTypes();
@@ -407,9 +411,9 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         boolean many = type.isArray() || Collection.class.isAssignableFrom(type);
         Multiplicity multiplicity;
         if (required)
-            multiplicity=many? Multiplicity.ONE_N:Multiplicity.ONE_ONE;
+            multiplicity = many ? Multiplicity.ONE_N : Multiplicity.ONE_ONE;
         else
-            multiplicity=many? Multiplicity.ZERO_N:Multiplicity.ZERO_ONE;
+            multiplicity = many ? Multiplicity.ZERO_N : Multiplicity.ZERO_ONE;
         ref.setMultiplicity(multiplicity);
         ServiceContract javaInterface = factory.createJavaServiceContract();
         javaInterface.setInterface(type);

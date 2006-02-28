@@ -20,7 +20,7 @@ import java.net.URL;
 
 import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
-import org.apache.tuscany.container.java.config.Java5ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
@@ -33,7 +33,7 @@ import org.apache.tuscany.model.assembly.impl.ComponentImplementationImpl;
  */
 public class JavaImplementationImpl extends ComponentImplementationImpl implements JavaImplementation {
 
-    private Class implementationClass;
+    private Class<?> implementationClass;
 
     /**
      * Constructor
@@ -76,9 +76,9 @@ public class JavaImplementationImpl extends ComponentImplementationImpl implemen
     /**
      * Create the component type
      * @param modelContext
-     * @param implementationClass
+     * @param implClass
      */
-    private ComponentType createComponentType(AssemblyModelContext modelContext, Class implClass) {
+    private static ComponentType createComponentType(AssemblyModelContext modelContext, Class<?> implClass) {
         String baseName = JavaIntrospectionHelper.getBaseName(implClass);
         URL componentTypeFile = implClass.getResource(baseName + ".componentType");
         if (componentTypeFile != null) {

@@ -38,7 +38,7 @@ public class JavaSCDLModelLoader implements SCDLModelLoader {
         this.runtimeContext = runtimeContext;
     }
 
-    @Reference
+//    @Reference
     public void setLoaderRegistry(SCDLModelLoaderRegistry registry) {
         this.loaderRegistry = registry;
     }
@@ -51,7 +51,7 @@ public class JavaSCDLModelLoader implements SCDLModelLoader {
 
     @Destroy
     public void destroy() {
-        loaderRegistry.unregisterLoader(this);
+//        loaderRegistry.unregisterLoader(this);
     }
 
     /**

@@ -18,13 +18,17 @@ package org.apache.tuscany.core.system.assembly.impl;
 
 import java.net.URL;
 
+import org.apache.tuscany.core.config.ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.ConfigurationException;
+import org.apache.tuscany.core.config.JavaIntrospectionHelper;
+import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.ServiceContract;
+import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.ComponentImplementationImpl;
 
 /**
@@ -34,10 +38,10 @@ import org.apache.tuscany.model.assembly.impl.ComponentImplementationImpl;
  */
 public class SystemImplementationImpl extends ComponentImplementationImpl implements SystemImplementation {
 
-    private Class implementationClass;
-    
+    private Class<?> implementationClass;
+
     private AssemblyModelContext modelContext;
-    
+
     protected SystemImplementationImpl() {
     }
 
@@ -66,9 +70,9 @@ public class SystemImplementationImpl extends ComponentImplementationImpl implem
     /**
      * Creates the component type
      */
-    private ComponentType createComponentType(Class implClass) {
+    private ComponentType createComponentType(Class<?> implClass) {
         ComponentType componentType;
-        String baseName = getBaseName(implClass);
+        String baseName = JavaIntrospectionHelper.getBaseName(implClass);
         URL componentTypeFile = implClass.getResource(baseName + ".componentType");
         if (componentTypeFile != null) {
             componentType = modelContext.getAssemblyLoader().loadComponentType(componentTypeFile.toString());
@@ -77,30 +81,14 @@ public class SystemImplementationImpl extends ComponentImplementationImpl implem
                 service.getServiceContract().setScope(Scope.MODULE);
             }
         } else {
-            //FIXME Return a made-up component type for now
-            // We need to introspect the component implementation class, support a subset of what
-            // we support for java components.
-            AssemblyFactory factory=modelContext.getAssemblyFactory();
-            componentType=factory.createComponentType();
-            Service service=factory.createService();
-            ServiceContract serviceContract=factory.createJavaServiceContract();
-            serviceContract.setScope(Scope.MODULE);
-            service.setServiceContract(serviceContract);
-            componentType.getServices().add(service);
+            AssemblyFactory factory = new AssemblyFactoryImpl();
+            ComponentTypeIntrospector introspector = new Java5ComponentTypeIntrospector(factory);
+            try {
+                componentType = introspector.introspect(implClass);
+            } catch (ConfigurationException e) {
+                throw new IllegalArgumentException("Unable to introspect implementation class: " + implClass.getName(), e);
+            }
         }
         return componentType;
     }
-
-    /**
-     * Returns the simple name of a class - i.e. the class name devoid of its package qualifier
-     */
-    private String getBaseName(Class implClass) {
-        String baseName = implClass.getName();
-        int lastDot = baseName.lastIndexOf('.');
-        if (lastDot != -1) {
-            baseName = baseName.substring(lastDot + 1);
-        }
-        return baseName;
-    }
-
 }

@@ -40,7 +40,7 @@ public class JavaScriptSCDLModelLoader implements SCDLModelLoader {
         this.runtimeContext = runtimeContext;
     }
 
-    @Reference
+//    @Reference
     public void setLoaderRegistry(SCDLModelLoaderRegistry registry) {
         this.loaderRegistry = registry;
     }
@@ -53,7 +53,7 @@ public class JavaScriptSCDLModelLoader implements SCDLModelLoader {
 
     @Destroy
     public void destroy() {
-        loaderRegistry.unregisterLoader(this);
+//        loaderRegistry.unregisterLoader(this);
     }
 
     /**
