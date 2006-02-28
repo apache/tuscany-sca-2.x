@@ -38,7 +38,7 @@ public class WebServiceSCDLModelLoader implements SCDLModelLoader {
         this.runtimeContext = runtimeContext;
     }
 
-    @Autowire
+    // @Autowire
     public void setLoaderRegistry(SCDLModelLoaderRegistry registry) {
         this.loaderRegistry = registry;
     }
