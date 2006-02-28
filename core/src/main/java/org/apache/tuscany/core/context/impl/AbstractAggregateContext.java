@@ -81,10 +81,6 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     @Autowire(required = false)
     protected MonitorFactory monitorFactory;
 
-    // The system wire builder
-    // @Autowire(required = false)
-    // protected WireBuilder wireBuilder;
-
     // The logical model representing the module assembly
     // protected ModuleComponent moduleComponent;
     protected Module module;
@@ -296,7 +292,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                     e.addContextName(getName());
                     throw e;
                 }
-                configuration = (RuntimeConfiguration<InstanceContext>) componentImplementation .getRuntimeConfiguration();
+                configuration = (RuntimeConfiguration<InstanceContext>) componentImplementation.getRuntimeConfiguration();
                 if (configuration == null) {
                     ConfigurationException e = new ConfigurationException("Runtime configuration not set");
                     e.addContextName(component.getName());
@@ -589,15 +585,24 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 if (target == null) {
                     ContextInitException e = new ContextInitException("Target not found");
                     e.setIdentifier(targetName.getPartName());
+                    e.addContextName(source.getName());
                     e.addContextName(name);
                     throw e;
                 }
                 // get the proxy chain for the target
                 ProxyFactory targetFactory = target.getTargetProxyFactory(sourceFactory.getProxyConfiguration().getTargetName()
                         .getPortName());
+                if (targetFactory == null) {
+                    ContextInitException e = new ContextInitException("No proxy factory found for service");
+                    e.setIdentifier(sourceFactory.getProxyConfiguration().getTargetName().getPortName());
+                    e.addContextName(target.getName());
+                    e.addContextName(source.getName());
+                    e.addContextName(name);
+                    throw e;
+                }
                 boolean downScope = scopeStrategy.downScopeReference(sourceScope, target.getScope());
-                configurationContext.wire(sourceFactory, targetFactory, target.getClass(), downScope, scopeContexts
-                        .get(target.getScope()));
+                configurationContext.wire(sourceFactory, targetFactory, target.getClass(), downScope, scopeContexts.get(target
+                        .getScope()));
             }
         }
         // wire invokers when the proxy only contains the target chain
