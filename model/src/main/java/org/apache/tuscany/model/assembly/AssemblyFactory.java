@@ -141,10 +141,11 @@ public interface AssemblyFactory {
     /**
      * Creates a new ServiceURI from a module component and configured port.
      * @param moduleComponent
+     * @param aggregatePart
      * @param configuredPort
      * @return
      */
-    ServiceURI createServiceURI(ModuleComponent moduleComponent, ConfiguredPort configuredPort);
+    ServiceURI createServiceURI(ModuleComponent moduleComponent, AggregatePart aggregatePart, ConfiguredPort configuredPort);
 
     /**
      * Create a qname from a URI

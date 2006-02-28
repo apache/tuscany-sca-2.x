@@ -51,14 +51,14 @@ public class ServiceURIImpl implements ServiceURI {
      * @param moduleComponent
      * @param configuredPort
      */
-    protected ServiceURIImpl(ModuleComponent moduleComponent, ConfiguredPort configuredPort) {
+    protected ServiceURIImpl(ModuleComponent moduleComponent, AggregatePart aggregatePart, ConfiguredPort configuredPort) {
         if (moduleComponent != null)
             moduleComponentName = moduleComponent.getName();
         else
             moduleComponentName = "";
         if (configuredPort instanceof ConfiguredService) {
+            partName = aggregatePart.getName();
             ConfiguredService configuredService = (ConfiguredService) configuredPort;
-            partName = configuredService.getAggregatePart().getName();
             Service service = configuredService.getService();
             if (service != null) {
                 serviceName = configuredService.getService().getName();
@@ -69,10 +69,12 @@ public class ServiceURIImpl implements ServiceURI {
 
         } else if (configuredPort instanceof ConfiguredReference) {
             ConfiguredReference configuredReference = (ConfiguredReference) configuredPort;
-            AggregatePart part = configuredReference.getAggregatePart();
-            partName = part.getName();
+            partName = aggregatePart.getName();
             serviceName = configuredReference.getReference().getName();
-            address = "sca:///" + moduleComponentName + '/' + partName + '/' + serviceName;
+            if (serviceName!=null)
+                address = "sca:///" + moduleComponentName + '/' + partName + '/' + serviceName;
+            else
+                address = "sca:///" + moduleComponentName + '/' + partName;
         }
 
         isSCAScheme = Boolean.TRUE;

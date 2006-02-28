@@ -16,6 +16,7 @@
  */
 package org.apache.tuscany.model.scdl.loader.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -480,7 +481,7 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
                     if (configuredReference == null) {
                         throw new IllegalArgumentException("Undefined reference " + referenceName);
                     }
-                    ServiceURI referenceURI=factory.createServiceURI(null, configuredReference);
+                    ServiceURI referenceURI=factory.createServiceURI(null, component, configuredReference);
 
                     // Get the reference value text
                     Sequence text = referenceElement.getSequence(0);
@@ -504,7 +505,7 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
     /**
      * @see org.apache.tuscany.model.scdl.util.ScdlSwitch#caseEntryPoint(org.apache.tuscany.model.scdl.EntryPoint)
      */
-    public Object caseEntryPoint(EntryPoint object) {
+    public Object caseEntryPoint(final EntryPoint object) {
         final org.apache.tuscany.model.assembly.EntryPoint entryPoint=factory.createEntryPoint();
         entryPoint.setName(object.getName());
 
@@ -515,15 +516,28 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
         configuredService.setService(service);
         entryPoint.setConfiguredService(configuredService);
         org.apache.tuscany.model.assembly.Reference reference=factory.createReference();
-        reference.setName("");
+        reference.setName(null);
         reference.setMultiplicity(transformMultiplicity(object.getMultiplicity()));
-        ConfiguredReference configuredReference=factory.createConfiguredReference();
+        final ConfiguredReference configuredReference=factory.createConfiguredReference();
         configuredReference.setReference(reference);
         entryPoint.setConfiguredReference(configuredReference);
         
         linkers.add(new Runnable() {
             public void run() {
                 currentAggregate.getEntryPoints().add(entryPoint);
+                
+                // Create wires to the target service
+                final List<Wire>wires=new ArrayList<Wire>();
+                ServiceURI referenceURI=factory.createServiceURI(null, entryPoint, configuredReference);
+                for (String uri : (List<String>)object.getReference()) {
+                    ServiceURI serviceURI=factory.createServiceURI(null, uri);
+                    final Wire wire=factory.createWire();
+                    wire.setSource(referenceURI);
+                    wire.setTarget(serviceURI);
+                    wires.add(wire);
+                }
+                
+                currentAggregate.getWires().addAll(wires);
             };
         });
         

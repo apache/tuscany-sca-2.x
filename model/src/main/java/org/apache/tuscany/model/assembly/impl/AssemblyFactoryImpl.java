@@ -18,6 +18,7 @@ package org.apache.tuscany.model.assembly.impl;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.model.assembly.AggregatePart;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.ConfiguredPort;
@@ -42,6 +43,7 @@ import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 import org.apache.tuscany.model.types.wsdl.impl.WSDLServiceContractImpl;
 
 /**
+ * Default implementation of AssemblyFactory
  */
 public class AssemblyFactoryImpl implements AssemblyFactory {
 
@@ -178,11 +180,11 @@ public class AssemblyFactoryImpl implements AssemblyFactory {
         return new ServiceURIImpl(moduleComponent, serviceName);
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyFactory#createServiceURI(org.apache.tuscany.model.assembly.ModuleComponent, org.apache.tuscany.model.assembly.ConfiguredPort)
+    /*
+     * @see org.apache.tuscany.model.assembly.AssemblyFactory#createServiceURI(org.apache.tuscany.model.assembly.ModuleComponent, org.apache.tuscany.model.assembly.AggregatePart, org.apache.tuscany.model.assembly.ConfiguredPort)
      */
-    public ServiceURI createServiceURI(ModuleComponent moduleComponent, ConfiguredPort portEndpoint) {
-        return new ServiceURIImpl(moduleComponent, portEndpoint);
+    public ServiceURI createServiceURI(ModuleComponent moduleComponent, AggregatePart aggregatePart, ConfiguredPort configuredPort) {
+        return new ServiceURIImpl(moduleComponent, aggregatePart, configuredPort);
     }
 
     /**
