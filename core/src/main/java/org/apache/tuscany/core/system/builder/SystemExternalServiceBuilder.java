@@ -17,6 +17,7 @@ import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.injection.ReferenceTargetFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemExternalServiceRuntimeConfiguration;
@@ -69,7 +70,7 @@ public class SystemExternalServiceBuilder implements RuntimeConfigurationBuilder
                 throw e;
             }
             SystemExternalServiceRuntimeConfiguration config = new SystemExternalServiceRuntimeConfiguration(externalService
-                    .getName(), new AutowireFactory(claz, context));
+                    .getName(), new AutowireFactory(claz, (AutowireContext) context));
             externalService.getConfiguredService().setRuntimeConfiguration(config);
         }
     }

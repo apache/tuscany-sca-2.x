@@ -20,38 +20,31 @@ import org.apache.tuscany.core.injection.FactoryInitException;
 import org.apache.tuscany.core.injection.ObjectCreationException;
 
 /**
- * Resolves an autowire for a wire target
- * 
+ * Implementation of ObjectFactory that returns an instance by resolving against an AutowireContext.
+ *
  * @version $Rev$ $Date$
  */
 public class AutowireFactory<T> implements ObjectFactory<T> {
 
     private AutowireContext autoWireContext;
 
-    private Class implementationType;
+    private Class<T> implementationType;
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
-    public AutowireFactory(Class implementationType, AggregateContext autoWireContext) throws FactoryInitException {
+    /**
+     * Constructor specifying the context to wire against and the type of service required.
+     *
+     * @param implementationType the type of service required
+     * @param autoWireContext    the context to wire against
+     */
+    public AutowireFactory(Class<T> implementationType, AutowireContext autoWireContext) {
         assert (implementationType != null) : "Implementation type was null";
         assert (autoWireContext != null) : "Autowire context was null";
         this.implementationType = implementationType;
-        if (!(autoWireContext instanceof AutowireContext)) {
-            FactoryInitException e = new FactoryInitException("Parent context is not an instance of "
-                    + AutowireContext.class.getName());
-            e.setIdentifier(autoWireContext.getName());
-            throw e;
-        }
-        this.autoWireContext = (AutowireContext) autoWireContext;
+        this.autoWireContext = autoWireContext;
     }
 
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
-
     public T getInstance() throws ObjectCreationException {
-        return (T) autoWireContext.resolveInstance(implementationType);
+        // todo what about required? should this just return null?
+        return autoWireContext.resolveInstance(implementationType);
     }
 }
