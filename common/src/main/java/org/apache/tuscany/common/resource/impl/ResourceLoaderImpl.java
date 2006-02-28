@@ -92,7 +92,12 @@ public class ResourceLoaderImpl implements ResourceLoader {
     }
 
     public Class loadClass(String name) throws ClassNotFoundException {
-        return getClassLoader().loadClass(name);
+        GeneratedClassLoader cl = generatedClassLoaderReference.get();
+        if (cl != null) {
+            return Class.forName(name, true, cl);
+        } else {
+            return Class.forName(name, true, getClassLoader());
+        }
     }
     
     public Class<?> addClass(byte[] bytes) {
