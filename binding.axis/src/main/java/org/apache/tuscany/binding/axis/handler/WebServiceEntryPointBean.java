@@ -16,42 +16,29 @@
  */
 package org.apache.tuscany.binding.axis.handler;
 
-import java.lang.reflect.Method;
-import java.util.Map;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 
 import javax.xml.rpc.ServiceException;
 import javax.xml.rpc.server.ServiceLifecycle;
 import javax.xml.rpc.server.ServletEndpointContext;
 
 import org.apache.axis.MessageContext;
-import org.apache.axis.message.SOAPEnvelope;
-import org.apache.tuscany.core.addressing.EndpointReference;
 import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
-
-//FIXME most of this class is commented out for now
+import org.apache.tuscany.core.context.EntryPointContext;
+import org.apache.tuscany.model.assembly.Aggregate;
+import org.apache.tuscany.model.assembly.EntryPoint;
+import org.osoa.sca.CurrentModuleContext;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
- * Bean implementation class for web service entry points..
+ * Base implementation class for web service entry points beans.
  */
 public class WebServiceEntryPointBean implements ServiceLifecycle {
     private AggregateContext moduleContext;
-    private WSDLServiceContract serviceContract;
-    private WebServicePortMetaData portMetaData;
-    private EndpointReference toEndpointReference;
-    private EndpointReference fromEndpointReference;
+    private EntryPointContext entryPointContext;
+    private InvocationHandler invocationHandler;
     private Object proxy;
-    private Map<String, Method> methodMap;
-
-    public final static Method SERVICE_METHOD = getServiceMethod();
-
-    private static Method getServiceMethod() {
-        try {
-            return WebServiceEntryPointBean.class.getMethod("processSOAPEnvelope", new Class[]{SOAPEnvelope.class, SOAPEnvelope.class});
-        } catch (Throwable e) {
-            return null;
-        }
-    }
 
     /**
      * Constructor.
@@ -83,157 +70,35 @@ public class WebServiceEntryPointBean implements ServiceLifecycle {
      * Initialize.
      */
     protected void initialize(String entryPointName) {
-//        try {
-//
-//            // Get the current module component, module and entry point
-//            moduleContext = (AggregateContext) CurrentModuleContext.getContext();
-//
-//            Module module = (Module)moduleContext.getAggregate();
-//            EntryPoint entryPoint = module.getEntryPoint(entryPointName);
-//            if (entryPoint == null) {
-//                throw new ServiceRuntimeException("Entry point not found: " + entryPointName);
-//            }
-//
-//            // Get the target service
-//            ConfiguredReference referenceValue = entryPoint.getConfiguredReference();
-//            ConfiguredService targetServiceEndpoint = referenceValue.getTargetConfiguredServices().get(0);
-//
-//            // Create a service reference for the target  service
-//            AssemblyFactory assemblyFactory = new AssemblyFactoryImpl();
-//            toEndpointReference = new AddressingFactoryImpl().createEndpointReference();
-//            //FIXME
-//            //toEndpointReference.setModuleContext(moduleContext);
-//            ServiceURI serviceAddress = assemblyFactory.createServiceURI(moduleContext.getModuleComponent(), targetServiceEndpoint);
-//            toEndpointReference.setAddress(serviceAddress.getAddress());
-//
-//            // Get the entry point interface
-//            ServiceContract serviceInterface = entryPoint.getServiceContract();
-//            InterfaceType interfaceEClass = serviceInterface.getInterfaceType();
-//            if (interfaceEClass != null)
-//                toEndpointReference.setPortTypeName(serviceInterface.getInterface());
-//
-//            // Create the target service
-//            //FIXME
-//            //toEndpointReference.getService();
-//
-//            // Create a service reference for the entry point itself
-//            fromEndpointReference = new AddressingFactoryImpl().createEndpointReference();
-//            //FIXME
-//            //fromEndpointReference.setModuleContext(moduleContext);
-//            ServiceURI fromAddress = assemblyFactory.createServiceURI(moduleContext.getModuleComponent(), entryPoint.getConfiguredReference());
-//            fromEndpointReference.setAddress(fromAddress.getAddress());
-//
-//            // Get the WSDL port name
-//            WebServiceBinding wsBinding = (WebServiceBinding) entryPoint.getBindings().get(0);
-//            QName wsdlPortName = assemblyFactory.createQName(wsBinding.getWSDLPort());
-//
-//            WSDLTypeHelper typeHelper = moduleContext.getAssemblyModelContext().getWSDLTypeHelper();
-//
-//            // Get the WSDL definition for this port
-//            Definition definition = typeHelper.getWSDLDefinition(wsdlPortName.getNamespaceURI());
-//            if (definition == null) {
-//                throw new IllegalArgumentException("Unable to locate WSDL package for target namespace " + wsdlPortName.getNamespaceURI());
-//            }
-//
-//            // Create a port info object to hold the WSDL port info
-//            portMetaData = new WebServicePortMetaData(typeHelper, definition, wsdlPortName, null, true);
-//
-//            // Get the EInterface representing the WSDL portType
-//            QName portTypeName = portMetaData.getPortTypeName();
-//            serviceContract = typeHelper.getWSDLInterfaceType(portTypeName);
-//            if (serviceContract == null) {
-//                throw new ServiceRuntimeException("Unable to get metadata for WSDL portType " + portTypeName);
-//            }
-//
-//            // Create a proxy
-//            ProxyFactory proxyFactory = (ProxyFactory) targetServiceEndpoint.getProxyFactory();
-//            proxy = proxyFactory.createProxy();
-//            Method[] methods = proxy.getClass().getMethods();
-//            methodMap = new HashMap<String, Method>();
-//            for (int i = 0; i < methods.length; i++) {
-//                methodMap.put(methods[i].getName(), methods[i]);
-//            }
-//
-//        } catch (Exception e) {
-//            throw new ServiceRuntimeException(e);
-//        }
+
+        // Get the current aggregate context
+        moduleContext = (AggregateContext) CurrentModuleContext.getContext();
+        
+        // Get the current entry point context
+        entryPointContext = (EntryPointContext)moduleContext.getContext(entryPointName);
+        if (entryPointContext == null) {
+            throw new ServiceRuntimeException("Entry point not found: " + entryPointName);
+        }
+
+        // Get the service interface
+        Aggregate aggregate=moduleContext.getAggregate();
+        EntryPoint entryPoint=aggregate.getEntryPoint(entryPointName);
+        Class serviceInterface=entryPoint.getConfiguredService().getService().getServiceContract().getInterface();
+        
+        // Get the invocation handler for the entry point
+        invocationHandler=(InvocationHandler)entryPointContext.getInstance(null);
+
+        // Create a dynamic proxy
+        // The proxy implements the service interface and delegates to the invocation handler
+        proxy=Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[]{serviceInterface}, invocationHandler);
     }
 
     /**
-     * Process the SOAP envelope passed by the Axis runtime
-     *
-     * @param requestEnvelope
+     * Returns the dynamic proxy
+     * @return
      */
-    public void processSOAPEnvelope(SOAPEnvelope requestEnvelope, SOAPEnvelope responseEnvelope) {
-//        try {
-//
-//            // Get the SOAP body
-//            SOAPBody soapBody = (SOAPBody) requestEnvelope.getBody();
-//
-//            WebServiceOperationMetaData operationMetaData = portMetaData.getOperationMetaData(soapBody);
-//            if (operationMetaData == null) {
-//                throw new IllegalArgumentException("Failed to resolve operation: " + soapBody);
-//            }
-//            // Get the WSDL operation
-//            Operation wsdlOperation = operationMetaData.getBindingOperation().getOperation();
-//
-//            String operationName = wsdlOperation.getName();
-//            WSDLOperationType operationType = (WSDLOperationType) serviceContract.getOperationType(operationName);
-//
-//            // Create the appropriate mediator
-//            boolean rpcEncoded = operationMetaData.getUse().equals("encoded");
-//            SOAPMediator mediator;
-//            if (operationMetaData.getStyle().equals("rpc")) {
-//                if (rpcEncoded) {
-//                    mediator = new SOAPRPCEncodedMediatorImpl(portMetaData);
-//                } else {
-//                    mediator = new SOAPRPCLiteralMediatorImpl(portMetaData);
-//                }
-//            } else {
-//                mediator = new SOAPDocumentLiteralMediatorImpl(portMetaData);
-//            }
-//
-//            // Read the SOAP envelope into an SCA message
-//            Message message = new MessageFactoryImpl().createMessage();
-//            mediator.readRequest(moduleContext, requestEnvelope, message, operationType);
-//
-//            // Set the message ID
-//            message.setMessageID(new AddressingFactoryImpl().createMessageID());
-//
-//            // Set the action header
-//            message.setAction(operationName);
-//            message.setOperationName(operationName);
-//
-//            // Set the endpoint reference header
-//            message.setEndpointReference(toEndpointReference);
-//
-//            // Set the callback endpoint reference
-//            message.setFrom(fromEndpointReference);
-//
-//            Object[] args = ExternalWebServiceHandler.getRequest(message, operationType);
-//            Object result = methodMap.get(operationName).invoke(proxy, args);
-//
-//            // Send the message
-//            Message responseMessage = ExternalWebServiceHandler.createResponseMessage(moduleContext, operationType, result);
-//
-//            // Write the response message into the response SOAP envelope
-//            SOAPEnvelope tempEnvelope = new SOAPEnvelopeImpl();
-//            mediator.writeResponse(moduleContext, responseMessage, operationType, tempEnvelope);
-//            for (Iterator i = tempEnvelope.getHeader().getChildElements(); i.hasNext();) {
-//                responseEnvelope.getHeader().addChildElement((MessageElement) i.next());
-//            }
-//            for (Iterator i = tempEnvelope.getBody().getChildElements(); i.hasNext();) {
-//                responseEnvelope.getBody().addChildElement((MessageElement) i.next());
-//            }
-//
-//        } catch (Throwable e) {
-//            if (e instanceof ServiceRuntimeException) {
-//                throw (ServiceRuntimeException) e;
-//            }
-//
-//            throw new ServiceRuntimeException(e);
-//        }
+    protected Object getProxy() {
+        return proxy;
     }
-
-        
+    
 }

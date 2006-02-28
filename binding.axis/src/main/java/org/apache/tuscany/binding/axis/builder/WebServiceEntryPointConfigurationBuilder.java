@@ -15,6 +15,7 @@ package org.apache.tuscany.binding.axis.builder;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,15 +23,18 @@ import org.apache.tuscany.binding.axis.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis.config.WebServiceEntryPointRuntimeConfiguration;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.impl.EntryPointRuntimeConfiguration;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.core.invocation.Interceptor;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
-import org.apache.tuscany.core.invocation.MethodHashMap;
+import org.apache.tuscany.core.invocation.InvocationRuntimeException;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
-import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
+import org.apache.tuscany.core.invocation.TargetInvoker;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
+import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
@@ -112,26 +116,23 @@ public class WebServiceEntryPointConfigurationBuilder implements RuntimeConfigur
             return;
         }
 
-        WebServiceBinding wsBinding=(WebServiceBinding)entryPoint.getBindings().get(0);
-        
-        WebServiceEntryPointRuntimeConfiguration config = new WebServiceEntryPointRuntimeConfiguration(entryPoint.getName(), entryPoint.getConfiguredService()
-                .getService().getName(), messageFactory);
+        EntryPointRuntimeConfiguration config = new WebServiceEntryPointRuntimeConfiguration(entryPoint.getName(), entryPoint.getConfiguredService().getService().getName(), messageFactory);
 
         ConfiguredService configuredService = entryPoint.getConfiguredService();
         Service service = configuredService.getService();
         ServiceContract serviceContract = service.getServiceContract();
-        Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
+        Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
         ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
         Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
         for (Method method : javaMethods) {
             InvocationConfiguration iConfig = new InvocationConfiguration(method);
             iConfigMap.put(method, iConfig);
         }
-        QualifiedName qName = new QualifiedName(entryPoint.getName() + "/" + service.getName());
-        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, messageFactory);
+        QualifiedName qName = new QualifiedName(entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0).getAggregatePart().getName() + "/" + service.getName());
+        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
         proxyFactory.setProxyConfiguration(pConfiguration);
-        config.addTargetProxyFactory(service.getName(), proxyFactory);
+        config.addSourceProxyFactory(service.getName(), proxyFactory);
         configuredService.setProxyFactory(proxyFactory);
         if (policyBuilder != null) {
             // invoke the reference builder to handle additional policy metadata
@@ -139,10 +140,31 @@ public class WebServiceEntryPointConfigurationBuilder implements RuntimeConfigur
         }
         // add tail interceptor
         for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
-            iConfig.addTargetInterceptor(new InvokerInterceptor());
+            iConfig.addTargetInterceptor(new EntryPointInvokerInterceptor());
         }
-
         entryPoint.getConfiguredReference().setRuntimeConfiguration(config);
     }
+    
+    //FIXME same as the InvokerInterceptor except that it doesn't throw an exception in setNext
+    // For some reason another InvokerInterceptor is added after this one, need Jim to look into it
+    // and figure out why.
+    public class EntryPointInvokerInterceptor implements Interceptor {
+        
+        public EntryPointInvokerInterceptor() {
+        }
+
+        public Message invoke(Message msg) throws InvocationRuntimeException {
+            TargetInvoker invoker = msg.getTargetInvoker();
+            if (invoker == null) {
+                throw new InvocationRuntimeException("No target invoker specified on message");
+            }
+            return invoker.invoke(msg);
+        }
+
+        public void setNext(Interceptor next) {
+        }
+
+    }
+
 
 }

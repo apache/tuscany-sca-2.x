@@ -14,6 +14,8 @@
 package org.apache.tuscany.binding.axis.handler;
 
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.Set;
@@ -39,9 +41,9 @@ import org.osoa.sca.ServiceUnavailableException;
 public class ExternalWebServiceClient {
     
     
-    private WebServicePortMetaData portMetaData;
+    private WebServicePortMetaData wsPortMetaData;
     private Service jaxrpcService;
-    private Map<Method, Call> calls=new MethodHashMap();
+    private Map<Method, Call> jaxrpcCalls=new MethodHashMap();
 
     /**
      * Constructs a new ExternalWebServiceClient.
@@ -51,13 +53,16 @@ public class ExternalWebServiceClient {
     public ExternalWebServiceClient(ExternalService externalService, WebServiceBinding wsBinding) {
         
         // Create a port metadata info object to hold the port information
-        portMetaData = new WebServicePortMetaData(wsBinding.getWSDLDefinition(), wsBinding.getWSDLPort(), wsBinding.getURI(), false);
+        wsPortMetaData = new WebServicePortMetaData(wsBinding.getWSDLDefinition(), wsBinding.getWSDLPort(), wsBinding.getURI(), false);
 
         // Create a JAX-RPC service
-        QName wsdlServiceName = portMetaData.getService().getQName();
+        QName wsdlServiceName = wsPortMetaData.getService().getQName();
         try {
-            jaxrpcService = ServiceFactory.newInstance().createService(wsdlServiceName);
+            URL url=new URL(wsBinding.getWSDLDefinition().getDocumentBaseURI());
+            jaxrpcService = ServiceFactory.newInstance().createService(url, wsdlServiceName);
         } catch (ServiceException e) {
+            throw new ServiceUnavailableException(e);
+        } catch (MalformedURLException e) {
             throw new ServiceUnavailableException(e);
         }
 
@@ -65,7 +70,7 @@ public class ExternalWebServiceClient {
         Set<Method> methods=JavaIntrospectionHelper.getAllUniqueMethods(externalService.getConfiguredService().getService().getServiceContract().getInterface());
         for (Method method : methods) {
             Call call=createCall(method);
-            calls.put(method, call);
+            jaxrpcCalls.put(method, call);
         }
         
     }
@@ -78,7 +83,7 @@ public class ExternalWebServiceClient {
     private Call createCall(Method method) {
         
         // Create a JAX RPC call object
-        QName portName = portMetaData.getPortName();
+        QName portName = wsPortMetaData.getPortName();
         Call call;
         try {
             call = (Call) jaxrpcService.createCall(portName, method.getName());
@@ -87,7 +92,7 @@ public class ExternalWebServiceClient {
         }
 
         // Set the target endpoint address
-        String endpoint = portMetaData.getEndpoint();
+        String endpoint = wsPortMetaData.getEndpoint();
         if (endpoint != null) {
             String originalEndpoint = call.getTargetEndpointAddress();
             if (!endpoint.equals(originalEndpoint))
@@ -104,7 +109,7 @@ public class ExternalWebServiceClient {
      * @return
      */
     public Object invoke(Method method,  Object[] args) {
-        Call call=calls.get(method);
+        Call call=jaxrpcCalls.get(method);
         try {
             return call.invoke(args);
         } catch (RemoteException e) {

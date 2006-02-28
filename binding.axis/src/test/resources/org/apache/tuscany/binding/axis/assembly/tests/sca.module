@@ -21,13 +21,13 @@
     <entryPoint name="AccountService">
         <interface.java interface="org.apache.tuscany.binding.axis.assembly.tests.bigbank.account.services.account.AccountService"/>
         <binding.ws port="http://www.bigbank.com/AccountService/#AccountServiceSOAP"/>
-        <reference>AccountServiceComponent</reference>
+        <reference>AccountExternalService</reference>
     </entryPoint>
 
     <entryPoint name="AccountService2">
         <interface.wsdl interface="http://www.bigbank.com/AccountService/#AccountService"/>
         <binding.ws port="http://www.bigbank.com/AccountService/#AccountServiceSOAP"/>
-        <reference>AccountServiceComponent</reference>
+        <reference>AccountExternalService</reference>
     </entryPoint>
 
     <component name="AccountServiceComponent">
@@ -44,6 +44,11 @@
         </component>
     -->
 
+    <externalService name="AccountExternalService">
+        <interface.wsdl interface="http://www.bigbank.com/AccountService/#AccountService"/>
+        <binding.ws port="http://www.bigbank.com/AccountService/#AccountServiceSOAP"/>
+    </externalService>
+    
     <externalService name="StockQuoteService">
         <interface.java interface="org.apache.tuscany.binding.axis.assembly.tests.bigbank.account.services.stockquote.StockQuoteService"/>
         <binding.ws port="http://webservice.stockquote#StockQuoteWebService"/>

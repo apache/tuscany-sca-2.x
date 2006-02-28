@@ -177,16 +177,19 @@ public class WebServiceOperationMetaData {
         javax.wsdl.extensions.soap.SOAPBody soapBody = getSOAPBody(input);
         if (soapBody != null) {
             List parts = soapBody.getParts();
-            List names = new ArrayList();
-            for (Iterator i = parts.iterator(); i.hasNext();) {
-                Object part = i.next();
-                if (part instanceof String)
-                    names.add(part);
-                else if (part instanceof Part) {
-                    names.add(((Part) part).getName());
+            if (parts!=null) {
+                List names = new ArrayList();
+                for (Iterator i = parts.iterator(); i.hasNext();) {
+                    Object part = i.next();
+                    if (part instanceof String)
+                        names.add(part);
+                    else if (part instanceof Part) {
+                        names.add(((Part) part).getName());
+                    }
                 }
-            }
-            return names;
+                return names;
+            } else
+                return null;
         } else
             return null;
     }
