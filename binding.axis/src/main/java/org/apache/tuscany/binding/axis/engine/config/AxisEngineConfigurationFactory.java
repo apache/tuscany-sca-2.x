@@ -161,7 +161,9 @@ public class AxisEngineConfigurationFactory implements EngineConfigurationFactor
                     service.setOption(RPCProvider.OPTION_WSDL_SERVICEELEMENT, wsPortMetaData.getServiceName().getLocalPart());
                     service.setOption(RPCProvider.OPTION_WSDL_SERVICEPORT, wsPortMetaData.getPortName().getLocalPart());
                     service.setOption(RPCProvider.OPTION_WSDL_PORTTYPE, wsPortMetaData.getPortTypeName().getLocalPart());
-
+                    //FIXME RPCProvider is not happy if you don't give it a class name... 
+                    service.setOption(RPCProvider.OPTION_CLASSNAME, Object.class.getName());
+                    
                     // Create a service description
                     JavaServiceDesc serviceDesc = (JavaServiceDesc) service.getServiceDescription();
                     serviceDesc.setName(entryPoint.getName());
