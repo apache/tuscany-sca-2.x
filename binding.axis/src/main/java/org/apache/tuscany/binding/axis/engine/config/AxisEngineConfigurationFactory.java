@@ -49,7 +49,6 @@ import org.apache.axis.description.ParameterDesc;
 import org.apache.axis.handlers.soap.SOAPService;
 import org.apache.axis.providers.java.RPCProvider;
 import org.apache.tuscany.binding.axis.assembly.WebServiceBinding;
-import org.apache.tuscany.binding.axis.handler.WebServiceEntryPointBean;
 import org.apache.tuscany.binding.axis.handler.WebServicePortMetaData;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
@@ -161,7 +160,6 @@ public class AxisEngineConfigurationFactory implements EngineConfigurationFactor
                     service.setOption(RPCProvider.OPTION_WSDL_TARGETNAMESPACE, wsPortMetaData.getPortName().getNamespaceURI());
                     service.setOption(RPCProvider.OPTION_WSDL_SERVICEELEMENT, wsPortMetaData.getServiceName().getLocalPart());
                     service.setOption(RPCProvider.OPTION_WSDL_SERVICEPORT, wsPortMetaData.getPortName().getLocalPart());
-                    service.setOption(RPCProvider.OPTION_CLASSNAME, WebServiceEntryPointBean.class.getName());
                     service.setOption(RPCProvider.OPTION_WSDL_PORTTYPE, wsPortMetaData.getPortTypeName().getLocalPart());
 
                     // Create a service description
