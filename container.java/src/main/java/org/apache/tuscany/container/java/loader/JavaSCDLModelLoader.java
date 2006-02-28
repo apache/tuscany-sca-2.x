@@ -5,10 +5,13 @@ import org.apache.tuscany.container.java.assembly.JavaImplementation;
 import org.apache.tuscany.container.java.assembly.impl.JavaAssemblyFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.core.loader.SCDLModelLoaderRegistry;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * Populates the assembly model from an SCDL model
@@ -17,6 +20,7 @@ import org.osoa.sca.annotations.Init;
 public class JavaSCDLModelLoader implements SCDLModelLoader {
 
     private RuntimeContext runtimeContext;
+    private SCDLModelLoaderRegistry loaderRegistry;
     private JavaAssemblyFactory javaFactory;
 
     /**
@@ -25,7 +29,7 @@ public class JavaSCDLModelLoader implements SCDLModelLoader {
     public JavaSCDLModelLoader() {
         this.javaFactory=new JavaAssemblyFactoryImpl();
     }
-    
+
     /**
      * @param runtimeContext The runtimeContext to set.
      */
@@ -34,9 +38,20 @@ public class JavaSCDLModelLoader implements SCDLModelLoader {
         this.runtimeContext = runtimeContext;
     }
 
+    @Reference
+    public void setLoaderRegistry(SCDLModelLoaderRegistry registry) {
+        this.loaderRegistry = registry;
+    }
+
     @Init(eager=true)
     public void init() {
         runtimeContext.addLoader(this);
+//        loaderRegistry.registerLoader(this);
+    }
+
+    @Destroy
+    public void destroy() {
+        loaderRegistry.unregisterLoader(this);
     }
 
     /**
@@ -53,7 +68,7 @@ public class JavaSCDLModelLoader implements SCDLModelLoader {
                 throw new IllegalArgumentException(e);
             }
             implementation.setImplementationClass(implementationClass);
-            
+
             return implementation;
         } else
             return null;

@@ -28,6 +28,11 @@
 
     <component name="org.apache.tuscany.container.java.loader.JavaSCDLModelLoader">
         <system:implementation.system class="org.apache.tuscany.container.java.loader.JavaSCDLModelLoader"/>
+<!--
+        <references>
+            <v:loaderRegistry>org.apache.tuscany.core.loader.SCDLModelLoaderRegistry</v:loaderRegistry>
+        </references>
+-->
     </component>
 
 </moduleFragment>

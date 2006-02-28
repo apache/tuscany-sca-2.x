@@ -7,11 +7,14 @@ import org.apache.tuscany.container.js.scdl.ScdlFactory;
 import org.apache.tuscany.container.js.scdl.impl.ScdlPackageImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.core.loader.SCDLModelLoaderRegistry;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 import org.apache.tuscany.sdo.util.SDOUtil;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * Populates the assembly model from an SCDL model
@@ -20,6 +23,7 @@ import org.osoa.sca.annotations.Init;
 public class JavaScriptSCDLModelLoader implements SCDLModelLoader {
 
     private RuntimeContext runtimeContext;
+    private SCDLModelLoaderRegistry loaderRegistry;
     private JavaScriptAssemblyFactory jsFactory;
 
     static {
@@ -27,7 +31,7 @@ public class JavaScriptSCDLModelLoader implements SCDLModelLoader {
         ScdlPackageImpl.eINSTANCE.eClass();
         SDOUtil.registerStaticTypes(ScdlFactory.class);
     }
-    
+
     /**
      * @param runtimeContext The runtimeContext to set.
      */
@@ -36,9 +40,20 @@ public class JavaScriptSCDLModelLoader implements SCDLModelLoader {
         this.runtimeContext = runtimeContext;
     }
 
+    @Reference
+    public void setLoaderRegistry(SCDLModelLoaderRegistry registry) {
+        this.loaderRegistry = registry;
+    }
+
     @Init(eager=true)
     public void init() {
         runtimeContext.addLoader(this);
+//        loaderRegistry.registerLoader(this);
+    }
+
+    @Destroy
+    public void destroy() {
+        loaderRegistry.unregisterLoader(this);
     }
 
     /**

@@ -14,7 +14,13 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  -->
-<module xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
-               name="org.apache.tuscany.core.system">
+<module xmlns="http://www.osoa.org/xmlns/sca/0.9"
+        xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
+        xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
+        name="org.apache.tuscany.core.system">
+
+    <component name="org.apache.tuscany.core.loader.SCDLModelLoaderRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.loader.impl.SCDLModelLoaderRegistryImpl"/>
+    </component>
 
 </module>
