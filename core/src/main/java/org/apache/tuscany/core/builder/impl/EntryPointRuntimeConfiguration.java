@@ -36,22 +36,22 @@ public abstract class EntryPointRuntimeConfiguration implements RuntimeConfigura
 
     private ProxyFactory proxyFactory;
 
-    private String epServiceName;
-    
-    private  MessageFactory msgFactory;
+    private String referenceName;
 
-    private Map<String,ProxyFactory> sourceProxyFactories;
+    private MessageFactory msgFactory;
 
-    public EntryPointRuntimeConfiguration(String name, String serviceName, MessageFactory msgFactory) {
+    private Map<String, ProxyFactory> sourceProxyFactories;
+
+    public EntryPointRuntimeConfiguration(String name, String referenceName, MessageFactory msgFactory) {
         assert (name != null) : "Entry point name was null";
         assert (msgFactory != null) : "Message factory was null";
         this.name = name;
-        this.epServiceName = serviceName;
+        this.referenceName = referenceName;
         this.msgFactory = msgFactory;
     }
 
     public EntryPointContext createInstanceContext() throws ContextCreationException {
-        return new EntryPointContextImpl(name,proxyFactory,msgFactory);
+        return new EntryPointContextImpl(name, proxyFactory, msgFactory);
     }
 
     public Scope getScope() {
@@ -66,36 +66,38 @@ public abstract class EntryPointRuntimeConfiguration implements RuntimeConfigura
     }
 
     public void addTargetProxyFactory(String serviceName, ProxyFactory factory) {
-        // no wires to an entry point from with an aggregate 
+        // no wires to an entry point from with an aggregate
     }
 
     public ProxyFactory getTargetProxyFactory(String serviceName) {
+        // no wires to an entry point from with an aggregate
         return null;
     }
 
-    public Map<String,ProxyFactory> getTargetProxyFactories() {
+    public Map<String, ProxyFactory> getTargetProxyFactories() {
+        // no wires to an entry point from with an aggregate
         return Collections.EMPTY_MAP;
     }
 
-    public void addSourceProxyFactory(String referenceName, ProxyFactory factory) {
-        assert (referenceName != null) : "No reference name specified";
+    public void addSourceProxyFactory(String refName, ProxyFactory factory) {
+        assert (refName != null) : "No reference name specified";
         assert (factory != null) : "Proxy factory was null";
-        this.epServiceName = referenceName; // entry points are configured with only one reference
+        this.referenceName = refName; // entry points are configured with only one reference
         this.proxyFactory = factory;
     }
 
-    public ProxyFactory getSourceProxyFactory(String referenceName) {
-        if (this.epServiceName.equals(referenceName)) {
+    public ProxyFactory getSourceProxyFactory(String refName) {
+        if (this.referenceName.equals(refName)) {
             return proxyFactory;
         } else {
             return null;
         }
     }
 
-    public Map<String,ProxyFactory> getSourceProxyFactories() {
+    public Map<String, ProxyFactory> getSourceProxyFactories() {
         if (sourceProxyFactories == null) {
             sourceProxyFactories = new HashMap(1);
-            sourceProxyFactories.put(epServiceName, proxyFactory);
+            sourceProxyFactories.put(referenceName, proxyFactory);
         }
         return sourceProxyFactories;
     }

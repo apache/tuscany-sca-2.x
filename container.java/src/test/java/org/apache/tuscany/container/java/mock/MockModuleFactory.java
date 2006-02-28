@@ -108,7 +108,7 @@ public class MockModuleFactory {
         JavaServiceContract targetContract = factory.createJavaServiceContract();
         targetContract.setInterface(HelloWorldService.class);
         targetService.setServiceContract(targetContract);
-        targetService.setName("HelloWorld");
+        targetService.setName("HelloWorldService");
         ConfiguredService cTargetService = factory.createConfiguredService();
         cTargetService.setService(targetService);
         targetComponent.getConfiguredServices().add(cTargetService);

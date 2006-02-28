@@ -112,8 +112,6 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
             if (ep.getBindings().size() < 1 || !(ep.getBindings().get(0) instanceof FooBinding)) {
                 return;
             }
-
-            // TODO create entry point context
             EntryPointRuntimeConfiguration config = new FooEntryPointRuntimeConfiguration(ep.getName(), ep.getConfiguredService()
                     .getService().getName(), messageFactory);
 

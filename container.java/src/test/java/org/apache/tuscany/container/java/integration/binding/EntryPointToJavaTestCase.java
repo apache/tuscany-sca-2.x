@@ -75,10 +75,6 @@ public class EntryPointToJavaTestCase extends TestCase {
         javaBuilder.setProxyFactoryFactory(proxyFactoryFactory);
 
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
-//        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, true);
-//        HierarchicalBuilder refBuilder = new HierarchicalBuilder();
-//        refBuilder.addBuilder(interceptorBuilder);
-//        javaBuilder.setPolicyBuilder(refBuilder);
         builders.add(javaBuilder);
 
         FooBindingBuilder fooBindingBuilder = new FooBindingBuilder();

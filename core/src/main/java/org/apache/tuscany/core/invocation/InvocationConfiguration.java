@@ -203,6 +203,11 @@ public class InvocationConfiguration {
     public Interceptor getTargetInterceptor() {
         return targetInterceptorChainHead;
     }
+    
+   
+    public Interceptor getLastTargetInterceptor() {
+        return targetInterceptorChainTail;
+    }
 
     /**
      * Sets the target invoker to pass down the invocation pipeline. When a service proxy represents a wire,

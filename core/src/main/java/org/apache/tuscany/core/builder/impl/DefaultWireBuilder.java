@@ -24,6 +24,7 @@ import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
+import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.impl.MessageChannelImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 
@@ -38,7 +39,6 @@ public class DefaultWireBuilder implements HierarchicalWireBuilder {
     // collection configured wire builders
     private List<WireBuilder> builders = new ArrayList();
 
-
     public DefaultWireBuilder() {
     }
 
@@ -52,14 +52,15 @@ public class DefaultWireBuilder implements HierarchicalWireBuilder {
     public void setWireBuilders(List<WireBuilder> builders) {
         builders.addAll(builders);
     }
-    
+
     public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) {
         QualifiedName targetName = sourceFactory.getProxyConfiguration().getTargetName();
         // get the proxy chain for the target
         if (targetFactory != null) {
             // if null, the target side has no interceptors or handlers
-            Map<Method, InvocationConfiguration> targetInvocationConfigs = targetFactory.getProxyConfiguration().getInvocationConfigurations();
+            Map<Method, InvocationConfiguration> targetInvocationConfigs = targetFactory.getProxyConfiguration()
+                    .getInvocationConfigurations();
             for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration()
                     .getInvocationConfigurations().values()) {
                 // match invocation chains
@@ -77,7 +78,11 @@ public class DefaultWireBuilder implements HierarchicalWireBuilder {
                         e.setIdentifier(targetInvocationConfig.getMethod().getName());
                         throw e;
                     }
-                    sourceInvocationConfig.addTargetInterceptor(targetInvocationConfig.getTargetInterceptor());
+                    if (!(sourceInvocationConfig.getLastTargetInterceptor() instanceof InvokerInterceptor && targetInvocationConfig
+                            .getTargetInterceptor() instanceof InvokerInterceptor)) {
+                        // check that we do not have the case where the only interceptors are invokers since we just need one
+                        sourceInvocationConfig.addTargetInterceptor(targetInvocationConfig.getTargetInterceptor());
+                    }
                 }
             }
         }
