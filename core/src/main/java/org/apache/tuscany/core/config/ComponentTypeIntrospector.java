@@ -16,7 +16,6 @@
  */
 package org.apache.tuscany.core.config;
 
-import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.model.assembly.ComponentType;
 
 /**
