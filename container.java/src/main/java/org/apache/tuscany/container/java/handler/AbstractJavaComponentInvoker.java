@@ -18,7 +18,9 @@ package org.apache.tuscany.container.java.handler;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Set;
 
+import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.invocation.Interceptor;
 import org.apache.tuscany.core.invocation.InvocationRuntimeException;
@@ -42,10 +44,17 @@ public abstract class AbstractJavaComponentInvoker implements TargetInvoker {
 
     public Object invokeTarget(Object payload) throws InvocationTargetException {
         try {
+            Object instance=getInstance();
+            if (!operation.getDeclaringClass().isInstance(instance)) {
+                Set methods=JavaIntrospectionHelper.getAllUniqueMethods(instance.getClass());
+                Method newOperation=JavaIntrospectionHelper.findClosestMatchingMethod(operation.getName(), operation.getParameterTypes(), methods);
+                if (newOperation!=null)
+                    operation=newOperation;
+            }
             if (payload != null && !payload.getClass().isArray()) {
-                return operation.invoke(getInstance(), payload);
+                return operation.invoke(instance, payload);
             } else {
-                return operation.invoke(getInstance(), (Object[]) payload);
+                return operation.invoke(instance, (Object[]) payload);
             }
         } catch (IllegalAccessException e) {
             throw new InvocationRuntimeException(e);
