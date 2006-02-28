@@ -151,7 +151,6 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                 EventInvoker initInvoker = null;
                 boolean eagerInit = false;
                 EventInvoker destroyInvoker = null;
-                // FIXME this should be run as part of the LCM load
                 for (Field field : fields) {
                     ComponentName compName = field.getAnnotation(ComponentName.class);
                     if (compName != null) {
@@ -165,7 +164,6 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                     }
                 }
                 for (Method method : methods) {
-                    // FIXME Java5
                     Init init = method.getAnnotation(Init.class);
                     if (init != null && initInvoker == null) {
                         initInvoker = new MethodEventInvoker(method);
@@ -192,7 +190,6 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                 }
                 // handle properties
                 List<ConfiguredProperty> configuredProperties = component.getConfiguredProperties();
-                // FIXME should return empty properties - does it?
                 if (configuredProperties != null) {
                     for (ConfiguredProperty property : configuredProperties) {
                         Injector injector = createPropertyInjector(property, fields, methods);
@@ -215,7 +212,8 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                         iConfigMap.put(method, iConfig);
                     }
                     QualifiedName qName = new QualifiedName(component.getName() + "/" + service.getName());
-                    ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
+                    ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface()
+                            .getClassLoader(), messageFactory);
                     proxyFactory.setBusinessInterface(serviceContract.getInterface());
                     proxyFactory.setProxyConfiguration(pConfiguration);
                     config.addTargetProxyFactory(service.getName(), proxyFactory);
@@ -289,7 +287,6 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
             throws NoAccessorException {
         Object value = property.getValue();
         String propName = property.getProperty().getName();
-        // @FIXME is this how to get property type of object
         Class type = value.getClass();
 
         // There is no efficient way to do this
@@ -302,7 +299,6 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
             }
         }
         Injector injector = null;
-        // FIXME support types other than String
         if (value instanceof DataObject) {
             if (field != null) {
                 injector = new FieldInjector(field, new SDOObjectFactory((DataObject) value));
