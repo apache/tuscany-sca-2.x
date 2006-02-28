@@ -153,7 +153,7 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
                         iConfigMap.put(method, iConfig);
                     }
                     QualifiedName qName = new QualifiedName(component.getName() + "/" + service.getName());
-                    ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, msgFactory);
+                    ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, contract.getInterface().getClassLoader(), msgFactory);
                     proxyFactory.setBusinessInterface(contract.getInterface());
                     proxyFactory.setProxyConfiguration(pConfiguration);
                     configuredService.setProxyFactory(proxyFactory);
