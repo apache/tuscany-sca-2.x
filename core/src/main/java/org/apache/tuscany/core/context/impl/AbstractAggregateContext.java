@@ -53,6 +53,7 @@ import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.ComponentImplementation;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 
 /**
@@ -288,8 +289,14 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
             Module newModule = (Module) model;
             module = newModule;
             for (Component component : newModule.getComponents()) {
-                configuration = (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation()
-                        .getRuntimeConfiguration();
+                ComponentImplementation componentImplementation = component.getComponentImplementation();
+                if (componentImplementation == null) {
+                    ConfigurationException e = new ConfigurationException("Component implementation not set");
+                    e.addContextName(component.getName());
+                    e.addContextName(getName());
+                    throw e;
+                }
+                configuration = (RuntimeConfiguration<InstanceContext>) componentImplementation .getRuntimeConfiguration();
                 if (configuration == null) {
                     ConfigurationException e = new ConfigurationException("Runtime configuration not set");
                     e.addContextName(component.getName());
