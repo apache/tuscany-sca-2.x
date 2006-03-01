@@ -18,7 +18,7 @@ package org.apache.tuscany.container.java.context;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.mock.TestContextFactory;
+import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.BadContextPojo;
 import org.apache.tuscany.container.java.mock.components.BadNamePojo;
 import org.apache.tuscany.core.context.AggregateContext;
@@ -37,7 +37,7 @@ public class BadPojoTestCase extends TestCase {
         AggregateContext mc = new AggregateContextImpl();
         mc.setName("mc");
         try {
-            JavaComponentContext context = TestContextFactory.createPojoContext("BadNamePojo", BadNamePojo.class,
+            JavaComponentContext context = MockFactory.createPojoContext("BadNamePojo", BadNamePojo.class,
                     Scope.MODULE, mc);
         } catch (NoSuchMethodException e) {
             if (e.getMessage().indexOf("@ComponentName") < 0) {
@@ -57,7 +57,7 @@ public class BadPojoTestCase extends TestCase {
         AggregateContext mc = new AggregateContextImpl();
         mc.setName("mc");
         try {
-            JavaComponentContext context = TestContextFactory.createPojoContext("BadContextPojo", BadContextPojo.class,
+            JavaComponentContext context = MockFactory.createPojoContext("BadContextPojo", BadContextPojo.class,
                     Scope.MODULE, mc);
         } catch (NoSuchMethodException e) {
             if (e.getMessage().indexOf("@Context") < 0) {

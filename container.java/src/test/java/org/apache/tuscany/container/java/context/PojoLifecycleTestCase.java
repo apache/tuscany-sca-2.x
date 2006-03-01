@@ -19,7 +19,7 @@ package org.apache.tuscany.container.java.context;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.mock.TestContextFactory;
+import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeInitOnlyComponent;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
@@ -35,7 +35,7 @@ public class PojoLifecycleTestCase extends TestCase {
     public void testComponentNameSet() throws Exception {
         AggregateContext mc = new AggregateContextImpl();
         mc.setName("mc");
-        JavaComponentContext context = TestContextFactory.createPojoContext("TestServiceInit",
+        JavaComponentContext context = MockFactory.createPojoContext("TestServiceInit",
                 ModuleScopeInitOnlyComponent.class, Scope.MODULE, mc);
         context.start();
         ModuleScopeInitOnlyComponent instance = (ModuleScopeInitOnlyComponent) context.getInstance(null);
@@ -47,7 +47,7 @@ public class PojoLifecycleTestCase extends TestCase {
     public void testModuleContextSet() throws Exception {
         AggregateContext mc = new AggregateContextImpl();
         mc.setName("mc");
-        JavaComponentContext context = TestContextFactory.createPojoContext("TestServiceInit",
+        JavaComponentContext context = MockFactory.createPojoContext("TestServiceInit",
                 ModuleScopeInitOnlyComponent.class, Scope.MODULE, mc);
         context.start();
         ModuleScopeInitOnlyComponent instance = (ModuleScopeInitOnlyComponent) context.getInstance(null);
@@ -59,7 +59,7 @@ public class PojoLifecycleTestCase extends TestCase {
     public void testInit() throws Exception {
         AggregateContext mc = new AggregateContextImpl();
         mc.setName("mc");
-        JavaComponentContext context = TestContextFactory.createPojoContext("TestServiceInit",
+        JavaComponentContext context = MockFactory.createPojoContext("TestServiceInit",
                 ModuleScopeInitOnlyComponent.class, Scope.MODULE, mc);
         context.start();
         ModuleScopeInitOnlyComponent instance = (ModuleScopeInitOnlyComponent) context.getInstance(null);

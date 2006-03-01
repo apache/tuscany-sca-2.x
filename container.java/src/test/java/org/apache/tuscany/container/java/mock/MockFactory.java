@@ -16,14 +16,18 @@
  */
 package org.apache.tuscany.container.java.mock;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
 import org.apache.tuscany.container.java.assembly.impl.JavaAssemblyFactoryImpl;
 import org.apache.tuscany.container.java.assembly.mock.HelloWorldImpl;
 import org.apache.tuscany.container.java.assembly.mock.HelloWorldService;
+import org.apache.tuscany.container.java.context.JavaComponentContext;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBinding;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.container.java.mock.components.HelloWorldClient;
@@ -32,6 +36,15 @@ import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.impl.AggregateContextImpl;
+import org.apache.tuscany.core.injection.EventInvoker;
+import org.apache.tuscany.core.injection.FieldInjector;
+import org.apache.tuscany.core.injection.Injector;
+import org.apache.tuscany.core.injection.MethodEventInvoker;
+import org.apache.tuscany.core.injection.MethodInjector;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
@@ -53,6 +66,10 @@ import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
+import org.osoa.sca.annotations.ComponentName;
+import org.osoa.sca.annotations.Context;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
 
 /**
  * Generates test components, modules, and runtime artifacts
@@ -67,7 +84,14 @@ public class MockFactory {
 
     private static AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(null, null, null);
 
-    public static SimpleComponent createComponent(String name, Class type, Scope scope) throws NoSuchMethodException {
+    /**
+     * Creates an initialized simple component
+     * 
+     * @param name the component name
+     * @param type the implementation type
+     * @param scope the component scope
+     */
+    public static SimpleComponent createComponent(String name, Class type, Scope scope) {
         SimpleComponent sc = factory.createSimpleComponent();
         JavaImplementation impl = factory.createJavaImplementation();
         impl.setComponentType(factory.createComponentType());
@@ -83,17 +107,17 @@ public class MockFactory {
         return sc;
     }
 
-    public static Component createSystemComponent(String name, String type, Scope scope) throws NoSuchMethodException,
-            ClassNotFoundException {
-        Class claz = JavaIntrospectionHelper.loadClass(type);
-        Component sc = null;
-        if (AggregateContext.class.isAssignableFrom(claz)) {
-            sc = systemFactory.createModuleComponent();
-        } else {
-            sc = systemFactory.createSimpleComponent();
-        }
+    /**
+     * Creates a system 
+     * @param name
+     * @param scope
+     * @return
+     * @throws ClassNotFoundException
+     */
+    public static Component createAggregateComponent(String name, Scope scope) throws ClassNotFoundException {
+        Component sc = sc = systemFactory.createModuleComponent();
         SystemImplementation impl = systemFactory.createSystemImplementation();
-        impl.setImplementationClass(claz);
+        impl.setImplementationClass(AggregateContextImpl.class);
         sc.setComponentImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
@@ -144,26 +168,6 @@ public class MockFactory {
     }
 
     /**
-     * Creates a component decorated with an appropriate runtime configuration
-     * 
-     * @param name the name of the component
-     * @param type the component implementation class name
-     * @param scope the scope of the component implementation
-     * @param aggregateContext the containing aggregate context
-     * @throws NoSuchMethodException
-     * @throws ClassNotFoundException 
-     * @see RuntimeConfiguration
-     */
-    public static Component createDecoratedComponent(String name, String type, Scope scope,
-            AggregateContext aggregateContext) throws NoSuchMethodException, ClassNotFoundException {
-    
-        Component sc = createSystemComponent(name, type, scope);
-        SystemComponentContextBuilder builder = new SystemComponentContextBuilder();
-        builder.build(sc, aggregateContext);
-        return sc;
-    }
-
-    /**
      * Creates an entry point wired to the given target (e.g. component, external service) using the system binding
      * 
      * @param name the name of the entry point
@@ -174,10 +178,10 @@ public class MockFactory {
     public static EntryPoint createEPSystemBinding(String name, Class interfaz, String refName, AggregatePart target) {
         JavaServiceContract contract = systemFactory.createJavaServiceContract();
         contract.setInterface(interfaz);
-    
+
         EntryPoint ep = systemFactory.createEntryPoint();
         ep.setName(name);
-    
+
         Reference ref = systemFactory.createReference();
         ref.setName(refName);
         ref.setServiceContract(contract);
@@ -185,24 +189,24 @@ public class MockFactory {
         configuredReference.setReference(ref);
         Service service = systemFactory.createService();
         service.setServiceContract(contract);
-    
+
         ConfiguredService cService = systemFactory.createConfiguredService();
         cService.setService(service);
         cService.initialize(MockFactory.assemblyContext);
-    
+
         configuredReference.getTargetConfiguredServices().add(cService);
         ep.setConfiguredReference(configuredReference);
-    
-        ///
+
+        // /
         Service epService = systemFactory.createService();
         epService.setServiceContract(contract);
-    
+
         ConfiguredService epCService = systemFactory.createConfiguredService();
         epCService.initialize(MockFactory.assemblyContext);
         epCService.setService(epService);
-    
+
         //
-        
+
         ep.setConfiguredService(epCService);
         SystemBinding binding = systemFactory.createSystemBinding();
         ep.getBindings().add(binding);
@@ -235,9 +239,9 @@ public class MockFactory {
     }
 
     public static Module createModule() throws Exception {
-        Component sourceComponent = createComponent("source", ModuleScopeComponentImpl.class,Scope.MODULE);
-        Component targetComponent = createComponent("target", ModuleScopeComponentImpl.class,Scope.MODULE);
-    
+        Component sourceComponent = createComponent("source", ModuleScopeComponentImpl.class, Scope.MODULE);
+        Component targetComponent = createComponent("target", ModuleScopeComponentImpl.class, Scope.MODULE);
+
         Service targetService = factory.createService();
         JavaServiceContract targetContract = factory.createJavaServiceContract();
         targetContract.setInterface(GenericComponent.class);
@@ -248,7 +252,7 @@ public class MockFactory {
         cTargetService.initialize(assemblyContext);
         targetComponent.getConfiguredServices().add(cTargetService);
         targetComponent.initialize(assemblyContext);
-        
+
         Reference ref = factory.createReference();
         ConfiguredReference cref = factory.createConfiguredReference();
         ref.setName("setGenericComponent");
@@ -260,7 +264,7 @@ public class MockFactory {
         cref.initialize(assemblyContext);
         sourceComponent.getConfiguredReferences().add(cref);
         sourceComponent.initialize(assemblyContext);
-    
+
         Module module = factory.createModule();
         module.setName("test.module");
         module.getComponents().add(sourceComponent);
@@ -270,9 +274,9 @@ public class MockFactory {
     }
 
     public static Module createModuleWithExternalService() throws Exception {
-        Component sourceComponent = createComponent("source", HelloWorldClient.class,Scope.MODULE);
-        ExternalService targetES = createFooBindingExternalService("target",HelloWorldService.class);
-    
+        Component sourceComponent = createComponent("source", HelloWorldClient.class, Scope.MODULE);
+        ExternalService targetES = createFooBindingExternalService("target", HelloWorldService.class);
+
         Service targetService = factory.createService();
         JavaServiceContract targetContract = factory.createJavaServiceContract();
         targetContract.setInterface(HelloWorldService.class);
@@ -282,7 +286,7 @@ public class MockFactory {
         cTargetService.setService(targetService);
         targetES.setConfiguredService(cTargetService);
         targetES.initialize(assemblyContext);
-        
+
         Reference ref = factory.createReference();
         ConfiguredReference cref = factory.createConfiguredReference();
         ref.setName("setHelloWorldService");
@@ -294,7 +298,7 @@ public class MockFactory {
         cref.initialize(assemblyContext);
         sourceComponent.getConfiguredReferences().add(cref);
         sourceComponent.initialize(assemblyContext);
-    
+
         Module module = factory.createModule();
         module.setName("test.module");
         module.getComponents().add(sourceComponent);
@@ -305,8 +309,8 @@ public class MockFactory {
 
     public static Module createModuleWithEntryPoint() throws Exception {
         EntryPoint sourceEP = createFooBindingEntryPoint("source", HelloWorldService.class);
-        Component targetComponent = createComponent("target",HelloWorldImpl.class,Scope.MODULE);
-    
+        Component targetComponent = createComponent("target", HelloWorldImpl.class, Scope.MODULE);
+
         Service targetService = factory.createService();
         JavaServiceContract targetContract = factory.createJavaServiceContract();
         targetContract.setInterface(HelloWorldService.class);
@@ -316,7 +320,7 @@ public class MockFactory {
         cTargetService.setService(targetService);
         targetComponent.getConfiguredServices().add(cTargetService);
         targetComponent.initialize(assemblyContext);
-        
+
         Reference ref = factory.createReference();
         ConfiguredReference cref = factory.createConfiguredReference();
         ref.setName("setHelloWorldService");
@@ -329,8 +333,7 @@ public class MockFactory {
         sourceEP.setConfiguredReference(cref);
         sourceEP.getConfiguredService().getService().setName("HelloWorldService");
         sourceEP.initialize(assemblyContext);
-        
-    
+
         Module module = factory.createModule();
         module.setName("test.module");
         module.getEntryPoints().add(sourceEP);
@@ -346,6 +349,87 @@ public class MockFactory {
         builders.add(new SystemExternalServiceBuilder());
         return builders;
     }
-    
-    
+
+    /**
+     * Creates an aggregate runtime configuration
+     * 
+     * @param name the name of the component
+     * @param scope the scope of the component implementation
+     * @param aggregateContext the containing aggregate context
+     * @throws NoSuchMethodException
+     * @throws ClassNotFoundException
+     * @see RuntimeConfiguration
+     */
+    public static RuntimeConfiguration<InstanceContext> createAggregateConfiguration(String name, Scope scope, AggregateContext aggregateContext)
+            throws NoSuchMethodException, ClassNotFoundException {
+
+        Component sc = createAggregateComponent(name, scope);
+        SystemComponentContextBuilder builder = new SystemComponentContextBuilder();
+        builder.build(sc, aggregateContext);
+        return (RuntimeConfiguration<InstanceContext>) sc.getComponentImplementation().getRuntimeConfiguration();
+    }
+
+    /**
+     * Creates a Java POJO component context
+     * 
+     * @param name the name of the context
+     * @param implType the POJO class
+     * @param scope the component scope
+     * @param moduleComponentContext the containing aggregate context
+     * @throws NoSuchMethodException
+     */
+    public static JavaComponentContext createPojoContext(String name, Class implType, Scope scope,
+            AggregateContext moduleComponentContext) throws NoSuchMethodException {
+        SimpleComponent component = createComponent(name, implType, scope);
+
+        Set<Field> fields = JavaIntrospectionHelper.getAllFields(implType);
+        Set<Method> methods = JavaIntrospectionHelper.getAllUniqueMethods(implType);
+        List<Injector> injectors = new ArrayList();
+        EventInvoker initInvoker = null;
+        boolean eagerInit = false;
+        EventInvoker destroyInvoker = null;
+        for (Field field : fields) {
+            ComponentName compName = field.getAnnotation(ComponentName.class);
+            if (compName != null) {
+                Injector injector = new FieldInjector(field, new SingletonObjectFactory(name));
+                injectors.add(injector);
+            }
+            Context context = field.getAnnotation(Context.class);
+            if (context != null) {
+                Injector injector = new FieldInjector(field, new SingletonObjectFactory(moduleComponentContext));
+                injectors.add(injector);
+            }
+        }
+        for (Method method : methods) {
+            // FIXME Java5
+            Init init = method.getAnnotation(Init.class);
+            if (init != null && initInvoker == null) {
+                initInvoker = new MethodEventInvoker(method);
+                eagerInit = init.eager();
+                continue;
+            }
+            Destroy destroy = method.getAnnotation(Destroy.class);
+            if (destroy != null && destroyInvoker == null) {
+                destroyInvoker = new MethodEventInvoker(method);
+                continue;
+            }
+            ComponentName compName = method.getAnnotation(ComponentName.class);
+            if (compName != null) {
+                Injector injector = new MethodInjector(method, new SingletonObjectFactory(name));
+                injectors.add(injector);
+            }
+            Context context = method.getAnnotation(Context.class);
+            if (context != null) {
+                Injector injector = new MethodInjector(method, new SingletonObjectFactory(moduleComponentContext));
+                injectors.add(injector);
+            }
+        }
+
+        boolean stateless = (scope == Scope.INSTANCE);
+        JavaComponentContext context = new JavaComponentContext("foo", new PojoObjectFactory(JavaIntrospectionHelper
+                .getDefaultConstructor(implType), null, injectors), eagerInit, initInvoker, destroyInvoker, stateless);
+
+        return context;
+    }
+
 }

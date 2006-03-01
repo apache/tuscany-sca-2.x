@@ -35,7 +35,6 @@ import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
@@ -92,7 +91,7 @@ public class EntryPointToJavaTestCase extends TestCase {
         runtime.addBuilder(new FooBindingWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
-                MockFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(), Scope.AGGREGATE));
+                MockFactory.createAggregateComponent("test.module", Scope.AGGREGATE));
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModuleWithEntryPoint());
         child.fireEvent(EventContext.MODULE_START, null);
