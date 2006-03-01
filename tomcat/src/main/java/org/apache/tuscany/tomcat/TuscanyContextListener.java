@@ -61,23 +61,30 @@ public class TuscanyContextListener implements LifecycleListener {
     }
 
     private void startContext(Context ctx) {
-        ResourceLoader resourceLoader = new ResourceLoaderImpl(ctx.getLoader().getClassLoader());
-        AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, systemLoader, resourceLoader);
-        ModuleComponentConfigurationLoader loader = new ModuleComponentConfigurationLoaderImpl(modelContext);
-
         AggregateContext moduleContext;
-        try {
-            // Load the SCDL configuration of the application module
-            ModuleComponent moduleComponent = loader.loadModuleComponent(ctx.getName(), ctx.getPath());
 
-            // Register it under the root application context
-            rootContext.registerModelObject(moduleComponent);
-            moduleContext = (AggregateContext)rootContext.getContext(moduleComponent.getName());
-            moduleContext.registerModelObject(moduleComponent.getComponentImplementation());
-        } catch (ConfigurationLoadException e) {
-            throw new UnsupportedOperationException();
-        } catch (ConfigurationException e) {
-            throw new UnsupportedOperationException();
+        ResourceLoader resourceLoader = new ResourceLoaderImpl(ctx.getLoader().getClassLoader());
+        ClassLoader oldCl  = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+        try {
+            AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, systemLoader, resourceLoader);
+            ModuleComponentConfigurationLoader loader = new ModuleComponentConfigurationLoaderImpl(modelContext);
+
+            try {
+                // Load the SCDL configuration of the application module
+                ModuleComponent moduleComponent = loader.loadModuleComponent(ctx.getName(), ctx.getPath());
+
+                // Register it under the root application context
+                rootContext.registerModelObject(moduleComponent);
+                moduleContext = (AggregateContext)rootContext.getContext(moduleComponent.getName());
+                moduleContext.registerModelObject(moduleComponent.getComponentImplementation());
+            } catch (ConfigurationLoadException e) {
+                throw new UnsupportedOperationException();
+            } catch (ConfigurationException e) {
+                throw new UnsupportedOperationException();
+            }
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCl);
         }
 
         Valve valve = new TuscanyValve(moduleContext);

@@ -25,8 +25,10 @@ import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.core.StandardServer;
 import org.apache.catalina.core.StandardService;
 import org.apache.catalina.startup.ContextConfig;
+import org.apache.catalina.Valve;
 
 import org.apache.tuscany.tomcat.TuscanyHost;
+import org.apache.tuscany.tomcat.TuscanyValve;
 
 /**
  * @version $Rev$ $Date$
@@ -44,6 +46,14 @@ public class TomcatIntegrationTestCase extends TestCase {
         ctx.setName("test");
         ctx.setDocBase(app1.getAbsolutePath());
         host.addChild(ctx);
+        boolean found = false;
+        for (Valve valve: ctx.getPipeline().getValves()) {
+            if (valve instanceof TuscanyValve) {
+                found = true;
+                break;
+            }
+        }
+        assertTrue("TuscanyValve not in pipeline", found);
         host.removeChild(ctx);
     }
 
@@ -74,8 +84,7 @@ public class TomcatIntegrationTestCase extends TestCase {
         engine.setBaseDir(baseDir.getAbsolutePath());
         service.setContainer(engine);
 
-//        host = new TuscanyHost();
-        host = new StandardHost();
+        host = new TuscanyHost();
         host.setName("localhost");
         host.setAppBase(appBase.getAbsolutePath());
         engine.addChild(host);
