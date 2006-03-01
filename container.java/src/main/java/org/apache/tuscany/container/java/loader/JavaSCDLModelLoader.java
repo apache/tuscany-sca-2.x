@@ -63,7 +63,7 @@ public class JavaSCDLModelLoader implements SCDLModelLoader {
             JavaImplementation implementation=javaFactory.createJavaImplementation();
             Class implementationClass;
             try {
-                implementationClass=modelContext.getResourceLoader().loadClass(scdlJavaImplementation.getClass_());
+                implementationClass=modelContext.getArtifactResourceLoader().loadClass(scdlJavaImplementation.getClass_());
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException(e);
             }
