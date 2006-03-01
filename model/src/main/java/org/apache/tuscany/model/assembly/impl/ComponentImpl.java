@@ -37,7 +37,7 @@ import org.apache.tuscany.model.assembly.Service;
 /**
  * An implementation of Component.
  */
-public class ComponentImpl extends AggregatePartImpl implements Component {
+public abstract class ComponentImpl extends AggregatePartImpl implements Component {
     
     private List<ConfiguredReference> configuredReferences=new ArrayList<ConfiguredReference>();
     private Map<String, ConfiguredReference> configuredReferencesMap;
@@ -46,12 +46,6 @@ public class ComponentImpl extends AggregatePartImpl implements Component {
     private List<ConfiguredProperty> configuredProperties=new ArrayList<ConfiguredProperty>();
     private Map<String, ConfiguredProperty> configuredPropertiesMap;
     private ComponentImplementation implementation;
-
-    /**
-     * Constructor
-     */
-    protected ComponentImpl() {
-    }
 
     /**
      * @see org.apache.tuscany.model.assembly.Component#getComponentImplementation()
