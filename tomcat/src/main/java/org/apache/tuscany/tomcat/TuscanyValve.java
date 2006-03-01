@@ -28,6 +28,7 @@ import org.osoa.sca.SCA;
 
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.EventException;
 
 /**
  * Valve that can be added to a pipeline to
@@ -51,36 +52,38 @@ public class TuscanyValve extends ValveBase {
     public void invoke(Request request, Response response) throws IOException, ServletException {
         Object oldRequestId = request.getNote(REQUEST_ID);
         ModuleContext oldContext = CurrentModuleContext.getContext();
+
+        // bind the current module context to the thread
+        BINDER.setContext((ModuleContext) moduleComponentContext);
         try {
-            // bind the current module context to the thread
-            BINDER.setContext((ModuleContext) moduleComponentContext);
-
-            // if we have not notified the runtime about this request, fire a request start event
-            if (oldRequestId == null) {
+            if (oldRequestId != null) {
+                // the request has already been started, just invoke the next valve
+                next.invoke(request, response);
+            } else {
+                // tell the runtime a new request is starting
                 Object requestId = new Object();
+                try {
+                    moduleComponentContext.fireEvent(EventContext.REQUEST_START, requestId);
+                } catch (Exception e) {
+                    throw new ServletException(e.getMessage(), e);
+                }
                 request.setNote(REQUEST_ID, requestId);
-                moduleComponentContext.fireEvent(EventContext.REQUEST_START, requestId);
-            }
 
-            // invoke the next valve in the pipeline
-            next.invoke(request, response);
-        } catch (IOException e) {
-            // rethrow exception from next valve
-            throw e;
-        } catch (ServletException e) {
-            // rethrow exception from next valve
-            throw e;
-        } catch (Exception e) {
-            // wrap other (unchecked) exceptions potentially thrown by the runtime
-            throw new ServletException(e.getMessage(), e);
+                try {
+                    // invoke the next valve in the pipeline
+                    next.invoke(request, response);
+                } finally{
+                    // notify the runtime the request is ending
+                    request.removeNote(REQUEST_ID);
+                    try {
+                        moduleComponentContext.fireEvent(EventContext.REQUEST_END, requestId);
+                    } catch (Exception e) {
+                        // the application already did its work, log and ignore
+                        // todo log this exception
+                    }
+                }
+            }
         } finally {
-            // if we sent the request start notification, fire the request end event
-            if (oldRequestId == null) {
-                Object requestId = request.getNote(REQUEST_ID);
-                moduleComponentContext.fireEvent(EventContext.REQUEST_END, requestId);
-                request.removeNote(REQUEST_ID);
-            }
-
             // restore the previous module context onto the thread
             BINDER.setContext(oldContext);
         }
