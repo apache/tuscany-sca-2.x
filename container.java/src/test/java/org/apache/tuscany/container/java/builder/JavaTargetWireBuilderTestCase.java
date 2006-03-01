@@ -9,10 +9,10 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.container.java.config.JavaComponentRuntimeConfiguration;
 import org.apache.tuscany.container.java.invocation.mock.MockHandler;
-import org.apache.tuscany.container.java.invocation.mock.MockScopeContext;
 import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.container.java.invocation.mock.SimpleTarget;
 import org.apache.tuscany.container.java.invocation.mock.SimpleTargetImpl;
+import org.apache.tuscany.container.java.mock.MockScopeContext;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;

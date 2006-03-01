@@ -14,12 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.java.invocation.mock;
+package org.apache.tuscany.container.java.mock;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.container.java.invocation.mock.SimpleTargetImpl;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.EventException;

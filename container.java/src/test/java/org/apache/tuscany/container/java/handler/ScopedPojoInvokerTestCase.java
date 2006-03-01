@@ -22,8 +22,8 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.container.java.handler.ScopedJavaComponentInvoker;
-import org.apache.tuscany.container.java.invocation.mock.MockScopeContext;
 import org.apache.tuscany.container.java.invocation.mock.SimpleTarget;
+import org.apache.tuscany.container.java.mock.MockScopeContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 

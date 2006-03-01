@@ -10,11 +10,10 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
-import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.MockConfigContext;
+import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeComponent;
-import org.apache.tuscany.container.java.mock.components.ModuleScopeComponentImpl;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
@@ -34,15 +33,9 @@ import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.Reference;
-import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 public class JavaComponentContextBuilderTestCase extends TestCase {
 
@@ -66,7 +59,7 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
         ScopeStrategy strategy = new DefaultScopeStrategy();
         DefaultWireBuilder wireBuilder = new DefaultWireBuilder();
         wireBuilder.addWireBuilder(javaWireBuilder);
-        Module module = createModule();
+        Module module = MockFactory.createModule();
         EventContext eCtx = new EventContextImpl();
         ScopeContext scopeContext = new ModuleScopeContext(eCtx);
         scopeContext.start();
@@ -110,45 +103,7 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
             }
         }
     }
-
     
-    
-    
-    
-    public Module createModule() throws Exception {
-        Component sourceComponent = MockFactory.createComponent("source", ModuleScopeComponentImpl.class,Scope.MODULE);
-        Component targetComponent = MockFactory.createComponent("target", ModuleScopeComponentImpl.class,Scope.MODULE);
-
-        Service targetService = factory.createService();
-        JavaServiceContract targetContract = factory.createJavaServiceContract();
-        targetContract.setInterface(GenericComponent.class);
-        targetService.setServiceContract(targetContract);
-        targetService.setName("GenericComponent");
-        ConfiguredService cTargetService = factory.createConfiguredService();
-        cTargetService.setService(targetService);
-        cTargetService.initialize(assemblyContext);
-        targetComponent.getConfiguredServices().add(cTargetService);
-        targetComponent.initialize(assemblyContext);
-        
-        Reference ref = factory.createReference();
-        ConfiguredReference cref = factory.createConfiguredReference();
-        ref.setName("setGenericComponent");
-        JavaServiceContract inter = factory.createJavaServiceContract();
-        inter.setInterface(GenericComponent.class);
-        ref.setServiceContract(inter);
-        cref.setReference(ref);
-        cref.getTargetConfiguredServices().add(cTargetService);
-        cref.initialize(assemblyContext);
-        sourceComponent.getConfiguredReferences().add(cref);
-        sourceComponent.initialize(assemblyContext);
-
-        Module module = factory.createModule();
-        module.setName("test.module");
-        module.getComponents().add(sourceComponent);
-        module.getComponents().add(targetComponent);
-        return module;
-    }
-
     private static AggregateContext createContext() {
         return new AggregateContextImpl("test.parent", null, new DefaultScopeStrategy(), new EventContextImpl(),
                 new MockConfigContext(null), new NullMonitorFactory());

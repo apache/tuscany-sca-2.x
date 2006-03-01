@@ -496,15 +496,6 @@ public class MockFactory {
     }
 
     /**
-     * Returns a collection of bootstrap and Java runtime configuration builders
-     */
-    public static List<RuntimeConfigurationBuilder> createJavaAndSystemBuilders() {
-        List<RuntimeConfigurationBuilder> builders = createSystemBuilders();
-
-        return builders;
-    }
-
-    /**
      * Creates a default {@link RuntimeContext} configured with support for Java component implementations
      * 
      * @throws ConfigurationException
