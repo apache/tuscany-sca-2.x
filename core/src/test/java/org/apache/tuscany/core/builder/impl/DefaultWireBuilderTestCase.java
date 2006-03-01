@@ -1,7 +1,6 @@
 package org.apache.tuscany.core.builder.impl;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -44,7 +43,6 @@ public class DefaultWireBuilderTestCase extends TestCase {
 
     public void testWireWithInterceptorsAndHandlers() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
-        //OperationType operation = new MockJavaOperationType(hello);
 
         InvocationConfiguration source = new InvocationConfiguration(hello);
         MockHandler sourceRequestHandler = new MockHandler();
@@ -83,7 +81,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
         builder.connect(sourceFactory, targetFactory, null, true, null);
-       // source.build();
+        // source.build();
         target.build();
         // set a static invoker
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
@@ -104,7 +102,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
 
     public void testWireWithSourceInterceptorTargetHandlersAndTargetInterceptor() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
-        
+
         InvocationConfiguration source = new InvocationConfiguration(hello);
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addSourceInterceptor(sourceInterceptor);
@@ -138,7 +136,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
         builder.connect(sourceFactory, targetFactory, null, true, null);
-        //source.build();
+        // source.build();
         target.build();
         // set a static invoker
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
@@ -155,10 +153,9 @@ public class DefaultWireBuilderTestCase extends TestCase {
         Assert.assertEquals(1, targetInterceptor.getCount());
     }
 
-    
     public void testWireWithInterceptorsAndRequestHandlers() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
-      
+
         InvocationConfiguration source = new InvocationConfiguration(hello);
         MockHandler sourceRequestHandler = new MockHandler();
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
@@ -192,7 +189,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
         builder.connect(sourceFactory, targetFactory, null, true, null);
-        //source.build();
+        // source.build();
         target.build();
         // set a static invoker
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
@@ -241,7 +238,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
         builder.connect(sourceFactory, targetFactory, null, true, null);
-        //source.build();
+        // source.build();
         target.build();
         // set a static invoker
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
@@ -256,7 +253,6 @@ public class DefaultWireBuilderTestCase extends TestCase {
         Assert.assertEquals(1, targetInterceptor.getCount());
     }
 
-    
     public void testWireWithSourceInterceptorSourceHandlersAndTargetInterceptor() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
@@ -293,7 +289,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
         builder.connect(sourceFactory, targetFactory, null, true, null);
-        //source.build();
+        // source.build();
         target.build();
         // set a static invoker
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
@@ -310,7 +306,6 @@ public class DefaultWireBuilderTestCase extends TestCase {
         Assert.assertEquals(1, targetInterceptor.getCount());
     }
 
-    
     public void testWireWithTargetInterceptorAndTargetHandlers() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
@@ -345,7 +340,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
         builder.connect(sourceFactory, targetFactory, null, true, null);
-//        source.build();
+        // source.build();
         target.build();
         // set a static invoker
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
@@ -360,7 +355,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         Assert.assertEquals(1, targetResponseHandler.getCount());
         Assert.assertEquals(1, targetInterceptor.getCount());
     }
-    
+
     public void testWireWithTargetInterceptor() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
@@ -402,6 +397,51 @@ public class DefaultWireBuilderTestCase extends TestCase {
         Message response = (Message) source.getSourceInterceptor().invoke(msg);
         Assert.assertEquals("foo", response.getBody());
         Assert.assertEquals(1, targetInterceptor.getCount());
+    }
+
+    /**
+     * When there are only {@link InvokerInterceptor}s in the source and target chain, we need to bypass one during
+     * wire up so they are not chained together
+     */
+    public void testWireWithOnlyInvokerInterceptors() throws Exception {
+        MessageFactory msgFactory = new MessageFactoryImpl();
+
+        InvocationConfiguration source = new InvocationConfiguration(hello);
+        source.addTargetInterceptor(new InvokerInterceptor());
+
+        ProxyFactory sourceFactory = new JDKProxyFactory();
+        Map<Method, InvocationConfiguration> sourceInvocationConfigs = new MethodHashMap();
+        sourceInvocationConfigs.put(hello, source);
+        ProxyConfiguration sourceConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+                sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
+        sourceFactory.setProxyConfiguration(sourceConfig);
+        sourceFactory.setBusinessInterface(SimpleTarget.class);
+
+        InvocationConfiguration target = new InvocationConfiguration(hello);
+        target.addTargetInterceptor(new InvokerInterceptor());
+
+        ProxyFactory targetFactory = new JDKProxyFactory();
+        Map<Method, InvocationConfiguration> targetInvocationConfigs = new MethodHashMap();
+        targetInvocationConfigs.put(hello, target);
+        ProxyConfiguration targetConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+                targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
+        targetFactory.setProxyConfiguration(targetConfig);
+        targetFactory.setBusinessInterface(SimpleTarget.class);
+
+        // connect the source to the target
+        DefaultWireBuilder builder = new DefaultWireBuilder();
+        // no need for scopes since we use a static invoker
+        builder.connect(sourceFactory, targetFactory, null, true, null);
+        target.build();
+        // set a static invoker
+        MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
+        source.setTargetInvoker(invoker);
+
+        Message msg = msgFactory.createMessage();
+        msg.setBody("foo");
+        msg.setTargetInvoker(invoker);
+        Message response = (Message) source.getSourceInterceptor().invoke(msg);
+        Assert.assertEquals("foo", response.getBody());
     }
 
 }

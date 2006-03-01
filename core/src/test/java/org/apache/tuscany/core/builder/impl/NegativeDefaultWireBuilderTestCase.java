@@ -1,7 +1,6 @@
 package org.apache.tuscany.core.builder.impl;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.TestCase;
