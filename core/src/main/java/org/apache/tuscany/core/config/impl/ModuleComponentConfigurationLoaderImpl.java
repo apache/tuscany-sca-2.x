@@ -56,7 +56,7 @@ public class ModuleComponentConfigurationLoaderImpl implements ModuleComponentCo
         this.modelContext=modelContext;
         this.modelLoader=this.modelContext.getAssemblyLoader();
         this.assemblyFactory=this.modelContext.getAssemblyFactory();
-        this.resourceLoader=this.modelContext.getResourceLoader();
+        this.resourceLoader=this.modelContext.getArtifactResourceLoader();
     }
     
     /**

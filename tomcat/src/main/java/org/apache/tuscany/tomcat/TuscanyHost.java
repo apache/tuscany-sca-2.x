@@ -26,7 +26,9 @@ import org.apache.catalina.ContainerListener;
 import org.apache.catalina.ContainerEvent;
 import org.apache.catalina.Container;
 import org.apache.catalina.Context;
-import org.apache.catalina.Valve;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.core.StandardHost;
+import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.util.StringManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -64,40 +66,28 @@ import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
  *
  * @version $Rev$ $Date$
  */
-public class TuscanyHostListener implements LifecycleListener, ContainerListener {
+public class TuscanyHost extends StandardHost {
     private static final String SYSTEM_MODULE_COMPONENT = "org.apache.tuscany.core.system";
-    private static final Log log = LogFactory.getLog(TuscanyHostListener.class);
+    private static final Log log = LogFactory.getLog(TuscanyHost.class);
     private static final StringManager sm = StringManager.getManager("org.apache.tuscany.tomcat");
 
     private RuntimeContext runtime;
     private AssemblyModelLoader modelLoader;
     private AssemblyFactory modelFactory;
+    private ResourceLoader systemLoader;
 
-    public void lifecycleEvent(LifecycleEvent event) {
-        String type = event.getType();
-        if (Lifecycle.START_EVENT.equals(type)) {
-            startRuntime();
-            if (event.getLifecycle() instanceof Container) {
-                Container container = (Container) event.getLifecycle();
-                container.addContainerListener(this);
-            }
-        } else if (Lifecycle.STOP_EVENT.equals(type)) {
-            if (event.getLifecycle() instanceof Container) {
-                Container container = (Container) event.getLifecycle();
-                container.removeContainerListener(this);
-            }
-            stopRuntime();
-        }
+    public synchronized void start() throws LifecycleException {
+        startRuntime();
+        super.start();
     }
 
-    public void containerEvent(ContainerEvent event) {
-        if (Container.ADD_CHILD_EVENT.equals(event.getType()) && event.getData() instanceof Context) {
-            contextAdded((Context) event.getData());
-        }
+    public synchronized void stop() throws LifecycleException {
+        super.stop();
+        stopRuntime();
     }
 
     private void startRuntime() {
-        ResourceLoader resourceLoader = new ResourceLoaderImpl(getClass().getClassLoader());
+        systemLoader = new ResourceLoaderImpl(getClass().getClassLoader());
 
         // Create an assembly model factory
         modelFactory = new AssemblyFactoryImpl();
@@ -108,7 +98,7 @@ public class TuscanyHostListener implements LifecycleListener, ContainerListener
         modelLoader = new SCDLAssemblyModelLoaderImpl(scdlLoaders);
 
         // Create an assembly model context
-        AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, resourceLoader);
+        AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, systemLoader);
 
         // Load the system module component
         ModuleComponentConfigurationLoader loader = new ModuleComponentConfigurationLoaderImpl(modelContext);
@@ -156,11 +146,23 @@ public class TuscanyHostListener implements LifecycleListener, ContainerListener
         log.info(sm.getString("runtime.stopped"));
     }
 
-
-    private void contextAdded(Context ctx) {
-        if (ctx instanceof Lifecycle) {
-            TuscanyContextListener contextListener = new TuscanyContextListener(runtime.getRootContext(), modelFactory, modelLoader);
-            ((Lifecycle) ctx).addLifecycleListener(contextListener);
+    public synchronized void addChild(Container child) {
+        if (!(child instanceof StandardContext)) {
+            throw new IllegalArgumentException(sm.getString("tuscanyHost.notContext"));
         }
+        StandardContext ctx = (StandardContext) child;
+        ctx.addLifecycleListener(new TuscanyContextListener(runtime.getRootContext(), modelFactory, modelLoader, systemLoader));
+        super.addChild(child);
+    }
+
+    public String toString() {
+
+        StringBuffer sb = new StringBuffer(132);
+        if (getParent() != null) {
+            sb.append(getParent().toString()).append('.');
+        }
+        sb.append("TuscanyHost[").append(getName()).append(']');
+        return (sb.toString());
+
     }
 }

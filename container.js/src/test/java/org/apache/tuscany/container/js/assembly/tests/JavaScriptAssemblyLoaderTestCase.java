@@ -70,7 +70,7 @@ public class JavaScriptAssemblyLoaderTestCase extends TestCase {
         super.setUp();
 
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-        modelContext = new AssemblyModelContextImpl(null, null,null);
+        modelContext = new AssemblyModelContextImpl(null,null);
     }
 
 }

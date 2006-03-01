@@ -60,7 +60,7 @@ public class MockAssemblyFactory {
         impl.getComponentType().getServices().add(s);
         ConfiguredService cService = factory.createConfiguredService();
         cService.setService(s);
-        cService.initialize(new AssemblyModelContextImpl(null, null,null));
+        cService.initialize(new AssemblyModelContextImpl(null,null));
         sc.getConfiguredServices().add(cService);
         sc.setName(name);
         sc.setComponentImplementation(impl);

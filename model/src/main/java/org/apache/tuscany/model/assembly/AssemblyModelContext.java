@@ -32,11 +32,18 @@ public interface AssemblyModelContext {
     AssemblyFactory getAssemblyFactory();
 
     /**
-     * Returns a loader for resources in the current environment
+     * Returns a loader for resources in the application environment
      *
      * @return a resource loader
      */
     ResourceLoader getResourceLoader();
+
+    /**
+     * Returns a loader for resources in the system environment.
+     *
+     * @return a loader for resources in the system environment
+     */
+    ResourceLoader getArtifactResourceLoader();
 
     /**
      * Returns a loader that can be used to load sub-models.

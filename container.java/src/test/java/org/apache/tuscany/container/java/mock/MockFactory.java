@@ -83,7 +83,7 @@ public class MockFactory {
 
     private static SystemAssemblyFactory systemFactory = new SystemAssemblyFactoryImpl();
 
-    private static AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(null, null, null);
+    private static AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(null, null);
 
     /**
      * Creates an initialized simple component

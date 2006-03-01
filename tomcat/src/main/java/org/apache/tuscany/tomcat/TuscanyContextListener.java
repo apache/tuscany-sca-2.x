@@ -42,11 +42,13 @@ public class TuscanyContextListener implements LifecycleListener {
     private final AssemblyFactory modelFactory;
     private final AssemblyModelLoader modelLoader;
     private final AggregateContext rootContext;
+    private final ResourceLoader systemLoader;
 
-    public TuscanyContextListener(AggregateContext rootContext, AssemblyFactory modelFactory, AssemblyModelLoader modelLoader) {
+    public TuscanyContextListener(AggregateContext rootContext, AssemblyFactory modelFactory, AssemblyModelLoader modelLoader, ResourceLoader systemLoader) {
         this.rootContext = rootContext;
         this.modelFactory = modelFactory;
         this.modelLoader = modelLoader;
+        this.systemLoader = systemLoader;
     }
 
     public void lifecycleEvent(LifecycleEvent event) {
@@ -60,7 +62,7 @@ public class TuscanyContextListener implements LifecycleListener {
 
     private void startContext(Context ctx) {
         ResourceLoader resourceLoader = new ResourceLoaderImpl(ctx.getLoader().getClassLoader());
-        AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, resourceLoader);
+        AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, systemLoader, resourceLoader);
         ModuleComponentConfigurationLoader loader = new ModuleComponentConfigurationLoaderImpl(modelContext);
 
         AggregateContext moduleContext;

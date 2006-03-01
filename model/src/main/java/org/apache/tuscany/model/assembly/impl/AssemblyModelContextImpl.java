@@ -25,24 +25,29 @@ import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
  */
 public class AssemblyModelContextImpl implements AssemblyModelContext {
 
-    private AssemblyFactory assemblyFactory;
-    private AssemblyModelLoader assemblyLoader;
-    private ResourceLoader resourceLoader;
+    private final AssemblyFactory assemblyFactory;
+    private final AssemblyModelLoader assemblyLoader;
+    private final ResourceLoader resourceLoader;
+    private final ResourceLoader artifactLoader;
 
-    /**
-     * Constructor
-     *
-     * @param resourceLoader
-     */
+    public AssemblyModelContextImpl(AssemblyModelLoader assemblyLoader, ResourceLoader resourceLoader) {
+        this(new AssemblyFactoryImpl(), assemblyLoader, resourceLoader, resourceLoader);
+    }
+
     public AssemblyModelContextImpl(AssemblyFactory assemblyFactory, AssemblyModelLoader assemblyLoader, ResourceLoader resourceLoader) {
-        if (assemblyFactory!=null)
-            this.assemblyFactory = assemblyFactory;
-        else
-            this.assemblyFactory = new AssemblyFactoryImpl();
-        this.resourceLoader = resourceLoader;
+        this(assemblyFactory, assemblyLoader, resourceLoader, resourceLoader);
+    }
+
+    public AssemblyModelContextImpl(AssemblyFactory assemblyFactory, AssemblyModelLoader assemblyLoader, ResourceLoader resourceLoader, ResourceLoader artifactLoader) {
+        this.assemblyFactory = assemblyFactory;
         this.assemblyLoader = assemblyLoader;
-        if (assemblyLoader!=null)
+        this.resourceLoader = resourceLoader;
+        this.artifactLoader = artifactLoader;
+
+        // FIXME isn't this dangerous?
+        if (assemblyLoader!=null) {
             assemblyLoader.setModelContext(this);
+        }
     }
 
     /**
@@ -58,7 +63,11 @@ public class AssemblyModelContextImpl implements AssemblyModelContext {
     public ResourceLoader getResourceLoader() {
         return resourceLoader;
     }
-    
+
+    public ResourceLoader getArtifactResourceLoader() {
+        return artifactLoader;
+    }
+
     /**
      * @see org.apache.tuscany.model.assembly.AssemblyModelContext#getAssemblyLoader()
      */

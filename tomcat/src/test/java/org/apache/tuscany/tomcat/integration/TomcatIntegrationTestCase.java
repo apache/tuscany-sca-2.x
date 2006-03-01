@@ -26,6 +26,8 @@ import org.apache.catalina.core.StandardServer;
 import org.apache.catalina.core.StandardService;
 import org.apache.catalina.startup.ContextConfig;
 
+import org.apache.tuscany.tomcat.TuscanyHost;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -72,12 +74,10 @@ public class TomcatIntegrationTestCase extends TestCase {
         engine.setBaseDir(baseDir.getAbsolutePath());
         service.setContainer(engine);
 
+//        host = new TuscanyHost();
         host = new StandardHost();
         host.setName("localhost");
         host.setAppBase(appBase.getAbsolutePath());
         engine.addChild(host);
-
-        // add in the Tuscany specific components
-//        host.addLifecycleListener(new TuscanyHostListener());
     }
 }
