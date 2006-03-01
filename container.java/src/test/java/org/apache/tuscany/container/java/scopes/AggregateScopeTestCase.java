@@ -51,8 +51,7 @@ public class AggregateScopeTestCase extends TestCase {
         AggregateContext moduleComponentCtx = new AggregateContextImpl();
         moduleComponentCtx.setName("testMC");
         AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
-        scopeContainer.registerConfiguration(MockFactory.createAggregateConfiguration("AggregateComponent", Scope.AGGREGATE,
-                moduleComponentCtx));
+        scopeContainer.registerConfiguration(MockFactory.createAggregateConfiguration("AggregateComponent", moduleComponentCtx));
         scopeContainer.start();
         AggregateContext child = (AggregateContext) scopeContainer.getContext("AggregateComponent");
         List<Extensible> models = createAssembly(moduleComponentCtx);
@@ -104,8 +103,7 @@ public class AggregateScopeTestCase extends TestCase {
         AggregateContext moduleComponentCtx = new AggregateContextImpl();
         moduleComponentCtx.setName("testMC");
         AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
-        scopeContainer.registerConfiguration(MockFactory.createAggregateConfiguration("AggregateComponent", Scope.AGGREGATE,
-                moduleComponentCtx));
+        scopeContainer.registerConfiguration(MockFactory.createAggregateConfiguration("AggregateComponent", moduleComponentCtx));
         scopeContainer.start();
         AggregateContext child = (AggregateContext) scopeContainer.getContext("AggregateComponent");
         List<Extensible> parts = createAssembly(moduleComponentCtx);
@@ -127,8 +125,7 @@ public class AggregateScopeTestCase extends TestCase {
         AggregateContext moduleComponentCtx = new AggregateContextImpl();
         moduleComponentCtx.setName("testMC");
         AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
-        scopeContainer.registerConfiguration(MockFactory.createAggregateConfiguration("AggregateComponent", Scope.AGGREGATE,
-                moduleComponentCtx));
+        scopeContainer.registerConfiguration(MockFactory.createAggregateConfiguration("AggregateComponent", moduleComponentCtx));
         scopeContainer.start();
         scopeContainer.onEvent(EventContext.MODULE_START, null);
         QualifiedName name = new QualifiedName("AggregateComponent/TestService1");
@@ -148,8 +145,7 @@ public class AggregateScopeTestCase extends TestCase {
         scopeContainer.start();
 
         scopeContainer.onEvent(EventContext.MODULE_START, null);
-        scopeContainer.registerConfiguration(MockFactory.createAggregateConfiguration("AggregateComponent", Scope.AGGREGATE,
-                moduleComponentCtx));
+        scopeContainer.registerConfiguration(MockFactory.createAggregateConfiguration("AggregateComponent", moduleComponentCtx));
         QualifiedName name = new QualifiedName("AggregateComponent/TestService1");
         AggregateContext componentCtx = (AggregateContext) scopeContainer.getContext("AggregateComponent");
         scopeContainer.onEvent(EventContext.MODULE_STOP, null);

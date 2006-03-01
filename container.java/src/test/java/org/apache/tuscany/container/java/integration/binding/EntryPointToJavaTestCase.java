@@ -44,7 +44,6 @@ import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
-import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * 
@@ -91,7 +90,7 @@ public class EntryPointToJavaTestCase extends TestCase {
         runtime.addBuilder(new FooBindingWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
-                MockFactory.createAggregateComponent("test.module", Scope.AGGREGATE));
+                MockFactory.createAggregateComponent("test.module"));
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModuleWithEntryPoint());
         child.fireEvent(EventContext.MODULE_START, null);

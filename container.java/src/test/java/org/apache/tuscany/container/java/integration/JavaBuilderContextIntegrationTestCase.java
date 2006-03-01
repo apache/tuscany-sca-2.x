@@ -41,7 +41,6 @@ import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
-import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Verifies that the aggregate context implementation and java component builders construct references properly
@@ -89,7 +88,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         runtime.addBuilder(new JavaTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
-                MockFactory.createAggregateComponent("test.module", Scope.AGGREGATE));
+                MockFactory.createAggregateComponent("test.module"));
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);
@@ -131,7 +130,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         runtime.addBuilder(new JavaTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
-                MockFactory.createAggregateComponent("test.module", Scope.AGGREGATE));
+                MockFactory.createAggregateComponent("test.module"));
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);
@@ -176,7 +175,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         runtime.addBuilder(new JavaTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
-                MockFactory.createAggregateComponent("test.module", Scope.AGGREGATE));
+                MockFactory.createAggregateComponent("test.module"));
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);
@@ -219,7 +218,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         
         runtime.start();
         runtime.getRootContext().registerModelObject(
-                MockFactory.createAggregateComponent("test.module", Scope.AGGREGATE));
+                MockFactory.createAggregateComponent("test.module"));
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);
