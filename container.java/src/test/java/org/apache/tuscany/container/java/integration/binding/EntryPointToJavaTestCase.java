@@ -26,8 +26,7 @@ import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
 import org.apache.tuscany.container.java.builder.JavaTargetWireBuilder;
 import org.apache.tuscany.container.java.builder.MockInterceptorBuilder;
 import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
-import org.apache.tuscany.container.java.mock.MockAssemblyFactory;
-import org.apache.tuscany.container.java.mock.MockModuleFactory;
+import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBindingBuilder;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBindingWireBuilder;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
@@ -93,9 +92,9 @@ public class EntryPointToJavaTestCase extends TestCase {
         runtime.addBuilder(new FooBindingWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
-                MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(), Scope.AGGREGATE));
+                MockFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(), Scope.AGGREGATE));
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
-        child.registerModelObject(MockModuleFactory.createModuleWithEntryPoint());
+        child.registerModelObject(MockFactory.createModuleWithEntryPoint());
         child.fireEvent(EventContext.MODULE_START, null);
         EntryPointContext ctx = (EntryPointContext) child.getContext("source");
         Assert.assertNotNull(ctx);

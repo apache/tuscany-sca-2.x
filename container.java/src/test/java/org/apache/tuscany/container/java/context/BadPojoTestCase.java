@@ -18,9 +18,9 @@ package org.apache.tuscany.container.java.context;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.model.BadContextPojo;
-import org.apache.tuscany.container.java.model.BadNamePojo;
-import org.apache.tuscany.container.java.model.TestContextFactory;
+import org.apache.tuscany.container.java.mock.TestContextFactory;
+import org.apache.tuscany.container.java.mock.components.BadContextPojo;
+import org.apache.tuscany.container.java.mock.components.BadNamePojo;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.model.assembly.Scope;

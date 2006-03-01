@@ -23,7 +23,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
-import org.apache.tuscany.container.java.mock.MockAssemblyFactory;
+import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.SessionScopeComponent;
 import org.apache.tuscany.container.java.mock.components.SessionScopeComponentImpl;
 import org.apache.tuscany.container.java.mock.components.SessionScopeInitDestroyComponent;
@@ -208,7 +208,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
 
     private List<RuntimeConfiguration<InstanceContext>> createConfigurations() throws NoSuchMethodException, BuilderException {
-        SimpleComponent component = MockAssemblyFactory.createComponent("TestService1", SessionScopeComponentImpl.class, Scope.SESSION);
+        SimpleComponent component = MockFactory.createComponent("TestService1", SessionScopeComponentImpl.class, Scope.SESSION);
         builder.build(component, null);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         configs.add((RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration());
@@ -216,7 +216,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     }
 
     private RuntimeConfiguration<InstanceContext> createConfiguration(String name) throws NoSuchMethodException, BuilderException {
-        SimpleComponent component = MockAssemblyFactory.createComponent(name, SessionScopeInitDestroyComponent.class, Scope.SESSION);
+        SimpleComponent component = MockFactory.createComponent(name, SessionScopeInitDestroyComponent.class, Scope.SESSION);
         builder.build(component, null);
         return (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration();
     }

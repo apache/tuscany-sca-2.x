@@ -23,7 +23,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
-import org.apache.tuscany.container.java.mock.MockAssemblyFactory;
+import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.StatelessComponent;
 import org.apache.tuscany.container.java.mock.components.StatelessComponentImpl;
 import org.apache.tuscany.core.builder.BuilderException;
@@ -106,7 +106,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
 
     private List<RuntimeConfiguration<InstanceContext>> createConfigurations()
             throws NoSuchMethodException, BuilderException {
-        SimpleComponent component = MockAssemblyFactory.createComponent("TestService1", StatelessComponentImpl.class,
+        SimpleComponent component = MockFactory.createComponent("TestService1", StatelessComponentImpl.class,
                 Scope.INSTANCE);
         builder.build(component, null);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
@@ -116,7 +116,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
 
     private RuntimeConfiguration<InstanceContext> createConfiguration(String name)
             throws NoSuchMethodException, BuilderException {
-        SimpleComponent component = MockAssemblyFactory.createComponent(name, StatelessComponentImpl.class,
+        SimpleComponent component = MockFactory.createComponent(name, StatelessComponentImpl.class,
                 Scope.INSTANCE);
         builder.build(component, null);
         return (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration();

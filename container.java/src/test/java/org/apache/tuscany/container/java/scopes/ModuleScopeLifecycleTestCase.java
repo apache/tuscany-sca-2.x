@@ -23,7 +23,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
-import org.apache.tuscany.container.java.mock.MockAssemblyFactory;
+import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeDestroyOnlyComponent;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeEagerInitComponent;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeEagerInitDestroyComponent;
@@ -157,11 +157,11 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
 
     private List<RuntimeConfiguration<InstanceContext>> createComponents() throws NoSuchMethodException, BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
-        ca[0] = MockAssemblyFactory.createComponent("TestServiceInitDestroy", ModuleScopeInitDestroyComponent.class,
+        ca[0] = MockFactory.createComponent("TestServiceInitDestroy", ModuleScopeInitDestroyComponent.class,
                 Scope.MODULE);
-        ca[1] = MockAssemblyFactory.createComponent("TestServiceInitOnly", ModuleScopeInitOnlyComponent.class,
+        ca[1] = MockFactory.createComponent("TestServiceInitOnly", ModuleScopeInitOnlyComponent.class,
                 Scope.MODULE);
-        ca[2] = MockAssemblyFactory.createComponent("TestServiceDestroyOnly", ModuleScopeDestroyOnlyComponent.class,
+        ca[2] = MockFactory.createComponent("TestServiceDestroyOnly", ModuleScopeDestroyOnlyComponent.class,
                 Scope.MODULE);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
@@ -176,9 +176,9 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
     private List<RuntimeConfiguration<InstanceContext>> createEagerInitComponents() throws NoSuchMethodException,
             BuilderException {
         SimpleComponent[] ca = new SimpleComponent[2];
-        ca[0] = MockAssemblyFactory.createComponent("TestServiceEagerInitDestroy", ModuleScopeEagerInitDestroyComponent.class,
+        ca[0] = MockFactory.createComponent("TestServiceEagerInitDestroy", ModuleScopeEagerInitDestroyComponent.class,
                 Scope.MODULE);
-        ca[1] = MockAssemblyFactory.createComponent("TestServiceEagerInit", ModuleScopeEagerInitComponent.class,
+        ca[1] = MockFactory.createComponent("TestServiceEagerInit", ModuleScopeEagerInitComponent.class,
                 Scope.MODULE);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
@@ -193,9 +193,9 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
     private List<RuntimeConfiguration<InstanceContext>> createOrderedInitComponents() throws NoSuchMethodException,
             BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
-        ca[0] = MockAssemblyFactory.createComponent("one", OrderedInitPojo.class, Scope.MODULE);
-        ca[1] = MockAssemblyFactory.createComponent("two", OrderedInitPojo.class, Scope.MODULE);
-        ca[2] = MockAssemblyFactory.createComponent("three", OrderedInitPojo.class, Scope.MODULE);
+        ca[0] = MockFactory.createComponent("one", OrderedInitPojo.class, Scope.MODULE);
+        ca[1] = MockFactory.createComponent("two", OrderedInitPojo.class, Scope.MODULE);
+        ca[2] = MockFactory.createComponent("three", OrderedInitPojo.class, Scope.MODULE);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
             builder.build(ca[i], null);
@@ -209,9 +209,9 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
     private List<RuntimeConfiguration<InstanceContext>> createOrderedEagerInitComponents() throws NoSuchMethodException,
             BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
-        ca[0] = MockAssemblyFactory.createComponent("one", OrderedEagerInitPojo.class, Scope.MODULE);
-        ca[1] = MockAssemblyFactory.createComponent("two", OrderedEagerInitPojo.class, Scope.MODULE);
-        ca[2] = MockAssemblyFactory.createComponent("three", OrderedEagerInitPojo.class, Scope.MODULE);
+        ca[0] = MockFactory.createComponent("one", OrderedEagerInitPojo.class, Scope.MODULE);
+        ca[1] = MockFactory.createComponent("two", OrderedEagerInitPojo.class, Scope.MODULE);
+        ca[2] = MockFactory.createComponent("three", OrderedEagerInitPojo.class, Scope.MODULE);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
             builder.build(ca[i], null);

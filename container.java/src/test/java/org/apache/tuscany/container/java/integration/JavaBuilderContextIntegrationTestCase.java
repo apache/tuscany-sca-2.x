@@ -25,8 +25,7 @@ import org.apache.tuscany.container.java.builder.MockHandlerBuilder;
 import org.apache.tuscany.container.java.builder.MockInterceptorBuilder;
 import org.apache.tuscany.container.java.invocation.mock.MockHandler;
 import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
-import org.apache.tuscany.container.java.mock.MockAssemblyFactory;
-import org.apache.tuscany.container.java.mock.MockModuleFactory;
+import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
@@ -91,9 +90,9 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         runtime.addBuilder(new JavaTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
-                MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(), Scope.AGGREGATE));
+                MockFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(), Scope.AGGREGATE));
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
-        child.registerModelObject(MockModuleFactory.createModule());
+        child.registerModelObject(MockFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);
         GenericComponent source = (GenericComponent) child.locateInstance("source");
         Assert.assertNotNull(source);
@@ -133,10 +132,10 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         runtime.addBuilder(new JavaTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
-                MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),
+                MockFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),
                         Scope.AGGREGATE));
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
-        child.registerModelObject(MockModuleFactory.createModule());
+        child.registerModelObject(MockFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);
         GenericComponent source = (GenericComponent) child.locateInstance("source");
         Assert.assertNotNull(source);
@@ -179,10 +178,10 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         runtime.addBuilder(new JavaTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
-                MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),
+                MockFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),
                         Scope.AGGREGATE));
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
-        child.registerModelObject(MockModuleFactory.createModule());
+        child.registerModelObject(MockFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);
         GenericComponent source = (GenericComponent) child.locateInstance("source");
         Assert.assertNotNull(source);
@@ -223,10 +222,10 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         
         runtime.start();
         runtime.getRootContext().registerModelObject(
-                MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),
+                MockFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),
                         Scope.AGGREGATE));
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
-        child.registerModelObject(MockModuleFactory.createModule());
+        child.registerModelObject(MockFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);
         GenericComponent source = (GenericComponent) child.locateInstance("source");
         Assert.assertNotNull(source);

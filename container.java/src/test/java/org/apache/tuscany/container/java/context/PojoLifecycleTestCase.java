@@ -19,8 +19,8 @@ package org.apache.tuscany.container.java.context;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.container.java.mock.TestContextFactory;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeInitOnlyComponent;
-import org.apache.tuscany.container.java.model.TestContextFactory;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.model.assembly.Scope;

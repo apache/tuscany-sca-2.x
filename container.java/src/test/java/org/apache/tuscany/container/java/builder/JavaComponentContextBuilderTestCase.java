@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
-import org.apache.tuscany.container.java.mock.MockAssemblyFactory;
+import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.MockConfigContext;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeComponent;
@@ -116,8 +116,8 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
     
     
     public Module createModule() throws Exception {
-        Component sourceComponent = MockAssemblyFactory.createComponent("source", ModuleScopeComponentImpl.class,Scope.MODULE);
-        Component targetComponent = MockAssemblyFactory.createComponent("target", ModuleScopeComponentImpl.class,Scope.MODULE);
+        Component sourceComponent = MockFactory.createComponent("source", ModuleScopeComponentImpl.class,Scope.MODULE);
+        Component targetComponent = MockFactory.createComponent("target", ModuleScopeComponentImpl.class,Scope.MODULE);
 
         Service targetService = factory.createService();
         JavaServiceContract targetContract = factory.createJavaServiceContract();

@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.java.model;
+package org.apache.tuscany.container.java.mock.components;
 
 import org.osoa.sca.annotations.Context;
 

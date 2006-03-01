@@ -23,7 +23,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
-import org.apache.tuscany.container.java.mock.MockAssemblyFactory;
+import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeComponentImpl;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeInitDestroyComponent;
 import org.apache.tuscany.core.builder.BuilderException;
@@ -109,7 +109,7 @@ public class BasicModuleScopeTestCase extends TestCase {
     JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
 
     private List<RuntimeConfiguration<InstanceContext>> createConfigurations() throws NoSuchMethodException, BuilderException {
-        SimpleComponent component = MockAssemblyFactory.createComponent("TestService1", ModuleScopeComponentImpl.class, Scope.MODULE);
+        SimpleComponent component = MockFactory.createComponent("TestService1", ModuleScopeComponentImpl.class, Scope.MODULE);
         builder.build(component, null);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         configs.add((RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration());
@@ -118,7 +118,7 @@ public class BasicModuleScopeTestCase extends TestCase {
 
     private RuntimeConfiguration<InstanceContext> createConfiguration(String name)
             throws NoSuchMethodException, BuilderException {
-        SimpleComponent component = MockAssemblyFactory.createComponent(name, ModuleScopeInitDestroyComponent.class,
+        SimpleComponent component = MockFactory.createComponent(name, ModuleScopeInitDestroyComponent.class,
                 Scope.MODULE);
         builder.build(component, null);
         return (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration();

@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.java.model;
+package org.apache.tuscany.container.java.mock;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.tuscany.container.java.context.JavaComponentContext;
-import org.apache.tuscany.container.java.mock.MockAssemblyFactory;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.injection.EventInvoker;
@@ -53,7 +52,7 @@ public class TestContextFactory {
 
     public static JavaComponentContext createPojoContext(String name, Class implType, Scope scope,
                                                          AggregateContext moduleComponentContext) throws NoSuchMethodException {
-        SimpleComponent component = MockAssemblyFactory.createComponent(name, implType, scope);
+        SimpleComponent component = MockFactory.createComponent(name, implType, scope);
 
         Set<Field> fields = JavaIntrospectionHelper.getAllFields(implType);
         Set<Method> methods = JavaIntrospectionHelper.getAllUniqueMethods(implType);

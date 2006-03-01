@@ -23,7 +23,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
-import org.apache.tuscany.container.java.mock.MockAssemblyFactory;
+import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.SessionScopeDestroyOnlyComponent;
 import org.apache.tuscany.container.java.mock.components.SessionScopeInitDestroyComponent;
 import org.apache.tuscany.container.java.mock.components.SessionScopeInitOnlyComponent;
@@ -113,11 +113,11 @@ public class RequestScopeLifecycleTestCase extends TestCase {
 
     private List<RuntimeConfiguration<InstanceContext>> createComponents() throws NoSuchMethodException, BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
-        ca[0] = MockAssemblyFactory.createComponent("TestServiceInitDestroy", SessionScopeInitDestroyComponent.class,
+        ca[0] = MockFactory.createComponent("TestServiceInitDestroy", SessionScopeInitDestroyComponent.class,
                 Scope.REQUEST);
-        ca[1] = MockAssemblyFactory.createComponent("TestServiceInitOnly", SessionScopeInitOnlyComponent.class,
+        ca[1] = MockFactory.createComponent("TestServiceInitOnly", SessionScopeInitOnlyComponent.class,
                 Scope.REQUEST);
-        ca[2] = MockAssemblyFactory.createComponent("TestServiceDestroyOnly", SessionScopeDestroyOnlyComponent.class,
+        ca[2] = MockFactory.createComponent("TestServiceDestroyOnly", SessionScopeDestroyOnlyComponent.class,
                 Scope.REQUEST);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
@@ -131,9 +131,9 @@ public class RequestScopeLifecycleTestCase extends TestCase {
     private List<RuntimeConfiguration<InstanceContext>> createOrderedInitComponents() throws NoSuchMethodException,
             BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
-        ca[0] = MockAssemblyFactory.createComponent("one", OrderedInitPojo.class, Scope.REQUEST);
-        ca[1] = MockAssemblyFactory.createComponent("two", OrderedInitPojo.class, Scope.REQUEST);
-        ca[2] = MockAssemblyFactory.createComponent("three", OrderedInitPojo.class, Scope.REQUEST);
+        ca[0] = MockFactory.createComponent("one", OrderedInitPojo.class, Scope.REQUEST);
+        ca[1] = MockFactory.createComponent("two", OrderedInitPojo.class, Scope.REQUEST);
+        ca[2] = MockFactory.createComponent("three", OrderedInitPojo.class, Scope.REQUEST);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
             builder.build(ca[i], null);

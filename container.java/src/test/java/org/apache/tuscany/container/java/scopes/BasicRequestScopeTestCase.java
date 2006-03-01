@@ -23,7 +23,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
-import org.apache.tuscany.container.java.mock.MockAssemblyFactory;
+import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.RequestScopeComponent;
 import org.apache.tuscany.container.java.mock.components.RequestScopeComponentImpl;
 import org.apache.tuscany.core.builder.BuilderException;
@@ -129,7 +129,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
 
     private List<RuntimeConfiguration<InstanceContext>> createConfigurations() throws NoSuchMethodException, BuilderException {
-        SimpleComponent component = MockAssemblyFactory.createComponent("TestService1", RequestScopeComponentImpl.class,
+        SimpleComponent component = MockFactory.createComponent("TestService1", RequestScopeComponentImpl.class,
                 Scope.REQUEST);
         builder.build(component, null);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
@@ -139,7 +139,7 @@ public class BasicRequestScopeTestCase extends TestCase {
 
     private RuntimeConfiguration<InstanceContext> createConfiguration(String name) throws NoSuchMethodException,
             BuilderException {
-        SimpleComponent component = MockAssemblyFactory.createComponent(name, RequestScopeComponentImpl.class,
+        SimpleComponent component = MockFactory.createComponent(name, RequestScopeComponentImpl.class,
                 Scope.REQUEST);
         builder.build(component, null);
         return (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration();

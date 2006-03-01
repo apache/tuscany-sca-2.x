@@ -13,14 +13,19 @@
  */
 package org.apache.tuscany.container.java.scopes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.mock.MockAggregateAssemblyFactory;
-import org.apache.tuscany.container.java.mock.MockSystemAssemblyFactory;
+import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
+import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
+import org.apache.tuscany.container.java.mock.components.ModuleScopeComponentImpl;
+import org.apache.tuscany.container.java.mock.components.SessionScopeComponentImpl;
+import org.apache.tuscany.core.builder.BuilderConfigException;
+import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
@@ -32,6 +37,7 @@ import org.apache.tuscany.core.context.scope.AggregateScopeContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.SimpleComponent;
 
 /**
  * Tests component nesting. This test need to be in the container.java progject since it relies on Java POJOs for scope
@@ -49,14 +55,14 @@ public class AggregateScopeTestCase extends TestCase {
         AggregateContext moduleComponentCtx = new AggregateContextImpl();
         moduleComponentCtx.setName("testMC");
         AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
-        Component aggregateComponent = MockSystemAssemblyFactory.createDecoratedComponent("AggregateComponent",
+        Component aggregateComponent = MockFactory.createDecoratedComponent("AggregateComponent",
                 AggregateContextImpl.class.getName(), Scope.AGGREGATE, moduleComponentCtx);
         scopeContainer.registerConfiguration((RuntimeConfiguration<InstanceContext>) aggregateComponent
                 .getComponentImplementation().getRuntimeConfiguration());
         scopeContainer.start();
 
         AggregateContext child = (AggregateContext) scopeContainer.getContext("AggregateComponent");
-        List<Extensible> models = MockAggregateAssemblyFactory.createAssembly(moduleComponentCtx);
+        List<Extensible> models = createAssembly(moduleComponentCtx);
         for (Extensible model : models) {
             child.registerModelObject(model);
         }
@@ -106,13 +112,13 @@ public class AggregateScopeTestCase extends TestCase {
         AggregateContext moduleComponentCtx = new AggregateContextImpl();
         moduleComponentCtx.setName("testMC");
         AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
-        Component aggregateComponent = MockSystemAssemblyFactory.createDecoratedComponent("AggregateComponent",
+        Component aggregateComponent = MockFactory.createDecoratedComponent("AggregateComponent",
                 AggregateContextImpl.class.getName(), Scope.AGGREGATE, moduleComponentCtx);
         scopeContainer.registerConfiguration((RuntimeConfiguration<InstanceContext>) aggregateComponent
                 .getComponentImplementation().getRuntimeConfiguration());
         scopeContainer.start();
         AggregateContext child = (AggregateContext) scopeContainer.getContext("AggregateComponent");
-        List<Extensible> parts = MockAggregateAssemblyFactory.createAssembly(moduleComponentCtx);
+        List<Extensible> parts = createAssembly(moduleComponentCtx);
         for (Extensible part : parts) {
             child.registerModelObject(part);
         }
@@ -132,7 +138,7 @@ public class AggregateScopeTestCase extends TestCase {
         AggregateContext moduleComponentCtx = new AggregateContextImpl();
         moduleComponentCtx.setName("testMC");
         AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
-        Component aggregateComponent = MockSystemAssemblyFactory.createDecoratedComponent("AggregateComponent",
+        Component aggregateComponent = MockFactory.createDecoratedComponent("AggregateComponent",
                 AggregateContextImpl.class.getName(), Scope.AGGREGATE, moduleComponentCtx);
         scopeContainer.registerConfiguration((RuntimeConfiguration<InstanceContext>) aggregateComponent
                 .getComponentImplementation().getRuntimeConfiguration());
@@ -154,7 +160,7 @@ public class AggregateScopeTestCase extends TestCase {
         AggregateContext moduleComponentCtx = new AggregateContextImpl();
         moduleComponentCtx.setName("testMC");
         AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
-        Component aggregateComponent = MockSystemAssemblyFactory.createDecoratedComponent("AggregateComponent",
+        Component aggregateComponent = MockFactory.createDecoratedComponent("AggregateComponent",
                 AggregateContextImpl.class.getName(), Scope.AGGREGATE, moduleComponentCtx);
         scopeContainer.start();
 
@@ -166,6 +172,34 @@ public class AggregateScopeTestCase extends TestCase {
                 .getContext("AggregateComponent");
         scopeContainer.onEvent(EventContext.MODULE_STOP, null);
         scopeContainer.stop();
+    }
+    
+    /**
+     * Creats an assembly containing a module-scoped component definition, a session-scoped component definition, and a
+     * request-scoped component definition
+     * 
+     * @param ctx the parent module context
+     */
+    private List<Extensible> createAssembly(AggregateContext ctx) throws BuilderException {
+        try {
+            JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
+            SimpleComponent component = MockFactory.createComponent("TestService1", ModuleScopeComponentImpl.class,
+                    Scope.MODULE);
+            SimpleComponent sessionComponent = MockFactory.createComponent("TestService2",
+                    SessionScopeComponentImpl.class, Scope.SESSION);
+            SimpleComponent requestComponent = MockFactory.createComponent("TestService3",
+                    SessionScopeComponentImpl.class, Scope.REQUEST);
+            builder.build(component, ctx);
+            builder.build(sessionComponent, ctx);
+            builder.build(requestComponent, ctx);
+            List<Extensible> configs = new ArrayList();
+            configs.add(component);
+            configs.add(sessionComponent);
+            configs.add(requestComponent);
+            return configs;
+        } catch (NoSuchMethodException e) {
+            throw new BuilderConfigException(e);
+        }
     }
 
 }
