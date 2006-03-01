@@ -19,23 +19,19 @@ package org.apache.tuscany.tomcat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.catalina.Lifecycle;
-import org.apache.catalina.LifecycleEvent;
-import org.apache.catalina.LifecycleListener;
-import org.apache.catalina.ContainerListener;
-import org.apache.catalina.ContainerEvent;
 import org.apache.catalina.Container;
-import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
-import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.util.StringManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
+import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.config.impl.ModuleComponentConfigurationLoaderImpl;
@@ -44,12 +40,10 @@ import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
-import org.apache.tuscany.core.system.loader.SystemSCDLModelLoader;
 import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
-import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
+import org.apache.tuscany.core.system.loader.SystemSCDLModelLoader;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
@@ -151,7 +145,7 @@ public class TuscanyHost extends StandardHost {
             throw new IllegalArgumentException(sm.getString("tuscanyHost.notContext"));
         }
         StandardContext ctx = (StandardContext) child;
-        ctx.addLifecycleListener(new TuscanyContextListener(runtime.getRootContext(), modelFactory, modelLoader, systemLoader));
+        ctx.addLifecycleListener(new TuscanyContextListener(runtime, modelFactory, modelLoader, systemLoader));
         super.addChild(child);
     }
 

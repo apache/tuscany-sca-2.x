@@ -40,12 +40,11 @@ import org.apache.tuscany.tomcat.TuscanyValve;
  * @version $Rev$ $Date$
  */
 public class TomcatIntegrationTestCase extends TestCase {
-    private File testClasses;
-    private File baseDir;
-    private File appBase;
     private File app1;
     private StandardServer server;
     private StandardHost host;
+    private Request request;
+    private Response response;
 
     public void testRuntimeIntegration() throws Exception {
         StandardContext ctx = new StandardContext();
@@ -71,13 +70,6 @@ public class TomcatIntegrationTestCase extends TestCase {
         }
         assertTrue("TuscanyValve not in pipeline", found);
 
-        Connector connector = new Connector("HTTP/1.1");
-        Request request = connector.createRequest();
-        Response response = connector.createResponse();
-        org.apache.coyote.Request coyoteRequest = new org.apache.coyote.Request();
-        org.apache.coyote.Response coyoteResponse = new org.apache.coyote.Response();
-        request.setCoyoteRequest(coyoteRequest);
-        response.setCoyoteResponse(coyoteResponse);
         request.setContext(ctx);
         request.setWrapper(wrapper);
         host.invoke(request, response);
@@ -88,9 +80,6 @@ public class TomcatIntegrationTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         app1 = new File(getClass().getResource("/app1").toURI());
-        testClasses = new File(app1, "../../test-classes").getCanonicalFile();
-        baseDir = new File(app1, "../../tomcat").getCanonicalFile();
-        appBase = new File(baseDir, "webapps").getCanonicalFile();
         setupTomcat();
         server.start();
     }
@@ -100,7 +89,10 @@ public class TomcatIntegrationTestCase extends TestCase {
         super.tearDown();
     }
 
-    private void setupTomcat() {
+    private void setupTomcat() throws Exception {
+        File baseDir = new File(app1, "../../tomcat").getCanonicalFile();
+        File appBase = new File(baseDir, "webapps").getCanonicalFile();
+
         // build a typical Tomcat configuration
         server = new StandardServer();
         StandardService service = new StandardService();
@@ -117,5 +109,14 @@ public class TomcatIntegrationTestCase extends TestCase {
         host.setName("localhost");
         host.setAppBase(appBase.getAbsolutePath());
         engine.addChild(host);
+
+        // build a empty request/response
+        Connector connector = new Connector("HTTP/1.1");
+        request = connector.createRequest();
+        org.apache.coyote.Request coyoteRequest = new org.apache.coyote.Request();
+        request.setCoyoteRequest(coyoteRequest);
+        response = connector.createResponse();
+        org.apache.coyote.Response coyoteResponse = new org.apache.coyote.Response();
+        response.setCoyoteResponse(coyoteResponse);
     }
 }

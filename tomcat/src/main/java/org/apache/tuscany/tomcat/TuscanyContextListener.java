@@ -29,6 +29,7 @@ import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.impl.ModuleComponentConfigurationLoaderImpl;
 import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
@@ -39,13 +40,15 @@ import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
  * @version $Rev$ $Date$
  */
 public class TuscanyContextListener implements LifecycleListener {
+    private static final String TUSCANY_RUNTIME_NAME = RuntimeContext.class.getName();
+
     private final AssemblyFactory modelFactory;
     private final AssemblyModelLoader modelLoader;
-    private final AggregateContext rootContext;
+    private final RuntimeContext runtime;
     private final ResourceLoader systemLoader;
 
-    public TuscanyContextListener(AggregateContext rootContext, AssemblyFactory modelFactory, AssemblyModelLoader modelLoader, ResourceLoader systemLoader) {
-        this.rootContext = rootContext;
+    public TuscanyContextListener(RuntimeContext runtimeContext, AssemblyFactory modelFactory, AssemblyModelLoader modelLoader, ResourceLoader systemLoader) {
+        this.runtime = runtimeContext;
         this.modelFactory = modelFactory;
         this.modelLoader = modelLoader;
         this.systemLoader = systemLoader;
@@ -75,6 +78,7 @@ public class TuscanyContextListener implements LifecycleListener {
                 ModuleComponent moduleComponent = loader.loadModuleComponent(ctx.getName(), ctx.getPath());
 
                 // Register it under the root application context
+                AggregateContext rootContext = runtime.getRootContext();
                 rootContext.registerModelObject(moduleComponent);
                 moduleContext = (AggregateContext)rootContext.getContext(moduleComponent.getName());
                 moduleContext.registerModelObject(moduleComponent.getComponentImplementation());
@@ -90,6 +94,9 @@ public class TuscanyContextListener implements LifecycleListener {
         // add a valve to this context's pipeline that will associate the request with the runtime
         Valve valve = new TuscanyValve(moduleContext);
         ctx.getPipeline().addValve(valve);
+
+        // add the RuntimeContext in as a servlet context parameter
+        ctx.getServletContext().setAttribute(TUSCANY_RUNTIME_NAME, runtime);
     }
 
     private void stopContext(Context ctx) {

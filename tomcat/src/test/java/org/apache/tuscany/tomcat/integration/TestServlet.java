@@ -25,18 +25,26 @@ import javax.servlet.ServletException;
 import org.osoa.sca.ModuleContext;
 import org.osoa.sca.CurrentModuleContext;
 
+import org.apache.tuscany.core.runtime.RuntimeContext;
+
 /**
  * @version $Rev$ $Date$
  */
 public class TestServlet extends GenericServlet {
+
     public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
         ModuleContext moduleContext = CurrentModuleContext.getContext();
         if (moduleContext == null) {
             throw new ServletException("No module context returned");
         }
         String name = moduleContext.getName();
-        if (!name.equals("testContext")) {
+        if (!"testContext".equals(name)) {
             throw new ServletException("Invalid module context name: " + name);
+        }
+
+        Object runtime = getServletContext().getAttribute("org.apache.tuscany.core.runtime.RuntimeContext");
+        if (!(runtime instanceof RuntimeContext)) {
+            throw new ServletException("Runtime not bound to org.apache.tuscany.core.runtime.RuntimeContext");
         }
     }
 }
