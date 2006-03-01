@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *  Copyright (c) 2005-2006 The Apache Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ -->
+<project>
+    <parent>
+        <groupId>org.apache.tuscany</groupId>
+        <artifactId>tuscany-sca</artifactId>
+        <version>SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>tuscany-sca-tools</artifactId>
+    <name>Tuscany SCA Tools</name>
+    <description>SCA Tools.</description>
+    <version>SNAPSHOT</version>
+
+    <repositories>
+        <repository>
+            <id>jeremy</id>
+            <url>http://people.apache.org/~jboynes/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany</groupId>
+            <artifactId>tuscany-sdo-impl</artifactId>
+            <version>SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>codegen</artifactId>
+            <version>2.2.0-I200602160000</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>codegen-ecore</artifactId>
+            <version>2.2.0-I200602160000</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>axis2</groupId>
+            <artifactId>axis2-core</artifactId>
+            <version>0.94</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>axis2</groupId>
+            <artifactId>axis2-codegen</artifactId>
+            <version>0.94</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-wsdl4j</artifactId>
+            <version>1.2</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0.4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.12</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    
+</project>
