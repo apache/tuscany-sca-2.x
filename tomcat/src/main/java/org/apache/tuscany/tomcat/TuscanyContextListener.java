@@ -16,6 +16,8 @@
  */
 package org.apache.tuscany.tomcat;
 
+import java.io.IOException;
+
 import org.apache.catalina.Context;
 import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleEvent;
@@ -67,6 +69,13 @@ public class TuscanyContextListener implements LifecycleListener {
         AggregateContext moduleContext;
 
         ResourceLoader resourceLoader = new ResourceLoaderImpl(ctx.getLoader().getClassLoader());
+        try {
+            if (resourceLoader.getResource("sca.module") == null) {
+                return;
+            }
+        } catch (IOException e) {
+            return;
+        }
         ClassLoader oldCl  = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         try {
