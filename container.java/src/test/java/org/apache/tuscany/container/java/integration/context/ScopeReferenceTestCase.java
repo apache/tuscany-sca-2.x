@@ -87,11 +87,75 @@ public class ScopeReferenceTestCase extends TestCase {
         source.getGenericComponent().setString("bar");
         Assert.assertEquals("bar",target2.getString());
         //testCtx.fireEvent(EventContext.SESSION_NOTIFY,session);
-        
                 
    }
 
+    /**
+     * Tests a module-to-request scoped wire is setup properly by the runtime
+     */
+    public void testModuleToRequest() throws Exception{
+        RuntimeContext runtime = MockFactory.createJavaRuntime();
+        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Assert.assertNotNull(ctx);
+        runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
+        AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
+        Assert.assertNotNull(testCtx);
+        testCtx.registerModelObject(MockFactory.createModule(Scope.MODULE,Scope.REQUEST));
+        testCtx.fireEvent(EventContext.MODULE_START,null);
+        
+        // first request
+        testCtx.fireEvent(EventContext.REQUEST_START,null);
+        GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
+        Assert.assertNotNull(source);
+        GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
+        Assert.assertNotNull(target);
+        source.getGenericComponent().setString("foo");
+        Assert.assertEquals("foo",target.getString());
+        testCtx.fireEvent(EventContext.REQUEST_END,null);
+        
+        //second request
+        testCtx.fireEvent(EventContext.REQUEST_START,null);
+        GenericComponent target2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
+        Assert.assertNotNull(target2);
+        Assert.assertTrue(!"foo".equals(target2.getString()));
+        
+        Assert.assertTrue(!"foo".equals(source.getGenericComponent().getString()));
+        source.getGenericComponent().setString("bar");
+        Assert.assertEquals("bar",target2.getString());
+   }
     
-
+    /**
+     * Tests a module-to-stateless scoped wire is setup properly by the runtime
+     */
+    public void testModuleToStateless() throws Exception{
+        RuntimeContext runtime = MockFactory.createJavaRuntime();
+        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Assert.assertNotNull(ctx);
+        runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
+        AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
+        Assert.assertNotNull(testCtx);
+        testCtx.registerModelObject(MockFactory.createModule(Scope.MODULE,Scope.INSTANCE));
+        testCtx.fireEvent(EventContext.MODULE_START,null);
+        
+        // first request
+        testCtx.fireEvent(EventContext.REQUEST_START,null);
+        GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
+        Assert.assertNotNull(source);
+        GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
+        Assert.assertNotNull(target);
+        source.getGenericComponent().setString("foo");
+        Assert.assertTrue(!"foo".equals(target.getString()));
+        testCtx.fireEvent(EventContext.REQUEST_END,null);
+        
+        //second request
+        testCtx.fireEvent(EventContext.REQUEST_START,null);
+        GenericComponent target2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
+        Assert.assertNotNull(target2);
+        Assert.assertTrue(!"foo".equals(target2.getString()));
+        
+        Assert.assertTrue(!"foo".equals(source.getGenericComponent().getString()));
+        source.getGenericComponent().setString("bar");
+        Assert.assertTrue(!"bar".equals(target2.getString()));
+   }
 }
 
