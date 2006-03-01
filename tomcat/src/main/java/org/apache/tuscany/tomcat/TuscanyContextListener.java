@@ -87,6 +87,7 @@ public class TuscanyContextListener implements LifecycleListener {
             Thread.currentThread().setContextClassLoader(oldCl);
         }
 
+        // add a valve to this context's pipeline that will associate the request with the runtime
         Valve valve = new TuscanyValve(moduleContext);
         ctx.getPipeline().addValve(valve);
     }

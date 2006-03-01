@@ -55,6 +55,18 @@
         </dependency>
         <dependency>
             <groupId>tomcat</groupId>
+            <artifactId>tomcat-coyote</artifactId>
+            <version>5.5.15</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>tomcat</groupId>
+            <artifactId>tomcat-http</artifactId>
+            <version>5.5.15</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>tomcat</groupId>
             <artifactId>naming-factory</artifactId>
             <version>5.5.15</version>
             <scope>provided</scope>

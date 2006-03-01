@@ -31,7 +31,8 @@ import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.EventException;
 
 /**
- * Valve that can be added to a pipeline to
+ * Valve that can be added to a pipeline to automatically set the SCA environment
+ * as each request is processed.
  *
  * @version $Rev$ $Date$
  */
@@ -53,7 +54,7 @@ public class TuscanyValve extends ValveBase {
         Object oldRequestId = request.getNote(REQUEST_ID);
         ModuleContext oldContext = CurrentModuleContext.getContext();
 
-        // bind the current module context to the thread
+        // bind the current module context to the thread for use by CurrentModuleContext
         BINDER.setContext((ModuleContext) moduleComponentContext);
         try {
             if (oldRequestId != null) {

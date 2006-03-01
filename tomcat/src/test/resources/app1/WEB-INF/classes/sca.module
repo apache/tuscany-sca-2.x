@@ -16,6 +16,6 @@
   limitations under the License.
  -->
 <module xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
-        name="test">
+        name="testModule">
 
 </module>
