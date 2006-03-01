@@ -79,8 +79,8 @@ public class WSDL2JavaGeneratorMojo extends AbstractMojo {
             File file = files[i];
             File marker = new File(targetDirectory, ".gen#" + file.getName());
             if (file.lastModified() > marker.lastModified()) {
-                getLog().info("Generating SDO interfaces from " + file);
-                WSDL2JavaGenerator.generateFromWSDL(file.toString(), targetDirectory, javaPackage, genOptions);
+                getLog().info("Generating Java service interfaces from " + file);
+                WSDL2JavaGenerator.generateFromWSDL(file.toString(), targetDirectory, javaPackage, null, genOptions);
             }
             try {
                 marker.createNewFile();

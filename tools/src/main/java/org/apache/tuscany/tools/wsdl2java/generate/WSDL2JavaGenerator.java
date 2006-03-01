@@ -23,36 +23,37 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.axis2.wsdl.WSDL2Java;
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sdo.helper.XSDHelperImpl;
 import org.apache.tuscany.sdo.util.DataObjectUtil;
+import org.eclipse.emf.codegen.ecore.genmodel.GenClass;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelFactory;
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage;
 import org.eclipse.emf.codegen.util.CodeGenUtil;
-import org.eclipse.emf.common.util.BasicMonitor;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.EPackageRegistryImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.BasicExtendedMetaData;
-import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
-import org.eclipse.xsd.XSDSchema;
-import org.eclipse.xsd.util.XSDResourceImpl;
 
 import commonj.sdo.helper.XSDHelper;
 
 
-public class WSDL2JavaGenerator
-{
+public class WSDL2JavaGenerator {
   
   /**
    * Generate Java interfaces from WSDL
@@ -79,14 +80,6 @@ public class WSDL2JavaGenerator
    */
   public static void main(String args[])
   {
-      try {
-          WSDL2Java.main(args);
-      } catch (Exception e) {
-          throw new IllegalArgumentException(e);
-      }
-      if (true)
-          return;
-      
     if (args.length == 0)
     {
       printUsage();
@@ -95,7 +88,8 @@ public class WSDL2JavaGenerator
     
     
     String targetDirectory = null;
-    String javaPackage = null;
+    String wsdlJavaPackage = null;
+    String xsdJavaPackage = null;
     
     int genOptions = 0;
 
@@ -108,7 +102,7 @@ public class WSDL2JavaGenerator
       }
       else if (args[index].equalsIgnoreCase("-javaPackage"))
       {
-        javaPackage = args[++index];
+        wsdlJavaPackage = args[++index];
       }
       //else if (...)
       else
@@ -117,101 +111,102 @@ public class WSDL2JavaGenerator
         return;
       }
     }
-
-    String wsdlFileName = args[index];
     
-    generateFromWSDL(wsdlFileName, targetDirectory, javaPackage, 0);
+    String wsdlFileName = args[index];
+    if (wsdlFileName==null || targetDirectory==null) {
+        printUsage();
+        return;
+    }
+
+    generateFromWSDL(wsdlFileName, targetDirectory, wsdlJavaPackage, xsdJavaPackage, 0);
+    
   }
 
-  public static void generateFromWSDL(String xsdFileName, String targetDirectory, String javaPackage, int genOptions)
+  public static void generateFromWSDL(String wsdlFileName, String targetDirectory, String wsdlJavaPackage, String xsdJavaPackage, int genOptions)
   {
     DataObjectUtil.initRuntime();
-    EPackage.Registry packageRegistry = new EPackageRegistryImpl(EPackage.Registry.INSTANCE)
-    {
-      public EPackage firstPackage = null;
-            
-    };
+    EPackage.Registry packageRegistry = new EPackageRegistryImpl(EPackage.Registry.INSTANCE);
     ExtendedMetaData extendedMetaData = new BasicExtendedMetaData(packageRegistry);
     XSDHelper xsdHelper = new XSDHelperImpl(extendedMetaData);
 
     try
     {
-      File inputFile = new File(xsdFileName).getAbsoluteFile();
+      File inputFile = new File(wsdlFileName).getAbsoluteFile();
       InputStream inputStream = new FileInputStream(inputFile);
       xsdHelper.define(inputStream, inputFile.toURI().toString());
 
       if (targetDirectory == null)
       {
-        targetDirectory = new File(xsdFileName).getCanonicalFile().getParent();
+        targetDirectory = new File(wsdlFileName).getCanonicalFile().getParent();
       }
       else
       {
         targetDirectory = new File(targetDirectory).getCanonicalPath();
       }
 
+      Map<QName, String> typeMapping=new HashMap<QName, String>();
       if (!packageRegistry.values().isEmpty())
       {
-        String packageURI = getSchemaNamespace(xsdFileName);
         ResourceSet resourceSet = DataObjectUtil.createResourceSet();
-        
-        List usedGenPackages = new ArrayList();
-        GenModel genModel = null;
+
+        List<GenPackage> genPackages=new ArrayList<GenPackage>();
+        Map<EClass, GenClass> genClasses=new HashMap<EClass, GenClass>();
         
         for (Iterator iter = packageRegistry.values().iterator(); iter.hasNext();)
         {
           EPackage currentEPackage = (EPackage)iter.next();
-          String currentBasePackage = extractBasePackageName(currentEPackage, javaPackage);
+          String currentBasePackage = extractBasePackageName(currentEPackage, xsdJavaPackage);
           String currentPrefix = CodeGenUtil.capName(currentEPackage.getName());
           
           GenPackage currentGenPackage = createGenPackage(currentEPackage, currentBasePackage, currentPrefix, genOptions, resourceSet);
-          if (currentEPackage.getNsURI().equals(packageURI))
-          {
-            genModel = currentGenPackage.getGenModel();
+          genPackages.add(currentGenPackage);
+          for (GenClass genClass : (List<GenClass>)currentGenPackage.getGenClasses()) {
+              genClasses.put(genClass.getEcoreClass(), genClass);
           }
-          else
-          {
-            usedGenPackages.add(currentGenPackage);
-          }
+          
         }
-        
-        genModel.getUsedGenPackages().addAll(usedGenPackages);
-        generateFromGenModel(genModel, targetDirectory);
+
+        for (GenPackage currentGenPackage : genPackages) {
+            EPackage currentEPackage=currentGenPackage.getEcorePackage();
+            for (GenClass genClass : (List<GenClass>)currentGenPackage.getGenClasses()) {
+                QName qname=new QName(extendedMetaData.getNamespace(currentEPackage), extendedMetaData.getName(genClass.getEcoreClass()));
+                String interfaceName=currentGenPackage.getInterfacePackageName()+'.'+genClass.getInterfaceName();
+                typeMapping.put(qname, interfaceName);
+            }
+            
+            EClass documentRoot=extendedMetaData.getDocumentRoot(currentEPackage);
+            if (documentRoot!=null) {
+                for (EStructuralFeature element  : (List<EStructuralFeature>)extendedMetaData.getElements(documentRoot)) {
+                    EClassifier elementType=element.getEType();
+                    if (elementType instanceof EClass) {
+                        GenClass genClass=genClasses.get(elementType);
+                        QName qname=new QName(extendedMetaData.getNamespace(currentEPackage), extendedMetaData.getName(element));
+                        String interfaceName=genClass.getGenPackage().getInterfacePackageName()+'.'+genClass.getInterfaceName();
+                        typeMapping.put(qname, interfaceName);
+                    } else if (elementType instanceof EClassifier) {
+                        QName qname=new QName(extendedMetaData.getNamespace(currentEPackage), extendedMetaData.getName(element));
+                        String interfaceName=elementType.getInstanceClass().getName();
+                        typeMapping.put(qname, interfaceName);
+                    }
+                }
+            }
+        }
       }
 
-      /*
-      for (Iterator iter = packageRegistry.values().iterator(); iter.hasNext();)
-      {
-        EPackage ePackage = (EPackage)iter.next();
-        String basePackage = extractBasePackageName(ePackage, javaPackage);
-        if (prefix == null)
-        {
-          prefix = CodeGenUtil.capName(ePackage.getName());
-        }
-        generateFromEPackage(ePackage, targetDirectory, basePackage, prefix, genOptions);
+      try {
+          JavaInterfaceGenerator codeGenerator=new JavaInterfaceGenerator(wsdlFileName, targetDirectory, wsdlJavaPackage, typeMapping);
+          codeGenerator.generate();
+      } catch (Exception e) {
+          throw new IllegalArgumentException(e);
       }
-      */
+      
     }
     catch (IOException e)
     {
-      e.printStackTrace();
+      throw new IllegalArgumentException(e);
     }
   }
   
-  public static String getSchemaNamespace(String xsdFileName)
-  {
-    File inputFile = new File(xsdFileName).getAbsoluteFile();
-    ResourceSet resourceSet = DataObjectUtil.createResourceSet();
-    Resource model = resourceSet.createResource(URI.createURI(inputFile.toURI().toString()));
-    try {
-      InputStream inputStream = new FileInputStream(inputFile);
-      ((XSDResourceImpl)model).load(inputStream, null);
-    }
-    catch (Exception e) {}
-    XSDSchema schema = (XSDSchema)model.getContents().get(0);
-    return schema.getTargetNamespace();
-
-  }
-
   public static GenPackage createGenPackage(EPackage ePackage, String basePackage, String prefix, int genOptions, ResourceSet resourceSet)
   {
     GenModel genModel = ecore2GenModel(ePackage, basePackage, prefix, genOptions);
@@ -226,48 +221,6 @@ public class WSDL2JavaGenerator
     genModelResource.getContents().add(genModel);
 
     return (GenPackage)genModel.getGenPackages().get(0);
-  }
-
-  public static void generateFromEPackage(EPackage ePackage, String targetDirectory, String basePackage, String prefix, int genOptions)
-  {
-    GenModel genModel = ecore2GenModel(ePackage, basePackage, prefix, genOptions);
-
-    ResourceSet resourceSet = DataObjectUtil.createResourceSet();
-    URI ecoreURI = URI.createURI("file:///temp.ecore");
-    URI genModelURI = ecoreURI.trimFileExtension().appendFileExtension("genmodel");
-
-    Resource ecoreResource = resourceSet.createResource(ecoreURI);
-    ecoreResource.getContents().add(ePackage);
-
-    Resource genModelResource = resourceSet.createResource(genModelURI);
-    genModelResource.getContents().add(genModel);
-
-    generateFromGenModel(genModel, targetDirectory);
-  }
-
-  public static void generateFromGenModel(GenModel genModel, String targetDirectory)
-  {
-    Resource resource = genModel.eResource();
-
-    if (targetDirectory != null)
-    {
-      resource.getResourceSet().getURIConverter().getURIMap().put(
-        URI.createURI("platform:/resource/TargetProject/"),
-        URI.createFileURI(targetDirectory + "/"));
-      genModel.setModelDirectory("/TargetProject");
-    }
-
-    genModel.gen(new BasicMonitor.Printing(System.out));
-
-    for (Iterator j = resource.getContents().iterator(); j.hasNext();)
-    {
-      EObject eObject = (EObject)j.next();
-      Diagnostic diagnostic = Diagnostician.INSTANCE.validate(eObject);
-      if (diagnostic.getSeverity() != Diagnostic.OK)
-      {
-        printDiagnostic(diagnostic, "");
-      }
-    }
   }
 
   public static GenModel ecore2GenModel(EPackage ePackage, String basePackage, String prefix, int genOptions)
