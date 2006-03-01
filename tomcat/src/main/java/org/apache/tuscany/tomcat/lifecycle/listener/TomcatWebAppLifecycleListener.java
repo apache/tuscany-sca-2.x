@@ -203,6 +203,7 @@ public class TomcatWebAppLifecycleListener implements LifecycleListener {
                     }
                 }
             } catch (Exception e) {
+                e.printStackTrace();
             }
         } else if (Lifecycle.STOP_EVENT.equals(lifecycleEventType) && lifecycleEventSource instanceof Context) {
 
@@ -240,7 +241,7 @@ public class TomcatWebAppLifecycleListener implements LifecycleListener {
                     }
                 }
             } catch (Exception e) {
-                throw new ServiceRuntimeException(e);
+                e.printStackTrace();
             }
         }
     }
