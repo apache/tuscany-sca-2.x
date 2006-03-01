@@ -15,7 +15,6 @@ package org.apache.tuscany.container.java.integration.binding;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -41,9 +40,6 @@ import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
-import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
-import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
-import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 
 /**
  * 
@@ -62,10 +58,8 @@ public class EntryPointToJavaTestCase extends TestCase {
         MessageFactory msgFactory = new MessageFactoryImpl();
         ProxyFactoryFactory proxyFactoryFactory = new JDKProxyFactoryFactory();
 
-        List<RuntimeConfigurationBuilder> builders = new ArrayList();
-        builders.add((new SystemComponentContextBuilder()));
-        builders.add(new SystemEntryPointBuilder());
-        builders.add(new SystemExternalServiceBuilder());
+        List<RuntimeConfigurationBuilder> builders = MockFactory.createSystemBuilders();
+
 
         JavaComponentContextBuilder javaBuilder = new JavaComponentContextBuilder();
         javaBuilder.setMessageFactory(msgFactory);

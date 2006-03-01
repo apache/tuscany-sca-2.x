@@ -27,6 +27,8 @@ import org.apache.tuscany.container.java.assembly.JavaImplementation;
 import org.apache.tuscany.container.java.assembly.impl.JavaAssemblyFactoryImpl;
 import org.apache.tuscany.container.java.assembly.mock.HelloWorldImpl;
 import org.apache.tuscany.container.java.assembly.mock.HelloWorldService;
+import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
+import org.apache.tuscany.container.java.builder.JavaTargetWireBuilder;
 import org.apache.tuscany.container.java.context.JavaComponentContext;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBinding;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
@@ -35,9 +37,12 @@ import org.apache.tuscany.container.java.mock.components.ModuleScopeComponentImp
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
@@ -46,6 +51,8 @@ import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
+import org.apache.tuscany.core.runtime.RuntimeContext;
+import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
@@ -53,6 +60,7 @@ import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
+import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
 import org.apache.tuscany.model.assembly.AggregatePart;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Component;
@@ -109,12 +117,56 @@ public class MockFactory {
     }
 
     /**
+     * Creates a system component of the given type with the given name and scope
+     */
+    public static Component createSystemComponent(String name, Class type, Scope scope) {
+
+        Component sc = null;
+        if (AggregateContext.class.isAssignableFrom(type)) {
+            sc = systemFactory.createModuleComponent();
+        } else {
+            sc = systemFactory.createSimpleComponent();
+        }
+        SystemImplementation impl = systemFactory.createSystemImplementation();
+        impl.setImplementationClass(type);
+        sc.setComponentImplementation(impl);
+        Service s = systemFactory.createService();
+        JavaServiceContract ji = systemFactory.createJavaServiceContract();
+        s.setServiceContract(ji);
+        ji.setScope(scope);
+        impl.setComponentType(systemFactory.createComponentType());
+        impl.getComponentType().getServices().add(s);
+        sc.setName(name);
+        sc.setComponentImplementation(impl);
+        return sc;
+    }
+
+    /**
      * Creates an aggregate component with the given name
      */
     public static Component createAggregateComponent(String name) {
         Component sc = sc = systemFactory.createModuleComponent();
         SystemImplementation impl = systemFactory.createSystemImplementation();
         impl.setImplementationClass(AggregateContextImpl.class);
+        sc.setComponentImplementation(impl);
+        Service s = systemFactory.createService();
+        JavaServiceContract ji = systemFactory.createJavaServiceContract();
+        s.setServiceContract(ji);
+        ji.setScope(Scope.AGGREGATE);
+        impl.setComponentType(systemFactory.createComponentType());
+        impl.getComponentType().getServices().add(s);
+        sc.setName(name);
+        sc.setComponentImplementation(impl);
+        return sc;
+    }
+
+    /**
+     * Creates a system aggregate component with the given name
+     */
+    public static Component createSystemAggregateComponent(String name) {
+        Component sc = sc = systemFactory.createModuleComponent();
+        SystemImplementation impl = systemFactory.createSystemImplementation();
+        impl.setImplementationClass(SystemAggregateContextImpl.class);
         sc.setComponentImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
@@ -436,4 +488,28 @@ public class MockFactory {
         return context;
     }
 
+    /**
+     * Returns a collection of bootstrap and Java runtime configuration builders
+     */
+    public static List<RuntimeConfigurationBuilder> createJavaAndSystemBuilders() {
+        List<RuntimeConfigurationBuilder> builders = createSystemBuilders();
+
+        return builders;
+    }
+
+    /**
+     * Creates a default {@link RuntimeContext} configured with support for Java component implementations
+     * 
+     * @throws ConfigurationException
+     */
+    public static RuntimeContext createJavaRuntime() throws ConfigurationException {
+        RuntimeContext runtime = new RuntimeContextImpl(null, null, MockFactory.createSystemBuilders(), null);
+        runtime.start();
+        runtime.getSystemContext().registerModelObject(createSystemAggregateComponent("tuscany.system.child"));
+        SystemAggregateContext ctx = (SystemAggregateContext) runtime.getSystemContext().getContext("tuscany.system.child");
+        ctx.registerModelObject(createSystemComponent("java.runtime.builder", JavaComponentContextBuilder.class, Scope.MODULE));
+        ctx.registerModelObject(createSystemComponent("java.wire.builder", JavaTargetWireBuilder.class, Scope.MODULE));
+        ctx.fireEvent(EventContext.MODULE_START,null);
+        return runtime;
+    }
 }

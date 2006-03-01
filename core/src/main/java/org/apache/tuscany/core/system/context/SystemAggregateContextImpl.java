@@ -147,7 +147,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     public SystemAggregateContextImpl() {
         super();
         scopeIndex = new ConcurrentHashMap();
-        //FIXME the assembly factory should be injected here
+        // FIXME the assembly factory should be injected here
         module = new AssemblyFactoryImpl().createModule();
         eventContext = new EventContextImpl();
         scopeStrategy = new SystemScopeStrategy();
@@ -163,7 +163,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         this.configurationContext = configCtx;
         this.monitorFactory = factory;
         scopeIndex = new ConcurrentHashMap();
-        //FIXME the assembly factory should be injected here
+        // FIXME the assembly factory should be injected here
         module = new AssemblyFactoryImpl().createModule();
     }
 
@@ -373,7 +373,8 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 throw e;
             }
             if (configuration == null) {
-                ConfigurationException e = new ConfigurationException("Runtime configuration not set");
+                ConfigurationException e = new ConfigurationException(
+                        "Runtime configuration not set. Ensure a runtime configuration builder is registered for the component implementation type");
                 if (model instanceof AggregatePart) {
                     e.setIdentifier(((AggregatePart) model).getName());
                 }
@@ -438,7 +439,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         return scope.getContext(componentName);
 
     }
-    
+
     /**
      * @see org.apache.tuscany.core.context.AggregateContext#getAggregate()
      */
@@ -536,10 +537,11 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     // ----------------------------------
     // AutowireContext methods
     // ----------------------------------
-    
-    //FIXME These should be removed and configured
-    private static final MessageFactory messageFactory=new MessageFactoryImpl();
-    private static final ProxyFactoryFactory proxyFactoryFactory=new JDKProxyFactoryFactory(); 
+
+    // FIXME These should be removed and configured
+    private static final MessageFactory messageFactory = new MessageFactoryImpl();
+
+    private static final ProxyFactoryFactory proxyFactoryFactory = new JDKProxyFactoryFactory();
 
     public <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException {
         if (RuntimeContext.class.equals(instanceInterface)) {
@@ -549,6 +551,8 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         } else if (ConfigurationContext.class.equals(instanceInterface)) {
             return instanceInterface.cast(this);
         } else if (AggregateContext.class.equals(instanceInterface)) {
+            return instanceInterface.cast(this);
+        } else if (AutowireContext.class.equals(instanceInterface)) {
             return instanceInterface.cast(this);
         } else if (MessageFactory.class.equals(instanceInterface)) {
             return instanceInterface.cast(messageFactory);
