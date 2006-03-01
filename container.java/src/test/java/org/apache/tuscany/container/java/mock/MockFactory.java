@@ -285,11 +285,18 @@ public class MockFactory {
     }
 
     /**
-     * Creates a module with a Java-based "target" component wired to a "source"
+     * Creates a module with a Java-based "target" module-scoped component wired to a module-scoped "source"
      */
     public static Module createModule() {
-        Component sourceComponent = createComponent("source", ModuleScopeComponentImpl.class, Scope.MODULE);
-        Component targetComponent = createComponent("target", ModuleScopeComponentImpl.class, Scope.MODULE);
+        return createModule(Scope.MODULE,Scope.MODULE);
+    }
+
+    /**
+     * Creates a module with a Java-based "target" component wired to a "source"
+     */
+    public static Module createModule(Scope sourceScope, Scope targetScope) {
+        Component sourceComponent = createComponent("source", ModuleScopeComponentImpl.class, sourceScope);
+        Component targetComponent = createComponent("target", ModuleScopeComponentImpl.class, targetScope);
 
         Service targetService = factory.createService();
         JavaServiceContract targetContract = factory.createJavaServiceContract();
@@ -509,7 +516,7 @@ public class MockFactory {
         SystemAggregateContext ctx = (SystemAggregateContext) runtime.getSystemContext().getContext("tuscany.system.child");
         ctx.registerModelObject(createSystemComponent("java.runtime.builder", JavaComponentContextBuilder.class, Scope.MODULE));
         ctx.registerModelObject(createSystemComponent("java.wire.builder", JavaTargetWireBuilder.class, Scope.MODULE));
-        ctx.fireEvent(EventContext.MODULE_START,null);
+        ctx.fireEvent(EventContext.MODULE_START, null);
         return runtime;
     }
 }
