@@ -23,7 +23,7 @@ import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.mock.MockSystemAssemblyFactory;
+import org.apache.tuscany.core.mock.MockFactory;
 
 /**
  * Tests runtime boot scenarios
@@ -59,7 +59,7 @@ public class RuntimeBootTestCase extends TestCase {
 
     public void testIncrementalBoot() throws Exception{
 
-        List<RuntimeConfigurationBuilder> builders  = MockSystemAssemblyFactory.createBuilders();
+        List<RuntimeConfigurationBuilder> builders  = MockFactory.createSystemBuilders();
         // start the runtime context
         RuntimeContext runtimeContext = new RuntimeContextImpl(new NullMonitorFactory(), null, builders, null);
         runtimeContext.start();
@@ -67,7 +67,7 @@ public class RuntimeBootTestCase extends TestCase {
         AggregateContext system = runtimeContext.getSystemContext();
         Assert.assertNotNull(system);
         // register system components
-        system.registerModelObject(MockSystemAssemblyFactory.createSystemModule());
+        system.registerModelObject(MockFactory.createSystemModule());
         // start the module scope
         system.fireEvent(EventContext.MODULE_START, null);
         // register the first module

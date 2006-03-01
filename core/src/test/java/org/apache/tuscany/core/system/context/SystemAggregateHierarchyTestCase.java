@@ -21,12 +21,10 @@ import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.context.AbstractAggregateHierarchyTests;
 import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.mock.MockConfigContext;
-import org.apache.tuscany.core.mock.MockSystemAssemblyFactory;
-import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.core.mock.MockFactory;
 
 /**
  * Performs testing of various hierarchical scenarios
@@ -38,11 +36,10 @@ public class SystemAggregateHierarchyTestCase extends AbstractAggregateHierarchy
 
 
     protected AggregateContext createContextHierachy() throws Exception {
-        List<RuntimeConfigurationBuilder> mockBuilders = MockSystemAssemblyFactory.createBuilders();
+        List<RuntimeConfigurationBuilder> mockBuilders = MockFactory.createSystemBuilders();
         AggregateContext parent = new SystemAggregateContextImpl("test.parent", null, null, new DefaultScopeStrategy(),
                 new EventContextImpl(), new MockConfigContext(mockBuilders), new NullMonitorFactory());
-        parent.registerModelObject(MockSystemAssemblyFactory.createComponent("test.child", AggregateContextImpl.class.getName(),
-                Scope.AGGREGATE));
+        parent.registerModelObject(MockFactory.createAggregateComponent("test.child"));
         parent.start();
         AggregateContext child = (AggregateContext) parent.getContext("test.child");
         Assert.assertNotNull(child);

@@ -24,7 +24,7 @@ import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.mock.MockConfigContext;
-import org.apache.tuscany.core.mock.MockSystemAssemblyFactory;
+import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
 import org.apache.tuscany.model.assembly.Component;
@@ -43,11 +43,11 @@ public abstract class AbstractAggregateHierarchyTests extends TestCase {
     public void testParentContextIsolation() throws Exception {
         AggregateContext parent = createContextHierachy();
         AggregateContext child = (AggregateContext) parent.getContext("test.child");
-        Component component = MockSystemAssemblyFactory.createComponent("TestService1", ModuleScopeSystemComponentImpl.class
-                .getName(), Scope.MODULE);
+        Component component = MockFactory.createSystemComponent("TestService1", ModuleScopeSystemComponentImpl.class,
+                Scope.MODULE);
         parent.registerModelObject(component);
-        EntryPoint ep = MockSystemAssemblyFactory.createEntryPoint("TestService1EP", ModuleScopeSystemComponent.class,
-                "TestService1", component);
+        EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1",
+                component);
         parent.registerModelObject(ep);
         parent.fireEvent(EventContext.MODULE_START, null);
         child.fireEvent(EventContext.MODULE_START, null);
@@ -70,11 +70,9 @@ public abstract class AbstractAggregateHierarchyTests extends TestCase {
     public void testRegisterSameName() throws Exception {
         AggregateContext parent = new AggregateContextImpl("test.parent", null, new DefaultScopeStrategy(),
                 new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
-        parent.registerModelObject(MockSystemAssemblyFactory.createComponent("test.child", AggregateContextImpl.class.getName(),
-                Scope.AGGREGATE));
+        parent.registerModelObject(MockFactory.createSystemAggregateComponent("test.child"));
         try {
-            parent.registerModelObject(MockSystemAssemblyFactory.createComponent("test.child", AggregateContextImpl.class
-                    .getName(), Scope.AGGREGATE));
+            parent.registerModelObject(MockFactory.createSystemAggregateComponent("test.child"));
             parent.start();
             fail("Expected " + DuplicateNameException.class.getName());
         } catch (DuplicateNameException e) {
@@ -88,14 +86,12 @@ public abstract class AbstractAggregateHierarchyTests extends TestCase {
     public void testRegisterSameNameAfterStart() throws Exception {
         AggregateContext parent = new AggregateContextImpl("test.parent", null, new DefaultScopeStrategy(),
                 new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
-        parent.registerModelObject(MockSystemAssemblyFactory.createComponent("test.child", AggregateContextImpl.class.getName(),
-                Scope.AGGREGATE));
+        parent.registerModelObject(MockFactory.createSystemAggregateComponent("test.child"));
         parent.start();
         AggregateContext child = (AggregateContext) parent.getContext("test.child");
         Assert.assertNotNull(child);
         try {
-            parent.registerModelObject(MockSystemAssemblyFactory.createComponent("test.child", AggregateContextImpl.class
-                    .getName(), Scope.AGGREGATE));
+            parent.registerModelObject(MockFactory.createSystemAggregateComponent("test.child"));
             fail("Expected " + DuplicateNameException.class.getName());
         } catch (DuplicateNameException e) {
             // expected
@@ -106,6 +102,6 @@ public abstract class AbstractAggregateHierarchyTests extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        builders = MockSystemAssemblyFactory.createBuilders();
+        builders = MockFactory.createSystemBuilders();
     }
 }

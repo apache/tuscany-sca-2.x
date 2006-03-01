@@ -24,7 +24,7 @@ import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.mock.MockConfigContext;
-import org.apache.tuscany.core.mock.MockSystemAssemblyFactory;
+import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.Component;
@@ -40,10 +40,10 @@ import org.apache.tuscany.model.assembly.Scope;
 public class SystemComponentContextBuilderTestCase extends TestCase {
 
     private SystemAssemblyFactory factory = new SystemAssemblyFactoryImpl();
-    
+
     public void testComponentContextBuilder() throws Exception {
         SystemComponentContextBuilder builder = new SystemComponentContextBuilder();
-        Component component = MockSystemAssemblyFactory.createComponent("test", SystemComponentImpl.class.getName(),
+        Component component = MockFactory.createSystemComponent("test", SystemComponentImpl.class,
                 Scope.AGGREGATE);
 
         ConfiguredProperty cProp = factory.createConfiguredProperty();
@@ -118,10 +118,10 @@ public class SystemComponentContextBuilderTestCase extends TestCase {
         Assert.assertEquals(1, instance.getTestInt());
         Assert.assertEquals(1d, instance.getTestDouble());
         Assert.assertEquals(1f, instance.getTestFloat());
-        Assert.assertEquals((short)1, instance.getTestShort());
+        Assert.assertEquals((short) 1, instance.getTestShort());
         Assert.assertTrue(instance.getTestBoolean());
         Assert.assertEquals('1', instance.getTestChar());
-        Assert.assertEquals((byte)1, instance.getTestByte());
+        Assert.assertEquals((byte) 1, instance.getTestByte());
         Assert.assertEquals("test", instance.getTestString());
 
         Assert.assertTrue(instance.initialized());
@@ -130,7 +130,8 @@ public class SystemComponentContextBuilderTestCase extends TestCase {
     }
 
     private static AggregateContext createContext() {
-        return new AggregateContextImpl("test.parent", null, new DefaultScopeStrategy(), new EventContextImpl(), new MockConfigContext(null), new NullMonitorFactory());
+        return new AggregateContextImpl("test.parent", null, new DefaultScopeStrategy(), new EventContextImpl(),
+                new MockConfigContext(null), new NullMonitorFactory());
     }
 
 }

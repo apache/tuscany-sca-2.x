@@ -24,7 +24,7 @@ import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.mock.MockConfigContext;
-import org.apache.tuscany.core.mock.MockSystemAssemblyFactory;
+import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.GenericSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
@@ -42,7 +42,7 @@ public class AggregateComponentContextRegisterTestCase extends TestCase {
 
     public void testModuleRegistration() throws Exception {
         AggregateContext moduleContext = createContext();
-        Module module = MockSystemAssemblyFactory.createSystemModule();
+        Module module = MockFactory.createSystemModule();
         moduleContext.registerModelObject(module);
         moduleContext.start();
         moduleContext.fireEvent(EventContext.MODULE_START, null);
@@ -57,7 +57,7 @@ public class AggregateComponentContextRegisterTestCase extends TestCase {
     public void testModuleRegistrationAfterStart() throws Exception {
         AggregateContext moduleContext = createContext();
         moduleContext.start();
-        Module module = MockSystemAssemblyFactory.createSystemModule();
+        Module module = MockFactory.createSystemModule();
         moduleContext.registerModelObject(module);
         moduleContext.fireEvent(EventContext.MODULE_START, null);
         GenericSystemComponent component = (GenericSystemComponent) moduleContext.locateInstance("TestService1");
@@ -70,11 +70,11 @@ public class AggregateComponentContextRegisterTestCase extends TestCase {
 
     public void testRegistration() throws Exception {
         AggregateContext moduleContext = createContext();
-        Component component = MockSystemAssemblyFactory.createComponent("TestService1", ModuleScopeSystemComponentImpl.class
-                .getName(), Scope.MODULE);
+        Component component = MockFactory.createSystemComponent("TestService1", ModuleScopeSystemComponentImpl.class,
+                Scope.MODULE);
         moduleContext.registerModelObject(component);
-        EntryPoint ep = MockSystemAssemblyFactory.createEntryPoint("TestService1EP", ModuleScopeSystemComponent.class,
-                "TestService1", component);
+        EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1",
+                component);
         moduleContext.registerModelObject(ep);
         moduleContext.start();
         moduleContext.fireEvent(EventContext.MODULE_START, null);
@@ -88,12 +88,12 @@ public class AggregateComponentContextRegisterTestCase extends TestCase {
 
     public void testRegistrationAfterStart() throws Exception {
         AggregateContext moduleContext = createContext();
-        Component component = MockSystemAssemblyFactory.createComponent("TestService1", ModuleScopeSystemComponentImpl.class
-                .getName(), Scope.MODULE);
+        Component component = MockFactory.createSystemComponent("TestService1", ModuleScopeSystemComponentImpl.class,
+                Scope.MODULE);
         moduleContext.start();
         moduleContext.registerModelObject(component);
-        EntryPoint ep = MockSystemAssemblyFactory.createEntryPoint("TestService1EP", ModuleScopeSystemComponent.class,
-                "TestService1", component);
+        EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1",
+                component);
         moduleContext.registerModelObject(ep);
         moduleContext.fireEvent(EventContext.MODULE_START, null);
         GenericSystemComponent test = (GenericSystemComponent) moduleContext.locateInstance("TestService1");
@@ -106,15 +106,15 @@ public class AggregateComponentContextRegisterTestCase extends TestCase {
 
     public void testEPRegistrationAfterModuleStart() throws Exception {
         AggregateContext moduleContext = createContext();
-        Component component = MockSystemAssemblyFactory.createComponent("TestService1", ModuleScopeSystemComponentImpl.class
-                .getName(), Scope.MODULE);
+        Component component = MockFactory.createSystemComponent("TestService1", ModuleScopeSystemComponentImpl.class,
+                Scope.MODULE);
         moduleContext.start();
         moduleContext.registerModelObject(component);
         moduleContext.fireEvent(EventContext.MODULE_START, null);
         GenericSystemComponent test = (GenericSystemComponent) moduleContext.locateInstance("TestService1");
         Assert.assertNotNull(test);
-        EntryPoint ep = MockSystemAssemblyFactory.createEntryPoint("TestService1EP", ModuleScopeSystemComponent.class,
-                "TestService1", component);
+        EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1",
+                component);
         moduleContext.registerModelObject(ep);
         GenericSystemComponent testEP = (GenericSystemComponent) moduleContext.locateInstance("TestService1EP");
         Assert.assertNotNull(testEP);
@@ -123,13 +123,8 @@ public class AggregateComponentContextRegisterTestCase extends TestCase {
     }
 
     protected AggregateContext createContext() {
-        List<RuntimeConfigurationBuilder> builders = MockSystemAssemblyFactory.createBuilders();
-        return new AggregateContextImpl(
-                "test.context",
-                null,
-                new DefaultScopeStrategy(),
-                new EventContextImpl(),
-                new MockConfigContext(builders),
-                new NullMonitorFactory());
+        List<RuntimeConfigurationBuilder> builders = MockFactory.createSystemBuilders();
+        return new AggregateContextImpl("test.context", null, new DefaultScopeStrategy(), new EventContextImpl(),
+                new MockConfigContext(builders), new NullMonitorFactory());
     }
 }

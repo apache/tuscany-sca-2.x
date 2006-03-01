@@ -55,7 +55,6 @@ import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.impl.AggregateImpl;
 import org.osoa.sca.annotations.ComponentName;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Destroy;

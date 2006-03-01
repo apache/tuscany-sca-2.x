@@ -16,10 +16,9 @@ package org.apache.tuscany.core.mock;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
@@ -29,6 +28,7 @@ import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
+import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
 import org.apache.tuscany.model.assembly.AggregatePart;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Component;
@@ -45,49 +45,33 @@ import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
- * Creates test artifacts for system types such as runtime configurations and system components
+ * Generates test components, modules, and runtime artifacts
  * 
  * @version $Rev$ $Date$
  */
-public class MockSystemAssemblyFactory {
+public class MockFactory {
 
     private static SystemAssemblyFactory systemFactory = new SystemAssemblyFactoryImpl();
 
     private static AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(systemFactory, null, null);
 
-    private MockSystemAssemblyFactory() {
+    private MockFactory() {
     }
 
-    public static List<RuntimeConfigurationBuilder> createBuilders() {
-        List<RuntimeConfigurationBuilder> builders = new ArrayList();
-        builders.add((new SystemComponentContextBuilder()));
-        builders.add(new SystemEntryPointBuilder());
-        builders.add(new SystemExternalServiceBuilder());
-        return builders;
-    }
 
     /**
-     * Creates a component
-     * 
-     * @param name the name of the component
-     * @param type the component implementation class name
-     * @param scope the scope of the component implementation
-     * @throws NoSuchMethodException
-     * @throws ClassNotFoundException
-     * @see RuntimeConfiguration
+     * Creates a system component of the given type with the given name and scope
      */
-    public static Component createComponent(String name, String type, Scope scope) throws NoSuchMethodException,
-            ClassNotFoundException {
+    public static Component createSystemComponent(String name, Class type, Scope scope) {
 
-        Class claz = JavaIntrospectionHelper.loadClass(type);
         Component sc = null;
-        if (AggregateContext.class.isAssignableFrom(claz)) {
+        if (AggregateContext.class.isAssignableFrom(type)) {
             sc = systemFactory.createModuleComponent();
         } else {
             sc = systemFactory.createSimpleComponent();
         }
         SystemImplementation impl = systemFactory.createSystemImplementation();
-        impl.setImplementationClass(claz);
+        impl.setImplementationClass(type);
         sc.setComponentImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
@@ -100,27 +84,49 @@ public class MockSystemAssemblyFactory {
         return sc;
     }
 
-    public static Component createInitializedComponent(String name, String type, Scope scope) throws NoSuchMethodException,
-            ClassNotFoundException {
-
-        Class claz = JavaIntrospectionHelper.loadClass(type);
-        Component sc = null;
-        if (AggregateContext.class.isAssignableFrom(claz)) {
-            sc = systemFactory.createModuleComponent();
-        } else {
-            sc = systemFactory.createSimpleComponent();
-        }
+    /**
+     * Creates an aggregate component with the given name
+     */
+    public static Component createAggregateComponent(String name) {
+        Component sc = sc = systemFactory.createModuleComponent();
         SystemImplementation impl = systemFactory.createSystemImplementation();
-        impl.setImplementationClass(claz);
+        impl.setImplementationClass(AggregateContextImpl.class);
         sc.setComponentImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
-        ji.setScope(scope);
+        ji.setScope(Scope.AGGREGATE);
         impl.setComponentType(systemFactory.createComponentType());
         impl.getComponentType().getServices().add(s);
         sc.setName(name);
         sc.setComponentImplementation(impl);
+        return sc;
+    }
+
+    /**
+     * Creates an aggregate component with the given name
+     */
+    public static Component createSystemAggregateComponent(String name) {
+        Component sc = sc = systemFactory.createModuleComponent();
+        SystemImplementation impl = systemFactory.createSystemImplementation();
+        impl.setImplementationClass(SystemAggregateContextImpl.class);
+        sc.setComponentImplementation(impl);
+        Service s = systemFactory.createService();
+        JavaServiceContract ji = systemFactory.createJavaServiceContract();
+        s.setServiceContract(ji);
+        ji.setScope(Scope.AGGREGATE);
+        impl.setComponentType(systemFactory.createComponentType());
+        impl.getComponentType().getServices().add(s);
+        sc.setName(name);
+        sc.setComponentImplementation(impl);
+        return sc;
+    }
+
+    /**
+     * Creates and initializes a system component of the given type with the given name and scope
+     */
+    public static Component createSystemInitializedComponent(String name, Class type, Scope scope) {
+        Component sc = createSystemComponent(name,type,scope);
         sc.initialize(assemblyContext);
         return sc;
     }
@@ -132,8 +138,8 @@ public class MockSystemAssemblyFactory {
      * @param interfaz the inteface exposed by the entry point
      * @param refName the name of the entry point reference
      */
-    public static EntryPoint createEntryPoint(String name, Class interfaz, String refName) {
-        return createEntryPoint(name, interfaz, refName, null);
+    public static EntryPoint createEPSystemBinding(String name, Class interfaz, String refName) {
+        return createEPSystemBinding(name, interfaz, refName, null);
     }
 
     /**
@@ -144,7 +150,7 @@ public class MockSystemAssemblyFactory {
      * @param refName the name of the entry point reference
      * @param target the target the entry point is wired to
      */
-    public static EntryPoint createEntryPoint(String name, Class interfaz, String refName, AggregatePart target) {
+    public static EntryPoint createEPSystemBinding(String name, Class interfaz, String refName, AggregatePart target) {
         JavaServiceContract contract = systemFactory.createJavaServiceContract();
         contract.setInterface(interfaz);
 
@@ -166,7 +172,6 @@ public class MockSystemAssemblyFactory {
         configuredReference.getTargetConfiguredServices().add(cService);
         ep.setConfiguredReference(configuredReference);
 
-        ///
         Service epService = systemFactory.createService();
         epService.setServiceContract(contract);
 
@@ -174,8 +179,6 @@ public class MockSystemAssemblyFactory {
         epCService.initialize(assemblyContext);
         epCService.setService(epService);
 
-        //
-        
         ep.setConfiguredService(epCService);
         SystemBinding binding = systemFactory.createSystemBinding();
         ep.getBindings().add(binding);
@@ -202,7 +205,7 @@ public class MockSystemAssemblyFactory {
      * @param componentName the name of the target to resolve
      */
     public static EntryPoint createEntryPointWithStringRef(String name, Class interfaz, String refName, String componentName) {
-        EntryPoint ep = createEntryPoint(name, interfaz, refName, null);
+        EntryPoint ep = createEPSystemBinding(name, interfaz, refName, null);
         ConfiguredReference cRef = systemFactory.createConfiguredReference();
         Reference ref = systemFactory.createReference();
         cRef.setReference(ref);
@@ -219,20 +222,13 @@ public class MockSystemAssemblyFactory {
     }
 
     /**
-     * Creates an external service
+     * Creates an external service configured with a {@link SystemBinding}
      */
-    public static ExternalService createExternalService(String name, String refName) {
+    public static ExternalService createESSystemBinding(String name, String refName) {
         ExternalService es = systemFactory.createExternalService();
         es.setName(name);
         ConfiguredService configuredService = systemFactory.createConfiguredService();
-        // FIXME model hack to get external service to work
-        //AggregatePart part = systemFactory.createSimpleComponent();
-        //part.setName(refName);
-        // FIXME set name on system binding xcv
-        // configuredService.setPart(part);
         es.setConfiguredService(configuredService);
-        
-        //ssss
         SystemBinding binding = systemFactory.createSystemBinding();
         binding.setTargetName(refName);
         es.getBindings().add(binding);
@@ -256,14 +252,13 @@ public class MockSystemAssemblyFactory {
         es.setConfiguredService(cService);
         es.getBindings().add(systemFactory.createSystemBinding());
         es.initialize(null);
-        //externalService.getConfiguredService().getService().getServiceContract().getInterface() != null
         return es;
     }
 
     /**
      * Creates a test system module component with a module-scoped component and entry point
      */
-    public static Module createSystemModule() throws Exception {
+    public static Module createSystemModule(){
         Module module = systemFactory.createModule();
         module.setName("system.module");
 
@@ -282,9 +277,7 @@ public class MockSystemAssemblyFactory {
         component.setComponentImplementation(impl);
 
         // create the entry point
-        EntryPoint ep = createEntryPoint("TestService1EP", ModuleScopeSystemComponent.class, "target", component);
-        // wire the entry point to the component
-        // ep.getConfiguredReference().getTargetConfiguredServices().get(0).setPart(component);
+        EntryPoint ep = createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "target", component);
 
         module.getEntryPoints().add(ep);
         module.getComponents().add(component);
@@ -295,7 +288,7 @@ public class MockSystemAssemblyFactory {
     /**
      * Creates a test system module component with a module-scoped component and entry point
      */
-    public static Module createSystemChildModule() throws Exception {
+    public static Module createSystemChildModule() {
         Module module = systemFactory.createModule();
         module.setName("system.test.module");
 
@@ -314,14 +307,23 @@ public class MockSystemAssemblyFactory {
         component.setComponentImplementation(impl);
 
         // create the entry point
-        EntryPoint ep = createEntryPoint("TestService2EP", ModuleScopeSystemComponent.class, "target", component);
-        // wire the entry point to the component
-        // ep.getConfiguredReference().getTargetConfiguredServices().get(0).setPart(component);
+        EntryPoint ep = createEPSystemBinding("TestService2EP", ModuleScopeSystemComponent.class, "target", component);
 
         module.getEntryPoints().add(ep);
         module.getComponents().add(component);
         module.initialize(assemblyContext);
         return module;
+    }
+
+    /**
+     * Returns a collection of bootstrap configuration builders
+     */
+    public static List<RuntimeConfigurationBuilder> createSystemBuilders() {
+        List<RuntimeConfigurationBuilder> builders = new ArrayList();
+        builders.add((new SystemComponentContextBuilder()));
+        builders.add(new SystemEntryPointBuilder());
+        builders.add(new SystemExternalServiceBuilder());
+        return builders;
     }
 
 }

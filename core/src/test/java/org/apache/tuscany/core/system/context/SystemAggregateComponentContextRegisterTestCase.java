@@ -21,7 +21,7 @@ import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.mock.MockConfigContext;
-import org.apache.tuscany.core.mock.MockSystemAssemblyFactory;
+import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 
 /**
@@ -32,7 +32,7 @@ import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 public class SystemAggregateComponentContextRegisterTestCase extends AggregateComponentContextRegisterTestCase {
 
     protected AggregateContext createContext() {
-        List<RuntimeConfigurationBuilder> builders = MockSystemAssemblyFactory.createBuilders();
+        List<RuntimeConfigurationBuilder> builders = MockFactory.createSystemBuilders();
         AggregateContext moduleContext = new SystemAggregateContextImpl("test.context", null,
                 null, new DefaultScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
         return moduleContext;
