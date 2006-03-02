@@ -77,6 +77,7 @@ public interface RuntimeContext extends AutowireContext, ConfigurationContext {
     /**
      * Returns the monitor factory in use by the runtime
      */
+    @Deprecated
     public MonitorFactory getMonitorFactory();
 
 }
