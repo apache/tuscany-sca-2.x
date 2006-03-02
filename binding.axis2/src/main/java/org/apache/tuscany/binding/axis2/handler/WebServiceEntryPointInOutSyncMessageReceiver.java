@@ -67,7 +67,8 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
             AxisOperation axisOperation = msgContext.getAxisOperation();
             String axisOperationName= axisOperation.getName().getLocalPart();
 
-            DataObject msgdo = AxiomHelper.fromOMElement(msgContext.getEnvelope().getBody());
+            OMElement requestOM = msgContext.getEnvelope().getBody().getFirstElement();
+            DataObject msgdo = AxiomHelper.toDataObject(requestOM);
             Sequence parmSeq = msgdo.getSequence("mixed");
             ArrayList parms = new ArrayList(parmSeq.size());
             for (int i = 0; i < parmSeq.size(); ++i) {

@@ -15,6 +15,7 @@ package org.apache.tuscany.binding.axis2.handler;
 
 import java.lang.reflect.Method;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 
 import org.apache.axis2.AxisFault;
@@ -22,9 +23,7 @@ import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
-import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContextConstants;
-import org.apache.axis2.description.AxisService;
 import org.apache.axis2.om.OMElement;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis2.util.AxiomHelper;
@@ -39,10 +38,6 @@ public class ExternalWebServiceClient {
     private ExternalService externalService;
 
     private WebServicePortMetaData wsPortMetaData;
-    
-    private ConfigurationContext configurationContext;
-    
-    private AxisService axisService;
 
     /**
      * Constructs a new ExternalWebServiceClient.
@@ -66,7 +61,9 @@ public class ExternalWebServiceClient {
 
         ServiceClient serviceClient = createServiceClient(method);
 
-        OMElement requestOM = AxiomHelper.toOMElement(method, args, wsPortMetaData);
+        String typeName = method.getName();
+        String typeNS = wsPortMetaData.getPortType().getQName().getNamespaceURI();
+        OMElement requestOM = AxiomHelper.toOMElement(args, new QName(typeNS, typeName));
 
         OMElement responseOM;
         try {
@@ -120,7 +117,7 @@ public class ExternalWebServiceClient {
         }
 
         serviceClient.setOptions(options);
-
+        
         return serviceClient;
     }
 

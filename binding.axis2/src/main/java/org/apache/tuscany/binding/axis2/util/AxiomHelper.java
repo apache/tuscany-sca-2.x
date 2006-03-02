@@ -16,10 +16,10 @@ package org.apache.tuscany.binding.axis2.util;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.io.StringReader;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.List;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -28,88 +28,20 @@ import org.apache.axis2.om.OMAbstractFactory;
 import org.apache.axis2.om.OMElement;
 import org.apache.axis2.om.OMXMLParserWrapper;
 import org.apache.axis2.om.impl.llom.factory.OMXMLBuilderFactory;
-import org.apache.tuscany.binding.axis2.handler.WebServicePortMetaData;
 import org.osoa.sca.ServiceRuntimeException;
 
 import commonj.sdo.DataObject;
-import commonj.sdo.Sequence;
+import commonj.sdo.Property;
 import commonj.sdo.helper.DataFactory;
 import commonj.sdo.helper.XMLDocument;
 import commonj.sdo.helper.XMLHelper;
 
+/**
+ * Utility methods to convert between Axis2 AXIOM, SDO DataObjects and Java objects.
+ * 
+ * Most of these methods rely on the schemas having been registered with XSDHelper.define
+ */
 public class AxiomHelper {
-
-    public static OMElement toOMElement(DataObject dataObject, String nsURI, String name) throws XMLStreamException, IOException {
-
-        PipedOutputStream pos = new PipedOutputStream();
-        PipedInputStream pis = new PipedInputStream(pos);
-        XMLHelper.INSTANCE.save(dataObject, nsURI, name, pos);
-        pos.close();
-
-        // create the parser
-        XMLStreamReader parser = XMLInputFactory.newInstance().createXMLStreamReader(pis);
-        // create the builder
-        OMXMLParserWrapper builder = OMXMLBuilderFactory.createStAXOMBuilder(OMAbstractFactory.getOMFactory(), parser);
-        // get the root element (in this case the envelope)
-        OMElement root = builder.getDocumentElement();
-
-        /*
-         * // get the writer XMLStreamWriter writer = XMLOutputFactory.newInstance() .createXMLStreamWriter(System.out); // dump the out put to
-         * console with caching root.serialize(writer); writer.flush();
-         */
-
-        return root;
-
-    }
-
-    public static DataObject fromOMElement(OMElement root) throws IOException, XMLStreamException {
-        PipedOutputStream pos = new PipedOutputStream();
-        PipedInputStream pis = new PipedInputStream(pos);
-
-        root.serialize(pos);
-        pos.flush();
-        pos.close(); // We have to close the pos to avoid the reader being
-        // blocked
-
-        XMLDocument document = XMLHelper.INSTANCE.load(pis);
-
-        return document.getRootObject();
-
-    }
-
-    /**
-     * Serialize Java Objects into an AXIOM OMElement
-     * 
-     * @param method
-     * @param args
-     * @param wsPortMetaData
-     * @return the AXIOM OMElement
-     */
-    public static OMElement toOMElement(Method method, Object[] args, WebServicePortMetaData wsPortMetaData) {
-
-        // TODO: toDataObject() doesn't work, ask Frank how it should be done
-        // DataObject dataObject = toDataObject(method, args, wsPortMetaData);
-        // String operationName = method.getName();
-        // String serviceNamespace = wsPortMetaData.getServiceName().getNamespaceURI();
-        // String xml = XMLHelper.INSTANCE.save(dataObject,serviceNamespace, operationName);
-        String xml = 
-            "<getGreetings xmlns=\"http://helloworldaxis.samples.tuscany.apache.org\">" + 
-               "<in0>World</in0>" + 
-            "</getGreetings>";
-
-        StringReader sr = new StringReader(xml);
-        XMLStreamReader parser;
-        try {
-            parser = XMLInputFactory.newInstance().createXMLStreamReader(sr);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        OMXMLParserWrapper builder = OMXMLBuilderFactory.createStAXOMBuilder(OMAbstractFactory.getOMFactory(), parser);
-        OMElement om = builder.getDocumentElement();
-
-        return om;
-    }
 
     /**
      * Deserialize an OMElement into Java Objects
@@ -119,53 +51,126 @@ public class AxiomHelper {
      * @return the array of deserialized Java objects
      */
     public static Object[] toObjects(OMElement om) {
-        DataObject dataObject;
+        DataObject dataObject = toDataObject(om);
+        Object[] os = toObjects(dataObject);
+        return os;
+    }
+
+    /**
+     * Convert a typed DataObject to Java objects
+     * 
+     * @param dataObject
+     * @return the array of Objects from the DataObject
+     */
+    public static Object[] toObjects(DataObject dataObject) {
+        List ips = dataObject.getInstanceProperties();
+        Object[] os = new Object[ips.size()];
+        for (int i = 0; i < ips.size(); i++) {
+            os[i] = dataObject.get((Property) ips.get(i));
+        }
+        return os;
+    }
+
+    /**
+     * Convert objects to an AXIOM OMElement
+     * 
+     * @param os
+     * @param typeNS
+     * @param typeName
+     * @return an AXIOM OMElement
+     */
+    public static OMElement toOMElement(Object[] os, QName typeQN) {
+        DataObject dataObject = toDataObject(os, typeQN);
+        OMElement omElement = toOMElement(dataObject, typeQN);
+        return omElement;
+    }
+
+    /**
+     * Convert a DataObject to AXIOM OMElement
+     * 
+     * @param dataObject
+     * @param typeNS
+     * @param typeName
+     * @return
+     * @throws XMLStreamException
+     * @throws IOException
+     */
+    public static OMElement toOMElement(DataObject dataObject, QName typeQN) {
         try {
-            dataObject = fromOMElement(om);
+
+            PipedOutputStream pos = new PipedOutputStream();
+            PipedInputStream pis = new PipedInputStream(pos);
+            XMLHelper.INSTANCE.save(dataObject, typeQN.getNamespaceURI(), typeQN.getLocalPart(), pos);
+            pos.close();
+
+            XMLStreamReader parser = XMLInputFactory.newInstance().createXMLStreamReader(pis);
+            OMXMLParserWrapper builder = OMXMLBuilderFactory.createStAXOMBuilder(OMAbstractFactory.getOMFactory(), parser);
+            OMElement root = builder.getDocumentElement();
+
+            return root;
+
+        } catch (IOException e) {
+            throw new ServiceRuntimeException(e);
+        } catch (XMLStreamException e) {
+            throw new ServiceRuntimeException(e);
+        } catch (FactoryConfigurationError e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
+    /**
+     * Deserialize an AXIOM OMElement into a DataObject
+     * 
+     * @param omElement
+     * @return
+     */
+    public static DataObject toDataObject(OMElement omElement) {
+        try {
+
+            PipedOutputStream pos = new PipedOutputStream();
+            PipedInputStream pis = new PipedInputStream(pos);
+
+            omElement.serialize(pos);
+            pos.flush();
+            pos.close();
+
+            XMLDocument document = XMLHelper.INSTANCE.load(pis);
+
+            return document.getRootObject();
+
         } catch (IOException e) {
             throw new ServiceRuntimeException(e);
         } catch (XMLStreamException e) {
             throw new ServiceRuntimeException(e);
         }
-        Object[] os = toObjects(dataObject);
-        return os;
     }
 
-    public static Object[] toObjects(DataObject dataObject) {
-        Sequence parmSeq = dataObject.getSequence("mixed");
-        ArrayList parms = new ArrayList(parmSeq.size());
-        for (int i = 0; i < parmSeq.size(); ++i) {
-            Object parmDO = (Object) parmSeq.getValue(i);// parm element
-            if (parmDO instanceof DataObject) {
-                Sequence nn = ((DataObject) parmDO).getSequence("mixed");
-                for (int j = 0; j < nn.size(); j++) {
-                    Object valueDO = (Object) nn.getValue(j); // data array s
-                    if (valueDO instanceof DataObject) {
-                        Sequence seqVal = ((DataObject) valueDO).getSequence("mixed");
-                        Object seqDO = seqVal.getValue(0);
-                        if (seqDO instanceof String) {
-                            parms.add(seqDO);
-                        } else {
-                            parms.add(valueDO); // no sure if this is right?
-                        }
-                    } else {
-                        parms.add(valueDO);
-                    }
-                }
-            }
-        }
-        Object[] args = parms.toArray(new Object[parms.size()]);
-        return args;
-    }
-
-    private static DataObject toDataObject(Method method, Object[] args, WebServicePortMetaData wsPortMetaData) {
-        // TODO: this doesn't work, ask Frank how it should be done
-        Class seiClass = method.getDeclaringClass();
-        DataObject dataObject = DataFactory.INSTANCE.create(seiClass);
-        for (int i = 0; i < args.length; i++) {
-            dataObject.set(i, args[i]);
+    /**
+     * Convert objects to typed DataObject
+     * 
+     * @param typeNS
+     * @param typeName
+     * @param os
+     * @return the DataObject
+     */
+    public static DataObject toDataObject(Object[] os, QName typeQN) {
+        String typeName = mangleName(typeQN.getLocalPart());
+        DataObject dataObject = DataFactory.INSTANCE.create(typeQN.getNamespaceURI(), typeName);
+        List ips = dataObject.getInstanceProperties();
+        for (int i = 0; i < ips.size(); i++) {
+            Property p = (Property) ips.get(i);
+            dataObject.set(i, os[i]);
         }
         return dataObject;
+    }
+
+    private static String mangleName(String typeName) {
+        // TODO: this will be unnecessary when SDO is fixed to do it automatically (JIRA?)
+        StringBuffer sb = new StringBuffer(typeName);
+        sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
+        sb.append("Type");
+        String s = sb.toString();
+        return s;
     }
 
 }
