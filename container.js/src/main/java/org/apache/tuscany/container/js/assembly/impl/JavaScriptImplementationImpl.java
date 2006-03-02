@@ -32,7 +32,7 @@ public class JavaScriptImplementationImpl extends ComponentImplementationImpl im
         if (isInitialized()) {
             return;
         }
-        this.resourceLoader = modelContext.getResourceLoader();
+        this.resourceLoader = modelContext.getApplicationResourceLoader();
         if(resourceLoader == null){
             throw new ModelInitException("No resource loader set on model context");
         }

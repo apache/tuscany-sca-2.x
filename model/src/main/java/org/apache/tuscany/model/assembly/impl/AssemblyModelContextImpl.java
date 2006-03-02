@@ -43,11 +43,10 @@ public class AssemblyModelContextImpl implements AssemblyModelContext {
         this.assemblyLoader = assemblyLoader;
         this.resourceLoader = resourceLoader;
         this.artifactLoader = artifactLoader;
-
-        // FIXME isn't this dangerous?
-        if (assemblyLoader!=null) {
+        
+        //FIXME the caller should configure the assemblyLoader himself
+        if (assemblyLoader!=null)
             assemblyLoader.setModelContext(this);
-        }
     }
 
     /**
@@ -58,13 +57,13 @@ public class AssemblyModelContextImpl implements AssemblyModelContext {
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelContext#getResourceLoader()
+     * @see org.apache.tuscany.model.assembly.AssemblyModelContext#getSystemResourceLoader()
      */
-    public ResourceLoader getResourceLoader() {
+    public ResourceLoader getSystemResourceLoader() {
         return resourceLoader;
     }
 
-    public ResourceLoader getArtifactResourceLoader() {
+    public ResourceLoader getApplicationResourceLoader() {
         return artifactLoader;
     }
 

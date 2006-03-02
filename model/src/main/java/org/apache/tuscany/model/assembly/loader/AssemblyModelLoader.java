@@ -78,11 +78,4 @@ public interface AssemblyModelLoader {
      */
     List<Definition> loadDefinitions(String namespace);
     
-    /**
-     * Load a class
-     * @param uri
-     * @return
-     */
-    Class loadClass(String className) throws ClassNotFoundException;
-    
 }

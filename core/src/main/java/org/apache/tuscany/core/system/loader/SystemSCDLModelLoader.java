@@ -37,7 +37,7 @@ public class SystemSCDLModelLoader implements SCDLModelLoader {
             org.apache.tuscany.core.system.assembly.SystemImplementation implementation=systemFactory.createSystemImplementation();
             Class implementationClass;
             try {
-                implementationClass=modelContext.getResourceLoader().loadClass(scdlImplementation.getClass_());
+                implementationClass=modelContext.getSystemResourceLoader().loadClass(scdlImplementation.getClass_());
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException(e);
             }

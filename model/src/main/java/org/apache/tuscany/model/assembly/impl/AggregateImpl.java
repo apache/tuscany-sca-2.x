@@ -202,7 +202,7 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
         this.modelContext=modelContext;
         
         // Populate map of WSDL imports
-        ResourceLoader resourceLoader=modelContext.getResourceLoader();
+        ResourceLoader resourceLoader=modelContext.getApplicationResourceLoader();
         WSDLReader reader=null;
         wsdlImportsMap = new HashMap<String, List<Import>>();
         for (Import wsdlImport : wsdlImports) {

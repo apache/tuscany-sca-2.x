@@ -123,10 +123,10 @@ public class WSDLServiceContractImpl extends ServiceContractImpl implements WSDL
             Class interfaceClass;
             try {
                 // Load the interface
-                interfaceClass=modelLoader.loadClass(interfaceName);
+                interfaceClass=modelContext.getApplicationResourceLoader().loadClass(interfaceName);
             } catch (ClassNotFoundException e) {
                 // Generate the interface on the fly
-                interfaceClass=generateJavaInterface(modelContext.getResourceLoader(), portType, interfaceName);
+                interfaceClass=generateJavaInterface(modelContext.getApplicationResourceLoader(), portType, interfaceName);
             }
             super.setInterface(interfaceClass);
         }
@@ -138,10 +138,10 @@ public class WSDLServiceContractImpl extends ServiceContractImpl implements WSDL
             Class interfaceClass;
             try {
                 // Load the interface
-                interfaceClass=modelLoader.loadClass(interfaceName);
+                interfaceClass=modelContext.getApplicationResourceLoader().loadClass(interfaceName);
             } catch (ClassNotFoundException e) {
                 // Generate the interface on the fly
-                interfaceClass=generateJavaInterface(modelContext.getResourceLoader(), portType, interfaceName);
+                interfaceClass=generateJavaInterface(modelContext.getApplicationResourceLoader(), portType, interfaceName);
             }
             super.setCallbackInterface(interfaceClass);
         }

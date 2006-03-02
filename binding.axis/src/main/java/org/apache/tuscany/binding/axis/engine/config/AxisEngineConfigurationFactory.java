@@ -119,7 +119,7 @@ public class AxisEngineConfigurationFactory implements EngineConfigurationFactor
             AssemblyModelContext modelContext = module.getAssemblyModelContext();
 
             // Load the .wsdd configuration
-            ResourceLoader bundleContext = modelContext.getResourceLoader();
+            ResourceLoader bundleContext = modelContext.getApplicationResourceLoader();
             InputStream wsdd;
             try {
                 URL url = bundleContext.getResource("org/apache/tuscany/binding/axis/engine/config/server-config.wsdd");

@@ -58,7 +58,7 @@ public class JavaServiceContractImpl extends ServiceContractImpl implements Java
         // Load the interface
         if (getInterface()==null && interfaceName!=null) {
             try {
-                Class interfaceClass=modelContext.getAssemblyLoader().loadClass(interfaceName);
+                Class interfaceClass=modelContext.getApplicationResourceLoader().loadClass(interfaceName);
                 setInterface(interfaceClass);
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException(e);
@@ -68,7 +68,7 @@ public class JavaServiceContractImpl extends ServiceContractImpl implements Java
         // Load the callback interface
         if (getCallbackInterface()==null && callbackInterfaceName!=null) {
             try {
-                Class callbackInterfaceClass=modelContext.getAssemblyLoader().loadClass(callbackInterfaceName);
+                Class callbackInterfaceClass=modelContext.getApplicationResourceLoader().loadClass(callbackInterfaceName);
                 setInterface(callbackInterfaceClass);
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException(e);

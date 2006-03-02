@@ -47,7 +47,6 @@ public class SCDLAssemblyModelLoaderImpl implements AssemblyModelLoader {
     private SCDLXMLReader xmlReader=new SCDLXMLReader();
     private WSDLReader wsdlReader;
     private AssemblyModelContext modelContext;
-    private ResourceLoader resourceLoader;
     
     private List<SCDLModelLoader> scdlModelLoaders;
     
@@ -70,7 +69,6 @@ public class SCDLAssemblyModelLoaderImpl implements AssemblyModelLoader {
      */
     public void setModelContext(AssemblyModelContext modelContext) {
         this.modelContext = modelContext;
-        this.resourceLoader=this.modelContext.getResourceLoader();
     }
 
     /**
@@ -182,13 +180,6 @@ public class SCDLAssemblyModelLoaderImpl implements AssemblyModelLoader {
         return definitionsByNamespace.get(namespace);
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#loadClass(java.lang.String)
-     */
-    public Class loadClass(String className) throws ClassNotFoundException {
-        return resourceLoader.loadClass(className);
-    }
-    
     /**
      * Transform a model and return the handler containing the result of the transformation.
      * @param object
