@@ -16,7 +16,6 @@ import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeComponent;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
-import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.InstanceContext;
@@ -49,10 +48,10 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
     public void testBuilder() throws Exception {
         JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
         builder.setMessageFactory(new MessageFactoryImpl());
-        HierarchicalBuilder refBuilder = new HierarchicalBuilder();
+       // HierarchicalBuilder refBuilder = new HierarchicalBuilder();
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
-        refBuilder.addBuilder(new MockInterceptorBuilder(interceptor, true));
-        builder.setPolicyBuilder(refBuilder);
+        builder.addPolicyBuilder(new MockInterceptorBuilder(interceptor, true));
+        //builder.setPolicyBuilder(refBuilder);
         AggregateContext ctx = createContext();
         builder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
         JavaTargetWireBuilder javaWireBuilder = new JavaTargetWireBuilder();

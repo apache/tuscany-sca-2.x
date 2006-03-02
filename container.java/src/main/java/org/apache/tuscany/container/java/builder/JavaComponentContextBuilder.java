@@ -16,6 +16,7 @@ import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.NoAccessorException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.builder.impl.ProxyObjectFactory;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
@@ -71,7 +72,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
     private MessageFactory messageFactory;
 
     /* the top-level builder responsible for evaluating policies */
-    private RuntimeConfigurationBuilder policyBuilder;
+    private HierarchicalBuilder policyBuilder = new HierarchicalBuilder();
 
     @Init(eager = true)
     public void init() {
@@ -105,14 +106,12 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
     }
 
     /**
-     * Sets a builder responsible for creating source-side and target-side invocation chains for a reference. The
+     * Adds a builder responsible for creating source-side and target-side invocation chains for a reference. The
      * reference builder may be hierarchical, containing other child reference builders that operate on specific
      * metadata used to construct and invocation chain.
-     * 
-     * @see org.apache.tuscany.core.builder.impl.HierarchicalBuilder
      */
-    public void setPolicyBuilder(RuntimeConfigurationBuilder builder) {
-        this.policyBuilder = builder;
+    public void addPolicyBuilder(RuntimeConfigurationBuilder builder) {
+        policyBuilder.addBuilder(builder);
     }
 
     // ----------------------------------

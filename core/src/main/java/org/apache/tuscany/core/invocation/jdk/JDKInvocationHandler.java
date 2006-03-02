@@ -84,6 +84,11 @@ public class JDKInvocationHandler implements InvocationHandler {
         TargetInvoker invoker = null;
 
         if (holder.cachedInvoker == null) {
+            if(config.getTargetInvoker() == null){
+                TargetException e= new TargetException("No target invoker configured for operation");
+                e.setIdentifier(config.getMethod().getName());
+                throw e;
+            }
             if (config.getTargetInvoker().isCacheable()) {
                 // clone and store the invoker locally
                 holder.cachedInvoker = (TargetInvoker) config.getTargetInvoker().clone();

@@ -23,6 +23,7 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.builder.impl.EntryPointRuntimeConfiguration;
+import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.QualifiedName;
@@ -53,13 +54,15 @@ import org.osoa.sca.annotations.Scope;
 @Scope("MODULE")
 public class FooBindingBuilder implements RuntimeConfigurationBuilder {
 
+    @Autowire
     private RuntimeContext runtimeContext;
 
     private ProxyFactoryFactory proxyFactoryFactory;
 
     private MessageFactory messageFactory;
 
-    private RuntimeConfigurationBuilder policyBuilder;
+    /* the top-level builder responsible for evaluating policies */
+    private HierarchicalBuilder policyBuilder = new HierarchicalBuilder();
 
     public FooBindingBuilder() {
     }
@@ -96,14 +99,12 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
     }
 
     /**
-     * Sets a builder responsible for creating source-side and target-side invocation chains for a reference. The
+     * Adds a builder responsible for creating source-side and target-side invocation chains for a reference. The
      * reference builder may be hierarchical, containing other child reference builders that operate on specific
      * metadata used to construct and invocation chain.
-     * 
-     * @see org.apache.tuscany.core.builder.impl.HierarchicalBuilder
      */
-    public void setPolicyBuilder(RuntimeConfigurationBuilder builder) {
-        policyBuilder = builder;
+    public void addPolicyBuilder(RuntimeConfigurationBuilder builder) {
+        policyBuilder.addBuilder(builder);
     }
 
     public void build(AssemblyModelObject object, Context context) throws BuilderException {

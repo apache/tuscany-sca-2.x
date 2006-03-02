@@ -13,75 +13,39 @@
  */
 package org.apache.tuscany.container.java.integration.binding;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.container.java.assembly.mock.HelloWorldService;
-import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
-import org.apache.tuscany.container.java.builder.JavaTargetWireBuilder;
 import org.apache.tuscany.container.java.builder.MockInterceptorBuilder;
 import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBindingBuilder;
-import org.apache.tuscany.container.java.mock.binding.foo.FooBindingWireBuilder;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
-import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
-import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
-import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
-import org.apache.tuscany.core.message.MessageFactory;
-import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
-import org.apache.tuscany.core.runtime.RuntimeContextImpl;
-import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
-import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
-import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 
 /**
- * 
+ * Tests basic Java to external service interaction
  * 
  * @version $Rev$ $Date$
  */
 public class JavaToExternalServiceTestCase extends TestCase {
 
-    public void testJavaToES() throws Exception {
-        MessageFactory msgFactory = new MessageFactoryImpl();
-        ProxyFactoryFactory proxyFactoryFactory =new JDKProxyFactoryFactory();
-
-        List<RuntimeConfigurationBuilder> builders = new ArrayList();
-        builders.add((new SystemComponentContextBuilder()));
-        builders.add(new SystemEntryPointBuilder());
-        builders.add(new SystemExternalServiceBuilder());
-
-        JavaComponentContextBuilder javaBuilder = new JavaComponentContextBuilder();
-        javaBuilder.setMessageFactory(msgFactory);
-        javaBuilder.setProxyFactoryFactory(proxyFactoryFactory);
-
+    /**
+     * Tests an invocation of an external service configured with the
+     * {@link org.apache.tuscany.container.java.mock.binding.foo.FooBinding} from a Java component
+     * 
+     * @throws Exception
+     */
+    public void testJavaToESInvoke() throws Exception {
+        RuntimeContext runtime = MockFactory.registerFooBinding(MockFactory.createJavaRuntime());
+        FooBindingBuilder builder = (FooBindingBuilder) ((AggregateContext) runtime.getSystemContext().getContext(
+                MockFactory.SYSTEM_CHILD)).getContext(MockFactory.FOO_BUILDER).getInstance(null);
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
-        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, true);
-        HierarchicalBuilder refBuilder = new HierarchicalBuilder();
-        refBuilder.addBuilder(interceptorBuilder);
-        javaBuilder.setPolicyBuilder(refBuilder);
-        builders.add(javaBuilder);
-
-        FooBindingBuilder fooBindingBuilder = new FooBindingBuilder();
-        fooBindingBuilder.setMessageFactory(msgFactory);
-        fooBindingBuilder.setProxyFactoryFactory(proxyFactoryFactory);
-        builders.add(fooBindingBuilder);
-        
-        DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
-
-        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, defaultWireBuilder);
-        runtime.addBuilder(new JavaTargetWireBuilder());
-        runtime.addBuilder(new FooBindingWireBuilder());
-        runtime.start();
-        runtime.getRootContext().registerModelObject(
-                MockFactory.createAggregateComponent("test.module"));
+        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
+        builder.addPolicyBuilder(interceptorBuilder);
+        runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test.module"));
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModuleWithExternalService());
         child.fireEvent(EventContext.MODULE_START, null);
@@ -95,4 +59,3 @@ public class JavaToExternalServiceTestCase extends TestCase {
     }
 
 }
-

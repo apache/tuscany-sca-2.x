@@ -13,8 +13,9 @@
  */
 package org.apache.tuscany.core.builder.impl;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
@@ -27,8 +28,10 @@ import org.apache.tuscany.model.assembly.AssemblyModelObject;
  * @version $Rev$ $Date$
  */
 public class HierarchicalBuilder implements RuntimeConfigurationBuilder {
-    private List<RuntimeConfigurationBuilder> builders = new ArrayList();
-
+    private List<RuntimeConfigurationBuilder> builders = new CopyOnWriteArrayList();
+    
+    private List<RuntimeConfigurationBuilder> readOnlyBuilders = Collections.unmodifiableList(builders); 
+    
     public HierarchicalBuilder() {
     }
 
@@ -36,6 +39,14 @@ public class HierarchicalBuilder implements RuntimeConfigurationBuilder {
         builders.add(builder);
     }
 
+    public void removeBuilder(RuntimeConfigurationBuilder builder){
+        builders.remove(builder);
+    }
+    
+    public List getBuilders(){
+        return readOnlyBuilders;
+    }
+    
     public void build(AssemblyModelObject object, Context context) throws BuilderException {
         for (RuntimeConfigurationBuilder builder : builders) {
             builder.build(object, context);
@@ -43,4 +54,5 @@ public class HierarchicalBuilder implements RuntimeConfigurationBuilder {
 
     }
 
+    
 }

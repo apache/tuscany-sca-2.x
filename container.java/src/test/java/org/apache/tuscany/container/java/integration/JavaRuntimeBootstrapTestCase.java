@@ -35,7 +35,7 @@ public class JavaRuntimeBootstrapTestCase extends TestCase {
      */
     public void testRuntimeBoot() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        InstanceContext ctx = runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD);
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
