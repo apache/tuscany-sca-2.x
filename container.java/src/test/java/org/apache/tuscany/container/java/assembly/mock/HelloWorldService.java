@@ -21,4 +21,7 @@ package org.apache.tuscany.container.java.assembly.mock;
  */
 public interface HelloWorldService {
     String hello(String name);
+    
+    public int count();
+
 }

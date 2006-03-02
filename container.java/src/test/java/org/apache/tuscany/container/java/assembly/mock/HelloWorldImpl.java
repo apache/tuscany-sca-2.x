@@ -21,9 +21,16 @@ package org.apache.tuscany.container.java.assembly.mock;
  */
 public class HelloWorldImpl implements HelloWorldService {
     
-    public String text;
+    private String text;
+    
+    private int count;
     
     public String hello(String name) {
+        ++count;
         return "Hello " + name;
+    }
+    
+    public int count() {
+        return count;
     }
 }

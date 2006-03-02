@@ -383,12 +383,14 @@ public class MockFactory {
     }
 
     /**
-     * Creates a module with an entry point named "source" configured with the {@link FooBinding} wired to a Java-based
-     * component names "target"
+     * Creates a module with an entry point named "source" configured with the {@link FooBinding} wired to a service
+     * offered by a Java-based component named "target"
+     * 
+     * @param scope the scope of the target service
      */
-    public static Module createModuleWithEntryPoint() {
+    public static Module createModuleWithEntryPoint(Scope scope) {
         EntryPoint sourceEP = createFooBindingEntryPoint("source", HelloWorldService.class);
-        Component targetComponent = createComponent("target", HelloWorldImpl.class, Scope.MODULE);
+        Component targetComponent = createComponent("target", HelloWorldImpl.class, scope);        
 
         Service targetService = factory.createService();
         JavaServiceContract targetContract = factory.createJavaServiceContract();
@@ -536,11 +538,8 @@ public class MockFactory {
         JavaComponentContextBuilder javaBuilder = (JavaComponentContextBuilder) child.getContext(MockFactory.JAVA_BUILDER)
                 .getInstance(null);
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
-        child
-                .registerModelObject(MockFactory.createSystemComponent(FOO_BUILDER, FooBindingBuilder.class,
-                        Scope.MODULE));
-        child.registerModelObject(MockFactory
-                .createSystemComponent(FOO_WIRE_BUILDER, FooBindingWireBuilder.class, Scope.MODULE));
+        child.registerModelObject(MockFactory.createSystemComponent(FOO_BUILDER, FooBindingBuilder.class, Scope.MODULE));
+        child.registerModelObject(MockFactory.createSystemComponent(FOO_WIRE_BUILDER, FooBindingWireBuilder.class, Scope.MODULE));
         // since the child context is already started, we need to manually retrieve the components to init them
         Assert.assertNotNull(child.getContext(FOO_BUILDER).getInstance(null));
         Assert.assertNotNull(child.getContext(FOO_WIRE_BUILDER).getInstance(null));

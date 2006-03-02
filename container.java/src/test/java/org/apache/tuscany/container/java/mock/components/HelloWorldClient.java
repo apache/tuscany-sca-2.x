@@ -22,6 +22,8 @@ import org.apache.tuscany.container.java.assembly.mock.HelloWorldService;
  */
 public class HelloWorldClient implements HelloWorldService{
 
+    private int count;
+    
     public HelloWorldClient() {
     }
 
@@ -32,7 +34,12 @@ public class HelloWorldClient implements HelloWorldService{
     }
 
     public String hello(String name) {
+        ++count;
         return service.hello(name);
+    }
+
+    public int count() {
+        return count;
     }
     
 }
