@@ -57,4 +57,14 @@ public class MockStaticInvoker implements TargetInvoker {
         throw new IllegalStateException("This interceptor must be the last interceptor in an interceptor chain");
     }
 
+    public Object clone() {
+        try {
+            MockStaticInvoker invoker = (MockStaticInvoker) super.clone();
+            invoker.instance = this.instance;
+            invoker.operation = this.operation;
+            return invoker;
+        } catch (CloneNotSupportedException e) {
+            return null; // will not happen
+        }
+    }
 }

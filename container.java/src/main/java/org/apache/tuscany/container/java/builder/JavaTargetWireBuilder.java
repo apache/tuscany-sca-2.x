@@ -61,7 +61,7 @@ public class JavaTargetWireBuilder implements WireBuilder {
                 // the source scope is shorter than the target, so the invoker can cache the target instance
                 invoker.setCacheable(false);
             } else {
-                invoker.setCacheable(true);
+                invoker.setCacheable(true); //TODO set to true
             }
             sourceInvocationConfig.setTargetInvoker(invoker);
         }

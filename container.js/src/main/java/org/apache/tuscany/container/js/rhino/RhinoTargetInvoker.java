@@ -34,8 +34,8 @@ public class RhinoTargetInvoker implements TargetInvoker {
             }
             return target.invoke(operation, payload);
         } else {
-            return ((RhinoScript) container.getContext(name.getPartName()).getImplementationInstance()).invoke(operation,
-                    payload);
+            return ((RhinoScript) container.getContext(name.getPartName()).getImplementationInstance())
+                    .invoke(operation, payload);
         }
     }
 
@@ -65,4 +65,17 @@ public class RhinoTargetInvoker implements TargetInvoker {
         throw new IllegalStateException("This interceptor must be the last interceptor in an interceptor chain");
     }
 
+    public Object clone() {
+        try {
+            RhinoTargetInvoker invoker = (RhinoTargetInvoker) super.clone();
+            invoker.container = this.container;
+            invoker.cacheable = this.cacheable;
+            invoker.name = this.name;
+            invoker.operation = this.operation;
+            invoker.target = null;
+            return invoker;
+        } catch (CloneNotSupportedException e) {
+            return null; // will not happen
+        }
+    }
 }

@@ -19,10 +19,13 @@ package org.apache.tuscany.core.invocation.jdk;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.invocation.Interceptor;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
+import org.apache.tuscany.core.invocation.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.MessageFactory;
 
@@ -35,7 +38,14 @@ public class JDKInvocationHandler implements InvocationHandler {
 
     private MessageFactory messageFactory;
 
-    private Map<Method, InvocationConfiguration> configuration;
+    /*
+     * an association of an operation to configuration holder. The holder contains the master invocation configuration
+     * and a locale clone of the master TargetInvoker. TargetInvokers will be cloned by the handler and placed in the
+     * holder if they are cacheable. This allows optimizations such as avoiding target resolution when a source refers
+     * to a target of greater scope since the target reference can be maintained by the invoker. When a target invoker
+     * is not cacheable, the master associated with the invocation configuration will be used.
+     */
+    private Map<Method, ConfigHolder> configuration;
 
     // ----------------------------------
     // Constructors
@@ -43,7 +53,11 @@ public class JDKInvocationHandler implements InvocationHandler {
 
     public JDKInvocationHandler(MessageFactory messageFactory, Map<Method, InvocationConfiguration> configuration) {
         assert (configuration != null) : "Configuration not specified";
-        this.configuration = configuration;
+        this.configuration = new HashMap(configuration.size());
+        for (Map.Entry<Method, InvocationConfiguration> entry : configuration.entrySet()) {
+            this.configuration.put(entry.getKey(), new ConfigHolder(entry.getValue()));
+        }
+        // this.configuration = configuration;
         this.messageFactory = messageFactory;
     }
 
@@ -56,9 +70,29 @@ public class JDKInvocationHandler implements InvocationHandler {
      */
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Interceptor headInterceptor = null;
-        InvocationConfiguration config = configuration.get(method);
+        ConfigHolder holder = configuration.get(method);
+        if (holder == null) {
+            TargetException e = new TargetException("Operation not configured");
+            e.setIdentifier(method.getName());
+            throw e;
+        }
+        InvocationConfiguration config = holder.config;
         if (config != null) {
             headInterceptor = config.getSourceInterceptor();
+        }
+
+        TargetInvoker invoker = null;
+
+        if (holder.cachedInvoker == null) {
+            if (config.getTargetInvoker().isCacheable()) {
+                // clone and store the invoker locally
+                holder.cachedInvoker = (TargetInvoker) config.getTargetInvoker().clone();
+                invoker = holder.cachedInvoker;
+            } else {
+                invoker = config.getTargetInvoker();
+            }
+        } else {
+            invoker = config.getTargetInvoker();
         }
         if (headInterceptor == null) {
             try {
@@ -73,7 +107,7 @@ public class JDKInvocationHandler implements InvocationHandler {
             }
         } else {
             Message msg = messageFactory.createMessage();
-            msg.setTargetInvoker(config.getTargetInvoker());
+            msg.setTargetInvoker(invoker);// config.getTargetInvoker());
             msg.setBody(args);
             // dispatch the invocation down the chain and get the response
             Message resp = headInterceptor.invoke(msg);
@@ -84,6 +118,21 @@ public class JDKInvocationHandler implements InvocationHandler {
             }
             return body;
         }
+    }
+
+    /**
+     * A holder used to associate an invocation configuration with a local copy of a target invoker that was previously
+     * cloned from the configuration master
+     */
+    private class ConfigHolder {
+
+        public ConfigHolder(InvocationConfiguration config) {
+            this.config = config;
+        }
+
+        InvocationConfiguration config;
+
+        TargetInvoker cachedInvoker;
     }
 
 }

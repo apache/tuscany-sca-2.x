@@ -44,7 +44,7 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
         name = serviceName;
         this.container = container;
     }
-    
+
     /**
      * Returns whether the target is cacheable.
      */
@@ -75,4 +75,12 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
         }
     }
 
+    public Object clone() {
+        ScopedJavaComponentInvoker invoker = (ScopedJavaComponentInvoker) super.clone();
+        invoker.target = null;
+        invoker.cacheable = this.cacheable;
+        invoker.container = this.container;
+        invoker.name = this.name;
+        return invoker;
+    }
 }

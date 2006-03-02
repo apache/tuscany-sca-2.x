@@ -19,8 +19,8 @@ package org.apache.tuscany.container.java.handler;
 import java.lang.reflect.Method;
 
 /**
- * Caches component instances that do not need to be resolved for every invocation, e.g. an invocation originating from a lesser
- * scope intended for a target with a wider scope
+ * Caches component instances that do not need to be resolved for every invocation, e.g. an invocation originating from
+ * a lesser scope intended for a target with a wider scope
  * 
  * @version $Rev$ $Date$
  */
@@ -38,8 +38,13 @@ public class StaticJavaComponentTargetInvoker extends AbstractJavaComponentInvok
         return instance;
     }
 
-    public boolean isCacheable(){
+    public boolean isCacheable() {
         return true;
     }
 
+    public Object clone() {
+        StaticJavaComponentTargetInvoker invoker = (StaticJavaComponentTargetInvoker) super.clone();
+        invoker.instance = null;
+        return invoker;
+    }
 }

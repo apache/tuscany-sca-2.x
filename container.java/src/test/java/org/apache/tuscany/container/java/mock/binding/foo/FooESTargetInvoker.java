@@ -82,4 +82,16 @@ public class FooESTargetInvoker implements TargetInvoker {
         throw new UnsupportedOperationException();
     }
 
+    public Object clone() {
+        try {
+            FooESTargetInvoker invoker = (FooESTargetInvoker) super.clone();
+            invoker.container = container;
+            invoker.context = this.context;
+            invoker.name = this.name;
+            return invoker;
+        } catch (CloneNotSupportedException e) {
+            return null; // will not happen
+        }
+    }
+
 }

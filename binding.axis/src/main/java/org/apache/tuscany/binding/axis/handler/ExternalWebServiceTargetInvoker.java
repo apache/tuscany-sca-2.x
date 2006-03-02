@@ -93,4 +93,17 @@ public class ExternalWebServiceTargetInvoker implements TargetInvoker {
         throw new UnsupportedOperationException();
     }
 
+    public Object clone() {
+        try {
+            ExternalWebServiceTargetInvoker invoker = (ExternalWebServiceTargetInvoker) super.clone();
+            invoker.container = container;
+            invoker.context = this.context;
+            invoker.esName = this.esName;
+            invoker.method = this.method;
+            invoker.serviceName = this.serviceName;
+            return invoker;
+        } catch (CloneNotSupportedException e) {
+            return null; // will not happen
+        }
+    }  
 }

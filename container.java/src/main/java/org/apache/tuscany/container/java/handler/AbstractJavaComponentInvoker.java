@@ -44,12 +44,13 @@ public abstract class AbstractJavaComponentInvoker implements TargetInvoker {
 
     public Object invokeTarget(Object payload) throws InvocationTargetException {
         try {
-            Object instance=getInstance();
+            Object instance = getInstance();
             if (!operation.getDeclaringClass().isInstance(instance)) {
-                Set methods=JavaIntrospectionHelper.getAllUniqueMethods(instance.getClass());
-                Method newOperation=JavaIntrospectionHelper.findClosestMatchingMethod(operation.getName(), operation.getParameterTypes(), methods);
-                if (newOperation!=null)
-                    operation=newOperation;
+                Set methods = JavaIntrospectionHelper.getAllUniqueMethods(instance.getClass());
+                Method newOperation = JavaIntrospectionHelper.findClosestMatchingMethod(operation.getName(), operation
+                        .getParameterTypes(), methods);
+                if (newOperation != null)
+                    operation = newOperation;
             }
             if (payload != null && !payload.getClass().isArray()) {
                 return operation.invoke(instance, payload);
@@ -79,4 +80,13 @@ public abstract class AbstractJavaComponentInvoker implements TargetInvoker {
         throw new IllegalStateException("This interceptor must be the last interceptor in an interceptor chain");
     }
 
+    public Object clone(){
+        try {
+            AbstractJavaComponentInvoker clone = (AbstractJavaComponentInvoker) super.clone();
+            clone.operation = this.operation;
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            return null; // will not happen
+        }
+    }
 }

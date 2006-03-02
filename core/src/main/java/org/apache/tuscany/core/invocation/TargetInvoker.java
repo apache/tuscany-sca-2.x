@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationTargetException;
  * 
  * @version $Rev$ $Date$
  */
-public interface TargetInvoker extends Interceptor {
+public interface TargetInvoker extends Interceptor, Cloneable{
 
     /**
      * Responsible for invoking an operation on a target with the given payload
@@ -39,4 +39,6 @@ public interface TargetInvoker extends Interceptor {
      * Determines whether the proxy can be cached on the client/source side
      */
     public boolean isCacheable();
+    
+    public Object clone();
 }
