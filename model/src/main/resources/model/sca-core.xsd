@@ -41,7 +41,7 @@
 		<anyAttribute namespace="##any" processContents="lax"/>
 	</complexType>
 
-	<complexType name="Property" abstract="true">
+	<complexType name="Property">
 		<sequence>
 		    <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</sequence>

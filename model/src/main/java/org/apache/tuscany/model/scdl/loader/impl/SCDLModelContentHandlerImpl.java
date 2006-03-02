@@ -38,6 +38,7 @@ import org.apache.tuscany.model.assembly.ServiceContract;
 import org.apache.tuscany.model.assembly.ServiceURI;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 import org.apache.tuscany.model.assembly.Wire;
+import org.apache.tuscany.model.assembly.impl.PropertyImpl;
 import org.apache.tuscany.model.scdl.Binding;
 import org.apache.tuscany.model.scdl.Component;
 import org.apache.tuscany.model.scdl.ComponentType;
@@ -66,10 +67,12 @@ import org.apache.tuscany.model.types.java.impl.JavaServiceContractImpl;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 import org.apache.tuscany.model.types.wsdl.impl.WSDLServiceContractImpl;
 import org.apache.tuscany.model.util.ModelContentHandler;
+import org.apache.tuscany.sdo.util.SDOUtil;
 import org.eclipse.emf.ecore.EObject;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Sequence;
+import commonj.sdo.Type;
 
 /**
  * A model content handler that transforms an SCDL model into an assembly model.
@@ -350,8 +353,17 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
         property.setDefaultValue(object.getDefault());
         property.setMany(object.isMany());
         property.setRequired(object.isRequired());
-        //FIXME derive the Java type from the XSD type name
-        property.setType(String.class);
+        
+        Object dataType=object.getDataType();
+        if (dataType!=null) {
+            String typeName=dataType.toString();
+            typeName=typeName.substring(typeName.indexOf(':')+1);
+            Type type=SDOUtil.getXSDSDOType(typeName);
+            ((PropertyImpl)property).setSDOType(type);
+            property.setType(type.getInstanceClass());
+        } else {
+            property.setType(String.class);
+        }
         
         linkers.add(new Runnable() {
             public void run() {
@@ -443,11 +455,17 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
                     }
 
                     // Get the property value text and convert to the expected java type
-                    //FIXME just handle strings for now
                     Sequence text = propertyElement.getSequence("any");
                     if (text != null && text.size() != 0) {
-                        Object rawValue = text.getValue(0);
-                        configuredProperty.setValue(rawValue);
+                        String rawValue = text.getValue(0).toString();
+                        Type type=((PropertyImpl)configuredProperty.getProperty()).getSDOType();
+                        Object value;
+                        if (type!=null) {
+                            value=SDOUtil.createFromString(type, rawValue);
+                        } else {
+                            value=rawValue;
+                        }
+                        configuredProperty.setValue(value);
                     }
                 }
             }

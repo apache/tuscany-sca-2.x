@@ -17,6 +17,7 @@
 package org.apache.tuscany.model.assembly;
 
 
+
 /**
  * A description of a property that can be used to configure a component.
  */

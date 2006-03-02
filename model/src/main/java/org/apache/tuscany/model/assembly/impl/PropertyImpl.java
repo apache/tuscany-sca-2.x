@@ -16,7 +16,17 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Property;
+import org.apache.tuscany.sdo.util.SDOUtil;
+
+import commonj.sdo.Type;
 
 /**
  * An implementation of Property.
@@ -28,6 +38,8 @@ public class PropertyImpl extends ExtensibleImpl implements Property {
     private boolean many;
     private boolean required;
     private Class type;
+    
+    private Type sdoType;
 
     /**
      * Constructor
@@ -108,5 +120,59 @@ public class PropertyImpl extends ExtensibleImpl implements Property {
         checkNotFrozen();
         type=value;
     }
+
+    /**
+     * @param sdoType The sdoType to set.
+     */
+    public void setSDOType(Type sdoType) {
+        checkNotFrozen();
+        this.sdoType = sdoType;
+    }
     
+    /**
+     * @return Returns the sdoType.
+     */
+    public Type getSDOType() {
+        return sdoType;
+    }
+    
+    private final static Map<Class, Type> typeMapping=new HashMap<Class, Type>();
+    
+    static {
+        typeMapping.put(BigDecimal.class, SDOUtil.getXSDSDOType("decimal"));
+        typeMapping.put(BigInteger.class, SDOUtil.getXSDSDOType("integer"));
+        typeMapping.put(boolean.class, SDOUtil.getXSDSDOType("boolean"));
+        typeMapping.put(Boolean.class, SDOUtil.getXSDSDOType("boolean"));
+        typeMapping.put(byte.class, SDOUtil.getXSDSDOType("byte"));
+        typeMapping.put(Byte.class, SDOUtil.getXSDSDOType("Byte"));
+        typeMapping.put(byte[].class, SDOUtil.getXSDSDOType("hexBinary"));
+        typeMapping.put(char.class, SDOUtil.getXSDSDOType("string"));
+        typeMapping.put(Character.class, SDOUtil.getXSDSDOType("string"));
+        typeMapping.put(Date.class, SDOUtil.getXSDSDOType("dateTime"));
+        typeMapping.put(double.class, SDOUtil.getXSDSDOType("double"));
+        typeMapping.put(Double.class, SDOUtil.getXSDSDOType("double"));
+        typeMapping.put(float.class, SDOUtil.getXSDSDOType("float"));
+        typeMapping.put(Float.class, SDOUtil.getXSDSDOType("float"));
+        typeMapping.put(int.class, SDOUtil.getXSDSDOType("int"));
+        typeMapping.put(Integer.class, SDOUtil.getXSDSDOType("int"));
+        typeMapping.put(long.class, SDOUtil.getXSDSDOType("long"));
+        typeMapping.put(Long.class, SDOUtil.getXSDSDOType("long"));
+        typeMapping.put(short.class, SDOUtil.getXSDSDOType("short"));
+        typeMapping.put(Short.class, SDOUtil.getXSDSDOType("short"));
+        typeMapping.put(String.class, SDOUtil.getXSDSDOType("string"));
+    }
+
+    /*
+     * @see org.apache.tuscany.model.assembly.impl.ExtensibleImpl#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
+     */
+    public void initialize(AssemblyModelContext modelContext) {
+        if (isInitialized())
+            return;
+        super.initialize(modelContext);
+
+        // Get the SDO type corresponding to the property's Java type
+        if (sdoType==null) {
+            sdoType=typeMapping.get(type);
+        }
+    }
 }
