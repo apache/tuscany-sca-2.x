@@ -65,6 +65,7 @@ public interface RuntimeContext extends AutowireContext, ConfigurationContext {
     /**
      * Adds a wire builder to the runtime
      */
+    @Deprecated
     public void addBuilder(WireBuilder builder);
 
     /**
