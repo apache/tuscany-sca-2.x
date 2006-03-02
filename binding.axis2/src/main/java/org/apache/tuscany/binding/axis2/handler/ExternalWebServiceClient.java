@@ -22,7 +22,9 @@ import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
+import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContextConstants;
+import org.apache.axis2.description.AxisService;
 import org.apache.axis2.om.OMElement;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis2.util.AxiomHelper;
@@ -37,6 +39,10 @@ public class ExternalWebServiceClient {
     private ExternalService externalService;
 
     private WebServicePortMetaData wsPortMetaData;
+    
+    private ConfigurationContext configurationContext;
+    
+    private AxisService axisService;
 
     /**
      * Constructs a new ExternalWebServiceClient.
