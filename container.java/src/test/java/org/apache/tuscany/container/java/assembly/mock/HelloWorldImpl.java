@@ -20,6 +20,9 @@ package org.apache.tuscany.container.java.assembly.mock;
  * @version $Rev$ $Date$
  */
 public class HelloWorldImpl implements HelloWorldService {
+    
+    public String text;
+    
     public String hello(String name) {
         return "Hello " + name;
     }

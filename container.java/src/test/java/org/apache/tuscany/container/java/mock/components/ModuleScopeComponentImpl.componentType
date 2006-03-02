@@ -20,8 +20,10 @@
     <service name="ModuleScopeComponent" scope="module">
         <interface.java interface="janus.test.component.ModuleScopeComponent"/>
     </service>
+    <!--  Not supported, not in the spec
     <property.java name="mInt" class="java.lang.Integer" default="default"/>
     <property.java name="foo" class="java.lang.String" default="default"/>
+    -->
     <reference name="mGenericComponent" multiplicity="0..1">
         <interface.java interface="test.org.apache.tuscany.container.java.components.AbstractGenericComponent"/>
     </reference>
