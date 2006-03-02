@@ -26,7 +26,6 @@ import java.util.Map;
 
 import javax.wsdl.Definition;
 import javax.wsdl.Import;
-import javax.wsdl.xml.WSDLReader;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.model.assembly.Aggregate;
@@ -39,6 +38,8 @@ import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.ServiceURI;
 import org.apache.tuscany.model.assembly.Wire;
+
+import commonj.sdo.helper.XSDHelper;
 
 /**
  * An implementation of Aggregate.
@@ -203,7 +204,6 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
         
         // Populate map of WSDL imports
         ResourceLoader resourceLoader=modelContext.getApplicationResourceLoader();
-        WSDLReader reader=null;
         wsdlImportsMap = new HashMap<String, List<Import>>();
         for (Import wsdlImport : wsdlImports) {
             String namespace=wsdlImport.getNamespaceURI();
@@ -223,6 +223,7 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
                     if (url==null)
                         throw new IllegalArgumentException("Cannot find "+location);
                     definition = modelContext.getAssemblyLoader().loadDefinition(url.toString());
+                    XSDHelper.INSTANCE.define (url.openStream(), null);
                 } catch (IOException e) {
                     throw new IllegalArgumentException(e);
                 }
