@@ -17,21 +17,17 @@
 package org.apache.tuscany.tomcat.integration;
 
 import java.io.File;
-import java.net.URLClassLoader;
-import java.net.URL;
 
 import junit.framework.TestCase;
+import org.apache.catalina.Valve;
+import org.apache.catalina.connector.Connector;
+import org.apache.catalina.connector.Request;
+import org.apache.catalina.connector.Response;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardEngine;
 import org.apache.catalina.core.StandardHost;
-import org.apache.catalina.core.StandardServer;
-import org.apache.catalina.core.StandardService;
 import org.apache.catalina.core.StandardWrapper;
 import org.apache.catalina.startup.ContextConfig;
-import org.apache.catalina.Valve;
-import org.apache.catalina.connector.Request;
-import org.apache.catalina.connector.Response;
-import org.apache.catalina.connector.Connector;
 
 import org.apache.tuscany.tomcat.TuscanyHost;
 import org.apache.tuscany.tomcat.TuscanyValve;
@@ -41,10 +37,10 @@ import org.apache.tuscany.tomcat.TuscanyValve;
  */
 public class TomcatIntegrationTestCase extends TestCase {
     private File app1;
-    private StandardServer server;
     private StandardHost host;
     private Request request;
     private Response response;
+    private StandardEngine engine;
 
     public void testRuntimeIntegration() throws Exception {
         StandardContext ctx = new StandardContext();
@@ -81,11 +77,11 @@ public class TomcatIntegrationTestCase extends TestCase {
         super.setUp();
         app1 = new File(getClass().getResource("/app1").toURI());
         setupTomcat();
-        server.start();
+        engine.start();
     }
 
     protected void tearDown() throws Exception {
-        server.stop();
+        engine.stop();
         super.tearDown();
     }
 
@@ -93,17 +89,11 @@ public class TomcatIntegrationTestCase extends TestCase {
         File baseDir = new File(app1, "../../tomcat").getCanonicalFile();
         File appBase = new File(baseDir, "webapps").getCanonicalFile();
 
-        // build a typical Tomcat configuration
-        server = new StandardServer();
-        StandardService service = new StandardService();
-        service.setName("Catalina");
-        server.addService(service);
-
-        StandardEngine engine = new StandardEngine();
+        // Configure a Tomcat Engine
+        engine = new StandardEngine();
         engine.setName("Catalina");
         engine.setDefaultHost("localhost");
         engine.setBaseDir(baseDir.getAbsolutePath());
-        service.setContainer(engine);
 
         host = new TuscanyHost();
         host.setName("localhost");
