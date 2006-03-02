@@ -79,6 +79,7 @@ public interface AggregateContext extends InstanceContext {
      * Returns the aggregate managed by this aggregate context 
      * @return
      */
+    @Deprecated
     public Aggregate getAggregate();
     
 }
