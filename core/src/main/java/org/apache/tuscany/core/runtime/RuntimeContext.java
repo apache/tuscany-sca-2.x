@@ -71,6 +71,7 @@ public interface RuntimeContext extends AutowireContext, ConfigurationContext {
     /**
      * Adds an SCDL model loader to the runtime
      */
+    @Deprecated
     public void addLoader(SCDLModelLoader loader);
 
     /**
