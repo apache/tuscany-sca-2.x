@@ -26,6 +26,16 @@
     <description>Implementation of the SCA Web Services binding using Axis2.</description>
     <version>SNAPSHOT</version>
 
+    <repositories>
+        <repository>
+            <id>jeremy</id>
+            <url>http://people.apache.org/~jboynes/maven2</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany</groupId>
