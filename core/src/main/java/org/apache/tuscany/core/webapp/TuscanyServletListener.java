@@ -16,6 +16,17 @@
  */
 package org.apache.tuscany.core.webapp;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+
+import org.osoa.sca.CurrentModuleContext;
+import org.osoa.sca.ModuleContext;
+
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.common.resource.ResourceLoader;
@@ -42,12 +53,6 @@ import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * ServletContextListener that can be added to a standard web application to boot
  * a Tuscany runtime inside that application. All implementation classes should
@@ -55,7 +60,7 @@ import java.util.List;
  *
  * @version $Rev: 380792 $ $Date: 2006-02-24 11:25:11 -0800 (Fri, 24 Feb 2006) $
  */
-public class TuscanyServletListener implements ServletContextListener {
+public class TuscanyServletListener implements ServletContextListener, HttpSessionListener {
     public static final String SCA_COMPONENT_NAME = "org.apache.tuscany.core.webapp.ModuleComponentName";
     public static final String MODULE_COMPONENT_NAME = "org.apache.tuscany.core.webapp.ModuleComponentContext";
     public static final String TUSCANY_RUNTIME_NAME = RuntimeContext.class.getName();
@@ -66,7 +71,7 @@ public class TuscanyServletListener implements ServletContextListener {
     private AggregateContext systemModuleComponentContext;
     private AggregateContext moduleContext;
 
-    private final static String SYSTEM_MODULE_COMPONENT = "org.apache.tuscany.core.system";
+    private static final String SYSTEM_MODULE_COMPONENT = "org.apache.tuscany.core.system";
 
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         ServletContext servletContext = servletContextEvent.getServletContext();
@@ -92,6 +97,21 @@ public class TuscanyServletListener implements ServletContextListener {
         runtimeContext.stop();
         servletContextEvent.getServletContext().removeAttribute(MODULE_COMPONENT_NAME);
         servletContextEvent.getServletContext().removeAttribute(TUSCANY_RUNTIME_NAME);
+    }
+
+    public void sessionCreated(HttpSessionEvent event) {
+        // do nothing since sessions are lazily created in {@link TuscanyRequestFilter}
+    }
+
+    public void sessionDestroyed(HttpSessionEvent event) {
+        // todo do we actually need to bind the module context to the thread to fire this event?
+        ModuleContext oldContext = CurrentModuleContext.getContext();
+        try {
+            ContextBinder.BINDER.setContext((ModuleContext) moduleContext);
+            moduleContext.fireEvent(EventContext.SESSION_END, event.getSession());
+        } finally{
+            ContextBinder.BINDER.setContext(oldContext);
+        }
     }
 
     private void bootRuntime(String name, String uri, MonitorFactory monitorFactory) throws ConfigurationException {

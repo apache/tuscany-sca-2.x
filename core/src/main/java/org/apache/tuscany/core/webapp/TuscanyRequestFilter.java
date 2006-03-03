@@ -27,13 +27,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.osoa.sca.SCA;
 import org.osoa.sca.ModuleContext;
 import org.osoa.sca.CurrentModuleContext;
 
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.webapp.TuscanyWebAppRuntime;
 import org.apache.tuscany.core.context.webapp.LazyHTTPSessionId;
 
 /**
@@ -46,8 +44,6 @@ import org.apache.tuscany.core.context.webapp.LazyHTTPSessionId;
  * @version $Rev: 379957 $ $Date: 2006-02-22 14:58:24 -0800 (Wed, 22 Feb 2006) $
  */
 public class TuscanyRequestFilter implements Filter {
-    private static final ContextBinder BINDER = new ContextBinder();
-
     private AggregateContext moduleContext;
 
     public TuscanyRequestFilter() {
@@ -65,7 +61,7 @@ public class TuscanyRequestFilter implements Filter {
         ModuleContext oldContext = CurrentModuleContext.getContext();
         try {
             // Set the current module context
-            BINDER.setContext((ModuleContext) moduleContext);
+            ContextBinder.BINDER.setContext((ModuleContext) moduleContext);
 
             // Handle a request
             if (request instanceof HttpServletRequest) {
@@ -94,22 +90,8 @@ public class TuscanyRequestFilter implements Filter {
             } catch (Exception e) {
                 throw new ServletException(e);
             }
-            BINDER.setContext(oldContext);
-        }
-
-    }
-
-    private static class ContextBinder extends SCA {
-        public void setContext(ModuleContext context) {
-            setModuleContext(context);
-        }
-
-        public void start() {
-            throw new AssertionError();
-        }
-
-        public void stop() {
-            throw new AssertionError();
+            ContextBinder.BINDER.setContext(oldContext);
         }
     }
+
 }
