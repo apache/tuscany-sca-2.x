@@ -58,8 +58,11 @@ import org.apache.axis2.transport.http.ServletBasedOutTransportInfo;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EntryPointContext;
+import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.webapp.TuscanyWebAppRuntime;
 import org.apache.tuscany.core.runtime.RuntimeContext;
+import org.apache.tuscany.core.webapp.TuscanyServletListener;
+import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.EntryPoint;
@@ -247,16 +250,29 @@ public class WebServiceEntryPointServlet extends HttpServlet  {
         RuntimeContext tuscanyRuntime = getTuscanyWebAppRuntime(config);
         
         // Get the current SCA module context
-        AggregateContext moduleContext = tuscanyRuntime.getRootContext();//.getModuleComponentContext();
+        
+       // AggregateContext moduleContext = (AggregateContext) tuscanyRuntime.getAggregate().getAssemblyModelContext();//getRootContext();//.getModuleComponentContext();
         try {
             tuscanyRuntime.start();
+            AggregateContext moduleContext = tuscanyRuntime.getRootContext();
             Module module = (Module) moduleContext.getAggregate();
-//           AssemblyModelContext modelContext = module.getAssemblyModelContext();
+            module = (Module)module.getComponents().get(0).getComponentImplementation();
+
+            
+           
             
 
-            for (Iterator i = module.getEntryPoints().iterator(); i.hasNext();) {
+            for (Iterator i =  module.getEntryPoints().iterator(); i.hasNext();) {
                 EntryPoint entryPoint = (EntryPoint) i.next();
                 final String epName = entryPoint.getName();
+                
+                
+                ServletContext servletContext= config.getServletContext() ;
+                AggregateContext moduleContext2 = (AggregateContext) servletContext.getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
+                InstanceContext entryPointContext = moduleContext2.getContext(epName);
+                
+       
+                 
                 Binding binding = (Binding) entryPoint.getBindings().get(0);
                 if (binding instanceof WebServiceBinding) {
 
@@ -266,9 +282,13 @@ public class WebServiceEntryPointServlet extends HttpServlet  {
                     QName qname = new QName(definition.getTargetNamespace(), port.getName());
                     if (qname != null) {
                         
-                        WebServiceEntryPointInOutSyncMessageReceiver msgrec = new WebServiceEntryPointInOutSyncMessageReceiver(moduleContext,
-                                entryPoint, (EntryPointContext)moduleContext.getContext(epName));
                         WebServicePortMetaData wsdlPortInfo = new WebServicePortMetaData(definition, port, null, false);
+                        
+                        WebServiceEntryPointInOutSyncMessageReceiver msgrec = new WebServiceEntryPointInOutSyncMessageReceiver(moduleContext,
+                                entryPoint,                           
+                                        (EntryPointContext)   entryPointContext,
+                                        wsdlPortInfo);
+                        
 
                         AxisServiceGroup serviceGroup = new AxisServiceGroup(axisConfig);
                         axisConfig.addMessageReceiver(WebServiceEntryPointInOutSyncMessageReceiver.MEP_URL, msgrec);
@@ -308,7 +328,7 @@ public class WebServiceEntryPointServlet extends HttpServlet  {
                 }
             }
         } finally{
-            tuscanyRuntime.stop();
+           // tuscanyRuntime.stop();
         }
     }
 
