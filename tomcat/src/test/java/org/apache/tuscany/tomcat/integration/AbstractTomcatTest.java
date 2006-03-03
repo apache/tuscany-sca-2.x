@@ -1,25 +1,44 @@
+/**
+ *
+ * Copyright 2006 The Apache Software Foundation
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.apache.tuscany.tomcat.integration;
 
 import junit.framework.TestCase;
 import org.apache.catalina.Host;
+import org.apache.catalina.Globals;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.catalina.core.StandardEngine;
+import org.apache.catalina.core.ApplicationFilterFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Enumeration;
+import java.util.Collections;
 
 /**
- * Created by IntelliJ IDEA.
- * User: jboynes
- * Date: Mar 2, 2006
- * Time: 12:20:07 PM
- * To change this template use File | Settings | File Templates.
+ * @version $Rev$ $Date$
  */
 public class AbstractTomcatTest extends TestCase {
     protected Host host;
-    protected Request request;
-    protected Response response;
+    protected MockRequest request;
+    protected MockResponse response;
     protected StandardEngine engine;
 
     protected void setupTomcat(File baseDir, Host host) throws Exception {
@@ -38,11 +57,128 @@ public class AbstractTomcatTest extends TestCase {
 
         // build a empty request/response
         Connector connector = new Connector("HTTP/1.1");
-        request = connector.createRequest();
-        org.apache.coyote.Request coyoteRequest = new org.apache.coyote.Request();
-        request.setCoyoteRequest(coyoteRequest);
-        response = connector.createResponse();
-        org.apache.coyote.Response coyoteResponse = new org.apache.coyote.Response();
-        response.setCoyoteResponse(coyoteResponse);
+        request = new MockRequest();
+        request.setConnector(connector);
+        response = new MockResponse();
+        request.setResponse(response);
+        request.setMethod("POST");
+        request.setScheme("http");
+    }
+
+    public static class MockRequest extends Request {
+        private String method;
+        private String scheme;
+        private String requestURI;
+        private String contentType;
+        private Map<String,String> headers = new HashMap();
+
+        public void setScheme(String scheme) {
+            this.scheme = scheme;
+        }
+
+        public void setMethod(String method) {
+            this.method = method;
+        }
+
+        public void setRequestURI(String requestURI) {
+            this.requestURI = requestURI;
+        }
+
+        public String getScheme() {
+            return scheme;
+        }
+
+        public String getMethod() {
+            return method;
+        }
+
+        public int getServerPort() {
+            return 80;
+        }
+
+        public String getServerName() {
+            return "localhost";
+        }
+
+        public String getRequestURI() {
+            return requestURI;
+        }
+
+        public void setAttribute(String name, Object value) {
+            if (name.startsWith("org.apache.tomcat.")) {
+                return;
+            }
+            super.setAttribute(name, value);
+        }
+
+        public Object getAttribute(String name) {
+            if (name.equals(Globals.DISPATCHER_TYPE_ATTR)) {
+                return (dispatcherType == null)
+                    ? ApplicationFilterFactory.REQUEST_INTEGER
+                    : dispatcherType;
+            } else if (name.equals(Globals.DISPATCHER_REQUEST_PATH_ATTR)) {
+                return (requestDispatcherPath == null)
+                    ? getRequestPathMB().toString()
+                    : requestDispatcherPath.toString();
+            }
+
+            return attributes.get(name);
+        }
+
+        public String getHeader(String name) {
+            return headers.get(name);
+        }
+
+        public Enumeration getHeaderNames() {
+            return Collections.enumeration(headers.keySet());
+        }
+
+        public String getContentType() {
+            return contentType;
+        }
+    }
+
+    public static class MockResponse extends Response {
+        private boolean suspended;
+        private int status;
+        private Map headers = new HashMap();
+
+        public boolean isCommitted() {
+            return false;
+        }
+
+        public boolean isAppCommitted() {
+            return false;
+        }
+
+        public void sendAcknowledgement() {
+        }
+
+        public void setSuspended(boolean suspended) {
+            this.suspended = suspended;
+        }
+
+        public boolean isSuspended() {
+            return suspended;
+        }
+
+        public void setStatus(int status, String message) {
+            this.status = status;
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
+        public void reset() {
+        }
+
+        public void addHeader(String name, String value) {
+            headers.put(name, value);
+        }
+
+        public String[] getHeaderNames() {
+            return (String[]) headers.keySet().toArray(new String[headers.size()]);
+        }
     }
 }

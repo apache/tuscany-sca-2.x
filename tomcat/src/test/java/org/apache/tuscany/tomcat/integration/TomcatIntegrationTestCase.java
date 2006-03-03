@@ -18,7 +18,7 @@ package org.apache.tuscany.tomcat.integration;
 
 import org.apache.catalina.Valve;
 import org.apache.catalina.Loader;
-import org.apache.catalina.loader.WebappLoader;
+import org.apache.catalina.Wrapper;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardWrapper;
 import org.apache.catalina.startup.ContextConfig;
@@ -34,7 +34,7 @@ import java.io.File;
 public class TomcatIntegrationTestCase extends AbstractTomcatTest {
     protected File app1;
 
-    public void testRuntimeIntegration() throws Exception {
+    public void testComponentIntegration() throws Exception {
         // create the webapp Context
         StandardContext ctx = new StandardContext();
         ctx.addLifecycleListener(new ContextConfig());
@@ -61,6 +61,25 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
         request.setContext(ctx);
         request.setWrapper(wrapper);
         host.invoke(request, response);
+
+        host.removeChild(ctx);
+    }
+
+    public void testWebServiceIntegration() throws Exception {
+        // create the webapp Context
+        StandardContext ctx = new StandardContext();
+        ctx.addLifecycleListener(new ContextConfig());
+        ctx.setName("testContext");
+        ctx.setDocBase(app1.getAbsolutePath());
+
+        host.addChild(ctx);
+
+        Wrapper wrapper = (Wrapper) ctx.findChild("TuscanyAxis2EntryPointServlet");
+        assertNotNull("No webservice wrapper present", wrapper);
+        request.setContext(ctx);
+        request.setRequestURI("/services/epName");
+        request.setWrapper(wrapper);
+//        host.invoke(request, response);
 
         host.removeChild(ctx);
     }
