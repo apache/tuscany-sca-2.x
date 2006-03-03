@@ -14,7 +14,7 @@
 package org.apache.tuscany.container.java.builder;
 
 import org.apache.tuscany.container.java.config.JavaComponentRuntimeConfiguration;
-import org.apache.tuscany.container.java.handler.ScopedJavaComponentInvoker;
+import org.apache.tuscany.container.java.invocation.ScopedJavaComponentInvoker;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.ScopeContext;

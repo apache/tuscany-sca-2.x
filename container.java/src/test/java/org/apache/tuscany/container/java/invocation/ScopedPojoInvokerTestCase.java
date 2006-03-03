@@ -14,14 +14,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.java.handler;
+package org.apache.tuscany.container.java.invocation;
 
 import java.lang.reflect.Method;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.handler.ScopedJavaComponentInvoker;
+import org.apache.tuscany.container.java.invocation.ScopedJavaComponentInvoker;
 import org.apache.tuscany.container.java.invocation.mock.SimpleTarget;
 import org.apache.tuscany.container.java.mock.MockScopeContext;
 import org.apache.tuscany.core.context.QualifiedName;

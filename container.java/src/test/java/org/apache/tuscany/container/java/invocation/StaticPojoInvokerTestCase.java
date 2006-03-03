@@ -14,12 +14,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.java.handler;
+package org.apache.tuscany.container.java.invocation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.container.java.handler.StaticJavaComponentTargetInvoker;
+import org.apache.tuscany.container.java.invocation.StaticJavaComponentTargetInvoker;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
