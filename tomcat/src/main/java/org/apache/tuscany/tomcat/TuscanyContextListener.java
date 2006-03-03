@@ -18,17 +18,21 @@ package org.apache.tuscany.tomcat;
 
 import java.io.IOException;
 
+import javax.servlet.ServletContext;
+
 import org.apache.catalina.Context;
 import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Valve;
+import org.apache.catalina.core.StandardWrapper;
 
+import org.apache.tuscany.binding.axis2.handler.WebServiceEntryPointServlet;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
-import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.ConfigurationException;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.config.impl.ModuleComponentConfigurationLoaderImpl;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.runtime.RuntimeContext;
@@ -43,6 +47,7 @@ import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
  */
 public class TuscanyContextListener implements LifecycleListener {
     private static final String TUSCANY_RUNTIME_NAME = RuntimeContext.class.getName();
+    public static final String MODULE_COMPONENT_NAME = "org.apache.tuscany.core.webapp.ModuleComponentContext";
 
     private final AssemblyFactory modelFactory;
     private final AssemblyModelLoader modelLoader;
@@ -104,11 +109,31 @@ public class TuscanyContextListener implements LifecycleListener {
         Valve valve = new TuscanyValve(moduleContext);
         ctx.getPipeline().addValve(valve);
 
+        // add the web service servlet wrapper
+        addWebServiceWrapper(ctx);
+
         // add the RuntimeContext in as a servlet context parameter
-        ctx.getServletContext().setAttribute(TUSCANY_RUNTIME_NAME, runtime);
+        ServletContext servletContext = ctx.getServletContext();
+        servletContext.setAttribute(TUSCANY_RUNTIME_NAME, runtime);
+        servletContext.setAttribute(MODULE_COMPONENT_NAME, runtime);
     }
 
     private void stopContext(Context ctx) {
         // todo unload module component from runtime
+    }
+
+    private static void addWebServiceWrapper(Context ctx) {
+        // todo this should not depend on axis2, we need an API in the model for embedders
+        // todo should only add this servlet if we need it
+        // todo servlet implementation should be determined by the binding implementation
+        // todo should get path from entry point definition and not hard code to /services
+
+        Class<WebServiceEntryPointServlet> servletClass = WebServiceEntryPointServlet.class;
+        StandardWrapper wrapper = new StandardWrapper();
+        wrapper.setName("TuscanyAxis2EntryPointServlet");
+        wrapper.setLoader(new ContainerLoader(servletClass.getClassLoader()));
+        wrapper.setServletClass(servletClass.getName());
+        ctx.addChild(wrapper);
+        ctx.addServletMapping("/services/*", wrapper.getName());
     }
 }
