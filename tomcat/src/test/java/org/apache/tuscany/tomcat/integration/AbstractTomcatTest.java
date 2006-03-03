@@ -27,10 +27,15 @@ import org.apache.catalina.core.ApplicationFilterFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Enumeration;
 import java.util.Collections;
+import javax.servlet.ServletInputStream;
+import javax.servlet.ServletOutputStream;
 
 /**
  * @version $Rev$ $Date$
@@ -71,6 +76,7 @@ public class AbstractTomcatTest extends TestCase {
         private String requestURI;
         private String contentType;
         private Map<String,String> headers = new HashMap();
+        private ServletInputStream inputStream;
 
         public void setScheme(String scheme) {
             this.scheme = scheme;
@@ -133,15 +139,33 @@ public class AbstractTomcatTest extends TestCase {
             return Collections.enumeration(headers.keySet());
         }
 
+        public void setContentType(String contentType) {
+            this.contentType = contentType;
+        }
+
         public String getContentType() {
             return contentType;
+        }
+
+        public ServletInputStream getInputStream() throws IOException {
+            return inputStream;
+        }
+
+        public InputStream getStream() {
+            return inputStream;
+        }
+
+        public void setStream(ServletInputStream stream) {
+            inputStream = stream;
         }
     }
 
     public static class MockResponse extends Response {
         private boolean suspended;
+        private String contentType;
         private int status;
         private Map headers = new HashMap();
+        private ServletOutputStream outputStream = new MockOutputStream();
 
         public boolean isCommitted() {
             return false;
@@ -179,6 +203,48 @@ public class AbstractTomcatTest extends TestCase {
 
         public String[] getHeaderNames() {
             return (String[]) headers.keySet().toArray(new String[headers.size()]);
+        }
+
+        public String getContentType() {
+            return contentType;
+        }
+
+        public void setContentType(String contentType) {
+            this.contentType = contentType;
+        }
+
+        public OutputStream getStream() {
+            return outputStream;
+        }
+
+        public ServletOutputStream getOutputStream() throws IOException {
+            return outputStream;
+        }
+    }
+
+    public static class MockInputStream extends ServletInputStream {
+        private final byte[] bytes;
+        private int index;
+
+        public MockInputStream(byte[] bytes) {
+            this.bytes = bytes;
+        }
+
+        public int read() throws IOException {
+            if (index == bytes.length) {
+                return -1;
+            }
+            else {
+                return bytes[index++];
+            }
+        }
+    }
+
+    public static class MockOutputStream extends ServletOutputStream {
+        private ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+        public void write(int b) throws IOException {
+            os.write(b);
         }
     }
 }

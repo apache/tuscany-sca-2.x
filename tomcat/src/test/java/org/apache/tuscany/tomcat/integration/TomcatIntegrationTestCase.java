@@ -79,7 +79,16 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
         request.setContext(ctx);
         request.setRequestURI("/services/epName");
         request.setWrapper(wrapper);
-//        host.invoke(request, response);
+        request.setContentType("text/xml");
+        String xml = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:q0=\"http://helloworldaxis.samples.tuscany.apache.org\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
+                "<soapenv:Body>\n" +
+                "<q0:getGreetings>\n" +
+                "<q0:in0>hello</q0:in0>\n" +
+                "</q0:getGreetings>\n" +
+                "</soapenv:Body>\n" +
+                "</soapenv:Envelope>\n";
+        request.setStream(new MockInputStream(xml.getBytes("UTF-8")));
+        host.invoke(request, response);
 
         host.removeChild(ctx);
     }
