@@ -57,6 +57,7 @@ import java.util.List;
  */
 public class TuscanyServletListener implements ServletContextListener {
     public static final String SCA_COMPONENT_NAME = "org.apache.tuscany.core.webapp.ModuleComponentName";
+    public static final String MODULE_COMPONENT_NAME = "org.apache.tuscany.core.webapp.ModuleComponentContext";
     public static final String TUSCANY_RUNTIME_NAME = RuntimeContext.class.getName();
 
     private final Object sessionKey = new Object();
@@ -80,15 +81,17 @@ public class TuscanyServletListener implements ServletContextListener {
         }
 
         servletContext.setAttribute(TUSCANY_RUNTIME_NAME, runtimeContext);
+        servletContext.setAttribute(MODULE_COMPONENT_NAME, moduleContext);
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        servletContextEvent.getServletContext().removeAttribute(TUSCANY_RUNTIME_NAME);
         moduleContext.fireEvent(EventContext.MODULE_STOP, null);
         moduleContext.stop();
         systemModuleComponentContext.fireEvent(EventContext.MODULE_STOP, null);
         systemModuleComponentContext.stop();
         runtimeContext.stop();
+        servletContextEvent.getServletContext().removeAttribute(MODULE_COMPONENT_NAME);
+        servletContextEvent.getServletContext().removeAttribute(TUSCANY_RUNTIME_NAME);
     }
 
     private void bootRuntime(String name, String uri, MonitorFactory monitorFactory) throws ConfigurationException {
