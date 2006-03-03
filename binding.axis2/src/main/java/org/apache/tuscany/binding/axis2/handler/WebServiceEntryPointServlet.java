@@ -163,7 +163,12 @@ public class WebServiceEntryPointServlet extends HttpServlet  {
         MessageContext msgContext = null;
         OutputStream out = null;
 
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        ClassLoader mycl = getClass().getClassLoader();
         try {
+            if (tccl != mycl) {
+                Thread.currentThread().setContextClassLoader(mycl);
+            }
             Object sessionContext = getSessionContext(req);
 
             msgContext = createAndSetInitialParamsToMsgCtxt(sessionContext, msgContext, res, req);
@@ -190,6 +195,10 @@ public class WebServiceEntryPointServlet extends HttpServlet  {
                 handleFault(msgContext, out, e);
             } else {
                 throw new ServletException(e);
+            }
+        } finally{
+            if (tccl != mycl) {
+                Thread.currentThread().setContextClassLoader(tccl);
             }
         }
     }
