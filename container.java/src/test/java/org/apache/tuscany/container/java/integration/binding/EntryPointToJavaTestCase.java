@@ -156,5 +156,93 @@ public class EntryPointToJavaTestCase extends TestCase {
         child.fireEvent(EventContext.MODULE_STOP, null);
         runtime.stop();
     }    
+    
+    
+    /**
+     * Tests creation and invocation of an entry point wired to a module-scoped service offered by a Java component
+     */
+    public void testEPtoJavaStatelessInvoke() throws Throwable {
+        RuntimeContext runtime = MockFactory.registerFooBinding(MockFactory.createJavaRuntime());
+        FooBindingBuilder builder = (FooBindingBuilder) ((AggregateContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD))
+                .getContext(MockFactory.FOO_BUILDER).getInstance(null);
+        MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
+        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
+        builder.addPolicyBuilder(interceptorBuilder);
+        runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test.module"));
+        AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
+        child.registerModelObject(MockFactory.createModuleWithEntryPoint(Scope.INSTANCE));
+        child.fireEvent(EventContext.MODULE_START, null);
+        child.fireEvent(EventContext.REQUEST_START, null);
+        EntryPointContext ctx = (EntryPointContext) child.getContext("source");
+        Assert.assertNotNull(ctx);
+        InvocationHandler handler = (InvocationHandler) ctx.getInstance(null);
+        Assert.assertEquals(0, mockInterceptor.getCount());
+        Object response = handler.invoke(null, hello, new Object[] { "foo" });
+        Assert.assertEquals("Hello foo", response);
+        Assert.assertEquals(1, mockInterceptor.getCount());
+        child.fireEvent(EventContext.REQUEST_END, null);
+
+        // second request
+        child.fireEvent(EventContext.REQUEST_START, null);
+        ctx = (EntryPointContext) child.getContext("source");
+        Assert.assertNotNull(ctx);
+        handler = (InvocationHandler) ctx.getInstance(null);
+        Assert.assertEquals(1, mockInterceptor.getCount());
+        response = handler.invoke(null, hello, new Object[] { "foo" });
+        Assert.assertEquals("Hello foo", response);
+        Assert.assertEquals(2, mockInterceptor.getCount());
+        HelloWorldService service1 = (HelloWorldService)child.getContext("target").getInstance(null);
+        Assert.assertEquals(0, service1.count());
+        child.fireEvent(EventContext.REQUEST_END, null);
+        
+        child.fireEvent(EventContext.MODULE_STOP, null);
+        runtime.stop();
+    }
+    
+    public void testEPtoJavaRequestInvoke() throws Throwable {
+        RuntimeContext runtime = MockFactory.registerFooBinding(MockFactory.createJavaRuntime());
+        FooBindingBuilder builder = (FooBindingBuilder) ((AggregateContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD))
+                .getContext(MockFactory.FOO_BUILDER).getInstance(null);
+        MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
+        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
+        builder.addPolicyBuilder(interceptorBuilder);
+        runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test.module"));
+        AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
+        child.registerModelObject(MockFactory.createModuleWithEntryPoint(Scope.REQUEST));
+        child.fireEvent(EventContext.MODULE_START, null);
+        child.fireEvent(EventContext.REQUEST_START, null);
+        EntryPointContext ctx = (EntryPointContext) child.getContext("source");
+        Assert.assertNotNull(ctx);
+        InvocationHandler handler = (InvocationHandler) ctx.getInstance(null);
+        Assert.assertEquals(0, mockInterceptor.getCount());
+        Object response = handler.invoke(null, hello, new Object[] { "foo" });
+        Assert.assertEquals("Hello foo", response);
+        Assert.assertEquals(1, mockInterceptor.getCount());
+
+        ctx = (EntryPointContext) child.getContext("source");
+        Assert.assertNotNull(ctx);
+        handler = (InvocationHandler) ctx.getInstance(null);
+        response = handler.invoke(null, hello, new Object[] { "foo" });
+        HelloWorldService service1 = (HelloWorldService)child.getContext("target").getInstance(null);
+        Assert.assertEquals(2, service1.count());
+        
+        child.fireEvent(EventContext.REQUEST_END, null);
+
+        // second request
+        child.fireEvent(EventContext.REQUEST_START, null);
+        ctx = (EntryPointContext) child.getContext("source");
+        Assert.assertNotNull(ctx);
+        handler = (InvocationHandler) ctx.getInstance(null);
+        Assert.assertEquals(2, mockInterceptor.getCount());
+        response = handler.invoke(null, hello, new Object[] { "foo" });
+        Assert.assertEquals("Hello foo", response);
+        Assert.assertEquals(3, mockInterceptor.getCount());
+        HelloWorldService service2 = (HelloWorldService)child.getContext("target").getInstance(null);
+        Assert.assertEquals(1, service2.count());
+        child.fireEvent(EventContext.REQUEST_END, null);
+        
+        child.fireEvent(EventContext.MODULE_STOP, null);
+        runtime.stop();
+    }
 
 }
