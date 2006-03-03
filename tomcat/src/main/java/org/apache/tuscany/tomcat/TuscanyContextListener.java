@@ -115,7 +115,7 @@ public class TuscanyContextListener implements LifecycleListener {
         // add the RuntimeContext in as a servlet context parameter
         ServletContext servletContext = ctx.getServletContext();
         servletContext.setAttribute(TUSCANY_RUNTIME_NAME, runtime);
-        servletContext.setAttribute(MODULE_COMPONENT_NAME, runtime);
+        servletContext.setAttribute(MODULE_COMPONENT_NAME, moduleContext);
     }
 
     private void stopContext(Context ctx) {
