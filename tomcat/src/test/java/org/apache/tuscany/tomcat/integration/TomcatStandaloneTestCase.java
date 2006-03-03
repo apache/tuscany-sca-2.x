@@ -5,6 +5,8 @@ import org.apache.catalina.core.StandardWrapper;
 import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.startup.ContextConfig;
 import org.apache.catalina.Valve;
+import org.apache.catalina.Wrapper;
+
 import org.apache.tuscany.tomcat.TuscanyValve;
 import org.apache.tuscany.tomcat.TuscanyHost;
 
@@ -27,11 +29,7 @@ public class TomcatStandaloneTestCase extends AbstractTomcatTest {
         ctx.addLifecycleListener(new ContextConfig());
         ctx.setName("testContext");
         ctx.setDocBase(app2.getAbsolutePath());
-/*
-        StandardWrapper wrapper = new StandardWrapper();
-        wrapper.setServletClass(TestServlet.class.getName());
-        ctx.addChild(wrapper);
-*/
+
         host.addChild(ctx);
         boolean found = false;
         for (Valve valve: ctx.getPipeline().getValves()) {
@@ -43,8 +41,8 @@ public class TomcatStandaloneTestCase extends AbstractTomcatTest {
         assertFalse("TuscanyValve in pipeline", found);
 
         request.setContext(ctx);
-//        request.setWrapper(wrapper);
-//        host.invoke(request, response);
+        request.setWrapper((Wrapper) ctx.findChild("TestServlet"));
+        host.invoke(request, response);
 
         host.removeChild(ctx);
     }
