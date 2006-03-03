@@ -35,6 +35,7 @@ import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.config.impl.ModuleComponentConfigurationLoaderImpl;
 import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
@@ -53,6 +54,7 @@ public class TuscanyContextListener implements LifecycleListener {
     private final AssemblyModelLoader modelLoader;
     private final RuntimeContext runtime;
     private final ResourceLoader systemLoader;
+    private AggregateContext moduleContext;
 
     public TuscanyContextListener(RuntimeContext runtimeContext, AssemblyFactory modelFactory, AssemblyModelLoader modelLoader, ResourceLoader systemLoader) {
         this.runtime = runtimeContext;
@@ -71,8 +73,6 @@ public class TuscanyContextListener implements LifecycleListener {
     }
 
     private void startContext(Context ctx) {
-        AggregateContext moduleContext;
-
         ResourceLoader resourceLoader = new ResourceLoaderImpl(ctx.getLoader().getClassLoader());
         try {
             if (resourceLoader.getResource("sca.module") == null) {
@@ -105,6 +105,8 @@ public class TuscanyContextListener implements LifecycleListener {
             Thread.currentThread().setContextClassLoader(oldCl);
         }
 
+        moduleContext.fireEvent(EventContext.MODULE_START, null);
+
         // add a valve to this context's pipeline that will associate the request with the runtime
         Valve valve = new TuscanyValve(moduleContext);
         ctx.getPipeline().addValve(valve);
@@ -119,6 +121,7 @@ public class TuscanyContextListener implements LifecycleListener {
     }
 
     private void stopContext(Context ctx) {
+        moduleContext.fireEvent(EventContext.MODULE_START, null);
         // todo unload module component from runtime
     }
 
