@@ -16,12 +16,6 @@
  */
 package org.apache.tuscany.core.context.scope;
 
-import static org.apache.tuscany.core.context.ContextConstants.AGGREGATE_SCOPE;
-import static org.apache.tuscany.core.context.ContextConstants.MODULE_SCOPE;
-import static org.apache.tuscany.core.context.ContextConstants.REQUEST_SCOPE;
-import static org.apache.tuscany.core.context.ContextConstants.SESSION_SCOPE;
-import static org.apache.tuscany.core.context.ContextConstants.STATELESS;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,11 +41,11 @@ public class DefaultScopeStrategy  extends AbstractScopeStrategy  {
         ScopeContext statelessScope = new StatelessScopeContext(eventContext);
         ScopeContext aggregrateScope = new AggregateScopeContext(eventContext);
         Map<Scope,ScopeContext> scopes = new HashMap();
-        scopes.put(MODULE_SCOPE,moduleScope);
-        scopes.put(SESSION_SCOPE,sessionScope);
-        scopes.put(REQUEST_SCOPE,requestScope);
-        scopes.put(STATELESS,statelessScope);
-        scopes.put(AGGREGATE_SCOPE,aggregrateScope);
+        scopes.put(Scope.MODULE,moduleScope);
+        scopes.put(Scope.SESSION,sessionScope);
+        scopes.put(Scope.REQUEST,requestScope);
+        scopes.put(Scope.INSTANCE,statelessScope);
+        scopes.put(Scope.AGGREGATE,aggregrateScope);
         return scopes;
     }
 

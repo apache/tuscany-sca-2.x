@@ -129,7 +129,7 @@ public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurat
             InvocationConfiguration iConfig = new InvocationConfiguration(method);
             iConfigMap.put(method, iConfig);
         }
-        QualifiedName qName = new QualifiedName(externalService.getName() + "/" + service.getName());
+        QualifiedName qName = new QualifiedName(externalService.getName() + QualifiedName.NAME_SEPARATOR + service.getName());
         ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
         proxyFactory.setProxyConfiguration(pConfiguration);

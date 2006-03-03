@@ -30,6 +30,8 @@ public class QualifiedName {
 
     private String portName;
 
+    public static final String NAME_SEPARATOR = "/";
+
     /**
      * Constructs a new qualified name
      * 
@@ -37,7 +39,7 @@ public class QualifiedName {
      */
     public QualifiedName(String qualifiedName) throws InvalidNameException {
         assert (qualifiedName != null) : "Name was null";
-        int pos = qualifiedName.indexOf(ContextConstants.NAME_SEPARATOR);
+        int pos = qualifiedName.indexOf(QualifiedName.NAME_SEPARATOR);
         switch (pos) {
         case -1:
             partName = qualifiedName;

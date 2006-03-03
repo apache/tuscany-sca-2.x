@@ -16,8 +16,6 @@
  */
 package org.apache.tuscany.core.runtime;
 
-import static org.apache.tuscany.core.context.ContextConstants.AGGREGATE_SCOPE;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +27,7 @@ import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Implements a {@link org.apache.tuscany.core.context.ScopeStrategy} for a runtime context. Specifically, a runtime
- * context has only one scope, {@link org.apache.tuscany.core.context.ContextConstants#AGGREGATE_SCOPE}
+ * context has only one scope, {@link org.apache.tuscany.model.assembly.Scope#AGGREGATE}
  * 
  * @version $Rev$ $Date$
  */
@@ -41,7 +39,7 @@ public class RuntimeScopeStrategy extends AbstractScopeStrategy {
     public Map<Scope, ScopeContext> createScopes(EventContext eventContext) {
         ScopeContext aggregrateScope = new AggregateScopeContext(eventContext);
         Map<Scope, ScopeContext> scopes = new HashMap();
-        scopes.put(AGGREGATE_SCOPE, aggregrateScope);
+        scopes.put(Scope.AGGREGATE, aggregrateScope);
         return scopes;
     }
 
