@@ -117,7 +117,7 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
             Method operationMethod= clazz.getMethod(axisOperationName, argsClazz);
             
              
-            InvocationHandler handler = (InvocationHandler) entryPointContext.getInstance(null);
+            InvocationHandler handler = (InvocationHandler) entryPointContext.getImplementationInstance();
            
          
             Object response = handler.invoke(null, operationMethod,  args);

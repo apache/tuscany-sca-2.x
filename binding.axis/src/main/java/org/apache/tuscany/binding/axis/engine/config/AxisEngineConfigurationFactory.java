@@ -137,7 +137,7 @@ public class AxisEngineConfigurationFactory implements EngineConfigurationFactor
                 EntryPoint entryPoint = (EntryPoint) i.next();
                 Binding binding = (Binding) entryPoint.getBindings().get(0);
                 if (binding instanceof WebServiceBinding) {
-                    
+                    //FIXME This should not use the proxy factory - use EntryPointContext#getInstance()
                     // Get the proxy factory associated with the entry point 
                     final ProxyFactory proxyFactory=(ProxyFactory)entryPoint.getConfiguredService().getProxyFactory();
                     

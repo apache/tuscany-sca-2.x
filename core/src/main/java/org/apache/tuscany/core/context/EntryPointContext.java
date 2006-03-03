@@ -29,15 +29,26 @@ package org.apache.tuscany.core.context;
  * to perform the invocation as in:
  * 
  * <pre>
- *             AggregateContext aggregateContext = ...
- *             EntryPointContext ctx = (EntryPointContext) aggregateContext.getContext(&quot;source&quot;);
- *             Assert.assertNotNull(ctx);
- *             InvocationHandler handler = (InvocationHandler) ctx.getInstance(null);
- *             Object response = handler.invoke(null, operation, new Object[] { param });
+ *              AggregateContext aggregateContext = ...
+ *              EntryPointContext ctx = (EntryPointContext) aggregateContext.getContext(&quot;source&quot;);
+ *              Assert.assertNotNull(ctx);
+ *              InvocationHandler handler = (InvocationHandler) ctx.getImplementationInstance();
+ *              Object response = handler.invoke(null, operation, new Object[] { param });
  * </pre>
  * 
  * The <code>Proxy</code> instance passed to <code>InvocationHandler</code> may be null as the client is invoking
  * directly on the handler.
+ * <p>
+ * Alternatively, the following will return a proxy implementing the service interface exposed by the entry point:
+ * 
+ * <pre>
+ *              AggregateContext aggregateContext = ...
+ *              EntryPointContext ctx = (EntryPointContext) aggregateContext.getContext(&quot;source&quot;);
+ *              Assert.assertNotNull(ctx);
+ *              HelloWorld proxy = (Helloworld) ctx.getInstance(null); // service name not necessary
+ * </pre>
+ * 
+ * The proxy returned will be backed by the entry point invocation chain.
  * 
  * @version $Rev$ $Date$
  */

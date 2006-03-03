@@ -22,6 +22,7 @@ import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.invocation.jdk.JDKInvocationHandler;
+import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 
@@ -39,6 +40,9 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
     private Object target;
 
     private InvocationHandler invocationHandler;
+
+    // a proxy implementing the service exposed by the entry point backed by the invocation handler
+    private Object proxy;
 
     // ----------------------------------
     // Constructors
@@ -69,7 +73,16 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
     // ----------------------------------
 
     public Object getInstance(QualifiedName qName) throws TargetException {
-        return invocationHandler;
+        if (proxy == null) {
+            try {
+                proxy = proxyFactory.createProxy();
+            } catch (ProxyCreationException e) {
+                TargetException te = new TargetException(e);
+                te.addContextName(getName());
+                throw te;
+            }
+        }
+        return proxy;
     }
 
     public Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
