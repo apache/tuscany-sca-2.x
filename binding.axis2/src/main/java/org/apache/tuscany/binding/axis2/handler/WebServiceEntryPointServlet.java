@@ -36,7 +36,6 @@ import javax.wsdl.Definition;
 import javax.wsdl.Operation;
 import javax.wsdl.Port;
 import javax.wsdl.PortType;
-import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 
 import org.apache.axis2.AxisFault;
@@ -59,11 +58,7 @@ import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.InstanceContext;
-import org.apache.tuscany.core.context.webapp.TuscanyWebAppRuntime;
 import org.apache.tuscany.core.runtime.RuntimeContext;
-import org.apache.tuscany.core.webapp.TuscanyServletListener;
-import org.apache.tuscany.model.assembly.Aggregate;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
@@ -216,7 +211,12 @@ public class WebServiceEntryPointServlet extends HttpServlet  {
      * @throws ServletException
      */
     public void init(ServletConfig config) throws ServletException {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        ClassLoader mycl = getClass().getClassLoader();
         try {
+            if (tccl != mycl) {
+                Thread.currentThread().setContextClassLoader(mycl);
+            }
             configContext = initConfigContext(config);
             initTuscany(configContext.getAxisConfiguration(),config);
             lister = new ListingAgent(configContext);
@@ -225,6 +225,10 @@ public class WebServiceEntryPointServlet extends HttpServlet  {
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServletException(e);
+        } finally{
+            if (tccl != mycl) {
+                Thread.currentThread().setContextClassLoader(tccl);
+            }
         }
     }
    
