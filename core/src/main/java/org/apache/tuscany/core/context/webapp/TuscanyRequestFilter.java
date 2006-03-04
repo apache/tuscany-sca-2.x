@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.webapp.LazyHTTPSessionId;
 
 /**
  * Notifies the {@link org.apache.tuscany.core.context.AggregateContext} of web request start and end events as well as setting up the

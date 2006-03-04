@@ -32,7 +32,6 @@ import org.osoa.sca.CurrentModuleContext;
 
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.webapp.LazyHTTPSessionId;
 
 /**
  * Notifies the {@link org.apache.tuscany.core.context.AggregateContext} of web request start and end events as well as setting up the

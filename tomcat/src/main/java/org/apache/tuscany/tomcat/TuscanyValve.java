@@ -29,7 +29,7 @@ import org.osoa.sca.SCA;
 
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.webapp.LazyHTTPSessionId;
+import org.apache.tuscany.core.webapp.LazyHTTPSessionId;
 
 /**
  * Valve that can be added to a pipeline to automatically set the SCA environment as each request is processed.

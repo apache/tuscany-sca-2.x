@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.context.webapp;
+package org.apache.tuscany.core.webapp;
 
 import javax.servlet.http.HttpServletRequest;
 
