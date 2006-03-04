@@ -19,6 +19,8 @@ package org.apache.tuscany.model.assembly;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 
+import commonj.sdo.helper.TypeHelper;
+
 /**
  * Context object supplied by visitors that are processing the model.
  */
@@ -52,4 +54,11 @@ public interface AssemblyModelContext {
      */
     AssemblyModelLoader getAssemblyLoader();
 
+    /**
+     * Returns an SDO type helper.
+     * 
+     * @return an SDO type helper
+     */
+    TypeHelper getTypeHelper();
+    
 }

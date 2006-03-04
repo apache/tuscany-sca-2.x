@@ -38,6 +38,7 @@ import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.ServiceURI;
 import org.apache.tuscany.model.assembly.Wire;
+import org.apache.tuscany.sdo.util.SDOUtil;
 
 import commonj.sdo.helper.XSDHelper;
 
@@ -223,7 +224,8 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
                     if (url==null)
                         throw new IllegalArgumentException("Cannot find "+location);
                     definition = modelContext.getAssemblyLoader().loadDefinition(url.toString());
-                    XSDHelper.INSTANCE.define (url.openStream(), null);
+                    XSDHelper xsdHelper=SDOUtil.createXSDHelper(modelContext.getTypeHelper());
+                    xsdHelper.define (url.openStream(), null);
                 } catch (IOException e) {
                     throw new IllegalArgumentException(e);
                 }

@@ -50,9 +50,6 @@ public class SCDLXMLReader extends ResourceSetImpl {
      * Constructor
      */
     public SCDLXMLReader() {
-        
-        // Initialize SCDL package
-        ScdlPackageImpl.eINSTANCE.eClass();
     }
 
     /**
