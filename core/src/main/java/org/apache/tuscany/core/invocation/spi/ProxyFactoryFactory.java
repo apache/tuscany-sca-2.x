@@ -13,6 +13,8 @@
  */
 package org.apache.tuscany.core.invocation.spi;
 
+import java.lang.reflect.InvocationHandler;
+
 /**
  * Creates proxy factories which may be subsequently configured to generate proxies
  * 
@@ -20,7 +22,21 @@ package org.apache.tuscany.core.invocation.spi;
  */
 public interface ProxyFactoryFactory {
 
+    /**
+     * Returns a new proxy factory
+     */
     public ProxyFactory createProxyFactory();
-    
-}
 
+    /**
+     * Determines whether the given object is a proxy
+     */
+    public boolean isProxy(Object object);
+
+    /**
+     * Returns an invocation handler fronting the invocation chains used by the proxy. Note that should SCA define a
+     * DII, this could return such an interface.
+     * 
+     * @throws IllegalArgumentException if the class is not a proxy
+     */
+    public InvocationHandler getHandler(Object proxy) throws IllegalArgumentException;
+}

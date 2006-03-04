@@ -13,6 +13,9 @@
  */
 package org.apache.tuscany.core.invocation.jdk;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
 
@@ -30,5 +33,20 @@ public class JDKProxyFactoryFactory implements ProxyFactoryFactory {
         return new JDKProxyFactory();
     }
 
-}
+    public boolean isProxy(Object object) {
+        if (object == null) {
+            return false;
+        } else {
+            return Proxy.isProxyClass(object.getClass());
+        }
+    }
 
+    public InvocationHandler getHandler(Object proxy) {
+        if (proxy == null) {
+            return null;
+        } else {
+            return Proxy.getInvocationHandler(proxy);
+        }
+    }
+
+}
