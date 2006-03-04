@@ -178,6 +178,11 @@ public class WSDL2JavaGenerator {
             if (documentRoot!=null) {
                 for (EStructuralFeature element  : (List<EStructuralFeature>)extendedMetaData.getElements(documentRoot)) {
                     EClassifier elementType=element.getEType();
+                    if (extendedMetaData.isAnonymous(elementType)) {
+                        EClass eClass=(EClass)elementType;
+                        EStructuralFeature feature=(EStructuralFeature)eClass.getEStructuralFeatures().get(0);
+                        elementType=feature.getEType();
+                    }
                     if (elementType instanceof EClass) {
                         GenClass genClass=genClasses.get(elementType);
                         QName qname=new QName(extendedMetaData.getNamespace(currentEPackage), extendedMetaData.getName(element));

@@ -75,7 +75,7 @@ public class JavaInterfaceGenerator {
         codegenConfiguration.setOutputLanguage("java");
         codegenConfiguration.setOutputLocation(new File(outputLocation));
         codegenConfiguration.setPackageName(packageName);
-        codegenConfiguration.setPackClasses(true);
+        codegenConfiguration.setPackClasses(false);
         codegenConfiguration.setPolicyMap(new HashMap());
         codegenConfiguration.setPortName(null);
         codegenConfiguration.setServerSide(false);
