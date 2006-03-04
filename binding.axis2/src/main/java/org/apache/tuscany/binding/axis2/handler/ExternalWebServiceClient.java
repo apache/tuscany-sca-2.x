@@ -14,7 +14,6 @@
 package org.apache.tuscany.binding.axis2.handler;
 
 import java.lang.reflect.Method;
-import java.net.URL;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -24,18 +23,14 @@ import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
-import org.apache.axis2.context.ConfigurationContext;
-import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.axis2.context.MessageContextConstants;
-import org.apache.axis2.description.AxisService;
-import org.apache.axis2.description.OutInAxisOperation;
-import org.apache.axis2.description.OutOnlyAxisOperation;
-import org.apache.axis2.description.RobustOutOnlyAxisOperation;
 import org.apache.axis2.om.OMElement;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis2.util.AxiomHelper;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.osoa.sca.ServiceRuntimeException;
+
+import commonj.sdo.helper.TypeHelper;
 
 /**
  * An ExternalWebServiceClient using Axis2
@@ -43,7 +38,7 @@ import org.osoa.sca.ServiceRuntimeException;
 public class ExternalWebServiceClient {
 
     private ExternalService externalService;
-
+    private TypeHelper typeHelper; 
     private WebServicePortMetaData wsPortMetaData;
 
     /**
@@ -52,8 +47,9 @@ public class ExternalWebServiceClient {
      * @param externalService
      * @param wsBinding
      */
-    public ExternalWebServiceClient(ExternalService externalService, WebServiceBinding wsBinding) {
+    public ExternalWebServiceClient(ExternalService externalService, WebServiceBinding wsBinding, TypeHelper typeHelper) {
         this.externalService = externalService;
+        this.typeHelper=typeHelper;
         this.wsPortMetaData = new WebServicePortMetaData(wsBinding.getWSDLDefinition(), wsBinding.getWSDLPort(), wsBinding.getURI(), false);
     }
 
@@ -70,7 +66,8 @@ public class ExternalWebServiceClient {
 
         String typeName = method.getName();
         String typeNS = wsPortMetaData.getPortType().getQName().getNamespaceURI();
-        OMElement requestOM = AxiomHelper.toOMElement(args, new QName(typeNS, typeName));
+        
+        OMElement requestOM = AxiomHelper.toOMElement(typeHelper, args, new QName(typeNS, typeName));
 
         OMElement responseOM;
         try {
@@ -79,7 +76,7 @@ public class ExternalWebServiceClient {
             throw new ServiceRuntimeException(e);
         }
 
-        Object[] os = AxiomHelper.toObjects(responseOM);
+        Object[] os = AxiomHelper.toObjects(typeHelper, responseOM);
         Object response;
         if (os == null || os.length < 1) {
             response = null;

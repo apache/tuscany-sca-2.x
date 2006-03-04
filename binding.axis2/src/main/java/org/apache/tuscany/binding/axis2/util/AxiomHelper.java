@@ -28,13 +28,16 @@ import org.apache.axis2.om.OMAbstractFactory;
 import org.apache.axis2.om.OMElement;
 import org.apache.axis2.om.OMXMLParserWrapper;
 import org.apache.axis2.om.impl.llom.factory.OMXMLBuilderFactory;
+import org.apache.tuscany.sdo.helper.DataFactoryImpl;
+import org.apache.tuscany.sdo.helper.XMLHelperImpl;
+import org.apache.tuscany.sdo.helper.XSDHelperImpl;
 import org.osoa.sca.ServiceRuntimeException;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;
-import commonj.sdo.helper.DataFactory;
+import commonj.sdo.helper.TypeHelper;
 import commonj.sdo.helper.XMLDocument;
-import commonj.sdo.helper.XMLHelper;
+import commonj.sdo.helper.XSDHelper;
 
 /**
  * Utility methods to convert between Axis2 AXIOM, SDO DataObjects and Java objects.
@@ -50,8 +53,8 @@ public class AxiomHelper {
      *            the OMElement
      * @return the array of deserialized Java objects
      */
-    public static Object[] toObjects(OMElement om) {
-        DataObject dataObject = toDataObject(om);
+    public static Object[] toObjects(TypeHelper typeHelper, OMElement om) {
+        DataObject dataObject = toDataObject(typeHelper, om);
         Object[] os = toObjects(dataObject);
         return os;
     }
@@ -79,9 +82,9 @@ public class AxiomHelper {
      * @param typeName
      * @return an AXIOM OMElement
      */
-    public static OMElement toOMElement(Object[] os, QName typeQN) {
-        DataObject dataObject = toDataObject(os, typeQN);
-        OMElement omElement = toOMElement(dataObject, typeQN);
+    public static OMElement toOMElement(TypeHelper typeHelper, Object[] os, QName typeQN) {
+        DataObject dataObject = toDataObject(typeHelper, os, typeQN);
+        OMElement omElement = toOMElement(typeHelper, dataObject, typeQN);
         return omElement;
     }
 
@@ -95,12 +98,12 @@ public class AxiomHelper {
      * @throws XMLStreamException
      * @throws IOException
      */
-    public static OMElement toOMElement(DataObject dataObject, QName typeQN) {
+    public static OMElement toOMElement(TypeHelper typeHelper, DataObject dataObject, QName typeQN) {
         try {
 
             PipedOutputStream pos = new PipedOutputStream();
             PipedInputStream pis = new PipedInputStream(pos);
-            XMLHelper.INSTANCE.save(dataObject, typeQN.getNamespaceURI(), typeQN.getLocalPart(), pos);
+            new XMLHelperImpl(typeHelper).save(dataObject, typeQN.getNamespaceURI(), typeQN.getLocalPart(), pos);
             pos.close();
 
             XMLStreamReader parser = XMLInputFactory.newInstance().createXMLStreamReader(pis);
@@ -124,7 +127,7 @@ public class AxiomHelper {
      * @param omElement
      * @return
      */
-    public static DataObject toDataObject(OMElement omElement) {
+    public static DataObject toDataObject(TypeHelper typeHelper, OMElement omElement) {
         try {
 
             PipedOutputStream pos = new PipedOutputStream();
@@ -134,7 +137,7 @@ public class AxiomHelper {
             pos.flush();
             pos.close();
 
-            XMLDocument document = XMLHelper.INSTANCE.load(pis);
+            XMLDocument document = new XMLHelperImpl(typeHelper).load(pis);
 
             return document.getRootObject();
 
@@ -153,9 +156,10 @@ public class AxiomHelper {
      * @param os
      * @return the DataObject
      */
-    public static DataObject toDataObject(Object[] os, QName typeQN) {
-        String typeName = mangleName(typeQN.getLocalPart());
-        DataObject dataObject = DataFactory.INSTANCE.create(typeQN.getNamespaceURI(), typeName);
+    public static DataObject toDataObject(TypeHelper typeHelper, Object[] os, QName typeQN) {
+        XSDHelper xsdHelper=new XSDHelperImpl(typeHelper);
+        Property property=xsdHelper.getGlobalProperty(typeQN.getNamespaceURI(), typeQN.getLocalPart(), true);
+        DataObject dataObject = new DataFactoryImpl(typeHelper).create(property.getType());
         List ips = dataObject.getInstanceProperties();
         for (int i = 0; i < ips.size(); i++) {
             Property p = (Property) ips.get(i);
@@ -163,14 +167,5 @@ public class AxiomHelper {
         }
         return dataObject;
     }
-
-    private static String mangleName(String typeName) {
-        // TODO: this will be unnecessary when SDO is fixed to do it automatically (JIRA?)
-        StringBuffer sb = new StringBuffer(typeName);
-        sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
-        sb.append("Type");
-        String s = sb.toString();
-        return s;
-    }
-
+    
 }

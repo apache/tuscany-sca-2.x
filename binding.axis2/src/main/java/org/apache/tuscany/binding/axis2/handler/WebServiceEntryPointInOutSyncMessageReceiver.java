@@ -29,6 +29,8 @@ import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.model.assembly.EntryPoint;
+import org.apache.tuscany.sdo.helper.TypeHelperImpl;
+import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.wsdl.WSDLConstants;
 import org.eclipse.emf.common.util.UniqueEList;
 
@@ -36,6 +38,7 @@ import commonj.sdo.DataObject;
 import commonj.sdo.Property;
 import commonj.sdo.Sequence;
 import commonj.sdo.Type;
+import commonj.sdo.helper.TypeHelper;
 
 public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {
     // public static final String MEP_URL = "http://www.w3.org/2004/08/wsdl/tuscany/in-out";
@@ -72,13 +75,15 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
             
             AxisOperation axisOperation = msgContext.getAxisOperation();
             String axisOperationName= axisOperation.getName().getLocalPart();
+            
+            TypeHelper typeHelper=entryPoint.getAggregate().getAssemblyModelContext().getTypeHelper();
 
             OMElement requestOM = msgContext.getEnvelope().getBody().getFirstElement();
-            DataObject msgdo = AxiomHelper.toDataObject(requestOM);
+            DataObject msgdo = AxiomHelper.toDataObject(typeHelper, requestOM);
            // Sequence parmSeq = msgdo.getSequence("mixed");
             
              requestOM = msgContext.getEnvelope().getBody().getFirstElement();
-            Object[] args = AxiomHelper.toObjects(requestOM);
+            Object[] args = AxiomHelper.toObjects(typeHelper, requestOM);
             
             
             
@@ -128,7 +133,7 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
             SOAPBody soapbody = soapenv.getBody();
              //new SDO way....
             QName responseTypeQN = getResponseTypeName(operationMethod.getName());
-            OMElement responseOM = AxiomHelper.toOMElement(new Object[] {response}, responseTypeQN);
+            OMElement responseOM = AxiomHelper.toOMElement(typeHelper, new Object[] {response}, responseTypeQN);
             soapbody.addChild(responseOM);
             
             

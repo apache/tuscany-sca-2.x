@@ -44,6 +44,8 @@ import org.apache.tuscany.model.assembly.ServiceContract;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
+import commonj.sdo.helper.TypeHelper;
+
 /**
  * Creates a <code>RuntimeConfigurationBuilder</code> for an external service configured with the {@link WebServiceBinding}
  * 
@@ -115,8 +117,9 @@ public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurat
         }
 
         WebServiceBinding wsBinding=(WebServiceBinding)externalService.getBindings().get(0);
-        
-        ExternalWebServiceClient externalWebServiceClient=new ExternalWebServiceClient(externalService, wsBinding);
+
+        TypeHelper typeHelper=externalService.getAggregate().getAssemblyModelContext().getTypeHelper();
+        ExternalWebServiceClient externalWebServiceClient=new ExternalWebServiceClient(externalService, wsBinding, typeHelper);
         ExternalWebServiceRuntimeConfiguration config = new ExternalWebServiceRuntimeConfiguration(externalService.getName(), new SingletonObjectFactory<ExternalWebServiceClient>(externalWebServiceClient));
 
         ConfiguredService configuredService = externalService.getConfiguredService();
