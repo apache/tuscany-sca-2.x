@@ -121,7 +121,9 @@ public class TuscanyContextListener implements LifecycleListener {
     }
 
     private void stopContext(Context ctx) {
-        moduleContext.fireEvent(EventContext.MODULE_START, null);
+        if (moduleContext!=null) {
+            moduleContext.fireEvent(EventContext.MODULE_START, null);
+        }
         // todo unload module component from runtime
     }
 
