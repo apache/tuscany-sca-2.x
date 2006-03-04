@@ -71,7 +71,10 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
     }
 
     public void invokeBusinessLogic(MessageContext msgContext, MessageContext outMsgContext) throws AxisFault {
+        
+        ClassLoader ccl=Thread.currentThread().getContextClassLoader();
         try {
+            Thread.currentThread().setContextClassLoader(entryPoint.getAggregate().getAssemblyModelContext().getApplicationResourceLoader().getClassLoader());
             
             AxisOperation axisOperation = msgContext.getAxisOperation();
             String axisOperationName= axisOperation.getName().getLocalPart();
@@ -158,6 +161,8 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
             
             e.printStackTrace();
             throw new AxisFault("Error creating DataObject from Soapenvelope. " + e.getClass() + " " + e.getMessage(), e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(ccl);
         }
 
     }

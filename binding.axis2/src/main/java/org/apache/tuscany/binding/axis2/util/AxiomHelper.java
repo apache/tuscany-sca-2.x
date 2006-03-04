@@ -106,7 +106,14 @@ public class AxiomHelper {
             new XMLHelperImpl(typeHelper).save(dataObject, typeQN.getNamespaceURI(), typeQN.getLocalPart(), pos);
             pos.close();
 
-            XMLStreamReader parser = XMLInputFactory.newInstance().createXMLStreamReader(pis);
+            XMLStreamReader parser;
+            ClassLoader ccl=Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(AxiomHelper.class.getClassLoader());
+                parser = XMLInputFactory.newInstance().createXMLStreamReader(pis);
+            } finally {
+                Thread.currentThread().setContextClassLoader(ccl);
+            }
             OMXMLParserWrapper builder = OMXMLBuilderFactory.createStAXOMBuilder(OMAbstractFactory.getOMFactory(), parser);
             OMElement root = builder.getDocumentElement();
 
@@ -133,7 +140,14 @@ public class AxiomHelper {
             PipedOutputStream pos = new PipedOutputStream();
             PipedInputStream pis = new PipedInputStream(pos);
 
-            omElement.serialize(pos);
+            ClassLoader ccl=Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(AxiomHelper.class.getClassLoader());
+                omElement.serialize(pos);
+            } finally {
+                Thread.currentThread().setContextClassLoader(ccl);
+            }
+            
             pos.flush();
             pos.close();
 

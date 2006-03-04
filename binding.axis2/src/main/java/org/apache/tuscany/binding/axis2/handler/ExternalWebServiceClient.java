@@ -62,18 +62,33 @@ public class ExternalWebServiceClient {
      */
     public Object invoke(Method method, Object[] args) {
 
-        ServiceClient serviceClient = createServiceClient(method);
-
+        ServiceClient serviceClient; 
+        ClassLoader ccl=Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(ExternalWebServiceClient.class.getClassLoader());
+            
+            serviceClient = createServiceClient(method);
+            
+        } finally {
+            Thread.currentThread().setContextClassLoader(ccl);
+        }
+        
         String typeName = method.getName();
         String typeNS = wsPortMetaData.getPortType().getQName().getNamespaceURI();
         
         OMElement requestOM = AxiomHelper.toOMElement(typeHelper, args, new QName(typeNS, typeName));
-
+        
         OMElement responseOM;
+        ccl=Thread.currentThread().getContextClassLoader();
         try {
+            Thread.currentThread().setContextClassLoader(ExternalWebServiceClient.class.getClassLoader());
+
             responseOM = serviceClient.sendReceive(requestOM);
+            
         } catch (AxisFault e) {
             throw new ServiceRuntimeException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(ccl);
         }
 
         Object[] os = AxiomHelper.toObjects(typeHelper, responseOM);
@@ -114,17 +129,10 @@ public class ExternalWebServiceClient {
         }
 
         ServiceClient serviceClient;
-        ClassLoader ccl=Thread.currentThread().getContextClassLoader();
         try {
-            Thread.currentThread().setContextClassLoader(ExternalWebServiceClient.class.getClassLoader());
-            //URL url=ExternalWebServiceClient.class.getClassLoader().getResource("tuscany-axis2.xml");
-            //ConfigurationContext configurationContext=new ConfigurationContextFactory().createConfigurationContextFromFileSystem(url.toString());
-            //serviceClient = new ServiceClient(configurationContext, createAnonymousService());
             serviceClient = new ServiceClient();
         } catch (org.apache.axis2.AxisFault e) {
             throw new RuntimeException(e);
-        } finally {
-            Thread.currentThread().setContextClassLoader(ccl);
         }
 
         serviceClient.setOptions(options);
