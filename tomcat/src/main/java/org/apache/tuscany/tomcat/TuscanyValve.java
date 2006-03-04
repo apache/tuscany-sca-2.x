@@ -18,7 +18,7 @@ package org.apache.tuscany.tomcat;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
@@ -29,12 +29,11 @@ import org.osoa.sca.SCA;
 
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.EventException;
 import org.apache.tuscany.core.context.webapp.LazyHTTPSessionId;
 
 /**
  * Valve that can be added to a pipeline to automatically set the SCA environment as each request is processed.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class TuscanyValve extends ValveBase {
@@ -64,17 +63,16 @@ public class TuscanyValve extends ValveBase {
             } else {
                 // tell the runtime a new request is starting
                 Object requestId = new Object();
-                // jfm
-                if (request.getSession(false) != null) {
+
+                HttpSession session = request.getSession(false);
+                if (session != null) {
                     // A session is already active
-                    moduleComponentContext
-                            .fireEvent(EventContext.SESSION_NOTIFY, ((HttpServletRequest) request).getSession(true));
+                    moduleComponentContext .fireEvent(EventContext.SESSION_NOTIFY, session);
                 } else {
                     // Create a lazy wrapper since a session is not yet active
-                    moduleComponentContext.fireEvent(EventContext.SESSION_NOTIFY, new LazyHTTPSessionId(
-                            (HttpServletRequest) request));
+                    moduleComponentContext.fireEvent(EventContext.SESSION_NOTIFY, new LazyHTTPSessionId(request));
                 }
-                // jfm
+
                 try {
                     moduleComponentContext.fireEvent(EventContext.REQUEST_START, requestId);
                 } catch (Exception e) {
