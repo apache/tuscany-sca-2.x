@@ -14,6 +14,7 @@
 package org.apache.tuscany.binding.axis2.handler;
 
 import java.lang.reflect.Method;
+import java.net.URL;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -23,7 +24,13 @@ import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.axis2.context.MessageContextConstants;
+import org.apache.axis2.description.AxisService;
+import org.apache.axis2.description.OutInAxisOperation;
+import org.apache.axis2.description.OutOnlyAxisOperation;
+import org.apache.axis2.description.RobustOutOnlyAxisOperation;
 import org.apache.axis2.om.OMElement;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis2.util.AxiomHelper;
@@ -110,10 +117,17 @@ public class ExternalWebServiceClient {
         }
 
         ServiceClient serviceClient;
+        ClassLoader ccl=Thread.currentThread().getContextClassLoader();
         try {
+            Thread.currentThread().setContextClassLoader(ExternalWebServiceClient.class.getClassLoader());
+            //URL url=ExternalWebServiceClient.class.getClassLoader().getResource("tuscany-axis2.xml");
+            //ConfigurationContext configurationContext=new ConfigurationContextFactory().createConfigurationContextFromFileSystem(url.toString());
+            //serviceClient = new ServiceClient(configurationContext, createAnonymousService());
             serviceClient = new ServiceClient();
         } catch (org.apache.axis2.AxisFault e) {
             throw new RuntimeException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(ccl);
         }
 
         serviceClient.setOptions(options);
