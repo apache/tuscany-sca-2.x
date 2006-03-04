@@ -186,7 +186,7 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
 
                         // QualifiedName qName = new QualifiedName(reference.getPart().getName() + "/"
                         // + reference.getPort().getName());
-                        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, msgFactory);
+                        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, interfaze.getInterface().getClassLoader(), msgFactory);
                         proxyFactory.setBusinessInterface(interfaze.getInterface());
                         proxyFactory.setProxyConfiguration(pConfiguration);
                         reference.setProxyFactory(proxyFactory);
