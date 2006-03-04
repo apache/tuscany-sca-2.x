@@ -79,7 +79,8 @@ public class ResourceLoaderImpl implements ResourceLoader {
      * @return the classloader that backs this resource loader
      * @throws IllegalStateException if the classloader has been garbage collected
      */
-    private ClassLoader getClassLoader() throws IllegalStateException {
+    //FIXME Temporary used to set the classloader on the thread context, need to changed to private 
+    public ClassLoader getClassLoader() throws IllegalStateException {
         ClassLoader cl = classLoaderReference.get();
         if (cl == null) {
             throw new IllegalStateException("Referenced ClassLoader has been garbage collected");

@@ -87,4 +87,8 @@ public interface ResourceLoader {
      * @throws IOException if there was a problem locating the resources
      */
     Iterator<URL> getAllResources(String name) throws IOException;
+
+    //FIXME this is temporary to work around classloader problems with SDO when running in Tomcat 
+    ClassLoader getClassLoader();
+    
 }
