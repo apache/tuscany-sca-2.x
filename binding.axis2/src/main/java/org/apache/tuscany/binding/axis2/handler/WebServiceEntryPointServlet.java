@@ -301,22 +301,16 @@ public class WebServiceEntryPointServlet
         try
         {
             tuscanyRuntime.start();
-            AggregateContext moduleContext = tuscanyRuntime.getRootContext();
-            Module rootModule = (Module) moduleContext.getAggregate();
-
-            for ( Iterator m = rootModule.getComponents().iterator(); m.hasNext(); )
-            {
-                Module module = (Module) ( (Component) m.next() ).getComponentImplementation();
+            ServletContext servletContext = config.getServletContext();
+            AggregateContext moduleContext = (AggregateContext) servletContext.getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext" );
+            Module module = (Module) moduleContext.getAggregate();
 
                 for ( Iterator i = module.getEntryPoints().iterator(); i.hasNext(); )
                 {
                     EntryPoint entryPoint = (EntryPoint) i.next();
                     final String epName = entryPoint.getName();
 
-                    ServletContext servletContext = config.getServletContext();
-                    AggregateContext moduleContext2 = (AggregateContext) servletContext
-                        .getAttribute( "org.apache.tuscany.core.webapp.ModuleComponentContext" );
-                    InstanceContext entryPointContext = moduleContext2.getContext( epName );
+                    InstanceContext entryPointContext = moduleContext.getContext( epName );
 
                     Binding binding = (Binding) entryPoint.getBindings().get( 0 );
                     if ( binding instanceof WebServiceBinding )
@@ -376,7 +370,6 @@ public class WebServiceEntryPointServlet
 
                     }
                 }
-            }
         }
         finally
         {
@@ -456,7 +449,7 @@ public class WebServiceEntryPointServlet
     //RRFOO
     //TODO get axis2.xml in
     /*
-     * 
+     *
      // Get the current SCA module context
      AggregateContext moduleContext = tuscanyRuntime.getModuleComponentContext();
      tuscanyRuntime.start();
@@ -475,6 +468,6 @@ public class WebServiceEntryPointServlet
      throw new ServiceRuntimeException(e1);
      }
 
-     * 
+     *
      */
 }
