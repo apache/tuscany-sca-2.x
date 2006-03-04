@@ -17,7 +17,6 @@
 
 package org.apache.tuscany.binding.axis2.handler;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -60,43 +59,49 @@ import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.model.assembly.Binding;
+import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
 
 /**
  * Class AxisServlet
  */
-public class WebServiceEntryPointServlet extends HttpServlet  {
-
+public class WebServiceEntryPointServlet
+    extends HttpServlet
+{
 
     private static final long serialVersionUID = -2085869393709833372L;
+
     private static final String CONFIGURATION_CONTEXT = "CONFIGURATION_CONTEXT";
+
     public static final String SESSION_ID = "SessionId";
+
     private ConfigurationContext configContext;
+
     private AxisConfiguration axisConfiguration;
+
     private ListingAgent lister;
 
-    private MessageContext createAndSetInitialParamsToMsgCtxt(Object sessionContext,
-                                                              MessageContext msgContext, HttpServletResponse httpServletResponse,
-                                                              HttpServletRequest httpServletRequest)
-            throws AxisFault {
+    private MessageContext createAndSetInitialParamsToMsgCtxt( Object sessionContext, MessageContext msgContext,
+                                                              HttpServletResponse httpServletResponse,
+                                                              HttpServletRequest httpServletRequest )
+        throws AxisFault
+    {
         msgContext = new MessageContext();
-        msgContext.setConfigurationContext(configContext);
-        msgContext.setSessionContext((SessionContext) sessionContext);
-        msgContext.setTransportIn(axisConfiguration.getTransportIn(new QName(Constants
-                .TRANSPORT_HTTP)));
-        msgContext.setTransportOut(axisConfiguration.getTransportOut(new QName(Constants.TRANSPORT_HTTP)));
+        msgContext.setConfigurationContext( configContext );
+        msgContext.setSessionContext( (SessionContext) sessionContext );
+        msgContext.setTransportIn( axisConfiguration.getTransportIn( new QName( Constants.TRANSPORT_HTTP ) ) );
+        msgContext.setTransportOut( axisConfiguration.getTransportOut( new QName( Constants.TRANSPORT_HTTP ) ) );
 
-        msgContext.setProperty(Constants.OUT_TRANSPORT_INFO,
-                new ServletBasedOutTransportInfo(httpServletResponse));
-        msgContext.setProperty(MessageContext.TRANSPORT_HEADERS,
-                getTransportHeaders(httpServletRequest));
-        msgContext.setProperty(SESSION_ID, httpServletRequest.getSession().getId());
+        msgContext.setProperty( Constants.OUT_TRANSPORT_INFO, new ServletBasedOutTransportInfo( httpServletResponse ) );
+        msgContext.setProperty( MessageContext.TRANSPORT_HEADERS, getTransportHeaders( httpServletRequest ) );
+        msgContext.setProperty( SESSION_ID, httpServletRequest.getSession().getId() );
 
         return msgContext;
     }
 
-    public void destroy() {
+    public void destroy()
+    {
         super.destroy();
     }
 
@@ -108,40 +113,47 @@ public class WebServiceEntryPointServlet extends HttpServlet  {
      * @throws ServletException
      * @throws IOException
      */
-    protected void doGet(HttpServletRequest httpServletRequest,
-                         HttpServletResponse httpServletResponse)
-            throws ServletException, IOException {
+    protected void doGet( HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse )
+        throws ServletException, IOException
+    {
         MessageContext msgContext = null;
         OutputStream out = null;
 
-        try {
-            Object sessionContext = getSessionContext(httpServletRequest);
-            HashMap map = getHTTPParameters(httpServletRequest);
+        try
+        {
+            Object sessionContext = getSessionContext( httpServletRequest );
+            HashMap map = getHTTPParameters( httpServletRequest );
 
-            msgContext = createAndSetInitialParamsToMsgCtxt(sessionContext, msgContext,
-                    httpServletResponse, httpServletRequest);
-            msgContext.setDoingREST(true);
-            msgContext.setServerSide(true);
+            msgContext = createAndSetInitialParamsToMsgCtxt( sessionContext, msgContext, httpServletResponse,
+                                                             httpServletRequest );
+            msgContext.setDoingREST( true );
+            msgContext.setServerSide( true );
             out = httpServletResponse.getOutputStream();
 
-            boolean processed = HTTPTransportUtils.processHTTPGetRequest(msgContext,
-                    httpServletRequest.getInputStream(), out,
-                    httpServletRequest.getContentType(),
-                    httpServletRequest.getHeader(HTTPConstants.HEADER_SOAP_ACTION),
-                    httpServletRequest.getRequestURL().toString(), configContext,
-                    map);
+            boolean processed = HTTPTransportUtils.processHTTPGetRequest( msgContext, httpServletRequest
+                .getInputStream(), out, httpServletRequest.getContentType(), httpServletRequest
+                .getHeader( HTTPConstants.HEADER_SOAP_ACTION ), httpServletRequest.getRequestURL().toString(),
+                                                                          configContext, map );
 
-            if (!processed) {
-                lister.handle(httpServletRequest, httpServletResponse, out);
+            if ( !processed )
+            {
+                lister.handle( httpServletRequest, httpServletResponse, out );
             }
-        } catch (AxisFault e) {
-            if (msgContext != null) {
-                handleFault(msgContext, out, e);
-            } else {
-                throw new ServletException(e);
+        }
+        catch ( AxisFault e )
+        {
+            if ( msgContext != null )
+            {
+                handleFault( msgContext, out, e );
             }
-        } catch (Exception e) {
-            throw new ServletException(e);
+            else
+            {
+                throw new ServletException( e );
+            }
+        }
+        catch ( Exception e )
+        {
+            throw new ServletException( e );
         }
     }
 
@@ -158,59 +170,69 @@ public class WebServiceEntryPointServlet extends HttpServlet  {
      * @throws ServletException
      * @throws IOException
      */
-    protected void doPost(HttpServletRequest req, HttpServletResponse res)
-            throws ServletException, IOException {
+    protected void doPost( HttpServletRequest req, HttpServletResponse res )
+        throws ServletException, IOException
+    {
         MessageContext msgContext = null;
         OutputStream out = null;
 
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         ClassLoader mycl = getClass().getClassLoader();
-        try {
-            if (tccl != mycl) {
-                Thread.currentThread().setContextClassLoader(mycl);
+        try
+        {
+            if ( tccl != mycl )
+            {
+                Thread.currentThread().setContextClassLoader( mycl );
             }
-            Object sessionContext = getSessionContext(req);
+            Object sessionContext = getSessionContext( req );
 
-            msgContext = createAndSetInitialParamsToMsgCtxt(sessionContext, msgContext, res, req);
+            msgContext = createAndSetInitialParamsToMsgCtxt( sessionContext, msgContext, res, req );
 
             // adding ServletContext into msgContext;
-            msgContext.setProperty(Constants.SERVLET_CONTEXT, sessionContext);
+            msgContext.setProperty( Constants.SERVLET_CONTEXT, sessionContext );
             out = res.getOutputStream();
-            HTTPTransportUtils.processHTTPPostRequest(msgContext, req.getInputStream(), out,
-                    req.getContentType(), req.getHeader(HTTPConstants.HEADER_SOAP_ACTION),
-                    req.getRequestURL().toString());
+            HTTPTransportUtils.processHTTPPostRequest( msgContext, req.getInputStream(), out, req.getContentType(), req
+                .getHeader( HTTPConstants.HEADER_SOAP_ACTION ), req.getRequestURL().toString() );
 
-            Object contextWritten =
-                    msgContext.getOperationContext().getProperty(Constants.RESPONSE_WRITTEN);
+            Object contextWritten = msgContext.getOperationContext().getProperty( Constants.RESPONSE_WRITTEN );
 
-            res.setContentType("text/xml; charset="
-                    + msgContext.getProperty(MessageContext.CHARACTER_SET_ENCODING));
+            res.setContentType( "text/xml; charset=" + msgContext.getProperty( MessageContext.CHARACTER_SET_ENCODING ) );
 
-            if ((contextWritten == null) || !Constants.VALUE_TRUE.equals(contextWritten)) {
-                res.setStatus(HttpServletResponse.SC_ACCEPTED);
+            if ( ( contextWritten == null ) || !Constants.VALUE_TRUE.equals( contextWritten ) )
+            {
+                res.setStatus( HttpServletResponse.SC_ACCEPTED );
             }
-        } catch (AxisFault e) {
-            if (msgContext != null) {
-                res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                handleFault(msgContext, out, e);
-            } else {
-                throw new ServletException(e);
+        }
+        catch ( AxisFault e )
+        {
+            if ( msgContext != null )
+            {
+                res.setStatus( HttpServletResponse.SC_INTERNAL_SERVER_ERROR );
+                handleFault( msgContext, out, e );
             }
-        } finally{
-            if (tccl != mycl) {
-                Thread.currentThread().setContextClassLoader(tccl);
+            else
+            {
+                throw new ServletException( e );
+            }
+        }
+        finally
+        {
+            if ( tccl != mycl )
+            {
+                Thread.currentThread().setContextClassLoader( tccl );
             }
         }
     }
 
-    private void handleFault(MessageContext msgContext, OutputStream out, AxisFault e)
-            throws AxisFault {
-        msgContext.setProperty(MessageContext.TRANSPORT_OUT, out);
+    private void handleFault( MessageContext msgContext, OutputStream out, AxisFault e )
+        throws AxisFault
+    {
+        msgContext.setProperty( MessageContext.TRANSPORT_OUT, out );
 
-        AxisEngine engine = new AxisEngine(configContext);
-        MessageContext faultContext = engine.createFaultMessageContext(msgContext, e);
+        AxisEngine engine = new AxisEngine( configContext );
+        MessageContext faultContext = engine.createFaultMessageContext( msgContext, e );
 
-        engine.sendFault(faultContext);
+        engine.sendFault( faultContext );
     }
 
     /**
@@ -219,132 +241,148 @@ public class WebServiceEntryPointServlet extends HttpServlet  {
      * @param config
      * @throws ServletException
      */
-    public void init(ServletConfig config) throws ServletException {
+    public void init( ServletConfig config )
+        throws ServletException
+    {
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         ClassLoader mycl = getClass().getClassLoader();
-        try {
-            if (tccl != mycl) {
-                Thread.currentThread().setContextClassLoader(mycl);
+        try
+        {
+            if ( tccl != mycl )
+            {
+                Thread.currentThread().setContextClassLoader( mycl );
             }
-            configContext = initConfigContext(config);
-            initTuscany(configContext.getAxisConfiguration(),config);
-            lister = new ListingAgent(configContext);
+            configContext = initConfigContext( config );
+            initTuscany( configContext.getAxisConfiguration(), config );
+            lister = new ListingAgent( configContext );
             axisConfiguration = configContext.getAxisConfiguration();
-            config.getServletContext().setAttribute(CONFIGURATION_CONTEXT, configContext);
-        } catch (Exception e) {
+            config.getServletContext().setAttribute( CONFIGURATION_CONTEXT, configContext );
+        }
+        catch ( Exception e )
+        {
             e.printStackTrace();
-            throw new ServletException(e);
-        } finally{
-            if (tccl != mycl) {
-                Thread.currentThread().setContextClassLoader(tccl);
+            throw new ServletException( e );
+        }
+        finally
+        {
+            if ( tccl != mycl )
+            {
+                Thread.currentThread().setContextClassLoader( tccl );
             }
         }
     }
-   
 
-    RuntimeContext getTuscanyWebAppRuntime(ServletConfig config) {
+    RuntimeContext getTuscanyWebAppRuntime( ServletConfig config )
+    {
 
-        Object ret = (RuntimeContext) (config).getServletContext().getAttribute("org.apache.tuscany.core.runtime.RuntimeContext");
-        if (!( ret instanceof RuntimeContext)) {
-            RuntimeException rete= new RuntimeException("Tuscany configuration not found! " + ((ret == null) ? "" : "unexpected class" + ret.getClass()));
+        Object ret = (RuntimeContext) ( config ).getServletContext()
+            .getAttribute( "org.apache.tuscany.core.runtime.RuntimeContext" );
+        if ( !( ret instanceof RuntimeContext ) )
+        {
+            RuntimeException rete = new RuntimeException( "Tuscany configuration not found! "
+                + ( ( ret == null ) ? "" : "unexpected class" + ret.getClass() ) );
             rete.printStackTrace();//pretty majar make sure something gets logged.
             throw rete;
 
         }
-        return (RuntimeContext)ret;
+        return (RuntimeContext) ret;
     }
-    
-    
-    
-    void initTuscany(final AxisConfiguration axisConfig, ServletConfig config) throws AxisFault{
-        
+
+    void initTuscany( final AxisConfiguration axisConfig, ServletConfig config )
+        throws AxisFault
+    {
 
         // Register all the Web service entry points
-        RuntimeContext tuscanyRuntime = getTuscanyWebAppRuntime(config);
-        
+        RuntimeContext tuscanyRuntime = getTuscanyWebAppRuntime( config );
+
         // Get the current SCA module context
-        
-       // AggregateContext moduleContext = (AggregateContext) tuscanyRuntime.getAggregate().getAssemblyModelContext();//getRootContext();//.getModuleComponentContext();
-        try {
+
+        // AggregateContext moduleContext = (AggregateContext) tuscanyRuntime.getAggregate().getAssemblyModelContext();//getRootContext();//.getModuleComponentContext();
+        try
+        {
             tuscanyRuntime.start();
             AggregateContext moduleContext = tuscanyRuntime.getRootContext();
-            Module module = (Module) moduleContext.getAggregate();
-            module = (Module)module.getComponents().get(0).getComponentImplementation();
+            Module rootModule = (Module) moduleContext.getAggregate();
 
-            
-           
-            
+            for ( Iterator m = rootModule.getComponents().iterator(); m.hasNext(); )
+            {
+                Module module = (Module) ( (Component) m.next() ).getComponentImplementation();
 
-            for (Iterator i =  module.getEntryPoints().iterator(); i.hasNext();) {
-                EntryPoint entryPoint = (EntryPoint) i.next();
-                final String epName = entryPoint.getName();
-                
-                
-                ServletContext servletContext= config.getServletContext() ;
-                AggregateContext moduleContext2 = (AggregateContext) servletContext.getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
-                InstanceContext entryPointContext = moduleContext2.getContext(epName);
-                
-       
-                 
-                Binding binding = (Binding) entryPoint.getBindings().get(0);
-                if (binding instanceof WebServiceBinding) {
+                for ( Iterator i = module.getEntryPoints().iterator(); i.hasNext(); )
+                {
+                    EntryPoint entryPoint = (EntryPoint) i.next();
+                    final String epName = entryPoint.getName();
 
-                    WebServiceBinding wsBinding = (WebServiceBinding) binding;
-                    Definition definition = wsBinding.getWSDLDefinition();
-                    Port port = wsBinding.getWSDLPort();
-                    QName qname = new QName(definition.getTargetNamespace(), port.getName());
-                    if (qname != null) {
-                        
-                        WebServicePortMetaData wsdlPortInfo = new WebServicePortMetaData(definition, port, null, false);
-                        
-                        WebServiceEntryPointInOutSyncMessageReceiver msgrec = new WebServiceEntryPointInOutSyncMessageReceiver(moduleContext,
-                                entryPoint,                           
-                                        (EntryPointContext)   entryPointContext,
-                                        wsdlPortInfo);
-                        
+                    ServletContext servletContext = config.getServletContext();
+                    AggregateContext moduleContext2 = (AggregateContext) servletContext
+                        .getAttribute( "org.apache.tuscany.core.webapp.ModuleComponentContext" );
+                    InstanceContext entryPointContext = moduleContext2.getContext( epName );
 
-                        AxisServiceGroup serviceGroup = new AxisServiceGroup(axisConfig);
-                        axisConfig.addMessageReceiver(WebServiceEntryPointInOutSyncMessageReceiver.MEP_URL, msgrec);
-                        serviceGroup.setServiceGroupName(wsdlPortInfo.getServiceName().getLocalPart());
+                    Binding binding = (Binding) entryPoint.getBindings().get( 0 );
+                    if ( binding instanceof WebServiceBinding )
+                    {
 
-                        // to create service from wsdl stream --->
-                        // AxisServiceBuilder axisServiceBuilder = new AxisServiceBuilder();
-                        // return axisServiceBuilder.getAxisService(in);
+                        WebServiceBinding wsBinding = (WebServiceBinding) binding;
+                        Definition definition = wsBinding.getWSDLDefinition();
+                        Port port = wsBinding.getWSDLPort();
+                        QName qname = new QName( definition.getTargetNamespace(), port.getName() );
+                        if ( qname != null )
+                        {
 
- 
-                        
-                        AxisService axisService = new AxisService(epName);
-                        axisService.setParent(serviceGroup);
-                        axisService.setServiceDescription("Tuscany configured service EntryPoint name '" + epName + "'");
-                        // axisService.setTargetNamespace(wsdlPortInfo.getPortName().getNamespaceURI());
-                        axisService.addMessageReceiver(WebServiceEntryPointInOutSyncMessageReceiver.MEP_URL, msgrec);
+                            WebServicePortMetaData wsdlPortInfo = new WebServicePortMetaData( definition, port, null,
+                                                                                              false );
 
- 
+                            WebServiceEntryPointInOutSyncMessageReceiver msgrec = new WebServiceEntryPointInOutSyncMessageReceiver(
+                                                                                                                                    moduleContext,
+                                                                                                                                    entryPoint,
+                                                                                                                                    (EntryPointContext) entryPointContext,
+                                                                                                                                    wsdlPortInfo );
 
-                        // Create operation descriptions for all the operations
-                        PortType wsdlPortType = wsdlPortInfo.getPortType();
-                        for (Iterator j = wsdlPortType.getOperations().iterator(); j.hasNext();) {
-                            Operation wsdlOperation = (Operation) j.next();
-                            String operationName = wsdlOperation.getName();
-                            AxisOperation axisOp = new InOutAxisOperation(new javax.xml.namespace.QName(qname.getNamespaceURI(), operationName));
-                            axisOp.setMessageReceiver(msgrec);
-                            axisService.addOperation(axisOp);
-                            axisOp.setMessageExchangePattern(WebServiceEntryPointInOutSyncMessageReceiver.MEP_URL);
+                            AxisServiceGroup serviceGroup = new AxisServiceGroup( axisConfig );
+                            axisConfig
+                                .addMessageReceiver( WebServiceEntryPointInOutSyncMessageReceiver.MEP_URL, msgrec );
+                            serviceGroup.setServiceGroupName( wsdlPortInfo.getServiceName().getLocalPart() );
 
-                            axisConfig.addService(axisService);
- 
+                            // to create service from wsdl stream --->
+                            // AxisServiceBuilder axisServiceBuilder = new AxisServiceBuilder();
+                            // return axisServiceBuilder.getAxisService(in);
+
+                            AxisService axisService = new AxisService( epName );
+                            axisService.setParent( serviceGroup );
+                            axisService.setServiceDescription( "Tuscany configured service EntryPoint name '" + epName
+                                + "'" );
+                            // axisService.setTargetNamespace(wsdlPortInfo.getPortName().getNamespaceURI());
+                            axisService.addMessageReceiver( WebServiceEntryPointInOutSyncMessageReceiver.MEP_URL,
+                                                            msgrec );
+
+                            // Create operation descriptions for all the operations
+                            PortType wsdlPortType = wsdlPortInfo.getPortType();
+                            for ( Iterator j = wsdlPortType.getOperations().iterator(); j.hasNext(); )
+                            {
+                                Operation wsdlOperation = (Operation) j.next();
+                                String operationName = wsdlOperation.getName();
+                                AxisOperation axisOp = new InOutAxisOperation( new javax.xml.namespace.QName( qname
+                                    .getNamespaceURI(), operationName ) );
+                                axisOp.setMessageReceiver( msgrec );
+                                axisService.addOperation( axisOp );
+                                axisOp.setMessageExchangePattern( WebServiceEntryPointInOutSyncMessageReceiver.MEP_URL );
+
+                                axisConfig.addService( axisService );
+
+                            }
+                            axisConfig.addServiceGroup( serviceGroup );
+
                         }
-                        axisConfig.addServiceGroup(serviceGroup);
 
                     }
-
                 }
             }
-        } finally{
-           // tuscanyRuntime.stop();
+        }
+        finally
+        {
+            // tuscanyRuntime.stop();
         }
     }
-
 
     /**
      * Initialize the Axis configuration context
@@ -352,56 +390,65 @@ public class WebServiceEntryPointServlet extends HttpServlet  {
      * @param config Servlet configuration
      * @throws ServletException
      */
-    protected ConfigurationContext initConfigContext(ServletConfig config) throws ServletException {
-        try {
+    protected ConfigurationContext initConfigContext( ServletConfig config )
+        throws ServletException
+    {
+        try
+        {
             ServletContext context = config.getServletContext();
-            String repoDir = context.getRealPath("/WEB-INF");
+            String repoDir = context.getRealPath( "/WEB-INF" );
             ConfigurationContextFactory erfac = new ConfigurationContextFactory();
-            ConfigurationContext configContext = erfac.createConfigurationContextFromFileSystem(repoDir);
-            configContext.setProperty(Constants.CONTAINER_MANAGED, Constants.VALUE_TRUE);
-            configContext.setRootDir(new File(context.getRealPath("/WEB-INF")));
+            ConfigurationContext configContext = erfac.createConfigurationContextFromFileSystem( repoDir );
+            configContext.setProperty( Constants.CONTAINER_MANAGED, Constants.VALUE_TRUE );
+            configContext.setRootDir( new File( context.getRealPath( "/WEB-INF" ) ) );
             return configContext;
-        } catch (Exception e) {
-            throw new ServletException(e);
+        }
+        catch ( Exception e )
+        {
+            throw new ServletException( e );
         }
     }
 
-    private HashMap getHTTPParameters(HttpServletRequest httpServletRequest) {
+    private HashMap getHTTPParameters( HttpServletRequest httpServletRequest )
+    {
         HashMap map = new HashMap();
         Enumeration enu = httpServletRequest.getParameterNames();
 
-        while (enu.hasMoreElements()) {
+        while ( enu.hasMoreElements() )
+        {
             String name = (String) enu.nextElement();
-            String value = httpServletRequest.getParameter(name);
+            String value = httpServletRequest.getParameter( name );
 
-            map.put(name, value);
+            map.put( name, value );
         }
 
         return map;
     }
 
-    private Object getSessionContext(HttpServletRequest httpServletRequest) {
-        Object sessionContext =
-                httpServletRequest.getSession(true).getAttribute(Constants.SESSION_CONTEXT_PROPERTY);
+    private Object getSessionContext( HttpServletRequest httpServletRequest )
+    {
+        Object sessionContext = httpServletRequest.getSession( true ).getAttribute( Constants.SESSION_CONTEXT_PROPERTY );
 
-        if (sessionContext == null) {
-            sessionContext = new SessionContext(null);
-            httpServletRequest.getSession().setAttribute(Constants.SESSION_CONTEXT_PROPERTY,
-                    sessionContext);
+        if ( sessionContext == null )
+        {
+            sessionContext = new SessionContext( null );
+            httpServletRequest.getSession().setAttribute( Constants.SESSION_CONTEXT_PROPERTY, sessionContext );
         }
 
         return sessionContext;
     }
 
-    private Map getTransportHeaders(HttpServletRequest req) {
+    private Map getTransportHeaders( HttpServletRequest req )
+    {
         HashMap headerMap = new HashMap();
         Enumeration headerNames = req.getHeaderNames();
 
-        while (headerNames.hasMoreElements()) {
+        while ( headerNames.hasMoreElements() )
+        {
             String key = (String) headerNames.nextElement();
-            String value = req.getHeader(key);
+            String value = req.getHeader( key );
 
-            headerMap.put(key, value);
+            headerMap.put( key, value );
         }
 
         return headerMap;
@@ -410,25 +457,24 @@ public class WebServiceEntryPointServlet extends HttpServlet  {
     //TODO get axis2.xml in
     /*
      * 
-            // Get the current SCA module context
-        AggregateContext moduleContext = tuscanyRuntime.getModuleComponentContext();
-        tuscanyRuntime.start();
-        try {
+     // Get the current SCA module context
+     AggregateContext moduleContext = tuscanyRuntime.getModuleComponentContext();
+     tuscanyRuntime.start();
+     try {
 
-            Module module = (Module)moduleContext.getAggregate();
-            AssemblyModelContext modelContext = module.getAssemblyModelContext();
+     Module module = (Module)moduleContext.getAggregate();
+     AssemblyModelContext modelContext = module.getAssemblyModelContext();
 
-            // Load the .wsdd configuration
-            ResourceLoader bundleContext = modelContext.getResourceLoader();
-            InputStream wsdd;
-            try {
-                URL url = bundleContext.getResource("org/apache/tuscany/binding/axis/engine/config/server-config.wsdd");
-                wsdd = url.openStream();
-            } catch (IOException e1) {
-                throw new ServiceRuntimeException(e1);
-            }
+     // Load the .wsdd configuration
+     ResourceLoader bundleContext = modelContext.getResourceLoader();
+     InputStream wsdd;
+     try {
+     URL url = bundleContext.getResource("org/apache/tuscany/binding/axis/engine/config/server-config.wsdd");
+     wsdd = url.openStream();
+     } catch (IOException e1) {
+     throw new ServiceRuntimeException(e1);
+     }
 
      * 
      */
 }
-
