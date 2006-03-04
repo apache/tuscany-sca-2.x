@@ -3,15 +3,14 @@ package org.apache.tuscany.container.java.loader;
 import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
 import org.apache.tuscany.container.java.assembly.impl.JavaAssemblyFactoryImpl;
+import org.apache.tuscany.core.loader.SCDLModelLoaderRegistry;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.core.loader.SCDLModelLoaderRegistry;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
-import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Init;
 
 /**
  * Populates the assembly model from an SCDL model
@@ -61,11 +60,17 @@ public class JavaSCDLModelLoader implements SCDLModelLoader {
         if (object instanceof org.apache.tuscany.model.scdl.JavaImplementation) {
             org.apache.tuscany.model.scdl.JavaImplementation scdlJavaImplementation=(org.apache.tuscany.model.scdl.JavaImplementation)object;
             JavaImplementation implementation=javaFactory.createJavaImplementation();
+            
+            //FIXME Temp set the current app classloader on the class to load the impl class 
+            ClassLoader ccl=Thread.currentThread().getContextClassLoader();
             Class implementationClass;
             try {
+                Thread.currentThread().setContextClassLoader(modelContext.getApplicationResourceLoader().getClassLoader());
                 implementationClass=modelContext.getApplicationResourceLoader().loadClass(scdlJavaImplementation.getClass_());
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException(e);
+            } finally {
+                Thread.currentThread().setContextClassLoader(ccl);
             }
             implementation.setImplementationClass(implementationClass);
 
