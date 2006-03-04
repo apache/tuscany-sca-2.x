@@ -30,7 +30,7 @@
         <module>common</module>
         <module>model</module>
         <module>core</module>
-        <module>binding.axis</module>
+        <!-- <module>binding.axis</module> -->
         <module>binding.axis2</module>
         <module>container.java</module>
         <module>container.js</module>
