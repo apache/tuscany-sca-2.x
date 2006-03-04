@@ -246,7 +246,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                         QualifiedName qName = new QualifiedName(targetCompName + "/" + targetSerivceName);
                         // QualifiedName qName = new QualifiedName(reference.getAggregatePart().getName() + "/"
                         // + reference.getPort().getName());
-                        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, messageFactory);
+                        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
                         proxyFactory.setBusinessInterface(serviceContract.getInterface());
                         proxyFactory.setProxyConfiguration(pConfiguration);
                         config.addSourceProxyFactory(reference.getReference().getName(), proxyFactory);

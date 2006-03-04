@@ -127,7 +127,7 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
                 iConfigMap.put(method, iConfig);
             }
             QualifiedName qName = new QualifiedName(ep.getConfiguredReference().getTargetConfiguredServices().get(0).getAggregatePart().getName() + "/" + service.getName());
-            ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, messageFactory);
+            ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
             proxyFactory.setBusinessInterface(serviceContract.getInterface());
             proxyFactory.setProxyConfiguration(pConfiguration);
             config.addSourceProxyFactory(service.getName(), proxyFactory);
@@ -162,7 +162,7 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
                 iConfigMap.put(method, iConfig);
             }
             QualifiedName qName = new QualifiedName(es.getName() + "/" + service.getName());
-            ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, null, messageFactory);
+            ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
             proxyFactory.setBusinessInterface(serviceContract.getInterface());
             proxyFactory.setProxyConfiguration(pConfiguration);
             config.addTargetProxyFactory(service.getName(), proxyFactory);
