@@ -219,15 +219,19 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
             if (wsdlImport.getDefinition()==null) {
                 String location=wsdlImport.getLocationURI();
                 Definition definition;
+                ClassLoader ccl=Thread.currentThread().getContextClassLoader();
                 try {
                     URL url=resourceLoader.getResource(location);
                     if (url==null)
                         throw new IllegalArgumentException("Cannot find "+location);
                     definition = modelContext.getAssemblyLoader().loadDefinition(url.toString());
+                    Thread.currentThread().setContextClassLoader(modelContext.getApplicationResourceLoader().getClassLoader());
                     XSDHelper xsdHelper=SDOUtil.createXSDHelper(modelContext.getTypeHelper());
                     xsdHelper.define (url.openStream(), null);
                 } catch (IOException e) {
                     throw new IllegalArgumentException(e);
+                } finally {
+                    Thread.currentThread().setContextClassLoader(ccl);
                 }
                 wsdlImport.setDefinition(definition);
             }
