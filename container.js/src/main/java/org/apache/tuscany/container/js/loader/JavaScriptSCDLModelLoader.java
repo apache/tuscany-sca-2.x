@@ -28,7 +28,6 @@ public class JavaScriptSCDLModelLoader implements SCDLModelLoader {
 
     static {
         // Register the JavaScript SCDL model
-        ScdlPackageImpl.eINSTANCE.eClass();
         SDOUtil.registerStaticTypes(ScdlFactory.class);
     }
 
