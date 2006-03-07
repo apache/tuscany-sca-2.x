@@ -18,12 +18,16 @@
 package org.apache.tuscany.binding.axis2.handler;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -43,6 +47,7 @@ import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.context.SessionContext;
+import org.apache.axis2.deployment.DeploymentConstants;
 import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.AxisServiceGroup;
@@ -53,8 +58,9 @@ import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.transport.http.HTTPTransportUtils;
 import org.apache.axis2.transport.http.ListingAgent;
 import org.apache.axis2.transport.http.ServletBasedOutTransportInfo;
-
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.InstanceContext;
@@ -78,6 +84,8 @@ public class WebServiceEntryPointServlet extends HttpServlet {
     private AxisConfiguration axisConfiguration;
 
     private ListingAgent lister;
+    
+    private  boolean tuscanyGetDefaultAxis2xmlChecked= false;
 
     private MessageContext createAndSetInitialParamsToMsgCtxt(SessionContext sessionContext, MessageContext msgContext, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) throws AxisFault {
         msgContext = new MessageContext();
@@ -208,6 +216,7 @@ public class WebServiceEntryPointServlet extends HttpServlet {
             if (tccl != mycl) {
                 Thread.currentThread().setContextClassLoader(mycl);
             }
+            tuscanyGetDefaultAxis2xml(config);
             configContext = initConfigContext(config);
             initTuscany(configContext.getAxisConfiguration(), config);
             lister = new ListingAgent(configContext);
@@ -228,8 +237,10 @@ public class WebServiceEntryPointServlet extends HttpServlet {
         // Get the current SCA module context
 
         ServletContext servletContext = config.getServletContext();
+        
         AggregateContext moduleContext = (AggregateContext) servletContext.getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
         Module module = (Module) moduleContext.getAggregate();
+       
 
         for (Iterator<EntryPoint> i = module.getEntryPoints().iterator(); i.hasNext();) {
             EntryPoint entryPoint = i.next();
@@ -285,12 +296,52 @@ public class WebServiceEntryPointServlet extends HttpServlet {
             }
         }
     }
+    
+    protected synchronized void tuscanyGetDefaultAxis2xml( ServletConfig config) throws ServletException {
+
+        if (tuscanyGetDefaultAxis2xmlChecked)
+            return; // already checked.
+        tuscanyGetDefaultAxis2xmlChecked = true;
+        ServletContext context = config.getServletContext();
+        String repoDir = context.getRealPath("/WEB-INF");
+        String axis2config = repoDir + "/" + DeploymentConstants.AXIS2_CONFIGURATION_XML;
+        File axis2xmlFile = new File(axis2config);
+        if (axis2xmlFile.exists())
+            return; // do nothing if there.
+        
+        AggregateContext moduleContext = (AggregateContext) config.getServletContext().getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
+        Module module = (Module) moduleContext.getAggregate();
+
+
+        ResourceLoader resourceLoader = new ResourceLoaderImpl(module.getClass().getClassLoader());
+
+        try {
+
+            URL url = resourceLoader.getResource("org/apache/tuscany/binding/axis2/engine/config/axis2.xml");
+            InputStream defaultAxis2xml = url.openStream();
+            FileOutputStream out = new FileOutputStream(axis2xmlFile);
+
+            byte[] buff = new byte[1024];
+            for (int len = -1; (len = defaultAxis2xml.read(buff)) > 0;) {
+                out.write(buff, 0, len);
+            }
+
+            defaultAxis2xml.close();
+            out.close();
+
+        } catch (IOException e1) {
+            throw new ServletException(e1);
+        }
+
+    }
 
     /**
      * Initialize the Axis configuration context
-     *
-     * @param config Servlet configuration
-     * @throws AxisFault if there was a problem configuring the Axis engine
+     * 
+     * @param config
+     *            Servlet configuration
+     * @throws AxisFault
+     *             if there was a problem configuring the Axis engine
      */
     protected ConfigurationContext initConfigContext(ServletConfig config) throws AxisFault {
         ServletContext context = config.getServletContext();
