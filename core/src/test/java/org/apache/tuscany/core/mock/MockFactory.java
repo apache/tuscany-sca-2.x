@@ -17,10 +17,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
+import org.apache.tuscany.core.mock.component.Source;
+import org.apache.tuscany.core.mock.component.SourceImpl;
+import org.apache.tuscany.core.mock.component.Target;
+import org.apache.tuscany.core.mock.component.TargetImpl;
+import org.apache.tuscany.core.runtime.RuntimeContext;
+import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
@@ -57,7 +64,6 @@ public class MockFactory {
 
     private MockFactory() {
     }
-
 
     /**
      * Creates a system component of the given type with the given name and scope
@@ -126,7 +132,7 @@ public class MockFactory {
      * Creates and initializes a system component of the given type with the given name and scope
      */
     public static Component createSystemInitializedComponent(String name, Class type, Scope scope) {
-        Component sc = createSystemComponent(name,type,scope);
+        Component sc = createSystemComponent(name, type, scope);
         sc.initialize(assemblyContext);
         return sc;
     }
@@ -256,9 +262,9 @@ public class MockFactory {
     }
 
     /**
-     * Creates a test system module component with a module-scoped component and entry point
+     * Creates a test system module with a module-scoped component and entry point
      */
-    public static Module createSystemModule(){
+    public static Module createSystemModule() {
         Module module = systemFactory.createModule();
         module.setName("system.module");
 
@@ -281,6 +287,71 @@ public class MockFactory {
 
         module.getEntryPoints().add(ep);
         module.getComponents().add(component);
+        module.initialize(assemblyContext);
+        return module;
+    }
+
+    /**
+     * Creates a test system module with source and target components wired together.
+     * 
+     * @see org.apache.tuscany.core.mock.component.Source
+     * @see org.apache.tuscany.core.mock.component.Target
+     */
+    public static Module createSystemModuleWithWiredComponents(Scope sourceScope, Scope targetScope) {
+
+        // create the target component
+        SimpleComponent target = systemFactory.createSimpleComponent();
+        target.setName("target");
+        SystemImplementation targetImpl = systemFactory.createSystemImplementation();
+        targetImpl.setComponentType(systemFactory.createComponentType());
+        targetImpl.setImplementationClass(TargetImpl.class);
+        target.setComponentImplementation(targetImpl);
+        Service targetService = systemFactory.createService();
+        JavaServiceContract targetContract = systemFactory.createJavaServiceContract();
+        targetContract.setInterface(Target.class);
+        targetService.setServiceContract(targetContract);
+        targetService.setName("Target");
+        targetImpl.getComponentType().getServices().add(targetService);
+        targetContract.setScope(targetScope);
+        ConfiguredService cTargetService = systemFactory.createConfiguredService();
+        cTargetService.setService(targetService);
+        cTargetService.initialize(assemblyContext);
+        target.getConfiguredServices().add(cTargetService);
+        target.initialize(assemblyContext);
+
+        // create the source component
+        SimpleComponent source = systemFactory.createSimpleComponent();
+        source.setName("source");
+        SystemImplementation impl = systemFactory.createSystemImplementation();
+        impl.setComponentType(systemFactory.createComponentType());
+        impl.setImplementationClass(SourceImpl.class);
+        source.setComponentImplementation(impl);
+        Service s = systemFactory.createService();
+        JavaServiceContract contract = systemFactory.createJavaServiceContract();
+        contract.setInterface(Source.class);
+        s.setServiceContract(contract);
+        contract.setScope(sourceScope);
+        impl.getComponentType().getServices().add(s);
+        source.setComponentImplementation(impl);
+
+        // wire source to target
+        JavaServiceContract refContract = systemFactory.createJavaServiceContract();
+        refContract.setInterface(Target.class);
+        Reference reference = systemFactory.createReference();
+        reference.setName("setTarget");
+        reference.setServiceContract(refContract);
+        ConfiguredReference cReference = systemFactory.createConfiguredReference();
+        cReference.setReference(reference);
+        cReference.getTargetConfiguredServices().add(cTargetService);
+        cReference.initialize(assemblyContext);
+        source.getConfiguredReferences().add(cReference);
+        source.initialize(assemblyContext);
+        
+        Module module = systemFactory.createModule();
+        module.setName("system.module");
+
+        module.getComponents().add(source);
+        module.getComponents().add(target);
         module.initialize(assemblyContext);
         return module;
     }
@@ -324,6 +395,17 @@ public class MockFactory {
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
         return builders;
+    }
+    
+    /**
+     * Creates a default {@link RuntimeContext} configured with support for Java component implementations
+     * 
+     * @throws ConfigurationException
+     */
+    public static RuntimeContext createCoreRuntime() throws ConfigurationException {
+        RuntimeContext runtime = new RuntimeContextImpl(null, null, createSystemBuilders(), null);
+        runtime.start();
+        return runtime;
     }
 
 }

@@ -67,12 +67,12 @@ import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemObjectRuntimeConfiguration;
 import org.apache.tuscany.model.assembly.Aggregate;
+import org.apache.tuscany.model.assembly.AggregatePart;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.AggregatePart;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 
@@ -284,6 +284,18 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
 
     public AggregateContext getParent() {
         return parentContext;
+    }
+
+    public void setParent(AggregateContext context) {
+        parentContext = context;
+    }
+
+    public void setConfigurationContext(ConfigurationContext context) {
+        configurationContext = context;
+    }
+
+    public void setAutowireContext(AutowireContext context) {
+        autowireContext = context;
     }
 
     public void registerModelObjects(List<Extensible> models) throws ConfigurationException {

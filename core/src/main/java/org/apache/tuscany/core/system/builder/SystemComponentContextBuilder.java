@@ -86,37 +86,42 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
             return;
         }
         Component component = (Component) modelObject;
-        
+
         Class implClass = null;
         Scope scope = null;
-        
+
         // Get the component implementation
         ComponentImplementation componentImplementation = component.getComponentImplementation();
-        if (componentImplementation instanceof SystemImplementation
-                && componentImplementation.getRuntimeConfiguration() == null) {
-            
+        if (componentImplementation instanceof SystemImplementation && componentImplementation.getRuntimeConfiguration() == null) {
+
             // The component is a system component, implemented by a Java class
             SystemImplementation javaImpl = (SystemImplementation) componentImplementation;
+            if (componentImplementation.getComponentType().getServices() == null
+                    || componentImplementation.getComponentType().getServices().size() < 1) {
+                BuilderConfigException e = new BuilderConfigException("No service configured on component type");
+                e.setIdentifier(component.getName());
+                throw e;
+            }
             scope = componentImplementation.getComponentType().getServices().get(0).getServiceContract().getScope();
             implClass = javaImpl.getImplementationClass();
-            
-        } else if (componentImplementation instanceof Module) { 
-            if (((Module)componentImplementation).getName().startsWith("org.apache.tuscany.core.system")) {
-                
+
+        } else if (componentImplementation instanceof Module) {
+            if (((Module) componentImplementation).getName().startsWith("org.apache.tuscany.core.system")) {
+
                 // The component is a system module component, fix the implementation class to our implementation
                 // of system module component context
-               implClass=SystemAggregateContextImpl.class;
-               scope = Scope.AGGREGATE;
-               
+                implClass = SystemAggregateContextImpl.class;
+                scope = Scope.AGGREGATE;
+
             } else {
-                
+
                 // The component is an app module component, fix the implementation class to our implementation
                 // of app module component context
-               implClass=AggregateContextImpl.class;
-               scope = Scope.AGGREGATE;
-               
+                implClass = AggregateContextImpl.class;
+                scope = Scope.AGGREGATE;
+
             }
-            
+
         } else {
             return;
         }
@@ -141,8 +146,8 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
                 }
             }
 
-            //FIXME do not inject references on an application module yet
-            if (implClass!=AggregateContextImpl.class) {
+            // FIXME do not inject references on an application module yet
+            if (implClass != AggregateContextImpl.class) {
                 // handle references
                 List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
                 if (configuredReferences != null) {
@@ -249,8 +254,7 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
                         throw e;
                     }
                     if (method.getParameterTypes() == null || method.getParameterTypes().length != 1) {
-                        BuilderConfigException e = new BuilderConfigException(
-                                "Autowire setter methods must take one parameter");
+                        BuilderConfigException e = new BuilderConfigException("Autowire setter methods must take one parameter");
                         e.setIdentifier(method.getName());
                         throw e;
                     }
@@ -277,9 +281,8 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
                 }
             }
             // decorate the logical model
-            SystemComponentRuntimeConfiguration config = new SystemComponentRuntimeConfiguration(name,
-                    JavaIntrospectionHelper.getDefaultConstructor(implClass), injectors, eagerInit, initInvoker,
-                    destroyInvoker, scope);
+            SystemComponentRuntimeConfiguration config = new SystemComponentRuntimeConfiguration(name, JavaIntrospectionHelper
+                    .getDefaultConstructor(implClass), injectors, eagerInit, initInvoker, destroyInvoker, scope);
             componentImplementation.setRuntimeConfiguration(config);
         } catch (BuilderConfigException e) {
             e.addContextName(component.getName());
