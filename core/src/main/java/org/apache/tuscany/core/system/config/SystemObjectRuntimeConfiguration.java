@@ -17,6 +17,7 @@
  */
 package org.apache.tuscany.core.system.config;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
@@ -86,7 +87,7 @@ public class SystemObjectRuntimeConfiguration implements RuntimeConfiguration {
         throw new UnsupportedOperationException();
     }
 
-    public Map getSourceProxyFactories() {
+    public List<ProxyFactory> getSourceProxyFactories() {
         throw new UnsupportedOperationException();
     }
 }

@@ -75,7 +75,7 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
         for (Component component : components) {
             RuntimeConfiguration source = (RuntimeConfiguration) component.getComponentImplementation().getRuntimeConfiguration();
             Assert.assertNotNull(source);
-            for (ProxyFactory pFactory : (Collection<ProxyFactory>) source.getSourceProxyFactories().values()) {
+            for (ProxyFactory pFactory : (Collection<ProxyFactory>) source.getSourceProxyFactories()) {
                 ProxyConfiguration pConfig = pFactory.getProxyConfiguration();
                 Component target = compMap.get(pConfig.getTargetName().getPartName());
 
@@ -105,7 +105,7 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
     
     private static AggregateContext createContext() {
         return new AggregateContextImpl("test.parent", null, new DefaultScopeStrategy(), new EventContextImpl(),
-                new MockConfigContext(null), new NullMonitorFactory());
+                new MockConfigContext(null,null), new NullMonitorFactory());
     }
 
 }

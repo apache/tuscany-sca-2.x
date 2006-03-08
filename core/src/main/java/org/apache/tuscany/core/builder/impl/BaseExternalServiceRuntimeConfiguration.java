@@ -15,6 +15,7 @@ package org.apache.tuscany.core.builder.impl;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
@@ -95,12 +96,8 @@ public abstract class BaseExternalServiceRuntimeConfiguration implements Runtime
         // no wires inside an aggregate from an external service
     }
 
-    public ProxyFactory getSourceProxyFactory(String referenceName) {
-        return null;
-    }
-
-    public Map getSourceProxyFactories() {
-        return Collections.EMPTY_MAP;
+    public List getSourceProxyFactories() {
+        return Collections.EMPTY_LIST;
     }
 
 }

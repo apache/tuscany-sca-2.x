@@ -351,14 +351,12 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
             BuilderConfigException {
         String refName = reference.getReference().getName();
         List<ConfiguredService> services = reference.getTargetConfiguredServices();
-        Class type;
-        if (services.size() == 1) {
-            // get the interface
-            type = reference.getReference().getServiceContract().getInterface();
-        } else {
-            // FIXME do we support arrays?
-            type = List.class;
+        if (services.size() == 0) {
+            BuilderConfigException e = new BuilderConfigException("No service contract defined on reference target");
+            e.setIdentifier(refName);
+            throw e;
         }
+        Class type = reference.getReference().getServiceContract().getInterface();
         Method method = null;
         Field field = JavaIntrospectionHelper.findClosestMatchingField(refName, type, fields);
         if (field == null) {

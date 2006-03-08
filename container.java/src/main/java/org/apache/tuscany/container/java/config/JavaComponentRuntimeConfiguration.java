@@ -14,6 +14,7 @@
 package org.apache.tuscany.container.java.config;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,17 +127,13 @@ public class JavaComponentRuntimeConfiguration implements RuntimeConfiguration<S
         return targetProxyFactories;
     }
 
-    private Map<String, ProxyFactory> sourceProxyFactories = new HashMap();
+    private List<ProxyFactory> sourceProxyFactories = new ArrayList();
 
     public void addSourceProxyFactory(String referenceName, ProxyFactory factory) {
-        sourceProxyFactories.put(referenceName, factory);
+        sourceProxyFactories.add(factory);
     }
 
-    public ProxyFactory getSourceProxyFactory(String referenceName) {
-        return sourceProxyFactories.get(referenceName);
-    }
-
-    public Map<String, ProxyFactory> getSourceProxyFactories() {
+    public List<ProxyFactory> getSourceProxyFactories() {
         return sourceProxyFactories;
     }
 

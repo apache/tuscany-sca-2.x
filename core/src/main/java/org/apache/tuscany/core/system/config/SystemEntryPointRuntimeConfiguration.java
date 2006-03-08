@@ -13,6 +13,7 @@
  */
 package org.apache.tuscany.core.system.config;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
@@ -67,7 +68,7 @@ public class SystemEntryPointRuntimeConfiguration implements RuntimeConfiguratio
 
     public void addTargetProxyFactory(String serviceName, ProxyFactory pFactory) {
         throw new UnsupportedOperationException();
- }
+    }
 
     public ProxyFactory getTargetProxyFactory(String serviceName) {
         return null;
@@ -81,11 +82,7 @@ public class SystemEntryPointRuntimeConfiguration implements RuntimeConfiguratio
         throw new UnsupportedOperationException();
     }
 
-    public ProxyFactory getSourceProxyFactory(String referenceName) {
-        return null;
-    }
-
-    public Map<String, ProxyFactory> getSourceProxyFactories() {
+    public List<ProxyFactory> getSourceProxyFactories() {
         return null;
     }
 

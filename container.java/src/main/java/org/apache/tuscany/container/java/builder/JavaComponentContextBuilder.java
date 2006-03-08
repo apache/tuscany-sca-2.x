@@ -15,8 +15,10 @@ import org.apache.tuscany.container.java.config.JavaComponentRuntimeConfiguratio
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.NoAccessorException;
+import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
+import org.apache.tuscany.core.builder.impl.MultiplicityObjectFactory;
 import org.apache.tuscany.core.builder.impl.ProxyObjectFactory;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
@@ -121,6 +123,11 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
     public JavaComponentContextBuilder() {
     }
 
+    public JavaComponentContextBuilder(ProxyFactoryFactory proxyFactoryFactory, MessageFactory messageFactory) {
+        this.proxyFactoryFactory = proxyFactoryFactory;
+        this.messageFactory = messageFactory;
+    }
+    
     // ----------------------------------
     // Methods
     // ----------------------------------
@@ -210,7 +217,8 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                         InvocationConfiguration iConfig = new InvocationConfiguration(method);
                         iConfigMap.put(method, iConfig);
                     }
-                    QualifiedName qName = new QualifiedName(component.getName() + QualifiedName.NAME_SEPARATOR + service.getName());
+                    QualifiedName qName = new QualifiedName(component.getName() + QualifiedName.NAME_SEPARATOR
+                            + service.getName());
                     ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface()
                             .getClassLoader(), messageFactory);
                     proxyFactory.setBusinessInterface(serviceContract.getInterface());
@@ -232,31 +240,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                 List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
                 if (configuredReferences != null) {
                     for (ConfiguredReference reference : configuredReferences) {
-                        ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
-                        ServiceContract serviceContract = reference.getReference().getServiceContract();
-                        Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
-                        Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
-                        for (Method method : javaMethods) {
-                            InvocationConfiguration iConfig = new InvocationConfiguration(method);
-                            iConfigMap.put(method, iConfig);
-                        }
-                        String targetCompName = reference.getTargetConfiguredServices().get(0).getAggregatePart().getName();
-                        String targetSerivceName = reference.getTargetConfiguredServices().get(0).getService().getName();
-
-                        QualifiedName qName = new QualifiedName(targetCompName + "/" + targetSerivceName);
-                        // QualifiedName qName = new QualifiedName(reference.getAggregatePart().getName() + "/"
-                        // + reference.getPort().getName());
-                        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
-                        proxyFactory.setBusinessInterface(serviceContract.getInterface());
-                        proxyFactory.setProxyConfiguration(pConfiguration);
-                        config.addSourceProxyFactory(reference.getReference().getName(), proxyFactory);
-                        reference.setProxyFactory(proxyFactory);
-                        if (policyBuilder != null) {
-                            // invoke the reference builder to handle metadata associated with the reference
-                            policyBuilder.build(reference, parentContext);
-                        }
-                        Injector injector = createReferenceInjector(reference.getReference().getName(), proxyFactory, fields,
-                                methods);
+                        Injector injector = createReferenceInjector(config, reference, fields, methods, parentContext);
                         injectors.add(injector);
                     }
                 }
@@ -318,13 +302,60 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
     /**
      * Creates an <code>Injector</code> for service references
      */
-    private Injector createReferenceInjector(String refName, ProxyFactory proxyFactory, Set<Field> fields, Set<Method> methods)
-            throws NoAccessorException, BuilderConfigException {
+    private Injector createReferenceInjector(JavaComponentRuntimeConfiguration config, ConfiguredReference reference,
+            Set<Field> fields, Set<Method> methods, AggregateContext parentContext) {
+
+        // iterate through the targets
+        List<ProxyFactory> targetProxyFactories = new ArrayList();
+        List<ObjectFactory> objectFactories = new ArrayList();
+        String refName = reference.getReference().getName();
+        Class refClass = reference.getReference().getServiceContract().getInterface();
+        for (ConfiguredService configuredService : reference.getTargetConfiguredServices()) {
+            String targetCompName = configuredService.getAggregatePart().getName();
+            String targetSerivceName = configuredService.getService().getName();
+            QualifiedName qName = new QualifiedName(targetCompName + QualifiedName.NAME_SEPARATOR + targetSerivceName);
+
+            ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
+            ServiceContract serviceContract = configuredService.getService().getServiceContract();//reference.getReference().getServiceContract();
+            Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
+            Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
+            for (Method method : javaMethods) {
+                InvocationConfiguration iConfig = new InvocationConfiguration(method);
+                iConfigMap.put(method, iConfig);
+            }
+
+            ProxyConfiguration pConfiguration = new ProxyConfiguration(refName, qName, iConfigMap, serviceContract.getInterface()
+                    .getClassLoader(), messageFactory);
+            proxyFactory.setBusinessInterface(serviceContract.getInterface());
+            proxyFactory.setProxyConfiguration(pConfiguration);
+            config.addSourceProxyFactory(reference.getReference().getName(), proxyFactory);
+            // xcv reference.setProxyFactory(proxyFactory);
+            configuredService.setProxyFactory(proxyFactory);
+            if (policyBuilder != null) {
+                // invoke the reference builder to handle metadata associated with the reference
+                policyBuilder.build(reference, parentContext);
+            }
+            objectFactories.add(new ProxyObjectFactory(proxyFactory));
+        }
+        if (objectFactories.size() == 0) {
+            return null; // FIXME
+        } else if (objectFactories.size() == 1 && !List.class.equals(refClass)) {
+            return createInjector(refName, refClass, objectFactories.get(0), fields, methods);
+        } else {
+            return createInjector(refName, refClass, new MultiplicityObjectFactory(objectFactories), fields, methods);
+        }
+
+    }
+
+    /**
+     * Creates an <code>Injector</code> for an object factory
+     */
+    private Injector createInjector(String refName, Class refClass, ObjectFactory objectFactory, Set<Field> fields,
+            Set<Method> methods) throws NoAccessorException, BuilderConfigException {
         Method method = null;
-        Field field = JavaIntrospectionHelper.findClosestMatchingField(refName, proxyFactory.getBusinessInterface(), fields);
+        Field field = JavaIntrospectionHelper.findClosestMatchingField(refName, refClass, fields);
         if (field == null) {
-            method = JavaIntrospectionHelper.findClosestMatchingMethod(refName,
-                    new Class[] { proxyFactory.getBusinessInterface() }, methods);
+            method = JavaIntrospectionHelper.findClosestMatchingMethod(refName, new Class[] { refClass }, methods);
             if (method == null) {
                 throw new NoAccessorException(refName);
             }
@@ -332,9 +363,9 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
         Injector injector;
         try {
             if (field != null) {
-                injector = new FieldInjector(field, new ProxyObjectFactory(proxyFactory));
+                injector = new FieldInjector(field, objectFactory);
             } else {
-                injector = new MethodInjector(method, new ProxyObjectFactory(proxyFactory));
+                injector = new MethodInjector(method, objectFactory);
             }
         } catch (FactoryInitException e) {
             BuilderConfigException ce = new BuilderConfigException("Error configuring reference", e);

@@ -18,6 +18,7 @@ package org.apache.tuscany.container.js.context;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.container.js.rhino.RhinoScript;
@@ -38,14 +39,14 @@ public class JavaScriptComponentContext extends AbstractContext implements Simpl
 
     private Map<String, Object> properties;
 
-    private Map<String, ProxyFactory> sourceProxyFactories;
+    private List<ProxyFactory> sourceProxyFactories;
 
     private Map<String, ProxyFactory> targetProxyFactories;
 
     private Object instance;
 
     public JavaScriptComponentContext(String name, Map<String, Class> services, Map<String, Object> properties,
-            Map<String, ProxyFactory> sourceProxyFactories, Map<String, ProxyFactory> targetProxyFactories, RhinoScript invoker) {
+            List sourceProxyFactories, Map<String, ProxyFactory> targetProxyFactories, RhinoScript invoker) {
         super(name);
         assert (services != null) : "No service interface mapping specified";
         assert (properties != null) : "No properties specified";
@@ -138,8 +139,8 @@ public class JavaScriptComponentContext extends AbstractContext implements Simpl
      */
     private Map createInvocationContext() throws ProxyCreationException {
         Map<String, Object> context = new HashMap<String, Object>();
-        for (Map.Entry<String, ProxyFactory> entry : sourceProxyFactories.entrySet()) {
-            context.put(entry.getKey(), entry.getValue().createProxy());
+        for (ProxyFactory factory : sourceProxyFactories) {
+            context.put(factory.getProxyConfiguration().getReferenceName(), factory.createProxy());
         }
         return context;
     }

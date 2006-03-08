@@ -13,8 +13,9 @@
  */
 package org.apache.tuscany.core.builder.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
@@ -40,7 +41,7 @@ public abstract class EntryPointRuntimeConfiguration implements RuntimeConfigura
 
     private MessageFactory msgFactory;
 
-    private Map<String, ProxyFactory> sourceProxyFactories;
+    private List sourceProxyFactories;
 
     public EntryPointRuntimeConfiguration(String name, String referenceName, MessageFactory msgFactory) {
         assert (name != null) : "Entry point name was null";
@@ -86,18 +87,10 @@ public abstract class EntryPointRuntimeConfiguration implements RuntimeConfigura
         this.proxyFactory = factory;
     }
 
-    public ProxyFactory getSourceProxyFactory(String refName) {
-        if (this.referenceName.equals(refName)) {
-            return proxyFactory;
-        } else {
-            return null;
-        }
-    }
-
-    public Map<String, ProxyFactory> getSourceProxyFactories() {
+    public List getSourceProxyFactories() {
         if (sourceProxyFactories == null) {
-            sourceProxyFactories = new HashMap(1);
-            sourceProxyFactories.put(referenceName, proxyFactory);
+            sourceProxyFactories = new ArrayList(1);
+            sourceProxyFactories.add(proxyFactory);
         }
         return sourceProxyFactories;
     }

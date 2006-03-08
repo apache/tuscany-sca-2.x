@@ -11,43 +11,23 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.mock.component;
-
-import java.util.ArrayList;
-import java.util.List;
+package org.apache.tuscany.container.java.mock.components;
 
 /**
  * Mock system component implementation used in wiring tests
  * 
  * @version $Rev$ $Date$
  */
-public class SourceImpl implements Source {
+public class TargetImpl implements Target {
 
-    private Target target;
-    
-    private List<Target> targets;
+    private String theString;
 
-    private List<Target> targetsThroughField;
-
-    public void setTarget(Target target) {
-        this.target = target;
-        this.targets = new ArrayList();
+    public String getString() {
+        return theString;
     }
 
-    public Target getTarget() {
-        return target;
-    }
-
-    public List<Target> getTargets() {
-        return targets;
-    }
-
-    public void setTargets(List<Target> targets) {
-        this.targets = targets;
-    }
-
-    public List<Target> getTargetsThroughField() {
-        return targetsThroughField;
+    public void setString(String val) {
+        theString = val;
     }
 
 }

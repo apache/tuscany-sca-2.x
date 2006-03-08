@@ -52,9 +52,12 @@ public class MockInterceptorBuilder implements RuntimeConfigurationBuilder {
                 return;
             } else {
                 ConfiguredReference cref = (ConfiguredReference) modelObject;
-                ProxyFactory pFactory = (ProxyFactory) cref.getProxyFactory();
-                for (InvocationConfiguration config : pFactory.getProxyConfiguration().getInvocationConfigurations().values()) {
-                    config.addSourceInterceptor(interceptor);
+                // xcvProxyFactory pFactory = (ProxyFactory) cref.getProxyFactory();
+                for (ConfiguredService configuredService : cref.getTargetConfiguredServices()) {
+                    ProxyFactory pFactory = (ProxyFactory) configuredService.getProxyFactory();
+                    for (InvocationConfiguration config : pFactory.getProxyConfiguration().getInvocationConfigurations().values()) {
+                        config.addSourceInterceptor(interceptor);
+                    }
                 }
             }
         } else {

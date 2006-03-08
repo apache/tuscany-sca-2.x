@@ -129,11 +129,7 @@ public class SystemComponentRuntimeConfiguration implements RuntimeConfiguration
         throw new UnsupportedOperationException();
     }
 
-    public ProxyFactory getSourceProxyFactory(String referenceName) {
-        return null;
-    }
-
-    public Map<String, ProxyFactory> getSourceProxyFactories() {
+    public List<ProxyFactory> getSourceProxyFactories() {
         return null;
     }
 

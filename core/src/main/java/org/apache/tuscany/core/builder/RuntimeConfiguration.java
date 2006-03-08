@@ -1,5 +1,6 @@
 package org.apache.tuscany.core.builder;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.core.context.Context;
@@ -62,8 +63,10 @@ public interface RuntimeConfiguration<T extends Context> {
      */
     public void addSourceProxyFactory(String referenceName, ProxyFactory factory);
 
-    public ProxyFactory getSourceProxyFactory(String referenceName);
-
-    public Map<String, ProxyFactory> getSourceProxyFactories();
+    /**
+     * Returns a collection of source side-proxy factories for component references. There may 1..n proxy factories per
+     * reference.
+     */
+    public List<ProxyFactory> getSourceProxyFactories();
 
 }

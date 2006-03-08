@@ -56,12 +56,15 @@ public class MockHandlerBuilder implements RuntimeConfigurationBuilder {
                 return;
             } else {
                 ConfiguredReference cref = (ConfiguredReference) modelObject;
-                ProxyFactory pFactory = (ProxyFactory) cref.getProxyFactory();
-                for (InvocationConfiguration config : pFactory.getProxyConfiguration().getInvocationConfigurations().values()) {
-                    if (request) {
-                        config.addRequestHandler(handler);
-                    } else {
-                        config.addResponseHandler(handler);
+                ///xcv ProxyFactory pFactory = (ProxyFactory) cref.getProxyFactory();
+                for (ConfiguredService configuredService : cref.getTargetConfiguredServices()) {
+                    ProxyFactory pFactory = (ProxyFactory) configuredService.getProxyFactory();
+                    for (InvocationConfiguration config : pFactory.getProxyConfiguration().getInvocationConfigurations().values()) {
+                        if (request) {
+                            config.addRequestHandler(handler);
+                        } else {
+                            config.addResponseHandler(handler);
+                        }
                     }
                 }
             }

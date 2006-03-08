@@ -13,6 +13,7 @@
  */
 package org.apache.tuscany.core.system.config;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
@@ -90,7 +91,7 @@ public class SystemExternalServiceRuntimeConfiguration implements RuntimeConfigu
         return null;
     }
 
-    public Map<String, ProxyFactory> getSourceProxyFactories() {
+    public List<ProxyFactory> getSourceProxyFactories() {
         return null;
     }
 

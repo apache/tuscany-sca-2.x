@@ -1,13 +1,12 @@
-package org.apache.tuscany.core.injection;
+package org.apache.tuscany.core.config;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Set;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 
 public class ReflectionHelperTestCase extends TestCase {
 
@@ -44,7 +43,7 @@ public class ReflectionHelperTestCase extends TestCase {
         boolean invoked = false;
         for (Method method : beanFields) {
             if (method.getName().equals("override")) {
-                method.invoke(new Bean1(), new Object[]{"foo"});
+                method.invoke(new Bean1(), new Object[] { "foo" });
                 invoked = true;
             }
         }
@@ -70,5 +69,22 @@ public class ReflectionHelperTestCase extends TestCase {
         Set<Field> bean1 = JavaIntrospectionHelper.getAllFields(Bean1.class);
         Assert.assertEquals(Bean1.ALL_BEAN1_FIELDS, bean1.size());
     }
+
+    public void testDefaultConstructor() throws Exception {
+        Constructor ctr = JavaIntrospectionHelper.getDefaultConstructor(Bean2.class);
+        Assert.assertEquals(ctr, Bean2.class.getConstructor(new Class[] {}));
+        Assert.assertTrue(Bean2.class == ctr.newInstance((Object[]) null).getClass());
+    }
+
+//    public void testfindClosestMatchingMethodWithList() throws Exception {
+//        Method setMethodList = Bean2.class.getMethod("setMethodList", new Class[] { List.class });
+//        Method m = JavaIntrospectionHelper.findClosestMatchingMethod("setMethodList", new Class[] { String.class },
+//                JavaIntrospectionHelper.getAllUniqueMethods(Bean2.class), true);
+//        Assert.assertEquals(setMethodList, m);
+//        m = JavaIntrospectionHelper.findClosestMatchingMethod("setMethodList", new Class[] { String.class },
+//                JavaIntrospectionHelper.getAllUniqueMethods(Bean2.class), false);
+//        Assert.assertNull("Collection type should be ignored",m);
+//        
+//    }
 
 }

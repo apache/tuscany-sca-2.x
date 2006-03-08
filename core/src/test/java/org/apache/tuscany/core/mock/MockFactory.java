@@ -222,6 +222,9 @@ public class MockFactory {
         cRef.getTargetConfiguredServices().add(cService);
         cRef.initialize(assemblyContext);
         cService.initialize(assemblyContext);
+        JavaServiceContract contract = systemFactory.createJavaServiceContract();
+        contract.setInterface(interfaz);
+        ref.setServiceContract(contract);
         ep.setConfiguredReference(cRef);
         ep.initialize(assemblyContext);
         return ep;
@@ -346,6 +349,33 @@ public class MockFactory {
         cReference.initialize(assemblyContext);
         source.getConfiguredReferences().add(cReference);
         source.initialize(assemblyContext);
+        
+        // wire multiplicity using a setter
+        JavaServiceContract refContract2 = systemFactory.createJavaServiceContract();
+        refContract2.setInterface(List.class);
+        Reference reference2 = systemFactory.createReference();
+        reference2.setName("setTargets");
+        reference2.setServiceContract(refContract2);
+        ConfiguredReference cReference2 = systemFactory.createConfiguredReference();
+        cReference2.setReference(reference2);
+        cReference2.getTargetConfiguredServices().add(cTargetService);
+        cReference2.initialize(assemblyContext);
+        source.getConfiguredReferences().add(cReference2);
+        source.initialize(assemblyContext);
+
+        // wire multiplicity using a field
+        JavaServiceContract refContract3 = systemFactory.createJavaServiceContract();
+        refContract3.setInterface(List.class);
+        Reference reference3 = systemFactory.createReference();
+        reference3.setName("targetsThroughField");
+        reference3.setServiceContract(refContract3);
+        ConfiguredReference cReference3 = systemFactory.createConfiguredReference();
+        cReference3.setReference(reference3);
+        cReference3.getTargetConfiguredServices().add(cTargetService);
+        cReference3.initialize(assemblyContext);
+        source.getConfiguredReferences().add(cReference3);
+        source.initialize(assemblyContext);
+   
         
         Module module = systemFactory.createModule();
         module.setName("system.module");

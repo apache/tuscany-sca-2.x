@@ -40,9 +40,16 @@ public class ProxyConfiguration {
 
     private QualifiedName serviceName;
 
+    private String referenceName;
+
     // ----------------------------------
     // Constructors
     // ----------------------------------
+
+    public ProxyConfiguration(QualifiedName serviceName, Map<Method, InvocationConfiguration> invocationConfigs,
+            ClassLoader proxyClassLoader, MessageFactory messageFactory) {
+        this(null, serviceName, invocationConfigs, proxyClassLoader, messageFactory);
+    }
 
     /**
      * Creates a configuration used to generate proxies representing a service.
@@ -52,9 +59,10 @@ public class ProxyConfiguration {
      * @param proxyClassLoader the classloader to use when creating a proxy
      * @param messageFactory the factory used to create invocation messages
      */
-    public ProxyConfiguration(QualifiedName serviceName, Map<Method, InvocationConfiguration> invocationConfigs,
-            ClassLoader proxyClassLoader, MessageFactory messageFactory) {
+    public ProxyConfiguration(String referenceName, QualifiedName serviceName,
+            Map<Method, InvocationConfiguration> invocationConfigs, ClassLoader proxyClassLoader, MessageFactory messageFactory) {
         assert (invocationConfigs != null) : "No invocation configuration map specified";
+        this.referenceName = referenceName;
         this.serviceName = serviceName;
         configurations = invocationConfigs;
         this.messageFactory = messageFactory;
@@ -74,6 +82,13 @@ public class ProxyConfiguration {
      */
     public QualifiedName getTargetName() {
         return serviceName;
+    }
+
+    /**
+     * Returns the name of the reference if a source-side configuration
+     */
+    public String getReferenceName() {
+        return referenceName;
     }
 
     /**

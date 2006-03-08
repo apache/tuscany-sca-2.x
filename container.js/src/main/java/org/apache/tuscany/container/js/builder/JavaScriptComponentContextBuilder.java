@@ -61,8 +61,11 @@ import org.osoa.sca.annotations.Init;
 public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
 
     private ProxyFactoryFactory factory;
+
     private MessageFactory msgFactory;
+
     private RuntimeConfigurationBuilder referenceBuilder;
+
     private RuntimeContext runtimeContext;
 
     // ----------------------------------
@@ -152,8 +155,10 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
                         InvocationConfiguration iConfig = new InvocationConfiguration(method);
                         iConfigMap.put(method, iConfig);
                     }
-                    QualifiedName qName = new QualifiedName(component.getName() + QualifiedName.NAME_SEPARATOR + service.getName());
-                    ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, contract.getInterface().getClassLoader(), msgFactory);
+                    QualifiedName qName = new QualifiedName(component.getName() + QualifiedName.NAME_SEPARATOR
+                            + service.getName());
+                    ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, contract.getInterface()
+                            .getClassLoader(), msgFactory);
                     proxyFactory.setBusinessInterface(contract.getInterface());
                     proxyFactory.setProxyConfiguration(pConfiguration);
                     configuredService.setProxyFactory(proxyFactory);
@@ -186,10 +191,13 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
 
                         // QualifiedName qName = new QualifiedName(reference.getPart().getName() + "/"
                         // + reference.getPort().getName());
-                        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, interfaze.getInterface().getClassLoader(), msgFactory);
+                        ProxyConfiguration pConfiguration = new ProxyConfiguration(reference.getReference().getName(), qName,
+                                iConfigMap, interfaze.getInterface().getClassLoader(), msgFactory);
                         proxyFactory.setBusinessInterface(interfaze.getInterface());
                         proxyFactory.setProxyConfiguration(pConfiguration);
-                        reference.setProxyFactory(proxyFactory);
+                        //FIXME multiplicity support
+                        reference.getTargetConfiguredServices().get(0).setProxyFactory(proxyFactory);
+                        //xcv reference.setProxyFactory(proxyFactory);
                         if (referenceBuilder != null) {
                             // invoke the reference builder to handle metadata associated with the reference
                             referenceBuilder.build(reference, context);

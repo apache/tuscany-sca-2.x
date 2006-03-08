@@ -13,6 +13,8 @@
  */
 package org.apache.tuscany.core.system.context;
 
+import java.util.List;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -84,10 +86,33 @@ public class IntraAggregateWireTestCase extends TestCase {
         context.stop();
     }
 
+    public void testMultiplicity() throws Exception {
+        SystemAggregateContext context = createContext();
+        context.start();
+        context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents(Scope.MODULE, Scope.MODULE));
+        context.fireEvent(EventContext.MODULE_START, null);
+        Source source = (Source) context.getContext("source").getImplementationInstance();
+        Assert.assertNotNull(source);
+        Target target = (Target) context.getContext("target").getImplementationInstance();
+        Assert.assertNotNull(target);
+        // test setter injection
+        List<Target> targets = source.getTargets();
+        Assert.assertEquals(1,targets.size());
+        assertSame(target,targets.get(0));
+        
+        // test field injection
+        targets = source.getTargetsThroughField();
+        Assert.assertEquals(1,targets.size());
+        assertSame(target,targets.get(0));
+    }
+
     private SystemAggregateContext createContext() {
         SystemAggregateContextImpl context = new SystemAggregateContextImpl();
         context.setName("system.context");
         context.setConfigurationContext(new MockConfigContext(MockFactory.createSystemBuilders()));
         return context;
     }
+
+
+
 }

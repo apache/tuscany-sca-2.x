@@ -48,12 +48,12 @@ import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.ComponentImplementation;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.ComponentImplementation;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 
 /**
@@ -252,6 +252,10 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         this.monitorFactory = factory;
     }
 
+    public void setConfigurationContext(ConfigurationContext context) {
+        this.configurationContext = context;
+    }
+    
     public AggregateContext getParent() {
         return parentContext;
     }
@@ -332,8 +336,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                     buildTarget(config);
                     try {
                         if (config.getSourceProxyFactories() != null) {
-                            for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()
-                                    .values()) {
+                            for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()) {
                                 sourceProxyFactory.initialize();
                             }
                         }
@@ -355,8 +358,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                     buildTarget(config);
                     try {
                         if (config.getSourceProxyFactories() != null) {
-                            for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()
-                                    .values()) {
+                            for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()) {
                                 sourceProxyFactory.initialize();
                             }
                         }
@@ -377,8 +379,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                     buildTarget(config);
                     try {
                         if (config.getSourceProxyFactories() != null) {
-                            for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()
-                                    .values()) {
+                            for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()) {
                                 sourceProxyFactory.initialize();
                             }
                         }
@@ -579,7 +580,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     protected void wireSource(RuntimeConfiguration source) {
         Scope sourceScope = source.getScope();
         if (source.getSourceProxyFactories() != null) {
-            for (ProxyFactory sourceFactory : ((Map<String, ProxyFactory>) source.getSourceProxyFactories()).values()) {
+            for (ProxyFactory sourceFactory : ((List<ProxyFactory>) source.getSourceProxyFactories())) {
                 QualifiedName targetName = sourceFactory.getProxyConfiguration().getTargetName();
                 RuntimeConfiguration target = configurations.get(targetName.getPartName());
                 if (target == null) {
@@ -631,12 +632,12 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     protected void initializeProxies() throws ProxyInitializationException {
         for (RuntimeConfiguration config : configurations.values()) {
             if (config.getSourceProxyFactories() != null) {
-                for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories().values()) {
+                for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()) {
                     sourceProxyFactory.initialize();
                 }
             }
             if (config.getSourceProxyFactories() != null) {
-                for (ProxyFactory targetProxyFactory : (Collection<ProxyFactory>) config.getTargetProxyFactories().values()) {
+                for (ProxyFactory targetProxyFactory : (Collection<ProxyFactory>) config.getTargetProxyFactories()) {
                     targetProxyFactory.initialize();
                 }
             }

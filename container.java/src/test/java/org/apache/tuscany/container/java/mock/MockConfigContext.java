@@ -18,7 +18,9 @@ import java.util.List;
 
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
+import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
@@ -33,10 +35,17 @@ import org.apache.tuscany.model.assembly.Extensible;
  */
 public class MockConfigContext implements ConfigurationContext {
 
-    private List<RuntimeConfigurationBuilder> builders = new ArrayList();
+    private List<RuntimeConfigurationBuilder> builders;
 
-    public MockConfigContext(List<RuntimeConfigurationBuilder> builders) {
-        this.builders=builders;
+    private DefaultWireBuilder wireBuilder = new DefaultWireBuilder();
+    
+    public MockConfigContext(List<RuntimeConfigurationBuilder> builders, List<WireBuilder> wireBuilders) {
+        this.builders = (builders == null) ? new ArrayList(1) : builders;
+        if (wireBuilders != null){
+            for (WireBuilder builder : wireBuilders) {
+                wireBuilder.addWireBuilder(builder);
+            }
+        }
     }
 
     public void configure(Extensible model) throws ConfigurationException {
@@ -47,10 +56,13 @@ public class MockConfigContext implements ConfigurationContext {
         visitor.start(model);
     }
 
-    public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope, ScopeContext targetScopeContext) throws BuilderConfigException {
+    public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+            ScopeContext targetScopeContext) throws BuilderConfigException {
+        wireBuilder.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
     }
 
     public void wire(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
+        wireBuilder.completeTargetChain(targetFactory, targetType, targetScopeContext);
     }
 
 }

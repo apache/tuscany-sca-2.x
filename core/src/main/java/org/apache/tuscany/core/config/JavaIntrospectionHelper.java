@@ -187,7 +187,7 @@ public class JavaIntrospectionHelper {
             return null;
         }
     }
-
+    
     /**
      * Returns a field or method defined in the given class or its superclasses matching a literal name and parameter
      * types <p/> This method can potentially be expensive as reflection information is not cached. It is assumed that
