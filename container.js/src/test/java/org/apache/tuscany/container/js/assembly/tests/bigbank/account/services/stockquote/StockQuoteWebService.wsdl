@@ -14,7 +14,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  -->
-<wsdl:definitions targetNamespace="http://webservice.stockquote" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://webservice.stockquote" xmlns:intf="http://webservice.stockquote" xmlns:tns1="http://stockquote" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="">
+<wsdl:definitions targetNamespace="http://webservice.stockquote" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://webservice.stockquote" xmlns:intf="http://webservice.stockquote" xmlns:tns1="http://stockquote" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="stockquote">
     <!--WSDL created by Apache Axis version: 1.2.1
 Built on Jun 14, 2005 (09:15:57 EDT)-->
     <wsdl:types>
