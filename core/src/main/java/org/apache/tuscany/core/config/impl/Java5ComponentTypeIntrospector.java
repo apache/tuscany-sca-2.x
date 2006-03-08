@@ -202,6 +202,9 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         Field[] fields = implClass.getFields();
         for (int i = 0; i < fields.length; i++) {
             Field field = fields[i];
+            if (Modifier.isStatic(field.getModifiers())) {
+                continue;
+            }
             if (field.getType().isAnnotationPresent(Remotable.class)) {
                 addReference(references, field);
             } else {
@@ -236,6 +239,9 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         Field[] fields = implClass.getFields();
         for (int i = 0; i < fields.length; i++) {
             Field field = fields[i];
+            if (Modifier.isStatic(field.getModifiers())) {
+                continue;
+            }
             if (field.isAnnotationPresent(org.osoa.sca.annotations.Property.class)) {
                 addProperty(properties, field);
             } else if (field.isAnnotationPresent(org.osoa.sca.annotations.Reference.class)) {
