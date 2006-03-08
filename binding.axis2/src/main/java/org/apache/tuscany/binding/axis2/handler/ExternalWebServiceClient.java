@@ -13,7 +13,10 @@
  */
 package org.apache.tuscany.binding.axis2.handler;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.URL;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -23,10 +26,19 @@ import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.axis2.context.MessageContextConstants;
+import org.apache.axis2.deployment.AxisConfigBuilder;
+import org.apache.axis2.deployment.DeploymentEngine;
+import org.apache.axis2.engine.AxisConfiguration;
+import org.apache.axis2.engine.AxisConfigurator;
 import org.apache.axis2.om.OMElement;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis2.util.AxiomHelper;
+import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.osoa.sca.ServiceRuntimeException;
 
@@ -38,7 +50,9 @@ import commonj.sdo.helper.TypeHelper;
 public class ExternalWebServiceClient {
 
     private ExternalService externalService;
-    private TypeHelper typeHelper; 
+
+    private TypeHelper typeHelper;
+
     private WebServicePortMetaData wsPortMetaData;
 
     /**
@@ -49,7 +63,7 @@ public class ExternalWebServiceClient {
      */
     public ExternalWebServiceClient(ExternalService externalService, WebServiceBinding wsBinding, TypeHelper typeHelper) {
         this.externalService = externalService;
-        this.typeHelper=typeHelper;
+        this.typeHelper = typeHelper;
         this.wsPortMetaData = new WebServicePortMetaData(wsBinding.getWSDLDefinition(), wsBinding.getWSDLPort(), wsBinding.getURI(), false);
     }
 
@@ -62,29 +76,29 @@ public class ExternalWebServiceClient {
      */
     public Object invoke(Method method, Object[] args) {
 
-        ServiceClient serviceClient; 
-        ClassLoader ccl=Thread.currentThread().getContextClassLoader();
+        ServiceClient serviceClient;
+        ClassLoader ccl = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(ExternalWebServiceClient.class.getClassLoader());
-            
+
             serviceClient = createServiceClient(method);
-            
+
         } finally {
             Thread.currentThread().setContextClassLoader(ccl);
         }
-        
+
         String typeName = method.getName();
         String typeNS = wsPortMetaData.getPortType().getQName().getNamespaceURI();
-        
+
         OMElement requestOM = AxiomHelper.toOMElement(typeHelper, args, new QName(typeNS, typeName));
-        
+
         OMElement responseOM;
-        ccl=Thread.currentThread().getContextClassLoader();
+        ccl = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(ExternalWebServiceClient.class.getClassLoader());
 
             responseOM = serviceClient.sendReceive(requestOM);
-            
+
         } catch (AxisFault e) {
             throw new ServiceRuntimeException(e);
         } finally {
@@ -102,7 +116,7 @@ public class ExternalWebServiceClient {
         return response;
     }
 
-    private ServiceClient createServiceClient(Method method) throws FactoryConfigurationError {
+    private ServiceClient createServiceClient(Method method) throws ServiceRuntimeException {
 
         /*
          * TODO: Simlistic impl for now, needs to be redone. Should cache our ConfigurationContext and pass in on ServiceClient constructor, should
@@ -128,16 +142,22 @@ public class ExternalWebServiceClient {
             options.setProperty(MessageContextConstants.CHUNKED, Boolean.FALSE);
         }
 
-        ServiceClient serviceClient;
         try {
-            serviceClient = new ServiceClient();
+            ServiceClient serviceClient;
+            // serviceClient = new ServiceClient();
+            TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator(null, null);
+
+            serviceClient = new ServiceClient(tuscanyAxisConfigurator.getConfigurationContext(), null);
+            serviceClient.setOptions(options);
+
+            return serviceClient;
+
         } catch (org.apache.axis2.AxisFault e) {
-            throw new RuntimeException(e);
+            throw new ServiceRuntimeException(e);
+        } catch (IOException e) {
+            throw new ServiceRuntimeException(e);
         }
 
-        serviceClient.setOptions(options);
-        
-        return serviceClient;
     }
 
 }
