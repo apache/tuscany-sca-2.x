@@ -35,4 +35,8 @@
 -->
     </component>
 
+    <component name="org.apache.tuscany.container.java.loader.JavaImplementationLoader">
+        <system:implementation.system class="org.apache.tuscany.container.java.loader.JavaImplementationLoader"/>
+    </component>
+
 </moduleFragment>

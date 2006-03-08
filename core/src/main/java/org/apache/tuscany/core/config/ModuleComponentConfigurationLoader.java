@@ -17,6 +17,7 @@
 package org.apache.tuscany.core.config;
 
 import java.util.Collection;
+import java.net.URL;
 
 import org.apache.tuscany.model.assembly.ModuleComponent;
 
@@ -34,7 +35,7 @@ public interface ModuleComponentConfigurationLoader {
      * @param name      the name of the module component
      * @param uri
      * @return a new module component definition
-     * @throws ConfigurationException if there was a problem loading the module component.
+     * @throws ConfigurationLoadException if there was a problem loading the module component.
      */
     ModuleComponent loadModuleComponent(String name, String uri) throws ConfigurationLoadException;
     
@@ -44,7 +45,7 @@ public interface ModuleComponentConfigurationLoader {
      * @param name      the name of the module component
      * @param uri
      * @return a new module component definition
-     * @throws ConfigurationException if there was a problem loading the module component.
+     * @throws ConfigurationLoadException if there was a problem loading the module component.
      */
     ModuleComponent loadSystemModuleComponent(String name, String uri) throws ConfigurationLoadException;
     
@@ -55,9 +56,9 @@ public interface ModuleComponentConfigurationLoader {
      * @param uri
      * @param url
      * @return a new module component definition
-     * @throws ConfigurationException if there was a problem loading the module component.
+     * @throws ConfigurationLoadException if there was a problem loading the module component.
      */
-    ModuleComponent loadModuleComponent(String name, String uri, String url) throws ConfigurationLoadException;
+    ModuleComponent loadModuleComponent(String name, String uri, URL url) throws ConfigurationLoadException;
     
     /**
      * Load a SCDL module component.
@@ -67,8 +68,8 @@ public interface ModuleComponentConfigurationLoader {
      * @param url
      * @param urls
      * @return a new module component definition
-     * @throws ConfigurationException if there was a problem loading the module component.
+     * @throws ConfigurationLoadException if there was a problem loading the module component.
      */
-    ModuleComponent loadModuleComponent(String name, String uri, String url, Collection<String> urls) throws ConfigurationLoadException;
+    ModuleComponent loadModuleComponent(String name, String uri, URL url, Collection<URL> urls) throws ConfigurationLoadException;
     
 }

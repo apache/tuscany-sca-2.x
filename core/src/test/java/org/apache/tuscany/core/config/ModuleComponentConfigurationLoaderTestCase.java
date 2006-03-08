@@ -41,7 +41,7 @@ public class ModuleComponentConfigurationLoaderTestCase extends TestCase {
 
     public void testFoo() throws ConfigurationException {
         URL xml = ModuleComponentConfigurationLoaderTestCase.class.getResource("ModuleComponentLoaderTest1.module");
-        ModuleComponent moduleComponent = loader.loadModuleComponent("test", "test", xml.toString());
+        ModuleComponent moduleComponent = loader.loadModuleComponent("test", "test", xml);
         Assert.assertEquals("test", moduleComponent.getName());
         Module module = moduleComponent.getModuleImplementation();
         Assert.assertEquals("ModuleComponentLoaderTest1", module.getName());

@@ -34,7 +34,7 @@ public class SystemObjectRegistrationTestCase extends TestCase {
 
     public void testRegistration() throws ConfigurationException {
         MockComponent instance = new MockComponent();
-        systemContext.registerJavaObject("foo", instance);
+        systemContext.registerJavaObject("foo", MockComponent.class, instance);
         assertSame(instance, systemContext.locateInstance("foo"));
     }
 

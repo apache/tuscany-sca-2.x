@@ -30,4 +30,7 @@
         <system:implementation.system class="org.apache.tuscany.container.js.builder.JavaScriptTargetWireBuilder"/>
     </component>
 
+    <component name="org.apache.tuscany.container.js.loader.JavaScriptImplementationLoader">
+        <system:implementation.system class="org.apache.tuscany.container.js.loader.JavaScriptImplementationLoader"/>
+    </component>
 </moduleFragment>

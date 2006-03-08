@@ -65,7 +65,9 @@ import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
+import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.config.SystemObjectRuntimeConfiguration;
+import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.AggregatePart;
 import org.apache.tuscany.model.assembly.Component;
@@ -83,7 +85,7 @@ import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
  * according to their exposed interface. A system context may contain child aggregate contexts but an entry point in a
  * child context will only be outwardly accessible if there is an entry point that exposes it configured in the
  * top-level system context.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class SystemAggregateContextImpl extends AbstractContext implements SystemAggregateContext {
@@ -140,6 +142,10 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     @Autowire(required = false)
     private AutowireContext autowireContext;
 
+    private final StAXLoaderRegistry loaderRegistry;
+
+    private final SystemAssemblyFactory assemblyFactory;
+
     // ----------------------------------
     // Constructors
     // ----------------------------------
@@ -151,10 +157,20 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         module = new AssemblyFactoryImpl().createModule();
         eventContext = new EventContextImpl();
         scopeStrategy = new SystemScopeStrategy();
+        this.loaderRegistry = null;
+        this.assemblyFactory = null;
     }
 
-    public SystemAggregateContextImpl(String name, AggregateContext parent, AutowireContext autowire, ScopeStrategy strategy,
-            EventContext ctx, ConfigurationContext configCtx, MonitorFactory factory) {
+    public SystemAggregateContextImpl(
+            String name,
+            AggregateContext parent,
+            AutowireContext autowire,
+            ScopeStrategy strategy,
+            EventContext ctx,
+            ConfigurationContext configCtx,
+            MonitorFactory factory,
+            StAXLoaderRegistry loaderRegistry,
+            SystemAssemblyFactory assemblyFactory) {
         super(name);
         this.parentContext = parent;
         this.autowireContext = autowire;
@@ -165,6 +181,8 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         scopeIndex = new ConcurrentHashMap();
         // FIXME the assembly factory should be injected here
         module = new AssemblyFactoryImpl().createModule();
+        this.loaderRegistry = loaderRegistry;
+        this.assemblyFactory = assemblyFactory;
     }
 
     // ----------------------------------
@@ -398,8 +416,12 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         }
     }
 
-    public void registerJavaObject(String componentName, Object instance) throws ConfigurationException {
-        registerConfiguration(new SystemObjectRuntimeConfiguration(componentName, instance));
+    public void registerJavaObject(String componentName, Class<?> service, Object instance) throws ConfigurationException {
+        SystemObjectRuntimeConfiguration configuration = new SystemObjectRuntimeConfiguration(componentName, instance);
+        registerConfiguration(configuration);
+        ScopeContext scope = scopeContexts.get(configuration.getScope());
+        NameToScope mapping = new NameToScope(new QualifiedName(componentName), scope);
+        autowireIndex.put(service, mapping);
     }
 
     protected void registerConfiguration(RuntimeConfiguration<InstanceContext> configuration) throws ConfigurationException {
@@ -570,6 +592,10 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
             return instanceInterface.cast(messageFactory);
         } else if (ProxyFactoryFactory.class.equals(instanceInterface)) {
             return instanceInterface.cast(proxyFactoryFactory);
+        } else if (StAXLoaderRegistry.class.equals(instanceInterface)) {
+            return instanceInterface.cast(loaderRegistry);
+        } else if (instanceInterface.isAssignableFrom(SystemAssemblyFactory.class)) {
+            return instanceInterface.cast(assemblyFactory);
         }
 
         NameToScope mapping = autowireIndex.get(instanceInterface);

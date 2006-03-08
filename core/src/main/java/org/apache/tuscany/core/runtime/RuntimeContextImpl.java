@@ -42,13 +42,15 @@ import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
+import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
+import org.apache.tuscany.core.loader.impl.StAXLoaderRegistryImpl;
 import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 
 /**
  * Implementation of a RuntimeContext that forms the foundation for a Tuscany environment.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class RuntimeContextImpl extends AbstractContext implements RuntimeContext {
@@ -67,7 +69,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     private final SystemAggregateContext systemContext;
 
     private final MonitorFactory monitorFactory;
-    
+
     /**
      * Default constructor that creates a runtime with a NullMonitorFactory and no builders.
      */
@@ -77,7 +79,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
     /**
      * Constructor for creating a runtime with a specified MonitorFactory and pre-defined builders.
-     * 
+     *
      * @param monitorFactory the default {@link MonitorFactory} for this runtime
      * @param builders a list of builders automatically made available; may be null
      * @param wireBuilder the top-level hierarchical wire builder for the runtime; if not specified, a default
@@ -92,7 +94,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         this.wireBuilder = (wireBuilder == null) ? new DefaultWireBuilder() : wireBuilder;
 
         rootContext = new AggregateContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this, monitorFactory);
-        systemContext = new SystemAggregateContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(), this, monitorFactory);
+        systemContext = new SystemAggregateContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(), this, monitorFactory, new StAXLoaderRegistryImpl(), new SystemAssemblyFactoryImpl());
     }
 
     /**

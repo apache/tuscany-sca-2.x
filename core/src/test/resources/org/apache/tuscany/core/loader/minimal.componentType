@@ -1,0 +1,4 @@
+<componentType xmlns="http://www.osoa.org/xmlns/sca/0.9">
+    <service name="service1">
+    </service>
+</componentType>

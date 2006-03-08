@@ -28,9 +28,10 @@ public interface SystemAggregateContext extends AutowireContext, ScopeAwareConte
      * configuration components.
      *
      * @param name     the name of the resulting component
+     * @param service
      * @param instance the Object that will become the component's implementation
      * @throws ConfigurationException
      */
-    void registerJavaObject(String name, Object instance) throws ConfigurationException;
+    void registerJavaObject(String name, Class<?> service, Object instance) throws ConfigurationException;
 }
 
