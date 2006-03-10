@@ -38,6 +38,7 @@ import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
+import org.apache.tuscany.container.java.loader.JavaSCDLModelLoader;
 
 /**
  */
@@ -54,8 +55,10 @@ public class WebServiceAssemblyLoaderTestCase extends TestCase {
 
         ResourceLoader resourceLoader=new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader());
         WebServiceSCDLModelLoader wsLoader=new WebServiceSCDLModelLoader();
+        JavaSCDLModelLoader javaLoader=new JavaSCDLModelLoader();
         List<SCDLModelLoader> scdlLoaders=new ArrayList<SCDLModelLoader>();
         scdlLoaders.add(wsLoader);
+        scdlLoaders.add(javaLoader);
         AssemblyModelLoader assemblyLoader=new SCDLAssemblyModelLoaderImpl(scdlLoaders);
         AssemblyFactory assemblyFactory=new AssemblyFactoryImpl();
         AssemblyModelContext modelContext=new AssemblyModelContextImpl(assemblyFactory, assemblyLoader, resourceLoader);

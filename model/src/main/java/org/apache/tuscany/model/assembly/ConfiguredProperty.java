@@ -22,6 +22,18 @@ package org.apache.tuscany.model.assembly;
 public interface ConfiguredProperty extends AssemblyModelObject {
 
     /**
+     * Returns the name of the property being configured.
+     * @return the name of the property being configured
+     */
+    String getName();
+
+    /**
+     * Set the name of the property being configured.
+     * @param name the name of the property being configured
+     */
+    void setName(String name);
+
+    /**
      * Returns the {@link Property} whose value is being set.
      * @return the {@link Property} whose value is being set
      */
@@ -58,5 +70,4 @@ public interface ConfiguredProperty extends AssemblyModelObject {
      * @param value the option that determines how property configuration can be overriden
      */
     void setOverrideOption(OverrideOption value);
-
 }

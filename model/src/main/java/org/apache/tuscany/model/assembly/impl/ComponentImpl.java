@@ -22,23 +22,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
-import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentImplementation;
-import org.apache.tuscany.model.assembly.ConfiguredProperty;
-import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.Property;
-import org.apache.tuscany.model.assembly.Reference;
-import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.*;
 
 /**
  * An implementation of Component.
  */
 public abstract class ComponentImpl extends AggregatePartImpl implements Component {
-    
+
     private List<ConfiguredReference> configuredReferences=new ArrayList<ConfiguredReference>();
     private Map<String, ConfiguredReference> configuredReferencesMap;
     private List<ConfiguredService> configuredServices=new ArrayList<ConfiguredService>();
@@ -114,50 +104,29 @@ public abstract class ComponentImpl extends AggregatePartImpl implements Compone
 
         // Initialize the implementation
         ComponentImplementation implementation = getComponentImplementation();
-        if (implementation != null) {
-            implementation.initialize(modelContext);
+        if (implementation == null) {
+            throw new IllegalStateException("No implementation for component [" + getName() + ']');
         }
+        implementation.initialize(modelContext);
+        ComponentType componentType = implementation.getComponentType();
 
         // Derive the configured services, references and properties from the component implementation
         //FIXME we have two options here: either just index the configured services, references and properties
         // that we find in the corresponding lists, or derive them from the services, references and properties on
         // the component type, for now just check if the lists are empty or not to determine which option to go with
         configuredServicesMap = new HashMap<String, ConfiguredService>();
-        configuredReferencesMap = new HashMap<String, ConfiguredReference>();
-        configuredPropertiesMap = new HashMap<String, ConfiguredProperty>();
-        if (configuredServices.isEmpty() && configuredReferences.isEmpty() && configuredProperties.isEmpty()) {
-            if (implementation != null) {
-                AssemblyFactory factory = modelContext.getAssemblyFactory();
-                for (Service service : implementation.getComponentType().getServices()) {
-                    ConfiguredService configuredService = factory.createConfiguredService();
-                    configuredService.setPort(service);
-                    configuredServices.add(configuredService);
-                    configuredServicesMap.put(service.getName(), configuredService);
-                    ((ConfiguredPortImpl)configuredService).setAggregatePart(this);
-                    configuredService.initialize(modelContext);
-                }
-    
-                for (Reference reference : implementation.getComponentType().getReferences()) {
-                    ConfiguredReference configuredReference = factory.createConfiguredReference();
-                    configuredReference.setPort(reference);
-                    configuredReferences.add(configuredReference);
-                    configuredReferencesMap.put(reference.getName(), configuredReference);
-                    ((ConfiguredPortImpl)configuredReference).setAggregatePart(this);
-                    configuredReference.initialize(modelContext);
-                }
-    
-                // Derive configured properties from the properties on the component type 
-                for (Property property : implementation.getComponentType().getProperties()) {
-                    ConfiguredProperty configuredProperty = factory.createConfiguredProperty();
-                    configuredProperty.setProperty(property);
-                    configuredProperties.add(configuredProperty);
-                    configuredPropertiesMap.put(property.getName(), configuredProperty);
-                    configuredProperty.initialize(modelContext);
-                }
-    
+        if (configuredServices.isEmpty()) {
+            AssemblyFactory factory = modelContext.getAssemblyFactory();
+            for (Service service : componentType.getServices()) {
+                ConfiguredService configuredService = factory.createConfiguredService();
+                configuredService.setPort(service);
+                configuredServices.add(configuredService);
+                configuredServicesMap.put(service.getName(), configuredService);
+                ((ConfiguredPortImpl)configuredService).setAggregatePart(this);
+                configuredService.initialize(modelContext);
             }
         } else {
-            
+
             // Just populate the maps of services, references and properties from the contents of
             // the corresponding lists
             for (ConfiguredService configuredService : configuredServices) {
@@ -166,16 +135,26 @@ public abstract class ComponentImpl extends AggregatePartImpl implements Compone
                 configuredService.initialize(modelContext);
             }
 
-            for (ConfiguredReference configuredReference : configuredReferences) {
-                configuredReferencesMap.put(configuredReference.getReference().getName(), configuredReference);
-                ((ConfiguredPortImpl)configuredReference).setAggregatePart(this);
-                configuredReference.initialize(modelContext);
-            }
+        }
 
-            for (ConfiguredProperty configuredProperty : configuredProperties) {
-                configuredPropertiesMap.put(configuredProperty.getProperty().getName(), configuredProperty);
-                configuredProperty.initialize(modelContext);
-            }
+        // Match configured properties to the properties on the component type
+        configuredPropertiesMap = new HashMap<String, ConfiguredProperty>(configuredProperties.size());
+        for (ConfiguredProperty configuredProperty : configuredProperties) {
+            String name = configuredProperty.getName();
+            configuredProperty.setProperty(componentType.getProperty(name));
+            configuredProperty.initialize(modelContext);
+            configuredPropertiesMap.put(name, configuredProperty);
+        }
+
+        // Match configured references to the references on the component type
+        configuredReferencesMap = new HashMap<String, ConfiguredReference>(configuredReferences.size());
+        for (ConfiguredReference configuredReference : configuredReferences) {
+            String name = configuredReference.getName();
+            ((ConfiguredPortImpl)configuredReference).setAggregatePart(this);
+            Reference reference = componentType.getReference(name);
+            configuredReference.setReference(reference);
+            configuredReference.initialize(modelContext);
+            configuredReferencesMap.put(name, configuredReference);
         }
     }
 
@@ -186,7 +165,7 @@ public abstract class ComponentImpl extends AggregatePartImpl implements Compone
         if (isFrozen())
             return;
         super.freeze();
-        
+
         // Freeze configured services, references and properties
         configuredServices=Collections.unmodifiableList(configuredServices);
         freeze(configuredServices);
@@ -197,14 +176,14 @@ public abstract class ComponentImpl extends AggregatePartImpl implements Compone
         if (implementation!=null)
             implementation.freeze();
     }
-    
+
     /**
      * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
      */
     public boolean accept(AssemblyModelVisitor visitor) {
         if (!super.accept(visitor))
             return false;
-        
+
         if (!accept(configuredServices, visitor))
             return false;
         if (!accept(configuredReferences, visitor))
@@ -215,7 +194,7 @@ public abstract class ComponentImpl extends AggregatePartImpl implements Compone
             if (!implementation.accept(visitor))
                 return false;
         }
-        
+
         return true;
     }
 

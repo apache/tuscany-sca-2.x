@@ -41,4 +41,7 @@ public interface ConfiguredReference extends ConfiguredPort {
      */
     List<ConfiguredService> getTargetConfiguredServices();
 
+    String getName();
+
+    void setName(String name);
 }

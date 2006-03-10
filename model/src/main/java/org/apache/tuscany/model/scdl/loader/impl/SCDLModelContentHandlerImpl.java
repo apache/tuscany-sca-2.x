@@ -421,42 +421,40 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
 
         // Grab the current component
         final SimpleComponent component=currentComponent;
-        linkers.add(new Runnable() {
-            public void run() {
-                
-                // Initialize the component's configured properties
-                Sequence sequence = object.getAny();
-                for (int p = 0, n = sequence.size(); p < n; p++) {
+        Sequence sequence = object.getAny();
+        for (int p = 0, n = sequence.size(); p < n; p++) {
 
-                    // Get each property value element
-                    commonj.sdo.Property propertyElementDef = sequence.getProperty(p);
-                    DataObject propertyElement = (DataObject) sequence.getValue(p);
+            // Get each property value element
+            commonj.sdo.Property propertyElementDef = sequence.getProperty(p);
+            DataObject propertyElement = (DataObject) sequence.getValue(p);
 
-                    // Get the corresponding property definition
-                    String propertyName = propertyElementDef.getName();
-                    ConfiguredProperty configuredProperty=component.getConfiguredProperty(propertyName);
-                    if (configuredProperty == null) {
-                        throw new IllegalArgumentException("Undefined property " + propertyName);
-                    }
-                    
-                    // Check if the property is overridable
-                    Sequence attrs=propertyElement.getSequence("anyAttribute");
-                    if (attrs!=null && attrs.size()!=0) {
-                        commonj.sdo.Property attr=attrs.getProperty(0);
-                        if (attr!=null && attr.getName().equals("overridable")) {
-                            Object overridable=attrs.getValue(0);
-                            if ("may".equals(overridable))
-                                configuredProperty.setOverrideOption(OverrideOption.MAY);
-                            else if ("must".equals(overridable))
-                                configuredProperty.setOverrideOption(OverrideOption.MUST);
-                            else if ("no".equals(overridable))
-                                configuredProperty.setOverrideOption(OverrideOption.NO);
-                        }
-                    }
+            // Get the corresponding property definition
+            String propertyName = propertyElementDef.getName();
+            final ConfiguredProperty configuredProperty = factory.createConfiguredProperty();
+            configuredProperty.setName(propertyName);
 
-                    // Get the property value text and convert to the expected java type
-                    Sequence text = propertyElement.getSequence("any");
-                    if (text != null && text.size() != 0) {
+            // Check if the property is overridable
+            Sequence attrs=propertyElement.getSequence("anyAttribute");
+            if (attrs!=null && attrs.size()!=0) {
+                commonj.sdo.Property attr=attrs.getProperty(0);
+                if (attr!=null && attr.getName().equals("overridable")) {
+                    Object overridable=attrs.getValue(0);
+                    if ("may".equals(overridable))
+                        configuredProperty.setOverrideOption(OverrideOption.MAY);
+                    else if ("must".equals(overridable))
+                        configuredProperty.setOverrideOption(OverrideOption.MUST);
+                    else if ("no".equals(overridable))
+                        configuredProperty.setOverrideOption(OverrideOption.NO);
+                }
+            }
+
+            // Create a linker that gets the property value text and convert to the expected java type
+            // This needs to be deferred until the Property has been located from the ComponentType
+            final Sequence text = propertyElement.getSequence("any");
+            if (text != null && text.size() != 0) {
+                linkers.add(new Runnable() {
+                    public void run() {
+                        // Initialize the component's configured properties
                         String rawValue = text.getValue(0).toString();
                         Type type=((PropertyImpl)configuredProperty.getProperty()).getSDOType();
                         Object value;
@@ -467,10 +465,11 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
                         }
                         configuredProperty.setValue(value);
                     }
-                }
+                });
             }
-        });
-        
+
+            component.getConfiguredProperties().add(configuredProperty);
+        }
         return object;
     }
 
@@ -481,24 +480,21 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
 
         // Grab the current component
         final SimpleComponent component=this.currentComponent;
-        
-        linkers.add(new Runnable() {
-            public void run() {
-                
-                // Initialize the component's configured references
-                Sequence sequence = object.getAny();
-                for (int r = 0, n = sequence.size(); r < n; r++) {
+        // Initialize the component's configured references
+        Sequence sequence = object.getAny();
+        for (int r = 0, n = sequence.size(); r < n; r++) {
 
-                    // Get each reference value element
-                    commonj.sdo.Property referenceElementDef = sequence.getProperty(r);
-                    DataObject referenceElement = (DataObject) sequence.getValue(r);
+            // Get each reference value element
+            commonj.sdo.Property referenceElementDef = sequence.getProperty(r);
+            final DataObject referenceElement = (DataObject) sequence.getValue(r);
 
-                    // Get the corresponding reference definition
-                    String referenceName = referenceElementDef.getName();
-                    ConfiguredReference configuredReference=component.getConfiguredReference(referenceName);
-                    if (configuredReference == null) {
-                        throw new IllegalArgumentException("Undefined reference " + referenceName);
-                    }
+            // Get the corresponding reference definition
+            String referenceName = referenceElementDef.getName();
+            final ConfiguredReference configuredReference = factory.createConfiguredReference();
+            configuredReference.setName(referenceName);
+
+            linkers.add(new Runnable() {
+                public void run() {
                     ServiceURI referenceURI=factory.createServiceURI(null, component, configuredReference);
 
                     // Get the reference value text
@@ -506,7 +502,7 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
                     if (text != null && text.size() != 0) {
                         String uri = text.getValue(0).toString();
                         ServiceURI serviceURI=factory.createServiceURI(null, uri);
-                        
+
                         // Create a wire
                         Wire wire=factory.createWire();
                         wire.setSource(referenceURI);
@@ -514,9 +510,11 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
                         currentAggregate.getWires().add(wire);
                     }
                 }
-            }
-        });
-        
+            });
+
+            component.getConfiguredReferences().add(configuredReference);
+        }
+
         return object;
     }
     

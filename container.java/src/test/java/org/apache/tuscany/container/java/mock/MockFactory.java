@@ -70,18 +70,7 @@ import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
-import org.apache.tuscany.model.assembly.AggregatePart;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.ExternalService;
-import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.Reference;
-import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.SimpleComponent;
+import org.apache.tuscany.model.assembly.*;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 import org.osoa.sca.annotations.ComponentName;
@@ -127,6 +116,7 @@ public class MockFactory {
         sc.setComponentImplementation(impl);
         Service s = factory.createService();
         JavaServiceContract ji = factory.createJavaServiceContract();
+        ji.setInterface(type);
         s.setServiceContract(ji);
         ji.setScope(scope);
         impl.getComponentType().getServices().add(s);
@@ -329,12 +319,14 @@ public class MockFactory {
         targetComponent.initialize(assemblyContext);
 
         Reference ref = factory.createReference();
-        ConfiguredReference cref = factory.createConfiguredReference();
         ref.setName("setGenericComponent");
         JavaServiceContract inter = factory.createJavaServiceContract();
         inter.setInterface(GenericComponent.class);
         ref.setServiceContract(inter);
-        cref.setReference(ref);
+        sourceComponent.getComponentImplementation().getComponentType().getReferences().add(ref);
+
+        ConfiguredReference cref = factory.createConfiguredReference();
+        cref.setName("setGenericComponent");
         cref.getTargetConfiguredServices().add(cTargetService);
         cref.initialize(assemblyContext);
         sourceComponent.getConfiguredReferences().add(cref);
@@ -367,12 +359,14 @@ public class MockFactory {
         targetES.initialize(assemblyContext);
 
         Reference ref = factory.createReference();
-        ConfiguredReference cref = factory.createConfiguredReference();
         ref.setName("setHelloWorldService");
         JavaServiceContract inter = factory.createJavaServiceContract();
         inter.setInterface(HelloWorldService.class);
         ref.setServiceContract(inter);
-        cref.setReference(ref);
+        sourceComponent.getComponentImplementation().getComponentType().getReferences().add(ref);
+
+        ConfiguredReference cref = factory.createConfiguredReference();
+        cref.setName(ref.getName());
         cref.getTargetConfiguredServices().add(cTargetService);
         cref.initialize(assemblyContext);
         sourceComponent.getConfiguredReferences().add(cref);
@@ -459,9 +453,10 @@ public class MockFactory {
 
         // create the source component
         SimpleComponent source = factory.createSimpleComponent();
+        ComponentType componentType = factory.createComponentType();
         source.setName("source");
         JavaImplementation impl = factory.createJavaImplementation();
-        impl.setComponentType(factory.createComponentType());
+        impl.setComponentType(componentType);
         impl.setImplementationClass(SourceImpl.class);
         source.setComponentImplementation(impl);
         Service s = systemFactory.createService();
@@ -478,25 +473,25 @@ public class MockFactory {
         Reference reference = systemFactory.createReference();
         reference.setName("setTarget");
         reference.setServiceContract(refContract);
+        componentType.getReferences().add(reference);
         ConfiguredReference cReference = systemFactory.createConfiguredReference();
-        cReference.setReference(reference);
+        cReference.setName(reference.getName());
         cReference.getTargetConfiguredServices().add(cTargetService);
         cReference.initialize(assemblyContext);
         source.getConfiguredReferences().add(cReference);
-        source.initialize(assemblyContext);
-        
+
         // wire multiplicity using a setter
         JavaServiceContract refContract2 = systemFactory.createJavaServiceContract();
         refContract2.setInterface(List.class);
         Reference reference2 = systemFactory.createReference();
         reference2.setName("setTargets");
         reference2.setServiceContract(refContract2);
+        componentType.getReferences().add(reference2);
         ConfiguredReference cReference2 = systemFactory.createConfiguredReference();
-        cReference2.setReference(reference2);
+        cReference2.setName(reference2.getName());
         cReference2.getTargetConfiguredServices().add(cTargetService);
         cReference2.initialize(assemblyContext);
         source.getConfiguredReferences().add(cReference2);
-        source.initialize(assemblyContext);
 
         // wire multiplicity using a field
         JavaServiceContract refContract3 = systemFactory.createJavaServiceContract();
@@ -504,8 +499,9 @@ public class MockFactory {
         Reference reference3 = systemFactory.createReference();
         reference3.setName("targetsThroughField");
         reference3.setServiceContract(refContract3);
+        componentType.getReferences().add(reference3);
         ConfiguredReference cReference3 = systemFactory.createConfiguredReference();
-        cReference3.setReference(reference3);
+        cReference3.setName(reference3.getName());
         cReference3.getTargetConfiguredServices().add(cTargetService);
         cReference3.initialize(assemblyContext);
         source.getConfiguredReferences().add(cReference3);

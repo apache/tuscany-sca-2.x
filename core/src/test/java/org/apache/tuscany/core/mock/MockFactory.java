@@ -36,18 +36,7 @@ import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
-import org.apache.tuscany.model.assembly.AggregatePart;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.ExternalService;
-import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.Reference;
-import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.SimpleComponent;
+import org.apache.tuscany.model.assembly.*;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 
@@ -322,55 +311,62 @@ public class MockFactory {
         target.getConfiguredServices().add(cTargetService);
         target.initialize(assemblyContext);
 
-        // create the source component
-        SimpleComponent source = systemFactory.createSimpleComponent();
-        source.setName("source");
-        SystemImplementation impl = systemFactory.createSystemImplementation();
-        impl.setComponentType(systemFactory.createComponentType());
-        impl.setImplementationClass(SourceImpl.class);
-        source.setComponentImplementation(impl);
+        // create the source componentType
+        ComponentType sourceComponentType = systemFactory.createComponentType();
         Service s = systemFactory.createService();
         JavaServiceContract contract = systemFactory.createJavaServiceContract();
         contract.setInterface(Source.class);
         s.setServiceContract(contract);
         contract.setScope(sourceScope);
-        impl.getComponentType().getServices().add(s);
-        source.setComponentImplementation(impl);
+        sourceComponentType.getServices().add(s);
 
-        // wire source to target
         JavaServiceContract refContract = systemFactory.createJavaServiceContract();
         refContract.setInterface(Target.class);
         Reference reference = systemFactory.createReference();
         reference.setName("setTarget");
         reference.setServiceContract(refContract);
-        ConfiguredReference cReference = systemFactory.createConfiguredReference();
-        cReference.setReference(reference);
-        cReference.getTargetConfiguredServices().add(cTargetService);
-        cReference.initialize(assemblyContext);
-        source.getConfiguredReferences().add(cReference);
-        source.initialize(assemblyContext);
-        
-        // wire multiplicity using a setter
+        sourceComponentType.getReferences().add(reference);
+
         JavaServiceContract refContract2 = systemFactory.createJavaServiceContract();
         refContract2.setInterface(List.class);
         Reference reference2 = systemFactory.createReference();
         reference2.setName("setTargets");
         reference2.setServiceContract(refContract2);
-        ConfiguredReference cReference2 = systemFactory.createConfiguredReference();
-        cReference2.setReference(reference2);
-        cReference2.getTargetConfiguredServices().add(cTargetService);
-        cReference2.initialize(assemblyContext);
-        source.getConfiguredReferences().add(cReference2);
-        source.initialize(assemblyContext);
+        sourceComponentType.getReferences().add(reference2);
 
-        // wire multiplicity using a field
         JavaServiceContract refContract3 = systemFactory.createJavaServiceContract();
         refContract3.setInterface(List.class);
         Reference reference3 = systemFactory.createReference();
         reference3.setName("targetsThroughField");
         reference3.setServiceContract(refContract3);
+        sourceComponentType.getReferences().add(reference3);
+        sourceComponentType.initialize(assemblyContext);
+
+        // create the source component
+        SimpleComponent source = systemFactory.createSimpleComponent();
+        source.setName("source");
+        SystemImplementation impl = systemFactory.createSystemImplementation();
+        impl.setComponentType(sourceComponentType);
+        impl.setImplementationClass(SourceImpl.class);
+        source.setComponentImplementation(impl);
+
+        // wire source to target
+        ConfiguredReference cReference = systemFactory.createConfiguredReference();
+        cReference.setName("setTarget");
+        cReference.getTargetConfiguredServices().add(cTargetService);
+        cReference.initialize(assemblyContext);
+        source.getConfiguredReferences().add(cReference);
+
+        // wire multiplicity using a setter
+        ConfiguredReference cReference2 = systemFactory.createConfiguredReference();
+        cReference2.setName("setTargets");
+        cReference2.getTargetConfiguredServices().add(cTargetService);
+        cReference2.initialize(assemblyContext);
+        source.getConfiguredReferences().add(cReference2);
+
+        // wire multiplicity using a field
         ConfiguredReference cReference3 = systemFactory.createConfiguredReference();
-        cReference3.setReference(reference3);
+        cReference3.setName("targetsThroughField");
         cReference3.getTargetConfiguredServices().add(cTargetService);
         cReference3.initialize(assemblyContext);
         source.getConfiguredReferences().add(cReference3);

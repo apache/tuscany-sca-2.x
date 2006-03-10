@@ -26,14 +26,23 @@ import org.apache.tuscany.model.assembly.Property;
  * Implementation of ConfiguredProperty
  */
 public class ConfiguredPropertyImpl extends AssemblyModelObjectImpl implements ConfiguredProperty {
-    private Property property;
+    private String name;
     private OverrideOption overrideOption;
     private Object value;
+    private Property property;
 
     /**
      * Constructor
      */
     protected ConfiguredPropertyImpl() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
