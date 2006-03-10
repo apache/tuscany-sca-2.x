@@ -339,7 +339,7 @@ public class MockFactory {
 
         ConfiguredReference cref = factory.createConfiguredReference();
         cref.setName("setGenericComponent");
-        cref.getTargetConfiguredServices().add(cTargetService);
+        cref.setTarget("target");
         cref.initialize(assemblyContext);
         sourceComponent.getConfiguredReferences().add(cref);
         sourceComponent.initialize(assemblyContext);
@@ -379,7 +379,7 @@ public class MockFactory {
 
         ConfiguredReference cref = factory.createConfiguredReference();
         cref.setName(ref.getName());
-        cref.getTargetConfiguredServices().add(cTargetService);
+        cref.setTarget("target");
         cref.initialize(assemblyContext);
         sourceComponent.getConfiguredReferences().add(cref);
         sourceComponent.initialize(assemblyContext);
@@ -487,7 +487,7 @@ public class MockFactory {
         componentType.getReferences().add(reference);
         ConfiguredReference cReference = systemFactory.createConfiguredReference();
         cReference.setName(reference.getName());
-        cReference.getTargetConfiguredServices().add(cTargetService);
+        cReference.setTarget("target");
         cReference.initialize(assemblyContext);
         source.getConfiguredReferences().add(cReference);
 
@@ -500,7 +500,7 @@ public class MockFactory {
         componentType.getReferences().add(reference2);
         ConfiguredReference cReference2 = systemFactory.createConfiguredReference();
         cReference2.setName(reference2.getName());
-        cReference2.getTargetConfiguredServices().add(cTargetService);
+        cReference2.setTarget("target");
         cReference2.initialize(assemblyContext);
         source.getConfiguredReferences().add(cReference2);
 
@@ -513,7 +513,7 @@ public class MockFactory {
         componentType.getReferences().add(reference3);
         ConfiguredReference cReference3 = systemFactory.createConfiguredReference();
         cReference3.setName(reference3.getName());
-        cReference3.getTargetConfiguredServices().add(cTargetService);
+        cReference3.setTarget("target");
         cReference3.initialize(assemblyContext);
         source.getConfiguredReferences().add(cReference3);
         source.initialize(assemblyContext);

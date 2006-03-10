@@ -16,9 +16,7 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -27,18 +25,16 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.osoa.sca.annotations.Scope;
 
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.COMPONENT;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.PROPERTIES;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.REFERENCES;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ComponentImplementation;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.Property;
-import org.apache.tuscany.model.assembly.Reference;
-import org.apache.tuscany.common.resource.ResourceLoader;
 
 /**
  * @version $Rev$ $Date$
@@ -90,6 +86,7 @@ public class ComponentLoader extends AbstractLoader {
                 String value = reader.getElementText();
                 ConfiguredProperty configuredProperty = factory.createConfiguredProperty();
                 // todo set property override
+                configuredProperty.setName(name);
                 configuredProperty.setValue(value);
                 configuredProperties.add(configuredProperty);
                 break;
@@ -105,9 +102,9 @@ public class ComponentLoader extends AbstractLoader {
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
-                String name = reader.getLocalName();
-                String value = reader.getElementText();
                 ConfiguredReference configuredReference = factory.createConfiguredReference();
+                configuredReference.setName(reader.getLocalName());
+                configuredReference.setTarget(reader.getElementText());
                 configuredReferences.add(configuredReference);
                 break;
             case END_ELEMENT:

@@ -66,7 +66,7 @@ import org.osoa.sca.ServiceRuntimeException;
 public class TuscanyRuntime extends SCA {
     private final Monitor monitor;
     private final Object sessionKey = new Object();
-    
+
     private final RuntimeContext runtimeContext;
     private AggregateContext systemModuleComponentContext;
     private AggregateContext moduleContext;
@@ -102,15 +102,15 @@ public class TuscanyRuntime extends SCA {
         // Create a resource loader from the current classloader
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         ResourceLoader resourceLoader = new ResourceLoaderImpl(classLoader);
-        
+
         // Create an assembly model factory
         AssemblyFactory modelFactory=new AssemblyFactoryImpl();
-        
+
         // Create an assembly model loader
         List<SCDLModelLoader> scdlLoaders=new ArrayList<SCDLModelLoader>();
         scdlLoaders.add(new SystemSCDLModelLoader());
         AssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl(scdlLoaders);
-        
+
         // Create an assembly model context
         AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, resourceLoader);
 
@@ -144,7 +144,7 @@ public class TuscanyRuntime extends SCA {
         systemModuleComponentContext = (AggregateContext) systemContext.getContext(SYSTEM_MODULE_COMPONENT);
         systemModuleComponentContext.registerModelObject(systemModuleComponent.getComponentImplementation());
         systemModuleComponentContext.fireEvent(EventContext.MODULE_START, null);
-        
+
         // Load the SCDL configuration of the application module
         ModuleComponent moduleComponent = loader.loadModuleComponent(name, uri);
         

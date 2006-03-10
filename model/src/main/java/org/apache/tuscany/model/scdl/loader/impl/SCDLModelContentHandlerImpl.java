@@ -492,25 +492,11 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
             String referenceName = referenceElementDef.getName();
             final ConfiguredReference configuredReference = factory.createConfiguredReference();
             configuredReference.setName(referenceName);
-
-            linkers.add(new Runnable() {
-                public void run() {
-                    ServiceURI referenceURI=factory.createServiceURI(null, component, configuredReference);
-
-                    // Get the reference value text
-                    Sequence text = referenceElement.getSequence(0);
-                    if (text != null && text.size() != 0) {
-                        String uri = text.getValue(0).toString();
-                        ServiceURI serviceURI=factory.createServiceURI(null, uri);
-
-                        // Create a wire
-                        Wire wire=factory.createWire();
-                        wire.setSource(referenceURI);
-                        wire.setTarget(serviceURI);
-                        currentAggregate.getWires().add(wire);
-                    }
-                }
-            });
+            Sequence text = referenceElement.getSequence(0);
+            if (text != null && text.size() != 0) {
+                String uri = String.valueOf(text.getValue(0));
+                configuredReference.setTarget(uri);
+            }
 
             component.getConfiguredReferences().add(configuredReference);
         }

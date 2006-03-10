@@ -69,7 +69,7 @@ public class MockModuleFactory {
         sourceComponent.getComponentImplementation().getComponentType().getReferences().add(ref);
         ConfiguredReference cref = factory.createConfiguredReference();
         cref.setName(ref.getName());
-        cref.getTargetConfiguredServices().add(cTargetService);
+        cref.setTarget("target");
         cref.initialize(assemblyContext);
         sourceComponent.getConfiguredReferences().add(cref);
         sourceComponent.initialize(assemblyContext);

@@ -144,6 +144,17 @@ public class ModuleImpl extends AggregateImpl implements Module {
                         continue;
                     componentType.getProperties().add(configuredProperty.getProperty());
                 }
+
+                for (ConfiguredReference configuredReference : component.getConfiguredReferences()) {
+                    // Create a wire
+                    ServiceURI source =factory.createServiceURI(null, component, configuredReference);
+                    ServiceURI target =factory.createServiceURI(null, configuredReference.getTarget());
+
+                    Wire wire=factory.createWire();
+                    wire.setSource(source);
+                    wire.setTarget(target);
+                    getWires().add(wire);
+                }
             }
         }
         componentType.initialize(modelContext);

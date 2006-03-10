@@ -365,6 +365,7 @@ public class MockFactory {
         // wire source to target
         ConfiguredReference cReference = systemFactory.createConfiguredReference();
         cReference.setName("setTarget");
+        cReference.setTarget("target");
         cReference.getTargetConfiguredServices().add(cTargetService);
         cReference.initialize(assemblyContext);
         source.getConfiguredReferences().add(cReference);
@@ -372,6 +373,7 @@ public class MockFactory {
         // wire multiplicity using a setter
         ConfiguredReference cReference2 = systemFactory.createConfiguredReference();
         cReference2.setName("setTargets");
+        cReference2.setTarget("target");
         cReference2.getTargetConfiguredServices().add(cTargetService);
         cReference2.initialize(assemblyContext);
         source.getConfiguredReferences().add(cReference2);
@@ -379,6 +381,7 @@ public class MockFactory {
         // wire multiplicity using a field
         ConfiguredReference cReference3 = systemFactory.createConfiguredReference();
         cReference3.setName("targetsThroughField");
+        cReference3.setTarget("target");
         cReference3.getTargetConfiguredServices().add(cTargetService);
         cReference3.initialize(assemblyContext);
         source.getConfiguredReferences().add(cReference3);

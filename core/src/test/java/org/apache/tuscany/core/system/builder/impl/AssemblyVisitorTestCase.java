@@ -42,6 +42,7 @@ import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.RuntimeConfigurationHolder;
 import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
@@ -61,20 +62,47 @@ public class AssemblyVisitorTestCase extends TestCase {
     private AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(factory, null, null);
      
     public void testModelVisit() throws Exception {
-        
-        Component component = factory.createSimpleComponent();
-        SystemImplementation impl = factory.createSystemImplementation();
-        impl.setComponentType(factory.createComponentType());
+        ComponentType componentType;
+        Service service;
+        SystemImplementation impl;
+        Component component;
+
+        Module module = factory.createModule();
+
+        // create target component
+        componentType = factory.createComponentType();
+        service = factory.createService();
+        service.setName("target");
+        componentType.getServices().add(service);
+        impl = factory.createSystemImplementation();
+        impl.setComponentType(componentType);
+        component = factory.createSimpleComponent();
+        component.setName("target");
+        component.setComponentImplementation(impl);
+        component.initialize(assemblyContext);
+        module.getComponents().add(component);
+
+        // create source component
+        componentType = factory.createComponentType();
+        Reference ref = factory.createReference();
+        ref.setName("ref");
+        componentType.getReferences().add(ref);
+        impl = factory.createSystemImplementation();
+        impl.setComponentType(componentType);
+        component = factory.createSimpleComponent();
+        component.setName("source");
         component.setComponentImplementation(impl);
         ConfiguredReference cRef = factory.createConfiguredReference();
-        Reference ref = factory.createReference();
-        cRef.setReference(ref);
+        cRef.setName("ref");
+        cRef.setTarget("target");
         component.getConfiguredReferences().add(cRef);
+        component.initialize(assemblyContext);
+        module.getComponents().add(component);
 
         EntryPoint ep = factory.createEntryPoint();
         JavaServiceContract contract = factory.createJavaServiceContract();
         contract.setInterface(ModuleScopeSystemComponent.class);
-        Service service = factory.createService();
+        service = factory.createService();
         service.setServiceContract(contract);
         ConfiguredService cService = factory.createConfiguredService();
         cService.setService(service);
@@ -86,10 +114,7 @@ public class AssemblyVisitorTestCase extends TestCase {
         Reference epRef = factory.createReference();
         cEpRef.setReference(epRef);
         ep.setConfiguredReference(cEpRef);
-        
         ep.initialize(assemblyContext);
-        Module module = factory.createModule();
-        module.getComponents().add(component);
         module.getEntryPoints().add(ep);
 
         List<RuntimeConfigurationBuilder> builders = new ArrayList();
