@@ -27,6 +27,8 @@ import org.apache.tuscany.core.mock.MockConfigContext;
 import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
+import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
+import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Scope;
@@ -39,15 +41,14 @@ import org.osoa.sca.ModuleContext;
  */
 public abstract class AbstractAggregateHierarchyTests extends TestCase {
     protected List<RuntimeConfigurationBuilder> builders;
+    protected SystemAssemblyFactory factory;
 
     public void testParentContextIsolation() throws Exception {
         AggregateContext parent = createContextHierachy();
         AggregateContext child = (AggregateContext) parent.getContext("test.child");
-        Component component = MockFactory.createSystemComponent("TestService1", ModuleScopeSystemComponentImpl.class,
-                Scope.MODULE);
+        Component component = factory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
         parent.registerModelObject(component);
-        EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1",
-                component);
+        EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1", component);
         parent.registerModelObject(ep);
         parent.fireEvent(EventContext.MODULE_START, null);
         child.fireEvent(EventContext.MODULE_START, null);
@@ -102,6 +103,7 @@ public abstract class AbstractAggregateHierarchyTests extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        factory = new SystemAssemblyFactoryImpl();
         builders = MockFactory.createSystemBuilders();
     }
 }

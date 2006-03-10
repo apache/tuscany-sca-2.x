@@ -22,6 +22,7 @@ import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.runtime.RuntimeContext;
+import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
@@ -31,11 +32,11 @@ import org.apache.tuscany.model.assembly.Scope;
  */
 public class IntraAggregateWireIntegrationTestCase extends TestCase {
 
-    public void testWireConstruction() throws Exception {
+    public void testWireConstruction() throws ConfigurationException {
         RuntimeContext runtime = MockFactory.createCoreRuntime();
         runtime.getSystemContext().registerModelObject(MockFactory.createSystemAggregateComponent("test.system"));
         AggregateContext context = (AggregateContext) runtime.getSystemContext().getContext("test.system").getImplementationInstance();
-        
+
         context.fireEvent(EventContext.MODULE_START, null);
         context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents(Scope.MODULE,Scope.MODULE));
         Source source = (Source) context.getContext("source").getImplementationInstance();
@@ -45,7 +46,7 @@ public class IntraAggregateWireIntegrationTestCase extends TestCase {
         Target target = (Target) context.getContext("target").getImplementationInstance();
         Assert.assertSame(target, targetRef);
         Source source2 = (Source) context.getContext("source").getImplementationInstance();
-        Assert.assertSame(target, source.getTarget());
+        Assert.assertSame(target, source2.getTarget());
         context.fireEvent(EventContext.MODULE_STOP, null);
         context.stop();
     }

@@ -36,7 +36,6 @@ import org.apache.tuscany.container.java.assembly.mock.HelloWorldService;
 import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
 import org.apache.tuscany.container.java.builder.JavaTargetWireBuilder;
 import org.apache.tuscany.container.java.context.JavaComponentContext;
-import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBinding;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBindingBuilder;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBindingWireBuilder;
@@ -50,6 +49,7 @@ import org.apache.tuscany.container.java.mock.components.TargetImpl;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
@@ -131,31 +131,6 @@ public class MockFactory {
         ji.setInterface(type);
         s.setServiceContract(ji);
         ji.setScope(scope);
-        impl.getComponentType().getServices().add(s);
-        sc.setName(name);
-        sc.setComponentImplementation(impl);
-        return sc;
-    }
-
-    /**
-     * Creates a system component of the given type with the given name and scope
-     */
-    public static Component createSystemComponent(String name, Class type, Scope scope) {
-
-        Component sc = null;
-        if (AggregateContext.class.isAssignableFrom(type)) {
-            sc = systemFactory.createModuleComponent();
-        } else {
-            sc = systemFactory.createSimpleComponent();
-        }
-        SystemImplementation impl = systemFactory.createSystemImplementation();
-        impl.setImplementationClass(type);
-        sc.setComponentImplementation(impl);
-        Service s = systemFactory.createService();
-        JavaServiceContract ji = systemFactory.createJavaServiceContract();
-        s.setServiceContract(ji);
-        ji.setScope(scope);
-        impl.setComponentType(systemFactory.createComponentType());
         impl.getComponentType().getServices().add(s);
         sc.setName(name);
         sc.setComponentImplementation(impl);
@@ -627,8 +602,8 @@ public class MockFactory {
         runtime.start();
         runtime.getSystemContext().registerModelObject(createSystemAggregateComponent(SYSTEM_CHILD));
         SystemAggregateContext ctx = (SystemAggregateContext) runtime.getSystemContext().getContext(SYSTEM_CHILD);
-        ctx.registerModelObject(createSystemComponent(JAVA_BUILDER, JavaComponentContextBuilder.class, Scope.MODULE));
-        ctx.registerModelObject(createSystemComponent(JAVA_WIRE_BUILDER, JavaTargetWireBuilder.class, Scope.MODULE));
+        ctx.registerModelObject(systemFactory.createSystemComponent(JAVA_BUILDER, RuntimeConfigurationBuilder.class, JavaComponentContextBuilder.class, Scope.MODULE));
+        ctx.registerModelObject(systemFactory.createSystemComponent(JAVA_WIRE_BUILDER, WireBuilder.class, JavaTargetWireBuilder.class, Scope.MODULE));
         ctx.fireEvent(EventContext.MODULE_START, null);
         return runtime;
     }
@@ -642,9 +617,8 @@ public class MockFactory {
         AggregateContext child = (AggregateContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD);
         JavaComponentContextBuilder javaBuilder = (JavaComponentContextBuilder) child.getContext(MockFactory.JAVA_BUILDER)
                 .getInstance(null);
-        MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
-        child.registerModelObject(MockFactory.createSystemComponent(FOO_BUILDER, FooBindingBuilder.class, Scope.MODULE));
-        child.registerModelObject(MockFactory.createSystemComponent(FOO_WIRE_BUILDER, FooBindingWireBuilder.class, Scope.MODULE));
+        child.registerModelObject(systemFactory.createSystemComponent(FOO_BUILDER, RuntimeConfigurationBuilder.class, FooBindingBuilder.class, Scope.MODULE));
+        child.registerModelObject(systemFactory.createSystemComponent(FOO_WIRE_BUILDER, WireBuilder.class, FooBindingWireBuilder.class, Scope.MODULE));
         // since the child context is already started, we need to manually retrieve the components to init them
         Assert.assertNotNull(child.getContext(FOO_BUILDER).getInstance(null));
         Assert.assertNotNull(child.getContext(FOO_WIRE_BUILDER).getInstance(null));

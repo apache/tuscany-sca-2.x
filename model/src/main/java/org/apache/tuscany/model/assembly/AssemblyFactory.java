@@ -159,4 +159,22 @@ public interface AssemblyFactory {
      * @return
      */
     Wire createWire();
+
+    /**
+     * Helper method for creating a reference.
+     *
+     * @param name the name of the reference
+     * @param service the Java type of the service
+     * @return a Reference
+     */
+    Reference createReference(String name, Class<?> service);
+
+    /**
+     * Helper method for creating a configured reference.
+     *
+     * @param name the name of the reference
+     * @param target the target for the reference
+     * @return a ConfiguredReference
+     */
+    ConfiguredReference createConfiguredReference(String name, String target);
 }

@@ -201,4 +201,20 @@ public class AssemblyFactoryImpl implements AssemblyFactory {
     public Wire createWire() {
         return new WireImpl();
     }
+
+    public Reference createReference(String name, Class<?> service) {
+        JavaServiceContract refContract = createJavaServiceContract();
+        refContract.setInterface(service);
+        Reference reference = createReference();
+        reference.setName(name);
+        reference.setServiceContract(refContract);
+        return reference;
+    }
+
+    public ConfiguredReference createConfiguredReference(String name, String target) {
+        ConfiguredReference ref = createConfiguredReference();
+        ref.setName(name);
+        ref.setTarget(target);
+        return ref;
+    }
 }

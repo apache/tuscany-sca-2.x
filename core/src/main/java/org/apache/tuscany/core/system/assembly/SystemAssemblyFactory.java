@@ -17,6 +17,8 @@
 package org.apache.tuscany.core.system.assembly;
 
 import org.apache.tuscany.model.assembly.AssemblyFactory;
+import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * A factory for building system assembly model artifacts
@@ -28,11 +30,21 @@ public interface SystemAssemblyFactory extends AssemblyFactory {
     /**
      * Returns an assembly model artifact representing a system component implementation
      */
-    SystemImplementation createSystemImplementation(); 
+    SystemImplementation createSystemImplementation();
 
     /**
      * Returns an assembly model artifact representing a system binding
      */
     SystemBinding createSystemBinding();
 
+    /**
+     * Helper method for creating a typical system component.
+     *
+     * @param name the name of the component
+     * @param service the service that the component provides
+     * @param impl the component implementation
+     * @param scope the component's scope
+     * @return a Component model object with the appropriate system implementation
+     */
+    <T> Component createSystemComponent(String name, Class<T> service, Class<? extends T> impl, Scope scope);
 }

@@ -50,6 +50,7 @@ public class RuntimeContextImplTestCase extends TestCase {
     private SystemAssemblyFactory systemFactory = new SystemAssemblyFactoryImpl();
 
     private List<RuntimeConfigurationBuilder> builders;
+    private SystemAssemblyFactory factory;
 
     /**
      * Tests explicit wiring of an external service to a system entry point that is wired to a child system module entry
@@ -187,12 +188,12 @@ public class RuntimeContextImplTestCase extends TestCase {
         Component moduleComponent = MockFactory.createAggregateComponent("module");
         runtime.registerModelObject(moduleComponent);
 
-        Component component = MockFactory.createSystemComponent("NoService", ModuleScopeSystemComponentImpl.class, Scope.MODULE);
+        Component component = factory.createSystemComponent("NoService", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
         // do not register the above component!
 
         AggregateContextImpl moduleContext = (AggregateContextImpl) runtime.getContext("module");
-        moduleContext.registerModelObject(MockFactory.createEPSystemBinding("TestServiceEP", ModuleScopeSystemComponent.class,
-                "NoReference", component));
+        EntryPoint epSystemBinding = MockFactory.createEPSystemBinding("TestServiceEP", ModuleScopeSystemComponent.class, "NoReference", component);
+        moduleContext.registerModelObject(epSystemBinding);
 
         moduleContext.fireEvent(EventContext.MODULE_START, null);
         try {
@@ -221,19 +222,15 @@ public class RuntimeContextImplTestCase extends TestCase {
         AggregateContextImpl moduleContext1 = (AggregateContextImpl) runtime.getContext("module1");
         AggregateContextImpl moduleContext2 = (AggregateContextImpl) runtime.getContext("module2");
 
-        Component component1 = MockFactory.createSystemComponent("Component1", ModuleScopeSystemComponentImpl.class,
-                Scope.MODULE);
-        EntryPoint entryPoint1 = MockFactory.createEPSystemBinding("EntryPoint1", ModuleScopeSystemComponent.class, "Component1",
-                component1);
+        Component component1 = factory.createSystemComponent("Component1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
+        EntryPoint entryPoint1 = MockFactory.createEPSystemBinding("EntryPoint1", ModuleScopeSystemComponent.class, "Component1", component1);
         ExternalService externalService1 = MockFactory.createESSystemBinding("ExternalService1", "module2/EntryPoint2");
         moduleContext1.registerModelObject(component1);
         moduleContext1.registerModelObject(entryPoint1);
         moduleContext1.registerModelObject(externalService1);
 
-        Component component2 = MockFactory.createSystemComponent("Component2", ModuleScopeSystemComponentImpl.class,
-                Scope.MODULE);
-        EntryPoint entryPoint2 = MockFactory.createEPSystemBinding("EntryPoint2", ModuleScopeSystemComponent.class, "Component2",
-                component2);
+        Component component2 = factory.createSystemComponent("Component2", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
+        EntryPoint entryPoint2 = MockFactory.createEPSystemBinding("EntryPoint2", ModuleScopeSystemComponent.class, "Component2", component2);
         ExternalService externalService2 = MockFactory.createESSystemBinding("ExternalService2", "module1/EntryPoint1");
         moduleContext2.registerModelObject(component2);
         moduleContext2.registerModelObject(entryPoint2);
@@ -286,7 +283,7 @@ public class RuntimeContextImplTestCase extends TestCase {
         runtime.start();
 
         AggregateContext system = runtime.getSystemContext();
-        Component builder = MockFactory.createSystemComponent("TestBuilder", TestBuilder.class, Scope.MODULE);
+        Component builder = factory.createSystemComponent("TestBuilder", RuntimeConfigurationBuilder.class, TestBuilder.class, Scope.MODULE);
         system.registerModelObject(builder);
         system.fireEvent(EventContext.MODULE_START, null);
         Component module1 = MockFactory.createAggregateComponent("module1");
@@ -301,5 +298,6 @@ public class RuntimeContextImplTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         builders = MockFactory.createSystemBuilders();
+        factory = new SystemAssemblyFactoryImpl();
     }
 }

@@ -27,6 +27,8 @@ import org.apache.tuscany.core.mock.MockConfigContext;
 import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
+import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
+import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Scope;
@@ -37,91 +39,72 @@ import org.apache.tuscany.model.assembly.Scope;
  * @version $Rev$ $Date$
  */
 public class SystemAggregateComponentContextTestCase extends TestCase {
+    private SystemAssemblyFactory factory;
+    private List<RuntimeConfigurationBuilder> builders;
+    private SystemAggregateContextImpl system;
 
     public void testChildLocate() throws Exception {
-        List<RuntimeConfigurationBuilder> builders = MockFactory.createSystemBuilders();
-
-        SystemAggregateContextImpl system = new SystemAggregateContextImpl("system", null, null, new SystemScopeStrategy(),
-                new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory(), null, null);
         system.start();
-
         Component aggregateComponent = MockFactory.createAggregateComponent("system.child");
         system.registerModelObject(aggregateComponent);
         AggregateContext childContext = (AggregateContext) system.getContext("system.child");
         Assert.assertNotNull(childContext);
 
-        Component component = MockFactory.createSystemComponent("TestService1", ModuleScopeSystemComponentImpl.class,
-                Scope.MODULE);
-        EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1",
-                component);
+        Component component = factory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
+        EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1", component);
         childContext.registerModelObject(component);
         childContext.registerModelObject(ep);
         childContext.fireEvent(EventContext.MODULE_START, null);
         Assert.assertNotNull(system.locateInstance("system.child/TestService1EP"));
         childContext.fireEvent(EventContext.MODULE_STOP, null);
-        system.stop();
     }
 
-    public void testAutowire() throws Exception {
-        List<RuntimeConfigurationBuilder> builders = MockFactory.createSystemBuilders();
-        SystemAggregateContextImpl system = new SystemAggregateContextImpl("system", null, null, new SystemScopeStrategy(),
-                new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory(), null, null);
-
-        Component component = MockFactory.createSystemComponent("TestService1", ModuleScopeSystemComponentImpl.class,
-                Scope.MODULE);
-        EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1",
-                component);
+    public void testAutowireRegisterBeforeStart() throws Exception {
+        Component component = factory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
+        EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1", component);
         system.registerModelObject(component);
         system.registerModelObject(ep);
         system.start();
         system.fireEvent(EventContext.MODULE_START, null);
         Assert.assertSame(system.locateInstance("TestService1EP"), system.resolveInstance(ModuleScopeSystemComponent.class));
-        system.fireEvent(EventContext.MODULE_STOP, null);
-        system.stop();
     }
 
     public void testAutowireRegisterAfterStart() throws Exception {
-        List<RuntimeConfigurationBuilder> builders = MockFactory.createSystemBuilders();
-
-        SystemAggregateContextImpl system = new SystemAggregateContextImpl("system", null, null, new SystemScopeStrategy(),
-                new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory(), null, null);
-
-        Component component = MockFactory.createSystemComponent("TestService1", ModuleScopeSystemComponentImpl.class,
-                Scope.MODULE);
+        Component component = factory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
         system.registerModelObject(component);
         system.start();
         system.fireEvent(EventContext.MODULE_START, null);
-        EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1",
-                component);
+        EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1", component);
         system.registerModelObject(ep);
         Assert.assertSame(system.locateInstance("TestService1EP"), system.resolveInstance(ModuleScopeSystemComponent.class));
-        system.fireEvent(EventContext.MODULE_STOP, null);
-        system.stop();
     }
 
-    public void testAutowireModuleRegister() throws Exception {
-        List<RuntimeConfigurationBuilder> builders = MockFactory.createSystemBuilders();
-
-        SystemAggregateContextImpl system = new SystemAggregateContextImpl("system", null, null, new SystemScopeStrategy(),
-                new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory(), null, null);
+    public void testAutowireModuleRegisterBeforeStart() throws Exception {
         system.registerModelObject(MockFactory.createSystemModule());
         system.start();
         system.fireEvent(EventContext.MODULE_START, null);
         Assert.assertSame(system.locateInstance("TestService1EP"), system.resolveInstance(ModuleScopeSystemComponent.class));
-        system.fireEvent(EventContext.MODULE_STOP, null);
-        system.stop();
     }
 
     public void testAutowireModuleRegisterAfterStart() throws Exception {
-        List<RuntimeConfigurationBuilder> builders = MockFactory.createSystemBuilders();
-        SystemAggregateContextImpl system = new SystemAggregateContextImpl("system", null, null, new SystemScopeStrategy(),
-                new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory(), null, null);
         system.start();
         system.fireEvent(EventContext.MODULE_START, null);
         system.registerModelObject(MockFactory.createSystemModule());
         Assert.assertSame(system.locateInstance("TestService1EP"), system.resolveInstance(ModuleScopeSystemComponent.class));
-        system.fireEvent(EventContext.MODULE_STOP, null);
-        system.stop();
     }
 
+    protected void setUp() throws Exception {
+        super.setUp();
+        factory = new SystemAssemblyFactoryImpl();
+        builders = MockFactory.createSystemBuilders();
+
+        system = new SystemAggregateContextImpl("system", null, null, new SystemScopeStrategy(),
+                new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory(), null, null);
+    }
+
+    protected void tearDown() throws Exception {
+        system.fireEvent(EventContext.MODULE_STOP, null);
+        system.stop();
+        super.tearDown();
+    }
 }

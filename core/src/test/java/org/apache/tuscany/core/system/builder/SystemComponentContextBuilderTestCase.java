@@ -43,8 +43,7 @@ public class SystemComponentContextBuilderTestCase extends TestCase {
 
     public void testComponentContextBuilder() throws Exception {
         SystemComponentContextBuilder builder = new SystemComponentContextBuilder();
-        Component component = MockFactory.createSystemComponent("test", SystemComponentImpl.class,
-                Scope.AGGREGATE);
+        Component component = factory.createSystemComponent("test", null, SystemComponentImpl.class, Scope.AGGREGATE);
 
         ConfiguredProperty cProp = factory.createConfiguredProperty();
         Property prop = factory.createProperty();
