@@ -36,13 +36,25 @@ import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
-import org.apache.tuscany.model.assembly.*;
+import org.apache.tuscany.model.assembly.AggregatePart;
+import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.ConfiguredReference;
+import org.apache.tuscany.model.assembly.ConfiguredService;
+import org.apache.tuscany.model.assembly.EntryPoint;
+import org.apache.tuscany.model.assembly.ExternalService;
+import org.apache.tuscany.model.assembly.Module;
+import org.apache.tuscany.model.assembly.Reference;
+import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.SimpleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
  * Generates test components, modules, and runtime artifacts
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class MockFactory {
@@ -128,10 +140,10 @@ public class MockFactory {
 
     /**
      * Creates a basic entry point with no configured reference using the system binding
-     * 
-     * @param name the name of the entry point
+     *
+     * @param name     the name of the entry point
      * @param interfaz the inteface exposed by the entry point
-     * @param refName the name of the entry point reference
+     * @param refName  the name of the entry point reference
      */
     public static EntryPoint createEPSystemBinding(String name, Class interfaz, String refName) {
         return createEPSystemBinding(name, interfaz, refName, null);
@@ -139,11 +151,11 @@ public class MockFactory {
 
     /**
      * Creates an entry point wired to the given target (e.g. component, external service) using the system binding
-     * 
-     * @param name the name of the entry point
+     *
+     * @param name     the name of the entry point
      * @param interfaz the inteface exposed by the entry point
-     * @param refName the name of the entry point reference
-     * @param target the target the entry point is wired to
+     * @param refName  the name of the entry point reference
+     * @param target   the target the entry point is wired to
      */
     public static EntryPoint createEPSystemBinding(String name, Class interfaz, String refName, AggregatePart target) {
         JavaServiceContract contract = systemFactory.createJavaServiceContract();
@@ -193,10 +205,10 @@ public class MockFactory {
     /**
      * Creates an entry point that should be wired to the given target (e.g. component, external service) using the
      * system binding. The system assembly process should resolve the target name to an actual target configuration.
-     * 
-     * @param name the name of the entry point
-     * @param interfaz the inteface exposed by the entry point
-     * @param refName the name of the entry point reference
+     *
+     * @param name          the name of the entry point
+     * @param interfaz      the inteface exposed by the entry point
+     * @param refName       the name of the entry point reference
      * @param componentName the name of the target to resolve
      */
     public static EntryPoint createEntryPointWithStringRef(String name, Class interfaz, String refName, String componentName) {
@@ -285,7 +297,7 @@ public class MockFactory {
 
     /**
      * Creates a test system module with source and target components wired together.
-     * 
+     *
      * @see org.apache.tuscany.core.mock.component.Source
      * @see org.apache.tuscany.core.mock.component.Target
      */
@@ -371,8 +383,8 @@ public class MockFactory {
         cReference3.initialize(assemblyContext);
         source.getConfiguredReferences().add(cReference3);
         source.initialize(assemblyContext);
-   
-        
+
+
         Module module = systemFactory.createModule();
         module.setName("system.module");
 
@@ -422,10 +434,10 @@ public class MockFactory {
         builders.add(new SystemExternalServiceBuilder());
         return builders;
     }
-    
+
     /**
      * Creates a default {@link RuntimeContext} configured with support for Java component implementations
-     * 
+     *
      * @throws ConfigurationException
      */
     public static RuntimeContext createCoreRuntime() throws ConfigurationException {

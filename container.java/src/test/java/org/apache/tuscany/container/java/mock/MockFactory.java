@@ -23,6 +23,10 @@ import java.util.List;
 import java.util.Set;
 
 import junit.framework.Assert;
+import org.osoa.sca.annotations.ComponentName;
+import org.osoa.sca.annotations.Context;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
 
 import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
@@ -70,17 +74,25 @@ import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
-import org.apache.tuscany.model.assembly.*;
+import org.apache.tuscany.model.assembly.AggregatePart;
+import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.ConfiguredReference;
+import org.apache.tuscany.model.assembly.ConfiguredService;
+import org.apache.tuscany.model.assembly.EntryPoint;
+import org.apache.tuscany.model.assembly.ExternalService;
+import org.apache.tuscany.model.assembly.Module;
+import org.apache.tuscany.model.assembly.Reference;
+import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.SimpleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
-import org.osoa.sca.annotations.ComponentName;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
 
 /**
  * Generates test components, modules, and runtime artifacts
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class MockFactory {
@@ -103,9 +115,9 @@ public class MockFactory {
 
     /**
      * Creates an initialized simple component
-     * 
-     * @param name the component name
-     * @param type the implementation type
+     *
+     * @param name  the component name
+     * @param type  the implementation type
      * @param scope the component scope
      */
     public static SimpleComponent createComponent(String name, Class type, Scope scope) {
@@ -228,11 +240,11 @@ public class MockFactory {
 
     /**
      * Creates an entry point wired to the given target (e.g. component, external service) using the system binding
-     * 
-     * @param name the name of the entry point
+     *
+     * @param name     the name of the entry point
      * @param interfaz the inteface exposed by the entry point
-     * @param refName the name of the entry point reference
-     * @param target the target the entry point is wired to
+     * @param refName  the name of the entry point reference
+     * @param target   the target the entry point is wired to
      */
     public static EntryPoint createEPSystemBinding(String name, Class interfaz, String refName, AggregatePart target) {
         JavaServiceContract contract = systemFactory.createJavaServiceContract();
@@ -383,12 +395,12 @@ public class MockFactory {
     /**
      * Creates a module with an entry point named "source" configured with the {@link FooBinding} wired to a service
      * offered by a Java-based component named "target"
-     * 
+     *
      * @param scope the scope of the target service
      */
     public static Module createModuleWithEntryPoint(Scope scope) {
         EntryPoint sourceEP = createFooBindingEntryPoint("source", HelloWorldService.class);
-        Component targetComponent = createComponent("target", HelloWorldImpl.class, scope);        
+        Component targetComponent = createComponent("target", HelloWorldImpl.class, scope);
 
         Service targetService = factory.createService();
         JavaServiceContract targetContract = factory.createJavaServiceContract();
@@ -420,12 +432,11 @@ public class MockFactory {
         module.initialize(assemblyContext);
         return module;
     }
-    
-    
-    
+
+
     /**
      * Creates a test system module with source and target components wired together.
-     * 
+     *
      * @see org.apache.tuscany.core.mock.component.Source
      * @see org.apache.tuscany.core.mock.component.Target
      */
@@ -506,8 +517,8 @@ public class MockFactory {
         cReference3.initialize(assemblyContext);
         source.getConfiguredReferences().add(cReference3);
         source.initialize(assemblyContext);
-   
-        
+
+
         Module module = systemFactory.createModule();
         module.setName("system.module");
 
@@ -530,14 +541,14 @@ public class MockFactory {
 
     /**
      * Creates an aggregate runtime configuration
-     * 
-     * @param name the name of the component
+     *
+     * @param name             the name of the component
      * @param aggregateContext the containing aggregate context
      * @throws BuilderException
      * @see RuntimeConfiguration
      */
     public static RuntimeConfiguration<InstanceContext> createAggregateConfiguration(String name,
-            AggregateContext aggregateContext) throws BuilderException {
+                                                                                     AggregateContext aggregateContext) throws BuilderException {
 
         Component sc = createAggregateComponent(name);
         SystemComponentContextBuilder builder = new SystemComponentContextBuilder();
@@ -547,15 +558,15 @@ public class MockFactory {
 
     /**
      * Creates a Java POJO component context
-     * 
-     * @param name the name of the context
-     * @param implType the POJO class
-     * @param scope the component scope
+     *
+     * @param name                   the name of the context
+     * @param implType               the POJO class
+     * @param scope                  the component scope
      * @param moduleComponentContext the containing aggregate context
      * @throws NoSuchMethodException if the POJO does not have a default noi-args constructor
      */
     public static JavaComponentContext createPojoContext(String name, Class implType, Scope scope,
-            AggregateContext moduleComponentContext) throws NoSuchMethodException {
+                                                         AggregateContext moduleComponentContext) throws NoSuchMethodException {
         SimpleComponent component = createComponent(name, implType, scope);
 
         Set<Field> fields = JavaIntrospectionHelper.getAllFields(implType);
@@ -608,7 +619,7 @@ public class MockFactory {
 
     /**
      * Creates a default {@link RuntimeContext} configured with support for Java component implementations
-     * 
+     *
      * @throws ConfigurationException
      */
     public static RuntimeContext createJavaRuntime() throws ConfigurationException {
@@ -624,7 +635,7 @@ public class MockFactory {
 
     /**
      * Registers the {@link FooBinding} builders with a given runtime
-     * 
+     *
      * @throws ConfigurationException
      */
     public static RuntimeContext registerFooBinding(RuntimeContext runtime) throws ConfigurationException {

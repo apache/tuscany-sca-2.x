@@ -22,18 +22,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.model.assembly.*;
+import org.apache.tuscany.model.assembly.AssemblyFactory;
+import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
+import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.ComponentImplementation;
+import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.ConfiguredProperty;
+import org.apache.tuscany.model.assembly.ConfiguredReference;
+import org.apache.tuscany.model.assembly.ConfiguredService;
+import org.apache.tuscany.model.assembly.Reference;
+import org.apache.tuscany.model.assembly.Service;
 
 /**
  * An implementation of Component.
  */
 public abstract class ComponentImpl extends AggregatePartImpl implements Component {
 
-    private List<ConfiguredReference> configuredReferences=new ArrayList<ConfiguredReference>();
+    private List<ConfiguredReference> configuredReferences = new ArrayList<ConfiguredReference>();
     private Map<String, ConfiguredReference> configuredReferencesMap;
-    private List<ConfiguredService> configuredServices=new ArrayList<ConfiguredService>();
+    private List<ConfiguredService> configuredServices = new ArrayList<ConfiguredService>();
     private Map<String, ConfiguredService> configuredServicesMap;
-    private List<ConfiguredProperty> configuredProperties=new ArrayList<ConfiguredProperty>();
+    private List<ConfiguredProperty> configuredProperties = new ArrayList<ConfiguredProperty>();
     private Map<String, ConfiguredProperty> configuredPropertiesMap;
     private ComponentImplementation implementation;
 
@@ -49,7 +59,7 @@ public abstract class ComponentImpl extends AggregatePartImpl implements Compone
      */
     public void setComponentImplementation(ComponentImplementation value) {
         checkNotFrozen();
-        implementation=value;
+        implementation = value;
     }
 
     /**
@@ -122,7 +132,7 @@ public abstract class ComponentImpl extends AggregatePartImpl implements Compone
                 configuredService.setPort(service);
                 configuredServices.add(configuredService);
                 configuredServicesMap.put(service.getName(), configuredService);
-                ((ConfiguredPortImpl)configuredService).setAggregatePart(this);
+                ((ConfiguredPortImpl) configuredService).setAggregatePart(this);
                 configuredService.initialize(modelContext);
             }
         } else {
@@ -131,7 +141,7 @@ public abstract class ComponentImpl extends AggregatePartImpl implements Compone
             // the corresponding lists
             for (ConfiguredService configuredService : configuredServices) {
                 configuredServicesMap.put(configuredService.getService().getName(), configuredService);
-                ((ConfiguredPortImpl)configuredService).setAggregatePart(this);
+                ((ConfiguredPortImpl) configuredService).setAggregatePart(this);
                 configuredService.initialize(modelContext);
             }
 
@@ -150,7 +160,7 @@ public abstract class ComponentImpl extends AggregatePartImpl implements Compone
         configuredReferencesMap = new HashMap<String, ConfiguredReference>(configuredReferences.size());
         for (ConfiguredReference configuredReference : configuredReferences) {
             String name = configuredReference.getName();
-            ((ConfiguredPortImpl)configuredReference).setAggregatePart(this);
+            ((ConfiguredPortImpl) configuredReference).setAggregatePart(this);
             Reference reference = componentType.getReference(name);
             configuredReference.setReference(reference);
             configuredReference.initialize(modelContext);
@@ -167,13 +177,13 @@ public abstract class ComponentImpl extends AggregatePartImpl implements Compone
         super.freeze();
 
         // Freeze configured services, references and properties
-        configuredServices=Collections.unmodifiableList(configuredServices);
+        configuredServices = Collections.unmodifiableList(configuredServices);
         freeze(configuredServices);
-        configuredReferences=Collections.unmodifiableList(configuredReferences);
+        configuredReferences = Collections.unmodifiableList(configuredReferences);
         freeze(configuredReferences);
-        configuredProperties=Collections.unmodifiableList(configuredProperties);
+        configuredProperties = Collections.unmodifiableList(configuredProperties);
         freeze(configuredProperties);
-        if (implementation!=null)
+        if (implementation != null)
             implementation.freeze();
     }
 
@@ -190,7 +200,7 @@ public abstract class ComponentImpl extends AggregatePartImpl implements Compone
             return false;
         if (!accept(configuredProperties, visitor))
             return false;
-        if (implementation!=null) {
+        if (implementation != null) {
             if (!implementation.accept(visitor))
                 return false;
         }
