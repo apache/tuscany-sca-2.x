@@ -71,6 +71,10 @@ public class SCDLAssemblyModelLoaderImpl implements AssemblyModelLoader {
         this.modelContext = modelContext;
     }
 
+    public List<SCDLModelLoader> getLoaders() {
+        return scdlModelLoaders;
+    }
+
     /**
      * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#loadComponentType(java.lang.String)
      */

@@ -26,17 +26,24 @@ import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleFragment;
 import org.apache.tuscany.model.assembly.Subsystem;
+import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 
 /**
  * An assembly model loader.
  */
 public interface AssemblyModelLoader {
-    
+
     /**
      * Sets the model context to use.
      * @param modelContext
      */
     void setModelContext(AssemblyModelContext modelContext);
+
+    /**
+     * Returns the live list of sub-loaders this loader is using.
+     * @return the list of sub-loaders
+     */
+    List<SCDLModelLoader> getLoaders();
 
     /**
      * Returns the module at the given uri
@@ -70,12 +77,12 @@ public interface AssemblyModelLoader {
      * Load a WSDL definition
      */
     Definition loadDefinition(String uri);
-    
+
     /**
      * Load definitions by namespace
      * @param uri
      * @return
      */
     List<Definition> loadDefinitions(String namespace);
-    
+
 }

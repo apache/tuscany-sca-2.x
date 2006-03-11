@@ -16,47 +16,27 @@
  */
 package org.apache.tuscany.core.client;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.stream.XMLInputFactory;
+import org.osoa.sca.ModuleContext;
+import org.osoa.sca.SCA;
+import org.osoa.sca.ServiceRuntimeException;
 
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
-import org.apache.tuscany.core.config.impl.ModuleComponentConfigurationLoaderImpl;
-import org.apache.tuscany.core.config.impl.StAXModuleComponentConfigurationLoaderImpl;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
-import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
-import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
-import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
-import org.apache.tuscany.core.system.loader.SystemSCDLModelLoader;
-import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
-import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.core.loader.StAXUtil;
-import org.apache.tuscany.core.loader.StAXLoaderRegistry;
-import org.apache.tuscany.core.loader.impl.StAXLoaderRegistryImpl;
-import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
-import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
-import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
-import org.osoa.sca.ModuleContext;
-import org.osoa.sca.SCA;
-import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Create and initialize a Tuscany SCA runtime environment.
@@ -67,12 +47,10 @@ public class TuscanyRuntime extends SCA {
     private final Monitor monitor;
     private final Object sessionKey = new Object();
 
-    private final RuntimeContext runtimeContext;
-    private AggregateContext systemModuleComponentContext;
-    private AggregateContext moduleContext;
+    private final RuntimeContext runtime;
+    private final AggregateContext moduleContext;
 
     private static final String SYSTEM_MODULE_COMPONENT = "org.apache.tuscany.core.system";
-    private static final String SYSTEM_LOADER_COMPONENT = "tuscany.loader";
 
     /**
      * Construct a runtime using a null MonitorFactory.
@@ -99,70 +77,28 @@ public class TuscanyRuntime extends SCA {
     public TuscanyRuntime(String name, String uri, MonitorFactory monitorFactory) throws ConfigurationException {
         this.monitor = monitorFactory.getMonitor(Monitor.class);
 
-        // Create a resource loader from the current classloader
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        ResourceLoader resourceLoader = new ResourceLoaderImpl(classLoader);
-
-        // Create an assembly model factory
-        AssemblyFactory modelFactory=new AssemblyFactoryImpl();
-
-        // Create an assembly model loader
-        List<SCDLModelLoader> scdlLoaders=new ArrayList<SCDLModelLoader>();
-        scdlLoaders.add(new SystemSCDLModelLoader());
-        AssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl(scdlLoaders);
-
         // Create an assembly model context
-        AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, resourceLoader);
-
-        // Create system configuration builders
-        List<RuntimeConfigurationBuilder> configBuilders = new ArrayList();
-        configBuilders.add((new SystemComponentContextBuilder()));
-        configBuilders.add(new SystemEntryPointBuilder());
-        configBuilders.add(new SystemExternalServiceBuilder());
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        AssemblyModelContext modelContext = BootstrapHelper.getModelContext(classLoader);
 
         // Create a runtime context and start it
-        runtimeContext = new RuntimeContextImpl(monitorFactory, scdlLoaders, configBuilders,new DefaultWireBuilder());
-        runtimeContext.start();
-        monitor.started(runtimeContext);
+        List<SCDLModelLoader> loaders = modelContext.getAssemblyLoader().getLoaders();
+        List<RuntimeConfigurationBuilder> configBuilders = BootstrapHelper.getBuilders();
+        runtime = new RuntimeContextImpl(monitorFactory, loaders, configBuilders, new DefaultWireBuilder());
+        runtime.start();
+        monitor.started(runtime);
 
-        // Get the system context
-        SystemAggregateContext systemContext = runtimeContext.getSystemContext();
-
-        // Bootstrap the StAX loader module
-        AggregateContext loaderContext = bootstrapLoader(systemContext, modelContext);
-
-        // Load the system module component
-        ModuleComponentConfigurationLoader loader;
-        loader = new ModuleComponentConfigurationLoaderImpl(modelContext);
-//        loader = new StAXModuleComponentConfigurationLoaderImpl(modelContext, XMLInputFactory.newInstance(), systemContext.resolveInstance(StAXLoaderRegistry.class));
+        // Load and start the system configuration
+        SystemAggregateContext systemContext = runtime.getSystemContext();
+        ModuleComponentConfigurationLoader loader = BootstrapHelper.getConfigurationLoader(systemContext, modelContext);
         ModuleComponent systemModuleComponent = loader.loadSystemModuleComponent(SYSTEM_MODULE_COMPONENT, SYSTEM_MODULE_COMPONENT);
-
-        // Register it with the system context
-        systemContext.registerModelObject(systemModuleComponent);
-
-        // Get the aggregate context representing the system module component
-        systemModuleComponentContext = (AggregateContext) systemContext.getContext(SYSTEM_MODULE_COMPONENT);
-        systemModuleComponentContext.registerModelObject(systemModuleComponent.getComponentImplementation());
-        systemModuleComponentContext.fireEvent(EventContext.MODULE_START, null);
+        AggregateContext context = BootstrapHelper.registerModule(systemContext, systemModuleComponent);
+        context.fireEvent(EventContext.MODULE_START, null);
 
         // Load the SCDL configuration of the application module
+        AggregateContext rootContext = runtime.getRootContext();
         ModuleComponent moduleComponent = loader.loadModuleComponent(name, uri);
-        
-        // Register it under the root application context
-        AggregateContext rootContext = runtimeContext.getRootContext();
-        rootContext.registerModelObject(moduleComponent);
-        moduleContext=(AggregateContext)rootContext.getContext(moduleComponent.getName());
-        moduleContext.registerModelObject(moduleComponent.getComponentImplementation());
-
-    }
-
-    private static AggregateContext bootstrapLoader(SystemAggregateContext systemContext, AssemblyModelContext modelContext) throws ConfigurationException {
-        ModuleComponent loaderComponent = StAXUtil.bootstrapLoader(SYSTEM_LOADER_COMPONENT, modelContext);
-        systemContext.registerModelObject(loaderComponent);
-        AggregateContext loaderContext = (AggregateContext) systemContext.getContext(SYSTEM_LOADER_COMPONENT);
-        loaderContext.registerModelObject(loaderComponent.getComponentImplementation());
-        loaderContext.fireEvent(EventContext.MODULE_START, null);
-        return loaderContext;
+        moduleContext = BootstrapHelper.registerModule(rootContext, moduleComponent);
     }
 
     /**
@@ -170,7 +106,7 @@ public class TuscanyRuntime extends SCA {
      */
     @Override
     public void start() {
-        setModuleContext((ModuleContext)moduleContext);
+        setModuleContext((ModuleContext) moduleContext);
         try {
             //moduleContext.start();
             moduleContext.fireEvent(EventContext.MODULE_START, null);
@@ -196,8 +132,8 @@ public class TuscanyRuntime extends SCA {
         moduleContext.fireEvent(EventContext.MODULE_STOP, null);
         moduleContext.stop();
         monitor.stopped(moduleContext);
-        runtimeContext.stop();
-        monitor.stopped(runtimeContext);
+        runtime.stop();
+        monitor.stopped(runtime);
     }
 
     /**
