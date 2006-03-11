@@ -46,7 +46,6 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
         // define our test servlet
         StandardWrapper wrapper = new StandardWrapper();
         wrapper.setServletClass(TestServlet.class.getName());
-//        wrapper.setLoader(loader);
         ctx.addChild(wrapper);
 
         host.addChild(ctx);
@@ -79,19 +78,25 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
         Wrapper wrapper = (Wrapper) ctx.findChild("TuscanyAxis2EntryPointServlet");
         assertNotNull("No webservice wrapper present", wrapper);
         request.setContext(ctx);
-        request.setRequestURI("/services/epName");
+        request.setRequestURI("/services/HelloWorldService");
         request.setWrapper(wrapper);
         request.setContentType("text/xml");
         String xml = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:q0=\"http://helloworldaxis.samples.tuscany.apache.org\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
                 "<soapenv:Body>\n" +
                 "<q0:getGreetings>\n" +
-                "<q0:in0>hello</q0:in0>\n" +
+                "<q0:in0>World</q0:in0>\n" +
                 "</q0:getGreetings>\n" +
                 "</soapenv:Body>\n" +
                 "</soapenv:Envelope>\n";
         request.setStream(new MockInputStream(xml.getBytes("UTF-8")));
         host.invoke(request, response);
+        xml = "<?xml version='1.0' encoding='UTF-8'?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Header /><soapenv:Body><helloworldaxis:getGreetingsResponse xmlns:helloworldaxis=\"http://helloworldaxis.samples.tuscany.apache.org\">\n" +
+                "  <helloworldaxis:getGreetingsReturn>Hello World</helloworldaxis:getGreetingsReturn>\n" +
+                "</helloworldaxis:getGreetingsResponse></soapenv:Body></soapenv:Envelope>";
+        assertEquals(xml, response.getOutputStream().toString());
 
+        // FIXME TUSCANY-117 shouldn't the status be 200 rather than 0
+//        assertEquals(200, response.getStatus());
         host.removeChild(ctx);
     }
 

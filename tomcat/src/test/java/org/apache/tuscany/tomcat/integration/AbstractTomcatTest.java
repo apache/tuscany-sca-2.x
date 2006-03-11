@@ -174,7 +174,7 @@ public class AbstractTomcatTest extends TestCase {
         private String contentType;
         private int status;
         private Map headers = new HashMap();
-        private ServletOutputStream outputStream = new MockOutputStream();
+        private MockOutputStream outputStream = new MockOutputStream();
 
         public boolean isCommitted() {
             return false;
@@ -254,6 +254,10 @@ public class AbstractTomcatTest extends TestCase {
 
         public void write(int b) throws IOException {
             os.write(b);
+        }
+
+        public String toString() {
+            return os.toString();
         }
     }
 }
