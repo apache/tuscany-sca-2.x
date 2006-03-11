@@ -13,23 +13,13 @@
  */
 package org.apache.tuscany.core.injection;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.InstanceContext;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.ExternalService;
 
 /**
- * Returns a direct reference to a target service, i.e. the factory avoids creating proxies and returns the actual
- * target instance
+ * Returns a direct reference to a target within the same aggregate, i.e. the factory avoids creating proxies and
+ * returns the actual target instance
  * 
  * @version $Rev$ $Date$
  */
@@ -38,114 +28,31 @@ public class ReferenceTargetFactory<T> implements ObjectFactory<T> {
     private AggregateContext parentContext;
 
     // the SCDL name of the target component/service for this reference
-    private String targetNames[];
-
-    private QualifiedName targetComponentName;
-
-    // the reference target is in another module
-    private boolean interModule;
-
-    private Class referenceType;
-    
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
+    private String targetName;
 
     /**
      * Constructs a reference object factory from a configured reference on a type
-     */
-    public ReferenceTargetFactory(ConfiguredReference reference, AggregateContext parentContext) throws FactoryInitException {
-        // FIXME how to handle a reference that is a list - may take different proxy factories for each entry
-        assert (reference != null) : "Reference was null";
-        assert (parentContext != null) : "Parent context was null";
-
-        this.parentContext = parentContext;
-        // targetName = reference.getReference().getName();
-        referenceType = reference.getReference().getServiceContract().getInterface();
-        targetNames = new String[reference.getTargetConfiguredServices().size()];
-        int i = 0;
-        for (ConfiguredService targetService : reference.getTargetConfiguredServices()) {
-            // ConfiguredService targetService = reference.getTargetConfiguredServices().get(0);
-            if (targetService.getAggregatePart() instanceof ExternalService) {
-                targetNames[i] = ((ExternalService) targetService.getAggregatePart()).getName();
-            } else if (targetService.getAggregatePart() instanceof Component) {
-                Component targetComponent = (Component) targetService.getAggregatePart();
-                targetNames[i] = targetComponent.getName();
-            } else if (targetService.getAggregatePart() instanceof EntryPoint) {
-                targetNames[i] = ((EntryPoint) targetService.getAggregatePart()).getName();
-            } else if (targetService.getAggregatePart() == null) {
-                // FIXME not correct
-                if (targetService.getService() == null) {
-                    throw new FactoryInitException("No target service specified");
-                }
-                targetNames[i] = targetService.getService().getName();
-            } else {
-                FactoryInitException fie = new FactoryInitException("Unknown reference target type");
-                fie.setIdentifier(reference.getReference().getName());
-                throw fie;
-            }
-            i++;
-        }
-    }
-
-    /**
-     * Reference source is an external service, target is in another module
      * 
-     * @param service
-     * @param parentContext
      * @throws FactoryInitException
      */
-    public ReferenceTargetFactory(String targetName, AggregateContext parentContext) throws FactoryInitException {
-        // assert (service != null) : "Service was null";
+    public ReferenceTargetFactory(ConfiguredService targetService, AggregateContext parentContext) throws FactoryInitException {
+        assert (targetService != null) : "Target service was null";
         assert (parentContext != null) : "Parent context was null";
-        interModule = true; // an external service with a reference target in another module
-        targetComponentName = new QualifiedName(targetName);
+
         this.parentContext = parentContext;
+        if (targetService.getAggregatePart() == null) {
+            // FIXME not correct
+            if (targetService.getService() == null) {
+                throw new FactoryInitException("No target service specified");
+            }
+            targetName = targetService.getService().getName();
+        } else {
+            targetName = targetService.getAggregatePart().getName();
+        }
     }
 
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
-
     public T getInstance() throws ObjectCreationException {
-        if (interModule) {
-            // only return entry points since this is an inter-module wire
-            Object o = parentContext.getInstance(targetComponentName);
-            if (o != null) {
-                return (T) o;
-            } else {
-                // walk up the hierarchy of aggregate contexts
-                AggregateContext ctx = parentContext;
-                do {
-                    if (ctx == null) {
-                        break; // reached top of context hierarchy
-                    }
-                    InstanceContext compContext = ctx.getContext(targetComponentName.getPartName());
-                    if (compContext != null) {
-                        o = compContext.getInstance(targetComponentName);
-                        if (o != null) {
-                            return (T) o;
-                        }
-                    }
-                    ctx = ctx.getParent();
-                } while (ctx != null);
-                TargetException e = new TargetException("Target reference not found");
-                e.setIdentifier(targetComponentName.getQualifiedName());
-                throw e;
-            }
-        } else {
-            if (targetNames.length == 1 && !List.class.equals(referenceType)) {
-                // the target is in the same module, so just locate it
-                return (T) parentContext.locateInstance(targetNames[0]);
-            } else {
-                //a multiplicity
-                List list = new ArrayList(targetNames.length);
-                for (int i = 0; i < targetNames.length; i++) {
-                    list.add(parentContext.locateInstance(targetNames[i]));
-                }
-                return (T) list;
-            }
-        }
+        return (T) parentContext.locateInstance(targetName);
     }
 
 }

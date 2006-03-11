@@ -11,24 +11,25 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.mock.component;
-
-import java.util.List;
+package org.apache.tuscany.container.java.mock.components;
 
 /**
- * Implementations are used in wiring tests
+ * A target used for testing wires with a different source and target interface 
  * 
  * @version $Rev$ $Date$
  */
-public interface Source {
+public class OtherTargetImpl implements OtherTarget{
 
-    public Target getTarget();
-    
-    public List<Target> getTargets();
+    private String theString;
 
-    public List<Target> getTargetsThroughField();
+    public String getString() {
+        return theString;
+    }
 
-    public Target[] getArrayOfTargets();
+    public void setString(String val) {
+        theString = val;
+    }
+ 
 
 }
 

@@ -25,20 +25,24 @@ import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.NoAccessorException;
+import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.builder.UnknownTypeException;
+import org.apache.tuscany.core.builder.impl.ArrayMultiplicityObjectFactory;
+import org.apache.tuscany.core.builder.impl.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
+import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.injection.EventInvoker;
+import org.apache.tuscany.core.injection.FactoryInitException;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.MethodInjector;
-import org.apache.tuscany.core.injection.ObjectCreationException;
 import org.apache.tuscany.core.injection.ReferenceTargetFactory;
 import org.apache.tuscany.core.injection.SDOObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
@@ -55,7 +59,9 @@ import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.Module;
+import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.Service;
 import org.osoa.sca.annotations.ComponentName;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Destroy;
@@ -65,12 +71,16 @@ import commonj.sdo.DataObject;
 
 /**
  * Decorates components whose implementation type is a
- * {@link org.apache.tuscany.core.system.assembly.SystemImplementation} with the appropriate runtime configuration.
- * System components are not proxied.
+ * {@link org.apache.tuscany.core.system.assembly.SystemImplementation} with the appropriate runtime configuration. This
+ * builder handles both system aggregate components as well as system leaf or "simple" components. Consequently, both
+ * simple and aggregate component types may be injected and autowired.
+ * <p>
+ * Note that system component references are not proxied.
  *
  * @version $Rev$ $Date$
  */
 public class SystemComponentContextBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
+
     // ----------------------------------
     // Constructors
     // ----------------------------------
@@ -103,12 +113,28 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
                 e.setIdentifier(component.getName());
                 throw e;
             }
-            scope = componentImplementation.getComponentType().getServices().get(0).getServiceContract().getScope();
             implClass = javaImpl.getImplementationClass();
+            Scope previous = null;
+            scope = Scope.INSTANCE;
+            List<Service> services = component.getComponentImplementation().getComponentType().getServices();
+            for (Service service : services) {
+                // calculate and validate the scope of the component; ensure that all service scopes are the same unless
+                // a scope is stateless
+                Scope current = service.getServiceContract().getScope();
+                if (previous != null && current != null && current != previous
+                        && (current != Scope.INSTANCE && previous != Scope.INSTANCE)) {
+                    BuilderException e = new BuilderConfigException("Incompatible scopes specified for services on component");
+                    e.setIdentifier(component.getName());
+                    throw e;
+                }
+                if (scope != null && current != Scope.INSTANCE) {
+                    scope = current;
+                }
+            }
 
         } else if (componentImplementation instanceof Module) {
+            // FIXME this is a hack
             if (((Module) componentImplementation).getName().startsWith("org.apache.tuscany.core.system")) {
-
                 // The component is a system module component, fix the implementation class to our implementation
                 // of system module component context
                 implClass = SystemAggregateContextImpl.class;
@@ -126,8 +152,6 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
         } else {
             return;
         }
-
-        // FIXME scope
         Set<Field> fields;
         Set<Method> methods;
         try {
@@ -153,8 +177,7 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
                 Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
                 if (configuredReferences != null) {
                     for (ConfiguredReference reference : configuredReferences.values()) {
-                        Injector injector = createReferenceInjector(parentContext.getName(), component.getName(), parentContext,
-                                reference, fields, methods);
+                        Injector injector = createReferenceInjector(reference, fields, methods, parentContext);
                         injectors.add(injector);
                     }
                 }
@@ -293,6 +316,11 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
             BuilderConfigException ce = new BuilderConfigException("Class does not have a no-arg constructor", e);
             ce.setIdentifier(implClass.getName());
             throw ce;
+        } catch (FactoryInitException e) {
+            BuilderConfigException ce = new BuilderConfigException("Error building component", e);
+            ce.addContextName(component.getName());
+            ce.addContextName(parentContext.getName());
+            throw ce;
         }
     }
 
@@ -345,41 +373,81 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
     }
 
     /**
-     * Creates an <code>Injector</code> for service references
+     * Creates object factories that resolve target(s) of a reference and an <code>Injector</code> responsible for
+     * injecting them into the reference
      */
-    private Injector createReferenceInjector(String moduleName, String componentName, AggregateContext parentContext,
-            ConfiguredReference reference, Set<Field> fields, Set<Method> methods) throws NoAccessorException,
-            BuilderConfigException {
-        String refName = reference.getReference().getName();
-        List<ConfiguredService> services = reference.getTargetConfiguredServices();
-        if (services.size() == 0) {
-            BuilderConfigException e = new BuilderConfigException("No service contract defined on reference target");
-            e.setIdentifier(refName);
-            throw e;
-        }
-        Class type = reference.getReference().getServiceContract().getInterface();
-        Method method = null;
-        Field field = JavaIntrospectionHelper.findClosestMatchingField(refName, type, fields);
-        if (field == null) {
-            method = JavaIntrospectionHelper.findClosestMatchingMethod(refName, new Class[] { type }, methods);
-            if (method == null) {
-                throw new NoAccessorException(refName);
-            }
-        }
-        Injector injector;
-        try {
-            if (field != null) {
-                injector = new FieldInjector(field, new ReferenceTargetFactory(reference, parentContext));
-            } else {
-                injector = new MethodInjector(method, new ReferenceTargetFactory(reference, parentContext));
-            }
-        } catch (ObjectCreationException e) {
-            BuilderConfigException ce = new BuilderConfigException("Error configuring reference", e);
-            ce.setIdentifier(refName);
-            throw ce;
-        }
-        return injector;
+    private Injector createReferenceInjector(ConfiguredReference reference, Set<Field> fields, Set<Method> methods,
+            AggregateContext parentContext) {
 
+        List<ObjectFactory> objectFactories = new ArrayList();
+        String refName = reference.getReference().getName();
+        Class refClass = reference.getReference().getServiceContract().getInterface();
+        for (ConfiguredService configuredService : reference.getTargetConfiguredServices()) {
+            String targetCompName = configuredService.getAggregatePart().getName();
+            String targetSerivceName = configuredService.getService().getName();
+            QualifiedName qName = new QualifiedName(targetCompName + QualifiedName.NAME_SEPARATOR + targetSerivceName);
+            Class interfaze = reference.getReference().getServiceContract().getInterface();
+            objectFactories.add(new ReferenceTargetFactory(configuredService, parentContext));
+        }
+        boolean multiplicity = reference.getReference().getMultiplicity() == Multiplicity.ONE_N
+                || reference.getReference().getMultiplicity() == Multiplicity.ZERO_N;
+        return createInjector(refName, refClass, multiplicity, objectFactories, fields, methods);
+
+    }
+
+    /**
+     * Creates an <code>Injector</code> for an object factories associated with a reference.
+     */
+    private Injector createInjector(String refName, Class refClass, boolean multiplicity, List<ObjectFactory> objectFactories,
+            Set<Field> fields, Set<Method> methods) throws NoAccessorException, BuilderConfigException {
+        Field field = null;
+        Method method = null;
+        if (multiplicity) {
+            // since this is a multiplicity, we cannot match on business interface type, so scan through the fields,
+            // matching on name and List or Array
+            field = JavaIntrospectionHelper.findMultiplicityFieldByName(refName, fields);
+            if (field == null) {
+                // No fields found. Again, since this is a multiplicity, we cannot match on interface type, so
+                // scan through the fields, matching on name and List or Array
+                method = JavaIntrospectionHelper.findMultiplicityMethodByName(refName, methods);
+                if (method == null) {
+                    throw new NoAccessorException(refName);
+                }
+            }
+            Injector injector;
+            if (field != null) {
+                // for multiplicities, we need to inject the target or targets using an object factory
+                // which first delegates to create the proxies and then returns them in the appropriate List or array
+                // type
+                if (field.getType().isArray()) {
+                    injector = new FieldInjector(field, new ArrayMultiplicityObjectFactory(refClass, objectFactories));
+                } else {
+                    injector = new FieldInjector(field, new ListMultiplicityObjectFactory(objectFactories));
+                }
+            } else {
+                if (method.getParameterTypes()[0].isArray()) {
+                    injector = new MethodInjector(method, new ArrayMultiplicityObjectFactory(refClass, objectFactories));
+                } else {
+                    injector = new MethodInjector(method, new ListMultiplicityObjectFactory(objectFactories));
+                }
+            }
+            return injector;
+        } else {
+            field = JavaIntrospectionHelper.findClosestMatchingField(refName, refClass, fields);
+            if (field == null) {
+                method = JavaIntrospectionHelper.findClosestMatchingMethod(refName, new Class[] { refClass }, methods);
+                if (method == null) {
+                    throw new NoAccessorException(refName);
+                }
+            }
+            Injector injector;
+            if (field != null) {
+                injector = new FieldInjector(field, objectFactories.get(0));
+            } else {
+                injector = new MethodInjector(method, objectFactories.get(0));
+            }
+            return injector;
+        }
     }
 
 }

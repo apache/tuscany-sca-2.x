@@ -11,24 +11,17 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.mock.component;
-
-import java.util.List;
+package org.apache.tuscany.container.java.mock.components;
 
 /**
  * Implementations are used in wiring tests
  * 
  * @version $Rev$ $Date$
  */
-public interface Source {
+public interface OtherTarget {
 
-    public Target getTarget();
+    public String getString();
     
-    public List<Target> getTargets();
-
-    public List<Target> getTargetsThroughField();
-
-    public Target[] getArrayOfTargets();
-
+    public void setString(String val);
 }
 

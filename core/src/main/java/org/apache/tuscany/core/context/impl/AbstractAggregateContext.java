@@ -255,7 +255,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     public void setConfigurationContext(ConfigurationContext context) {
         this.configurationContext = context;
     }
-    
+
     public AggregateContext getParent() {
         return parentContext;
     }
@@ -601,15 +601,29 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                     e.addContextName(name);
                     throw e;
                 }
-                boolean downScope = scopeStrategy.downScopeReference(sourceScope, target.getScope());
-                configurationContext.wire(sourceFactory, targetFactory, target.getClass(), downScope, scopeContexts.get(target
-                        .getScope()));
+                try {
+                    boolean downScope = scopeStrategy.downScopeReference(sourceScope, target.getScope());
+                    configurationContext.wire(sourceFactory, targetFactory, target.getClass(), downScope, scopeContexts
+                            .get(target.getScope()));
+                } catch (BuilderConfigException e) {
+                    e.addContextName(target.getName());
+                    e.addContextName(source.getName());
+                    e.addContextName(name);
+                    throw e;
+                }
+
             }
         }
         // wire invokers when the proxy only contains the target chain
         if (source.getTargetProxyFactories() != null) {
             for (ProxyFactory targetFactory : ((Map<String, ProxyFactory>) source.getTargetProxyFactories()).values()) {
-                configurationContext.wire(targetFactory, source.getClass(), scopeContexts.get(sourceScope));
+                try {
+                    configurationContext.wire(targetFactory, source.getClass(), scopeContexts.get(sourceScope));
+                } catch (BuilderConfigException e) {
+                    e.addContextName(source.getName());
+                    e.addContextName(name);
+                    throw e;
+                }
             }
         }
         source.prepare();

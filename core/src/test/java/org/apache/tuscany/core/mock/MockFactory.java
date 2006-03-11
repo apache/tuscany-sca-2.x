@@ -44,6 +44,7 @@ import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
+import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
@@ -272,13 +273,18 @@ public class MockFactory {
         configuredReferences.put(configuredReference.getName(), configuredReference);
 
         // wire multiplicity using a setter
-        references.add(systemFactory.createReference("setTargets", List.class));
+        references.add(systemFactory.createReference("setTargets", Target.class,Multiplicity.ONE_N));
         configuredReference = systemFactory.createConfiguredReference("setTargets", "target");
         configuredReferences.put(configuredReference.getName(), configuredReference);
 
         // wire multiplicity using a field
-        references.add(systemFactory.createReference("targetsThroughField", List.class));
+        references.add(systemFactory.createReference("targetsThroughField", Target.class,Multiplicity.ONE_N));
         configuredReference = systemFactory.createConfiguredReference("targetsThroughField", "target");
+        configuredReferences.put(configuredReference.getName(), configuredReference);
+
+        // wire multiplicity using a setter
+        references.add(systemFactory.createReference("setArrayOfTargets", Target.class,Multiplicity.ONE_N));
+        configuredReference = systemFactory.createConfiguredReference("setArrayOfTargets", "target");
         configuredReferences.put(configuredReference.getName(), configuredReference);
 
         source.initialize(assemblyContext);

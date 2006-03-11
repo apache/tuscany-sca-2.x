@@ -13,7 +13,6 @@
  */
 package org.apache.tuscany.container.java.mock.components;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,5 +47,17 @@ public class SourceImpl implements Source {
     public List<Target> getTargetsThroughField() {
         return targetsThroughField;
     }
+    
+
+    private Target[] targetsArray;
+    
+    public Target[] getArrayOfTargets() {
+        return targetsArray;
+    }
+
+    public void setArrayOfTargets(Target[] targets) {
+        targetsArray = targets;
+    }
+
 
 }

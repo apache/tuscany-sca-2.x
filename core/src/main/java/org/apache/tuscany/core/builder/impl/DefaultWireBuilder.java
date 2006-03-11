@@ -65,6 +65,11 @@ public class DefaultWireBuilder implements HierarchicalWireBuilder {
                     .getInvocationConfigurations().values()) {
                 // match invocation chains
                 InvocationConfiguration targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig.getMethod());
+                if (targetInvocationConfig == null){
+                    BuilderConfigException e= new BuilderConfigException("Incompatible source and target interface types for reference");
+                    e.setIdentifier(sourceFactory.getProxyConfiguration().getReferenceName());
+                    throw e;
+                }
                 // if handler is configured, add that
                 if (targetInvocationConfig.getRequestHandlers() != null) {
                     sourceInvocationConfig.setTargetRequestChannel(new MessageChannelImpl(targetInvocationConfig

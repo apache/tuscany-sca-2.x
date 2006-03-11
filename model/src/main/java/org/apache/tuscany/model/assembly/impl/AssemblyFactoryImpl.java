@@ -30,6 +30,7 @@ import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.ModuleFragment;
+import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Property;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.Service;
@@ -203,15 +204,20 @@ public class AssemblyFactoryImpl implements AssemblyFactory {
     }
 
     public Reference createReference(String name, Class<?> service) {
+        return createReference(name,service,Multiplicity.ZERO_ONE);
+    }
+    
+    public Reference createReference(String name, Class<?> service, Multiplicity multiplicity){
         JavaServiceContract refContract = createJavaServiceContract();
         refContract.setInterface(service);
         Reference reference = createReference();
         reference.setName(name);
         reference.setServiceContract(refContract);
+        reference.setMultiplicity(multiplicity);
         return reference;
     }
 
-    public ConfiguredReference createConfiguredReference(String name, String... targets) {
+     public ConfiguredReference createConfiguredReference(String name, String... targets) {
         ConfiguredReference ref = createConfiguredReference();
         ref.setName(name);
         for (String target : targets) {

@@ -14,9 +14,7 @@
 package org.apache.tuscany.core.system.injection;
 
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.AutowireContext;
-import org.apache.tuscany.core.injection.FactoryInitException;
 import org.apache.tuscany.core.injection.ObjectCreationException;
 
 /**

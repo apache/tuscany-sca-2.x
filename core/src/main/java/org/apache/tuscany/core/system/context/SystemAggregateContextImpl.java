@@ -566,8 +566,6 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         }
     }
 
-    // ////////////////////////////
-
     // ----------------------------------
     // AutowireContext methods
     // ----------------------------------

@@ -22,109 +22,125 @@ import org.apache.tuscany.model.types.java.JavaServiceContract;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 
 /**
- * The Factory for the assembly model.
- * Provides a create method for each non-abstract class of the model.
+ * The Factory for the assembly model. Provides a create method for each non-abstract class of the model.
  */
 public interface AssemblyFactory {
 
     /**
      * Returns a new SimpleComponent.
+     * 
      * @return
      */
     SimpleComponent createSimpleComponent();
 
     /**
      * Returns a new ComponentType.
+     * 
      * @return
      */
     ComponentType createComponentType();
 
     /**
      * Returns a new EntryPoint.
+     * 
      * @return
      */
     EntryPoint createEntryPoint();
 
     /**
      * Returns a new ExternalService.
+     * 
      * @return
      */
     ExternalService createExternalService();
 
     /**
      * Returns a new JavaServiceContract.
+     * 
      * @return
      */
     JavaServiceContract createJavaServiceContract();
 
     /**
      * Returns a new Module.
+     * 
      * @return
      */
     Module createModule();
 
     /**
      * Returns a new ModuleComponent.
+     * 
      * @return
      */
     ModuleComponent createModuleComponent();
 
     /**
      * Returns a new ModuleFragment.
+     * 
      * @return
      */
     ModuleFragment createModuleFragment();
 
     /**
      * Returns a new Reference.
+     * 
      * @return
      */
     Reference createReference();
 
     /**
      * Returns a new ConfiguredReference.
+     * 
      * @return
      */
     ConfiguredReference createConfiguredReference();
 
     /**
      * Returns a new Service.
+     * 
      * @return
      */
     Service createService();
 
     /**
      * Returns a new ConfiguredService.
+     * 
      * @return
      */
     ConfiguredService createConfiguredService();
 
     /**
      * Returns a new Subsystem.
+     * 
      * @return
      */
     Subsystem createSubsystem();
 
     /**
      * Returns Property.
+     * 
      * @return
      */
     Property createProperty();
 
     /**
      * Returns a new ConfiguredProperty.
+     * 
      * @return
      */
     ConfiguredProperty createConfiguredProperty();
 
     /**
      * Returns a new WSDLServiceContract.
+     * 
      * @return
      */
     WSDLServiceContract createWSDLServiceContract();
 
     /**
      * Create a new ServiceURI from the given uri string.
+     * 
      * @param uri
      * @return
      */
@@ -132,6 +148,7 @@ public interface AssemblyFactory {
 
     /**
      * Creates a new ServiceURI from a module component and a service name.
+     * 
      * @param moduleComponent
      * @param serviceName
      * @return
@@ -140,6 +157,7 @@ public interface AssemblyFactory {
 
     /**
      * Creates a new ServiceURI from a module component and configured port.
+     * 
      * @param moduleComponent
      * @param aggregatePart
      * @param configuredPort
@@ -149,6 +167,7 @@ public interface AssemblyFactory {
 
     /**
      * Create a qname from a URI
+     * 
      * @param uri
      * @return
      */
@@ -156,13 +175,14 @@ public interface AssemblyFactory {
 
     /**
      * Create a wire
+     * 
      * @return
      */
     Wire createWire();
 
     /**
      * Helper method for creating a reference.
-     *
+     * 
      * @param name the name of the reference
      * @param service the Java type of the service
      * @return a Reference
@@ -170,8 +190,18 @@ public interface AssemblyFactory {
     Reference createReference(String name, Class<?> service);
 
     /**
+     * Helper method for creating a reference.
+     * 
+     * @param name the name of the reference
+     * @param service the Java type of the service
+     * @param the multiplicity of the reference
+     * @return a Reference
+     */
+    Reference createReference(String name, Class<?> service, Multiplicity multiplicity);
+
+    /**
      * Helper method for creating a configured reference.
-     *
+     * 
      * @param name the name of the reference
      * @param targets the targets for the reference
      * @return a ConfiguredReference

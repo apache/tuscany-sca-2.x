@@ -104,6 +104,13 @@ public class IntraAggregateWireTestCase extends TestCase {
         targets = source.getTargetsThroughField();
         Assert.assertEquals(1,targets.size());
         assertSame(target,targets.get(0));
+
+        // test array injection
+        Target[] targetArray = source.getArrayOfTargets();
+        Assert.assertEquals(1,targetArray.length);
+        assertSame(target,targetArray[0]);
+
+    
     }
 
     private SystemAggregateContext createContext() {

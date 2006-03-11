@@ -4,6 +4,8 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -187,7 +189,45 @@ public class JavaIntrospectionHelper {
             return null;
         }
     }
-    
+
+    /**
+     * Searches a collection of fields for one that matches by name and has a multiplicity type. i.e. a List or Array of
+     * interfaces
+     * 
+     * @return a matching field or null
+     */
+    public static Field findMultiplicityFieldByName(String name, Set<Field> fields) {
+        for (Field candidate : fields) {
+            if (candidate.getName().equals(name)
+                    && (List.class.isAssignableFrom(candidate.getType()) || (candidate.getType().isArray()
+                            && candidate.getType().getComponentType() != null && candidate.getType().getComponentType()
+                            .isInterface()))) {
+                return candidate;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Searches a collection of method for one that matches by name and has single parameter of a multiplicity type. i.e. a List or Array of
+     * interfaces
+     * 
+     * @return a matching method or null
+     */
+    public static Method findMultiplicityMethodByName(String name, Set<Method> methods) {
+        for (Method candidate : methods) {
+            if (candidate.getName().equals(name)
+                    && candidate.getParameterTypes().length == 1
+                    && (List.class.isAssignableFrom(candidate.getParameterTypes()[0]) || (candidate.getParameterTypes()[0]
+                            .isArray()
+                            && candidate.getParameterTypes()[0].getComponentType() != null && candidate.getParameterTypes()[0]
+                            .getComponentType().isInterface()))) {
+                return candidate;
+            }
+        }
+        return null;
+    }
+
     /**
      * Returns a field or method defined in the given class or its superclasses matching a literal name and parameter
      * types <p/> This method can potentially be expensive as reflection information is not cached. It is assumed that
@@ -311,7 +351,7 @@ public class JavaIntrospectionHelper {
     }
 
     /**
-     * Compares a two types, assuming one is a primitive, to dtermine if the other is its object counterpart
+     * Compares a two types, assuming one is a primitive, to determine if the other is its object counterpart
      */
     private static boolean primitiveAssignable(Class memberType, Class param) {
         if (memberType == Integer.class) {
@@ -346,4 +386,32 @@ public class JavaIntrospectionHelper {
             return false;
         }
     }
+
+    /**
+     * Returns the generic types represented in the given type. Usage as follows:
+     * <p>
+     * <code>
+     *      // to return the generic type of a field:
+     *      JavaIntrospectionHelper.getGenerics(field.getGenericType());
+     *      
+     *      // to return the generic types for the first parameter of a method:
+     *      JavaIntrospectionHelper.getGenerics(m.getGenericParameterTypes()[0];);
+     *
+     * </code>
+     * 
+     * @return the generic types in order of declaration or an empty array if the type is not genericized
+     */
+    public static List<Class> getGenerics(Type genericType) {
+        List classes = new ArrayList();
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType ptype = (ParameterizedType) genericType;
+            // get the type arguments
+            Type[] targs = ptype.getActualTypeArguments();
+            for (int i = 0; i < targs.length; i++) {
+                classes.add(targs[i]);
+            }
+        }
+        return classes;
+    }
+
 }

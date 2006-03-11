@@ -17,14 +17,14 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.NoAccessorException;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.impl.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
-import org.apache.tuscany.core.builder.impl.MultiplicityObjectFactory;
+import org.apache.tuscany.core.builder.impl.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.builder.impl.ProxyObjectFactory;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.injection.EventInvoker;
-import org.apache.tuscany.core.injection.FactoryInitException;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
@@ -44,6 +44,7 @@ import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
+import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceContract;
@@ -127,7 +128,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
         this.proxyFactoryFactory = proxyFactoryFactory;
         this.messageFactory = messageFactory;
     }
-    
+
     // ----------------------------------
     // Methods
     // ----------------------------------
@@ -139,9 +140,23 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
         SimpleComponent component = (SimpleComponent) modelObject;
         if (component.getComponentImplementation() instanceof JavaImplementation) {
             JavaImplementation javaImpl = (JavaImplementation) component.getComponentImplementation();
-            // FIXME scope
-            Scope scope = component.getComponentImplementation().getComponentType().getServices().get(0).getServiceContract()
-                    .getScope();
+            List<Service> services = component.getComponentImplementation().getComponentType().getServices();
+            Scope previous = null;
+            Scope scope = Scope.INSTANCE;
+            for (Service service : services) {
+                // calculate and validate the scope of the component; ensure that all service scopes are the same unless
+                // a scope is stateless
+                Scope current = service.getServiceContract().getScope();
+                if (previous != null && current != null && current != previous
+                        && (current != Scope.INSTANCE && previous != Scope.INSTANCE)) {
+                    BuilderException e = new BuilderConfigException("Incompatible scopes specified for services on component");
+                    e.setIdentifier(component.getName());
+                    throw e;
+                }
+                if (scope != null && current != Scope.INSTANCE) {
+                    scope = current;
+                }
+            }
             Class implClass = null;
             Set<Field> fields;
             Set<Method> methods;
@@ -176,8 +191,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                         eagerInit = init.eager();
                         continue;
                     }
-                    // @spec - should we allow the same method to have @init and
-                    // @destroy?
+                    // @spec - should we allow the same method to have @init and @destroy?
                     Destroy destroy = method.getAnnotation(Destroy.class);
                     if (destroy != null && destroyInvoker == null) {
                         destroyInvoker = new MethodEventInvoker(method);
@@ -236,7 +250,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
 
                 }
 
-                // handle references
+                // create injectors for references
                 Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
                 if (configuredReferences != null) {
                     for (ConfiguredReference reference : configuredReferences.values()) {
@@ -300,7 +314,8 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
     }
 
     /**
-     * Creates an <code>Injector</code> for service references
+     * Creates proxy factories that represent target(s) of a reference and an <code>Injector</code> responsible for
+     * injecting them into the reference
      */
     private Injector createReferenceInjector(JavaComponentRuntimeConfiguration config, ConfiguredReference reference,
             Set<Field> fields, Set<Method> methods, AggregateContext parentContext) {
@@ -316,20 +331,19 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
             QualifiedName qName = new QualifiedName(targetCompName + QualifiedName.NAME_SEPARATOR + targetSerivceName);
 
             ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
-            ServiceContract serviceContract = configuredService.getService().getServiceContract();//reference.getReference().getServiceContract();
+            Class interfaze = reference.getReference().getServiceContract().getInterface();
             Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
-            Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
+            Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(interfaze);
             for (Method method : javaMethods) {
                 InvocationConfiguration iConfig = new InvocationConfiguration(method);
                 iConfigMap.put(method, iConfig);
             }
 
-            ProxyConfiguration pConfiguration = new ProxyConfiguration(refName, qName, iConfigMap, serviceContract.getInterface()
-                    .getClassLoader(), messageFactory);
-            proxyFactory.setBusinessInterface(serviceContract.getInterface());
+            ProxyConfiguration pConfiguration = new ProxyConfiguration(refName, qName, iConfigMap, interfaze.getClassLoader(),
+                    messageFactory);
+            proxyFactory.setBusinessInterface(interfaze);
             proxyFactory.setProxyConfiguration(pConfiguration);
             config.addSourceProxyFactory(reference.getReference().getName(), proxyFactory);
-            // xcv reference.setProxyFactory(proxyFactory);
             configuredService.setProxyFactory(proxyFactory);
             if (policyBuilder != null) {
                 // invoke the reference builder to handle metadata associated with the reference
@@ -337,43 +351,63 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
             }
             objectFactories.add(new ProxyObjectFactory(proxyFactory));
         }
-        if (objectFactories.size() == 0) {
-            return null; // FIXME
-        } else if (objectFactories.size() == 1 && !List.class.equals(refClass)) {
-            return createInjector(refName, refClass, objectFactories.get(0), fields, methods);
-        } else {
-            return createInjector(refName, refClass, new MultiplicityObjectFactory(objectFactories), fields, methods);
-        }
+        boolean multiplicity = reference.getReference().getMultiplicity() == Multiplicity.ONE_N
+                || reference.getReference().getMultiplicity() == Multiplicity.ZERO_N;
+        return createInjector(refName, refClass, multiplicity, objectFactories, fields, methods);
 
     }
 
     /**
-     * Creates an <code>Injector</code> for an object factory
+     * Creates an <code>Injector</code> for a set of object factories associated with a reference.
      */
-    private Injector createInjector(String refName, Class refClass, ObjectFactory objectFactory, Set<Field> fields,
-            Set<Method> methods) throws NoAccessorException, BuilderConfigException {
+    private Injector createInjector(String refName, Class refClass, boolean multiplicity, List<ObjectFactory> objectFactories,
+            Set<Field> fields, Set<Method> methods) throws NoAccessorException, BuilderConfigException {
+        Field field = null;
         Method method = null;
-        Field field = JavaIntrospectionHelper.findClosestMatchingField(refName, refClass, fields);
-        if (field == null) {
-            method = JavaIntrospectionHelper.findClosestMatchingMethod(refName, new Class[] { refClass }, methods);
-            if (method == null) {
-                throw new NoAccessorException(refName);
+        if (multiplicity) {
+            // since this is a multiplicity, we cannot match on business interface type, so scan through the fields,
+            // matching on name and List or Array
+            field = JavaIntrospectionHelper.findMultiplicityFieldByName(refName, fields);
+            if (field == null) {
+                // No fields found. Again, since this is a multiplicity, we cannot match on business interface type, so
+                // scan through the fields, matching on name and List or Array
+                method = JavaIntrospectionHelper.findMultiplicityMethodByName(refName, methods);
+                if (method == null) {
+                    throw new NoAccessorException(refName);
+                }
             }
-        }
-        Injector injector;
-        try {
+            Injector injector;
+            // for multiplicities, we need to inject the reference proxy or proxies using an object factory
+            // which first delegates to create the proxies and then returns them in the appropriate List or array type
             if (field != null) {
-                injector = new FieldInjector(field, objectFactory);
+                if (field.getType().isArray()) {
+                    injector = new FieldInjector(field, new ArrayMultiplicityObjectFactory(refClass, objectFactories));
+                } else {
+                    injector = new FieldInjector(field, new ListMultiplicityObjectFactory(objectFactories));
+                }
             } else {
-                injector = new MethodInjector(method, objectFactory);
+                if (method.getParameterTypes()[0].isArray()) {
+                    injector = new MethodInjector(method, new ArrayMultiplicityObjectFactory(refClass, objectFactories));
+                } else {
+                    injector = new MethodInjector(method, new ListMultiplicityObjectFactory(objectFactories));
+                }
             }
-        } catch (FactoryInitException e) {
-            BuilderConfigException ce = new BuilderConfigException("Error configuring reference", e);
-            ce.setIdentifier(refName);
-            throw ce;
+            return injector;
+        } else {
+            field = JavaIntrospectionHelper.findClosestMatchingField(refName, refClass, fields);
+            if (field == null) {
+                method = JavaIntrospectionHelper.findClosestMatchingMethod(refName, new Class[] { refClass }, methods);
+                if (method == null) {
+                    throw new NoAccessorException(refName);
+                }
+            }
+            Injector injector;
+            if (field != null) {
+                injector = new FieldInjector(field, objectFactories.get(0));
+            } else {
+                injector = new MethodInjector(method, objectFactories.get(0));
+            }
+            return injector;
         }
-        return injector;
-
     }
-
 }

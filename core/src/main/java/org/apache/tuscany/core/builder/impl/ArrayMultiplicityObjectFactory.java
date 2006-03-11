@@ -13,32 +13,37 @@
  */
 package org.apache.tuscany.core.builder.impl;
 
-import java.util.ArrayList;
+import java.lang.reflect.Array;
 import java.util.List;
 
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.injection.ObjectCreationException;
 
 /**
- * Resolves targets configured in a multiplicity by delegating to contained object factories
+ * Resolves targets configured in a multiplicity by delegating to object factories and returning an
+ * <code>Array</code> containing object instances 
  * 
  * @version $Rev$ $Date$
  */
-public class MultiplicityObjectFactory implements ObjectFactory<List> {
+public class ArrayMultiplicityObjectFactory implements ObjectFactory<Object> {
 
     private ObjectFactory[] factories;
 
-    public MultiplicityObjectFactory(List<ObjectFactory> factories) {
+    private Class interfaceType;
+
+    public ArrayMultiplicityObjectFactory(Class interfaceType, List<ObjectFactory> factories) {
+        assert (interfaceType != null) : "Interface type was null";
         assert (factories != null) : "Object factories were null";
+        this.interfaceType = interfaceType;
         this.factories = factories.toArray(new ObjectFactory[factories.size()]);
     }
 
-    public List getInstance() throws ObjectCreationException {
-        List list = new ArrayList();
+    public Object getInstance() throws ObjectCreationException {
+        Object array = Array.newInstance(interfaceType, factories.length);
         for (int i = 0; i < factories.length; i++) {
-            list.add(factories[i].getInstance());
+            Array.set(array, i, factories[i].getInstance());
         }
-        return list;
+        return array;
     }
 
 }

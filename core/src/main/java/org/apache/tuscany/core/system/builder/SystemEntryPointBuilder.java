@@ -51,8 +51,9 @@ public class SystemEntryPointBuilder implements RuntimeConfigurationBuilder<Aggr
             return;
         }
         try {
+            Class type = entryPoint.getConfiguredReference().getReference().getServiceContract().getInterface();
             SystemEntryPointRuntimeConfiguration config = new SystemEntryPointRuntimeConfiguration(entryPoint.getName(),
-                    new ReferenceTargetFactory(entryPoint.getConfiguredReference(), context));
+                    new ReferenceTargetFactory(entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0), context));
             entryPoint.getConfiguredReference().setRuntimeConfiguration(config);
         } catch (FactoryInitException e) {
             e.addContextName(entryPoint.getName());
