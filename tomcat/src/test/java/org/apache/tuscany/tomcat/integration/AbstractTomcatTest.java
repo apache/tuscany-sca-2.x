@@ -41,10 +41,19 @@ import javax.servlet.ServletOutputStream;
  * @version $Rev$ $Date$
  */
 public class AbstractTomcatTest extends TestCase {
+    protected Map<String, Class<?>> classes;
     protected Host host;
     protected MockRequest request;
     protected MockResponse response;
     protected StandardEngine engine;
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        classes = new HashMap<String, Class<?>>();
+        classes.put(TestServlet.class.getName(), TestServlet.class);
+        classes.put(HelloWorldService.class.getName(), HelloWorldService.class);
+        classes.put(HelloWorldImpl.class.getName(), HelloWorldImpl.class);
+    }
 
     protected void setupTomcat(File baseDir, Host host) throws Exception {
         File appBase = new File(baseDir, "webapps").getCanonicalFile();

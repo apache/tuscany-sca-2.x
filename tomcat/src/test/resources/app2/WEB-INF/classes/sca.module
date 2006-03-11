@@ -18,4 +18,18 @@
 <module xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
         name="testModule">
 
+    <entryPoint name="HelloWorldService">
+        <interface.wsdl interface="http://helloworldaxis.samples.tuscany.apache.org#HelloWorldServiceImpl"/>
+        <binding.ws port="http://helloworldaxis.samples.tuscany.apache.org#helloworld"/>
+        <reference>HelloWorld/HelloWorldService</reference>
+    </entryPoint>
+
+    <component name="HelloWorld">
+        <implementation.java class="org.apache.tuscany.tomcat.integration.HelloWorldImpl"/>
+    </component>
+
+    <import.wsdl
+		location="wsdl/helloworld.wsdl"
+		namespace="http://helloworldaxis.samples.tuscany.apache.org"/>
+
 </module>

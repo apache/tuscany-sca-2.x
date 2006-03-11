@@ -1,20 +1,19 @@
 package org.apache.tuscany.tomcat.integration;
 
-import org.apache.catalina.core.StandardContext;
-import org.apache.catalina.core.StandardWrapper;
-import org.apache.catalina.core.StandardHost;
-import org.apache.catalina.startup.ContextConfig;
+import java.io.File;
+
 import org.apache.catalina.Valve;
 import org.apache.catalina.Wrapper;
+import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.core.StandardHost;
+import org.apache.catalina.startup.ContextConfig;
 
 import org.apache.tuscany.tomcat.TuscanyValve;
-import org.apache.tuscany.tomcat.TuscanyHost;
-
-import java.io.File;
 
 /**
  * @version $Rev$ $Date$
  */
+@SuppressWarnings({"ClassLoader2Instantiation"})
 public class TomcatStandaloneTestCase extends AbstractTomcatTest {
     protected File app2;
 

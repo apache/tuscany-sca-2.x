@@ -18,21 +18,30 @@ package org.apache.tuscany.tomcat.integration;
 
 import java.io.IOException;
 import javax.servlet.GenericServlet;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.ServletException;
 
-import org.osoa.sca.ModuleContext;
 import org.osoa.sca.CurrentModuleContext;
-
-import org.apache.tuscany.core.runtime.RuntimeContext;
+import org.osoa.sca.ModuleContext;
 
 /**
  * @version $Rev$ $Date$
  */
+@SuppressWarnings({"serial"})
 public class TestServlet extends GenericServlet {
 
     public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+        Object runtime = getServletContext().getAttribute("org.apache.tuscany.core.runtime.RuntimeContext");
+        if (runtime == null || "org.apache.tuscany.core.runtime.RuntimeContext".equals(runtime.getClass().getName())) {
+            throw new ServletException("Runtime not bound to org.apache.tuscany.core.runtime.RuntimeContext");
+        }
+
+        Object module = getServletContext().getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
+        if (module == null || "org.apache.tuscany.core.context.AggregateContext".equals(module.getClass().getName())) {
+            throw new ServletException("Module aggregate not bound to org.apache.tuscany.core.webapp.ModuleComponentContext");
+        }
+
         ModuleContext moduleContext = CurrentModuleContext.getContext();
         if (moduleContext == null) {
             throw new ServletException("No module context returned");
@@ -42,9 +51,10 @@ public class TestServlet extends GenericServlet {
             throw new ServletException("Invalid module context name: " + name);
         }
 
-        Object runtime = getServletContext().getAttribute("org.apache.tuscany.core.runtime.RuntimeContext");
-        if (!(runtime instanceof RuntimeContext)) {
-            throw new ServletException("Runtime not bound to org.apache.tuscany.core.runtime.RuntimeContext");
+        HelloWorldService helloService = (HelloWorldService) moduleContext.locateService("HelloWorld");
+        String greetings = helloService.getGreetings("World");
+        if (!"Hello World".equals(greetings)) {
+            throw new ServletException("Serivce returned " + greetings);
         }
     }
 }

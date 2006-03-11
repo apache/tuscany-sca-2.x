@@ -33,6 +33,7 @@ import java.io.File;
  */
 public class TomcatIntegrationTestCase extends AbstractTomcatTest {
     protected File app1;
+    private Loader loader;
 
     public void testComponentIntegration() throws Exception {
         // create the webapp Context
@@ -40,12 +41,12 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
         ctx.addLifecycleListener(new ContextConfig());
         ctx.setName("testContext");
         ctx.setDocBase(app1.getAbsolutePath());
+        ctx.setLoader(loader);
 
         // define our test servlet
-        Loader loader = new ContainerLoader(TestServlet.class.getClassLoader());
         StandardWrapper wrapper = new StandardWrapper();
         wrapper.setServletClass(TestServlet.class.getName());
-        wrapper.setLoader(loader);
+//        wrapper.setLoader(loader);
         ctx.addChild(wrapper);
 
         host.addChild(ctx);
@@ -71,6 +72,7 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
         ctx.addLifecycleListener(new ContextConfig());
         ctx.setName("testContext");
         ctx.setDocBase(app1.getAbsolutePath());
+        ctx.setLoader(loader);
 
         host.addChild(ctx);
 
@@ -99,6 +101,10 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
         File baseDir = new File(app1, "../../tomcat").getCanonicalFile();
         setupTomcat(baseDir, new TuscanyHost());
         engine.start();
+
+        TestClassLoader cl = new TestClassLoader(classes, new File(app1, "WEB-INF/classes").toURL(), getClass().getClassLoader());
+        cl.start();
+        loader = new ContainerLoader(cl);
     }
 
     protected void tearDown() throws Exception {
