@@ -28,7 +28,7 @@ import org.apache.tuscany.core.client.TuscanyRuntime;
 /**
  * @version $Rev$ $Date$
  */
-public class HelloWorldTestCase extends TestCase {
+public class HelloWorldMCTestCase extends TestCase {
     private ClassLoader oldCL;
 
     public void testHelloWorld() throws Exception {
@@ -48,7 +48,7 @@ public class HelloWorldTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        URL url = getClass().getResource("/helloworld/");
+        URL url = getClass().getResource("/helloworldmc/");
         ClassLoader cl = new URLClassLoader(new URL[]{url}, getClass().getClassLoader());
         oldCL = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(cl);
