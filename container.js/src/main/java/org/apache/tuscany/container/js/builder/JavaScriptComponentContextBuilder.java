@@ -19,7 +19,6 @@ package org.apache.tuscany.container.js.builder;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
@@ -174,9 +173,9 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
                 }
 
                 // handle references
-                List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
+                Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
                 if (configuredReferences != null) {
-                    for (ConfiguredReference reference : configuredReferences) {
+                    for (ConfiguredReference reference : configuredReferences.values()) {
                         ProxyFactory proxyFactory = factory.createProxyFactory();
                         ServiceContract interfaze = reference.getReference().getServiceContract();
                         Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();

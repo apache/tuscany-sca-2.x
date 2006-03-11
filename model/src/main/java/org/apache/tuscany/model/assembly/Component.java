@@ -17,6 +17,7 @@
 package org.apache.tuscany.model.assembly;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -52,10 +53,11 @@ public interface Component extends Extensible, AggregatePart {
     ConfiguredProperty getConfiguredProperty(String name);
 
     /**
-     * Returns a list of configured reference values for the configured instance.
-     * @return a list of configured reference values for the configured instance
+     * Returns a live map of this components configured references, keyed by reference name.
+     *
+     * @return a live map of configured references
      */
-    List<ConfiguredReference> getConfiguredReferences();
+    Map<String, ConfiguredReference> getConfiguredReferences();
 
     /**
      * Returns the ConfiguredReference value for the specified reference.
@@ -76,5 +78,5 @@ public interface Component extends Extensible, AggregatePart {
      * @return the configured service value for the named service
      */
     ConfiguredService getConfiguredService(String name);
-	
+
 }

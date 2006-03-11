@@ -17,6 +17,7 @@
 package org.apache.tuscany.core.loader.assembly;
 
 import java.util.List;
+import java.util.Map;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -97,15 +98,21 @@ public class ComponentLoader extends AbstractLoader {
     }
 
     protected void loadReferences(XMLStreamReader reader, Component component) throws XMLStreamException {
-        List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
-
+        Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
-                ConfiguredReference configuredReference = factory.createConfiguredReference();
-                configuredReference.setName(reader.getLocalName());
-                configuredReference.setTarget(reader.getElementText());
-                configuredReferences.add(configuredReference);
+                String name = reader.getLocalName();
+                String uri = reader.getElementText();
+
+                ConfiguredReference configuredReference = configuredReferences.get(name);
+                if (configuredReference == null) {
+                    configuredReference = factory.createConfiguredReference();
+                    configuredReference.setName(name);
+                    configuredReferences.put(name, configuredReference);
+                }
+
+                configuredReference.getTargets().add(uri);
                 break;
             case END_ELEMENT:
                 return;

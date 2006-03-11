@@ -19,8 +19,6 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
@@ -30,7 +28,6 @@ import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.Component;
@@ -43,10 +40,7 @@ import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.RuntimeConfigurationHolder;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ComponentType;
-import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
-import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
@@ -92,10 +86,8 @@ public class AssemblyVisitorTestCase extends TestCase {
         component = factory.createSimpleComponent();
         component.setName("source");
         component.setComponentImplementation(impl);
-        ConfiguredReference cRef = factory.createConfiguredReference();
-        cRef.setName("ref");
-        cRef.setTarget("target");
-        component.getConfiguredReferences().add(cRef);
+        ConfiguredReference cRef = factory.createConfiguredReference("ref", "target");
+        component.getConfiguredReferences().put(cRef.getName(), cRef);
         component.initialize(assemblyContext);
         module.getComponents().add(component);
 

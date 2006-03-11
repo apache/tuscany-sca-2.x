@@ -31,7 +31,6 @@ public class SourceImpl implements Source {
 
     public void setTarget(Target target) {
         this.target = target;
-        this.targets = new ArrayList();
     }
 
     public Target getTarget() {

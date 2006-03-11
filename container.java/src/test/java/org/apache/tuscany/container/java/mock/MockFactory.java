@@ -312,11 +312,9 @@ public class MockFactory {
         ref.setServiceContract(inter);
         sourceComponent.getComponentImplementation().getComponentType().getReferences().add(ref);
 
-        ConfiguredReference cref = factory.createConfiguredReference();
-        cref.setName("setGenericComponent");
-        cref.setTarget("target");
+        ConfiguredReference cref = factory.createConfiguredReference("setGenericComponent", "target");
         cref.initialize(assemblyContext);
-        sourceComponent.getConfiguredReferences().add(cref);
+        sourceComponent.getConfiguredReferences().put(cref.getName(), cref);
         sourceComponent.initialize(assemblyContext);
 
         Module module = factory.createModule();
@@ -352,11 +350,9 @@ public class MockFactory {
         ref.setServiceContract(inter);
         sourceComponent.getComponentImplementation().getComponentType().getReferences().add(ref);
 
-        ConfiguredReference cref = factory.createConfiguredReference();
-        cref.setName(ref.getName());
-        cref.setTarget("target");
+        ConfiguredReference cref = factory.createConfiguredReference(ref.getName(), "target");
         cref.initialize(assemblyContext);
-        sourceComponent.getConfiguredReferences().add(cref);
+        sourceComponent.getConfiguredReferences().put(cref.getName(), cref);
         sourceComponent.initialize(assemblyContext);
 
         Module module = factory.createModule();
@@ -460,11 +456,9 @@ public class MockFactory {
         reference.setName("setTarget");
         reference.setServiceContract(refContract);
         componentType.getReferences().add(reference);
-        ConfiguredReference cReference = systemFactory.createConfiguredReference();
-        cReference.setName(reference.getName());
-        cReference.setTarget("target");
+        ConfiguredReference cReference = systemFactory.createConfiguredReference(reference.getName(), "target");
         cReference.initialize(assemblyContext);
-        source.getConfiguredReferences().add(cReference);
+        source.getConfiguredReferences().put(cReference.getName(), cReference);
 
         // wire multiplicity using a setter
         JavaServiceContract refContract2 = systemFactory.createJavaServiceContract();
@@ -473,11 +467,9 @@ public class MockFactory {
         reference2.setName("setTargets");
         reference2.setServiceContract(refContract2);
         componentType.getReferences().add(reference2);
-        ConfiguredReference cReference2 = systemFactory.createConfiguredReference();
-        cReference2.setName(reference2.getName());
-        cReference2.setTarget("target");
+        ConfiguredReference cReference2 = systemFactory.createConfiguredReference(reference2.getName(), "target");
         cReference2.initialize(assemblyContext);
-        source.getConfiguredReferences().add(cReference2);
+        source.getConfiguredReferences().put(cReference2.getName(), cReference2);
 
         // wire multiplicity using a field
         JavaServiceContract refContract3 = systemFactory.createJavaServiceContract();
@@ -486,11 +478,9 @@ public class MockFactory {
         reference3.setName("targetsThroughField");
         reference3.setServiceContract(refContract3);
         componentType.getReferences().add(reference3);
-        ConfiguredReference cReference3 = systemFactory.createConfiguredReference();
-        cReference3.setName(reference3.getName());
-        cReference3.setTarget("target");
+        ConfiguredReference cReference3 = systemFactory.createConfiguredReference(reference3.getName(), "target");
         cReference3.initialize(assemblyContext);
-        source.getConfiguredReferences().add(cReference3);
+        source.getConfiguredReferences().put(cReference3.getName(), cReference3);
         source.initialize(assemblyContext);
 
 

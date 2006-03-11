@@ -67,11 +67,9 @@ public class MockModuleFactory {
         inter.setInterface(HelloWorldService.class);
         ref.setServiceContract(inter);
         sourceComponent.getComponentImplementation().getComponentType().getReferences().add(ref);
-        ConfiguredReference cref = factory.createConfiguredReference();
-        cref.setName(ref.getName());
-        cref.setTarget("target");
+        ConfiguredReference cref = factory.createConfiguredReference(ref.getName(), "target");
         cref.initialize(assemblyContext);
-        sourceComponent.getConfiguredReferences().add(cref);
+        sourceComponent.getConfiguredReferences().put(cref.getName(), cref);
         sourceComponent.initialize(assemblyContext);
 
         Module module = factory.createModule();

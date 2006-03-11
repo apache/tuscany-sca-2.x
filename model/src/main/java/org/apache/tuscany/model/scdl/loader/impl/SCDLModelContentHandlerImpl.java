@@ -480,6 +480,8 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
 
         // Grab the current component
         final SimpleComponent component=this.currentComponent;
+        Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
+
         // Initialize the component's configured references
         Sequence sequence = object.getAny();
         for (int r = 0, n = sequence.size(); r < n; r++) {
@@ -490,15 +492,18 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
 
             // Get the corresponding reference definition
             String referenceName = referenceElementDef.getName();
-            final ConfiguredReference configuredReference = factory.createConfiguredReference();
-            configuredReference.setName(referenceName);
+            ConfiguredReference configuredReference = configuredReferences.get(referenceName);
+            if (configuredReference == null) {
+                configuredReference = factory.createConfiguredReference();
+                configuredReference.setName(referenceName);
+                configuredReferences.put(referenceName, configuredReference);
+            }
+
             Sequence text = referenceElement.getSequence(0);
             if (text != null && text.size() != 0) {
                 String uri = String.valueOf(text.getValue(0));
-                configuredReference.setTarget(uri);
+                configuredReference.getTargets().add(uri);
             }
-
-            component.getConfiguredReferences().add(configuredReference);
         }
 
         return object;

@@ -173,8 +173,8 @@ public interface AssemblyFactory {
      * Helper method for creating a configured reference.
      *
      * @param name the name of the reference
-     * @param target the target for the reference
+     * @param targets the targets for the reference
      * @return a ConfiguredReference
      */
-    ConfiguredReference createConfiguredReference(String name, String target);
+    ConfiguredReference createConfiguredReference(String name, String... targets);
 }

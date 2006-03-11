@@ -20,8 +20,33 @@ import java.util.List;
 
 /**
  * A configured reference associated with a particular usage.
+ * Each configuredReference represents a configured version of an logical
+ * reference defined in the ComponentType. If the logical reference
+ * has a multiplicity greater than 1 (0..n or 1..n) then the configured
+ * reference many have multiple targets.
  */
 public interface ConfiguredReference extends ConfiguredPort {
+
+    /**
+     * Returns the name of the reference being configured.
+     *
+     * @return the name of the reference being configured
+     */
+    String getName();
+
+    /**
+     * Set the name of the reference being configured.
+     *
+     * @param name the name of the reference being configured
+     */
+    void setName(String name);
+
+    /**
+     * List of URIs for the targets of this reference.
+     *
+     * @return the list of URIs for the targets of this reference
+     */
+    List<String> getTargets();
 
     /**
      * Returns the {@link Reference} that is being configured.
@@ -43,20 +68,6 @@ public interface ConfiguredReference extends ConfiguredPort {
      * @return the list of configured services that are wired to this configured reference
      */
     List<ConfiguredService> getTargetConfiguredServices();
-
-    /**
-     * Returns the name of the reference being configured.
-     *
-     * @return the name of the reference being configured
-     */
-    String getName();
-
-    /**
-     * Set the name of the reference being configured.
-     *
-     * @param name the name of the reference being configured
-     */
-    void setName(String name);
 
     /**
      * Returns the URI of the target of this reference.

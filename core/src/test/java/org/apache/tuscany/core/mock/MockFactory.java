@@ -15,9 +15,9 @@ package org.apache.tuscany.core.mock;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
-import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
@@ -264,19 +264,22 @@ public class MockFactory {
         Component source = systemFactory.createSystemComponent("source", Source.class, SourceImpl.class, sourceScope);
         ComponentType sourceComponentType = source.getComponentImplementation().getComponentType();
         List<Reference> references = sourceComponentType.getReferences();
-        List<ConfiguredReference> configuredReferences = source.getConfiguredReferences();
+        Map<String, ConfiguredReference> configuredReferences = source.getConfiguredReferences();
 
         // wire source to target
         references.add(systemFactory.createReference("setTarget", Target.class));
-        configuredReferences.add(systemFactory.createConfiguredReference("setTarget", "target"));
+        ConfiguredReference configuredReference = systemFactory.createConfiguredReference("setTarget", "target");
+        configuredReferences.put(configuredReference.getName(), configuredReference);
 
         // wire multiplicity using a setter
         references.add(systemFactory.createReference("setTargets", List.class));
-        configuredReferences.add(systemFactory.createConfiguredReference("setTargets", "target"));
+        configuredReference = systemFactory.createConfiguredReference("setTargets", "target");
+        configuredReferences.put(configuredReference.getName(), configuredReference);
 
         // wire multiplicity using a field
         references.add(systemFactory.createReference("targetsThroughField", List.class));
-        configuredReferences.add(systemFactory.createConfiguredReference("targetsThroughField", "target"));
+        configuredReference = systemFactory.createConfiguredReference("targetsThroughField", "target");
+        configuredReferences.put(configuredReference.getName(), configuredReference);
 
         source.initialize(assemblyContext);
 

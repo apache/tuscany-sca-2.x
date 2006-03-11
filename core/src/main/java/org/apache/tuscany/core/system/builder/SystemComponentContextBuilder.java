@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
 
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
@@ -66,7 +67,7 @@ import commonj.sdo.DataObject;
  * Decorates components whose implementation type is a
  * {@link org.apache.tuscany.core.system.assembly.SystemImplementation} with the appropriate runtime configuration.
  * System components are not proxied.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class SystemComponentContextBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
@@ -149,9 +150,9 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
             // FIXME do not inject references on an application module yet
             if (implClass != AggregateContextImpl.class) {
                 // handle references
-                List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
+                Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
                 if (configuredReferences != null) {
-                    for (ConfiguredReference reference : configuredReferences) {
+                    for (ConfiguredReference reference : configuredReferences.values()) {
                         Injector injector = createReferenceInjector(parentContext.getName(), component.getName(), parentContext,
                                 reference, fields, methods);
                         injectors.add(injector);

@@ -211,10 +211,12 @@ public class AssemblyFactoryImpl implements AssemblyFactory {
         return reference;
     }
 
-    public ConfiguredReference createConfiguredReference(String name, String target) {
+    public ConfiguredReference createConfiguredReference(String name, String... targets) {
         ConfiguredReference ref = createConfiguredReference();
         ref.setName(name);
-        ref.setTarget(target);
+        for (String target : targets) {
+            ref.getTargets().add(target);
+        }
         return ref;
     }
 }

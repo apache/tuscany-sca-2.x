@@ -39,8 +39,7 @@ import org.apache.tuscany.model.assembly.Service;
  */
 public abstract class ComponentImpl extends AggregatePartImpl implements Component {
 
-    private List<ConfiguredReference> configuredReferences = new ArrayList<ConfiguredReference>();
-    private Map<String, ConfiguredReference> configuredReferencesMap;
+    private Map<String, ConfiguredReference> configuredReferencesMap = new HashMap<String, ConfiguredReference>();
     private List<ConfiguredService> configuredServices = new ArrayList<ConfiguredService>();
     private Map<String, ConfiguredService> configuredServicesMap;
     private List<ConfiguredProperty> configuredProperties = new ArrayList<ConfiguredProperty>();
@@ -74,18 +73,14 @@ public abstract class ComponentImpl extends AggregatePartImpl implements Compone
         return configuredServicesMap.get(name);
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.Component#getConfiguredReferences()
-     */
-    public List<ConfiguredReference> getConfiguredReferences() {
-        return configuredReferences;
+    public Map<String, ConfiguredReference> getConfiguredReferences() {
+        return configuredReferencesMap;
     }
 
     /**
      * @see org.apache.tuscany.model.assembly.Component#getConfiguredReference(java.lang.String)
      */
     public ConfiguredReference getConfiguredReference(String name) {
-        checkInitialized();
         return configuredReferencesMap.get(name);
     }
 
@@ -157,14 +152,12 @@ public abstract class ComponentImpl extends AggregatePartImpl implements Compone
         }
 
         // Match configured references to the references on the component type
-        configuredReferencesMap = new HashMap<String, ConfiguredReference>(configuredReferences.size());
-        for (ConfiguredReference configuredReference : configuredReferences) {
+        for (ConfiguredReference configuredReference : configuredReferencesMap.values()) {
             String name = configuredReference.getName();
             ((ConfiguredPortImpl) configuredReference).setAggregatePart(this);
             Reference reference = componentType.getReference(name);
             configuredReference.setReference(reference);
             configuredReference.initialize(modelContext);
-            configuredReferencesMap.put(name, configuredReference);
         }
     }
 
@@ -179,8 +172,8 @@ public abstract class ComponentImpl extends AggregatePartImpl implements Compone
         // Freeze configured services, references and properties
         configuredServices = Collections.unmodifiableList(configuredServices);
         freeze(configuredServices);
-        configuredReferences = Collections.unmodifiableList(configuredReferences);
-        freeze(configuredReferences);
+        configuredReferencesMap = Collections.unmodifiableMap(configuredReferencesMap);
+        freeze(configuredReferencesMap.values());
         configuredProperties = Collections.unmodifiableList(configuredProperties);
         freeze(configuredProperties);
         if (implementation != null)
@@ -196,7 +189,7 @@ public abstract class ComponentImpl extends AggregatePartImpl implements Compone
 
         if (!accept(configuredServices, visitor))
             return false;
-        if (!accept(configuredReferences, visitor))
+        if (!accept(configuredReferencesMap.values(), visitor))
             return false;
         if (!accept(configuredProperties, visitor))
             return false;

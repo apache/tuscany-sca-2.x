@@ -237,9 +237,9 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                 }
 
                 // handle references
-                List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
+                Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
                 if (configuredReferences != null) {
-                    for (ConfiguredReference reference : configuredReferences) {
+                    for (ConfiguredReference reference : configuredReferences.values()) {
                         Injector injector = createReferenceInjector(config, reference, fields, methods, parentContext);
                         injectors.add(injector);
                     }

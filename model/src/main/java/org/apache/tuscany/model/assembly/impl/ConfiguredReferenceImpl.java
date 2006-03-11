@@ -31,6 +31,7 @@ public class ConfiguredReferenceImpl extends ConfiguredPortImpl implements Confi
 
     private String name;
     private String target;
+    private List<String> targets = new ArrayList<String>();
 
     private List<ConfiguredService> targetConfiguredServices = new ArrayList<ConfiguredService>();
 
@@ -43,6 +44,10 @@ public class ConfiguredReferenceImpl extends ConfiguredPortImpl implements Confi
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<String> getTargets() {
+        return targets;
     }
 
     public String getTarget() {
@@ -67,22 +72,23 @@ public class ConfiguredReferenceImpl extends ConfiguredPortImpl implements Confi
         checkNotFrozen();
         super.setPort(reference);
     }
-    
+
     /**
      * @see org.apache.tuscany.model.assembly.ConfiguredReference#getTargetConfiguredServices()
      */
     public List<ConfiguredService> getTargetConfiguredServices() {
         return targetConfiguredServices;
     }
-    
+
     /**
      * @see org.apache.tuscany.model.assembly.impl.ConfiguredPortImpl#freeze()
      */
     public void freeze() {
         super.freeze();
-        
+
         // Freeze list of configured services
-        targetConfiguredServices=Collections.unmodifiableList(targetConfiguredServices);
+        targetConfiguredServices = Collections.unmodifiableList(targetConfiguredServices);
+        targets = Collections.unmodifiableList(targets);
     }
 
 }
