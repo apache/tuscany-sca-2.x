@@ -27,13 +27,20 @@ import org.apache.tuscany.model.assembly.Binding;
 public interface WebServiceBinding extends Binding {
 
     /**
+     * Set the URI of the WSDL port for this binding.
+     *
+     * @param portURI the URI of the WSDL port
+     */
+    void setPortURI(String portURI);
+
+    /**
      * Returns the WSDL port defining this binding.
      */
     Port getWSDLPort();
     
     /**
      * Returns the WSDL definition containing the WSDL port.
-     * @return
+     * @return the WSDL definition containing the WSDL port
      */
     Definition getWSDLDefinition();
 
@@ -47,5 +54,4 @@ public interface WebServiceBinding extends Binding {
      * @param definition
      */
     void setWSDLDefinition(Definition definition);
-
 }

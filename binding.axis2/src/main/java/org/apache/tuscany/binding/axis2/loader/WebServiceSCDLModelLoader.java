@@ -3,7 +3,6 @@ package org.apache.tuscany.binding.axis2.loader;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceAssemblyFactory;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis2.assembly.impl.WebServiceAssemblyFactoryImpl;
-import org.apache.tuscany.binding.axis2.assembly.impl.WebServiceBindingImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.loader.SCDLModelLoaderRegistry;
@@ -64,7 +63,7 @@ public class WebServiceSCDLModelLoader implements SCDLModelLoader {
             binding.setURI(scdlBinding.getUri());
 
             // Set the port URI into the assembly binding, it'll be resolved in the initialize method
-            ((WebServiceBindingImpl)binding).setPortURI(scdlBinding.getPort());
+            binding.setPortURI(scdlBinding.getPort());
 
             return binding;
 
