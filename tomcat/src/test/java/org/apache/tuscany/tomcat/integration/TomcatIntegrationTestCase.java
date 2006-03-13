@@ -95,8 +95,7 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
                 "</helloworldaxis:getGreetingsResponse></soapenv:Body></soapenv:Envelope>";
         assertEquals(xml, response.getOutputStream().toString());
 
-        // FIXME TUSCANY-117 shouldn't the status be 200 rather than 0
-//        assertEquals(200, response.getStatus());
+        assertEquals(200, response.getStatus());
         host.removeChild(ctx);
     }
 

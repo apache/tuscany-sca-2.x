@@ -172,7 +172,7 @@ public class AbstractTomcatTest extends TestCase {
     public static class MockResponse extends Response {
         private boolean suspended;
         private String contentType;
-        private int status;
+        private int status = 200;
         private Map headers = new HashMap();
         private MockOutputStream outputStream = new MockOutputStream();
 
