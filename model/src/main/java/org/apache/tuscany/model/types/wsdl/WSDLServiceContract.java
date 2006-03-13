@@ -49,4 +49,7 @@ public interface WSDLServiceContract extends ServiceContract {
      */
     void setCallbackPortType(PortType portType);
 
+    void setPortTypeURI(String portTypeURI);
+
+    void setCallbackPortTypeURI(String callbackPortTypeURI);
 }

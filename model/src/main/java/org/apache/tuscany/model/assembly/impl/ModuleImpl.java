@@ -127,6 +127,16 @@ public class ModuleImpl extends AggregateImpl implements Module {
                 if (serviceContract != null)
                     service.setServiceContract(serviceContract);
                 componentType.getServices().add(service);
+
+                ConfiguredReference configuredReference = entryPoint.getConfiguredReference();
+                ServiceURI sourceURI = factory.createServiceURI(null, entryPoint, configuredReference);
+                for (String target : configuredReference.getTargets()) {
+                    ServiceURI targetURI =factory.createServiceURI(null, target);
+                    Wire wire=factory.createWire();
+                    wire.setSource(sourceURI);
+                    wire.setTarget(targetURI);
+                    getWires().add(wire);
+                }
             }
             for (ExternalService externalService : getExternalServices()) {
                 if (externalService.getOverrideOption()==null || externalService.getOverrideOption()==OverrideOption.NO)

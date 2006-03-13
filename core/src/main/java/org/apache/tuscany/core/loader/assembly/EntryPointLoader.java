@@ -36,6 +36,8 @@ import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceURI;
+import org.apache.tuscany.model.assembly.ServiceContract;
+import org.apache.tuscany.model.assembly.impl.ServiceContractImpl;
 import org.apache.tuscany.common.resource.ResourceLoader;
 
 /**
@@ -69,16 +71,20 @@ public class EntryPointLoader extends AbstractLoader {
         configuredReference.setReference(reference);
         entryPoint.setConfiguredReference(configuredReference);
 
-        ServiceURI source = factory.createServiceURI(null, entryPoint, configuredReference);
-
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
-                AssemblyModelObject o = registry.load(reader, resourceLoader);
-                if (o instanceof Binding) {
-                    entryPoint.getBindings().add((Binding) o);
-                } else if (o instanceof Reference) {
-                    // todo we need to store the reference info here to that it can be used to generate wires in the aggregate
+                QName qname = reader.getName();
+                if (AssemblyConstants.REFERENCE.equals(qname)) {
+                    String uri = reader.getElementText();
+                    configuredReference.getTargets().add(uri);
+                } else {
+                    AssemblyModelObject o = registry.load(reader, resourceLoader);
+                    if (o instanceof Binding) {
+                        entryPoint.getBindings().add((Binding) o);
+                    } else if (o instanceof ServiceContract) {
+                        service.setServiceContract((ServiceContract) o);
+                    }
                 }
                 reader.next();
                 break;

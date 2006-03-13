@@ -262,8 +262,8 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
         final WSDLServiceContract serviceContract=factory.createWSDLServiceContract();
         serviceContract.setScope(Scope.INSTANCE);
         
-        ((WSDLServiceContractImpl)serviceContract).setPortTypeURI(object.getInterface());
-        ((WSDLServiceContractImpl)serviceContract).setCallbackPortTypeURI(object.getCallbackInterface());
+        serviceContract.setPortTypeURI(object.getInterface());
+        serviceContract.setCallbackPortTypeURI(object.getCallbackInterface());
         
         linkServiceContract(object, serviceContract);
 
@@ -529,6 +529,10 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
         configuredReference.setReference(reference);
         entryPoint.setConfiguredReference(configuredReference);
         
+        for (String uri : (List<String>)object.getReference()) {
+            configuredReference.getTargets().add(uri);
+        }
+/*
         linkers.add(new Runnable() {
             public void run() {
                 currentAggregate.getEntryPoints().add(entryPoint);
@@ -547,7 +551,9 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
                 currentAggregate.getWires().addAll(wires);
             };
         });
-        
+*/
+
+        currentAggregate.getEntryPoints().add(entryPoint);
         currentEntryPoint=entryPoint;
         return entryPoint;
     }

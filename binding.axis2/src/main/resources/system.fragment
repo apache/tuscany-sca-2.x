@@ -34,4 +34,8 @@
         <system:implementation.system class="org.apache.tuscany.binding.axis2.builder.WebServiceEntryPointConfigurationBuilder"/>
     </component>
 
+    <component name="org.apache.tuscany.binding.axis2.loader.WebServiceBindingLoaderr">
+        <system:implementation.system class="org.apache.tuscany.binding.axis2.loader.WebServiceBindingLoader"/>
+    </component>
+
 </moduleFragment>

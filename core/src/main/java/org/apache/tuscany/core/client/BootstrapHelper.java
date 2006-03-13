@@ -109,11 +109,14 @@ public final class BootstrapHelper {
     }
 
     private static AggregateContext bootstrapStaxLoader(SystemAggregateContext systemContext, AssemblyModelContext modelContext) throws ConfigurationException {
-        ModuleComponent loaderComponent = StAXUtil.bootstrapLoader(SYSTEM_LOADER_COMPONENT, modelContext);
-        systemContext.registerModelObject(loaderComponent);
         AggregateContext loaderContext = (AggregateContext) systemContext.getContext(SYSTEM_LOADER_COMPONENT);
-        loaderContext.registerModelObject(loaderComponent.getComponentImplementation());
-        loaderContext.fireEvent(EventContext.MODULE_START, null);
+        if (loaderContext == null) {
+            ModuleComponent loaderComponent = StAXUtil.bootstrapLoader(SYSTEM_LOADER_COMPONENT, modelContext);
+            systemContext.registerModelObject(loaderComponent);
+            loaderContext = (AggregateContext) systemContext.getContext(SYSTEM_LOADER_COMPONENT);
+            loaderContext.registerModelObject(loaderComponent.getComponentImplementation());
+            loaderContext.fireEvent(EventContext.MODULE_START, null);
+        }
         return loaderContext;
     }
 
