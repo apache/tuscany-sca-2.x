@@ -11,6 +11,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.axis2.AxisFault;
+import org.apache.axis2.Constants;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.context.OperationContext;
 import org.apache.axis2.description.AxisOperation;
@@ -151,6 +152,12 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
             outMsgContext.setEnvelope(soapenv);
             // outMsgContext.setAxisOperation(axisOperation);
             // outMsgContext.setAxisService(msgContext.getAxisService());
+            
+            
+            outMsgContext.getOperationContext().setProperty(Constants.RESPONSE_WRITTEN,
+                        Constants.VALUE_TRUE);
+            
+
          
 
         } catch (Exception e) {
