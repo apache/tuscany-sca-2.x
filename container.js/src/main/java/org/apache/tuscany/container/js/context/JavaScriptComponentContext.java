@@ -30,6 +30,7 @@ import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.osoa.sca.ServiceRuntimeException;
 
 public class JavaScriptComponentContext extends AbstractContext implements SimpleComponentContext {
 
@@ -95,22 +96,10 @@ public class JavaScriptComponentContext extends AbstractContext implements Simpl
     }
 
     public Object getImplementationInstance(boolean notify) throws TargetException {
+        rhinoInvoker.updateScriptScope(createServiceReferences()); // create references
         rhinoInvoker.updateScriptScope(properties); // create prop values
         return rhinoInvoker;
     }
-
-//    private Object createProxy(Class[] ifaces) throws ProxyCreationException {
-//        // final RhinoInvoker rhinoInvoker = implementation.getRhinoInvoker().copy();
-//        rhinoInvoker.updateScriptScope(properties); // create prop values
-//        final Map refs = createInvocationContext();
-//        InvocationHandler ih = new InvocationHandler() {
-//            public Object invoke(Object proxy, Method method, Object[] args) {
-//                return rhinoInvoker.invoke(method.getName(), args, method.getReturnType(), refs);
-//                // return rhinoInvoker.invoke(method.getName(), args, method.getReturnType(),createInvocationContext());
-//            }
-//        };
-//        return Proxy.newProxyInstance(ifaces[0].getClassLoader(), ifaces, ih);
-//    }
 
     private void notifyListeners(boolean notify) {
         if (notify) {
@@ -122,27 +111,18 @@ public class JavaScriptComponentContext extends AbstractContext implements Simpl
     }
 
     /**
-     * Creates a map containing any properties and their values
-     */
-    // private Map createPropertyValues() {
-    // Map<String,Object> context = new HashMap<String,Object>();
-    // List<ConfiguredProperty> configuredProperties = component.getConfiguredProperties();
-    // if (configuredProperties != null) {
-    // for (ConfiguredProperty property : configuredProperties) {
-    // context.put(property.getProperty().getName(), property.getValue());
-    // }
-    // }
-    // return context;
-    // }
-    /**
      * Creates a map containing any ServiceReferences
      */
-    private Map createInvocationContext() throws ProxyCreationException {
-        Map<String, Object> context = new HashMap<String, Object>();
-        for (ProxyFactory factory : sourceProxyFactories) {
-            context.put(factory.getProxyConfiguration().getReferenceName(), factory.createProxy());
-        }
-        return context;
+    private Map createServiceReferences() {
+        try {
+            Map<String, Object> context = new HashMap<String, Object>();
+            for (ProxyFactory proxyFactory : sourceProxyFactories) {
+                context.put(proxyFactory.getProxyConfiguration().getReferenceName(), proxyFactory.createProxy());
+            }
+            return context;
+		} catch (ProxyCreationException e) {
+			throw new ServiceRuntimeException(e);
+		}
     }
 
     public boolean isEagerInit() {

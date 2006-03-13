@@ -22,6 +22,7 @@ import java.util.Map;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Function;
+import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Wrapper;
@@ -63,7 +64,7 @@ public class RhinoScript {
      * @param script the complete script
      */
     public RhinoScript(String scriptName, String script) {
-        this(scriptName, script, (Map) null);
+        this(scriptName, script, (Map) null, null);
     }
 
     /**
@@ -74,10 +75,10 @@ public class RhinoScript {
      * @param context name-value pairs that are added in to the scope where the script is compiled. May be null. The
      *        value objects are made available to the script by using a variable with the name.
      */
-    public RhinoScript(String scriptName, String script, Map context) {
+    public RhinoScript(String scriptName, String script, Map context, ClassLoader cl) {
         this.scriptName = scriptName;
         this.script = script;
-        initScriptScope(scriptName, script, context);
+        initScriptScope(scriptName, script, context, cl);
         initSharedScope();
     }
 
@@ -192,11 +193,14 @@ public class RhinoScript {
     /**
      * Create a Rhino scope and compile the script into it
      */
-    protected void initScriptScope(String fileName, String scriptCode, Map context) {
+    protected void initScriptScope(String fileName, String scriptCode, Map context, ClassLoader cl) {
         Context cx = Context.enter();
         try {
-
-            this.scriptScope = cx.initStandardObjects(null, true);
+            
+            if (cl != null) {
+               cx.setApplicationClassLoader(cl);
+            }
+            this.scriptScope = new ImporterTopLevel( cx, true );
             Script compiledScript = cx.compileString(scriptCode, fileName, 1, null);
             compiledScript.exec(cx, scriptScope);
             addContexts(scriptScope, context);

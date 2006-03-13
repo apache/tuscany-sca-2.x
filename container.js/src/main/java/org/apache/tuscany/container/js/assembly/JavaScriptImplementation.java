@@ -16,7 +16,6 @@
  */
 package org.apache.tuscany.container.js.assembly;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.model.assembly.ComponentImplementation;
 
 /**
@@ -25,8 +24,6 @@ import org.apache.tuscany.model.assembly.ComponentImplementation;
  * @version $Rev$ $Date$
  */
 public interface JavaScriptImplementation extends ComponentImplementation {
-
-    public ResourceLoader getResourceLoader();
 
     public String getScriptFile();
 

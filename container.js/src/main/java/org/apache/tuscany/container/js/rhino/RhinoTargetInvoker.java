@@ -1,8 +1,24 @@
+/**
+ *
+ *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.apache.tuscany.container.js.rhino;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.invocation.Interceptor;
 import org.apache.tuscany.core.invocation.TargetInvoker;
@@ -12,33 +28,40 @@ public class RhinoTargetInvoker implements TargetInvoker {
 
     private ScopeContext container;
 
-    private QualifiedName name;
+    private String serviceName;
 
-    private String operation;
+    private Method method;
 
     private RhinoScript target;
 
-    public RhinoTargetInvoker(String serviceName, String operation, ScopeContext container) {
+    public RhinoTargetInvoker(String serviceName, Method method, ScopeContext container) {
         assert (serviceName != null) : "No service name specified";
         assert (container != null) : "No scope container specified";
-        assert (operation != null) : "No operation specified";
-        this.name = new QualifiedName(serviceName);
+        assert (method != null) : "No method specified";
+        this.serviceName = serviceName;
         this.container = container;
-        this.operation = operation;
+        this.method = method;
     }
 
     public Object invokeTarget(Object payload) throws InvocationTargetException {
-        if (cacheable) {
-            if (target == null) {
-                target = (RhinoScript) container.getContext(name.getPartName()).getImplementationInstance();
-            }
-            return target.invoke(operation, payload);
-        } else {
-            return ((RhinoScript) container.getContext(name.getPartName()).getImplementationInstance())
-                    .invoke(operation, payload);
-        }
+    	RhinoScript rhinoScript = getRhinoScript();
+    	Object response = rhinoScript.invoke(method.getName(), payload, method.getReturnType(), null);
+    	return response;
     }
 
+    protected RhinoScript getRhinoScript() {
+        RhinoScript rhinoScript;
+        if (cacheable) {
+            if (target == null) {
+                target = (RhinoScript) container.getContext(serviceName).getImplementationInstance();
+            }
+            rhinoScript = target;
+        } else {
+            rhinoScript = (RhinoScript) container.getContext(serviceName).getImplementationInstance();
+        }
+        return rhinoScript;
+    }
+    
     private boolean cacheable;
 
     public boolean isCacheable() {
@@ -70,8 +93,8 @@ public class RhinoTargetInvoker implements TargetInvoker {
             RhinoTargetInvoker invoker = (RhinoTargetInvoker) super.clone();
             invoker.container = this.container;
             invoker.cacheable = this.cacheable;
-            invoker.name = this.name;
-            invoker.operation = this.operation;
+            invoker.serviceName = this.serviceName;
+            invoker.method = this.method;
             invoker.target = null;
             return invoker;
         } catch (CloneNotSupportedException e) {

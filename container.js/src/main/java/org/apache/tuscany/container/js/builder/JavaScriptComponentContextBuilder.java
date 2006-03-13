@@ -19,6 +19,7 @@ package org.apache.tuscany.container.js.builder;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
@@ -41,6 +42,7 @@ import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.ComponentImplementation;
+import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.ModelInitException;
@@ -67,16 +69,8 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
 
     private RuntimeContext runtimeContext;
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
     public JavaScriptComponentContextBuilder() {
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     @Init(eager = true)
     public void init() {
@@ -123,102 +117,104 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
             SimpleComponent component = (SimpleComponent) modelObject;
             ComponentImplementation impl = component.getComponentImplementation();
             if (impl instanceof JavaScriptImplementation) {
-                Scope scope = ((JavaScriptImplementation) impl).getComponentType().getServices().get(0).getServiceContract()
-                        .getScope();
-                Map<String, Class> services = new HashMap();
-                for (Service service : ((JavaScriptImplementation) impl).getComponentType().getServices()) {
-                    services.put(service.getName(), service.getServiceContract().getInterface());
-                }
-                Map<String, Object> properties = new HashMap();
-                // TODO support properties
-                String script = null;
-                if (impl instanceof JavaScriptImplementationImpl) { // fixme
-                    try {
-                        script = ((JavaScriptImplementationImpl) impl).getScript();
-                    } catch (ModelInitException e) {
-                        throw new BuilderConfigException(e);
-                    }
-                }
-
-                RhinoScript invoker = createRhinoInvoker(component.getName(), script, properties);
-                JavaScriptComponentRuntimeConfiguration config = new JavaScriptComponentRuntimeConfiguration(component.getName(),
-                        scope, services, properties, invoker);
-
-                // create target-side invocation chains for each service offered by the implementation
-                for (ConfiguredService configuredService : component.getConfiguredServices()) {
-                    Service service = configuredService.getService();
-                    ServiceContract contract = service.getServiceContract();
-                    Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
-                    ProxyFactory proxyFactory = factory.createProxyFactory();
-                    for (Method method : contract.getInterface().getMethods()) {
-                        InvocationConfiguration iConfig = new InvocationConfiguration(method);
-                        iConfigMap.put(method, iConfig);
-                    }
-                    QualifiedName qName = new QualifiedName(component.getName() + QualifiedName.NAME_SEPARATOR
-                            + service.getName());
-                    ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, contract.getInterface()
-                            .getClassLoader(), msgFactory);
-                    proxyFactory.setBusinessInterface(contract.getInterface());
-                    proxyFactory.setProxyConfiguration(pConfiguration);
-                    configuredService.setProxyFactory(proxyFactory);
-                    if (referenceBuilder != null) {
-                        // invoke the reference builder to handle target-side metadata
-                        referenceBuilder.build(configuredService, context);
-                    }
-                    // add tail interceptor
-                    for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
-                        iConfig.addTargetInterceptor(new InvokerInterceptor());
-                    }
-                    config.addTargetProxyFactory(service.getName(), proxyFactory);
-                }
-
-                // handle references
-                Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
-                if (configuredReferences != null) {
-                    for (ConfiguredReference reference : configuredReferences.values()) {
-                        ProxyFactory proxyFactory = factory.createProxyFactory();
-                        ServiceContract interfaze = reference.getReference().getServiceContract();
-                        Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
-                        for (Method method : interfaze.getInterface().getMethods()) {
-                            InvocationConfiguration iConfig = new InvocationConfiguration(method);
-                            iConfigMap.put(method, iConfig);
-                        }
-                        String targetCompName = reference.getTargetConfiguredServices().get(0).getAggregatePart().getName();
-                        String targetSerivceName = reference.getTargetConfiguredServices().get(0).getService().getName();
-
-                        QualifiedName qName = new QualifiedName(targetCompName + "/" + targetSerivceName);
-
-                        // QualifiedName qName = new QualifiedName(reference.getPart().getName() + "/"
-                        // + reference.getPort().getName());
-                        ProxyConfiguration pConfiguration = new ProxyConfiguration(reference.getReference().getName(), qName,
-                                iConfigMap, interfaze.getInterface().getClassLoader(), msgFactory);
-                        proxyFactory.setBusinessInterface(interfaze.getInterface());
-                        proxyFactory.setProxyConfiguration(pConfiguration);
-                        //FIXME multiplicity support
-                        reference.getTargetConfiguredServices().get(0).setProxyFactory(proxyFactory);
-                        //xcv reference.setProxyFactory(proxyFactory);
-                        if (referenceBuilder != null) {
-                            // invoke the reference builder to handle metadata associated with the reference
-                            referenceBuilder.build(reference, context);
-                        }
-                        config.addSourceProxyFactory(reference.getReference().getName(), proxyFactory);
-                    }
-                }
-                component.getComponentImplementation().setRuntimeConfiguration(config);
+                buildJavaScriptComponent(context, component, (JavaScriptImplementation) impl);
             }
         }
     }
 
+	private void buildJavaScriptComponent(AggregateContext context, SimpleComponent component, JavaScriptImplementation impl) {
+		Scope scope = impl.getComponentType().getServices().get(0).getServiceContract().getScope();
+		Map<String, Class> services = new HashMap<String, Class>();
+		for (Service service : impl.getComponentType().getServices()) {
+		    services.put(service.getName(), service.getServiceContract().getInterface());
+		}
+		Map<String, Object> properties = new HashMap<String, Object>();
+		List<ConfiguredProperty> configuredProperties = component.getConfiguredProperties();
+		if (configuredProperties != null) {
+		    for (ConfiguredProperty property : configuredProperties) {
+		        properties.put(property.getProperty().getName(), property.getValue());
+		    }
+		}
+
+        // TODO: avoid casting to JavaScriptImplementationImpl
+		String script;
+	    try {
+	        script = ((JavaScriptImplementationImpl) impl).getScript();
+	    } catch (ModelInitException e) {
+	        throw new BuilderConfigException(e);
+	    }
+        ClassLoader cl = ((JavaScriptImplementationImpl) impl).getResourceLoader().getClassLoader();
+        
+        RhinoScript invoker = new RhinoScript(component.getName(), script, properties, cl);
+
+        JavaScriptComponentRuntimeConfiguration config = new JavaScriptComponentRuntimeConfiguration(component.getName(),
+		        scope, services, properties, invoker);
+
+		addTargetInvocationChains(context, component, config);
+		addComponentReferences(context, component, config);
+		component.getComponentImplementation().setRuntimeConfiguration(config);
+	}
+
     /**
-     * Creates a representation of the JavaScript implementation script that is used to perform invocations
-     * 
-     * @param name
-     * @param script the Script source
-     * @param properties configured properties for the component
-     * @return
+     * Add target-side invocation chains for each service offered by the implementation
      */
-    private RhinoScript createRhinoInvoker(String name, String script, Map properties) {
-        RhinoScript ri = new RhinoScript(name, script, properties);
-        return ri;
-    }
+	private void addTargetInvocationChains(AggregateContext context, SimpleComponent component, JavaScriptComponentRuntimeConfiguration config) {
+		for (ConfiguredService configuredService : component.getConfiguredServices()) {
+		    Service service = configuredService.getService();
+		    ServiceContract contract = service.getServiceContract();
+		    Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
+		    ProxyFactory proxyFactory = factory.createProxyFactory();
+		    for (Method method : contract.getInterface().getMethods()) {
+		        InvocationConfiguration iConfig = new InvocationConfiguration(method);
+		        iConfigMap.put(method, iConfig);
+		    }
+            QualifiedName qName = new QualifiedName(component.getName() + QualifiedName.NAME_SEPARATOR
+                    + service.getName());
+            ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, contract.getInterface()
+                    .getClassLoader(), msgFactory);
+		    proxyFactory.setBusinessInterface(contract.getInterface());
+		    proxyFactory.setProxyConfiguration(pConfiguration);
+		    configuredService.setProxyFactory(proxyFactory);
+		    if (referenceBuilder != null) {
+		        // invoke the reference builder to handle target-side metadata
+		        referenceBuilder.build(configuredService, context);
+		    }
+		    // add tail interceptor
+		    for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
+		        iConfig.addTargetInterceptor(new InvokerInterceptor());
+		    }
+		    config.addTargetProxyFactory(service.getName(), proxyFactory);
+		}
+	}
+
+	private void addComponentReferences(AggregateContext context, SimpleComponent component, JavaScriptComponentRuntimeConfiguration config) {
+		Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
+		if (configuredReferences != null) {
+		    for (ConfiguredReference reference : configuredReferences.values()) {
+		        ProxyFactory proxyFactory = factory.createProxyFactory();
+		        ServiceContract interfaze = reference.getReference().getServiceContract();
+		        Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
+		        for (Method method : interfaze.getInterface().getMethods()) {
+		            InvocationConfiguration iConfig = new InvocationConfiguration(method);
+		            iConfigMap.put(method, iConfig);
+		        }
+		        String targetCompName = reference.getTargetConfiguredServices().get(0).getAggregatePart().getName();
+		        String targetSerivceName = reference.getTargetConfiguredServices().get(0).getService().getName();
+
+		        QualifiedName qName = new QualifiedName(targetCompName + "/" + targetSerivceName);
+                ProxyConfiguration pConfiguration = new ProxyConfiguration(reference.getReference().getName(), qName,
+                        iConfigMap, interfaze.getInterface().getClassLoader(), msgFactory);
+		        proxyFactory.setBusinessInterface(interfaze.getInterface());
+		        proxyFactory.setProxyConfiguration(pConfiguration);
+                //FIXME multiplicity support
+                reference.getTargetConfiguredServices().get(0).setProxyFactory(proxyFactory);
+		        if (referenceBuilder != null) {
+		            // invoke the reference builder to handle metadata associated with the reference
+		            referenceBuilder.build(reference, context);
+		        }
+		        config.addSourceProxyFactory(reference.getReference().getName(), proxyFactory);
+		    }
+		}
+	}
+
 }
