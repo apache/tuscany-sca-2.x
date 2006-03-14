@@ -13,8 +13,8 @@
  */
 package org.apache.tuscany.core.injection;
 
+import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 
 /**
@@ -23,9 +23,9 @@ import org.apache.tuscany.model.assembly.ConfiguredService;
  * 
  * @version $Rev$ $Date$
  */
-public class ReferenceTargetFactory<T> implements ObjectFactory<T> {
+public class NonProxiedTargetFactory<T> implements ObjectFactory<T> {
 
-    private AggregateContext parentContext;
+    private ContextResolver resolver;
 
     // the SCDL name of the target component/service for this reference
     private String targetName;
@@ -35,11 +35,11 @@ public class ReferenceTargetFactory<T> implements ObjectFactory<T> {
      * 
      * @throws FactoryInitException
      */
-    public ReferenceTargetFactory(ConfiguredService targetService, AggregateContext parentContext) throws FactoryInitException {
+    public NonProxiedTargetFactory(ConfiguredService targetService, ContextResolver resolver) throws FactoryInitException {
         assert (targetService != null) : "Target service was null";
-        assert (parentContext != null) : "Parent context was null";
+        assert (resolver != null) : "Context resolver was null";
 
-        this.parentContext = parentContext;
+        this.resolver = resolver;
         if (targetService.getAggregatePart() == null) {
             // FIXME not correct
             if (targetService.getService() == null) {
@@ -52,7 +52,7 @@ public class ReferenceTargetFactory<T> implements ObjectFactory<T> {
     }
 
     public T getInstance() throws ObjectCreationException {
-        return (T) parentContext.locateInstance(targetName);
+        return (T) resolver.getCurrentContext().locateInstance(targetName);
     }
 
 }

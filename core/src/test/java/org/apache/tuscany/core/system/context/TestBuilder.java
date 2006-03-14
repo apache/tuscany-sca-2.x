@@ -3,8 +3,8 @@ package org.apache.tuscany.core.system.context;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.runtime.RuntimeContext;
+import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
@@ -26,7 +26,7 @@ public class TestBuilder implements RuntimeConfigurationBuilder<AggregateContext
         runtime.addBuilder(this);
     }
 
-    public void build(AssemblyModelObject object, AggregateContext context) throws BuilderException {
+    public void build(AssemblyModelObject object) throws BuilderException {
         invoked = true;
     }
 

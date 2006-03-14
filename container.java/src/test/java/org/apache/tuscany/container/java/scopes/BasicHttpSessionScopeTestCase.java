@@ -209,7 +209,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     private List<RuntimeConfiguration<InstanceContext>> createConfigurations() throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockFactory.createComponent("TestService1", SessionScopeComponentImpl.class, Scope.SESSION);
-        builder.build(component, null);
+        builder.build(component);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         configs.add((RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration());
         return configs;
@@ -217,7 +217,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     private RuntimeConfiguration<InstanceContext> createConfiguration(String name) throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockFactory.createComponent(name, SessionScopeInitDestroyComponent.class, Scope.SESSION);
-        builder.build(component, null);
+        builder.build(component);
         return (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration();
     }
 }

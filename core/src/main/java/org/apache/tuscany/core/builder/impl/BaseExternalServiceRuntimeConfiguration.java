@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.context.impl.ExternalServiceContextImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -46,6 +47,8 @@ public abstract class BaseExternalServiceRuntimeConfiguration implements Runtime
     private String targetServiceName;
 
     private Map<String,ProxyFactory> targetProxyFactories;
+    
+    private AggregateContext parentContext;
 
     public BaseExternalServiceRuntimeConfiguration(String name, ObjectFactory objectFactory) {
         assert (name != null) : "Name was null";
@@ -98,6 +101,10 @@ public abstract class BaseExternalServiceRuntimeConfiguration implements Runtime
 
     public List getSourceProxyFactories() {
         return Collections.EMPTY_LIST;
+    }
+    
+    public void prepare(AggregateContext parent) {
+        parentContext = parent;
     }
 
 }

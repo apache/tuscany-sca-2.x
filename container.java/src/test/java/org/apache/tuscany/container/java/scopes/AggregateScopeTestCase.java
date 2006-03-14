@@ -165,9 +165,9 @@ public class AggregateScopeTestCase extends TestCase {
                 Scope.SESSION);
         SimpleComponent requestComponent = MockFactory.createComponent("TestService3", SessionScopeComponentImpl.class,
                 Scope.REQUEST);
-        builder.build(component, ctx);
-        builder.build(sessionComponent, ctx);
-        builder.build(requestComponent, ctx);
+        builder.build(component);
+        builder.build(sessionComponent);
+        builder.build(requestComponent);
         List<Extensible> configs = new ArrayList();
         configs.add(component);
         configs.add(sessionComponent);

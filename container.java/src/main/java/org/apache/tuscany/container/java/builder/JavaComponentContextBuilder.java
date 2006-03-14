@@ -24,6 +24,7 @@ import org.apache.tuscany.core.builder.impl.ProxyObjectFactory;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.core.injection.ContextObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
@@ -133,7 +134,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
     // Methods
     // ----------------------------------
 
-    public void build(AssemblyModelObject modelObject, AggregateContext parentContext) throws BuilderException {
+    public void build(AssemblyModelObject modelObject) throws BuilderException {
         if (!(modelObject instanceof SimpleComponent)) {
             return;
         }
@@ -160,6 +161,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
             Class implClass = null;
             Set<Field> fields;
             Set<Method> methods;
+            JavaComponentRuntimeConfiguration config = null;
             try {
                 implClass = javaImpl.getImplementationClass();
                 fields = JavaIntrospectionHelper.getAllFields(implClass);
@@ -167,11 +169,15 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                 String name = component.getName();
                 Constructor ctr = implClass.getConstructor((Class[]) null);
 
+                config = new JavaComponentRuntimeConfiguration(name, JavaIntrospectionHelper
+                        .getDefaultConstructor(implClass), scope);
+                
                 List<Injector> injectors = new ArrayList();
 
                 EventInvoker initInvoker = null;
                 boolean eagerInit = false;
                 EventInvoker destroyInvoker = null;
+                ContextObjectFactory contextFactory = new ContextObjectFactory(config);
                 for (Field field : fields) {
                     ComponentName compName = field.getAnnotation(ComponentName.class);
                     if (compName != null) {
@@ -180,7 +186,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                     }
                     Context context = field.getAnnotation(Context.class);
                     if (context != null) {
-                        Injector injector = new FieldInjector(field, new SingletonObjectFactory(parentContext));
+                        Injector injector = new FieldInjector(field, contextFactory);
                         injectors.add(injector);
                     }
                 }
@@ -204,7 +210,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                     }
                     Context context = method.getAnnotation(Context.class);
                     if (context != null) {
-                        Injector injector = new MethodInjector(method, new SingletonObjectFactory(parentContext));
+                        Injector injector = new MethodInjector(method, contextFactory);
                         injectors.add(injector);
                     }
                 }
@@ -216,8 +222,6 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                         injectors.add(injector);
                     }
                 }
-                JavaComponentRuntimeConfiguration config = new JavaComponentRuntimeConfiguration(name, JavaIntrospectionHelper
-                        .getDefaultConstructor(implClass), eagerInit, initInvoker, destroyInvoker, scope);
                 component.getComponentImplementation().setRuntimeConfiguration(config);
 
                 // create target-side invocation chains for each service offered by the implementation
@@ -241,7 +245,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                     configuredService.setProxyFactory(proxyFactory);
                     if (policyBuilder != null) {
                         // invoke the reference builder to handle target-side metadata
-                        policyBuilder.build(configuredService, parentContext);
+                        policyBuilder.build(configuredService);
                     }
                     // add tail interceptor
                     for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
@@ -254,20 +258,23 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                 Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
                 if (configuredReferences != null) {
                     for (ConfiguredReference reference : configuredReferences.values()) {
-                        Injector injector = createReferenceInjector(config, reference, fields, methods, parentContext);
+                        Injector injector = createReferenceInjector(config, reference, fields, methods);
                         injectors.add(injector);
                     }
                 }
+                
                 config.setSetters(injectors);
+                config.setEagerInit(eagerInit);
+                config.setInitInvoker(initInvoker);
+                config.setDestroyInvoker(destroyInvoker);
+                
             } catch (BuilderException e) {
                 e.addContextName(component.getName());
-                e.addContextName(parentContext.getName());
                 throw e;
             } catch (NoSuchMethodException e) {
                 BuilderConfigException ce = new BuilderConfigException("Class does not have a no-arg constructor", e);
                 ce.setIdentifier(implClass.getName());
                 ce.addContextName(component.getName());
-                ce.addContextName(parentContext.getName());
                 throw ce;
             }
         }
@@ -318,7 +325,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
      * injecting them into the reference
      */
     private Injector createReferenceInjector(JavaComponentRuntimeConfiguration config, ConfiguredReference reference,
-            Set<Field> fields, Set<Method> methods, AggregateContext parentContext) {
+            Set<Field> fields, Set<Method> methods) {
 
         // iterate through the targets
         List<ProxyFactory> targetProxyFactories = new ArrayList();
@@ -347,7 +354,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
             configuredService.setProxyFactory(proxyFactory);
             if (policyBuilder != null) {
                 // invoke the reference builder to handle metadata associated with the reference
-                policyBuilder.build(reference, parentContext);
+                policyBuilder.build(reference);
             }
             objectFactories.add(new ProxyObjectFactory(proxyFactory));
         }

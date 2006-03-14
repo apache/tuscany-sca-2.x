@@ -17,8 +17,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
-import org.apache.tuscany.core.builder.ObjectFactory;
+import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemEntryPointContext;
@@ -29,21 +30,22 @@ import org.apache.tuscany.model.assembly.Scope;
  * 
  * @version $Rev$ $Date$
  */
-public class SystemEntryPointRuntimeConfiguration implements RuntimeConfiguration<EntryPointContext> {
+public class SystemEntryPointRuntimeConfiguration implements RuntimeConfiguration<EntryPointContext>, ContextResolver {
 
     // the name of the entry point
     private String name;
 
-    // the factory for returning a reference to the implementation instance of the component exposed by the entry point
-    private ObjectFactory factory;
+    private AggregateContext parentContext;
+
+    private String targetName;
 
     // ----------------------------------
     // Constructors
     // ----------------------------------
 
-    public SystemEntryPointRuntimeConfiguration(String name, ObjectFactory factory) {
+    public SystemEntryPointRuntimeConfiguration(String name, String targetName) {
         this.name = name;
-        this.factory = factory;
+        this.targetName = targetName;
     }
 
     // ----------------------------------
@@ -51,7 +53,7 @@ public class SystemEntryPointRuntimeConfiguration implements RuntimeConfiguratio
     // ----------------------------------
 
     public EntryPointContext createInstanceContext() throws ContextCreationException {
-        return new SystemEntryPointContext(name, factory);
+        return new SystemEntryPointContext(name, targetName, this);
     }
 
     public Scope getScope() {
@@ -60,10 +62,6 @@ public class SystemEntryPointRuntimeConfiguration implements RuntimeConfiguratio
 
     public String getName() {
         return name;
-    }
-
-    // -- Proxy
-    public void prepare() {
     }
 
     public void addTargetProxyFactory(String serviceName, ProxyFactory pFactory) {
@@ -84,6 +82,14 @@ public class SystemEntryPointRuntimeConfiguration implements RuntimeConfiguratio
 
     public List<ProxyFactory> getSourceProxyFactories() {
         return null;
+    }
+
+    public void prepare(AggregateContext parent) {
+        this.parentContext = parent;
+    }
+
+    public AggregateContext getCurrentContext() {
+        return parentContext;
     }
 
 }

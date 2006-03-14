@@ -24,7 +24,6 @@ import org.apache.tuscany.binding.axis.handler.ExternalWebServiceClient;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
-import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
@@ -105,7 +104,7 @@ public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurat
         policyBuilder = builder;
     }
 
-    public void build(AssemblyModelObject object, Context context) throws BuilderException {
+    public void build(AssemblyModelObject object) throws BuilderException {
         if (!(object instanceof ExternalService)) {
             return;
         }
@@ -137,7 +136,7 @@ public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurat
         configuredService.setProxyFactory(proxyFactory);
         if (policyBuilder != null) {
             // invoke the reference builder to handle additional policy metadata
-            policyBuilder.build(configuredService, context);
+            policyBuilder.build(configuredService);
         }
         // add tail interceptor
         for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {

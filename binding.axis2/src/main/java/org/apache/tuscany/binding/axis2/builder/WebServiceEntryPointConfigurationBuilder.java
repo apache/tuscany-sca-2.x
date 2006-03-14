@@ -107,7 +107,7 @@ public class WebServiceEntryPointConfigurationBuilder implements RuntimeConfigur
         policyBuilder = builder;
     }
 
-    public void build(AssemblyModelObject object, AggregateContext parentContext) throws BuilderException {
+    public void build(AssemblyModelObject object) throws BuilderException {
         if (!(object instanceof EntryPoint)) {
             return;
         }
@@ -136,7 +136,7 @@ public class WebServiceEntryPointConfigurationBuilder implements RuntimeConfigur
         configuredService.setProxyFactory(proxyFactory);
         if (policyBuilder != null) {
             // invoke the reference builder to handle additional policy metadata
-            policyBuilder.build(configuredService, parentContext);
+            policyBuilder.build(configuredService);
         }
         // add tail interceptor
         for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {

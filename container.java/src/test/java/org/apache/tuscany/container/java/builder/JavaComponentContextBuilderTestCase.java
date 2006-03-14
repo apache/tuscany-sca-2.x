@@ -68,7 +68,7 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
 
         for (Component component : components) {
             compMap.put(component.getName(), component);
-            builder.build(component, ctx);
+            builder.build(component);
             RuntimeConfiguration config = (RuntimeConfiguration) component.getComponentImplementation().getRuntimeConfiguration();
             Assert.assertNotNull(config);
         }

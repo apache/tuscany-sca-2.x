@@ -131,7 +131,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     private List<RuntimeConfiguration<InstanceContext>> createConfigurations() throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockFactory.createComponent("TestService1", RequestScopeComponentImpl.class,
                 Scope.REQUEST);
-        builder.build(component, null);
+        builder.build(component);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         configs.add((RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration());
         return configs;
@@ -141,7 +141,7 @@ public class BasicRequestScopeTestCase extends TestCase {
             BuilderException {
         SimpleComponent component = MockFactory.createComponent(name, RequestScopeComponentImpl.class,
                 Scope.REQUEST);
-        builder.build(component, null);
+        builder.build(component);
         return (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration();
     }
 

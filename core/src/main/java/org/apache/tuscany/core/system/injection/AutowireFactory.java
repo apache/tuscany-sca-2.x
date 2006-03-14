@@ -13,18 +13,20 @@
  */
 package org.apache.tuscany.core.system.injection;
 
+import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.injection.ObjectCreationException;
 
 /**
  * Implementation of ObjectFactory that returns an instance by resolving against an AutowireContext.
- *
+ * @deprecated
  * @version $Rev$ $Date$
+ * 
  */
 public class AutowireFactory<T> implements ObjectFactory<T> {
 
-    private AutowireContext autoWireContext;
+    private ContextResolver resolver;
 
     private Class<T> implementationType;
 
@@ -34,15 +36,17 @@ public class AutowireFactory<T> implements ObjectFactory<T> {
      * @param implementationType the type of service required
      * @param autoWireContext    the context to wire against
      */
-    public AutowireFactory(Class<T> implementationType, AutowireContext autoWireContext) {
+    public AutowireFactory(Class<T> implementationType) {
         assert (implementationType != null) : "Implementation type was null";
-        assert (autoWireContext != null) : "Autowire context was null";
         this.implementationType = implementationType;
-        this.autoWireContext = autoWireContext;
     }
 
+    public void setContextResolver(ContextResolver resolver){
+        this.resolver = resolver;
+    }
+    
     public T getInstance() throws ObjectCreationException {
         // todo what about required? should this just return null?
-        return autoWireContext.resolveInstance(implementationType);
+        return ((AutowireContext)resolver.getCurrentContext()).resolveInstance(implementationType);
     }
 }

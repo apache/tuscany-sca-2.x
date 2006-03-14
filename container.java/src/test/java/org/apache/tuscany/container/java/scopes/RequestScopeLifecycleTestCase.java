@@ -121,7 +121,7 @@ public class RequestScopeLifecycleTestCase extends TestCase {
                 Scope.REQUEST);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
-            builder.build(ca[i], null);
+            builder.build(ca[i]);
             configs.add((RuntimeConfiguration<InstanceContext>) ca[i].getComponentImplementation().getRuntimeConfiguration());
 
         }
@@ -136,7 +136,7 @@ public class RequestScopeLifecycleTestCase extends TestCase {
         ca[2] = MockFactory.createComponent("three", OrderedInitPojo.class, Scope.REQUEST);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
-            builder.build(ca[i], null);
+            builder.build(ca[i]);
             configs.add((RuntimeConfiguration<InstanceContext>) ca[i].getComponentImplementation().getRuntimeConfiguration());
 
         }

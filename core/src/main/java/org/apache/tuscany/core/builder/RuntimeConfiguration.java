@@ -3,6 +3,7 @@ package org.apache.tuscany.core.builder;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.model.assembly.Scope;
@@ -36,8 +37,6 @@ public interface RuntimeConfiguration<T extends Context> {
      */
     public String getName();
 
-    public void prepare();
-
     /**
      * Adds a target-side proxy factory for the given service name to the configuration. Target-side proxy factories
      * contain the invocation chains associated with the destination service of a wire and are responsible for
@@ -68,5 +67,13 @@ public interface RuntimeConfiguration<T extends Context> {
      * reference.
      */
     public List<ProxyFactory> getSourceProxyFactories();
+
+    /**
+     * Called to signal to the configuration that its parent context has been activated and that it shoud perform any
+     * required initialization steps
+     * 
+     * @param parent the parent context's configuration
+     */
+    public void prepare(AggregateContext parent);
 
 }

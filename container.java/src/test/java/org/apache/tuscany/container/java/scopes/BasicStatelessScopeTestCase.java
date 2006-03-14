@@ -108,7 +108,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
             throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockFactory.createComponent("TestService1", StatelessComponentImpl.class,
                 Scope.INSTANCE);
-        builder.build(component, null);
+        builder.build(component);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         configs.add((RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration());
         return configs;
@@ -118,7 +118,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
             throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockFactory.createComponent(name, StatelessComponentImpl.class,
                 Scope.INSTANCE);
-        builder.build(component, null);
+        builder.build(component);
         return (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration();
     }
 

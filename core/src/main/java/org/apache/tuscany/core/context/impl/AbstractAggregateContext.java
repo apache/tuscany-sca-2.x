@@ -334,6 +334,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                             .getComponentImplementation().getRuntimeConfiguration();
                     wireSource(config);
                     buildTarget(config);
+                    config.prepare(this);
                     try {
                         if (config.getSourceProxyFactories() != null) {
                             for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()) {
@@ -356,6 +357,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                             .getConfiguredReference().getRuntimeConfiguration();
                     wireSource(config);
                     buildTarget(config);
+                    config.prepare(this);
                     try {
                         if (config.getSourceProxyFactories() != null) {
                             for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()) {
@@ -377,6 +379,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                     RuntimeConfiguration<InstanceContext> config = (RuntimeConfiguration<InstanceContext>) es
                             .getConfiguredService().getRuntimeConfiguration();
                     buildTarget(config);
+                    config.prepare(this);
                     try {
                         if (config.getSourceProxyFactories() != null) {
                             for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()) {
@@ -434,10 +437,12 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     }
 
     protected void registerConfiguration(RuntimeConfiguration<InstanceContext> configuration) throws ConfigurationException {
+        configuration.prepare(this);
         if (lifecycleState == RUNNING) {
             if (scopeIndex.get(configuration.getName()) != null) {
                 throw new DuplicateNameException(configuration.getName());
             }
+            // configuration.prepare(this);
             ScopeContext scope = scopeContexts.get(configuration.getScope());
             if (scope == null) {
                 ConfigurationException e = new ConfigurationException("Component has an unknown scope");
@@ -626,7 +631,6 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 }
             }
         }
-        source.prepare();
     }
 
     /**

@@ -59,15 +59,15 @@ import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
+import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
-import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
+import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemObjectRuntimeConfiguration;
-import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.AggregatePart;
 import org.apache.tuscany.model.assembly.Component;
@@ -85,7 +85,7 @@ import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
  * according to their exposed interface. A system context may contain child aggregate contexts but an entry point in a
  * child context will only be outwardly accessible if there is an entry point that exposes it configured in the
  * top-level system context.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class SystemAggregateContextImpl extends AbstractContext implements SystemAggregateContext {
@@ -161,15 +161,8 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         this.assemblyFactory = null;
     }
 
-    public SystemAggregateContextImpl(
-            String name,
-            AggregateContext parent,
-            AutowireContext autowire,
-            ScopeStrategy strategy,
-            EventContext ctx,
-            ConfigurationContext configCtx,
-            MonitorFactory factory,
-            StAXLoaderRegistry loaderRegistry,
+    public SystemAggregateContextImpl(String name, AggregateContext parent, AutowireContext autowire, ScopeStrategy strategy,
+            EventContext ctx, ConfigurationContext configCtx, MonitorFactory factory, StAXLoaderRegistry loaderRegistry,
             SystemAssemblyFactory assemblyFactory) {
         super(name);
         this.parentContext = parent;
@@ -425,6 +418,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     }
 
     protected void registerConfiguration(RuntimeConfiguration<InstanceContext> configuration) throws ConfigurationException {
+        configuration.prepare(this);
         if (lifecycleState == RUNNING) {
             if (scopeIndex.get(configuration.getName()) != null) {
                 throw new DuplicateNameException(configuration.getName());
@@ -591,7 +585,11 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         } else if (ProxyFactoryFactory.class.equals(instanceInterface)) {
             return instanceInterface.cast(proxyFactoryFactory);
         } else if (StAXLoaderRegistry.class.equals(instanceInterface)) {
-            return instanceInterface.cast(loaderRegistry);
+            if (loaderRegistry != null) {
+                return instanceInterface.cast(loaderRegistry);
+            } else {
+                return instanceInterface.cast(autowireContext.resolveInstance(StAXLoaderRegistry.class));
+            }
         } else if (instanceInterface.isAssignableFrom(SystemAssemblyFactory.class)) {
             return instanceInterface.cast(assemblyFactory);
         }

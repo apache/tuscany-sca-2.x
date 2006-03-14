@@ -19,7 +19,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
-import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 
 /**
@@ -47,9 +46,9 @@ public class HierarchicalBuilder implements RuntimeConfigurationBuilder {
         return readOnlyBuilders;
     }
     
-    public void build(AssemblyModelObject object, Context context) throws BuilderException {
+    public void build(AssemblyModelObject object) throws BuilderException {
         for (RuntimeConfigurationBuilder builder : builders) {
-            builder.build(object, context);
+            builder.build(object);
         }
 
     }

@@ -15,7 +15,6 @@ package org.apache.tuscany.container.js.builder;
 
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
-import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.MessageHandler;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -50,7 +49,7 @@ public class MockHandlerBuilder implements RuntimeConfigurationBuilder {
         this.request = request;
     }
 
-    public void build(AssemblyModelObject modelObject, Context context) throws BuilderException {
+    public void build(AssemblyModelObject modelObject) throws BuilderException {
         if (source) {
             if (!(modelObject instanceof ConfiguredReference)) {
                 return;

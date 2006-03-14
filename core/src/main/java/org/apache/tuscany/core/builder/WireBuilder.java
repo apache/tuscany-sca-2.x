@@ -17,12 +17,18 @@ import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 
 /**
- * Responsible for finalizing target-side proxy factories and bridging
- * {@link org.apache.tuscany.core.invocation.InvocationConfiguration}s held by source- and target-side proxy factories.
+ * Implementations perform the second phase of converting a logical model representing an assembly into a series of
+ * runtime or executable artifacts. Specifically, they are responsible for finalizing target-side proxy factories and
+ * bridging {@link org.apache.tuscany.core.invocation.InvocationConfiguration}s held by source- and target-side proxy
+ * factories. <code>WireBuilder</code>s generally operate by target implementation type. In other words, for a wire
+ * from a Java source to a JavaScript target, the Javascript <code>WireBuilder</code> will complete the wire. This is
+ * necessary as a <code>WireBuilder</code> must set a {@link org.apache.tuscany.core.invocation.TargetInvoker} that is
+ * responsible for dispatching to an implementation on the source side of the wire.
  * <p>
  * Wire builders may optimize the invocation chains based on certain characteristics of th wire, such as source and
  * target scopes.
  * 
+ * @see org.apache.tuscany.core.builder.RuntimeConfigurationBuilder
  * @version $Rev$ $Date$
  */
 public interface WireBuilder {

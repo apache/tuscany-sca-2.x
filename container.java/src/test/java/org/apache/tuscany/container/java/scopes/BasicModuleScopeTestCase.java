@@ -110,7 +110,7 @@ public class BasicModuleScopeTestCase extends TestCase {
 
     private List<RuntimeConfiguration<InstanceContext>> createConfigurations() throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockFactory.createComponent("TestService1", ModuleScopeComponentImpl.class, Scope.MODULE);
-        builder.build(component, null);
+        builder.build(component);
         List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
         configs.add((RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration());
         return configs;
@@ -120,7 +120,7 @@ public class BasicModuleScopeTestCase extends TestCase {
             throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockFactory.createComponent(name, ModuleScopeInitDestroyComponent.class,
                 Scope.MODULE);
-        builder.build(component, null);
+        builder.build(component);
         return (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration();
     }
 }

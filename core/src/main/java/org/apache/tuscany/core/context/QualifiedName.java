@@ -38,7 +38,9 @@ public class QualifiedName {
      * @throws InvalidNameException if the name is in an invalid format
      */
     public QualifiedName(String qualifiedName) throws InvalidNameException {
-        assert (qualifiedName != null) : "Name was null";
+        if (qualifiedName == null){
+            return;
+        }
         int pos = qualifiedName.indexOf(QualifiedName.NAME_SEPARATOR);
         switch (pos) {
         case -1:

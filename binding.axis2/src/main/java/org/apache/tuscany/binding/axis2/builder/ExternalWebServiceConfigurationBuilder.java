@@ -107,7 +107,7 @@ public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurat
         policyBuilder = builder;
     }
 
-    public void build(AssemblyModelObject object, Context context) throws BuilderException {
+    public void build(AssemblyModelObject object) throws BuilderException {
         if (!(object instanceof ExternalService)) {
             return;
         }
@@ -140,7 +140,7 @@ public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurat
         configuredService.setProxyFactory(proxyFactory);
         if (policyBuilder != null) {
             // invoke the reference builder to handle additional policy metadata
-            policyBuilder.build(configuredService, context);
+            policyBuilder.build(configuredService);
         }
         // add tail interceptor
         for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {

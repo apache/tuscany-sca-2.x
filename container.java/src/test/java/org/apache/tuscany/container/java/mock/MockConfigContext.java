@@ -52,7 +52,7 @@ public class MockConfigContext implements ConfigurationContext {
     }
 
     public void build(AggregateContext parent, Extensible model) throws BuilderConfigException {
-        AssemblyVisitor visitor = new AssemblyVisitor(parent, builders);
+        AssemblyVisitor visitor = new AssemblyVisitor(builders);
         visitor.start(model);
     }
 

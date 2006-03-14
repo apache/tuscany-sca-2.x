@@ -644,7 +644,7 @@ public class MockFactory {
 
         Component sc = createAggregateComponent(name);
         SystemComponentContextBuilder builder = new SystemComponentContextBuilder();
-        builder.build(sc, aggregateContext);
+        builder.build(sc);
         return (RuntimeConfiguration<InstanceContext>) sc.getComponentImplementation().getRuntimeConfiguration();
     }
 

@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
-import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
@@ -31,6 +30,7 @@ import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.ConfiguredPort;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
@@ -39,7 +39,6 @@ import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.RuntimeConfigurationHolder;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 
@@ -111,7 +110,7 @@ public class AssemblyVisitorTestCase extends TestCase {
 
         List<RuntimeConfigurationBuilder> builders = new ArrayList();
         builders.add(new TestBuilder());
-        AssemblyVisitor visitor = new AssemblyVisitor(null, builders);
+        AssemblyVisitor visitor = new AssemblyVisitor(builders);
         module.initialize(assemblyContext);
         visitor.start(module);
 
@@ -126,7 +125,7 @@ public class AssemblyVisitorTestCase extends TestCase {
     }
 
     private static class TestBuilder implements RuntimeConfigurationBuilder {
-        public void build(AssemblyModelObject model, Context context) throws BuilderException {
+        public void build(AssemblyModelObject model) throws BuilderException {
             if (model instanceof ConfiguredPort) {
                 ((ConfiguredPort) model).setProxyFactory(MARKER);
             }

@@ -13,11 +13,12 @@
  */
 package org.apache.tuscany.core.system.context;
 
-import org.apache.tuscany.core.builder.ObjectFactory;
+import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.context.AbstractContext;
-import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EntryPointContext;
+import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.TargetException;
 
 /**
@@ -28,20 +29,23 @@ import org.apache.tuscany.core.context.TargetException;
  */
 public class SystemEntryPointContext extends AbstractContext implements EntryPointContext {
 
-    // responsible for resolving the component implementation instance exposed by the entry point
-    private ObjectFactory factory;
-
     // a reference to the component's implementation instance exposed by the entry point
     private Object cachedInstance;
 
+    private ContextResolver resolver;
+    
+    private QualifiedName targetName;
+    
     // ----------------------------------
     // Constructors
     // ----------------------------------
 
-    public SystemEntryPointContext(String name, ObjectFactory factory) {
+    public SystemEntryPointContext(String name, String targetName, ContextResolver resolver) {
         super(name);
-        assert (factory != null) : "Object factory was null";
-        this.factory = factory;
+        assert (resolver != null) : "Context resolver was null";
+        assert (targetName != null) : "Target name was null";
+        this.resolver = resolver;
+        this.targetName = new QualifiedName(targetName);
     }
 
     // ----------------------------------
@@ -55,7 +59,11 @@ public class SystemEntryPointContext extends AbstractContext implements EntryPoi
     public Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
         try {
             if (cachedInstance == null) {
-                cachedInstance = factory.getInstance();
+                InstanceContext ctx = resolver.getCurrentContext().getContext(targetName.getPartName());
+                if (ctx == null){
+                    return null;
+                }
+                cachedInstance = ctx.getInstance(targetName);
             }
             return cachedInstance;
         } catch (TargetException e) {
@@ -72,11 +80,11 @@ public class SystemEntryPointContext extends AbstractContext implements EntryPoi
         lifecycleState = STOPPED;
     }
 
-    public Object getImplementationInstance() throws TargetException{
+    public Object getImplementationInstance() throws TargetException {
         return getInstance(null);
     }
 
-    public Object getImplementationInstance(boolean notify) throws TargetException{
-        return getInstance(null,notify);
+    public Object getImplementationInstance(boolean notify) throws TargetException {
+        return getInstance(null, notify);
     }
 }

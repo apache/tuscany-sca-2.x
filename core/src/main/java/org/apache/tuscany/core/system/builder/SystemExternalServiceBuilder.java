@@ -17,12 +17,10 @@ import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.injection.InterAggregateReferenceFactory;
-import org.apache.tuscany.core.injection.ReferenceTargetFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemExternalServiceRuntimeConfiguration;
-import org.apache.tuscany.core.system.injection.AutowireFactory;
+import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.ExternalService;
 
@@ -43,7 +41,7 @@ public class SystemExternalServiceBuilder implements RuntimeConfigurationBuilder
     // Methods
     // ----------------------------------
 
-    public void build(AssemblyModelObject modelObject, AggregateContext context) throws BuilderException {
+    public void build(AssemblyModelObject modelObject) throws BuilderException {
         if (!(modelObject instanceof ExternalService)) {
             return;
         }
@@ -58,7 +56,7 @@ public class SystemExternalServiceBuilder implements RuntimeConfigurationBuilder
         SystemBinding binding = (SystemBinding)externalService.getBindings().get(0);
         if (binding.getTargetName() != null) {
             SystemExternalServiceRuntimeConfiguration config = new SystemExternalServiceRuntimeConfiguration(externalService
-                    .getName(), new InterAggregateReferenceFactory(binding.getTargetName(), context));
+                    .getName(), new InterAggregateReferenceFactory(binding.getTargetName()));
             externalService.getConfiguredService().setRuntimeConfiguration(config);
         } else if (externalService.getConfiguredService().getService().getServiceContract().getInterface() != null) {
             // autowire
@@ -67,11 +65,10 @@ public class SystemExternalServiceBuilder implements RuntimeConfigurationBuilder
                 BuilderException e = new BuilderConfigException("Interface type not specified");
                 e.setIdentifier(externalService.getName());
                 e.addContextName(externalService.getName());
-                e.addContextName(context.getName());
                 throw e;
             }
             SystemExternalServiceRuntimeConfiguration config = new SystemExternalServiceRuntimeConfiguration(externalService
-                    .getName(), new AutowireFactory(claz, (AutowireContext) context));
+                    .getName(), new AutowireObjectFactory(claz)); 
             externalService.getConfiguredService().setRuntimeConfiguration(config);
         }
     }

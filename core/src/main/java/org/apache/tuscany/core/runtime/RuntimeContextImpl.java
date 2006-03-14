@@ -225,7 +225,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     // ----------------------------------
 
     public synchronized void build(AggregateContext parent, Extensible model) throws BuilderConfigException {
-        AssemblyVisitor visitor = new AssemblyVisitor(parent, builders);
+        AssemblyVisitor visitor = new AssemblyVisitor(builders);
         visitor.start(model);
     }
 

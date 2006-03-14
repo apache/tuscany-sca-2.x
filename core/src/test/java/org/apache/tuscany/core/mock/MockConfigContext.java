@@ -27,7 +27,7 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.model.assembly.Extensible;
 
 /**
- *  A mock configuration context
+ * A mock configuration context
  * 
  * @version $Rev$ $Date$
  */
@@ -36,18 +36,19 @@ public class MockConfigContext implements ConfigurationContext {
     private List<RuntimeConfigurationBuilder> builders = new ArrayList();
 
     public MockConfigContext(List<RuntimeConfigurationBuilder> builders) {
-        this.builders=builders;
+        this.builders = builders;
     }
 
     public void configure(Extensible model) throws ConfigurationException {
     }
 
     public void build(AggregateContext parent, Extensible model) throws BuilderConfigException {
-        AssemblyVisitor visitor = new AssemblyVisitor(parent, builders);
+        AssemblyVisitor visitor = new AssemblyVisitor(builders);
         visitor.start(model);
     }
 
-    public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope, ScopeContext targetScopeContext) throws BuilderConfigException {
+    public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+            ScopeContext targetScopeContext) throws BuilderConfigException {
     }
 
     public void wire(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {

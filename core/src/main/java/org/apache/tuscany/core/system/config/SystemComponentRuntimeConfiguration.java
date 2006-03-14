@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
+import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.InstanceContext;
@@ -20,11 +21,13 @@ import org.apache.tuscany.model.assembly.Scope;
  * 
  * @version $Rev$ $Date$
  */
-public class SystemComponentRuntimeConfiguration implements RuntimeConfiguration<InstanceContext> {
+public class SystemComponentRuntimeConfiguration implements RuntimeConfiguration<InstanceContext>, ContextResolver {
 
     // the component name as configured in the hosting module
     private String name;
 
+    private AggregateContext parentContext;
+    
     // the implementation type constructor
     private Constructor ctr;
 
@@ -83,6 +86,10 @@ public class SystemComponentRuntimeConfiguration implements RuntimeConfiguration
         stateless = (scope == Scope.INSTANCE);
     }
 
+    public SystemComponentRuntimeConfiguration(String name, Constructor ctr, Scope scope) {
+        this(name, ctr, null, false, null, null, scope);
+    }
+
     // ----------------------------------
     // Methods
     // ----------------------------------
@@ -108,11 +115,6 @@ public class SystemComponentRuntimeConfiguration implements RuntimeConfiguration
         }
     }
     
-    // -- Proxy
-
-    public void prepare() {
-    }
-
     public void addTargetProxyFactory(String serviceName, ProxyFactory factory) {
         throw new UnsupportedOperationException();
     }
@@ -131,6 +133,30 @@ public class SystemComponentRuntimeConfiguration implements RuntimeConfiguration
 
     public List<ProxyFactory> getSourceProxyFactories() {
         return null;
+    }
+
+    public void setSetters(List<Injector> setters) {
+        this.setters = setters;
+    }
+
+    public void setEagerInit(boolean val) {
+        eagerInit = val;
+    }
+
+    public void setInitInvoker(EventInvoker invoker) {
+        init = invoker;
+    }
+
+    public void setDestroyInvoker(EventInvoker invoker) {
+        destroy = invoker;
+    }
+
+    public void prepare(AggregateContext parent) {
+        parentContext = parent;
+    }
+
+    public AggregateContext getCurrentContext() {
+        return parentContext;
     }
 
 }

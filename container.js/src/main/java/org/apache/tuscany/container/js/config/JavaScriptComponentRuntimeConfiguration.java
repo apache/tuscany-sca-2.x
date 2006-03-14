@@ -25,6 +25,7 @@ import org.apache.tuscany.container.js.context.JavaScriptComponentContext;
 import org.apache.tuscany.container.js.rhino.RhinoScript;
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.model.assembly.Scope;
@@ -46,6 +47,8 @@ public class JavaScriptComponentRuntimeConfiguration implements RuntimeConfigura
 
     private RhinoScript invoker;
 
+    private AggregateContext parentContext;
+    
     public JavaScriptComponentRuntimeConfiguration(String name, Scope scope, Map<String, Class> services,
             Map<String, Object> properties, RhinoScript invoker) {
         this.name = name;
@@ -92,8 +95,9 @@ public class JavaScriptComponentRuntimeConfiguration implements RuntimeConfigura
         return sourceProxyFactories;
     }
 
-    public void prepare() {
-
+    public void prepare(AggregateContext parent) {
+        parentContext = parent;
     }
+
 
 }

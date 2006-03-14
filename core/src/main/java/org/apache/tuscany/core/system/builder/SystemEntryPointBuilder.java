@@ -14,13 +14,14 @@
 package org.apache.tuscany.core.system.builder;
 
 import org.apache.tuscany.core.builder.BuilderException;
+import org.apache.tuscany.core.builder.BuilderInitException;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.injection.FactoryInitException;
-import org.apache.tuscany.core.injection.ReferenceTargetFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemEntryPointRuntimeConfiguration;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
 
 /**
@@ -41,7 +42,7 @@ public class SystemEntryPointBuilder implements RuntimeConfigurationBuilder<Aggr
     // Methods
     // ----------------------------------
 
-    public void build(AssemblyModelObject modelObject, AggregateContext context) throws BuilderException {
+    public void build(AssemblyModelObject modelObject) throws BuilderException {
         if (!(modelObject instanceof EntryPoint)) {
             return;
         }
@@ -51,13 +52,25 @@ public class SystemEntryPointBuilder implements RuntimeConfigurationBuilder<Aggr
             return;
         }
         try {
-            Class type = entryPoint.getConfiguredReference().getReference().getServiceContract().getInterface();
+            // Class type = entryPoint.getConfiguredReference().getReference().getServiceContract().getInterface();
+
+            String targetName = null;
+            ConfiguredService targetService = entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0);
+            if (targetService.getAggregatePart() == null) {
+                // FIXME not correct
+                if (targetService.getService() == null) {
+                    BuilderInitException e = new BuilderInitException("No target service specified on ");
+                    e.setIdentifier(entryPoint.getName());
+                }
+                targetName = targetService.getService().getName();
+            } else {
+                targetName = targetService.getAggregatePart().getName();
+            }
             SystemEntryPointRuntimeConfiguration config = new SystemEntryPointRuntimeConfiguration(entryPoint.getName(),
-                    new ReferenceTargetFactory(entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0), context));
+                    targetName);
             entryPoint.getConfiguredReference().setRuntimeConfiguration(config);
         } catch (FactoryInitException e) {
             e.addContextName(entryPoint.getName());
-            e.addContextName(context.getName());
             throw e;
         }
     }

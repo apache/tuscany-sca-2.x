@@ -13,6 +13,7 @@
  */
 package org.apache.tuscany.core.injection;
 
+import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.InstanceContext;
@@ -27,7 +28,7 @@ import org.apache.tuscany.core.context.TargetException;
  */
 public class InterAggregateReferenceFactory<T> implements ObjectFactory<T> {
 
-    private AggregateContext parentContext;
+    private ContextResolver resolver;
 
     private QualifiedName targetQualifiedName;
 
@@ -37,20 +38,22 @@ public class InterAggregateReferenceFactory<T> implements ObjectFactory<T> {
      * @param service
      * @param parentContext
      */
-    public InterAggregateReferenceFactory(String targetName, AggregateContext parentContext) {
-        assert (parentContext != null) : "Parent context was null";
+    public InterAggregateReferenceFactory(String targetName) {
         targetQualifiedName = new QualifiedName(targetName);
-        this.parentContext = parentContext;
     }
 
+    public void setContextResolver(ContextResolver resolver){
+        this.resolver = resolver;
+    }
+    
     public T getInstance() throws ObjectCreationException {
         // only return entry points since this is an inter-module wire
-        Object o = parentContext.getInstance(targetQualifiedName);
+        Object o = resolver.getCurrentContext().getInstance(targetQualifiedName);
         if (o != null) {
             return (T) o;
         } else {
             // walk up the hierarchy of aggregate contexts
-            AggregateContext ctx = parentContext;
+            AggregateContext ctx = resolver.getCurrentContext();
             do {
                 if (ctx == null) {
                     break; // reached top of context hierarchy

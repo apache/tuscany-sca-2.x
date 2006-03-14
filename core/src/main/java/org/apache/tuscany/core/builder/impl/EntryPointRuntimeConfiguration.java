@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.impl.EntryPointContextImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -42,6 +43,8 @@ public abstract class EntryPointRuntimeConfiguration implements RuntimeConfigura
     private MessageFactory msgFactory;
 
     private List sourceProxyFactories;
+    
+    private AggregateContext parentContext;
 
     public EntryPointRuntimeConfiguration(String name, String referenceName, MessageFactory msgFactory) {
         assert (name != null) : "Entry point name was null";
@@ -93,5 +96,9 @@ public abstract class EntryPointRuntimeConfiguration implements RuntimeConfigura
             sourceProxyFactories.add(proxyFactory);
         }
         return sourceProxyFactories;
+    }
+    
+    public void prepare(AggregateContext parent) {
+        parentContext = parent;
     }
 }

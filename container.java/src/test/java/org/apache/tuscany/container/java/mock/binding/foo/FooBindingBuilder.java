@@ -25,7 +25,6 @@ import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
 import org.apache.tuscany.core.builder.impl.EntryPointRuntimeConfiguration;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
-import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.injection.ObjectCreationException;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
@@ -107,7 +106,7 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
         policyBuilder.addBuilder(builder);
     }
 
-    public void build(AssemblyModelObject object, Context context) throws BuilderException {
+    public void build(AssemblyModelObject object) throws BuilderException {
         if (object instanceof EntryPoint) {
             EntryPoint ep = (EntryPoint) object;
             if (ep.getBindings().size() < 1 || !(ep.getBindings().get(0) instanceof FooBinding)) {
@@ -134,7 +133,7 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
             configuredService.setProxyFactory(proxyFactory);
             if (policyBuilder != null) {
                 // invoke the reference builder to handle additional policy metadata
-                policyBuilder.build(configuredService, context);
+                policyBuilder.build(configuredService);
             }
             // add tail interceptor
             for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
@@ -169,7 +168,7 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
             configuredService.setProxyFactory(proxyFactory);
             if (policyBuilder != null) {
                 // invoke the reference builder to handle additional policy metadata
-                policyBuilder.build(configuredService, context);
+                policyBuilder.build(configuredService);
             }
             // add tail interceptor
             for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {

@@ -18,12 +18,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
+import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.NoAccessorException;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
@@ -37,13 +38,14 @@ import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
+import org.apache.tuscany.core.injection.ContextObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FactoryInitException;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.MethodInjector;
-import org.apache.tuscany.core.injection.ReferenceTargetFactory;
+import org.apache.tuscany.core.injection.NonProxiedTargetFactory;
 import org.apache.tuscany.core.injection.SDOObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
@@ -52,6 +54,7 @@ import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.config.SystemComponentRuntimeConfiguration;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
+import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ComponentImplementation;
@@ -76,7 +79,7 @@ import commonj.sdo.DataObject;
  * simple and aggregate component types may be injected and autowired.
  * <p>
  * Note that system component references are not proxied.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class SystemComponentContextBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
@@ -92,7 +95,7 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
     // Methods
     // ----------------------------------
 
-    public void build(AssemblyModelObject modelObject, AggregateContext parentContext) throws BuilderException {
+    public void build(AssemblyModelObject modelObject) throws BuilderException {
         if (!(modelObject instanceof Component)) {
             return;
         }
@@ -100,7 +103,6 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
 
         Class implClass = null;
         Scope scope = null;
-
         // Get the component implementation
         ComponentImplementation componentImplementation = component.getComponentImplementation();
         if (componentImplementation instanceof SystemImplementation && componentImplementation.getRuntimeConfiguration() == null) {
@@ -154,11 +156,15 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
         }
         Set<Field> fields;
         Set<Method> methods;
+        SystemComponentRuntimeConfiguration config = null;
         try {
             fields = JavaIntrospectionHelper.getAllFields(implClass);
             methods = JavaIntrospectionHelper.getAllUniqueMethods(implClass);
             String name = component.getName();
             Constructor ctr = implClass.getConstructor((Class[]) null);
+            config = new SystemComponentRuntimeConfiguration(name, JavaIntrospectionHelper.getDefaultConstructor(implClass),
+                    scope);
+            ContextObjectFactory contextFactory = new ContextObjectFactory(config);
 
             List<Injector> injectors = new ArrayList();
 
@@ -177,7 +183,7 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
                 Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
                 if (configuredReferences != null) {
                     for (ConfiguredReference reference : configuredReferences.values()) {
-                        Injector injector = createReferenceInjector(reference, fields, methods, parentContext);
+                        Injector injector = createReferenceInjector(reference, fields, methods, config);
                         injectors.add(injector);
                     }
                 }
@@ -195,27 +201,27 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
                 }
                 Context context = field.getAnnotation(Context.class);
                 if (context != null) {
-                    Injector injector = new FieldInjector(field, new SingletonObjectFactory(parentContext));
+                    Injector injector = new FieldInjector(field, contextFactory);
                     injectors.add(injector);
                 }
                 ParentContext parentField = field.getAnnotation(ParentContext.class);
                 if (parentField != null) {
-                    if (!(parentContext instanceof AggregateContext)) {
-                        BuilderConfigException e = new BuilderConfigException("Component must be a child of");
-                        e.setIdentifier(AggregateContext.class.getName());
-                        throw e;
-                    }
-                    Injector injector = new FieldInjector(field, new SingletonObjectFactory((parentContext)));
+//                    if (!(parentContext instanceof AggregateContext)) {
+//                        BuilderConfigException e = new BuilderConfigException("Component must be a child of");
+//                        e.setIdentifier(AggregateContext.class.getName());
+//                        throw e;
+//                    }
+                    Injector injector = new FieldInjector(field, contextFactory);
                     injectors.add(injector);
                 }
                 Autowire autowire = field.getAnnotation(Autowire.class);
                 if (autowire != null) {
-                    if (!(parentContext instanceof AutowireContext)) {
-                        BuilderConfigException e = new BuilderConfigException("Parent context must implement");
-                        e.setIdentifier(AutowireContext.class.getName());
-                        throw e;
-                    }
-                    AutowireContext ctx = (AutowireContext) parentContext;
+//                    if (!(parentContext instanceof AutowireContext)) {
+//                        BuilderConfigException e = new BuilderConfigException("Parent context must implement");
+//                        e.setIdentifier(AutowireContext.class.getName());
+//                        throw e;
+//                    }
+//                    AutowireContext ctx = (AutowireContext) parentContext;
                     // for system aggregate context types, only allow autowire of certain types, otherwise we have a
                     // chicken-and-egg problem
                     if (SystemAggregateContext.class.isAssignableFrom(implClass)
@@ -228,13 +234,13 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
                         throw e;
                     }
 
-                    Object o = ctx.resolveInstance(field.getType());
-                    if (autowire.required() && o == null) {
-                        BuilderConfigException e = new BuilderConfigException("No autowire found for field");
-                        e.setIdentifier(field.getName());
-                        throw e;
-                    }
-                    Injector injector = new FieldInjector(field, new SingletonObjectFactory(o));
+//                    Object o = ctx.resolveInstance(field.getType());
+//                    if (autowire.required() && o == null) {
+//                        BuilderConfigException e = new BuilderConfigException("No autowire found for field");
+//                        e.setIdentifier(field.getName());
+//                        throw e;
+//                    }
+                    Injector injector = new FieldInjector(field, new AutowireObjectFactory(field.getType(),autowire.required(),config));
                     injectors.add(injector);
                 }
             }
@@ -257,32 +263,32 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
                 }
                 Context context = method.getAnnotation(Context.class);
                 if (context != null) {
-                    Injector injector = new MethodInjector(method, new SingletonObjectFactory(parentContext));
+                    Injector injector = new MethodInjector(method, contextFactory);
                     injectors.add(injector);
                 }
                 ParentContext parentMethod = method.getAnnotation(ParentContext.class);
                 if (parentMethod != null) {
-                    if (!(parentContext instanceof AggregateContext)) {
-                        BuilderConfigException e = new BuilderConfigException("Component must be a child of ");
-                        e.setIdentifier(AggregateContext.class.getName());
-                        throw e;
-                    }
-                    Injector injector = new MethodInjector(method, new SingletonObjectFactory((parentContext)));
+//                    if (!(parentContext instanceof AggregateContext)) {
+//                        BuilderConfigException e = new BuilderConfigException("Component must be a child of ");
+//                        e.setIdentifier(AggregateContext.class.getName());
+//                        throw e;
+//                    }
+                    Injector injector = new MethodInjector(method, contextFactory);
                     injectors.add(injector);
                 }
                 Autowire autowire = method.getAnnotation(Autowire.class);
                 if (autowire != null) {
-                    if (!(parentContext instanceof AutowireContext)) {
-                        BuilderConfigException e = new BuilderConfigException("Parent context must implement)");
-                        e.setIdentifier(AutowireContext.class.getName());
-                        throw e;
-                    }
+//                    if (!(parentContext instanceof AutowireContext)) {
+//                        BuilderConfigException e = new BuilderConfigException("Parent context must implement)");
+//                        e.setIdentifier(AutowireContext.class.getName());
+//                        throw e;
+//                    }
                     if (method.getParameterTypes() == null || method.getParameterTypes().length != 1) {
                         BuilderConfigException e = new BuilderConfigException("Autowire setter methods must take one parameter");
                         e.setIdentifier(method.getName());
                         throw e;
                     }
-                    AutowireContext ctx = (AutowireContext) parentContext;
+//                    AutowireContext ctx = (AutowireContext) parentContext;
                     Class paramType = method.getParameterTypes()[0];
                     // for system aggregate context types, only allow autowire of certain types, otherwise we have a
                     // chicken-and-egg problem
@@ -293,24 +299,30 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
                         e.setIdentifier(paramType.getName());
                         throw e;
                     }
-                    Object o = ctx.resolveInstance(paramType);
-                    if (autowire.required() && o == null) {
-                        BuilderConfigException e = new BuilderConfigException("No autowire found for method ");
-                        e.setIdentifier(method.getName());
-                        throw e;
-                    }
+//                    Object o = ctx.resolveInstance(paramType);
+//                    if (autowire.required() && o == null) {
+//                        BuilderConfigException e = new BuilderConfigException("No autowire found for method ");
+//                        e.setIdentifier(method.getName());
+//                        throw e;
+//                    }
 
-                    Injector injector = new MethodInjector(method, new SingletonObjectFactory(o));
+                    Injector injector = new MethodInjector(method, new AutowireObjectFactory(paramType,autowire.required(), config));
                     injectors.add(injector);
                 }
             }
             // decorate the logical model
-            SystemComponentRuntimeConfiguration config = new SystemComponentRuntimeConfiguration(name, JavaIntrospectionHelper
-                    .getDefaultConstructor(implClass), injectors, eagerInit, initInvoker, destroyInvoker, scope);
+            config.setSetters(injectors);
+            config.setEagerInit(eagerInit);
+            config.setInitInvoker(initInvoker);
+            config.setDestroyInvoker(destroyInvoker);
+
+            // SystemComponentRuntimeConfiguration config = new SystemComponentRuntimeConfiguration(name,
+            // JavaIntrospectionHelper
+            // .getDefaultConstructor(implClass), injectors, eagerInit, initInvoker, destroyInvoker, scope);
             componentImplementation.setRuntimeConfiguration(config);
         } catch (BuilderConfigException e) {
             e.addContextName(component.getName());
-            e.addContextName(parentContext.getName());
+            // e.addContextName(parentContext.getName());
             throw e;
         } catch (NoSuchMethodException e) {
             BuilderConfigException ce = new BuilderConfigException("Class does not have a no-arg constructor", e);
@@ -319,7 +331,7 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
         } catch (FactoryInitException e) {
             BuilderConfigException ce = new BuilderConfigException("Error building component", e);
             ce.addContextName(component.getName());
-            ce.addContextName(parentContext.getName());
+            // ce.addContextName(parentContext.getName());
             throw ce;
         }
     }
@@ -377,7 +389,7 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
      * injecting them into the reference
      */
     private Injector createReferenceInjector(ConfiguredReference reference, Set<Field> fields, Set<Method> methods,
-            AggregateContext parentContext) {
+            ContextResolver resolver) {
 
         List<ObjectFactory> objectFactories = new ArrayList();
         String refName = reference.getReference().getName();
@@ -387,7 +399,7 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
             String targetSerivceName = configuredService.getService().getName();
             QualifiedName qName = new QualifiedName(targetCompName + QualifiedName.NAME_SEPARATOR + targetSerivceName);
             Class interfaze = reference.getReference().getServiceContract().getInterface();
-            objectFactories.add(new ReferenceTargetFactory(configuredService, parentContext));
+            objectFactories.add(new NonProxiedTargetFactory(configuredService, resolver));
         }
         boolean multiplicity = reference.getReference().getMultiplicity() == Multiplicity.ONE_N
                 || reference.getReference().getMultiplicity() == Multiplicity.ZERO_N;

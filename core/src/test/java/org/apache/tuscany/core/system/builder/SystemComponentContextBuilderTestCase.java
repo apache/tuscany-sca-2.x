@@ -24,7 +24,6 @@ import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.mock.MockConfigContext;
-import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.Component;
@@ -101,9 +100,10 @@ public class SystemComponentContextBuilderTestCase extends TestCase {
         cProp.setProperty(prop);
         component.getConfiguredProperties().add(cProp);
 
-        builder.build(component, createContext());
+        builder.build(component);
         RuntimeConfiguration config = (RuntimeConfiguration) component.getComponentImplementation().getRuntimeConfiguration();
         Assert.assertNotNull(config);
+        config.prepare(createContext());
         InstanceContext ctx = (InstanceContext) config.createInstanceContext();
 
         ctx.start();

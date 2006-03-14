@@ -112,17 +112,17 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
         this.referenceBuilder = builder;
     }
 
-    public void build(AssemblyModelObject modelObject, AggregateContext context) throws BuilderException {
+    public void build(AssemblyModelObject modelObject) throws BuilderException {
         if (modelObject instanceof SimpleComponent) {
             SimpleComponent component = (SimpleComponent) modelObject;
             ComponentImplementation impl = component.getComponentImplementation();
             if (impl instanceof JavaScriptImplementation) {
-                buildJavaScriptComponent(context, component, (JavaScriptImplementation) impl);
+                buildJavaScriptComponent(component, (JavaScriptImplementation) impl);
             }
         }
     }
 
-	private void buildJavaScriptComponent(AggregateContext context, SimpleComponent component, JavaScriptImplementation impl) {
+	private void buildJavaScriptComponent(SimpleComponent component, JavaScriptImplementation impl) {
 		Scope scope = impl.getComponentType().getServices().get(0).getServiceContract().getScope();
 		Map<String, Class> services = new HashMap<String, Class>();
 		for (Service service : impl.getComponentType().getServices()) {
@@ -150,15 +150,15 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
         JavaScriptComponentRuntimeConfiguration config = new JavaScriptComponentRuntimeConfiguration(component.getName(),
 		        scope, services, properties, invoker);
 
-		addTargetInvocationChains(context, component, config);
-		addComponentReferences(context, component, config);
+		addTargetInvocationChains(component, config);
+		addComponentReferences(component, config);
 		component.getComponentImplementation().setRuntimeConfiguration(config);
 	}
 
     /**
      * Add target-side invocation chains for each service offered by the implementation
      */
-	private void addTargetInvocationChains(AggregateContext context, SimpleComponent component, JavaScriptComponentRuntimeConfiguration config) {
+	private void addTargetInvocationChains(SimpleComponent component, JavaScriptComponentRuntimeConfiguration config) {
 		for (ConfiguredService configuredService : component.getConfiguredServices()) {
 		    Service service = configuredService.getService();
 		    ServiceContract contract = service.getServiceContract();
@@ -177,7 +177,7 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
 		    configuredService.setProxyFactory(proxyFactory);
 		    if (referenceBuilder != null) {
 		        // invoke the reference builder to handle target-side metadata
-		        referenceBuilder.build(configuredService, context);
+		        referenceBuilder.build(configuredService);
 		    }
 		    // add tail interceptor
 		    for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
@@ -187,7 +187,7 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
 		}
 	}
 
-	private void addComponentReferences(AggregateContext context, SimpleComponent component, JavaScriptComponentRuntimeConfiguration config) {
+	private void addComponentReferences(SimpleComponent component, JavaScriptComponentRuntimeConfiguration config) {
 		Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
 		if (configuredReferences != null) {
 		    for (ConfiguredReference reference : configuredReferences.values()) {
@@ -210,7 +210,7 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
                 reference.getTargetConfiguredServices().get(0).setProxyFactory(proxyFactory);
 		        if (referenceBuilder != null) {
 		            // invoke the reference builder to handle metadata associated with the reference
-		            referenceBuilder.build(reference, context);
+		            referenceBuilder.build(reference);
 		        }
 		        config.addSourceProxyFactory(reference.getReference().getName(), proxyFactory);
 		    }
