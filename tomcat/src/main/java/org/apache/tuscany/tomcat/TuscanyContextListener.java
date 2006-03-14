@@ -16,8 +16,6 @@
  */
 package org.apache.tuscany.tomcat;
 
-import java.io.IOException;
-
 import javax.servlet.ServletContext;
 
 import org.apache.catalina.Context;
@@ -26,6 +24,8 @@ import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Valve;
 import org.apache.catalina.core.StandardWrapper;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.tuscany.binding.axis2.handler.WebServiceEntryPointServlet;
 import org.apache.tuscany.binding.jsonrpc.handler.JSONRPCEntryPointServlet;
 import org.apache.tuscany.binding.jsonrpc.handler.ScriptGetterServlet;
@@ -33,7 +33,6 @@ import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
@@ -48,6 +47,7 @@ import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
  * @version $Rev$ $Date$
  */
 public class TuscanyContextListener implements LifecycleListener {
+    private static final Log log = LogFactory.getLog(TuscanyContextListener.class);
     private static final String TUSCANY_RUNTIME_NAME = RuntimeContext.class.getName();
     public static final String MODULE_COMPONENT_NAME = "org.apache.tuscany.core.webapp.ModuleComponentContext";
 
@@ -74,39 +74,21 @@ public class TuscanyContextListener implements LifecycleListener {
     }
 
     private void startContext(Context ctx) {
-        ResourceLoader resourceLoader = new ResourceLoaderImpl(ctx.getLoader().getClassLoader());
-        try {
-            if (resourceLoader.getResource("sca.module") == null) {
-                return;
-            }
-        } catch (IOException e) {
+        ClassLoader appLoader = ctx.getLoader().getClassLoader();
+        if (appLoader.getResource("sca.module") == null) {
             return;
         }
-        ClassLoader oldCl  = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+
         try {
-            AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, systemLoader, resourceLoader);
-
+            loadContext(ctx);
+        } catch (ConfigurationException e) {
+            log.error("context.configError", e);
             try {
-                ModuleComponentConfigurationLoader loader = BootstrapHelper.getConfigurationLoader(runtime.getSystemContext(), modelContext);
-
-                // Load the SCDL configuration of the application module
-                ModuleComponent moduleComponent = loader.loadModuleComponent(ctx.getName(), ctx.getPath());
-
-                // Register it under the root application context
-                AggregateContext rootContext = runtime.getRootContext();
-                rootContext.registerModelObject(moduleComponent);
-                moduleContext = (AggregateContext)rootContext.getContext(moduleComponent.getName());
-                moduleContext.registerModelObject(moduleComponent.getComponentImplementation());
-            } catch (ConfigurationLoadException e) {
-                throw new UnsupportedOperationException();
-            } catch (ConfigurationException e) {
-                throw new UnsupportedOperationException();
+                Thread.sleep(10000);
+            } catch (InterruptedException e1) {
             }
-        } finally {
-            Thread.currentThread().setContextClassLoader(oldCl);
+            return;
         }
-
         moduleContext.fireEvent(EventContext.MODULE_START, null);
 
         // add a valve to this context's pipeline that will associate the request with the runtime
@@ -121,6 +103,28 @@ public class TuscanyContextListener implements LifecycleListener {
         ServletContext servletContext = ctx.getServletContext();
         servletContext.setAttribute(TUSCANY_RUNTIME_NAME, runtime);
         servletContext.setAttribute(MODULE_COMPONENT_NAME, moduleContext);
+    }
+
+    private void loadContext(Context ctx) throws ConfigurationException {
+        ResourceLoader resourceLoader = new ResourceLoaderImpl(ctx.getLoader().getClassLoader());
+        ClassLoader oldCl  = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+        try {
+            AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, systemLoader, resourceLoader);
+
+            ModuleComponentConfigurationLoader loader = BootstrapHelper.getConfigurationLoader(runtime.getSystemContext(), modelContext);
+
+            // Load the SCDL configuration of the application module
+            ModuleComponent moduleComponent = loader.loadModuleComponent(ctx.getName(), ctx.getPath());
+
+            // Register it under the root application context
+            AggregateContext rootContext = runtime.getRootContext();
+            rootContext.registerModelObject(moduleComponent);
+            moduleContext = (AggregateContext)rootContext.getContext(moduleComponent.getName());
+            moduleContext.registerModelObject(moduleComponent.getComponentImplementation());
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCl);
+        }
     }
 
     private void stopContext(Context ctx) {
