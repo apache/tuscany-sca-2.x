@@ -591,7 +591,11 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 return instanceInterface.cast(autowireContext.resolveInstance(StAXLoaderRegistry.class));
             }
         } else if (instanceInterface.isAssignableFrom(SystemAssemblyFactory.class)) {
-            return instanceInterface.cast(assemblyFactory);
+            if (assemblyFactory != null) {
+                return instanceInterface.cast(assemblyFactory);
+            } else {
+                return instanceInterface.cast(autowireContext.resolveInstance(instanceInterface));
+            }
         }
 
         NameToScope mapping = autowireIndex.get(instanceInterface);
