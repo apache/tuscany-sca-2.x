@@ -15,7 +15,7 @@ package org.apache.tuscany.core.builder.impl;
 
 import java.util.List;
 
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
 
@@ -26,7 +26,7 @@ import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
  */
 public class AssemblyVisitor implements AssemblyModelVisitor {
 
-    List<RuntimeConfigurationBuilder> builders;
+    List<ContextFactoryBuilder> builders;
 
     /**
      * Constructs a visitor
@@ -34,7 +34,7 @@ public class AssemblyVisitor implements AssemblyModelVisitor {
      * @param parent the parent context for the object graph
      * @param builders the collection of builders for creating runtime configurations
      */
-    public AssemblyVisitor(List<RuntimeConfigurationBuilder> builders) {
+    public AssemblyVisitor(List<ContextFactoryBuilder> builders) {
         this.builders = builders;
     }
 
@@ -49,7 +49,7 @@ public class AssemblyVisitor implements AssemblyModelVisitor {
      * Callback when walking the graph
      */
     public boolean visit(AssemblyModelObject modelObject) {
-        for (RuntimeConfigurationBuilder builder : builders) {
+        for (ContextFactoryBuilder builder : builders) {
             builder.build(modelObject);
         }
         return true;

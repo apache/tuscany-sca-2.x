@@ -37,13 +37,13 @@ public interface ConfigurationContext {
     public void configure(Extensible model) throws ConfigurationException;
 
     /**
-     * Decorates the supplied model object with a {@link org.apache.tuscany.core.builder.RuntimeConfiguration} that can
+     * Decorates the supplied model object with a {@link org.apache.tuscany.core.builder.ContextFactory} that can
      * be used to create the runtime context corresponding to the model.
      * 
      * @param parent an AggregrateContext that will ultimately become the parent of the runtime context
      * @param model the model object that defines the configuration to be built
      * @throws BuilderConfigException
-     * @see org.apache.tuscany.core.builder.RuntimeConfiguration
+     * @see org.apache.tuscany.core.builder.ContextFactory
      */
     public void build(AggregateContext parent, Extensible model) throws BuilderConfigException;
 
@@ -52,7 +52,7 @@ public interface ConfigurationContext {
      * 
      * @param sourceFactory the proxy factory that will be used to create the injected proxy for a reference
      * @param targetFactory the proxy factory that contains the invocation chains for the target side of the wire
-     * @param targetType the {@link org.apache.tuscany.core.builder.RuntimeConfiguration} implementation type for the
+     * @param targetType the {@link org.apache.tuscany.core.builder.ContextFactory} implementation type for the
      *        wire target
      * @param downScope whether the source is a shorter lived scope than the target. Used in optimization.
      * @param targetScopeContext the scope context of the target service

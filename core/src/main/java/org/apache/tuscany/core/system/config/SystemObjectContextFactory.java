@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
@@ -31,28 +31,28 @@ import org.apache.tuscany.core.system.context.SystemComponentContext;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
- * A RuntimeConfiguration that contains the configuration needed to convert a simple
+ * A ContextFactory that contains the configuration needed to convert a simple
  * Java Object into a component. The object is assumed to be fully initialized and
  * will always be added with MODULE scope.
  *
  * @version $Rev$ $Date$
  */
-public class SystemObjectRuntimeConfiguration implements RuntimeConfiguration {
+public class SystemObjectContextFactory implements ContextFactory {
     private final String name;
     private final ObjectFactory<?> objectFactory;
 
     /**
-     * Construct a RuntimeConfiguration for the supplied Java Object.
+     * Construct a ContextFactory for the supplied Java Object.
      *
      * @param name the name to be assigned to the resulting component
      * @param instance the Java Object that provides the implementation
      */
-    public SystemObjectRuntimeConfiguration(String name, Object instance) {
+    public SystemObjectContextFactory(String name, Object instance) {
         this.name = name;
         objectFactory = new SingletonObjectFactory(instance);
     }
 
-    public Context createInstanceContext() throws ContextCreationException {
+    public Context createContext() throws ContextCreationException {
         return new SystemComponentContext(name, objectFactory, false, null, null, false);
     }
 

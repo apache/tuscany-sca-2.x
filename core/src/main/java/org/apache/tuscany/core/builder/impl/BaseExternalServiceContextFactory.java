@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.context.impl.ExternalServiceContextImpl;
@@ -36,7 +36,7 @@ import org.apache.tuscany.model.assembly.Scope;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class BaseExternalServiceRuntimeConfiguration implements RuntimeConfiguration<ExternalServiceContext> {
+public abstract class BaseExternalServiceContextFactory implements ContextFactory<ExternalServiceContext> {
 
     private String name;
 
@@ -50,14 +50,14 @@ public abstract class BaseExternalServiceRuntimeConfiguration implements Runtime
     
     private AggregateContext parentContext;
 
-    public BaseExternalServiceRuntimeConfiguration(String name, ObjectFactory objectFactory) {
+    public BaseExternalServiceContextFactory(String name, ObjectFactory objectFactory) {
         assert (name != null) : "Name was null";
         assert (objectFactory != null) : "Object factory was null";
         this.name = name;
         this.objectFactory = objectFactory;
     }
 
-    public ExternalServiceContext createInstanceContext() throws ContextCreationException {
+    public ExternalServiceContext createContext() throws ContextCreationException {
         return new ExternalServiceContextImpl(name, proxyFactory, objectFactory);
     }
 

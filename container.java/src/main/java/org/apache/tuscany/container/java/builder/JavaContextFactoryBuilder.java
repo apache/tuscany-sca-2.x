@@ -11,12 +11,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
-import org.apache.tuscany.container.java.config.JavaComponentRuntimeConfiguration;
+import org.apache.tuscany.container.java.config.JavaContextFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.NoAccessorException;
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.builder.impl.ListMultiplicityObjectFactory;
@@ -62,12 +62,12 @@ import commonj.sdo.DataObject;
  * {@link org.apache.tuscany.container.java.assembly.JavaImplementation}. The logical model is then decorated with the
  * runtime configuration.
  * 
- * @see org.apache.tuscany.core.builder.RuntimeConfiguration
+ * @see org.apache.tuscany.core.builder.ContextFactory
  * 
  * @version $Rev: 368822 $ $Date: 2006-01-13 10:54:38 -0800 (Fri, 13 Jan 2006) $
  */
 @org.osoa.sca.annotations.Scope("MODULE")
-public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
+public class JavaContextFactoryBuilder implements ContextFactoryBuilder<AggregateContext> {
 
     private RuntimeContext runtimeContext;
 
@@ -114,7 +114,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
      * reference builder may be hierarchical, containing other child reference builders that operate on specific
      * metadata used to construct and invocation chain.
      */
-    public void addPolicyBuilder(RuntimeConfigurationBuilder builder) {
+    public void addPolicyBuilder(ContextFactoryBuilder builder) {
         policyBuilder.addBuilder(builder);
     }
 
@@ -122,10 +122,10 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
     // Constructors
     // ----------------------------------
 
-    public JavaComponentContextBuilder() {
+    public JavaContextFactoryBuilder() {
     }
 
-    public JavaComponentContextBuilder(ProxyFactoryFactory proxyFactoryFactory, MessageFactory messageFactory) {
+    public JavaContextFactoryBuilder(ProxyFactoryFactory proxyFactoryFactory, MessageFactory messageFactory) {
         this.proxyFactoryFactory = proxyFactoryFactory;
         this.messageFactory = messageFactory;
     }
@@ -161,7 +161,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
             Class implClass = null;
             Set<Field> fields;
             Set<Method> methods;
-            JavaComponentRuntimeConfiguration config = null;
+            JavaContextFactory config = null;
             try {
                 implClass = javaImpl.getImplementationClass();
                 fields = JavaIntrospectionHelper.getAllFields(implClass);
@@ -169,7 +169,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                 String name = component.getName();
                 Constructor ctr = implClass.getConstructor((Class[]) null);
 
-                config = new JavaComponentRuntimeConfiguration(name, JavaIntrospectionHelper
+                config = new JavaContextFactory(name, JavaIntrospectionHelper
                         .getDefaultConstructor(implClass), scope);
                 
                 List<Injector> injectors = new ArrayList();
@@ -222,7 +222,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
                         injectors.add(injector);
                     }
                 }
-                component.getComponentImplementation().setRuntimeConfiguration(config);
+                component.getComponentImplementation().setContextFactory(config);
 
                 // create target-side invocation chains for each service offered by the implementation
                 for (ConfiguredService configuredService : component.getConfiguredServices()) {
@@ -324,7 +324,7 @@ public class JavaComponentContextBuilder implements RuntimeConfigurationBuilder<
      * Creates proxy factories that represent target(s) of a reference and an <code>Injector</code> responsible for
      * injecting them into the reference
      */
-    private Injector createReferenceInjector(JavaComponentRuntimeConfiguration config, ConfiguredReference reference,
+    private Injector createReferenceInjector(JavaContextFactory config, ConfiguredReference reference,
             Set<Field> fields, Set<Method> methods) {
 
         // iterate through the targets

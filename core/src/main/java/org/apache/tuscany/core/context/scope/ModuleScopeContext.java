@@ -21,7 +21,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
@@ -96,10 +96,10 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
         return true;
     }
 
-    public void registerConfiguration(RuntimeConfiguration<InstanceContext> configuration) {
-        runtimeConfigurations.put(configuration.getName(), configuration);
+    public void registerFactory(ContextFactory<InstanceContext> configuration) {
+        contextFactorys.put(configuration.getName(), configuration);
         if (lifecycleState == RUNNING) {
-            componentContexts.put(configuration.getName(), configuration.createInstanceContext());
+            componentContexts.put(configuration.getName(), configuration.createContext());
         }
     }
 
@@ -157,8 +157,8 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
         if (componentContexts == null) {
             componentContexts = new ConcurrentHashMap();
             destroyableContexts = new ConcurrentLinkedQueue();
-            for (RuntimeConfiguration<InstanceContext> config : runtimeConfigurations.values()) {
-                InstanceContext context = config.createInstanceContext();
+            for (ContextFactory<InstanceContext> config : contextFactorys.values()) {
+                InstanceContext context = config.createContext();
                 context.addContextListener(this);
                 context.start();
                 componentContexts.put(context.getName(), context);

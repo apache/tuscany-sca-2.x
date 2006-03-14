@@ -27,7 +27,7 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.NoAccessorException;
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.UnknownTypeException;
 import org.apache.tuscany.core.builder.impl.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.builder.impl.ListMultiplicityObjectFactory;
@@ -52,7 +52,7 @@ import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
-import org.apache.tuscany.core.system.config.SystemComponentRuntimeConfiguration;
+import org.apache.tuscany.core.system.config.SystemContextFactory;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
 import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
@@ -82,13 +82,13 @@ import commonj.sdo.DataObject;
  * 
  * @version $Rev$ $Date$
  */
-public class SystemComponentContextBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
+public class SystemContextFactoryBuilder implements ContextFactoryBuilder<AggregateContext> {
 
     // ----------------------------------
     // Constructors
     // ----------------------------------
 
-    public SystemComponentContextBuilder() {
+    public SystemContextFactoryBuilder() {
     }
 
     // ----------------------------------
@@ -105,7 +105,7 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
         Scope scope = null;
         // Get the component implementation
         ComponentImplementation componentImplementation = component.getComponentImplementation();
-        if (componentImplementation instanceof SystemImplementation && componentImplementation.getRuntimeConfiguration() == null) {
+        if (componentImplementation instanceof SystemImplementation && componentImplementation.getContextFactory() == null) {
 
             // The component is a system component, implemented by a Java class
             SystemImplementation javaImpl = (SystemImplementation) componentImplementation;
@@ -156,13 +156,13 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
         }
         Set<Field> fields;
         Set<Method> methods;
-        SystemComponentRuntimeConfiguration config = null;
+        SystemContextFactory config = null;
         try {
             fields = JavaIntrospectionHelper.getAllFields(implClass);
             methods = JavaIntrospectionHelper.getAllUniqueMethods(implClass);
             String name = component.getName();
             Constructor ctr = implClass.getConstructor((Class[]) null);
-            config = new SystemComponentRuntimeConfiguration(name, JavaIntrospectionHelper.getDefaultConstructor(implClass),
+            config = new SystemContextFactory(name, JavaIntrospectionHelper.getDefaultConstructor(implClass),
                     scope);
             ContextObjectFactory contextFactory = new ContextObjectFactory(config);
 
@@ -315,11 +315,7 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
             config.setEagerInit(eagerInit);
             config.setInitInvoker(initInvoker);
             config.setDestroyInvoker(destroyInvoker);
-
-            // SystemComponentRuntimeConfiguration config = new SystemComponentRuntimeConfiguration(name,
-            // JavaIntrospectionHelper
-            // .getDefaultConstructor(implClass), injectors, eagerInit, initInvoker, destroyInvoker, scope);
-            componentImplementation.setRuntimeConfiguration(config);
+            componentImplementation.setContextFactory(config);
         } catch (BuilderConfigException e) {
             e.addContextName(component.getName());
             // e.addContextName(parentContext.getName());
@@ -331,7 +327,6 @@ public class SystemComponentContextBuilder implements RuntimeConfigurationBuilde
         } catch (FactoryInitException e) {
             BuilderConfigException ce = new BuilderConfigException("Error building component", e);
             ce.addContextName(component.getName());
-            // ce.addContextName(parentContext.getName());
             throw ce;
         }
     }

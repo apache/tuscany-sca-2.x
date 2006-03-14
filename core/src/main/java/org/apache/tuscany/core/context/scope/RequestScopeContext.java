@@ -21,7 +21,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.LifecycleEventListener;
@@ -104,8 +104,8 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
         return true;
     }
 
-    public void registerConfiguration(RuntimeConfiguration<InstanceContext> configuration) {
-        runtimeConfigurations.put(configuration.getName(), configuration);
+    public void registerFactory(ContextFactory<InstanceContext> configuration) {
+        contextFactorys.put(configuration.getName(), configuration);
     }
     
     public InstanceContext getContext(String ctxName) {
@@ -114,9 +114,9 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
         InstanceContext ctx = contexts.get(ctxName);
         if (ctx == null){
             // check to see if the configuration was added after the request was started
-            RuntimeConfiguration<InstanceContext> configuration = runtimeConfigurations.get(ctxName);
+            ContextFactory<InstanceContext> configuration = contextFactorys.get(ctxName);
             if (configuration != null) {
-                ctx = configuration.createInstanceContext();
+                ctx = configuration.createContext();
                 ctx.addContextListener(this);
                 ctx.start();
                 contexts.put(ctx.getName(), ctx);
@@ -208,9 +208,9 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
         if (contexts == null) {
             contexts = new ConcurrentHashMap();
             Queue shutdownQueue = new ConcurrentLinkedQueue();
-            for (RuntimeConfiguration<InstanceContext> config : runtimeConfigurations.values()) {
+            for (ContextFactory<InstanceContext> config : contextFactorys.values()) {
                 InstanceContext context = null;
-                context = config.createInstanceContext();
+                context = config.createContext();
                 context.addContextListener(this);
                 context.start();
                 contexts.put(context.getName(), context);

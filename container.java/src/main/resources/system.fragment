@@ -18,8 +18,8 @@
         xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
 		name="org.apache.tuscany.container.java">
 
-    <component name="org.apache.tuscany.container.java.builder.JavaComponentContextBuilder">
-        <system:implementation.system class="org.apache.tuscany.container.java.builder.JavaComponentContextBuilder"/>
+    <component name="org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder">
+        <system:implementation.system class="org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder"/>
     </component>
 
     <component name="org.apache.tuscany.container.java.builder.JavaTargetWireBuilder">

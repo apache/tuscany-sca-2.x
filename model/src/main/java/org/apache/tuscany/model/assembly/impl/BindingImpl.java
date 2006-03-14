@@ -26,7 +26,7 @@ import org.apache.tuscany.model.assembly.Binding;
 public class BindingImpl extends ExtensibleImpl implements Binding {
     
     private String uri;
-    private Object runtimeConfiguration;
+    private Object contextFactory;
 
     /**
      * Constructor
@@ -69,18 +69,18 @@ public class BindingImpl extends ExtensibleImpl implements Binding {
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.RuntimeConfigurationHolder#getRuntimeConfiguration()
+     * @see org.apache.tuscany.model.assembly.ContextFactoryHolder#getContextFactory()
      */
-    public Object getRuntimeConfiguration() {
-        return runtimeConfiguration;
+    public Object getContextFactory() {
+        return contextFactory;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.RuntimeConfigurationHolder#setRuntimeConfiguration(java.lang.Object)
+     * @see org.apache.tuscany.model.assembly.ContextFactoryHolder#setContextFactory(java.lang.Object)
      */
-    public void setRuntimeConfiguration(Object configuration) {
+    public void setContextFactory(Object configuration) {
         checkNotFrozen();
-        this.runtimeConfiguration = configuration;
+        this.contextFactory = configuration;
     }
 
     /**

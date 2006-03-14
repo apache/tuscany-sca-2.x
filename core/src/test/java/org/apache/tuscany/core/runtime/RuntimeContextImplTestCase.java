@@ -19,7 +19,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.Context;
@@ -49,7 +49,7 @@ public class RuntimeContextImplTestCase extends TestCase {
 
     private SystemAssemblyFactory systemFactory = new SystemAssemblyFactoryImpl();
 
-    private List<RuntimeConfigurationBuilder> builders;
+    private List<ContextFactoryBuilder> builders;
     private SystemAssemblyFactory factory;
 
     /**
@@ -283,7 +283,7 @@ public class RuntimeContextImplTestCase extends TestCase {
         runtime.start();
 
         AggregateContext system = runtime.getSystemContext();
-        Component builder = factory.createSystemComponent("TestBuilder", RuntimeConfigurationBuilder.class, TestBuilder.class, Scope.MODULE);
+        Component builder = factory.createSystemComponent("TestBuilder", ContextFactoryBuilder.class, TestBuilder.class, Scope.MODULE);
         system.registerModelObject(builder);
         system.fireEvent(EventContext.MODULE_START, null);
         Component module1 = MockFactory.createAggregateComponent("module1");

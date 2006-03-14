@@ -13,20 +13,20 @@
  */
 package org.apache.tuscany.binding.axis.config;
 
-import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.builder.impl.BaseExternalServiceRuntimeConfiguration;
+import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
+import org.apache.tuscany.core.message.MessageFactory;
 
 /**
- * Creates instances of {@link org.apache.tuscany.core.context.ExternalServiceContext} configured with the appropriate
+ * Creates instances of {@link org.apache.tuscany.core.context.EntryPointContext} configured with the appropriate
  * invocation chains and bindings. This implementation serves as a marker for
- * {@link org.apache.tuscany.binding.axis.builder.ExternalWebServiceWireBuilder}
+ * {@link org.apache.tuscany.binding.axis.builder.WebServiceEntryPointWireBuilder}
  * 
  * @version $Rev$ $Date$
  */
-public class ExternalWebServiceRuntimeConfiguration extends BaseExternalServiceRuntimeConfiguration {
+public class WebServiceEntryPointContextFactory extends EntryPointContextFactory {
 
-    public ExternalWebServiceRuntimeConfiguration(String name, ObjectFactory objectFactory) {
-        super(name, objectFactory);
+    public WebServiceEntryPointContextFactory(String name, String serviceName, MessageFactory messageFactory) {
+        super(name, serviceName, messageFactory);
     }
 
 }

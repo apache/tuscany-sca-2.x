@@ -19,7 +19,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.EventContext;
@@ -46,7 +46,7 @@ import org.apache.tuscany.model.types.java.JavaServiceContract;
  * @version $Rev$ $Date$
  */
 public class SystemBootstrapTestCase extends TestCase {
-    private List<RuntimeConfigurationBuilder> builders;
+    private List<ContextFactoryBuilder> builders;
     
     private SystemAssemblyFactory factory = new SystemAssemblyFactoryImpl();
 

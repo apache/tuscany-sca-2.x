@@ -23,7 +23,7 @@ package org.apache.tuscany.model.assembly;
  * specific implementation to be used by a runtime and to allow for additional runtime configuration
  * properties.
  */
-public interface ComponentImplementation extends Extensible, RuntimeConfigurationHolder {
+public interface ComponentImplementation extends Extensible, ContextFactoryHolder {
 
     /**
      * Returns the generic component type corresponding to this implementation.

@@ -22,7 +22,7 @@ package org.apache.tuscany.model.assembly;
  * This model object will typically by extended by binding implementations to allow
  * specification of binding/transport specific information.
  */
-public interface Binding extends AssemblyModelObject, RuntimeConfigurationHolder {
+public interface Binding extends AssemblyModelObject, ContextFactoryHolder {
     /**
      * Returns the binding URI.
      * @return the binding uri

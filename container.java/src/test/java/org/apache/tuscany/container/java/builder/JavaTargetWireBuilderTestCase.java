@@ -7,7 +7,7 @@ import java.util.Map;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.config.JavaComponentRuntimeConfiguration;
+import org.apache.tuscany.container.java.config.JavaContextFactory;
 import org.apache.tuscany.container.java.invocation.mock.MockHandler;
 import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.container.java.invocation.mock.SimpleTarget;
@@ -92,7 +92,7 @@ public class JavaTargetWireBuilderTestCase extends TestCase {
         DefaultWireBuilder builder = new DefaultWireBuilder();
         builder.addWireBuilder(new JavaTargetWireBuilder());
         
-        builder.connect(sourceFactory, targetFactory, JavaComponentRuntimeConfiguration.class, true, scopeCtx);
+        builder.connect(sourceFactory, targetFactory, JavaContextFactory.class, true, scopeCtx);
         source.build();
         target.build();
         Assert.assertNotNull(source.getTargetInvoker());

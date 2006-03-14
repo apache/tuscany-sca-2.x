@@ -11,13 +11,13 @@ import org.apache.tuscany.model.assembly.Scope;
 /**
  * Implementations create instances of {@link org.apache.tuscany.core.context.Context} based on a compiled
  * configuration, such as a logical assembly model. For example, implementations of
- * {@link org.apache.tuscany.core.builder.RuntimeConfigurationBuilder} analyze an
+ * {@link org.apache.tuscany.core.builder.ContextFactoryBuilder} analyze an
  * {@link org.apache.tuscany.model.assembly.AssemblyModelObject} to create implementations of
- * <tt>RuntimeConfiguration</tt>.
+ * <tt>ContextFactory</tt>.
  * 
- * @version $Rev$ $Date$
+ * @version $Rev: 385747 $ $Date: 2006-03-13 22:12:53 -0800 (Mon, 13 Mar 2006) $
  */
-public interface RuntimeConfiguration<T extends Context> {
+public interface ContextFactory<T extends Context> {
 
     /**
      * Creates an instance context based on the current runtime configuration
@@ -25,7 +25,7 @@ public interface RuntimeConfiguration<T extends Context> {
      * @return a new instance context
      * @throws ContextCreationException if an error occurs creating the context
      */
-    public T createInstanceContext() throws ContextCreationException;
+    public T createContext() throws ContextCreationException;
 
     /**
      * Returns the scope identifier associated with the type of contexts produced by the current configuration

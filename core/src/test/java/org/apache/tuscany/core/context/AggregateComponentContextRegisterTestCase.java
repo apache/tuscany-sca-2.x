@@ -19,7 +19,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
@@ -120,7 +120,7 @@ public class AggregateComponentContextRegisterTestCase extends TestCase {
     }
 
     protected AggregateContext createContext() {
-        List<RuntimeConfigurationBuilder> builders = MockFactory.createSystemBuilders();
+        List<ContextFactoryBuilder> builders = MockFactory.createSystemBuilders();
         return new AggregateContextImpl("test.context", null, new DefaultScopeStrategy(), new EventContextImpl(),
                 new MockConfigContext(builders), new NullMonitorFactory());
     }

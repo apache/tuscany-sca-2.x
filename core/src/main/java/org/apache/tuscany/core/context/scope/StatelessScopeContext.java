@@ -19,7 +19,7 @@ package org.apache.tuscany.core.context.scope;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.LifecycleEventListener;
@@ -76,10 +76,10 @@ public class StatelessScopeContext extends AbstractScopeContext implements Runti
     // Methods
     // ----------------------------------
 
-    public void registerConfiguration(RuntimeConfiguration<InstanceContext> configuration) {
-        runtimeConfigurations.put(configuration.getName(), configuration);
+    public void registerFactory(ContextFactory<InstanceContext> configuration) {
+        contextFactorys.put(configuration.getName(), configuration);
         if (lifecycleState == RUNNING) {
-            contextMap.put(configuration.getName(), configuration.createInstanceContext());
+            contextMap.put(configuration.getName(), configuration.createContext());
         }
 
     }
@@ -129,10 +129,10 @@ public class StatelessScopeContext extends AbstractScopeContext implements Runti
         }
         if (contextMap == null) {
             contextMap = new ConcurrentHashMap();
-            for (RuntimeConfiguration<InstanceContext> config : runtimeConfigurations.values()) {
-                for (int i = 0; i < runtimeConfigurations.size(); i++) {
+            for (ContextFactory<InstanceContext> config : contextFactorys.values()) {
+                for (int i = 0; i < contextFactorys.size(); i++) {
                     InstanceContext context = null;
-                    context = config.createInstanceContext();
+                    context = config.createContext();
                     context.addContextListener(this);
                     context.start();
                     contextMap.put(context.getName(), context);

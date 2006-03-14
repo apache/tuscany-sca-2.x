@@ -11,22 +11,21 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.binding.axis2.config;
+package org.apache.tuscany.container.java.mock.binding.foo;
 
-import org.apache.tuscany.core.builder.impl.EntryPointRuntimeConfiguration;
+import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 
 /**
- * Creates instances of {@link org.apache.tuscany.core.context.EntryPointContext} configured with the appropriate
- * invocation chains and bindings. This implementation serves as a marker for
- * {@link org.apache.tuscany.binding.axis2.builder.WebServiceEntryPointWireBuilder}
+ * 
  * 
  * @version $Rev$ $Date$
  */
-public class WebServiceEntryPointRuntimeConfiguration extends EntryPointRuntimeConfiguration {
+public class FooEntryPointContextFactory extends EntryPointContextFactory {
 
-    public WebServiceEntryPointRuntimeConfiguration(String name, String serviceName, MessageFactory messageFactory) {
-        super(name, serviceName, messageFactory);
+    public FooEntryPointContextFactory(String name, String serviceName, MessageFactory msgFactory) {
+        super(name, serviceName, msgFactory);
     }
 
 }
+

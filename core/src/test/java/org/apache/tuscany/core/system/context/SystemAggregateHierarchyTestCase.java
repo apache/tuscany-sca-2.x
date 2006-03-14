@@ -18,7 +18,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.AbstractAggregateHierarchyTests;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
@@ -36,7 +36,7 @@ public class SystemAggregateHierarchyTestCase extends AbstractAggregateHierarchy
 
 
     protected AggregateContext createContextHierachy() throws Exception {
-        List<RuntimeConfigurationBuilder> mockBuilders = MockFactory.createSystemBuilders();
+        List<ContextFactoryBuilder> mockBuilders = MockFactory.createSystemBuilders();
         AggregateContext parent = new SystemAggregateContextImpl("test.parent", null, null, new DefaultScopeStrategy(),
                 new EventContextImpl(), new MockConfigContext(mockBuilders), new NullMonitorFactory(), null, null);
         parent.registerModelObject(MockFactory.createAggregateComponent("test.child"));

@@ -19,14 +19,14 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
+import org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder;
 import org.apache.tuscany.container.java.builder.JavaTargetWireBuilder;
 import org.apache.tuscany.container.java.mock.MockConfigContext;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.OtherTarget;
 import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.Target;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
@@ -66,8 +66,8 @@ public class DifferentInterfaceWireTestCase extends TestCase {
     private AggregateContext createContext() {
         AggregateContextImpl context = new AggregateContextImpl();
         context.setName("system.context");
-        List<RuntimeConfigurationBuilder>builders = MockFactory.createSystemBuilders();
-        builders.add(new JavaComponentContextBuilder(new JDKProxyFactoryFactory(), new MessageFactoryImpl()));
+        List<ContextFactoryBuilder>builders = MockFactory.createSystemBuilders();
+        builders.add(new JavaContextFactoryBuilder(new JDKProxyFactoryFactory(), new MessageFactoryImpl()));
         List<WireBuilder> wireBuilders = new ArrayList();
         wireBuilders.add(new JavaTargetWireBuilder());
         context.setConfigurationContext(new MockConfigContext(builders,wireBuilders));

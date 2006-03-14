@@ -19,7 +19,7 @@ import javax.wsdl.Part;
 
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.core.context.AggregateContext;
@@ -85,7 +85,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     // protected ModuleComponent moduleComponent;
     protected Module module;
 
-    protected Map<String, RuntimeConfiguration<InstanceContext>> configurations = new HashMap();
+    protected Map<String, ContextFactory<InstanceContext>> configurations = new HashMap();
 
     // Factory for scope contexts
     @Autowire(required = false)
@@ -147,15 +147,15 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 lifecycleState = INITIALIZING;
                 initializeScopes();
 
-                Map<Scope, List<RuntimeConfiguration<SimpleComponentContext>>> configurationsByScope = new HashMap();
+                Map<Scope, List<ContextFactory<SimpleComponentContext>>> configurationsByScope = new HashMap();
                 if (configurations != null) {
-                    for (RuntimeConfiguration source : configurations.values()) {
+                    for (ContextFactory source : configurations.values()) {
                         // FIXME scopes are defined at the interface level
                         Scope sourceScope = source.getScope();
                         wireSource(source);
                         buildTarget(source);
                         scopeIndex.put(source.getName(), scopeContexts.get(sourceScope));
-                        List<RuntimeConfiguration<SimpleComponentContext>> list = configurationsByScope.get(sourceScope);
+                        List<ContextFactory<SimpleComponentContext>> list = configurationsByScope.get(sourceScope);
                         if (list == null) {
                             list = new ArrayList();
                             configurationsByScope.put(sourceScope, list);
@@ -175,7 +175,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 for (Map.Entry entries : configurationsByScope.entrySet()) {
                     // register configurations with scope contexts
                     ScopeContext scope = scopeContexts.get(entries.getKey());
-                    scope.registerConfigurations((List<RuntimeConfiguration<InstanceContext>>) entries.getValue());
+                    scope.registerFactorys((List<ContextFactory<InstanceContext>>) entries.getValue());
                 }
                 initializeProxies();
                 for (ScopeContext scope : scopeContexts.values()) {
@@ -282,7 +282,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 throw e;
             }
         }
-        RuntimeConfiguration<InstanceContext> configuration = null;
+        ContextFactory<InstanceContext> configuration = null;
         if (model instanceof Module) {
             // merge new module definition with the existing one
             Module oldModule = module;
@@ -296,7 +296,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                     e.addContextName(getName());
                     throw e;
                 }
-                configuration = (RuntimeConfiguration<InstanceContext>) componentImplementation.getRuntimeConfiguration();
+                configuration = (ContextFactory<InstanceContext>) componentImplementation.getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new ConfigurationException("Runtime configuration not set");
                     e.addContextName(component.getName());
@@ -307,7 +307,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 registerAutowire(component);
             }
             for (EntryPoint ep : newModule.getEntryPoints()) {
-                configuration = (RuntimeConfiguration<InstanceContext>) ep.getConfiguredReference().getRuntimeConfiguration();
+                configuration = (ContextFactory<InstanceContext>) ep.getConfiguredReference().getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new ConfigurationException("Runtime configuration not set");
                     e.setIdentifier(ep.getName());
@@ -318,7 +318,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 registerAutowire(ep);
             }
             for (ExternalService service : newModule.getExternalServices()) {
-                configuration = (RuntimeConfiguration<InstanceContext>) service.getConfiguredService().getRuntimeConfiguration();
+                configuration = (ContextFactory<InstanceContext>) service.getConfiguredService().getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new ConfigurationException("Runtime configuration not set");
                     e.setIdentifier(service.getName());
@@ -330,8 +330,8 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
             }
             if (lifecycleState == RUNNING) {
                 for (Component component : newModule.getComponents()) {
-                    RuntimeConfiguration<InstanceContext> config = (RuntimeConfiguration<InstanceContext>) component
-                            .getComponentImplementation().getRuntimeConfiguration();
+                    ContextFactory<InstanceContext> config = (ContextFactory<InstanceContext>) component
+                            .getComponentImplementation().getContextFactory();
                     wireSource(config);
                     buildTarget(config);
                     config.prepare(this);
@@ -353,8 +353,8 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
 
                 }
                 for (EntryPoint ep : newModule.getEntryPoints()) {
-                    RuntimeConfiguration<InstanceContext> config = (RuntimeConfiguration<InstanceContext>) ep
-                            .getConfiguredReference().getRuntimeConfiguration();
+                    ContextFactory<InstanceContext> config = (ContextFactory<InstanceContext>) ep
+                            .getConfiguredReference().getContextFactory();
                     wireSource(config);
                     buildTarget(config);
                     config.prepare(this);
@@ -376,8 +376,8 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
 
                 }
                 for (ExternalService es : newModule.getExternalServices()) {
-                    RuntimeConfiguration<InstanceContext> config = (RuntimeConfiguration<InstanceContext>) es
-                            .getConfiguredService().getRuntimeConfiguration();
+                    ContextFactory<InstanceContext> config = (ContextFactory<InstanceContext>) es
+                            .getConfiguredService().getContextFactory();
                     buildTarget(config);
                     config.prepare(this);
                     try {
@@ -407,16 +407,16 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
             if (model instanceof Component) {
                 Component component = (Component) model;
                 module.getComponents().add(component);
-                configuration = (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation()
-                        .getRuntimeConfiguration();
+                configuration = (ContextFactory<InstanceContext>) component.getComponentImplementation()
+                        .getContextFactory();
             } else if (model instanceof EntryPoint) {
                 EntryPoint ep = (EntryPoint) model;
                 module.getEntryPoints().add(ep);
-                configuration = (RuntimeConfiguration<InstanceContext>) ep.getConfiguredReference().getRuntimeConfiguration();
+                configuration = (ContextFactory<InstanceContext>) ep.getConfiguredReference().getContextFactory();
             } else if (model instanceof ExternalService) {
                 ExternalService service = (ExternalService) model;
                 module.getExternalServices().add(service);
-                configuration = (RuntimeConfiguration<InstanceContext>) service.getConfiguredService().getRuntimeConfiguration();
+                configuration = (ContextFactory<InstanceContext>) service.getConfiguredService().getContextFactory();
             } else {
                 BuilderConfigException e = new BuilderConfigException("Unknown model type");
                 e.setIdentifier(model.getClass().getName());
@@ -436,7 +436,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         }
     }
 
-    protected void registerConfiguration(RuntimeConfiguration<InstanceContext> configuration) throws ConfigurationException {
+    protected void registerConfiguration(ContextFactory<InstanceContext> configuration) throws ConfigurationException {
         configuration.prepare(this);
         if (lifecycleState == RUNNING) {
             if (scopeIndex.get(configuration.getName()) != null) {
@@ -450,7 +450,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 e.addContextName(getName());
                 throw e;
             }
-            scope.registerConfiguration(configuration);
+            scope.registerFactory(configuration);
             scopeIndex.put(configuration.getName(), scope);
             configurations.put(configuration.getName(), configuration); // xcv
         } else {
@@ -582,12 +582,12 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     /**
      * Iterates through references and delegates to the configuration context to wire them to their targets
      */
-    protected void wireSource(RuntimeConfiguration source) {
+    protected void wireSource(ContextFactory source) {
         Scope sourceScope = source.getScope();
         if (source.getSourceProxyFactories() != null) {
             for (ProxyFactory sourceFactory : ((List<ProxyFactory>) source.getSourceProxyFactories())) {
                 QualifiedName targetName = sourceFactory.getProxyConfiguration().getTargetName();
-                RuntimeConfiguration target = configurations.get(targetName.getPartName());
+                ContextFactory target = configurations.get(targetName.getPartName());
                 if (target == null) {
                     ContextInitException e = new ContextInitException("Target not found");
                     e.setIdentifier(targetName.getPartName());
@@ -636,7 +636,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     /**
      * Signals to target side of reference configurations to initialize
      */
-    protected void buildTarget(RuntimeConfiguration target) {
+    protected void buildTarget(ContextFactory target) {
         if (target.getTargetProxyFactories() != null) {
             for (ProxyFactory targetFactory : ((Map<String, ProxyFactory>) target.getTargetProxyFactories()).values()) {
                 for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) targetFactory
@@ -648,7 +648,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     }
 
     protected void initializeProxies() throws ProxyInitializationException {
-        for (RuntimeConfiguration config : configurations.values()) {
+        for (ContextFactory config : configurations.values()) {
             if (config.getSourceProxyFactories() != null) {
                 for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()) {
                     sourceProxyFactory.initialize();

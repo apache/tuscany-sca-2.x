@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
@@ -47,7 +47,7 @@ public class AggregateScopeContext extends AbstractContext implements ScopeConte
 
     private EventContext eventContext;
 
-    private List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
+    private List<ContextFactory<InstanceContext>> configs = new ArrayList();
 
     // Aggregate component contexts in this scope keyed by name
     private Map<String, AggregateContext> contexts = new ConcurrentHashMap();
@@ -70,8 +70,8 @@ public class AggregateScopeContext extends AbstractContext implements ScopeConte
     // ----------------------------------
 
     public void start() throws ScopeInitializationException {
-        for (RuntimeConfiguration<InstanceContext> configuration : configs) {
-            InstanceContext context = configuration.createInstanceContext();
+        for (ContextFactory<InstanceContext> configuration : configs) {
+            InstanceContext context = configuration.createContext();
             if (!(context instanceof AggregateContext)) {
                 ScopeInitializationException e = new ScopeInitializationException("Context not an aggregate type");
                 e.addContextName(context.getName());
@@ -94,15 +94,15 @@ public class AggregateScopeContext extends AbstractContext implements ScopeConte
     // Methods
     // ----------------------------------
 
-    public void registerConfigurations(List<RuntimeConfiguration<InstanceContext>> configurations) {
+    public void registerFactorys(List<ContextFactory<InstanceContext>> configurations) {
         this.configs = configurations;
     }
 
-    public void registerConfiguration(RuntimeConfiguration<InstanceContext> configuration) {
+    public void registerFactory(ContextFactory<InstanceContext> configuration) {
         assert (configuration != null) : "Configuration was null";
         configs.add(configuration);
         if (lifecycleState == RUNNING) {
-            InstanceContext context = configuration.createInstanceContext();
+            InstanceContext context = configuration.createContext();
             if (!(context instanceof AggregateContext)) {
                 ScopeInitializationException e = new ScopeInitializationException("Context not an aggregate type");
                 e.setIdentifier(context.getName());

@@ -19,7 +19,7 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
+import org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder;
 import org.apache.tuscany.container.java.builder.JavaTargetWireBuilder;
 import org.apache.tuscany.container.java.builder.MockHandlerBuilder;
 import org.apache.tuscany.container.java.builder.MockInterceptorBuilder;
@@ -27,7 +27,7 @@ import org.apache.tuscany.container.java.invocation.mock.MockHandler;
 import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
@@ -37,7 +37,7 @@ import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
-import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
+import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 
@@ -63,14 +63,14 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     public void testRefWithSourceInterceptor() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
-        List<RuntimeConfigurationBuilder> builders = new ArrayList();
-        builders.add((new SystemComponentContextBuilder()));
+        List<ContextFactoryBuilder> builders = new ArrayList();
+        builders.add((new SystemContextFactoryBuilder()));
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
 
         ProxyFactoryFactory proxyFactoryFactory =new JDKProxyFactoryFactory();
         
-        JavaComponentContextBuilder javaBuilder = new JavaComponentContextBuilder();
+        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder();
         javaBuilder.setMessageFactory(msgFactory);
         javaBuilder.setProxyFactoryFactory(proxyFactoryFactory);
 
@@ -104,12 +104,12 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     public void testRefWithSourceInterceptorHandler() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
-        List<RuntimeConfigurationBuilder> builders = new ArrayList();
-        builders.add((new SystemComponentContextBuilder()));
+        List<ContextFactoryBuilder> builders = new ArrayList();
+        builders.add((new SystemContextFactoryBuilder()));
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
 
-        JavaComponentContextBuilder javaBuilder = new JavaComponentContextBuilder();
+        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder();
         javaBuilder.setMessageFactory(msgFactory);
         javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
 
@@ -150,12 +150,12 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     public void testRefWithTargetInterceptorHandler() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
-        List<RuntimeConfigurationBuilder> builders = new ArrayList();
-        builders.add((new SystemComponentContextBuilder()));
+        List<ContextFactoryBuilder> builders = new ArrayList();
+        builders.add((new SystemContextFactoryBuilder()));
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
 
-        JavaComponentContextBuilder javaBuilder = new JavaComponentContextBuilder();
+        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder();
         javaBuilder.setMessageFactory(msgFactory);
         javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
 
@@ -197,12 +197,12 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     public void testRefWithTargetInterceptor() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
-        List<RuntimeConfigurationBuilder> builders = new ArrayList();
-        builders.add((new SystemComponentContextBuilder()));
+        List<ContextFactoryBuilder> builders = new ArrayList();
+        builders.add((new SystemContextFactoryBuilder()));
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
 
-        JavaComponentContextBuilder javaBuilder = new JavaComponentContextBuilder();
+        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder();
         javaBuilder.setMessageFactory(msgFactory);
         javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
 

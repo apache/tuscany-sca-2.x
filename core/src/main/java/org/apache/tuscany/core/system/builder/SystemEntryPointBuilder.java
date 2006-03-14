@@ -15,11 +15,11 @@ package org.apache.tuscany.core.system.builder;
 
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.BuilderInitException;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.injection.FactoryInitException;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
-import org.apache.tuscany.core.system.config.SystemEntryPointRuntimeConfiguration;
+import org.apache.tuscany.core.system.config.SystemEntryPointContextFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
@@ -27,9 +27,9 @@ import org.apache.tuscany.model.assembly.EntryPoint;
 /**
  * Decorates the logical model with entry point context configuration builders
  * 
- * @version $Rev$ $Date$
+ * @version $Rev: 385747 $ $Date: 2006-03-13 22:12:53 -0800 (Mon, 13 Mar 2006) $
  */
-public class SystemEntryPointBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
+public class SystemEntryPointBuilder implements ContextFactoryBuilder<AggregateContext> {
 
     // ----------------------------------
     // Constructors
@@ -48,7 +48,7 @@ public class SystemEntryPointBuilder implements RuntimeConfigurationBuilder<Aggr
         }
         EntryPoint entryPoint = (EntryPoint) modelObject;
         if (!(entryPoint.getBindings().get(0) instanceof SystemBinding)
-                || entryPoint.getConfiguredReference().getRuntimeConfiguration() != null) {
+                || entryPoint.getConfiguredReference().getContextFactory() != null) {
             return;
         }
         try {
@@ -66,9 +66,9 @@ public class SystemEntryPointBuilder implements RuntimeConfigurationBuilder<Aggr
             } else {
                 targetName = targetService.getAggregatePart().getName();
             }
-            SystemEntryPointRuntimeConfiguration config = new SystemEntryPointRuntimeConfiguration(entryPoint.getName(),
+            SystemEntryPointContextFactory config = new SystemEntryPointContextFactory(entryPoint.getName(),
                     targetName);
-            entryPoint.getConfiguredReference().setRuntimeConfiguration(config);
+            entryPoint.getConfiguredReference().setContextFactory(config);
         } catch (FactoryInitException e) {
             e.addContextName(entryPoint.getName());
             throw e;

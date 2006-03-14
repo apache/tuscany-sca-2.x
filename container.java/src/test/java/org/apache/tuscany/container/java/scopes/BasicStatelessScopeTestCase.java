@@ -22,12 +22,12 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
+import org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.StatelessComponent;
 import org.apache.tuscany.container.java.mock.components.StatelessComponentImpl;
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
@@ -48,7 +48,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
     public void testInstanceManagement() throws Exception {
         EventContext ctx = new EventContextImpl();
         StatelessScopeContext scope = new StatelessScopeContext(ctx);
-        scope.registerConfigurations(createConfigurations());
+        scope.registerFactorys(createConfigurations());
         scope.start();
         // first request
         StatelessComponentImpl comp1 = (StatelessComponentImpl) scope.getContext("TestService1").getInstance(null);
@@ -63,8 +63,8 @@ public class BasicStatelessScopeTestCase extends TestCase {
     public void testRegisterContextBeforeRequest() throws Exception {
         EventContext ctx = new EventContextImpl();
         StatelessScopeContext scope = new StatelessScopeContext(ctx);
-        scope.registerConfigurations(createConfigurations());
-        scope.registerConfiguration(createConfiguration("NewTestService"));
+        scope.registerFactorys(createConfigurations());
+        scope.registerFactory(createConfiguration("NewTestService"));
         scope.start();
         StatelessComponent comp1 = (StatelessComponent) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp1);
@@ -76,11 +76,11 @@ public class BasicStatelessScopeTestCase extends TestCase {
     public void testRegisterContextAfterRequest() throws Exception {
         EventContext ctx = new EventContextImpl();
         StatelessScopeContext scope = new StatelessScopeContext(ctx);
-        scope.registerConfigurations(createConfigurations());
+        scope.registerFactorys(createConfigurations());
         scope.start();
         StatelessComponent comp1 = (StatelessComponent) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp1);
-        scope.registerConfiguration(createConfiguration("NewTestService"));
+        scope.registerFactory(createConfiguration("NewTestService"));
         StatelessComponent comp2 = (StatelessComponent) scope.getContext("NewTestService").getInstance(null);
         Assert.assertNotNull(comp2);
         scope.stop();
@@ -93,7 +93,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
     public void testSetNullComponents() throws Exception {
         EventContext ctx = new EventContextImpl();
         StatelessScopeContext scope = new StatelessScopeContext(ctx);
-        scope.registerConfigurations(createConfigurations());
+        scope.registerFactorys(createConfigurations());
         scope.start();
         scope.stop();
     }
@@ -102,24 +102,24 @@ public class BasicStatelessScopeTestCase extends TestCase {
     // Private methods
     // ----------------------------------
 
-    JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
+    JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
-    private List<RuntimeConfiguration<InstanceContext>> createConfigurations()
+    private List<ContextFactory<InstanceContext>> createConfigurations()
             throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockFactory.createComponent("TestService1", StatelessComponentImpl.class,
                 Scope.INSTANCE);
         builder.build(component);
-        List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
-        configs.add((RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration());
+        List<ContextFactory<InstanceContext>> configs = new ArrayList();
+        configs.add((ContextFactory<InstanceContext>) component.getComponentImplementation().getContextFactory());
         return configs;
     }
 
-    private RuntimeConfiguration<InstanceContext> createConfiguration(String name)
+    private ContextFactory<InstanceContext> createConfiguration(String name)
             throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockFactory.createComponent(name, StatelessComponentImpl.class,
                 Scope.INSTANCE);
         builder.build(component);
-        return (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration();
+        return (ContextFactory<InstanceContext>) component.getComponentImplementation().getContextFactory();
     }
 
 }

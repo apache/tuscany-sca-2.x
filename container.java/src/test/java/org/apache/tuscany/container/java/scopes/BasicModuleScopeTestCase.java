@@ -22,12 +22,12 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
+import org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeComponentImpl;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeInitDestroyComponent;
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
@@ -48,7 +48,7 @@ public class BasicModuleScopeTestCase extends TestCase {
     public void testInstanceManagement() throws Exception {
         EventContext ctx = new EventContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        scope.registerConfigurations(createConfigurations());
+        scope.registerFactorys(createConfigurations());
         scope.start();
         // first request
         scope.onEvent(EventContext.MODULE_START, null);
@@ -65,7 +65,7 @@ public class BasicModuleScopeTestCase extends TestCase {
     public void testSetNullComponents() throws Exception {
         EventContext ctx = new EventContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        scope.registerConfigurations(createConfigurations());
+        scope.registerFactorys(createConfigurations());
         scope.start();
         scope.onEvent(EventContext.MODULE_START, null);
         scope.onEvent(EventContext.MODULE_STOP, null);
@@ -75,9 +75,9 @@ public class BasicModuleScopeTestCase extends TestCase {
     public void testRegisterContextBeforeStart() throws Exception {
         EventContext ctx = new EventContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        scope.registerConfigurations(createConfigurations());
+        scope.registerFactorys(createConfigurations());
         scope.start();
-        scope.registerConfiguration(createConfiguration("NewTestService"));
+        scope.registerFactory(createConfiguration("NewTestService"));
         scope.onEvent(EventContext.MODULE_START,null);
         ModuleScopeInitDestroyComponent comp2 = (ModuleScopeInitDestroyComponent) scope.getContext("NewTestService").getInstance(null);
         Assert.assertNotNull(comp2);
@@ -91,9 +91,9 @@ public class BasicModuleScopeTestCase extends TestCase {
         EventContext ctx = new EventContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
         scope.start();
-        scope.registerConfiguration(createConfiguration("NewTestService"));
+        scope.registerFactory(createConfiguration("NewTestService"));
         scope.onEvent(EventContext.MODULE_START,null);
-        scope.registerConfigurations(createConfigurations());
+        scope.registerFactorys(createConfigurations());
         ModuleScopeInitDestroyComponent comp2 = (ModuleScopeInitDestroyComponent) scope.getContext("NewTestService").getInstance(null);
         Assert.assertNotNull(comp2);
         Assert.assertTrue(comp2.isInitialized());
@@ -106,21 +106,21 @@ public class BasicModuleScopeTestCase extends TestCase {
     // Private methods
     // ----------------------------------
 
-    JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
+    JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
-    private List<RuntimeConfiguration<InstanceContext>> createConfigurations() throws NoSuchMethodException, BuilderException {
+    private List<ContextFactory<InstanceContext>> createConfigurations() throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockFactory.createComponent("TestService1", ModuleScopeComponentImpl.class, Scope.MODULE);
         builder.build(component);
-        List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
-        configs.add((RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration());
+        List<ContextFactory<InstanceContext>> configs = new ArrayList();
+        configs.add((ContextFactory<InstanceContext>) component.getComponentImplementation().getContextFactory());
         return configs;
     }
 
-    private RuntimeConfiguration<InstanceContext> createConfiguration(String name)
+    private ContextFactory<InstanceContext> createConfiguration(String name)
             throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockFactory.createComponent(name, ModuleScopeInitDestroyComponent.class,
                 Scope.MODULE);
         builder.build(component);
-        return (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration();
+        return (ContextFactory<InstanceContext>) component.getComponentImplementation().getContextFactory();
     }
 }

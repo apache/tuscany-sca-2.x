@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.QualifiedName;
@@ -43,7 +43,7 @@ public abstract class AbstractScopeContext  extends AbstractContext implements S
     // ----------------------------------
 
     // The collection of runtime configurations for the scope
-    protected Map<String, RuntimeConfiguration<InstanceContext>> runtimeConfigurations = new ConcurrentHashMap();
+    protected Map<String, ContextFactory<InstanceContext>> contextFactorys = new ConcurrentHashMap();
 
     // The event context the scope container is associated with
     protected EventContext eventContext;
@@ -72,9 +72,9 @@ public abstract class AbstractScopeContext  extends AbstractContext implements S
     // Scope methods
     // ----------------------------------
 
-    public void registerConfigurations(List<RuntimeConfiguration<InstanceContext>> configurations) {
-        for (RuntimeConfiguration<InstanceContext> configuration : configurations) {
-            runtimeConfigurations.put(configuration.getName(), configuration);
+    public void registerFactorys(List<ContextFactory<InstanceContext>> configurations) {
+        for (ContextFactory<InstanceContext> configuration : configurations) {
+            contextFactorys.put(configuration.getName(), configuration);
         }
     }
 

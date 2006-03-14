@@ -20,13 +20,13 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.container.js.assembly.mock.HelloWorldService;
-import org.apache.tuscany.container.js.builder.JavaScriptComponentContextBuilder;
+import org.apache.tuscany.container.js.builder.JavaScriptContextFactoryBuilder;
 import org.apache.tuscany.container.js.builder.JavaScriptTargetWireBuilder;
 import org.apache.tuscany.container.js.builder.MockInterceptorBuilder;
 import org.apache.tuscany.container.js.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.container.js.mock.MockAssemblyFactory;
 import org.apache.tuscany.container.js.mock.MockModuleFactory;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
@@ -37,7 +37,7 @@ import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
-import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
+import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 import org.apache.tuscany.model.assembly.Scope;
@@ -52,12 +52,12 @@ public class JSComponentContextTestCase extends TestCase {
     public void testBasicInvocation() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
-        List<RuntimeConfigurationBuilder> builders = new ArrayList();
-        builders.add((new SystemComponentContextBuilder()));
+        List<ContextFactoryBuilder> builders = new ArrayList();
+        builders.add((new SystemContextFactoryBuilder()));
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
 
-        JavaScriptComponentContextBuilder javaBuilder = new JavaScriptComponentContextBuilder();
+        JavaScriptContextFactoryBuilder javaBuilder = new JavaScriptContextFactoryBuilder();
         javaBuilder.setMessageFactory(msgFactory);
         javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
 

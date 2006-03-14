@@ -22,13 +22,13 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
+import org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.SessionScopeDestroyOnlyComponent;
 import org.apache.tuscany.container.java.mock.components.SessionScopeInitDestroyComponent;
 import org.apache.tuscany.container.java.mock.components.SessionScopeInitOnlyComponent;
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
@@ -49,7 +49,7 @@ public class RequestScopeLifecycleTestCase extends TestCase {
     public void testInitDestroy() throws Exception {
         EventContext ctx = new EventContextImpl();
         RequestScopeContext scope = new RequestScopeContext(ctx);
-        scope.registerConfigurations(createComponents());
+        scope.registerFactorys(createComponents());
         scope.start();
         SessionScopeInitDestroyComponent initDestroy = (SessionScopeInitDestroyComponent) scope.getContext(
                 "TestServiceInitDestroy").getInstance(null);
@@ -80,7 +80,7 @@ public class RequestScopeLifecycleTestCase extends TestCase {
     public void testDestroyOrder() throws Exception {
         EventContext ctx = new EventContextImpl();
         RequestScopeContext scope = new RequestScopeContext(ctx);
-        scope.registerConfigurations(createOrderedInitComponents());
+        scope.registerFactorys(createOrderedInitComponents());
         scope.start();
         // request start
         OrderedInitPojo one = (OrderedInitPojo) scope.getContext("one").getInstance(null);
@@ -109,9 +109,9 @@ public class RequestScopeLifecycleTestCase extends TestCase {
     // Private methods
     // ----------------------------------
 
-    JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
+    JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
-    private List<RuntimeConfiguration<InstanceContext>> createComponents() throws NoSuchMethodException, BuilderException {
+    private List<ContextFactory<InstanceContext>> createComponents() throws NoSuchMethodException, BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
         ca[0] = MockFactory.createComponent("TestServiceInitDestroy", SessionScopeInitDestroyComponent.class,
                 Scope.REQUEST);
@@ -119,25 +119,25 @@ public class RequestScopeLifecycleTestCase extends TestCase {
                 Scope.REQUEST);
         ca[2] = MockFactory.createComponent("TestServiceDestroyOnly", SessionScopeDestroyOnlyComponent.class,
                 Scope.REQUEST);
-        List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
+        List<ContextFactory<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
             builder.build(ca[i]);
-            configs.add((RuntimeConfiguration<InstanceContext>) ca[i].getComponentImplementation().getRuntimeConfiguration());
+            configs.add((ContextFactory<InstanceContext>) ca[i].getComponentImplementation().getContextFactory());
 
         }
         return configs;
     }
 
-    private List<RuntimeConfiguration<InstanceContext>> createOrderedInitComponents() throws NoSuchMethodException,
+    private List<ContextFactory<InstanceContext>> createOrderedInitComponents() throws NoSuchMethodException,
             BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
         ca[0] = MockFactory.createComponent("one", OrderedInitPojo.class, Scope.REQUEST);
         ca[1] = MockFactory.createComponent("two", OrderedInitPojo.class, Scope.REQUEST);
         ca[2] = MockFactory.createComponent("three", OrderedInitPojo.class, Scope.REQUEST);
-        List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
+        List<ContextFactory<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
             builder.build(ca[i]);
-            configs.add((RuntimeConfiguration<InstanceContext>) ca[i].getComponentImplementation().getRuntimeConfiguration());
+            configs.add((ContextFactory<InstanceContext>) ca[i].getComponentImplementation().getContextFactory());
 
         }
         return configs;

@@ -18,7 +18,7 @@ import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextResolver;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -30,7 +30,7 @@ import org.apache.tuscany.model.assembly.Scope;
  * 
  * @version $Rev$ $Date$
  */
-public class SystemEntryPointRuntimeConfiguration implements RuntimeConfiguration<EntryPointContext>, ContextResolver {
+public class SystemEntryPointContextFactory implements ContextFactory<EntryPointContext>, ContextResolver {
 
     // the name of the entry point
     private String name;
@@ -43,7 +43,7 @@ public class SystemEntryPointRuntimeConfiguration implements RuntimeConfiguratio
     // Constructors
     // ----------------------------------
 
-    public SystemEntryPointRuntimeConfiguration(String name, String targetName) {
+    public SystemEntryPointContextFactory(String name, String targetName) {
         this.name = name;
         this.targetName = targetName;
     }
@@ -52,7 +52,7 @@ public class SystemEntryPointRuntimeConfiguration implements RuntimeConfiguratio
     // Methods
     // ----------------------------------
 
-    public EntryPointContext createInstanceContext() throws ContextCreationException {
+    public EntryPointContext createContext() throws ContextCreationException {
         return new SystemEntryPointContext(name, targetName, this);
     }
 

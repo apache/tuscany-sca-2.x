@@ -1,6 +1,6 @@
 package org.apache.tuscany.binding.axis.builder;
 
-import org.apache.tuscany.binding.axis.config.ExternalWebServiceRuntimeConfiguration;
+import org.apache.tuscany.binding.axis.config.ExternalWebServiceContextFactory;
 import org.apache.tuscany.binding.axis.handler.ExternalWebServiceTargetInvoker;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.WireBuilder;
@@ -35,7 +35,7 @@ public class ExternalWebServiceWireBuilder implements WireBuilder {
     }
 
     public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope, ScopeContext targetScopeContext) throws BuilderConfigException {
-        if (!(ExternalWebServiceRuntimeConfiguration.class.isAssignableFrom(targetType))) {
+        if (!(ExternalWebServiceContextFactory.class.isAssignableFrom(targetType))) {
             return;
         }
         for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations().values()) {

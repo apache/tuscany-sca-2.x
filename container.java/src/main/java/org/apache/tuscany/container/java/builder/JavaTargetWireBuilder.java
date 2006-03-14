@@ -13,7 +13,7 @@
  */
 package org.apache.tuscany.container.java.builder;
 
-import org.apache.tuscany.container.java.config.JavaComponentRuntimeConfiguration;
+import org.apache.tuscany.container.java.config.JavaContextFactory;
 import org.apache.tuscany.container.java.invocation.ScopedJavaComponentInvoker;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.WireBuilder;
@@ -50,7 +50,7 @@ public class JavaTargetWireBuilder implements WireBuilder {
 
     public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) throws BuilderConfigException {
-        if (!(JavaComponentRuntimeConfiguration.class.isAssignableFrom(targetType))) {
+        if (!(JavaContextFactory.class.isAssignableFrom(targetType))) {
             return;
         }
         for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations()

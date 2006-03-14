@@ -29,7 +29,7 @@ public abstract class ConfiguredPortImpl extends AssemblyModelObjectImpl impleme
     private AggregatePart aggregatePart;
     private Port port;
 
-    private Object runtimeConfiguration;
+    private Object contextFactory;
     private Object proxyFactory;
 
     /**
@@ -86,18 +86,18 @@ public abstract class ConfiguredPortImpl extends AssemblyModelObjectImpl impleme
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.RuntimeConfigurationHolder#getRuntimeConfiguration()
+     * @see org.apache.tuscany.model.assembly.ContextFactoryHolder#getContextFactory()
      */
-    public Object getRuntimeConfiguration() {
-        return runtimeConfiguration;
+    public Object getContextFactory() {
+        return contextFactory;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.RuntimeConfigurationHolder#setRuntimeConfiguration(java.lang.Object)
+     * @see org.apache.tuscany.model.assembly.ContextFactoryHolder#setContextFactory(java.lang.Object)
      */
-    public void setRuntimeConfiguration(Object configuration) {
+    public void setContextFactory(Object configuration) {
         checkNotFrozen();
-        runtimeConfiguration = configuration;
+        contextFactory = configuration;
     }
 
     /**

@@ -1,7 +1,7 @@
 package org.apache.tuscany.core.system.context;
 
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
@@ -10,7 +10,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
 @Scope("MODULE")
-public class TestBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
+public class TestBuilder implements ContextFactoryBuilder<AggregateContext> {
 
     @Autowire
     private RuntimeContext runtime;

@@ -20,10 +20,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
-import org.apache.tuscany.binding.axis2.config.WebServiceEntryPointRuntimeConfiguration;
+import org.apache.tuscany.binding.axis2.config.WebServiceEntryPointContextFactory;
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
-import org.apache.tuscany.core.builder.impl.EntryPointRuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.QualifiedName;
@@ -47,12 +47,12 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
 /**
- * Creates a <code>RuntimeConfigurationBuilder</code> for an entry point configured with the {@link WebServiceBinding}
+ * Creates a <code>ContextFactoryBuilder</code> for an entry point configured with the {@link WebServiceBinding}
  * 
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class WebServiceEntryPointConfigurationBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
+public class WebServiceEntryPointBuilder implements ContextFactoryBuilder<AggregateContext> {
 
     private RuntimeContext runtimeContext;
 
@@ -60,9 +60,9 @@ public class WebServiceEntryPointConfigurationBuilder implements RuntimeConfigur
 
     private MessageFactory messageFactory;
 
-    private RuntimeConfigurationBuilder policyBuilder;
+    private ContextFactoryBuilder policyBuilder;
 
-    public WebServiceEntryPointConfigurationBuilder() {
+    public WebServiceEntryPointBuilder() {
     }
 
     @Init(eager = true)
@@ -103,7 +103,7 @@ public class WebServiceEntryPointConfigurationBuilder implements RuntimeConfigur
      * 
      * @see org.apache.tuscany.core.builder.impl.HierarchicalBuilder
      */
-    public void setPolicyBuilder(RuntimeConfigurationBuilder builder) {
+    public void setPolicyBuilder(ContextFactoryBuilder builder) {
         policyBuilder = builder;
     }
 
@@ -116,7 +116,7 @@ public class WebServiceEntryPointConfigurationBuilder implements RuntimeConfigur
             return;
         }
 
-        EntryPointRuntimeConfiguration config = new WebServiceEntryPointRuntimeConfiguration(entryPoint.getName(), entryPoint.getConfiguredService().getService().getName(), messageFactory);
+        EntryPointContextFactory config = new WebServiceEntryPointContextFactory(entryPoint.getName(), entryPoint.getConfiguredService().getService().getName(), messageFactory);
 
         ConfiguredService configuredService = entryPoint.getConfiguredService();
         Service service = configuredService.getService();
@@ -142,7 +142,7 @@ public class WebServiceEntryPointConfigurationBuilder implements RuntimeConfigur
         for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
             iConfig.addTargetInterceptor(new EntryPointInvokerInterceptor());
         }
-        entryPoint.getConfiguredReference().setRuntimeConfiguration(config);
+        entryPoint.getConfiguredReference().setContextFactory(config);
     }
     
     //FIXME same as the InvokerInterceptor except that it doesn't throw an exception in setNext

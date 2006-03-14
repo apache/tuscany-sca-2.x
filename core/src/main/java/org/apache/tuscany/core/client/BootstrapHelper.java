@@ -23,7 +23,7 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.impl.ModuleComponentConfigurationLoaderImpl;
@@ -32,7 +32,7 @@ import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
+import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 import org.apache.tuscany.core.system.loader.SystemSCDLModelLoader;
@@ -80,9 +80,9 @@ public final class BootstrapHelper {
      *
      * @return a default list of configuration builders
      */
-    public static List<RuntimeConfigurationBuilder> getBuilders() {
-        List<RuntimeConfigurationBuilder> configBuilders = new ArrayList();
-        configBuilders.add((new SystemComponentContextBuilder()));
+    public static List<ContextFactoryBuilder> getBuilders() {
+        List<ContextFactoryBuilder> configBuilders = new ArrayList();
+        configBuilders.add((new SystemContextFactoryBuilder()));
         configBuilders.add(new SystemEntryPointBuilder());
         configBuilders.add(new SystemExternalServiceBuilder());
         return configBuilders;

@@ -13,7 +13,7 @@
  */
 package org.apache.tuscany.binding.jsonrpc.config;
 
-import org.apache.tuscany.core.builder.impl.EntryPointRuntimeConfiguration;
+import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 
 /**
@@ -22,7 +22,7 @@ import org.apache.tuscany.core.message.MessageFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class JSONRPCEntryPointRuntimeConfiguration extends EntryPointRuntimeConfiguration {
+public class JSONRPCEntryPointRuntimeConfiguration extends EntryPointContextFactory {
 
     public JSONRPCEntryPointRuntimeConfiguration(String name, String serviceName, MessageFactory messageFactory) {
         super(name, serviceName, messageFactory);

@@ -18,8 +18,8 @@
         xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
 		name="org.apache.tuscany.container.js">
 
-    <component name="org.apache.tuscany.container.js.builder.JavaScriptComponentContextBuilder">
-        <system:implementation.system class="org.apache.tuscany.container.js.builder.JavaScriptComponentContextBuilder"/>
+    <component name="org.apache.tuscany.container.js.builder.JavaScriptContextFactoryBuilder">
+        <system:implementation.system class="org.apache.tuscany.container.js.builder.JavaScriptContextFactoryBuilder"/>
     </component>
 
     <component name="org.apache.tuscany.container.js.loader.JavaScriptSCDLModelLoader">

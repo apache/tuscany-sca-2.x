@@ -22,13 +22,13 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
+import org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.SessionScopeComponent;
 import org.apache.tuscany.container.java.mock.components.SessionScopeComponentImpl;
 import org.apache.tuscany.container.java.mock.components.SessionScopeInitDestroyComponent;
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
@@ -49,7 +49,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     public void testInstanceManagement() throws Exception {
         EventContext ctx = new EventContextImpl();
         HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
-        scope.registerConfigurations(createConfigurations());
+        scope.registerFactorys(createConfigurations());
         scope.start();
         Object session = new Object();
         Object session2 = new Object();
@@ -85,7 +85,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     public void testSetNullComponents() throws Exception {
         EventContext ctx = new EventContextImpl();
         HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
-        scope.registerConfigurations(new ArrayList<RuntimeConfiguration<InstanceContext>>());
+        scope.registerFactorys(new ArrayList<ContextFactory<InstanceContext>>());
         scope.start();
         scope.stop();
     }
@@ -93,7 +93,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     public void testGetContextByKey() throws Exception {
         EventContext ctx = new EventContextImpl();
         HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
-        scope.registerConfigurations(createConfigurations());
+        scope.registerFactorys(createConfigurations());
         scope.start();
         Object session = new Object();
         Object session2 = new Object();
@@ -126,10 +126,10 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     public void testRegisterContextBeforeSession() throws Exception {
         EventContext ctx = new EventContextImpl();
         HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
-        scope.registerConfigurations(createConfigurations());
+        scope.registerFactorys(createConfigurations());
         scope.start();
         Object session = new Object();
-        scope.registerConfiguration(createConfiguration("NewTestService"));
+        scope.registerFactory(createConfiguration("NewTestService"));
 
         // first request
         ctx.setIdentifier(EventContext.HTTP_SESSION, session);
@@ -164,7 +164,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     public void testRegisterContextAfterSession() throws Exception {
         EventContext ctx = new EventContextImpl();
         HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
-        scope.registerConfigurations(createConfigurations());
+        scope.registerFactorys(createConfigurations());
         scope.start();
         Object session = new Object();
 
@@ -174,7 +174,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         Assert.assertNotNull(comp1);
         ctx.clearIdentifier(EventContext.HTTP_SESSION);
 
-        scope.registerConfiguration(createConfiguration("NewTestService"));
+        scope.registerFactory(createConfiguration("NewTestService"));
 
         // second request
         ctx.setIdentifier(EventContext.HTTP_SESSION, session);
@@ -205,19 +205,19 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     // ----------------------------------
     // Private methods
     // ----------------------------------
-    JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
+    JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
-    private List<RuntimeConfiguration<InstanceContext>> createConfigurations() throws NoSuchMethodException, BuilderException {
+    private List<ContextFactory<InstanceContext>> createConfigurations() throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockFactory.createComponent("TestService1", SessionScopeComponentImpl.class, Scope.SESSION);
         builder.build(component);
-        List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
-        configs.add((RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration());
+        List<ContextFactory<InstanceContext>> configs = new ArrayList();
+        configs.add((ContextFactory<InstanceContext>) component.getComponentImplementation().getContextFactory());
         return configs;
     }
 
-    private RuntimeConfiguration<InstanceContext> createConfiguration(String name) throws NoSuchMethodException, BuilderException {
+    private ContextFactory<InstanceContext> createConfiguration(String name) throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockFactory.createComponent(name, SessionScopeInitDestroyComponent.class, Scope.SESSION);
         builder.build(component);
-        return (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration();
+        return (ContextFactory<InstanceContext>) component.getComponentImplementation().getContextFactory();
     }
 }

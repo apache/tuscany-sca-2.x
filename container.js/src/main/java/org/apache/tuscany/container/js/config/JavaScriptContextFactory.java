@@ -24,7 +24,7 @@ import java.util.Map;
 import org.apache.tuscany.container.js.context.JavaScriptComponentContext;
 import org.apache.tuscany.container.js.rhino.RhinoScript;
 import org.apache.tuscany.core.builder.ContextCreationException;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -35,7 +35,7 @@ import org.apache.tuscany.model.assembly.Scope;
  * 
  * @version $Rev$ $Date$
  */
-public class JavaScriptComponentRuntimeConfiguration implements RuntimeConfiguration<SimpleComponentContext> {
+public class JavaScriptContextFactory implements ContextFactory<SimpleComponentContext> {
 
     private Scope scope;
 
@@ -49,7 +49,7 @@ public class JavaScriptComponentRuntimeConfiguration implements RuntimeConfigura
 
     private AggregateContext parentContext;
     
-    public JavaScriptComponentRuntimeConfiguration(String name, Scope scope, Map<String, Class> services,
+    public JavaScriptContextFactory(String name, Scope scope, Map<String, Class> services,
             Map<String, Object> properties, RhinoScript invoker) {
         this.name = name;
         this.scope = scope;
@@ -58,7 +58,7 @@ public class JavaScriptComponentRuntimeConfiguration implements RuntimeConfigura
         this.invoker = invoker;
     }
 
-    public SimpleComponentContext createInstanceContext() throws ContextCreationException {
+    public SimpleComponentContext createContext() throws ContextCreationException {
         return new JavaScriptComponentContext(name, services, properties, sourceProxyFactories, targetProxyFactories, invoker
                 .copy());
     }

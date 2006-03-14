@@ -19,10 +19,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.binding.axis.assembly.WebServiceBinding;
-import org.apache.tuscany.binding.axis.config.ExternalWebServiceRuntimeConfiguration;
+import org.apache.tuscany.binding.axis.config.ExternalWebServiceContextFactory;
 import org.apache.tuscany.binding.axis.handler.ExternalWebServiceClient;
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
@@ -44,12 +44,12 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
 /**
- * Creates a <code>RuntimeConfigurationBuilder</code> for an external service configured with the {@link WebServiceBinding}
+ * Creates a <code>ContextFactoryBuilder</code> for an external service configured with the {@link WebServiceBinding}
  * 
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurationBuilder {
+public class ExternalWebServiceBuilder implements ContextFactoryBuilder {
 
     private RuntimeContext runtimeContext;
 
@@ -57,9 +57,9 @@ public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurat
 
     private MessageFactory messageFactory;
 
-    private RuntimeConfigurationBuilder policyBuilder;
+    private ContextFactoryBuilder policyBuilder;
 
-    public ExternalWebServiceConfigurationBuilder() {
+    public ExternalWebServiceBuilder() {
     }
 
     @Init(eager = true)
@@ -100,7 +100,7 @@ public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurat
      * 
      * @see org.apache.tuscany.core.builder.impl.HierarchicalBuilder
      */
-    public void setPolicyBuilder(RuntimeConfigurationBuilder builder) {
+    public void setPolicyBuilder(ContextFactoryBuilder builder) {
         policyBuilder = builder;
     }
 
@@ -116,7 +116,7 @@ public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurat
         WebServiceBinding wsBinding=(WebServiceBinding)externalService.getBindings().get(0);
         
         ExternalWebServiceClient externalWebServiceClient=new ExternalWebServiceClient(externalService, wsBinding);
-        ExternalWebServiceRuntimeConfiguration config = new ExternalWebServiceRuntimeConfiguration(externalService.getName(), new SingletonObjectFactory<ExternalWebServiceClient>(externalWebServiceClient));
+        ExternalWebServiceContextFactory config = new ExternalWebServiceContextFactory(externalService.getName(), new SingletonObjectFactory<ExternalWebServiceClient>(externalWebServiceClient));
 
         ConfiguredService configuredService = externalService.getConfiguredService();
         Service service = configuredService.getService();
@@ -143,7 +143,7 @@ public class ExternalWebServiceConfigurationBuilder implements RuntimeConfigurat
             iConfig.addTargetInterceptor(new InvokerInterceptor());
         }
 
-        externalService.getConfiguredService().setRuntimeConfiguration(config);
+        externalService.getConfiguredService().setContextFactory(config);
     }
 
 }

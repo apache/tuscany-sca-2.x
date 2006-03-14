@@ -18,8 +18,8 @@
         xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
 		name="org.apache.tuscany.binding.axis">
 
-    <component name="org.apache.tuscany.binding.axis.builder.ExternalWebServiceConfigurationBuilder">
-        <system:implementation.system class="org.apache.tuscany.binding.axis.builder.ExternalWebServiceConfigurationBuilder"/>
+    <component name="org.apache.tuscany.binding.axis.builder.ExternalWebServiceBuilder">
+        <system:implementation.system class="org.apache.tuscany.binding.axis.builder.ExternalWebServiceBuilder"/>
     </component>
 
     <component name="org.apache.tuscany.binding.axis.builder.ExternalWebServiceWireBuilder">
@@ -30,8 +30,8 @@
         <system:implementation.system class="org.apache.tuscany.binding.axis.loader.WebServiceSCDLModelLoader"/>
     </component>
 
-    <component name="org.apache.tuscany.binding.axis.builder.WebServiceEntryPointConfigurationBuilder">
-        <system:implementation.system class="org.apache.tuscany.binding.axis.builder.WebServiceEntryPointConfigurationBuilder"/>
+    <component name="org.apache.tuscany.binding.axis.builder.WebServiceEntryPointBuilder">
+        <system:implementation.system class="org.apache.tuscany.binding.axis.builder.WebServiceEntryPointBuilder"/>
     </component>
 
 </moduleFragment>

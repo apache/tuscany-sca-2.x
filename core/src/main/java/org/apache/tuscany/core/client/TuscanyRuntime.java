@@ -24,7 +24,7 @@ import org.osoa.sca.ServiceRuntimeException;
 
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
@@ -83,7 +83,7 @@ public class TuscanyRuntime extends SCA {
 
         // Create a runtime context and start it
         List<SCDLModelLoader> loaders = modelContext.getAssemblyLoader().getLoaders();
-        List<RuntimeConfigurationBuilder> configBuilders = BootstrapHelper.getBuilders();
+        List<ContextFactoryBuilder> configBuilders = BootstrapHelper.getBuilders();
         runtime = new RuntimeContextImpl(monitorFactory, loaders, configBuilders, new DefaultWireBuilder());
         runtime.start();
         monitor.started(runtime);

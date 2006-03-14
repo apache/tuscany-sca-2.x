@@ -18,7 +18,7 @@ package org.apache.tuscany.core.context;
 
 import java.util.List;
 
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 
 /**
  * Manages the lifecycle and visibility of <code>InstanceContext</code>s.
@@ -35,14 +35,14 @@ public interface ScopeContext extends InstanceContext, RuntimeEventListener {
     public boolean isCacheable();
 
     /**
-     * Registers the runtime configurations used to construct instance contexts for the scope
+     * Registers the context factory used to construct instance contexts for the scope
      */
-    public void registerConfigurations(List<RuntimeConfiguration<InstanceContext>> configurations);
+    public void registerFactorys(List<ContextFactory<InstanceContext>> configurations);
 
     /**
-     * Adds a runtime configuration to the scope
+     * Adds a context factory to the scope
      */
-    public void registerConfiguration(RuntimeConfiguration<InstanceContext> configuration);
+    public void registerFactory(ContextFactory<InstanceContext> configuration);
 
     /**
      * Returns a context bound to the given name or null if the component does not exist. The returned context is bound

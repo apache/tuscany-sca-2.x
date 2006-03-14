@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 
 /**
@@ -26,19 +26,19 @@ import org.apache.tuscany.model.assembly.AssemblyModelObject;
  * 
  * @version $Rev$ $Date$
  */
-public class HierarchicalBuilder implements RuntimeConfigurationBuilder {
-    private List<RuntimeConfigurationBuilder> builders = new CopyOnWriteArrayList();
+public class HierarchicalBuilder implements ContextFactoryBuilder {
+    private List<ContextFactoryBuilder> builders = new CopyOnWriteArrayList();
     
-    private List<RuntimeConfigurationBuilder> readOnlyBuilders = Collections.unmodifiableList(builders); 
+    private List<ContextFactoryBuilder> readOnlyBuilders = Collections.unmodifiableList(builders); 
     
     public HierarchicalBuilder() {
     }
 
-    public void addBuilder(RuntimeConfigurationBuilder builder) {
+    public void addBuilder(ContextFactoryBuilder builder) {
         builders.add(builder);
     }
 
-    public void removeBuilder(RuntimeConfigurationBuilder builder){
+    public void removeBuilder(ContextFactoryBuilder builder){
         builders.remove(builder);
     }
     
@@ -47,7 +47,7 @@ public class HierarchicalBuilder implements RuntimeConfigurationBuilder {
     }
     
     public void build(AssemblyModelObject object) throws BuilderException {
-        for (RuntimeConfigurationBuilder builder : builders) {
+        for (ContextFactoryBuilder builder : builders) {
             builder.build(object);
         }
 

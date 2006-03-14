@@ -22,8 +22,8 @@ import java.util.Set;
 import org.apache.tuscany.binding.jsonrpc.assembly.JSONRPCBinding;
 import org.apache.tuscany.binding.jsonrpc.config.JSONRPCEntryPointRuntimeConfiguration;
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
-import org.apache.tuscany.core.builder.impl.EntryPointRuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.QualifiedName;
@@ -49,7 +49,7 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class JSONRPCEntryPointConfigurationBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
+public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuilder<AggregateContext> {
 
     private RuntimeContext runtimeContext;
 
@@ -57,7 +57,7 @@ public class JSONRPCEntryPointConfigurationBuilder implements RuntimeConfigurati
 
     private MessageFactory messageFactory;
 
-    private RuntimeConfigurationBuilder policyBuilder;
+    private ContextFactoryBuilder policyBuilder;
 
     public JSONRPCEntryPointConfigurationBuilder() {
     }
@@ -100,7 +100,7 @@ public class JSONRPCEntryPointConfigurationBuilder implements RuntimeConfigurati
      * 
      * @see org.apache.tuscany.core.builder.impl.HierarchicalBuilder
      */
-    public void setPolicyBuilder(RuntimeConfigurationBuilder builder) {
+    public void setPolicyBuilder(ContextFactoryBuilder builder) {
         policyBuilder = builder;
     }
 
@@ -113,7 +113,7 @@ public class JSONRPCEntryPointConfigurationBuilder implements RuntimeConfigurati
             return;
         }
 
-        EntryPointRuntimeConfiguration config = new JSONRPCEntryPointRuntimeConfiguration(entryPoint.getName(), entryPoint.getConfiguredService()
+        EntryPointContextFactory config = new JSONRPCEntryPointRuntimeConfiguration(entryPoint.getName(), entryPoint.getConfiguredService()
                 .getService().getName(), messageFactory);
 
         ConfiguredService configuredService = entryPoint.getConfiguredService();
@@ -141,7 +141,7 @@ public class JSONRPCEntryPointConfigurationBuilder implements RuntimeConfigurati
         for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
             iConfig.addTargetInterceptor(new InvokerInterceptor());
         }
-        entryPoint.getConfiguredReference().setRuntimeConfiguration(config);
+        entryPoint.getConfiguredReference().setContextFactory(config);
     }
 
 }

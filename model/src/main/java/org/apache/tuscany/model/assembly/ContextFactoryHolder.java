@@ -17,20 +17,18 @@
 package org.apache.tuscany.model.assembly;
 
 /**
- * A model object that can hold a runtime configuration object.
+ * A model object that can hold a runtime context factory object.
  */
-public interface RuntimeConfigurationHolder {
+public interface ContextFactoryHolder {
 
     /**
-     * Sets the runtime configuration object.
-     * @param configuration the runtime configuration object
+     * Sets the context factory
      */
-    void setRuntimeConfiguration(Object configuration);
+    void setContextFactory(Object configuration);
 
     /**
-     * Returns the runtime configuration object.
-     * @return the runtime configuration object
+     * Returns the context factory
      */
-    Object getRuntimeConfiguration();
+    Object getContextFactory();
 
 }

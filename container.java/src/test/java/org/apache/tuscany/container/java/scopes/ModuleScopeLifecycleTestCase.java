@@ -22,7 +22,7 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
+import org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeDestroyOnlyComponent;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeEagerInitComponent;
@@ -30,7 +30,7 @@ import org.apache.tuscany.container.java.mock.components.ModuleScopeEagerInitDes
 import org.apache.tuscany.container.java.mock.components.ModuleScopeInitDestroyComponent;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeInitOnlyComponent;
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
@@ -48,7 +48,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
     public void testInitDestroy() throws Exception {
         EventContext ctx = new EventContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        scope.registerConfigurations(createComponents());
+        scope.registerFactorys(createComponents());
         scope.start();
         scope.onEvent(EventContext.MODULE_START, null);
         ModuleScopeInitDestroyComponent initDestroy = (ModuleScopeInitDestroyComponent) scope.getContext(
@@ -78,7 +78,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
     public void testEagerInit() throws Exception {
         EventContext ctx = new EventContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        scope.registerConfigurations(createEagerInitComponents());
+        scope.registerFactorys(createEagerInitComponents());
         scope.start();
         scope.onEvent(EventContext.MODULE_START, null);
         ModuleScopeEagerInitDestroyComponent initDestroy = (ModuleScopeEagerInitDestroyComponent) scope.getContext(
@@ -104,7 +104,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
     public void testDestroyOrder() throws Exception {
         EventContext ctx = new EventContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        scope.registerConfigurations(createOrderedInitComponents());
+        scope.registerFactorys(createOrderedInitComponents());
         scope.start();
         scope.onEvent(EventContext.MODULE_START, null);
         OrderedInitPojo one = (OrderedInitPojo) scope.getContext("one").getInstance(null);
@@ -131,7 +131,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
     public void testEagerInitDestroyOrder() throws Exception {
         EventContext ctx = new EventContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        scope.registerConfigurations(createOrderedEagerInitComponents());
+        scope.registerFactorys(createOrderedEagerInitComponents());
         scope.start();
         scope.onEvent(EventContext.MODULE_START, null);
         OrderedEagerInitPojo one = (OrderedEagerInitPojo) scope.getContext("one").getInstance(null);
@@ -153,9 +153,9 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
     // Private methods
     // ----------------------------------
 
-    JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
+    JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
-    private List<RuntimeConfiguration<InstanceContext>> createComponents() throws NoSuchMethodException, BuilderException {
+    private List<ContextFactory<InstanceContext>> createComponents() throws NoSuchMethodException, BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
         ca[0] = MockFactory.createComponent("TestServiceInitDestroy", ModuleScopeInitDestroyComponent.class,
                 Scope.MODULE);
@@ -163,60 +163,60 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
                 Scope.MODULE);
         ca[2] = MockFactory.createComponent("TestServiceDestroyOnly", ModuleScopeDestroyOnlyComponent.class,
                 Scope.MODULE);
-        List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
+        List<ContextFactory<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
             builder.build(ca[i]);
-            configs.add((RuntimeConfiguration<InstanceContext>) ca[i].getComponentImplementation()
-                    .getRuntimeConfiguration());
+            configs.add((ContextFactory<InstanceContext>) ca[i].getComponentImplementation()
+                    .getContextFactory());
 
         }
         return configs;
     }
 
-    private List<RuntimeConfiguration<InstanceContext>> createEagerInitComponents() throws NoSuchMethodException,
+    private List<ContextFactory<InstanceContext>> createEagerInitComponents() throws NoSuchMethodException,
             BuilderException {
         SimpleComponent[] ca = new SimpleComponent[2];
         ca[0] = MockFactory.createComponent("TestServiceEagerInitDestroy", ModuleScopeEagerInitDestroyComponent.class,
                 Scope.MODULE);
         ca[1] = MockFactory.createComponent("TestServiceEagerInit", ModuleScopeEagerInitComponent.class,
                 Scope.MODULE);
-        List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
+        List<ContextFactory<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
             builder.build(ca[i]);
-            configs.add((RuntimeConfiguration<InstanceContext>) ca[i].getComponentImplementation()
-                    .getRuntimeConfiguration());
+            configs.add((ContextFactory<InstanceContext>) ca[i].getComponentImplementation()
+                    .getContextFactory());
 
         }
         return configs;
     }
 
-    private List<RuntimeConfiguration<InstanceContext>> createOrderedInitComponents() throws NoSuchMethodException,
+    private List<ContextFactory<InstanceContext>> createOrderedInitComponents() throws NoSuchMethodException,
             BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
         ca[0] = MockFactory.createComponent("one", OrderedInitPojo.class, Scope.MODULE);
         ca[1] = MockFactory.createComponent("two", OrderedInitPojo.class, Scope.MODULE);
         ca[2] = MockFactory.createComponent("three", OrderedInitPojo.class, Scope.MODULE);
-        List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
+        List<ContextFactory<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
             builder.build(ca[i]);
-            configs.add((RuntimeConfiguration<InstanceContext>) ca[i].getComponentImplementation()
-                    .getRuntimeConfiguration());
+            configs.add((ContextFactory<InstanceContext>) ca[i].getComponentImplementation()
+                    .getContextFactory());
 
         }
         return configs;
     }
 
-    private List<RuntimeConfiguration<InstanceContext>> createOrderedEagerInitComponents() throws NoSuchMethodException,
+    private List<ContextFactory<InstanceContext>> createOrderedEagerInitComponents() throws NoSuchMethodException,
             BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
         ca[0] = MockFactory.createComponent("one", OrderedEagerInitPojo.class, Scope.MODULE);
         ca[1] = MockFactory.createComponent("two", OrderedEagerInitPojo.class, Scope.MODULE);
         ca[2] = MockFactory.createComponent("three", OrderedEagerInitPojo.class, Scope.MODULE);
-        List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
+        List<ContextFactory<InstanceContext>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
             builder.build(ca[i]);
-            configs.add((RuntimeConfiguration<InstanceContext>) ca[i].getComponentImplementation()
-                    .getRuntimeConfiguration());
+            configs.add((ContextFactory<InstanceContext>) ca[i].getComponentImplementation()
+                    .getContextFactory());
 
         }
         return configs;

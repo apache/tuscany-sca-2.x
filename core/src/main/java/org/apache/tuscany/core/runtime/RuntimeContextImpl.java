@@ -20,7 +20,7 @@ import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.HierarchicalWireBuilder;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
@@ -55,7 +55,7 @@ import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
  */
 public class RuntimeContextImpl extends AbstractContext implements RuntimeContext {
 
-    private final List<RuntimeConfigurationBuilder> builders;
+    private final List<ContextFactoryBuilder> builders;
 
     private final List<SCDLModelLoader> loaders;
 
@@ -86,7 +86,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
      *        implementation will be used
      */
     public RuntimeContextImpl(MonitorFactory monitorFactory, List<SCDLModelLoader> loaders,
-            List<RuntimeConfigurationBuilder> builders, HierarchicalWireBuilder wireBuilder) {
+            List<ContextFactoryBuilder> builders, HierarchicalWireBuilder wireBuilder) {
         super(RUNTIME);
         this.monitorFactory = monitorFactory;
         this.builders = (builders == null) ? new ArrayList(1) : builders;
@@ -109,7 +109,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
      *        implementation will be used
      */
     public RuntimeContextImpl(MonitorFactory monitorFactory, AggregateContext rootContext, SystemAggregateContext systemContext,
-            List<SCDLModelLoader> loaders, List<RuntimeConfigurationBuilder> builders, HierarchicalWireBuilder wireBuilder) {
+            List<SCDLModelLoader> loaders, List<ContextFactoryBuilder> builders, HierarchicalWireBuilder wireBuilder) {
         super(RUNTIME);
         this.rootContext = rootContext;
         this.systemContext = systemContext;
@@ -137,7 +137,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         lifecycleState = STOPPED;
     }
 
-    public void addBuilder(RuntimeConfigurationBuilder builder) {
+    public void addBuilder(ContextFactoryBuilder builder) {
         assert (builder != null) : "Builder was null";
         builders.add(builder);
     }

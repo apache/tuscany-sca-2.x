@@ -14,7 +14,7 @@
 package org.apache.tuscany.container.js.builder;
 
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.invocation.Interceptor;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -27,7 +27,7 @@ import org.apache.tuscany.model.assembly.ConfiguredService;
  * 
  * @version $Rev$ $Date$
  */
-public class MockInterceptorBuilder implements RuntimeConfigurationBuilder {
+public class MockInterceptorBuilder implements ContextFactoryBuilder {
 
     private Interceptor interceptor;
 

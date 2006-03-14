@@ -28,7 +28,7 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
  * Wire builders may optimize the invocation chains based on certain characteristics of th wire, such as source and
  * target scopes.
  * 
- * @see org.apache.tuscany.core.builder.RuntimeConfigurationBuilder
+ * @see org.apache.tuscany.core.builder.ContextFactoryBuilder
  * @version $Rev$ $Date$
  */
 public interface WireBuilder {

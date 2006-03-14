@@ -17,7 +17,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
@@ -36,12 +36,12 @@ import org.apache.tuscany.model.assembly.Scope;
  * 
  * @version $Rev$ $Date$
  */
-public class SystemComponentContextBuilderTestCase extends TestCase {
+public class SystemContextFactoryBuilderTestCase extends TestCase {
 
     private SystemAssemblyFactory factory = new SystemAssemblyFactoryImpl();
 
     public void testComponentContextBuilder() throws Exception {
-        SystemComponentContextBuilder builder = new SystemComponentContextBuilder();
+        SystemContextFactoryBuilder builder = new SystemContextFactoryBuilder();
         Component component = factory.createSystemComponent("test", null, SystemComponentImpl.class, Scope.AGGREGATE);
 
         ConfiguredProperty cProp = factory.createConfiguredProperty();
@@ -101,10 +101,10 @@ public class SystemComponentContextBuilderTestCase extends TestCase {
         component.getConfiguredProperties().add(cProp);
 
         builder.build(component);
-        RuntimeConfiguration config = (RuntimeConfiguration) component.getComponentImplementation().getRuntimeConfiguration();
+        ContextFactory config = (ContextFactory) component.getComponentImplementation().getContextFactory();
         Assert.assertNotNull(config);
         config.prepare(createContext());
-        InstanceContext ctx = (InstanceContext) config.createInstanceContext();
+        InstanceContext ctx = (InstanceContext) config.createContext();
 
         ctx.start();
         SystemComponentImpl instance = (SystemComponentImpl) ctx.getInstance(null);

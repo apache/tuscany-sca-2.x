@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.impl.EntryPointContextImpl;
@@ -32,7 +32,7 @@ import org.apache.tuscany.model.assembly.Scope;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class EntryPointRuntimeConfiguration implements RuntimeConfiguration<EntryPointContext> {
+public abstract class EntryPointContextFactory implements ContextFactory<EntryPointContext> {
 
     private String name;
 
@@ -46,7 +46,7 @@ public abstract class EntryPointRuntimeConfiguration implements RuntimeConfigura
     
     private AggregateContext parentContext;
 
-    public EntryPointRuntimeConfiguration(String name, String referenceName, MessageFactory msgFactory) {
+    public EntryPointContextFactory(String name, String referenceName, MessageFactory msgFactory) {
         assert (name != null) : "Entry point name was null";
         assert (msgFactory != null) : "Message factory was null";
         this.name = name;
@@ -54,7 +54,7 @@ public abstract class EntryPointRuntimeConfiguration implements RuntimeConfigura
         this.msgFactory = msgFactory;
     }
 
-    public EntryPointContext createInstanceContext() throws ContextCreationException {
+    public EntryPointContext createContext() throws ContextCreationException {
         return new EntryPointContextImpl(name, proxyFactory, msgFactory);
     }
 

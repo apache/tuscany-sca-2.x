@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextResolver;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.injection.EventInvoker;
@@ -17,11 +17,11 @@ import org.apache.tuscany.core.system.context.SystemComponentContext;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
- * A RuntimeConfiguration that handles system component implementation types
+ * A ContextFactory that handles system component implementation types
  * 
  * @version $Rev$ $Date$
  */
-public class SystemComponentRuntimeConfiguration implements RuntimeConfiguration<InstanceContext>, ContextResolver {
+public class SystemContextFactory implements ContextFactory<InstanceContext>, ContextResolver {
 
     // the component name as configured in the hosting module
     private String name;
@@ -70,7 +70,7 @@ public class SystemComponentRuntimeConfiguration implements RuntimeConfiguration
      *        <code>@Destroy</code>
      * @param scope the scope of the component implementation type
      */
-    public SystemComponentRuntimeConfiguration(String name, Constructor ctr, List<Injector> setters, boolean eagerInit,
+    public SystemContextFactory(String name, Constructor ctr, List<Injector> setters, boolean eagerInit,
             EventInvoker init, EventInvoker destroy, Scope scope) {
         assert (name != null) : "Name was null";
         assert (ctr != null) : "Constructor was null";
@@ -86,7 +86,7 @@ public class SystemComponentRuntimeConfiguration implements RuntimeConfiguration
         stateless = (scope == Scope.INSTANCE);
     }
 
-    public SystemComponentRuntimeConfiguration(String name, Constructor ctr, Scope scope) {
+    public SystemContextFactory(String name, Constructor ctr, Scope scope) {
         this(name, ctr, null, false, null, null, scope);
     }
 
@@ -102,7 +102,7 @@ public class SystemComponentRuntimeConfiguration implements RuntimeConfiguration
         return scope;
     }
 
-    public InstanceContext createInstanceContext() throws ContextCreationException {
+    public InstanceContext createContext() throws ContextCreationException {
         if (isAggregate) {
             // aggregate context types are themselves an instance context
             PojoObjectFactory objectFactory = new PojoObjectFactory(ctr, null, setters);

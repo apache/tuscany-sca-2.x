@@ -21,7 +21,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
@@ -101,8 +101,8 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
         return true;
     }
 
-    public void registerConfiguration(RuntimeConfiguration<InstanceContext> configuration) {
-        runtimeConfigurations.put(configuration.getName(), configuration);
+    public void registerFactory(ContextFactory<InstanceContext> configuration) {
+        contextFactorys.put(configuration.getName(), configuration);
     }
 
     public InstanceContext getContext(String ctxName) {
@@ -118,9 +118,9 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
         InstanceContext ctx = ctxs.get(ctxName);
         if (ctx == null) {
             // the configuration was added after the session had started, so create a context now and start it
-            RuntimeConfiguration<InstanceContext> configuration = runtimeConfigurations.get(ctxName);
+            ContextFactory<InstanceContext> configuration = contextFactorys.get(ctxName);
             if (configuration != null) {
-                ctx = configuration.createInstanceContext();
+                ctx = configuration.createContext();
                 ctx.addContextListener(this);
                 ctx.start();
                 ctxs.put(ctx.getName(), ctx);
@@ -214,10 +214,10 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
         if (m != null) {
             return m; // already created, return
         }
-        Map<String, InstanceContext> sessionContext = new ConcurrentHashMap(runtimeConfigurations.size());
-        for (RuntimeConfiguration<InstanceContext> config : runtimeConfigurations.values()) {
+        Map<String, InstanceContext> sessionContext = new ConcurrentHashMap(contextFactorys.size());
+        for (ContextFactory<InstanceContext> config : contextFactorys.values()) {
             InstanceContext context = null;
-            context = config.createInstanceContext();
+            context = config.createContext();
             context.addContextListener(this);
             context.start();
             sessionContext.put(context.getName(), context);

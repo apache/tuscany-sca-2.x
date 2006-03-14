@@ -19,7 +19,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.EventContext;
@@ -59,7 +59,7 @@ public class RuntimeBootTestCase extends TestCase {
 
     public void testIncrementalBoot() throws Exception{
 
-        List<RuntimeConfigurationBuilder> builders  = MockFactory.createSystemBuilders();
+        List<ContextFactoryBuilder> builders  = MockFactory.createSystemBuilders();
         // start the runtime context
         RuntimeContext runtimeContext = new RuntimeContextImpl(new NullMonitorFactory(), null, builders, null);
         runtimeContext.start();

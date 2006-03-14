@@ -17,15 +17,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.injection.InterAggregateReferenceFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemExternalServiceContext;
-import org.apache.tuscany.core.system.injection.AutowireFactory;
 import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
 import org.apache.tuscany.model.assembly.Scope;
 
@@ -37,7 +36,7 @@ import org.apache.tuscany.model.assembly.Scope;
  * 
  * @version $Rev$ $Date$
  */
-public class SystemExternalServiceRuntimeConfiguration implements RuntimeConfiguration<ExternalServiceContext>, ContextResolver {
+public class SystemExternalServiceContextFactory implements ContextFactory<ExternalServiceContext>, ContextResolver {
 
     // the name of the external service
     private String name;
@@ -52,7 +51,7 @@ public class SystemExternalServiceRuntimeConfiguration implements RuntimeConfigu
     // Constructors
     // ----------------------------------
 
-    public SystemExternalServiceRuntimeConfiguration(String name, ObjectFactory factory) {
+    public SystemExternalServiceContextFactory(String name, ObjectFactory factory) {
         assert (name != null) : "Name was null";
         assert (factory != null) : "Object factory was null";
         this.name = name;
@@ -71,7 +70,7 @@ public class SystemExternalServiceRuntimeConfiguration implements RuntimeConfigu
         return name;
     }
 
-    public ExternalServiceContext createInstanceContext() throws ContextCreationException {
+    public ExternalServiceContext createContext() throws ContextCreationException {
         return new SystemExternalServiceContext(name, factory);
     }
 

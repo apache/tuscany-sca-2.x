@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
 
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
@@ -79,7 +79,7 @@ public class TuscanyHost extends StandardHost {
         systemLoader = modelContext.getSystemResourceLoader();
 
         // Create and start the runtime
-        List<RuntimeConfigurationBuilder> configBuilders = BootstrapHelper.getBuilders();
+        List<ContextFactoryBuilder> configBuilders = BootstrapHelper.getBuilders();
         runtime = new RuntimeContextImpl(new NullMonitorFactory(), modelLoader.getLoaders(), configBuilders, new DefaultWireBuilder());
         runtime.start();
 

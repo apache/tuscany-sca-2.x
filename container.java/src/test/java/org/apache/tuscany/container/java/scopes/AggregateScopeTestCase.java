@@ -19,7 +19,7 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
+import org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeComponentImpl;
@@ -51,7 +51,7 @@ public class AggregateScopeTestCase extends TestCase {
         AggregateContext moduleComponentCtx = new AggregateContextImpl();
         moduleComponentCtx.setName("testMC");
         AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
-        scopeContainer.registerConfiguration(MockFactory.createAggregateConfiguration("AggregateComponent", moduleComponentCtx));
+        scopeContainer.registerFactory(MockFactory.createAggregateConfiguration("AggregateComponent", moduleComponentCtx));
         scopeContainer.start();
         AggregateContext child = (AggregateContext) scopeContainer.getContext("AggregateComponent");
         List<Extensible> models = createAssembly(moduleComponentCtx);
@@ -103,7 +103,7 @@ public class AggregateScopeTestCase extends TestCase {
         AggregateContext moduleComponentCtx = new AggregateContextImpl();
         moduleComponentCtx.setName("testMC");
         AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
-        scopeContainer.registerConfiguration(MockFactory.createAggregateConfiguration("AggregateComponent", moduleComponentCtx));
+        scopeContainer.registerFactory(MockFactory.createAggregateConfiguration("AggregateComponent", moduleComponentCtx));
         scopeContainer.start();
         AggregateContext child = (AggregateContext) scopeContainer.getContext("AggregateComponent");
         List<Extensible> parts = createAssembly(moduleComponentCtx);
@@ -125,7 +125,7 @@ public class AggregateScopeTestCase extends TestCase {
         AggregateContext moduleComponentCtx = new AggregateContextImpl();
         moduleComponentCtx.setName("testMC");
         AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
-        scopeContainer.registerConfiguration(MockFactory.createAggregateConfiguration("AggregateComponent", moduleComponentCtx));
+        scopeContainer.registerFactory(MockFactory.createAggregateConfiguration("AggregateComponent", moduleComponentCtx));
         scopeContainer.start();
         scopeContainer.onEvent(EventContext.MODULE_START, null);
         QualifiedName name = new QualifiedName("AggregateComponent/TestService1");
@@ -145,7 +145,7 @@ public class AggregateScopeTestCase extends TestCase {
         scopeContainer.start();
 
         scopeContainer.onEvent(EventContext.MODULE_START, null);
-        scopeContainer.registerConfiguration(MockFactory.createAggregateConfiguration("AggregateComponent", moduleComponentCtx));
+        scopeContainer.registerFactory(MockFactory.createAggregateConfiguration("AggregateComponent", moduleComponentCtx));
         QualifiedName name = new QualifiedName("AggregateComponent/TestService1");
         AggregateContext componentCtx = (AggregateContext) scopeContainer.getContext("AggregateComponent");
         scopeContainer.onEvent(EventContext.MODULE_STOP, null);
@@ -159,7 +159,7 @@ public class AggregateScopeTestCase extends TestCase {
      * @param ctx the parent module context
      */
     private List<Extensible> createAssembly(AggregateContext ctx) throws BuilderException {
-        JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
+        JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
         SimpleComponent component = MockFactory.createComponent("TestService1", ModuleScopeComponentImpl.class, Scope.MODULE);
         SimpleComponent sessionComponent = MockFactory.createComponent("TestService2", SessionScopeComponentImpl.class,
                 Scope.SESSION);

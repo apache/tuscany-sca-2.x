@@ -24,11 +24,11 @@ import java.util.Map;
 
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
 import org.apache.tuscany.container.js.assembly.impl.JavaScriptImplementationImpl;
-import org.apache.tuscany.container.js.config.JavaScriptComponentRuntimeConfiguration;
+import org.apache.tuscany.container.js.config.JavaScriptContextFactory;
 import org.apache.tuscany.container.js.rhino.RhinoScript;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
@@ -53,23 +53,23 @@ import org.apache.tuscany.model.assembly.SimpleComponent;
 import org.osoa.sca.annotations.Init;
 
 /**
- * Builds {@link org.apache.tuscany.container.js.config.JavaScriptComponentRuntimeConfiguration}s from a JavaScript
+ * Builds {@link org.apache.tuscany.container.js.config.JavaScriptContextFactory}s from a JavaScript
  * component type
  * 
  * @version $Rev$ $Date$
  */
 @org.osoa.sca.annotations.Scope("MODULE")
-public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
+public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder<AggregateContext> {
 
     private ProxyFactoryFactory factory;
 
     private MessageFactory msgFactory;
 
-    private RuntimeConfigurationBuilder referenceBuilder;
+    private ContextFactoryBuilder referenceBuilder;
 
     private RuntimeContext runtimeContext;
 
-    public JavaScriptComponentContextBuilder() {
+    public JavaScriptContextFactoryBuilder() {
     }
 
     @Init(eager = true)
@@ -108,7 +108,7 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
      * 
      * @see org.apache.tuscany.core.builder.impl.HierarchicalBuilder
      */
-    public void setReferenceBuilder(RuntimeConfigurationBuilder builder) {
+    public void setReferenceBuilder(ContextFactoryBuilder builder) {
         this.referenceBuilder = builder;
     }
 
@@ -147,18 +147,18 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
         
         RhinoScript invoker = new RhinoScript(component.getName(), script, properties, cl);
 
-        JavaScriptComponentRuntimeConfiguration config = new JavaScriptComponentRuntimeConfiguration(component.getName(),
+        JavaScriptContextFactory config = new JavaScriptContextFactory(component.getName(),
 		        scope, services, properties, invoker);
 
 		addTargetInvocationChains(component, config);
 		addComponentReferences(component, config);
-		component.getComponentImplementation().setRuntimeConfiguration(config);
+		component.getComponentImplementation().setContextFactory(config);
 	}
 
     /**
      * Add target-side invocation chains for each service offered by the implementation
      */
-	private void addTargetInvocationChains(SimpleComponent component, JavaScriptComponentRuntimeConfiguration config) {
+	private void addTargetInvocationChains(SimpleComponent component, JavaScriptContextFactory config) {
 		for (ConfiguredService configuredService : component.getConfiguredServices()) {
 		    Service service = configuredService.getService();
 		    ServiceContract contract = service.getServiceContract();
@@ -187,7 +187,7 @@ public class JavaScriptComponentContextBuilder implements RuntimeConfigurationBu
 		}
 	}
 
-	private void addComponentReferences(SimpleComponent component, JavaScriptComponentRuntimeConfiguration config) {
+	private void addComponentReferences(SimpleComponent component, JavaScriptContextFactory config) {
 		Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
 		if (configuredReferences != null) {
 		    for (ConfiguredReference reference : configuredReferences.values()) {

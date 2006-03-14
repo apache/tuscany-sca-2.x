@@ -27,7 +27,7 @@ import org.apache.tuscany.model.assembly.ComponentType;
 public class ComponentImplementationImpl extends ExtensibleImpl implements ComponentImplementation {
     
     private ComponentType componentType;
-    private Object runtimeConfiguration;
+    private Object contextFactory;
 
     /**
      * Constructor
@@ -76,18 +76,18 @@ public class ComponentImplementationImpl extends ExtensibleImpl implements Compo
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.RuntimeConfigurationHolder#getRuntimeConfiguration()
+     * @see org.apache.tuscany.model.assembly.ContextFactoryHolder#getContextFactory()
      */
-    public Object getRuntimeConfiguration() {
-        return runtimeConfiguration;
+    public Object getContextFactory() {
+        return contextFactory;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.RuntimeConfigurationHolder#setRuntimeConfiguration(java.lang.Object)
+     * @see org.apache.tuscany.model.assembly.ContextFactoryHolder#setContextFactory(java.lang.Object)
      */
-    public void setRuntimeConfiguration(Object configuration) {
+    public void setContextFactory(Object configuration) {
         checkNotFrozen();
-        this.runtimeConfiguration = configuration;
+        this.contextFactory = configuration;
     }
 
     /**

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.core.builder.BuilderConfigException;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
@@ -35,11 +35,11 @@ import org.apache.tuscany.model.assembly.Extensible;
  */
 public class MockConfigContext implements ConfigurationContext {
 
-    private List<RuntimeConfigurationBuilder> builders;
+    private List<ContextFactoryBuilder> builders;
 
     private DefaultWireBuilder wireBuilder = new DefaultWireBuilder();
     
-    public MockConfigContext(List<RuntimeConfigurationBuilder> builders, List<WireBuilder> wireBuilders) {
+    public MockConfigContext(List<ContextFactoryBuilder> builders, List<WireBuilder> wireBuilders) {
         this.builders = (builders == null) ? new ArrayList(1) : builders;
         if (wireBuilders != null){
             for (WireBuilder builder : wireBuilders) {

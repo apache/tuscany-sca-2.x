@@ -20,7 +20,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
@@ -37,7 +37,7 @@ import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Reference;
-import org.apache.tuscany.model.assembly.RuntimeConfigurationHolder;
+import org.apache.tuscany.model.assembly.ContextFactoryHolder;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
@@ -108,29 +108,29 @@ public class AssemblyVisitorTestCase extends TestCase {
         ep.initialize(assemblyContext);
         module.getEntryPoints().add(ep);
 
-        List<RuntimeConfigurationBuilder> builders = new ArrayList();
+        List<ContextFactoryBuilder> builders = new ArrayList();
         builders.add(new TestBuilder());
         AssemblyVisitor visitor = new AssemblyVisitor(builders);
         module.initialize(assemblyContext);
         visitor.start(module);
 
-        Assert.assertSame(MARKER, impl.getRuntimeConfiguration());
-        Assert.assertSame(MARKER, cRef.getRuntimeConfiguration());
+        Assert.assertSame(MARKER, impl.getContextFactory());
+        Assert.assertSame(MARKER, cRef.getContextFactory());
         Assert.assertSame(MARKER, cRef.getProxyFactory());
-        Assert.assertSame(MARKER, binding.getRuntimeConfiguration());
-        Assert.assertSame(MARKER, cEpRef.getRuntimeConfiguration());
+        Assert.assertSame(MARKER, binding.getContextFactory());
+        Assert.assertSame(MARKER, cEpRef.getContextFactory());
         Assert.assertSame(MARKER, cEpRef.getProxyFactory());
-        Assert.assertSame(MARKER, module.getRuntimeConfiguration());
+        Assert.assertSame(MARKER, module.getContextFactory());
 
     }
 
-    private static class TestBuilder implements RuntimeConfigurationBuilder {
+    private static class TestBuilder implements ContextFactoryBuilder {
         public void build(AssemblyModelObject model) throws BuilderException {
             if (model instanceof ConfiguredPort) {
                 ((ConfiguredPort) model).setProxyFactory(MARKER);
             }
-            if (model instanceof RuntimeConfigurationHolder) {
-                ((RuntimeConfigurationHolder) model).setRuntimeConfiguration(MARKER);
+            if (model instanceof ContextFactoryHolder) {
+                ((ContextFactoryHolder) model).setContextFactory(MARKER);
             }
         }
 

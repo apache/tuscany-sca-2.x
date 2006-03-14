@@ -47,11 +47,11 @@ public class FooBinding implements Binding {
 
     private Object config;
 
-    public void setRuntimeConfiguration(Object configuration) {
+    public void setContextFactory(Object configuration) {
         config = configuration;
     }
 
-    public Object getRuntimeConfiguration() {
+    public Object getContextFactory() {
         System.out.println("retting");
         return config;
     }

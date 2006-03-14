@@ -18,7 +18,7 @@ package org.apache.tuscany.container.js.builder;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.container.js.config.JavaScriptComponentRuntimeConfiguration;
+import org.apache.tuscany.container.js.config.JavaScriptContextFactory;
 import org.apache.tuscany.container.js.rhino.RhinoTargetInvoker;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.WireBuilder;
@@ -56,7 +56,7 @@ public class JavaScriptTargetWireBuilder implements WireBuilder {
 
     public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) throws BuilderConfigException {
-        if (!(JavaScriptComponentRuntimeConfiguration.class.isAssignableFrom(targetType))) {
+        if (!(JavaScriptContextFactory.class.isAssignableFrom(targetType))) {
             return;
         }
         for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations()
@@ -76,7 +76,7 @@ public class JavaScriptTargetWireBuilder implements WireBuilder {
 
     public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
             throws BuilderConfigException {
-        if (!(JavaScriptComponentRuntimeConfiguration.class.isAssignableFrom(targetType))) {
+        if (!(JavaScriptContextFactory.class.isAssignableFrom(targetType))) {
             return;
         }
         for (InvocationConfiguration targetInvocationConfig : targetFactory.getProxyConfiguration().getInvocationConfigurations()

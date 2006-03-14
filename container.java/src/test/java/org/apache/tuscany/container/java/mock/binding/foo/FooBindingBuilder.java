@@ -21,8 +21,8 @@ import java.util.Set;
 
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
-import org.apache.tuscany.core.builder.impl.EntryPointRuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.QualifiedName;
@@ -45,13 +45,13 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
 /**
- * Creates a <code>RuntimeConfigurationBuilder</code> for an entry point or external service configured with the
+ * Creates a <code>ContextFactoryBuilder</code> for an entry point or external service configured with the
  * {@link FooBinding}
  * 
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class FooBindingBuilder implements RuntimeConfigurationBuilder {
+public class FooBindingBuilder implements ContextFactoryBuilder {
 
     @Autowire
     private RuntimeContext runtimeContext;
@@ -102,7 +102,7 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
      * reference builder may be hierarchical, containing other child reference builders that operate on specific
      * metadata used to construct and invocation chain.
      */
-    public void addPolicyBuilder(RuntimeConfigurationBuilder builder) {
+    public void addPolicyBuilder(ContextFactoryBuilder builder) {
         policyBuilder.addBuilder(builder);
     }
 
@@ -112,7 +112,7 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
             if (ep.getBindings().size() < 1 || !(ep.getBindings().get(0) instanceof FooBinding)) {
                 return;
             }
-            EntryPointRuntimeConfiguration config = new FooEntryPointRuntimeConfiguration(ep.getName(), ep.getConfiguredService()
+            EntryPointContextFactory config = new FooEntryPointContextFactory(ep.getName(), ep.getConfiguredService()
                     .getService().getName(), messageFactory);
 
             ConfiguredService configuredService = ep.getConfiguredService();
@@ -139,7 +139,7 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
             for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
                 iConfig.addTargetInterceptor(new InvokerInterceptor());
             }
-            ep.getConfiguredReference().setRuntimeConfiguration(config);
+            ep.getConfiguredReference().setContextFactory(config);
 
         } else if (object instanceof ExternalService) {
             ExternalService es = (ExternalService) object;
@@ -147,7 +147,7 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
                 return;
             }
 
-            FooExternalServiceRuntimeConfiguration config = new FooExternalServiceRuntimeConfiguration(es.getName(),
+            FooExternalServiceContextFactory config = new FooExternalServiceContextFactory(es.getName(),
                     new FooClientFactory());
 
             ConfiguredService configuredService = es.getConfiguredService();
@@ -175,7 +175,7 @@ public class FooBindingBuilder implements RuntimeConfigurationBuilder {
                 iConfig.addTargetInterceptor(new InvokerInterceptor());
             }
 
-            es.getConfiguredService().setRuntimeConfiguration(config);
+            es.getConfiguredService().setContextFactory(config);
         } else {
             return;
 

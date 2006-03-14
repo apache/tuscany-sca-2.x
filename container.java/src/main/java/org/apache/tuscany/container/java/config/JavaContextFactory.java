@@ -22,7 +22,7 @@ import java.util.Map;
 import org.apache.tuscany.container.java.context.JavaComponentContext;
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextResolver;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.injection.EventInvoker;
@@ -32,11 +32,11 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
- * A RuntimeConfiguration that handles POJO component implementation types
+ * A ContextFactory that handles POJO component implementation types
  * 
  * @version $Rev$ $Date$
  */
-public class JavaComponentRuntimeConfiguration implements RuntimeConfiguration<SimpleComponentContext>, ContextResolver {
+public class JavaContextFactory implements ContextFactory<SimpleComponentContext>, ContextResolver {
 
     // the component name as configured in the hosting module
     private String name;
@@ -76,7 +76,7 @@ public class JavaComponentRuntimeConfiguration implements RuntimeConfiguration<S
      * @param ctr the implementation type constructor
      * @param scope the scope of the component implementation type
      */
-    public JavaComponentRuntimeConfiguration(String name, Constructor ctr, Scope scope) {
+    public JavaContextFactory(String name, Constructor ctr, Scope scope) {
         assert (name != null) : "Name was null";
         assert (ctr != null) : "Constructor was null";
         this.name = name;
@@ -97,7 +97,7 @@ public class JavaComponentRuntimeConfiguration implements RuntimeConfiguration<S
         return scope;
     }
 
-    public SimpleComponentContext createInstanceContext() throws ContextCreationException {
+    public SimpleComponentContext createContext() throws ContextCreationException {
         PojoObjectFactory objectFactory = new PojoObjectFactory(ctr, null, setters);
         return new JavaComponentContext(name, objectFactory, eagerInit, init, destroy, stateless);
     }

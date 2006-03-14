@@ -19,7 +19,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
@@ -40,7 +40,7 @@ import org.osoa.sca.ModuleContext;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractAggregateHierarchyTests extends TestCase {
-    protected List<RuntimeConfigurationBuilder> builders;
+    protected List<ContextFactoryBuilder> builders;
     protected SystemAssemblyFactory factory;
 
     public void testParentContextIsolation() throws Exception {

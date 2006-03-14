@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.container.java.invocation.mock.SimpleTargetImpl;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.EventException;
 import org.apache.tuscany.core.context.QualifiedName;
@@ -98,10 +98,10 @@ public class MockScopeContext implements ScopeContext {
     }
 
 
-    public void registerConfigurations(List<RuntimeConfiguration<InstanceContext>> configurations) {
+    public void registerFactorys(List<ContextFactory<InstanceContext>> configurations) {
     } 
 
-    public void registerConfiguration(RuntimeConfiguration<InstanceContext> configuration) {
+    public void registerFactory(ContextFactory<InstanceContext> configuration) {
     } 
     
     public int getLifecycleState(){

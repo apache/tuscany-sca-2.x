@@ -29,7 +29,7 @@ import org.apache.tuscany.container.java.assembly.JavaImplementation;
 import org.apache.tuscany.container.java.assembly.impl.JavaAssemblyFactoryImpl;
 import org.apache.tuscany.container.java.assembly.mock.HelloWorldImpl;
 import org.apache.tuscany.container.java.assembly.mock.HelloWorldService;
-import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
+import org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder;
 import org.apache.tuscany.container.java.builder.JavaTargetWireBuilder;
 import org.apache.tuscany.container.java.context.JavaComponentContext;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBinding;
@@ -45,8 +45,8 @@ import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.container.java.mock.components.TargetImpl;
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
@@ -68,7 +68,7 @@ import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
+import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
@@ -623,9 +623,9 @@ public class MockFactory {
     /**
      * Returns a collection of bootstrap configuration builders
      */
-    public static List<RuntimeConfigurationBuilder> createSystemBuilders() {
-        List<RuntimeConfigurationBuilder> builders = new ArrayList();
-        builders.add((new SystemComponentContextBuilder()));
+    public static List<ContextFactoryBuilder> createSystemBuilders() {
+        List<ContextFactoryBuilder> builders = new ArrayList();
+        builders.add((new SystemContextFactoryBuilder()));
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
         return builders;
@@ -637,15 +637,15 @@ public class MockFactory {
      * @param name             the name of the component
      * @param aggregateContext the containing aggregate context
      * @throws BuilderException
-     * @see RuntimeConfiguration
+     * @see ContextFactory
      */
-    public static RuntimeConfiguration<InstanceContext> createAggregateConfiguration(String name,
+    public static ContextFactory<InstanceContext> createAggregateConfiguration(String name,
                                                                                      AggregateContext aggregateContext) throws BuilderException {
 
         Component sc = createAggregateComponent(name);
-        SystemComponentContextBuilder builder = new SystemComponentContextBuilder();
+        SystemContextFactoryBuilder builder = new SystemContextFactoryBuilder();
         builder.build(sc);
-        return (RuntimeConfiguration<InstanceContext>) sc.getComponentImplementation().getRuntimeConfiguration();
+        return (ContextFactory<InstanceContext>) sc.getComponentImplementation().getContextFactory();
     }
 
     /**
@@ -719,7 +719,7 @@ public class MockFactory {
         runtime.start();
         runtime.getSystemContext().registerModelObject(createSystemAggregateComponent(SYSTEM_CHILD));
         SystemAggregateContext ctx = (SystemAggregateContext) runtime.getSystemContext().getContext(SYSTEM_CHILD);
-        ctx.registerModelObject(systemFactory.createSystemComponent(JAVA_BUILDER, RuntimeConfigurationBuilder.class, JavaComponentContextBuilder.class, Scope.MODULE));
+        ctx.registerModelObject(systemFactory.createSystemComponent(JAVA_BUILDER, ContextFactoryBuilder.class, JavaContextFactoryBuilder.class, Scope.MODULE));
         ctx.registerModelObject(systemFactory.createSystemComponent(JAVA_WIRE_BUILDER, WireBuilder.class, JavaTargetWireBuilder.class, Scope.MODULE));
         ctx.fireEvent(EventContext.MODULE_START, null);
         return runtime;
@@ -732,9 +732,9 @@ public class MockFactory {
      */
     public static RuntimeContext registerFooBinding(RuntimeContext runtime) throws ConfigurationException {
         AggregateContext child = (AggregateContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD);
-        JavaComponentContextBuilder javaBuilder = (JavaComponentContextBuilder) child.getContext(MockFactory.JAVA_BUILDER)
+        JavaContextFactoryBuilder javaBuilder = (JavaContextFactoryBuilder) child.getContext(MockFactory.JAVA_BUILDER)
                 .getInstance(null);
-        child.registerModelObject(systemFactory.createSystemComponent(FOO_BUILDER, RuntimeConfigurationBuilder.class, FooBindingBuilder.class, Scope.MODULE));
+        child.registerModelObject(systemFactory.createSystemComponent(FOO_BUILDER, ContextFactoryBuilder.class, FooBindingBuilder.class, Scope.MODULE));
         child.registerModelObject(systemFactory.createSystemComponent(FOO_WIRE_BUILDER, WireBuilder.class, FooBindingWireBuilder.class, Scope.MODULE));
         // since the child context is already started, we need to manually retrieve the components to init them
         Assert.assertNotNull(child.getContext(FOO_BUILDER).getInstance(null));

@@ -20,7 +20,7 @@ package org.apache.tuscany.model.assembly;
 /**
  * Represents a configured port (e.g. a configured reference or configured service).
  */
-public interface ConfiguredPort extends AssemblyModelObject, RuntimeConfigurationHolder {
+public interface ConfiguredPort extends AssemblyModelObject, ContextFactoryHolder {
 
     /**
      * Returns the port that is being configured.

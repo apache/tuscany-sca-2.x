@@ -22,12 +22,12 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.builder.JavaComponentContextBuilder;
+import org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.RequestScopeComponent;
 import org.apache.tuscany.container.java.mock.components.RequestScopeComponentImpl;
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
@@ -48,7 +48,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     public void testInstanceManagement() throws Exception {
         EventContext ctx = new EventContextImpl();
         RequestScopeContext scope = new RequestScopeContext(ctx);
-        scope.registerConfigurations(createConfigurations());
+        scope.registerFactorys(createConfigurations());
         scope.start();
 
         // first request
@@ -68,8 +68,8 @@ public class BasicRequestScopeTestCase extends TestCase {
     public void testRegisterContextBeforeRequest() throws Exception {
         EventContext ctx = new EventContextImpl();
         RequestScopeContext scope = new RequestScopeContext(ctx);
-        scope.registerConfigurations(createConfigurations());
-        scope.registerConfiguration(createConfiguration("NewTestService"));
+        scope.registerFactorys(createConfigurations());
+        scope.registerFactory(createConfiguration("NewTestService"));
         scope.start();
         RequestScopeComponent comp1 = (RequestScopeComponent) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp1);
@@ -82,11 +82,11 @@ public class BasicRequestScopeTestCase extends TestCase {
     public void testRegisterContextAfterRequest() throws Exception {
         EventContext ctx = new EventContextImpl();
         RequestScopeContext scope = new RequestScopeContext(ctx);
-        scope.registerConfigurations(createConfigurations());
+        scope.registerFactorys(createConfigurations());
         scope.start();
         RequestScopeComponent comp1 = (RequestScopeComponent) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp1);
-        scope.registerConfiguration(createConfiguration("NewTestService"));
+        scope.registerFactory(createConfiguration("NewTestService"));
         RequestScopeComponent comp2 = (RequestScopeComponent) scope.getContext("NewTestService").getInstance(null);
         Assert.assertNotNull(comp2);
         scope.onEvent(EventContext.REQUEST_END, null);
@@ -99,7 +99,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     public void testSetNullComponents() throws Exception {
         EventContext ctx = new EventContextImpl();
         RequestScopeContext scope = new RequestScopeContext(ctx);
-        scope.registerConfigurations(createConfigurations());
+        scope.registerFactorys(createConfigurations());
         scope.start();
         scope.stop();
     }
@@ -107,7 +107,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     public void testGetComponentByKey() throws Exception {
         EventContext ctx = new EventContextImpl();
         RequestScopeContext scope = new RequestScopeContext(ctx);
-        scope.registerConfigurations(createConfigurations());
+        scope.registerFactorys(createConfigurations());
         scope.start();
 
         RequestScopeComponentImpl comp1 = (RequestScopeComponentImpl) scope.getContext("TestService1").getInstance(null);
@@ -126,23 +126,23 @@ public class BasicRequestScopeTestCase extends TestCase {
     // Private methods
     // ----------------------------------
 
-    JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
+    JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
-    private List<RuntimeConfiguration<InstanceContext>> createConfigurations() throws NoSuchMethodException, BuilderException {
+    private List<ContextFactory<InstanceContext>> createConfigurations() throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockFactory.createComponent("TestService1", RequestScopeComponentImpl.class,
                 Scope.REQUEST);
         builder.build(component);
-        List<RuntimeConfiguration<InstanceContext>> configs = new ArrayList();
-        configs.add((RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration());
+        List<ContextFactory<InstanceContext>> configs = new ArrayList();
+        configs.add((ContextFactory<InstanceContext>) component.getComponentImplementation().getContextFactory());
         return configs;
     }
 
-    private RuntimeConfiguration<InstanceContext> createConfiguration(String name) throws NoSuchMethodException,
+    private ContextFactory<InstanceContext> createConfiguration(String name) throws NoSuchMethodException,
             BuilderException {
         SimpleComponent component = MockFactory.createComponent(name, RequestScopeComponentImpl.class,
                 Scope.REQUEST);
         builder.build(component);
-        return (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation().getRuntimeConfiguration();
+        return (ContextFactory<InstanceContext>) component.getComponentImplementation().getContextFactory();
     }
 
 }

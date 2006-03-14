@@ -15,11 +15,11 @@ package org.apache.tuscany.core.system.builder;
 
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.injection.InterAggregateReferenceFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
-import org.apache.tuscany.core.system.config.SystemExternalServiceRuntimeConfiguration;
+import org.apache.tuscany.core.system.config.SystemExternalServiceContextFactory;
 import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.ExternalService;
@@ -29,7 +29,7 @@ import org.apache.tuscany.model.assembly.ExternalService;
  * 
  * @version $Rev$ $Date$
  */
-public class SystemExternalServiceBuilder implements RuntimeConfigurationBuilder<AggregateContext> {
+public class SystemExternalServiceBuilder implements ContextFactoryBuilder<AggregateContext> {
     // ----------------------------------
     // Constructors
     // ----------------------------------
@@ -47,7 +47,7 @@ public class SystemExternalServiceBuilder implements RuntimeConfigurationBuilder
         }
         ExternalService externalService = (ExternalService) modelObject;
         if (externalService.getConfiguredService() != null
-                && externalService.getConfiguredService().getRuntimeConfiguration() != null) {
+                && externalService.getConfiguredService().getContextFactory() != null) {
             return;
         } else if (externalService.getBindings() == null || externalService.getBindings().size() < 1
                 || !(externalService.getBindings().get(0) instanceof SystemBinding)) {
@@ -55,9 +55,9 @@ public class SystemExternalServiceBuilder implements RuntimeConfigurationBuilder
         }
         SystemBinding binding = (SystemBinding)externalService.getBindings().get(0);
         if (binding.getTargetName() != null) {
-            SystemExternalServiceRuntimeConfiguration config = new SystemExternalServiceRuntimeConfiguration(externalService
+            SystemExternalServiceContextFactory config = new SystemExternalServiceContextFactory(externalService
                     .getName(), new InterAggregateReferenceFactory(binding.getTargetName()));
-            externalService.getConfiguredService().setRuntimeConfiguration(config);
+            externalService.getConfiguredService().setContextFactory(config);
         } else if (externalService.getConfiguredService().getService().getServiceContract().getInterface() != null) {
             // autowire
             Class<?> claz = externalService.getConfiguredService().getService().getServiceContract().getInterface();
@@ -67,9 +67,9 @@ public class SystemExternalServiceBuilder implements RuntimeConfigurationBuilder
                 e.addContextName(externalService.getName());
                 throw e;
             }
-            SystemExternalServiceRuntimeConfiguration config = new SystemExternalServiceRuntimeConfiguration(externalService
+            SystemExternalServiceContextFactory config = new SystemExternalServiceContextFactory(externalService
                     .getName(), new AutowireObjectFactory(claz)); 
-            externalService.getConfiguredService().setRuntimeConfiguration(config);
+            externalService.getConfiguredService().setContextFactory(config);
         }
     }
 }

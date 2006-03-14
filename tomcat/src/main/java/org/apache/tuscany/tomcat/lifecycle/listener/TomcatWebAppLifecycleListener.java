@@ -30,7 +30,7 @@ import org.apache.catalina.deploy.FilterMap;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
-import org.apache.tuscany.core.builder.RuntimeConfigurationBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.config.impl.ModuleComponentConfigurationLoaderImpl;
@@ -42,7 +42,7 @@ import org.apache.tuscany.core.context.webapp.TuscanyRequestFilter;
 import org.apache.tuscany.core.context.webapp.TuscanyWebAppRuntime;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
-import org.apache.tuscany.core.system.builder.SystemComponentContextBuilder;
+import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 import org.apache.tuscany.core.system.loader.SystemSCDLModelLoader;
@@ -134,8 +134,8 @@ public class TomcatWebAppLifecycleListener implements LifecycleListener {
                         AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, resourceLoader);
 
                         // Create system configuration builders
-                        List<RuntimeConfigurationBuilder> configBuilders = new ArrayList();
-                        configBuilders.add((new SystemComponentContextBuilder()));
+                        List<ContextFactoryBuilder> configBuilders = new ArrayList();
+                        configBuilders.add((new SystemContextFactoryBuilder()));
                         configBuilders.add(new SystemEntryPointBuilder());
                         configBuilders.add(new SystemExternalServiceBuilder());
 

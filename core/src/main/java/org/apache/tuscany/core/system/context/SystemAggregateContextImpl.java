@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.core.context.AggregateContext;
@@ -67,7 +67,7 @@ import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
-import org.apache.tuscany.core.system.config.SystemObjectRuntimeConfiguration;
+import org.apache.tuscany.core.system.config.SystemObjectContextFactory;
 import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.AggregatePart;
 import org.apache.tuscany.model.assembly.Component;
@@ -112,7 +112,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     // protected ModuleComponent moduleComponent;
     protected Module module;
 
-    protected List<RuntimeConfiguration<InstanceContext>> configurations = new ArrayList();
+    protected List<ContextFactory<InstanceContext>> configurations = new ArrayList();
 
     protected ScopeStrategy scopeStrategy;
 
@@ -192,9 +192,9 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 lifecycleState = INITIALIZING;
                 initializeScopes();
 
-                Map<Scope, List<RuntimeConfiguration<SimpleComponentContext>>> configurationsByScope = new HashMap();
+                Map<Scope, List<ContextFactory<SimpleComponentContext>>> configurationsByScope = new HashMap();
                 if (configurations != null) {
-                    for (RuntimeConfiguration config : configurations) {
+                    for (ContextFactory config : configurations) {
                         // FIXME scopes are defined at the interface level
                         Scope scope = config.getScope();
                         // ensure duplicate names were not added before the context was started
@@ -202,7 +202,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                             throw new DuplicateNameException(config.getName());
                         }
                         scopeIndex.put(config.getName(), scopeContexts.get(scope));
-                        List<RuntimeConfiguration<SimpleComponentContext>> list = configurationsByScope.get(scope);
+                        List<ContextFactory<SimpleComponentContext>> list = configurationsByScope.get(scope);
                         if (list == null) {
                             list = new ArrayList();
                             configurationsByScope.put(scope, list);
@@ -222,7 +222,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 for (Map.Entry entries : configurationsByScope.entrySet()) {
                     // register configurations with scope contexts
                     ScopeContext scope = scopeContexts.get(entries.getKey());
-                    scope.registerConfigurations((List<RuntimeConfiguration<InstanceContext>>) entries.getValue());
+                    scope.registerFactorys((List<ContextFactory<InstanceContext>>) entries.getValue());
                 }
                 for (ScopeContext scope : scopeContexts.values()) {
                     // register scope contexts as a listeners for events in the aggregate context
@@ -331,15 +331,15 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 throw e;
             }
         }
-        RuntimeConfiguration<InstanceContext> configuration = null;
+        ContextFactory<InstanceContext> configuration = null;
         if (model instanceof Module) {
             // merge new module definition with the existing one
             Module oldModule = module;
             Module newModule = (Module) model;
             module = newModule;
             for (Component component : newModule.getComponents()) {
-                configuration = (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation()
-                        .getRuntimeConfiguration();
+                configuration = (ContextFactory<InstanceContext>) component.getComponentImplementation()
+                        .getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new ConfigurationException("Runtime configuration not set");
                     e.addContextName(component.getName());
@@ -350,7 +350,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 registerAutowire(component);
             }
             for (EntryPoint ep : newModule.getEntryPoints()) {
-                configuration = (RuntimeConfiguration<InstanceContext>) ep.getConfiguredReference().getRuntimeConfiguration();
+                configuration = (ContextFactory<InstanceContext>) ep.getConfiguredReference().getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new ConfigurationException("Runtime configuration not set");
                     e.setIdentifier(ep.getName());
@@ -361,7 +361,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 registerAutowire(ep);
             }
             for (ExternalService service : newModule.getExternalServices()) {
-                configuration = (RuntimeConfiguration<InstanceContext>) service.getConfiguredService().getRuntimeConfiguration();
+                configuration = (ContextFactory<InstanceContext>) service.getConfiguredService().getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new ConfigurationException("Runtime configuration not set");
                     e.setIdentifier(service.getName());
@@ -379,16 +379,16 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
             if (model instanceof Component) {
                 Component component = (Component) model;
                 module.getComponents().add(component);
-                configuration = (RuntimeConfiguration<InstanceContext>) component.getComponentImplementation()
-                        .getRuntimeConfiguration();
+                configuration = (ContextFactory<InstanceContext>) component.getComponentImplementation()
+                        .getContextFactory();
             } else if (model instanceof EntryPoint) {
                 EntryPoint ep = (EntryPoint) model;
                 module.getEntryPoints().add(ep);
-                configuration = (RuntimeConfiguration<InstanceContext>) ep.getConfiguredReference().getRuntimeConfiguration();
+                configuration = (ContextFactory<InstanceContext>) ep.getConfiguredReference().getContextFactory();
             } else if (model instanceof ExternalService) {
                 ExternalService service = (ExternalService) model;
                 module.getExternalServices().add(service);
-                configuration = (RuntimeConfiguration<InstanceContext>) service.getConfiguredService().getRuntimeConfiguration();
+                configuration = (ContextFactory<InstanceContext>) service.getConfiguredService().getContextFactory();
             } else {
                 BuilderConfigException e = new BuilderConfigException("Unknown model type");
                 e.setIdentifier(model.getClass().getName());
@@ -410,14 +410,14 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     }
 
     public void registerJavaObject(String componentName, Class<?> service, Object instance) throws ConfigurationException {
-        SystemObjectRuntimeConfiguration configuration = new SystemObjectRuntimeConfiguration(componentName, instance);
+        SystemObjectContextFactory configuration = new SystemObjectContextFactory(componentName, instance);
         registerConfiguration(configuration);
         ScopeContext scope = scopeContexts.get(configuration.getScope());
         NameToScope mapping = new NameToScope(new QualifiedName(componentName), scope);
         autowireIndex.put(service, mapping);
     }
 
-    protected void registerConfiguration(RuntimeConfiguration<InstanceContext> configuration) throws ConfigurationException {
+    protected void registerConfiguration(ContextFactory<InstanceContext> configuration) throws ConfigurationException {
         configuration.prepare(this);
         if (lifecycleState == RUNNING) {
             if (scopeIndex.get(configuration.getName()) != null) {
@@ -430,7 +430,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 e.addContextName(getName());
                 throw e;
             }
-            scope.registerConfiguration(configuration);
+            scope.registerFactory(configuration);
             scopeIndex.put(configuration.getName(), scope);
         } else {
             configurations.add(configuration);
@@ -614,8 +614,8 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 EntryPoint ep = (EntryPoint) model;
                 if (ep.getBindings() != null) {
                     if (ep.getBindings().get(0) instanceof SystemBinding) {
-                        ScopeContext scope = scopeContexts.get(((RuntimeConfiguration) ep.getConfiguredReference()
-                                .getRuntimeConfiguration()).getScope());
+                        ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getConfiguredReference()
+                                .getContextFactory()).getScope());
                         if (scope == null) {
                             ConfigurationException ce = new ConfigurationException("Scope not found for entry point");
                             ce.setIdentifier(ep.getName());

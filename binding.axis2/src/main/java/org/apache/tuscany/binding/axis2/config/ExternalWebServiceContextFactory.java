@@ -11,21 +11,21 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.container.java.mock.binding.foo;
+package org.apache.tuscany.binding.axis2.config;
 
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.builder.impl.BaseExternalServiceRuntimeConfiguration;
+import org.apache.tuscany.core.builder.impl.BaseExternalServiceContextFactory;
 
 /**
  * Creates instances of {@link org.apache.tuscany.core.context.ExternalServiceContext} configured with the appropriate
  * invocation chains and bindings. This implementation serves as a marker for
- * {@link org.apache.tuscany.container.java.mock.binding.foo.FooBindingWireBuilder}
+ * {@link org.apache.tuscany.binding.axis2.builder.ExternalWebServiceWireBuilder}
  * 
  * @version $Rev$ $Date$
  */
-public class FooExternalServiceRuntimeConfiguration extends BaseExternalServiceRuntimeConfiguration {
+public class ExternalWebServiceContextFactory extends BaseExternalServiceContextFactory {
 
-    public FooExternalServiceRuntimeConfiguration(String name, ObjectFactory objectFactory) {
+    public ExternalWebServiceContextFactory(String name, ObjectFactory objectFactory) {
         super(name, objectFactory);
     }
 

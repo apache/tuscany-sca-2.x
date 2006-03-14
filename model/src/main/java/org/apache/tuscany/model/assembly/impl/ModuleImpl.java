@@ -50,7 +50,7 @@ public class ModuleImpl extends AggregateImpl implements Module {
     private List<ModuleFragment> moduleFragments = new ArrayList<ModuleFragment>();
     private Map<String, ModuleFragment> moduleFragmentsMap;
     private ComponentType componentType;
-    private Object runtimeConfiguration;
+    private Object contextFactory;
 
     /**
      * Constructor
@@ -230,18 +230,18 @@ public class ModuleImpl extends AggregateImpl implements Module {
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.RuntimeConfigurationHolder#getRuntimeConfiguration()
+     * @see org.apache.tuscany.model.assembly.ContextFactoryHolder#getContextFactory()
      */
-    public Object getRuntimeConfiguration() {
-        return runtimeConfiguration;
+    public Object getContextFactory() {
+        return contextFactory;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.RuntimeConfigurationHolder#setRuntimeConfiguration(java.lang.Object)
+     * @see org.apache.tuscany.model.assembly.ContextFactoryHolder#setContextFactory(java.lang.Object)
      */
-    public void setRuntimeConfiguration(Object configuration) {
+    public void setContextFactory(Object configuration) {
         checkNotFrozen();
-        this.runtimeConfiguration = configuration;
+        this.contextFactory = configuration;
     }
 
     /**

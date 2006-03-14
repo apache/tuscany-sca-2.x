@@ -30,7 +30,7 @@ public class FooBindingWireBuilder implements WireBuilder {
 
     public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) throws BuilderConfigException {
-        if (!FooExternalServiceRuntimeConfiguration.class.isAssignableFrom(targetType)) {
+        if (!FooExternalServiceContextFactory.class.isAssignableFrom(targetType)) {
             return;
         }
         for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations()

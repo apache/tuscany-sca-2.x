@@ -14,7 +14,7 @@ import org.apache.tuscany.container.java.mock.MockConfigContext;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeComponent;
-import org.apache.tuscany.core.builder.RuntimeConfiguration;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
@@ -36,17 +36,17 @@ import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 
-public class JavaComponentContextBuilderTestCase extends TestCase {
+public class JavaContextFactoryBuilderTestCase extends TestCase {
 
     private AssemblyFactory factory = new AssemblyFactoryImpl();
     
     private AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(null,null); 
     
-    public JavaComponentContextBuilderTestCase() {
+    public JavaContextFactoryBuilderTestCase() {
     }
 
     public void testBuilder() throws Exception {
-        JavaComponentContextBuilder builder = new JavaComponentContextBuilder();
+        JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
         builder.setMessageFactory(new MessageFactoryImpl());
        // HierarchicalBuilder refBuilder = new HierarchicalBuilder();
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
@@ -69,19 +69,19 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
         for (Component component : components) {
             compMap.put(component.getName(), component);
             builder.build(component);
-            RuntimeConfiguration config = (RuntimeConfiguration) component.getComponentImplementation().getRuntimeConfiguration();
+            ContextFactory config = (ContextFactory) component.getComponentImplementation().getContextFactory();
             Assert.assertNotNull(config);
         }
         for (Component component : components) {
-            RuntimeConfiguration source = (RuntimeConfiguration) component.getComponentImplementation().getRuntimeConfiguration();
+            ContextFactory source = (ContextFactory) component.getComponentImplementation().getContextFactory();
             Assert.assertNotNull(source);
             for (ProxyFactory pFactory : (Collection<ProxyFactory>) source.getSourceProxyFactories()) {
                 ProxyConfiguration pConfig = pFactory.getProxyConfiguration();
                 Component target = compMap.get(pConfig.getTargetName().getPartName());
 
                 if (target != null) {
-                    RuntimeConfiguration targetConfig = (RuntimeConfiguration) target.getComponentImplementation()
-                            .getRuntimeConfiguration();
+                    ContextFactory targetConfig = (ContextFactory) target.getComponentImplementation()
+                            .getContextFactory();
                     boolean downScope = strategy.downScopeReference(source.getScope(), targetConfig.getScope());
                     wireBuilder.connect(pFactory, targetConfig.getTargetProxyFactory(pFactory.getProxyConfiguration().getTargetName()
                             .getPortName()), targetConfig.getClass(), downScope, scopeContext);
@@ -89,11 +89,11 @@ public class JavaComponentContextBuilderTestCase extends TestCase {
                 pFactory.initialize();
             }
 
-            scopeContext.registerConfiguration(source);
+            scopeContext.registerFactory(source);
         }
         for (Component component : components) {
-            RuntimeConfiguration config = (RuntimeConfiguration) component.getComponentImplementation().getRuntimeConfiguration();
-            InstanceContext context = (InstanceContext) config.createInstanceContext();
+            ContextFactory config = (ContextFactory) component.getComponentImplementation().getContextFactory();
+            InstanceContext context = (InstanceContext) config.createContext();
             if ("source".equals(component.getName())) {
                 ModuleScopeComponent source = (ModuleScopeComponent) context.getInstance(null);
                 Assert.assertNotNull(source);
