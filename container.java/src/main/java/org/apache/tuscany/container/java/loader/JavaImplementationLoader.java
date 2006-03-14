@@ -70,12 +70,16 @@ public class JavaImplementationLoader implements StAXElementLoader<JavaImplement
     public JavaImplementation load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         JavaImplementation javaImpl = factory.createJavaImplementation();
         String typeName = reader.getAttributeValue(null, "class");
+        ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
         try {
+            Thread.currentThread().setContextClassLoader(resourceLoader.getClassLoader());
             // todo the type information should not require loading of an application class, save until build time
             Class<?> type = resourceLoader.loadClass(typeName);
             javaImpl.setImplementationClass(type);
         } catch (ClassNotFoundException e) {
             throw (ConfigurationLoadException) new ConfigurationLoadException(e.getMessage()).initCause(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCL);
         }
         return javaImpl;
     }
