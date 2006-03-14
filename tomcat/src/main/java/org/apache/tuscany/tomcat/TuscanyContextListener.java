@@ -26,17 +26,18 @@ import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Valve;
 import org.apache.catalina.core.StandardWrapper;
-
 import org.apache.tuscany.binding.axis2.handler.WebServiceEntryPointServlet;
+import org.apache.tuscany.binding.jsonrpc.handler.JSONRPCEntryPointServlet;
+import org.apache.tuscany.binding.jsonrpc.handler.ScriptGetterServlet;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
+import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.runtime.RuntimeContext;
-import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
@@ -114,6 +115,7 @@ public class TuscanyContextListener implements LifecycleListener {
 
         // add the web service servlet wrapper
         addWebServiceWrapper(ctx);
+        addJSONRPCServiceWrapper(ctx);
 
         // add the RuntimeContext in as a servlet context parameter
         ServletContext servletContext = ctx.getServletContext();
@@ -141,5 +143,31 @@ public class TuscanyContextListener implements LifecycleListener {
         wrapper.setServletClass(servletClass.getName());
         ctx.addChild(wrapper);
         ctx.addServletMapping("/services/*", wrapper.getName());
+    }
+
+    private static void addJSONRPCServiceWrapper(Context ctx) {
+        // todo this should not depend on jsonrpc, we need an API in the model for embedders
+        // todo should only add this servlet if we need it
+        // todo servlet implementation should be determined by the binding implementation
+        // todo should get path from entry point definition and not hard code to /services
+
+    	{
+            Class<JSONRPCEntryPointServlet> servletClass = JSONRPCEntryPointServlet.class;
+            StandardWrapper wrapper = new StandardWrapper();
+            wrapper.setName("TuscanyJSONRPCServlet");
+            wrapper.setLoader(new ContainerLoader(servletClass.getClassLoader()));
+            wrapper.setServletClass(servletClass.getName());
+            ctx.addChild(wrapper);
+            ctx.addServletMapping("/SCA/jsonrpc/*", wrapper.getName());
+    	}
+    	{
+            Class<ScriptGetterServlet> servletClass = ScriptGetterServlet.class;
+            StandardWrapper wrapper = new StandardWrapper();
+            wrapper.setName("TuscanyJSONRPCScriptServlet");
+            wrapper.setLoader(new ContainerLoader(servletClass.getClassLoader()));
+            wrapper.setServletClass(servletClass.getName());
+            ctx.addChild(wrapper);
+            ctx.addServletMapping("/SCA/scripts/*", wrapper.getName());
+    	}
     }
 }
