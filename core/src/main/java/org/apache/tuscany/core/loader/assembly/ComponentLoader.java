@@ -86,8 +86,8 @@ public class ComponentLoader extends AbstractLoader {
             switch (reader.next()) {
             case START_ELEMENT:
                 String name = reader.getLocalName();
-                String value = reader.getElementText();
                 OverrideOption override = StAXUtil.overrideOption(reader.getAttributeValue(null, "override"), OverrideOption.NO);
+                String value = reader.getElementText();
                 ConfiguredProperty configuredProperty = factory.createConfiguredProperty();
                 configuredProperty.setName(name);
                 configuredProperty.setValue(value);
