@@ -26,4 +26,7 @@
         <system:implementation.system class="org.apache.tuscany.binding.jsonrpc.builder.JSONRPCEntryPointConfigurationBuilder"/>
     </component>
 
+    <component name="org.apache.tuscany.binding.jsonrpc.loader.JSONRPCBindingLoaderr">
+        <system:implementation.system class="org.apache.tuscany.binding.jsonrpc.loader.JSONRPCBindingLoader"/>
+    </component>
 </moduleFragment>
