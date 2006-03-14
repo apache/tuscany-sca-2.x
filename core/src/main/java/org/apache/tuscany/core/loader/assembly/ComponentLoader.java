@@ -31,11 +31,13 @@ import org.apache.tuscany.core.config.ConfigurationLoadException;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.COMPONENT;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.PROPERTIES;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.REFERENCES;
+import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ComponentImplementation;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
+import org.apache.tuscany.model.assembly.OverrideOption;
 
 /**
  * @version $Rev$ $Date$
@@ -85,10 +87,11 @@ public class ComponentLoader extends AbstractLoader {
             case START_ELEMENT:
                 String name = reader.getLocalName();
                 String value = reader.getElementText();
+                OverrideOption override = StAXUtil.overrideOption(reader.getAttributeValue(null, "override"), OverrideOption.NO);
                 ConfiguredProperty configuredProperty = factory.createConfiguredProperty();
-                // todo set property override
                 configuredProperty.setName(name);
                 configuredProperty.setValue(value);
+                configuredProperty.setOverrideOption(override);
                 configuredProperties.add(configuredProperty);
                 break;
             case END_ELEMENT:
