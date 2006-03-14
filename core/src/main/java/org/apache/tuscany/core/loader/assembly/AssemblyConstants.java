@@ -29,6 +29,7 @@ public final class AssemblyConstants {
     public static final QName ENTRY_POINT = new QName(SCA_NAMESPACE, "entryPoint");
     public static final QName EXTERNAL_SERVICE = new QName(SCA_NAMESPACE, "externalService");
     public static final QName IMPORT_WSDL = new QName(SCA_NAMESPACE, "import.wsdl");
+    public static final QName INTERFACE_JAVA = new QName(SCA_NAMESPACE, "interface.java");
     public static final QName INTERFACE_WSDL = new QName(SCA_NAMESPACE, "interface.wsdl");
     public static final QName MODULE = new QName(SCA_NAMESPACE, "module");
     public static final QName MODULE_FRAGMENT = new QName(SCA_NAMESPACE, "moduleFragment");

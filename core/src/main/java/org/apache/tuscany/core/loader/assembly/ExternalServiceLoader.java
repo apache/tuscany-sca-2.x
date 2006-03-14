@@ -33,6 +33,7 @@ import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.OverrideOption;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceContract;
+import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.common.resource.ResourceLoader;
 
 /**
@@ -50,8 +51,9 @@ public class ExternalServiceLoader extends AbstractLoader {
 
     public ExternalService load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         assert EXTERNAL_SERVICE.equals(reader.getName());
+        String name = reader.getAttributeValue(null, "name");
         ExternalService externalService = factory.createExternalService();
-        externalService.setName(reader.getAttributeValue(null, "name"));
+        externalService.setName(name);
         externalService.setOverrideOption(StAXUtil.overrideOption(reader.getAttributeValue(null, "overridable"), OverrideOption.NO));
 
         while (true) {
@@ -60,10 +62,13 @@ public class ExternalServiceLoader extends AbstractLoader {
                 AssemblyModelObject o = registry.load(reader, resourceLoader);
                 if (o instanceof ServiceContract) {
                     Service service = factory.createService();
+                    service.setName(name);
                     service.setServiceContract((ServiceContract) o);
                     ConfiguredService configuredService = factory.createConfiguredService();
                     configuredService.setService(service);
                     externalService.setConfiguredService(configuredService);
+                } else if (o instanceof Binding) {
+                    externalService.getBindings().add((Binding) o);
                 }
                 reader.next();
                 break;

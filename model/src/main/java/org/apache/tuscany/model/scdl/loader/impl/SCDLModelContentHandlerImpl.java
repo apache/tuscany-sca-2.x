@@ -247,8 +247,8 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
         final JavaServiceContract serviceContract=factory.createJavaServiceContract();
         serviceContract.setScope(Scope.INSTANCE);
 
-        ((JavaServiceContractImpl)serviceContract).setInterfaceName(object.getInterface());
-        ((JavaServiceContractImpl)serviceContract).setCallbackInterfaceName(object.getCallbackInterface());
+        serviceContract.setInterfaceName(object.getInterface());
+        serviceContract.setCallbackInterfaceName(object.getCallbackInterface());
         
         linkServiceContract(object, serviceContract);
         

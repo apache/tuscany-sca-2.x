@@ -23,5 +23,8 @@ import org.apache.tuscany.model.assembly.ServiceContract;
  * Represents a Java service contract.
  */
 public interface JavaServiceContract extends ServiceContract {
-    
+
+    void setInterfaceName(String interfaceName);
+
+    void setCallbackInterfaceName(String callbackInterfaceName);
 }
