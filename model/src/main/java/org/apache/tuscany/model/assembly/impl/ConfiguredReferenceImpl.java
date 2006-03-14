@@ -30,7 +30,6 @@ import org.apache.tuscany.model.assembly.Reference;
 public class ConfiguredReferenceImpl extends ConfiguredPortImpl implements ConfiguredReference {
 
     private String name;
-    private String target;
     private List<String> targets = new ArrayList<String>();
 
     private List<ConfiguredService> targetConfiguredServices = new ArrayList<ConfiguredService>();
@@ -48,14 +47,6 @@ public class ConfiguredReferenceImpl extends ConfiguredPortImpl implements Confi
 
     public List<String> getTargets() {
         return targets;
-    }
-
-    public String getTarget() {
-        return target;
-    }
-
-    public void setTarget(String target) {
-        this.target = target;
     }
 
     /**

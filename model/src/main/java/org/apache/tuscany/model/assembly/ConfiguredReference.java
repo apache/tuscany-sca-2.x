@@ -69,18 +69,4 @@ public interface ConfiguredReference extends ConfiguredPort {
      */
     List<ConfiguredService> getTargetConfiguredServices();
 
-    /**
-     * Returns the URI of the target of this reference.
-     * Relative URI's must be resolved relative to the component containing this reference.
-     *
-     * @return the URI of the target
-     */
-    String getTarget();
-
-    /**
-     * Set the URI of the target of this reference. May be relative.
-     *
-     * @param target the URI of the target of this reference
-     */
-    void setTarget(String target);
 }
