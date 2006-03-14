@@ -35,7 +35,7 @@ public class ModuleLoader extends AggregateLoader {
         return AssemblyConstants.MODULE;
     }
 
-    public Class getModelType() {
+    public Class<Module> getModelType() {
         return Module.class;
     }
 

@@ -35,7 +35,7 @@ public class ModuleFragmentLoader extends AggregateLoader {
         return AssemblyConstants.MODULE_FRAGMENT;
     }
 
-    public Class getModelType() {
+    public Class<ModuleFragment> getModelType() {
         return ModuleFragment.class;
     }
 
