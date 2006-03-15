@@ -40,7 +40,6 @@ public class AutowireObjectFactory<T> implements ObjectFactory<T> {
      */
     public AutowireObjectFactory(Class<T> autowireType, boolean required, ContextResolver resolver) {
         assert (autowireType != null) : "Target interface was null";
-        assert (resolver != null) : "Context resolver was null";
         this.resolver = resolver;
         this.required = required;
         this.autowireType = autowireType;
