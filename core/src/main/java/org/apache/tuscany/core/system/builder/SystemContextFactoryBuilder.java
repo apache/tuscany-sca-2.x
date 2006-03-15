@@ -148,7 +148,6 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
                 // of app module component context
                 implClass = AggregateContextImpl.class;
                 scope = Scope.AGGREGATE;
-
             }
 
         } else {
@@ -156,15 +155,20 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
         }
         Set<Field> fields;
         Set<Method> methods;
-        SystemContextFactory config = null;
+        SystemContextFactory contextFactory = null;
         try {
             fields = JavaIntrospectionHelper.getAllFields(implClass);
             methods = JavaIntrospectionHelper.getAllUniqueMethods(implClass);
             String name = component.getName();
             Constructor ctr = implClass.getConstructor((Class[]) null);
-            config = new SystemContextFactory(name, JavaIntrospectionHelper.getDefaultConstructor(implClass),
-                    scope);
-            ContextObjectFactory contextFactory = new ContextObjectFactory(config);
+            if (componentImplementation instanceof Module) {
+                Module module = (Module)componentImplementation;
+                contextFactory = new SystemContextFactory(name, module, JavaIntrospectionHelper.getDefaultConstructor(implClass), scope);
+
+            } else {
+                contextFactory = new SystemContextFactory(name, JavaIntrospectionHelper.getDefaultConstructor(implClass), scope);
+            }
+            ContextObjectFactory contextObjectFactory = new ContextObjectFactory(contextFactory);
 
             List<Injector> injectors = new ArrayList();
 
@@ -183,7 +187,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
                 Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
                 if (configuredReferences != null) {
                     for (ConfiguredReference reference : configuredReferences.values()) {
-                        Injector injector = createReferenceInjector(reference, fields, methods, config);
+                        Injector injector = createReferenceInjector(reference, fields, methods, contextFactory);
                         injectors.add(injector);
                     }
                 }
@@ -201,27 +205,16 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
                 }
                 Context context = field.getAnnotation(Context.class);
                 if (context != null) {
-                    Injector injector = new FieldInjector(field, contextFactory);
+                    Injector injector = new FieldInjector(field, contextObjectFactory);
                     injectors.add(injector);
                 }
                 ParentContext parentField = field.getAnnotation(ParentContext.class);
                 if (parentField != null) {
-//                    if (!(parentContext instanceof AggregateContext)) {
-//                        BuilderConfigException e = new BuilderConfigException("Component must be a child of");
-//                        e.setIdentifier(AggregateContext.class.getName());
-//                        throw e;
-//                    }
-                    Injector injector = new FieldInjector(field, contextFactory);
+                    Injector injector = new FieldInjector(field, contextObjectFactory);
                     injectors.add(injector);
                 }
                 Autowire autowire = field.getAnnotation(Autowire.class);
                 if (autowire != null) {
-//                    if (!(parentContext instanceof AutowireContext)) {
-//                        BuilderConfigException e = new BuilderConfigException("Parent context must implement");
-//                        e.setIdentifier(AutowireContext.class.getName());
-//                        throw e;
-//                    }
-//                    AutowireContext ctx = (AutowireContext) parentContext;
                     // for system aggregate context types, only allow autowire of certain types, otherwise we have a
                     // chicken-and-egg problem
                     if (SystemAggregateContext.class.isAssignableFrom(implClass)
@@ -233,14 +226,8 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
                         e.setIdentifier(field.getType().getName());
                         throw e;
                     }
-
-//                    Object o = ctx.resolveInstance(field.getType());
-//                    if (autowire.required() && o == null) {
-//                        BuilderConfigException e = new BuilderConfigException("No autowire found for field");
-//                        e.setIdentifier(field.getName());
-//                        throw e;
-//                    }
-                    Injector injector = new FieldInjector(field, new AutowireObjectFactory(field.getType(),autowire.required(),config));
+                    Injector injector = new FieldInjector(field, new AutowireObjectFactory(field.getType(), autowire.required(),
+                            contextFactory));
                     injectors.add(injector);
                 }
             }
@@ -263,32 +250,31 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
                 }
                 Context context = method.getAnnotation(Context.class);
                 if (context != null) {
-                    Injector injector = new MethodInjector(method, contextFactory);
+                    Injector injector = new MethodInjector(method, contextObjectFactory);
                     injectors.add(injector);
                 }
                 ParentContext parentMethod = method.getAnnotation(ParentContext.class);
                 if (parentMethod != null) {
-//                    if (!(parentContext instanceof AggregateContext)) {
-//                        BuilderConfigException e = new BuilderConfigException("Component must be a child of ");
-//                        e.setIdentifier(AggregateContext.class.getName());
-//                        throw e;
-//                    }
-                    Injector injector = new MethodInjector(method, contextFactory);
+                    // if (!(parentContext instanceof AggregateContext)) {
+                    // BuilderConfigException e = new BuilderConfigException("Component must be a child of ");
+                    // e.setIdentifier(AggregateContext.class.getName());
+                    // throw e;
+                    // }
+                    Injector injector = new MethodInjector(method, contextObjectFactory);
                     injectors.add(injector);
                 }
                 Autowire autowire = method.getAnnotation(Autowire.class);
                 if (autowire != null) {
-//                    if (!(parentContext instanceof AutowireContext)) {
-//                        BuilderConfigException e = new BuilderConfigException("Parent context must implement)");
-//                        e.setIdentifier(AutowireContext.class.getName());
-//                        throw e;
-//                    }
+                    // if (!(parentContext instanceof AutowireContext)) {
+                    // BuilderConfigException e = new BuilderConfigException("Parent context must implement)");
+                    // e.setIdentifier(AutowireContext.class.getName());
+                    // throw e;
+                    // }
                     if (method.getParameterTypes() == null || method.getParameterTypes().length != 1) {
                         BuilderConfigException e = new BuilderConfigException("Autowire setter methods must take one parameter");
                         e.setIdentifier(method.getName());
                         throw e;
                     }
-//                    AutowireContext ctx = (AutowireContext) parentContext;
                     Class paramType = method.getParameterTypes()[0];
                     // for system aggregate context types, only allow autowire of certain types, otherwise we have a
                     // chicken-and-egg problem
@@ -299,26 +285,19 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
                         e.setIdentifier(paramType.getName());
                         throw e;
                     }
-//                    Object o = ctx.resolveInstance(paramType);
-//                    if (autowire.required() && o == null) {
-//                        BuilderConfigException e = new BuilderConfigException("No autowire found for method ");
-//                        e.setIdentifier(method.getName());
-//                        throw e;
-//                    }
-
-                    Injector injector = new MethodInjector(method, new AutowireObjectFactory(paramType,autowire.required(), config));
+                    Injector injector = new MethodInjector(method, new AutowireObjectFactory(paramType, autowire.required(),
+                            contextFactory));
                     injectors.add(injector);
                 }
             }
+            contextFactory.setSetters(injectors);
+            contextFactory.setEagerInit(eagerInit);
+            contextFactory.setInitInvoker(initInvoker);
+            contextFactory.setDestroyInvoker(destroyInvoker);
             // decorate the logical model
-            config.setSetters(injectors);
-            config.setEagerInit(eagerInit);
-            config.setInitInvoker(initInvoker);
-            config.setDestroyInvoker(destroyInvoker);
-            componentImplementation.setContextFactory(config);
+            componentImplementation.setContextFactory(contextFactory);
         } catch (BuilderConfigException e) {
             e.addContextName(component.getName());
-            // e.addContextName(parentContext.getName());
             throw e;
         } catch (NoSuchMethodException e) {
             BuilderConfigException ce = new BuilderConfigException("Class does not have a no-arg constructor", e);

@@ -46,18 +46,29 @@ import commonj.sdo.helper.XSDHelper;
  * An implementation of Aggregate.
  */
 public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate {
-    
+
     private String name;
-    private List<Component> components=new ArrayList<Component>();
+
+    private List<Component> components = new ArrayList<Component>();
+
     private Map<String, Component> componentsMap;
-    private List<EntryPoint> entryPoints=new ArrayList<EntryPoint>();
+
+    private List<EntryPoint> entryPoints = new ArrayList<EntryPoint>();
+
     private Map<String, EntryPoint> entryPointsMap;
-    private List<ExternalService> externalServices=new ArrayList<ExternalService>();
+
+    private List<ExternalService> externalServices = new ArrayList<ExternalService>();
+
     private Map<String, ExternalService> externalServicesMap;
+
     private List<AggregatePart> aggregateParts;
-    private List<Wire> wires=new ArrayList<Wire>();
-    private List<Import> wsdlImports=new ArrayList<Import>();
+
+    private List<Wire> wires = new ArrayList<Wire>();
+
+    private List<Import> wsdlImports = new ArrayList<Import>();
+
     private Map<String, List<Import>> wsdlImportsMap;
+
     private AssemblyModelContext modelContext;
 
     /**
@@ -78,7 +89,7 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
      */
     public void setName(String newName) {
         checkNotFrozen();
-        name=newName;
+        name = newName;
     }
 
     /**
@@ -140,14 +151,14 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
     public List<Wire> getWires() {
         return wires;
     }
-    
+
     /**
      * @see org.apache.tuscany.model.assembly.Aggregate#getWSDLImports()
      */
     public List<Import> getWSDLImports() {
         return wsdlImports;
     }
-    
+
     /**
      * @see org.apache.tuscany.model.assembly.Aggregate#getWSDLImports(java.lang.String)
      */
@@ -155,7 +166,7 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
         checkInitialized();
         return wsdlImportsMap.get(namespace);
     }
-    
+
     /**
      * @see org.apache.tuscany.model.assembly.Aggregate#getAssemblyModelContext()
      */
@@ -163,7 +174,7 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
         checkInitialized();
         return modelContext;
     }
-    
+
     /**
      * @see org.apache.tuscany.model.assembly.Aggregate#getConfiguredService(org.apache.tuscany.model.assembly.ServiceURI)
      */
@@ -199,35 +210,35 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
         if (isInitialized())
             return;
         super.initialize(modelContext);
-        
+
         // Save the model context
-        this.modelContext=modelContext;
-        
+        this.modelContext = modelContext;
+
         // Populate map of WSDL imports
-        ResourceLoader resourceLoader=modelContext.getApplicationResourceLoader();
+        ResourceLoader resourceLoader = modelContext.getApplicationResourceLoader();
         wsdlImportsMap = new HashMap<String, List<Import>>();
         for (Import wsdlImport : wsdlImports) {
-            String namespace=wsdlImport.getNamespaceURI();
-            List<Import> list=wsdlImportsMap.get(namespace);
-            if (list==null) {
-                list=new ArrayList<Import>();
+            String namespace = wsdlImport.getNamespaceURI();
+            List<Import> list = wsdlImportsMap.get(namespace);
+            if (list == null) {
+                list = new ArrayList<Import>();
                 wsdlImportsMap.put(namespace, list);
             }
             list.add(wsdlImport);
-            
+
             // Load the WSDL definition if necessary
-            if (wsdlImport.getDefinition()==null) {
-                String location=wsdlImport.getLocationURI();
+            if (wsdlImport.getDefinition() == null) {
+                String location = wsdlImport.getLocationURI();
                 Definition definition;
-                ClassLoader ccl=Thread.currentThread().getContextClassLoader();
+                ClassLoader ccl = Thread.currentThread().getContextClassLoader();
                 try {
-                    URL url=resourceLoader.getResource(location);
-                    if (url==null)
-                        throw new IllegalArgumentException("Cannot find "+location);
+                    URL url = resourceLoader.getResource(location);
+                    if (url == null)
+                        throw new IllegalArgumentException("Cannot find " + location);
                     definition = modelContext.getAssemblyLoader().loadDefinition(url.toString());
                     Thread.currentThread().setContextClassLoader(modelContext.getApplicationResourceLoader().getClassLoader());
-                    XSDHelper xsdHelper=SDOUtil.createXSDHelper(modelContext.getTypeHelper());
-                    xsdHelper.define (url.openStream(), null);
+                    XSDHelper xsdHelper = SDOUtil.createXSDHelper(modelContext.getTypeHelper());
+                    xsdHelper.define(url.openStream(), null);
                 } catch (IOException e) {
                     throw new IllegalArgumentException(e);
                 } finally {
@@ -244,21 +255,21 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
             componentsMap.put(component.getName(), component);
             aggregateParts.add(component);
             component.initialize(modelContext);
-            ((AggregatePartImpl)component).setAggregate(this);
+            ((AggregatePartImpl) component).setAggregate(this);
         }
         entryPointsMap = new HashMap<String, EntryPoint>();
         for (EntryPoint entryPoint : entryPoints) {
             entryPointsMap.put(entryPoint.getName(), entryPoint);
             aggregateParts.add(entryPoint);
             entryPoint.initialize(modelContext);
-            ((AggregatePartImpl)entryPoint).setAggregate(this);
+            ((AggregatePartImpl) entryPoint).setAggregate(this);
         }
         externalServicesMap = new HashMap<String, ExternalService>();
         for (ExternalService externalService : externalServices) {
             externalServicesMap.put(externalService.getName(), externalService);
             aggregateParts.add(externalService);
             externalService.initialize(modelContext);
-            ((AggregatePartImpl)externalService).setAggregate(this);
+            ((AggregatePartImpl) externalService).setAggregate(this);
         }
         for (Wire wire : wires) {
             wire.initialize(modelContext);
@@ -272,17 +283,17 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
         if (isFrozen())
             return;
         super.freeze();
-        
+
         // Freeze lists
-        wsdlImports=Collections.unmodifiableList(wsdlImports);
+        wsdlImports = Collections.unmodifiableList(wsdlImports);
         freeze(wsdlImports);
-        components=Collections.unmodifiableList(components);
+        components = Collections.unmodifiableList(components);
         freeze(components);
-        entryPoints=Collections.unmodifiableList(entryPoints);
+        entryPoints = Collections.unmodifiableList(entryPoints);
         freeze(entryPoints);
-        externalServices=Collections.unmodifiableList(externalServices);
+        externalServices = Collections.unmodifiableList(externalServices);
         freeze(externalServices);
-        wires=Collections.unmodifiableList(wires);
+        wires = Collections.unmodifiableList(wires);
         freeze(wires);
     }
 
@@ -292,14 +303,21 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
     public boolean accept(AssemblyModelVisitor visitor) {
         if (!super.accept(visitor))
             return false;
-        
-        if (!accept(aggregateParts, visitor))
+
+        // if (!accept(aggregateParts, visitor))
+        // return false;
+        if (!accept(components, visitor))
             return false;
-        
+        if (!accept(entryPoints, visitor))
+            return false;
+
+        if (!accept(externalServices, visitor))
+            return false;
+
         if (!accept(wires, visitor))
             return false;
-        
+
         return true;
     }
 
-} //ModuleImpl
+} // ModuleImpl

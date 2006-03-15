@@ -632,7 +632,7 @@ public class MockFactory {
     }
 
     /**
-     * Creates an aggregate runtime configuration
+     * Creates an aggregate context faxtory
      *
      * @param name             the name of the component
      * @param aggregateContext the containing aggregate context

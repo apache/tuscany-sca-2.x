@@ -42,7 +42,7 @@ public interface AggregateContext extends InstanceContext {
      * @see org.apache.tuscany.model.assembly.EntryPoint
      * @see org.apache.tuscany.model.assembly.ExternalService
      */
-    public void registerModelObjects(List<Extensible> models) throws ConfigurationException;
+    public void registerModelObjects(List<? extends Extensible> models) throws ConfigurationException;
 
     /**
      * Adds a runtime artifact represented by the model object to the aggregate context by merging it with existing

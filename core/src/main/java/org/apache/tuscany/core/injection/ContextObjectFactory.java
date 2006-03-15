@@ -5,7 +5,7 @@ import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.AggregateContext;
 
 /**
- * Implementation of ObjectFactory that resolves the current context.
+ * An implementation of <code>ObjectFactory</code> that resolves the current context.
  * 
  * @version $Rev: 380903 $ $Date: 2006-02-25 00:53:26 -0800 (Sat, 25 Feb 2006) $
  */

@@ -29,7 +29,7 @@ import org.apache.tuscany.core.invocation.impl.MessageChannelImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 
 /**
- * The top-most wire builder configured in a runtime. Responsible for constructing wires from source and target chains,
+ * The top-most <code>WireBuilder</code> configured in a runtime. Responsible for constructing wires from source and target chains,
  * this implementation first bridges the chains and then delegates to any other wire builders.
  * 
  * @version $Rev$ $Date$

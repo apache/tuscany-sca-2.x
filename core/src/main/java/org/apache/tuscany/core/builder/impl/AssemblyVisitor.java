@@ -31,8 +31,7 @@ public class AssemblyVisitor implements AssemblyModelVisitor {
     /**
      * Constructs a visitor
      * 
-     * @param parent the parent context for the object graph
-     * @param builders the collection of builders for creating runtime configurations
+     * @param builders the collection of builders for creating context factories
      */
     public AssemblyVisitor(List<ContextFactoryBuilder> builders) {
         this.builders = builders;

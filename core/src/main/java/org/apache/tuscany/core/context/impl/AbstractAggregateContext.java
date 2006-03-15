@@ -260,7 +260,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         return parentContext;
     }
 
-    public void registerModelObjects(List<Extensible> models) throws ConfigurationException {
+    public void registerModelObjects(List<? extends Extensible> models) throws ConfigurationException {
         assert (models != null) : "Model object collection was null";
         for (Extensible model : models) {
             registerModelObject(model);
@@ -273,7 +273,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         if (configurationContext != null) {
             try {
                 configurationContext.configure(model);
-                configurationContext.build(this, model);
+                configurationContext.build(model);
             } catch (ConfigurationException e) {
                 e.addContextName(getName());
                 throw e;
@@ -298,7 +298,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 }
                 configuration = (ContextFactory<InstanceContext>) componentImplementation.getContextFactory();
                 if (configuration == null) {
-                    ConfigurationException e = new ConfigurationException("Runtime configuration not set");
+                    ConfigurationException e = new ConfigurationException("Context factory not set");
                     e.addContextName(component.getName());
                     e.addContextName(getName());
                     throw e;
@@ -309,7 +309,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
             for (EntryPoint ep : newModule.getEntryPoints()) {
                 configuration = (ContextFactory<InstanceContext>) ep.getConfiguredReference().getContextFactory();
                 if (configuration == null) {
-                    ConfigurationException e = new ConfigurationException("Runtime configuration not set");
+                    ConfigurationException e = new ConfigurationException("Context factory not set");
                     e.setIdentifier(ep.getName());
                     e.addContextName(getName());
                     throw e;
@@ -320,7 +320,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
             for (ExternalService service : newModule.getExternalServices()) {
                 configuration = (ContextFactory<InstanceContext>) service.getConfiguredService().getContextFactory();
                 if (configuration == null) {
-                    ConfigurationException e = new ConfigurationException("Runtime configuration not set");
+                    ConfigurationException e = new ConfigurationException("Context factory not set");
                     e.setIdentifier(service.getName());
                     e.addContextName(getName());
                     throw e;
@@ -424,7 +424,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 throw e;
             }
             if (configuration == null) {
-                ConfigurationException e = new ConfigurationException("Runtime configuration not set");
+                ConfigurationException e = new ConfigurationException("Context factory not set");
                 if (model instanceof Part) {
                     e.setIdentifier(((Part) model).getName());
                 }
@@ -608,7 +608,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 }
                 try {
                     boolean downScope = scopeStrategy.downScopeReference(sourceScope, target.getScope());
-                    configurationContext.wire(sourceFactory, targetFactory, target.getClass(), downScope, scopeContexts
+                    configurationContext.connect(sourceFactory, targetFactory, target.getClass(), downScope, scopeContexts
                             .get(target.getScope()));
                 } catch (BuilderConfigException e) {
                     e.addContextName(target.getName());
@@ -623,7 +623,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         if (source.getTargetProxyFactories() != null) {
             for (ProxyFactory targetFactory : ((Map<String, ProxyFactory>) source.getTargetProxyFactories()).values()) {
                 try {
-                    configurationContext.wire(targetFactory, source.getClass(), scopeContexts.get(sourceScope));
+                    configurationContext.completeTargetChain(targetFactory, source.getClass(), scopeContexts.get(sourceScope));
                 } catch (BuilderConfigException e) {
                     e.addContextName(source.getName());
                     e.addContextName(name);
@@ -655,7 +655,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 }
             }
             if (config.getSourceProxyFactories() != null) {
-                for (ProxyFactory targetProxyFactory : (Collection<ProxyFactory>) config.getTargetProxyFactories()) {
+                for (ProxyFactory targetProxyFactory : (Collection<ProxyFactory>) config.getTargetProxyFactories().values()) {
                     targetProxyFactory.initialize();
                 }
             }

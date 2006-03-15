@@ -25,10 +25,14 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
  * necessary as a <code>WireBuilder</code> must set a {@link org.apache.tuscany.core.invocation.TargetInvoker} that is
  * responsible for dispatching to an implementation on the source side of the wire.
  * <p>
+ * Runtimes are generally configured with a {@link org.apache.tuscany.core.builder.impl.DefaultWireBuilder} as a
+ * top-most wire builder, which delegates to other builders wired to it as part of a system configuration.
+ * <p>
  * Wire builders may optimize the invocation chains based on certain characteristics of th wire, such as source and
  * target scopes.
  * 
  * @see org.apache.tuscany.core.builder.ContextFactoryBuilder
+ * @see org.apache.tuscany.core.builder.impl.DefaultWireBuilder
  * @version $Rev$ $Date$
  */
 public interface WireBuilder {

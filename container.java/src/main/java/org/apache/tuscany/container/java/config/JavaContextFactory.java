@@ -70,7 +70,7 @@ public class JavaContextFactory implements ContextFactory<SimpleComponentContext
     // ----------------------------------
 
     /**
-     * Creates the runtime configuration
+     * Creates a new context factory
      * 
      * @param name the SCDL name of the component the context refers to
      * @param ctr the implementation type constructor

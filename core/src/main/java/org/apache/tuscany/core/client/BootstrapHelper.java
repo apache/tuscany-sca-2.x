@@ -126,7 +126,7 @@ public final class BootstrapHelper {
 
         // Get the aggregate context representing the component
         AggregateContext context = (AggregateContext) parent.getContext(component.getName());
-        context.registerModelObject(component.getComponentImplementation());
+        //context.registerModelObject(component.getComponentImplementation());
         return context;
     }
 }

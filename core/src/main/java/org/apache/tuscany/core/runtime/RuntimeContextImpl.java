@@ -19,8 +19,8 @@ import java.util.List;
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
-import org.apache.tuscany.core.builder.HierarchicalWireBuilder;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.HierarchicalWireBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
@@ -40,11 +40,12 @@ import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.apache.tuscany.core.loader.impl.StAXLoaderRegistryImpl;
+import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
-import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.core.loader.impl.StAXLoaderRegistryImpl;
 import org.apache.tuscany.model.assembly.Aggregate;
+import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 
@@ -182,7 +183,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         rootContext.registerModelObject(model);
     }
 
-    public void registerModelObjects(List<Extensible> models) throws ConfigurationException {
+    public void registerModelObjects(List<? extends Extensible> models) throws ConfigurationException {
         for (Extensible model : models) {
             registerModelObject(model);
         }
@@ -224,7 +225,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     // ConfigurationContext methods
     // ----------------------------------
 
-    public synchronized void build(AggregateContext parent, Extensible model) throws BuilderConfigException {
+    public synchronized void build(AssemblyModelObject model) throws BuilderConfigException {
         AssemblyVisitor visitor = new AssemblyVisitor(builders);
         visitor.start(model);
     }
@@ -232,12 +233,12 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     public void configure(Extensible model) throws ConfigurationException {
     }
 
-    public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+    public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) throws BuilderConfigException {
         wireBuilder.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
     }
 
-    public void wire(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
+    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
         wireBuilder.completeTargetChain(targetFactory, targetType, targetScopeContext);
     }
 

@@ -16,6 +16,7 @@ package org.apache.tuscany.core.integration;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.mock.MockFactory;
@@ -26,8 +27,6 @@ import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
-import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.Scope;
@@ -45,12 +44,12 @@ public class IntraAggregateWireIntegrationTestCase extends TestCase {
     public void testWireConstruction2() throws Exception {
         RuntimeContext runtime = MockFactory.createCoreRuntime();
         ModuleComponent moduleComponent = createSystemAggregateComponent("test.system");
-        Module module = MockFactory.createSystemModuleWithWiredComponents(Scope.MODULE, Scope.MODULE);
+        Module module = MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE, Scope.MODULE);
         moduleComponent.setModuleImplementation(module);
         runtime.getSystemContext().registerModelObject(moduleComponent);
         AggregateContext context = (AggregateContext) runtime.getSystemContext().getContext("test.system").getImplementationInstance();
         context.fireEvent(EventContext.MODULE_START, null);
-        context.registerModelObject(module);
+        //context.registerModelObject(module);
         Source source = (Source) context.getContext("source").getImplementationInstance();
         Assert.assertNotNull(source);
         Target targetRef = source.getTarget();
@@ -91,7 +90,7 @@ public class IntraAggregateWireIntegrationTestCase extends TestCase {
         AggregateContext context = (AggregateContext) runtime.getSystemContext().getContext("test.system").getImplementationInstance();
 
         context.fireEvent(EventContext.MODULE_START, null);
-        context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents(Scope.MODULE,Scope.MODULE));
+        context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE,Scope.MODULE));
         Source source = (Source) context.getContext("source").getImplementationInstance();
         Assert.assertNotNull(source);
         Target targetRef = source.getTarget();

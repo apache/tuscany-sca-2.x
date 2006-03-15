@@ -121,7 +121,7 @@ public class TuscanyContextListener implements LifecycleListener {
             AggregateContext rootContext = runtime.getRootContext();
             rootContext.registerModelObject(moduleComponent);
             moduleContext = (AggregateContext)rootContext.getContext(moduleComponent.getName());
-            moduleContext.registerModelObject(moduleComponent.getComponentImplementation());
+            //moduleContext.registerModelObject(moduleComponent.getComponentImplementation());
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }

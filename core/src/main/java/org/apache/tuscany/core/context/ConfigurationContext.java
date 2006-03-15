@@ -13,20 +13,22 @@
  */
 package org.apache.tuscany.core.context;
 
-import org.apache.tuscany.core.builder.BuilderConfigException;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.model.assembly.Extensible;
 
 /**
  * Offers configuration services in the runtime. A ConfigurationContext is able to configure a model and then build the
- * runtime representation corresponding to that model in the live system. <p/> Configuration contexts will typically be
- * hierarchical, delegating to their parent <b>after</b> performing an operation. The parent ConfigurationContext will
- * typically be injected into an implementation of this interface during registration.
+ * runtime representation corresponding to that model in the live system.
+ * <p>
+ * Configuration contexts will typically be hierarchical, delegating to their parent <b>after</b> performing an
+ * operation. The parent ConfigurationContext will typically be injected into an implementation of this interface during
+ * registration.
  * 
  * @version $Rev$ $Date$
  */
-public interface ConfigurationContext {
+public interface ConfigurationContext extends ContextFactoryBuilder, WireBuilder {
 
     /**
      * Adds additional configuration information to a model object.
@@ -35,32 +37,5 @@ public interface ConfigurationContext {
      * @throws ConfigurationException
      */
     public void configure(Extensible model) throws ConfigurationException;
-
-    /**
-     * Decorates the supplied model object with a {@link org.apache.tuscany.core.builder.ContextFactory} that can
-     * be used to create the runtime context corresponding to the model.
-     * 
-     * @param parent an AggregrateContext that will ultimately become the parent of the runtime context
-     * @param model the model object that defines the configuration to be built
-     * @throws BuilderConfigException
-     * @see org.apache.tuscany.core.builder.ContextFactory
-     */
-    public void build(AggregateContext parent, Extensible model) throws BuilderConfigException;
-
-    /**
-     * Constructs a wire from a source proxy factory to a corresponding target, potentially performing optimizations
-     * 
-     * @param sourceFactory the proxy factory that will be used to create the injected proxy for a reference
-     * @param targetFactory the proxy factory that contains the invocation chains for the target side of the wire
-     * @param targetType the {@link org.apache.tuscany.core.builder.ContextFactory} implementation type for the
-     *        wire target
-     * @param downScope whether the source is a shorter lived scope than the target. Used in optimization.
-     * @param targetScopeContext the scope context of the target service
-     * @throws BuilderConfigException
-     */
-    public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
-            ScopeContext targetScopeContext) throws BuilderConfigException;
-
-    public void wire(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException;
 
 }

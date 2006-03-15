@@ -32,6 +32,7 @@ import org.apache.tuscany.core.context.ServiceNotFoundException;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.Extensible;
 import org.osoa.sca.ModuleContext;
 import org.osoa.sca.RequestContext;
@@ -50,7 +51,7 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Co
     // ----------------------------------
 
     @Autowire(required = false)
-    private AutowireContext autowireContext;
+    private AutowireContext autowireContext;    
     
     // ----------------------------------
     // Constructors
@@ -173,10 +174,10 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Co
         }
     }
 
-    public void build(AggregateContext parent, Extensible model) throws BuilderConfigException {
+    public void build(AssemblyModelObject model) throws BuilderConfigException {
         if (configurationContext != null) {
             try {
-                configurationContext.build(parent, model);
+                configurationContext.build(model);
             } catch (BuilderConfigException e) {
                 e.addContextName(getName());
                 throw e;
@@ -184,11 +185,11 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Co
         }
     }
 
-    public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+    public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) throws BuilderConfigException {
         if (configurationContext != null) {
             try {
-                configurationContext.wire(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
+                configurationContext.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
             } catch (BuilderConfigException e) {
                 e.addContextName(getName());
                 throw e;
@@ -196,10 +197,10 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Co
         }
     }
 
-    public void wire(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
+    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
         if (configurationContext != null) {
             try {
-                configurationContext.wire(targetFactory, targetType, targetScopeContext);
+                configurationContext.completeTargetChain(targetFactory, targetType, targetScopeContext);
             } catch (BuilderConfigException e) {
                 e.addContextName(getName());
                 throw e;

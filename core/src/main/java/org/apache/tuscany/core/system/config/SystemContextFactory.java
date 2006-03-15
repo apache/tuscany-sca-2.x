@@ -4,9 +4,11 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.common.TuscanyRuntimeException;
 import org.apache.tuscany.core.builder.ContextCreationException;
-import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.builder.ContextResolver;
+import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.injection.EventInvoker;
@@ -14,10 +16,17 @@ import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemComponentContext;
+import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
- * A ContextFactory that handles system component implementation types
+ * A <code>ContextFactory</code> that handles system component implementation types, which may be either simple,
+ * leaf types or an aggregates.
+ * <p>
+ * For aggregate types, this factory delegates to an {@link org.apache.tuscany.core.builder.ObjectFactory} to create an
+ * instance of the aggregate implementation and perform injection of configuration and references. Once an aggregate instance is
+ * created, the factory will register the aggregate's children. This process may be done recursively in a lazy fashion,
+ * descending down an aggregate hierarchy as a child aggregate is instantiated.
  * 
  * @version $Rev$ $Date$
  */
@@ -26,8 +35,11 @@ public class SystemContextFactory implements ContextFactory<InstanceContext>, Co
     // the component name as configured in the hosting module
     private String name;
 
+    // if this factory produces aggregates, the module will be the logical model associated with its children
+    private Module module;
+
     private AggregateContext parentContext;
-    
+
     // the implementation type constructor
     private Constructor ctr;
 
@@ -46,7 +58,7 @@ public class SystemContextFactory implements ContextFactory<InstanceContext>, Co
     // the scope of the implementation instance
     private Scope scope;
 
-    // if the component implementation scope is stateless 
+    // if the component implementation scope is stateless
     private boolean stateless;
 
     // if the component implementation is an aggregate context
@@ -61,33 +73,30 @@ public class SystemContextFactory implements ContextFactory<InstanceContext>, Co
      * 
      * @param name the SCDL name of the component the context refers to
      * @param ctr the implementation type constructor
-     * @param setters a collection of <code>Injectors</code> used to configure properties, references and other meta
-     *        data values on implementation instances
-     * @param eagerInit whether the component should be eagerly initialized
-     * @param init an <code>Invoker</code> pointing to a method on the implementation type decorated with
-     *        <code>@Init</code>
-     * @param destroy an <code>Invoker</code> pointing to a method on the implementation type decorated with
-     *        <code>@Destroy</code>
      * @param scope the scope of the component implementation type
      */
-    public SystemContextFactory(String name, Constructor ctr, List<Injector> setters, boolean eagerInit,
-            EventInvoker init, EventInvoker destroy, Scope scope) {
-        assert (name != null) : "Name was null";
-        assert (ctr != null) : "Constructor was null";
-        assert (setters != null) : "Setters were null";
-        this.name = name;
-        this.ctr = ctr;
-        this.isAggregate = AggregateContext.class.isAssignableFrom(ctr.getDeclaringClass());
-        this.setters = setters;
-        this.eagerInit = eagerInit;
-        this.init = init;
-        this.destroy = destroy;
-        this.scope = scope;
-        stateless = (scope == Scope.INSTANCE);
+    public SystemContextFactory(String name, Constructor ctr, Scope scope) {
+        this(name, null, ctr, scope);
     }
 
-    public SystemContextFactory(String name, Constructor ctr, Scope scope) {
-        this(name, ctr, null, false, null, null, scope);
+    /**
+     * Creates the runtime configuration
+     * 
+     * @param name the SCDL name of the component the context refers to
+     * @param module if this factory produces aggregagtes, the logical model associated with its children; otherwise
+     *        null
+     * @param ctr the implementation type constructor
+     * @param scope the scope of the component implementation type
+     */
+    public SystemContextFactory(String name, Module module, Constructor ctr, Scope scope) {
+        assert (name != null) : "Name was null";
+        assert (ctr != null) : "Constructor was null";
+        this.name = name;
+        this.module = module;
+        this.ctr = ctr;
+        this.isAggregate = AggregateContext.class.isAssignableFrom(ctr.getDeclaringClass());
+        this.scope = scope;
+        stateless = (scope == Scope.INSTANCE);
     }
 
     // ----------------------------------
@@ -104,17 +113,33 @@ public class SystemContextFactory implements ContextFactory<InstanceContext>, Co
 
     public InstanceContext createContext() throws ContextCreationException {
         if (isAggregate) {
-            // aggregate context types are themselves an instance context
-            PojoObjectFactory objectFactory = new PojoObjectFactory(ctr, null, setters);
-            AggregateContext ctx = (AggregateContext) objectFactory.getInstance();
-            ctx.setName(name);
-            return ctx;
+            try {
+                // aggregate context types are themselves an instance context
+                PojoObjectFactory objectFactory = new PojoObjectFactory(ctr, null, setters);
+                AggregateContext ctx = (AggregateContext) objectFactory.getInstance();
+                ctx.setName(name);
+                // the aggregate has been created, now register its children
+                if (module != null) {
+                    try {
+                        ctx.registerModelObject(module);
+                    } catch (ConfigurationException e) {
+                        ContextCreationException cce = new ContextCreationException("Error creating context", e);
+                        cce.setIdentifier(getName());
+                        throw cce;
+                    }
+
+                }
+                return ctx;
+            } catch (TuscanyRuntimeException e) {
+                e.addContextName(name);
+                throw e;
+            }
         } else {
             PojoObjectFactory objectFactory = new PojoObjectFactory(ctr, null, setters);
             return new SystemComponentContext(name, objectFactory, eagerInit, init, destroy, stateless);
         }
     }
-    
+
     public void addTargetProxyFactory(String serviceName, ProxyFactory factory) {
         throw new UnsupportedOperationException();
     }

@@ -22,7 +22,7 @@ import org.apache.tuscany.core.injection.FactoryInitException;
 import org.apache.tuscany.core.injection.ObjectCreationException;
 
 /**
- * Implementation of ObjectFactory that returns an instance by resolving against an AutowireContext.
+ * Returns an instance by resolving against an AutowireContext.
  * 
  * @version $Rev: 385139 $ $Date: 2006-03-11 11:03:11 -0800 (Sat, 11 Mar 2006) $
  */
@@ -30,7 +30,7 @@ public class AutowireObjectFactory<T> implements ObjectFactory<T> {
 
     private ContextResolver resolver;
 
-    private Class interfaze;
+    private Class autowireType;
 
     private boolean required;
 
@@ -38,13 +38,12 @@ public class AutowireObjectFactory<T> implements ObjectFactory<T> {
      * 
      * @throws FactoryInitException
      */
-    public AutowireObjectFactory(Class<T> implementationType, boolean required, ContextResolver resolver)
-            throws FactoryInitException {
-        assert (implementationType != null) : "Target interface was null";
+    public AutowireObjectFactory(Class<T> autowireType, boolean required, ContextResolver resolver) {
+        assert (autowireType != null) : "Target interface was null";
         assert (resolver != null) : "Context resolver was null";
         this.resolver = resolver;
         this.required = required;
-        interfaze = implementationType;
+        this.autowireType = autowireType;
     }
 
     /**
@@ -52,7 +51,7 @@ public class AutowireObjectFactory<T> implements ObjectFactory<T> {
      * 
      * @throws FactoryInitException
      */
-    public AutowireObjectFactory(Class<T> implementationType) throws FactoryInitException {
+    public AutowireObjectFactory(Class<T> implementationType) {
         this(implementationType, true, null);
     }
 
@@ -70,12 +69,12 @@ public class AutowireObjectFactory<T> implements ObjectFactory<T> {
         AutowireContext ctx = (AutowireContext) parent;
         if (ctx == null && required) {
             AutowireResolutionException e = new AutowireResolutionException("Required autowire not found");
-            e.setIdentifier(interfaze.getName());
+            e.setIdentifier(autowireType.getName());
             throw e;
         } else if (ctx == null) {
             return null;
         }
-        return (T) ctx.resolveInstance(interfaze);
+        return (T) ctx.resolveInstance(autowireType);
     }
 
     public void setContextResolver(ContextResolver resolver) {

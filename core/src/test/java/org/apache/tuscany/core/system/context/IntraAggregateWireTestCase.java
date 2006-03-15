@@ -36,7 +36,7 @@ public class IntraAggregateWireTestCase extends TestCase {
     public void testModuleToModuleScope() throws Exception {
         SystemAggregateContext context = createContext();
         context.start();
-        context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents(Scope.MODULE, Scope.MODULE));
+        context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE, Scope.MODULE));
         context.fireEvent(EventContext.MODULE_START, null);
         Source source = (Source) context.getContext("source").getImplementationInstance();
         Assert.assertNotNull(source);
@@ -53,7 +53,7 @@ public class IntraAggregateWireTestCase extends TestCase {
     public void testStatelessToModuleScope() throws Exception {
         SystemAggregateContext context = createContext();
         context.start();
-        context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents(Scope.INSTANCE, Scope.MODULE));
+        context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.INSTANCE, Scope.MODULE));
         context.fireEvent(EventContext.MODULE_START, null);
         Source source = (Source) context.getContext("source").getImplementationInstance();
         Assert.assertNotNull(source);
@@ -70,7 +70,7 @@ public class IntraAggregateWireTestCase extends TestCase {
     public void testModuleToStatelessScope() throws Exception {
         SystemAggregateContext context = createContext();
         context.start();
-        context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents(Scope.MODULE, Scope.INSTANCE));
+        context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE, Scope.INSTANCE));
         context.fireEvent(EventContext.MODULE_START, null);
         Source source = (Source) context.getContext("source").getImplementationInstance();
         Assert.assertNotNull(source);
@@ -89,7 +89,7 @@ public class IntraAggregateWireTestCase extends TestCase {
     public void testMultiplicity() throws Exception {
         SystemAggregateContext context = createContext();
         context.start();
-        context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents(Scope.MODULE, Scope.MODULE));
+        context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE, Scope.MODULE));
         context.fireEvent(EventContext.MODULE_START, null);
         Source source = (Source) context.getContext("source").getImplementationInstance();
         Assert.assertNotNull(source);

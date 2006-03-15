@@ -9,18 +9,26 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
- * Implementations create instances of {@link org.apache.tuscany.core.context.Context} based on a compiled
- * configuration, such as a logical assembly model. For example, implementations of
- * {@link org.apache.tuscany.core.builder.ContextFactoryBuilder} analyze an
- * {@link org.apache.tuscany.model.assembly.AssemblyModelObject} to create implementations of
- * <tt>ContextFactory</tt>.
+ * Implementations serve the dual purpose of creating instances of {@link org.apache.tuscany.core.context.Context} based
+ * on a compiled configuration such as a logical assembly model and holding a
+ * {@link org.apache.tuscany.core.invocation.spi.ProxyFactory} for the instance type associated with the context.
+ * <p>
+ * Context factories are created or "built" in two phases. {@link org.apache.tuscany.core.builder.ContextFactoryBuilder}s
+ * are responsible for analyzing a logical model assembly and producing the appropriate <code>ContextFactory</code>
+ * for the runtime. {@link org.apache.tuscany.core.builder.WireBuilder}s update the proxy configuration associated with
+ * the <code>ProxyFactory</code> attached to the <code>ContextFactory</code>.
+ * <p>
+ * <code>ContextFactory</code> implementations also contain the source and target invocations chains associated with
+ * all instances of a given <code>Context</code> type. For example, two contexts associated with separate sessions for
+ * a component will refer back to the same invocation chains held in the <code>ProxyFactory</code> attached to the
+ * <code>ContextFactory</code>.
  * 
  * @version $Rev: 385747 $ $Date: 2006-03-13 22:12:53 -0800 (Mon, 13 Mar 2006) $
  */
 public interface ContextFactory<T extends Context> {
 
     /**
-     * Creates an instance context based on the current runtime configuration
+     * Creates a <code>Context</code> based on configuration supplied by a logical model assembly
      * 
      * @return a new instance context
      * @throws ContextCreationException if an error occurs creating the context
@@ -28,12 +36,12 @@ public interface ContextFactory<T extends Context> {
     public T createContext() throws ContextCreationException;
 
     /**
-     * Returns the scope identifier associated with the type of contexts produced by the current configuration
+     * Returns the scope identifier associated with the type of contexts produced by the current factory
      */
     public Scope getScope();
 
     /**
-     * Returns the name of the contexts produced by the current configuration
+     * Returns the name of the contexts produced by the current factory
      */
     public String getName();
 

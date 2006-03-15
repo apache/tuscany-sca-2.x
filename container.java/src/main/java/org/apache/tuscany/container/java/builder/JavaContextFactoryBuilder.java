@@ -14,9 +14,9 @@ import org.apache.tuscany.container.java.assembly.JavaImplementation;
 import org.apache.tuscany.container.java.config.JavaContextFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.NoAccessorException;
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.builder.impl.ListMultiplicityObjectFactory;
@@ -58,7 +58,7 @@ import org.osoa.sca.annotations.Init;
 import commonj.sdo.DataObject;
 
 /**
- * Builds runtime configurations for component implementations that map to
+ * Builds context factories for component implementations that map to
  * {@link org.apache.tuscany.container.java.assembly.JavaImplementation}. The logical model is then decorated with the
  * runtime configuration.
  * 
@@ -267,7 +267,6 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder<Aggregat
                 config.setEagerInit(eagerInit);
                 config.setInitInvoker(initInvoker);
                 config.setDestroyInvoker(destroyInvoker);
-                
             } catch (BuilderException e) {
                 e.addContextName(component.getName());
                 throw e;

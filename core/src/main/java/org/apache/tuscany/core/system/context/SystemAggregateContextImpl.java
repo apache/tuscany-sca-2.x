@@ -30,6 +30,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.tuscany.common.TuscanyRuntimeException;
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextFactory;
@@ -70,6 +71,7 @@ import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemObjectContextFactory;
 import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.AggregatePart;
+import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Extensible;
@@ -309,7 +311,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         autowireContext = context;
     }
 
-    public void registerModelObjects(List<Extensible> models) throws ConfigurationException {
+    public void registerModelObjects(List<? extends Extensible> models) throws ConfigurationException {
         assert (models != null) : "Model object collection was null";
         for (Extensible model : models) {
             registerModelObject(model);
@@ -322,7 +324,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         if (configurationContext != null) {
             try {
                 configurationContext.configure(model);
-                configurationContext.build(this, model);
+                configurationContext.build(model);
             } catch (ConfigurationException e) {
                 e.addContextName(getName());
                 throw e;
@@ -338,8 +340,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
             Module newModule = (Module) model;
             module = newModule;
             for (Component component : newModule.getComponents()) {
-                configuration = (ContextFactory<InstanceContext>) component.getComponentImplementation()
-                        .getContextFactory();
+                configuration = (ContextFactory<InstanceContext>) component.getComponentImplementation().getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new ConfigurationException("Runtime configuration not set");
                     e.addContextName(component.getName());
@@ -379,8 +380,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
             if (model instanceof Component) {
                 Component component = (Component) model;
                 module.getComponents().add(component);
-                configuration = (ContextFactory<InstanceContext>) component.getComponentImplementation()
-                        .getContextFactory();
+                configuration = (ContextFactory<InstanceContext>) component.getComponentImplementation().getContextFactory();
             } else if (model instanceof EntryPoint) {
                 EntryPoint ep = (EntryPoint) model;
                 module.getEntryPoints().add(ep);
@@ -417,23 +417,28 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         autowireIndex.put(service, mapping);
     }
 
-    protected void registerConfiguration(ContextFactory<InstanceContext> configuration) throws ConfigurationException {
-        configuration.prepare(this);
+    protected void registerConfiguration(ContextFactory<InstanceContext> factory) throws ConfigurationException {
+        factory.prepare(this);
         if (lifecycleState == RUNNING) {
-            if (scopeIndex.get(configuration.getName()) != null) {
-                throw new DuplicateNameException(configuration.getName());
+            if (scopeIndex.get(factory.getName()) != null) {
+                throw new DuplicateNameException(factory.getName());
             }
-            ScopeContext scope = scopeContexts.get(configuration.getScope());
-            if (scope == null) {
-                ConfigurationException e = new ConfigurationException("Component has an unknown scope");
-                e.addContextName(configuration.getName());
+            try {
+                ScopeContext scope = scopeContexts.get(factory.getScope());
+                if (scope == null) {
+                    ConfigurationException e = new ConfigurationException("Component has an unknown scope");
+                    e.addContextName(factory.getName());
+                    e.addContextName(getName());
+                    throw e;
+                }
+                scope.registerFactory(factory);
+                scopeIndex.put(factory.getName(), scope);
+            } catch (TuscanyRuntimeException e) {
                 e.addContextName(getName());
                 throw e;
             }
-            scope.registerFactory(configuration);
-            scopeIndex.put(configuration.getName(), scope);
         } else {
-            configurations.add(configuration);
+            configurations.add(factory);
         }
 
     }
@@ -618,8 +623,8 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 EntryPoint ep = (EntryPoint) model;
                 if (ep.getBindings() != null) {
                     if (ep.getBindings().get(0) instanceof SystemBinding) {
-                        ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getConfiguredReference()
-                                .getContextFactory()).getScope());
+                        ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getConfiguredReference().getContextFactory())
+                                .getScope());
                         if (scope == null) {
                             ConfigurationException ce = new ConfigurationException("Scope not found for entry point");
                             ce.setIdentifier(ep.getName());
@@ -644,17 +649,17 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         }
     }
 
-    public void build(AggregateContext parent, Extensible model) throws BuilderConfigException {
+    public void build(AssemblyModelObject model) throws BuilderConfigException {
         if (configurationContext != null) {
-            configurationContext.build(parent, model);
+            configurationContext.build(model);
         }
     }
 
-    public void wire(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+    public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) throws BuilderConfigException {
         if (configurationContext != null) {
             try {
-                configurationContext.wire(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
+                configurationContext.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
             } catch (BuilderConfigException e) {
                 e.addContextName(getName());
                 throw e;
@@ -662,10 +667,11 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         }
     }
 
-    public void wire(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
+    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
+            throws BuilderConfigException {
         if (configurationContext != null) {
             try {
-                configurationContext.wire(targetFactory, targetType, targetScopeContext);
+                configurationContext.completeTargetChain(targetFactory, targetType, targetScopeContext);
             } catch (BuilderConfigException e) {
                 e.addContextName(getName());
                 throw e;

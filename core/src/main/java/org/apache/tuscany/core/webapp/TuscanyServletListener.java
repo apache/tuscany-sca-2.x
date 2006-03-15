@@ -152,7 +152,7 @@ public class TuscanyServletListener implements ServletContextListener, HttpSessi
 
         // Get the aggregate context representing the system module component
         systemModuleComponentContext = (AggregateContext) systemContext.getContext(SYSTEM_MODULE_COMPONENT);
-        systemModuleComponentContext.registerModelObject(systemModuleComponent.getComponentImplementation());
+        //systemModuleComponentContext.registerModelObject(systemModuleComponent.getComponentImplementation());
         systemModuleComponentContext.fireEvent(EventContext.MODULE_START, null);
 
         // Load the SCDL configuration of the application module
@@ -161,7 +161,7 @@ public class TuscanyServletListener implements ServletContextListener, HttpSessi
         // Register it under the root application context
         runtimeContext.getRootContext().registerModelObject(moduleComponent);
         moduleContext=(AggregateContext)runtimeContext.getContext(moduleComponent.getName());
-        moduleContext.registerModelObject(moduleComponent.getComponentImplementation());
+        //moduleContext.registerModelObject(moduleComponent.getComponentImplementation());
 
         moduleContext.fireEvent(EventContext.MODULE_START, null);
     }

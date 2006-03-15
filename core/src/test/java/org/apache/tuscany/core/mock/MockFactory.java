@@ -44,6 +44,7 @@ import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
+import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.Scope;
@@ -53,7 +54,7 @@ import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
  * Generates test components, modules, and runtime artifacts
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class MockFactory {
@@ -105,10 +106,10 @@ public class MockFactory {
 
     /**
      * Creates a basic entry point with no configured reference using the system binding
-     *
-     * @param name     the name of the entry point
+     * 
+     * @param name the name of the entry point
      * @param interfaz the inteface exposed by the entry point
-     * @param refName  the name of the entry point reference
+     * @param refName the name of the entry point reference
      */
     public static EntryPoint createEPSystemBinding(String name, Class interfaz, String refName) {
         return createEPSystemBinding(name, interfaz, refName, null);
@@ -116,11 +117,11 @@ public class MockFactory {
 
     /**
      * Creates an entry point wired to the given target (e.g. component, external service) using the system binding
-     *
-     * @param name     the name of the entry point
+     * 
+     * @param name the name of the entry point
      * @param interfaz the inteface exposed by the entry point
-     * @param refName  the name of the entry point reference
-     * @param target   the target the entry point is wired to
+     * @param refName the name of the entry point reference
+     * @param target the target the entry point is wired to
      */
     public static EntryPoint createEPSystemBinding(String name, Class interfaz, String refName, AggregatePart target) {
         JavaServiceContract contract = systemFactory.createJavaServiceContract();
@@ -170,10 +171,10 @@ public class MockFactory {
     /**
      * Creates an entry point that should be wired to the given target (e.g. component, external service) using the
      * system binding. The system assembly process should resolve the target name to an actual target configuration.
-     *
-     * @param name          the name of the entry point
-     * @param interfaz      the inteface exposed by the entry point
-     * @param refName       the name of the entry point reference
+     * 
+     * @param name the name of the entry point
+     * @param interfaz the inteface exposed by the entry point
+     * @param refName the name of the entry point reference
      * @param componentName the name of the target to resolve
      */
     public static EntryPoint createEntryPointWithStringRef(String name, Class interfaz, String refName, String componentName) {
@@ -238,7 +239,8 @@ public class MockFactory {
         module.setName("system.module");
 
         // create test component
-        Component component = systemFactory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
+        Component component = systemFactory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class,
+                ModuleScopeSystemComponentImpl.class, Scope.MODULE);
         module.getComponents().add(component);
 
         // create the entry point
@@ -251,11 +253,11 @@ public class MockFactory {
 
     /**
      * Creates a test system module with source and target components wired together.
-     *
+     * 
      * @see org.apache.tuscany.core.mock.component.Source
      * @see org.apache.tuscany.core.mock.component.Target
      */
-    public static Module createSystemModuleWithWiredComponents(Scope sourceScope, Scope targetScope) {
+    public static Module createSystemModuleWithWiredComponents(String moduleName, Scope sourceScope, Scope targetScope) {
 
         // create the target component
         Component target = systemFactory.createSystemComponent("target", Target.class, TargetImpl.class, targetScope);
@@ -273,28 +275,42 @@ public class MockFactory {
         configuredReferences.put(configuredReference.getName(), configuredReference);
 
         // wire multiplicity using a setter
-        references.add(systemFactory.createReference("setTargets", Target.class,Multiplicity.ONE_N));
+        references.add(systemFactory.createReference("setTargets", Target.class, Multiplicity.ONE_N));
         configuredReference = systemFactory.createConfiguredReference("setTargets", "target");
         configuredReferences.put(configuredReference.getName(), configuredReference);
 
         // wire multiplicity using a field
-        references.add(systemFactory.createReference("targetsThroughField", Target.class,Multiplicity.ONE_N));
+        references.add(systemFactory.createReference("targetsThroughField", Target.class, Multiplicity.ONE_N));
         configuredReference = systemFactory.createConfiguredReference("targetsThroughField", "target");
         configuredReferences.put(configuredReference.getName(), configuredReference);
 
         // wire multiplicity using a setter
-        references.add(systemFactory.createReference("setArrayOfTargets", Target.class,Multiplicity.ONE_N));
+        references.add(systemFactory.createReference("setArrayOfTargets", Target.class, Multiplicity.ONE_N));
         configuredReference = systemFactory.createConfiguredReference("setArrayOfTargets", "target");
         configuredReferences.put(configuredReference.getName(), configuredReference);
 
         source.initialize(assemblyContext);
 
         Module module = systemFactory.createModule();
-        module.setName("system.module");
+        module.setName(moduleName);
         module.getComponents().add(source);
         module.getComponents().add(target);
         module.initialize(assemblyContext);
         return module;
+    }
+
+    /**
+     * Creates a test system module component with source and target components wired together.
+     * 
+     * @see org.apache.tuscany.core.mock.component.Source
+     * @see org.apache.tuscany.core.mock.component.Target
+     */
+    public static ModuleComponent createSystemModuleComponentWithWiredComponents(String moduleComponentName, Scope sourceScope,
+            Scope targetScope) {
+        ModuleComponent mc = systemFactory.createModuleComponent();
+        mc.setName(moduleComponentName);
+        mc.setComponentImplementation(createSystemModuleWithWiredComponents(moduleComponentName+".module", sourceScope, targetScope));
+        return mc;
     }
 
     /**
@@ -305,7 +321,8 @@ public class MockFactory {
         module.setName("system.test.module");
 
         // create test component
-        Component component = systemFactory.createSystemComponent("TestService2", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
+        Component component = systemFactory.createSystemComponent("TestService2", ModuleScopeSystemComponent.class,
+                ModuleScopeSystemComponentImpl.class, Scope.MODULE);
         module.getComponents().add(component);
 
         // create the entry point

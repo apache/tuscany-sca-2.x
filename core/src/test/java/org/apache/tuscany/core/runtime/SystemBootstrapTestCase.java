@@ -11,7 +11,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.system.context;
+package org.apache.tuscany.core.runtime;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ import org.apache.tuscany.model.types.java.JavaServiceContract;
 /**
  * Tests bootstrapping a system module
  * 
- * @version $Rev$ $Date$
+ * @version $Rev: 385834 $ $Date: 2006-03-14 08:57:08 -0800 (Tue, 14 Mar 2006) $
  */
 public class SystemBootstrapTestCase extends TestCase {
     private List<ContextFactoryBuilder> builders;
