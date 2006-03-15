@@ -34,16 +34,16 @@ public class JSContextFactoryBuilderTestCase extends TestCase {
         component.initialize(new AssemblyModelContextImpl(new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(null), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader())));
         jsBuilder.build(component);
         ModuleScopeContext context = new ModuleScopeContext(new EventContextImpl());
-        ContextFactory<InstanceContext> config = (ContextFactory) component.getComponentImplementation()
+        ContextFactory<InstanceContext> contextFactory = (ContextFactory) component.getComponentImplementation()
                 .getContextFactory();
-        context.registerFactory(config);
+        context.registerFactory(contextFactory);
         context.start();
         context.onEvent(EventContext.MODULE_START, null);
-        for (ProxyFactory proxyFactory : (Collection<ProxyFactory>) config.getTargetProxyFactories().values()) {
+        for (ProxyFactory proxyFactory : (Collection<ProxyFactory>) contextFactory.getTargetProxyFactories().values()) {
             jsWireBuilder.completeTargetChain(proxyFactory, JavaScriptContextFactory.class, context);
             proxyFactory.initialize();
         }
-        InstanceContext ctx = config.createContext();
+        InstanceContext ctx = contextFactory.createContext();
         HelloWorldService hello = (HelloWorldService) ctx.getInstance(new QualifiedName("foo/HelloWorldService"));
         Assert.assertNotNull(hello);
         Assert.assertEquals("Hello foo", hello.hello("foo"));

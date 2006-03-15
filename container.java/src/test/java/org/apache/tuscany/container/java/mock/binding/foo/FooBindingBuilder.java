@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
@@ -112,7 +112,7 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
             if (ep.getBindings().size() < 1 || !(ep.getBindings().get(0) instanceof FooBinding)) {
                 return;
             }
-            EntryPointContextFactory config = new FooEntryPointContextFactory(ep.getName(), ep.getConfiguredService()
+            EntryPointContextFactory contextFactory = new FooEntryPointContextFactory(ep.getName(), ep.getConfiguredService()
                     .getService().getName(), messageFactory);
 
             ConfiguredService configuredService = ep.getConfiguredService();
@@ -129,7 +129,7 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
             ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
             proxyFactory.setBusinessInterface(serviceContract.getInterface());
             proxyFactory.setProxyConfiguration(pConfiguration);
-            config.addSourceProxyFactory(service.getName(), proxyFactory);
+            contextFactory.addSourceProxyFactory(service.getName(), proxyFactory);
             configuredService.setProxyFactory(proxyFactory);
             if (policyBuilder != null) {
                 // invoke the reference builder to handle additional policy metadata
@@ -139,7 +139,7 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
             for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
                 iConfig.addTargetInterceptor(new InvokerInterceptor());
             }
-            ep.getConfiguredReference().setContextFactory(config);
+            ep.getConfiguredReference().setContextFactory(contextFactory);
 
         } else if (object instanceof ExternalService) {
             ExternalService es = (ExternalService) object;
@@ -147,7 +147,7 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
                 return;
             }
 
-            FooExternalServiceContextFactory config = new FooExternalServiceContextFactory(es.getName(),
+            FooExternalServiceContextFactory contextFactory = new FooExternalServiceContextFactory(es.getName(),
                     new FooClientFactory());
 
             ConfiguredService configuredService = es.getConfiguredService();
@@ -164,7 +164,7 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
             ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
             proxyFactory.setBusinessInterface(serviceContract.getInterface());
             proxyFactory.setProxyConfiguration(pConfiguration);
-            config.addTargetProxyFactory(service.getName(), proxyFactory);
+            contextFactory.addTargetProxyFactory(service.getName(), proxyFactory);
             configuredService.setProxyFactory(proxyFactory);
             if (policyBuilder != null) {
                 // invoke the reference builder to handle additional policy metadata
@@ -175,7 +175,7 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
                 iConfig.addTargetInterceptor(new InvokerInterceptor());
             }
 
-            es.getConfiguredService().setContextFactory(config);
+            es.getConfiguredService().setContextFactory(contextFactory);
         } else {
             return;
 

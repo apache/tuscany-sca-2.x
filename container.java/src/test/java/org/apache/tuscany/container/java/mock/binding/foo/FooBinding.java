@@ -45,15 +45,15 @@ public class FooBinding implements Binding {
         return false;
     }
 
-    private Object config;
+    private Object contextFactory;
 
-    public void setContextFactory(Object configuration) {
-        config = configuration;
+    public void setContextFactory(Object factory) {
+        contextFactory = factory;
     }
 
     public Object getContextFactory() {
         System.out.println("retting");
-        return config;
+        return contextFactory;
     }
 
 }

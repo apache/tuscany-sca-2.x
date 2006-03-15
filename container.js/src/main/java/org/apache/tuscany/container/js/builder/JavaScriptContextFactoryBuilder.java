@@ -147,12 +147,12 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder<Ag
         
         RhinoScript invoker = new RhinoScript(component.getName(), script, properties, cl);
 
-        JavaScriptContextFactory config = new JavaScriptContextFactory(component.getName(),
+        JavaScriptContextFactory contextFactory = new JavaScriptContextFactory(component.getName(),
 		        scope, services, properties, invoker);
 
-		addTargetInvocationChains(component, config);
-		addComponentReferences(component, config);
-		component.getComponentImplementation().setContextFactory(config);
+		addTargetInvocationChains(component, contextFactory);
+		addComponentReferences(component, contextFactory);
+		component.getComponentImplementation().setContextFactory(contextFactory);
 	}
 
     /**

@@ -66,9 +66,9 @@ public class SystemEntryPointBuilder implements ContextFactoryBuilder<AggregateC
             } else {
                 targetName = targetService.getAggregatePart().getName();
             }
-            SystemEntryPointContextFactory config = new SystemEntryPointContextFactory(entryPoint.getName(),
+            SystemEntryPointContextFactory contextFactory = new SystemEntryPointContextFactory(entryPoint.getName(),
                     targetName);
-            entryPoint.getConfiguredReference().setContextFactory(config);
+            entryPoint.getConfiguredReference().setContextFactory(contextFactory);
         } catch (FactoryInitException e) {
             e.addContextName(entryPoint.getName());
             throw e;

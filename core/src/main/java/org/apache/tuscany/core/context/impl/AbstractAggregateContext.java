@@ -330,19 +330,19 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
             }
             if (lifecycleState == RUNNING) {
                 for (Component component : newModule.getComponents()) {
-                    ContextFactory<InstanceContext> config = (ContextFactory<InstanceContext>) component
+                    ContextFactory<InstanceContext> contextFactory = (ContextFactory<InstanceContext>) component
                             .getComponentImplementation().getContextFactory();
-                    wireSource(config);
-                    buildTarget(config);
-                    config.prepare(this);
+                    wireSource(contextFactory);
+                    buildTarget(contextFactory);
+                    contextFactory.prepare(this);
                     try {
-                        if (config.getSourceProxyFactories() != null) {
-                            for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()) {
+                        if (contextFactory.getSourceProxyFactories() != null) {
+                            for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) contextFactory.getSourceProxyFactories()) {
                                 sourceProxyFactory.initialize();
                             }
                         }
-                        if (config.getTargetProxyFactories() != null) {
-                            for (ProxyFactory targetProxyFactory : (Collection<ProxyFactory>) config.getTargetProxyFactories()
+                        if (contextFactory.getTargetProxyFactories() != null) {
+                            for (ProxyFactory targetProxyFactory : (Collection<ProxyFactory>) contextFactory.getTargetProxyFactories()
                                     .values()) {
                                 targetProxyFactory.initialize();
                             }
@@ -353,19 +353,19 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
 
                 }
                 for (EntryPoint ep : newModule.getEntryPoints()) {
-                    ContextFactory<InstanceContext> config = (ContextFactory<InstanceContext>) ep
+                    ContextFactory<InstanceContext> contextFactory = (ContextFactory<InstanceContext>) ep
                             .getConfiguredReference().getContextFactory();
-                    wireSource(config);
-                    buildTarget(config);
-                    config.prepare(this);
+                    wireSource(contextFactory);
+                    buildTarget(contextFactory);
+                    contextFactory.prepare(this);
                     try {
-                        if (config.getSourceProxyFactories() != null) {
-                            for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()) {
+                        if (contextFactory.getSourceProxyFactories() != null) {
+                            for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) contextFactory.getSourceProxyFactories()) {
                                 sourceProxyFactory.initialize();
                             }
                         }
-                        if (config.getTargetProxyFactories() != null) {
-                            for (ProxyFactory targetProxyFactory : (Collection<ProxyFactory>) config.getTargetProxyFactories()
+                        if (contextFactory.getTargetProxyFactories() != null) {
+                            for (ProxyFactory targetProxyFactory : (Collection<ProxyFactory>) contextFactory.getTargetProxyFactories()
                                     .values()) {
                                 targetProxyFactory.initialize();
                             }
@@ -376,18 +376,18 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
 
                 }
                 for (ExternalService es : newModule.getExternalServices()) {
-                    ContextFactory<InstanceContext> config = (ContextFactory<InstanceContext>) es
+                    ContextFactory<InstanceContext> contextFactory = (ContextFactory<InstanceContext>) es
                             .getConfiguredService().getContextFactory();
-                    buildTarget(config);
-                    config.prepare(this);
+                    buildTarget(contextFactory);
+                    contextFactory.prepare(this);
                     try {
-                        if (config.getSourceProxyFactories() != null) {
-                            for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) config.getSourceProxyFactories()) {
+                        if (contextFactory.getSourceProxyFactories() != null) {
+                            for (ProxyFactory sourceProxyFactory : (Collection<ProxyFactory>) contextFactory.getSourceProxyFactories()) {
                                 sourceProxyFactory.initialize();
                             }
                         }
-                        if (config.getTargetProxyFactories() != null) {
-                            for (ProxyFactory targetProxyFactory : (Collection<ProxyFactory>) config.getTargetProxyFactories()
+                        if (contextFactory.getTargetProxyFactories() != null) {
+                            for (ProxyFactory targetProxyFactory : (Collection<ProxyFactory>) contextFactory.getTargetProxyFactories()
                                     .values()) {
                                 targetProxyFactory.initialize();
                             }

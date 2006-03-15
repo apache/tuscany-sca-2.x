@@ -55,9 +55,9 @@ public class SystemExternalServiceBuilder implements ContextFactoryBuilder<Aggre
         }
         SystemBinding binding = (SystemBinding)externalService.getBindings().get(0);
         if (binding.getTargetName() != null) {
-            SystemExternalServiceContextFactory config = new SystemExternalServiceContextFactory(externalService
+            SystemExternalServiceContextFactory contextFactory = new SystemExternalServiceContextFactory(externalService
                     .getName(), new InterAggregateReferenceFactory(binding.getTargetName()));
-            externalService.getConfiguredService().setContextFactory(config);
+            externalService.getConfiguredService().setContextFactory(contextFactory);
         } else if (externalService.getConfiguredService().getService().getServiceContract().getInterface() != null) {
             // autowire
             Class<?> claz = externalService.getConfiguredService().getService().getServiceContract().getInterface();

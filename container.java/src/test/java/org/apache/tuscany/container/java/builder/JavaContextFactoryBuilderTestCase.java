@@ -69,8 +69,8 @@ public class JavaContextFactoryBuilderTestCase extends TestCase {
         for (Component component : components) {
             compMap.put(component.getName(), component);
             builder.build(component);
-            ContextFactory config = (ContextFactory) component.getComponentImplementation().getContextFactory();
-            Assert.assertNotNull(config);
+            ContextFactory contextFactory = (ContextFactory) component.getComponentImplementation().getContextFactory();
+            Assert.assertNotNull(contextFactory);
         }
         for (Component component : components) {
             ContextFactory source = (ContextFactory) component.getComponentImplementation().getContextFactory();

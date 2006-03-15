@@ -161,7 +161,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder<Aggregat
             Class implClass = null;
             Set<Field> fields;
             Set<Method> methods;
-            JavaContextFactory config = null;
+            JavaContextFactory contextFactory = null;
             try {
                 implClass = javaImpl.getImplementationClass();
                 fields = JavaIntrospectionHelper.getAllFields(implClass);
@@ -169,7 +169,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder<Aggregat
                 String name = component.getName();
                 Constructor ctr = implClass.getConstructor((Class[]) null);
 
-                config = new JavaContextFactory(name, JavaIntrospectionHelper
+                contextFactory = new JavaContextFactory(name, JavaIntrospectionHelper
                         .getDefaultConstructor(implClass), scope);
                 
                 List<Injector> injectors = new ArrayList();
@@ -177,7 +177,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder<Aggregat
                 EventInvoker initInvoker = null;
                 boolean eagerInit = false;
                 EventInvoker destroyInvoker = null;
-                ContextObjectFactory contextFactory = new ContextObjectFactory(config);
+                ContextObjectFactory contextObjectFactory = new ContextObjectFactory(contextFactory);
                 for (Field field : fields) {
                     ComponentName compName = field.getAnnotation(ComponentName.class);
                     if (compName != null) {
@@ -186,7 +186,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder<Aggregat
                     }
                     Context context = field.getAnnotation(Context.class);
                     if (context != null) {
-                        Injector injector = new FieldInjector(field, contextFactory);
+                        Injector injector = new FieldInjector(field, contextObjectFactory);
                         injectors.add(injector);
                     }
                 }
@@ -210,7 +210,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder<Aggregat
                     }
                     Context context = method.getAnnotation(Context.class);
                     if (context != null) {
-                        Injector injector = new MethodInjector(method, contextFactory);
+                        Injector injector = new MethodInjector(method, contextObjectFactory);
                         injectors.add(injector);
                     }
                 }
@@ -222,7 +222,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder<Aggregat
                         injectors.add(injector);
                     }
                 }
-                component.getComponentImplementation().setContextFactory(config);
+                component.getComponentImplementation().setContextFactory(contextFactory);
 
                 // create target-side invocation chains for each service offered by the implementation
                 for (ConfiguredService configuredService : component.getConfiguredServices()) {
@@ -241,7 +241,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder<Aggregat
                             .getClassLoader(), messageFactory);
                     proxyFactory.setBusinessInterface(serviceContract.getInterface());
                     proxyFactory.setProxyConfiguration(pConfiguration);
-                    config.addTargetProxyFactory(service.getName(), proxyFactory);
+                    contextFactory.addTargetProxyFactory(service.getName(), proxyFactory);
                     configuredService.setProxyFactory(proxyFactory);
                     if (policyBuilder != null) {
                         // invoke the reference builder to handle target-side metadata
@@ -258,15 +258,15 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder<Aggregat
                 Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
                 if (configuredReferences != null) {
                     for (ConfiguredReference reference : configuredReferences.values()) {
-                        Injector injector = createReferenceInjector(config, reference, fields, methods);
+                        Injector injector = createReferenceInjector(contextFactory, reference, fields, methods);
                         injectors.add(injector);
                     }
                 }
                 
-                config.setSetters(injectors);
-                config.setEagerInit(eagerInit);
-                config.setInitInvoker(initInvoker);
-                config.setDestroyInvoker(destroyInvoker);
+                contextFactory.setSetters(injectors);
+                contextFactory.setEagerInit(eagerInit);
+                contextFactory.setInitInvoker(initInvoker);
+                contextFactory.setDestroyInvoker(destroyInvoker);
             } catch (BuilderException e) {
                 e.addContextName(component.getName());
                 throw e;

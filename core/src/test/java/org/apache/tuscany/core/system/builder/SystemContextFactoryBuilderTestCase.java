@@ -101,10 +101,10 @@ public class SystemContextFactoryBuilderTestCase extends TestCase {
         component.getConfiguredProperties().add(cProp);
 
         builder.build(component);
-        ContextFactory config = (ContextFactory) component.getComponentImplementation().getContextFactory();
-        Assert.assertNotNull(config);
-        config.prepare(createContext());
-        InstanceContext ctx = (InstanceContext) config.createContext();
+        ContextFactory contextFactory = (ContextFactory) component.getComponentImplementation().getContextFactory();
+        Assert.assertNotNull(contextFactory);
+        contextFactory.prepare(createContext());
+        InstanceContext ctx = (InstanceContext) contextFactory.createContext();
 
         ctx.start();
         SystemComponentImpl instance = (SystemComponentImpl) ctx.getInstance(null);
