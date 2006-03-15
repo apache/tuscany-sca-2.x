@@ -275,6 +275,7 @@ public class WebServiceEntryPointServlet extends HttpServlet {
 
                 AxisService axisService = new AxisService(epName);
                 axisService.setParent(serviceGroup);
+                axisService.setWSDLDefinition(definition);
                 axisService.setServiceDescription("Tuscany configured service EntryPoint name '" + epName + '\'');
                 axisService.addMessageReceiver(WebServiceEntryPointInOutSyncMessageReceiver.MEP_URL, msgrec);
 
