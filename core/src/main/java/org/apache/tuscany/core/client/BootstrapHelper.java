@@ -112,9 +112,7 @@ public final class BootstrapHelper {
         AggregateContext loaderContext = (AggregateContext) systemContext.getContext(SYSTEM_LOADER_COMPONENT);
         if (loaderContext == null) {
             ModuleComponent loaderComponent = StAXUtil.bootstrapLoader(SYSTEM_LOADER_COMPONENT, modelContext);
-            systemContext.registerModelObject(loaderComponent);
-            loaderContext = (AggregateContext) systemContext.getContext(SYSTEM_LOADER_COMPONENT);
-            loaderContext.registerModelObject(loaderComponent.getComponentImplementation());
+            loaderContext = registerModule(systemContext, loaderComponent);
             loaderContext.fireEvent(EventContext.MODULE_START, null);
         }
         return loaderContext;
@@ -125,8 +123,6 @@ public final class BootstrapHelper {
         parent.registerModelObject(component);
 
         // Get the aggregate context representing the component
-        AggregateContext context = (AggregateContext) parent.getContext(component.getName());
-        //context.registerModelObject(component.getComponentImplementation());
-        return context;
+        return (AggregateContext) parent.getContext(component.getName());
     }
 }
