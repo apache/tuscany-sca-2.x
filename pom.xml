@@ -49,6 +49,8 @@
                     <includes>
                         <include>**/*TestCase.java</include>
                     </includes>
+                    <reportFormat>brief</reportFormat>
+                    <useFile>false</useFile>
                 </configuration>
             </plugin>
         </plugins>
