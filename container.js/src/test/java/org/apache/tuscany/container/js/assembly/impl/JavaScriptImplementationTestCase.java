@@ -27,6 +27,7 @@ public class JavaScriptImplementationTestCase extends TestCase {
 
     private JavaScriptImplementationImpl impl = (JavaScriptImplementationImpl) new JavaScriptAssemblyFactoryImpl()
             .createJavaScriptImplementation();
+    private ClassLoader origLoader;
 
     public void testDummy(){} // remove when tests added back
     
@@ -65,11 +66,12 @@ public class JavaScriptImplementationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        origLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(JavaScriptImplementationTestCase.class.getClassLoader());
     }
 
     protected void tearDown() throws Exception {
-        Thread.currentThread().setContextClassLoader(null);
+        Thread.currentThread().setContextClassLoader(origLoader);
         super.tearDown();
     }
 }

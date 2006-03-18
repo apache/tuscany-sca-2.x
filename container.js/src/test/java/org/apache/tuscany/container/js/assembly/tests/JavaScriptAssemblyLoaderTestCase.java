@@ -28,6 +28,7 @@ import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 public class JavaScriptAssemblyLoaderTestCase extends TestCase {
 
     private AssemblyModelContext modelContext;
+    private ClassLoader origLoader;
 
     /**
      *
@@ -68,9 +69,15 @@ public class JavaScriptAssemblyLoaderTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-
+        origLoader = Thread.currentThread().getContextClassLoader();
+        
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         modelContext = new AssemblyModelContextImpl(null,null);
+    }
+    
+    protected void tearDown() throws Exception {
+        Thread.currentThread().setContextClassLoader(origLoader);
+        super.tearDown();
     }
 
 }

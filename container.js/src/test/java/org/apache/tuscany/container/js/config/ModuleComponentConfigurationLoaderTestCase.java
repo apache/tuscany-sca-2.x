@@ -45,6 +45,7 @@ import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
  */
 public class ModuleComponentConfigurationLoaderTestCase extends TestCase {
     private ModuleComponentConfigurationLoader loader;
+    private ClassLoader origLoader;
 
     public void testFoo() throws ConfigurationException {
         URL xml = ModuleComponentConfigurationLoaderTestCase.class.getResource("ModuleComponentLoaderTest1.module");
@@ -66,6 +67,7 @@ public class ModuleComponentConfigurationLoaderTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        origLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
         List<SCDLModelLoader> scdlLoaders=new ArrayList<SCDLModelLoader>();
         JavaScriptSCDLModelLoader jsLoader=new JavaScriptSCDLModelLoader();
@@ -74,5 +76,9 @@ public class ModuleComponentConfigurationLoaderTestCase extends TestCase {
         AssemblyModelContext modelContext=new AssemblyModelContextImpl(
                 new AssemblyFactoryImpl(), modelLoader,new ResourceLoaderImpl(this.getClass().getClassLoader()));
           loader = new ModuleComponentConfigurationLoaderImpl(modelContext);
+    }
+    
+    protected void tearDown() throws Exception {
+        Thread.currentThread().setContextClassLoader(origLoader);
     }
 }
