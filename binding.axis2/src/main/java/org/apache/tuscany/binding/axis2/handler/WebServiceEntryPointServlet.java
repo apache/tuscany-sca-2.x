@@ -21,20 +21,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.wsdl.Definition;
 import javax.wsdl.Operation;
 import javax.wsdl.Port;
@@ -42,22 +36,13 @@ import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
 import org.apache.axis2.AxisFault;
-import org.apache.axis2.Constants;
-import org.apache.axis2.context.ConfigurationContext;
-import org.apache.axis2.context.ConfigurationContextFactory;
-import org.apache.axis2.context.MessageContext;
-import org.apache.axis2.context.SessionContext;
 import org.apache.axis2.deployment.DeploymentConstants;
 import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.AxisServiceGroup;
 import org.apache.axis2.description.InOutAxisOperation;
 import org.apache.axis2.engine.AxisConfiguration;
-import org.apache.axis2.engine.AxisEngine;
-import org.apache.axis2.transport.http.HTTPConstants;
-import org.apache.axis2.transport.http.HTTPTransportUtils;
-import org.apache.axis2.transport.http.ListingAgent;
-import org.apache.axis2.transport.http.ServletBasedOutTransportInfo;
+import org.apache.axis2.transport.http.AxisServlet;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
@@ -71,143 +56,19 @@ import org.apache.tuscany.model.assembly.Module;
 /**
  * @version $Rev: 383148 $ $Date: 2006-03-04 08:07:17 -0800 (Sat, 04 Mar 2006) $
  */
-public class WebServiceEntryPointServlet extends HttpServlet {
+public class WebServiceEntryPointServlet extends AxisServlet {
 
     private static final long serialVersionUID = -2085869393709833372L;
-
-    private static final String CONFIGURATION_CONTEXT = "CONFIGURATION_CONTEXT";
-
-    public static final String SESSION_ID = "SessionId";
-
-    private ConfigurationContext configContext;
-
-    private AxisConfiguration axisConfiguration;
-
-    private ListingAgent lister;
-    
     private  boolean tuscanyGetDefaultAxis2xmlChecked= false;
 
-    private MessageContext createAndSetInitialParamsToMsgCtxt(SessionContext sessionContext, MessageContext msgContext, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) throws AxisFault {
-        msgContext = new MessageContext();
-        msgContext.setConfigurationContext(configContext);
-        msgContext.setSessionContext(sessionContext);
-        msgContext.setTransportIn(axisConfiguration.getTransportIn(new QName(Constants.TRANSPORT_HTTP)));
-        msgContext.setTransportOut(axisConfiguration.getTransportOut(new QName(Constants.TRANSPORT_HTTP)));
 
-        msgContext.setProperty(Constants.OUT_TRANSPORT_INFO, new ServletBasedOutTransportInfo(httpServletResponse));
-        msgContext.setProperty(MessageContext.TRANSPORT_HEADERS, getTransportHeaders(httpServletRequest));
-        msgContext.setProperty(SESSION_ID, httpServletRequest.getSession().getId());
+  // private static final String CONFIGURATION_CONTEXT = "CONFIGURATION_CONTEXT";
 
-        return msgContext;
-    }
+  //  public static final String SESSION_ID = "SessionId";
 
-    public void destroy() {
-        super.destroy();
-    }
+   // private ConfigurationContext configContext;
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        MessageContext msgContext = null;
-        OutputStream out = null;
-
-        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-        ClassLoader mycl = getClass().getClassLoader();
-        try {
-            if (tccl != mycl) {
-                Thread.currentThread().setContextClassLoader(mycl);
-            }
-
-            SessionContext sessionContext = getSessionContext(request);
-            Map<String, String> map = request.getParameterMap();
-
-            msgContext = createAndSetInitialParamsToMsgCtxt(sessionContext, msgContext, response, request);
-            msgContext.setDoingREST(true);
-            msgContext.setServerSide(true);
-            out = response.getOutputStream();
-
-            boolean processed = HTTPTransportUtils.processHTTPGetRequest(
-                    msgContext,
-                    request.getInputStream(),
-                    out,
-                    request.getContentType(),
-                    request.getHeader(HTTPConstants.HEADER_SOAP_ACTION),
-                    request.getRequestURL().toString(),
-                    configContext,
-                    map);
-
-            if (!processed) {
-                try {
-                    lister.handle(request, response, out);
-                } catch (Exception e) {
-                    throw new ServletException(e.getMessage(), e);
-                }
-            }
-        } catch (AxisFault e) {
-            if (msgContext != null) {
-                handleFault(msgContext, out, e);
-            } else {
-                throw new ServletException(e);
-            }
-        } finally {
-            if (tccl != mycl) {
-                Thread.currentThread().setContextClassLoader(tccl);
-            }
-        }
-    }
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        MessageContext msgContext = null;
-        OutputStream out = null;
-
-        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-        ClassLoader mycl = getClass().getClassLoader();
-        try {
-            if (tccl != mycl) {
-                Thread.currentThread().setContextClassLoader(mycl);
-            }
-            SessionContext sessionContext = getSessionContext(request);
-
-            msgContext = createAndSetInitialParamsToMsgCtxt(sessionContext, msgContext, response, request);
-
-            // adding ServletContext into msgContext;
-            msgContext.setProperty(Constants.SERVLET_CONTEXT, sessionContext);
-            out = response.getOutputStream();
-            HTTPTransportUtils.processHTTPPostRequest(
-                    msgContext,
-                    request.getInputStream(),
-                    out,
-                    request.getContentType(),
-                    request.getHeader(HTTPConstants.HEADER_SOAP_ACTION),
-                    request.getRequestURL().toString());
-
-            Object contextWritten = msgContext.getOperationContext().getProperty(Constants.RESPONSE_WRITTEN);
-
-            response.setContentType("text/xml; charset=" + msgContext.getProperty(MessageContext.CHARACTER_SET_ENCODING));
-
-            if ((contextWritten == null) || !Constants.VALUE_TRUE.equals(contextWritten)) {
-                response.setStatus(HttpServletResponse.SC_ACCEPTED);
-            }
-        } catch (AxisFault e) {
-            if (msgContext != null) {
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                handleFault(msgContext, out, e);
-            } else {
-                throw new ServletException(e);
-            }
-        } finally {
-            if (tccl != mycl) {
-                Thread.currentThread().setContextClassLoader(tccl);
-            }
-        }
-    }
-
-    private void handleFault(MessageContext msgContext, OutputStream out, AxisFault e) throws AxisFault {
-        msgContext.setProperty(MessageContext.TRANSPORT_OUT, out);
-
-        AxisEngine engine = new AxisEngine(configContext);
-        MessageContext faultContext = engine.createFaultMessageContext(msgContext, e);
-
-        engine.sendFault(faultContext);
-    }
+    // private AxisConfiguration axisConfiguration;
 
     public void init(ServletConfig config) throws ServletException {
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
@@ -217,11 +78,9 @@ public class WebServiceEntryPointServlet extends HttpServlet {
                 Thread.currentThread().setContextClassLoader(mycl);
             }
             tuscanyGetDefaultAxis2xml(config);
+            super.init(config);
             configContext = initConfigContext(config);
             initTuscany(configContext.getAxisConfiguration(), config);
-            lister = new ListingAgent(configContext);
-            axisConfiguration = configContext.getAxisConfiguration();
-            config.getServletContext().setAttribute(CONFIGURATION_CONTEXT, configContext);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServletException(e);
@@ -231,7 +90,6 @@ public class WebServiceEntryPointServlet extends HttpServlet {
             }
         }
     }
-
     private void initTuscany(final AxisConfiguration axisConfig, ServletConfig config) throws AxisFault, ServletException {
 
         // Get the current SCA module context
@@ -297,7 +155,8 @@ public class WebServiceEntryPointServlet extends HttpServlet {
             }
         }
     }
-    
+
+
     protected synchronized void tuscanyGetDefaultAxis2xml( ServletConfig config) throws ServletException {
 
         if (tuscanyGetDefaultAxis2xmlChecked)
@@ -335,47 +194,46 @@ public class WebServiceEntryPointServlet extends HttpServlet {
         }
 
     }
-
-    /**
-     * Initialize the Axis configuration context
-     * 
-     * @param config
-     *            Servlet configuration
-     * @throws AxisFault
-     *             if there was a problem configuring the Axis engine
-     */
-    protected ConfigurationContext initConfigContext(ServletConfig config) throws AxisFault {
-        ServletContext context = config.getServletContext();
-        String repoDir = context.getRealPath("/WEB-INF");
-        ConfigurationContextFactory erfac = new ConfigurationContextFactory();
-        ConfigurationContext configContext = erfac.createConfigurationContextFromFileSystem(repoDir);
-        configContext.setProperty(Constants.CONTAINER_MANAGED, Constants.VALUE_TRUE);
-        configContext.setRootDir(new File(context.getRealPath("/WEB-INF")));
-        return configContext;
-    }
-
-    private static SessionContext getSessionContext(HttpServletRequest httpServletRequest) {
-        HttpSession httpSession = httpServletRequest.getSession(true);
-        SessionContext sessionContext = (SessionContext) httpSession.getAttribute(Constants.SESSION_CONTEXT_PROPERTY);
-
-        if (sessionContext == null) {
-            sessionContext = new SessionContext(null);
-            httpSession.setAttribute(Constants.SESSION_CONTEXT_PROPERTY, sessionContext);
+    @Override
+    protected void doGet(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        ClassLoader mycl = getClass().getClassLoader();
+        try {
+            if (tccl != mycl) {
+                Thread.currentThread().setContextClassLoader(mycl);
+            }
+            super.doGet(arg0, arg1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServletException(e);
+        } finally {
+            if (tccl != mycl) {
+                Thread.currentThread().setContextClassLoader(tccl);
+            }
         }
 
-        return sessionContext;
+    
     }
-
-    private static Map getTransportHeaders(HttpServletRequest req) {
-        HashMap<String, String> headerMap = new HashMap<String, String>();
-        Enumeration<String> headerNames = req.getHeaderNames();
-
-        while (headerNames.hasMoreElements()) {
-            String key = headerNames.nextElement();
-            String value = req.getHeader(key);
-            headerMap.put(key, value);
+    @Override
+    protected void doPost(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
+        
+        
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        ClassLoader mycl = getClass().getClassLoader();
+        try {
+            if (tccl != mycl) {
+                Thread.currentThread().setContextClassLoader(mycl);
+            }
+            super.doPost(arg0, arg1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServletException(e);
+        } finally {
+            if (tccl != mycl) {
+                Thread.currentThread().setContextClassLoader(tccl);
+            }
         }
 
-        return headerMap;
     }
+    
 }

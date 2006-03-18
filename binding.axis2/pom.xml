@@ -54,15 +54,42 @@
         <dependency>
             <groupId>axis2</groupId>
             <artifactId>axis2-core</artifactId>
-            <version>0.94</version>
+            <version>0.95-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>axis2</groupId>
+            <artifactId>axis2-common</artifactId>
+            <version>0.95-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>axis2</groupId>
+            <artifactId>axis2-wsdl</artifactId>
+            <version>0.95-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>ws-commons</groupId>
-            <artifactId>ws-policy</artifactId>
-            <version>SNAPSHOT</version>
+            <artifactId>policy</artifactId>
+            <version>0.92-SNAPSHOT</version>
             <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>ws-commons</groupId>
+            <artifactId>XmlSchema</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>ws-commons</groupId>
+            <artifactId>axiom</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>

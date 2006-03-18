@@ -167,6 +167,24 @@ public class AbstractTomcatTest extends TestCase {
         public void setStream(ServletInputStream stream) {
             inputStream = stream;
         }
+
+        @Override
+        public String getRemoteHost() {
+           
+            return "locahost";
+        }
+
+        @Override
+        public int getRemotePort() {
+           
+            return 1080;
+        }
+
+        @Override
+        public String getRemoteAddr() {
+          
+            return "127.0.0.1";
+        }
     }
 
     public static class MockResponse extends Response {

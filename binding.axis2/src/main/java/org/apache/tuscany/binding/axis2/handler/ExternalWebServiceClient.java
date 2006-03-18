@@ -14,32 +14,21 @@
 package org.apache.tuscany.binding.axis2.handler;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.net.URL;
 
 import javax.xml.namespace.QName;
-import javax.xml.parsers.FactoryConfigurationError;
 
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
-import org.apache.axis2.context.ConfigurationContext;
-import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.axis2.context.MessageContextConstants;
-import org.apache.axis2.deployment.AxisConfigBuilder;
-import org.apache.axis2.deployment.DeploymentEngine;
-import org.apache.axis2.engine.AxisConfiguration;
-import org.apache.axis2.engine.AxisConfigurator;
-import org.apache.axis2.om.OMElement;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis2.util.AxiomHelper;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
-import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.model.assembly.ExternalService;
+import org.apache.ws.commons.om.OMElement;
 import org.osoa.sca.ServiceRuntimeException;
 
 import commonj.sdo.helper.TypeHelper;
@@ -134,7 +123,7 @@ public class ExternalWebServiceClient {
 
         String soapAction = operationMetaData.getSOAPAction();
         if (soapAction != null) {
-            options.setSoapAction(soapAction);
+            options.setAction(soapAction);
         }
 
         // If use is encoded assume its an old style service and wont understand chunking

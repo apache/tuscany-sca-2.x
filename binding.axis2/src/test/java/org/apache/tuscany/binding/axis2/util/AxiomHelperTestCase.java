@@ -6,13 +6,10 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.apache.axis2.om.OMElement;
-import org.apache.tuscany.sdo.helper.TypeHelperImpl;
 import org.apache.tuscany.sdo.helper.XSDHelperImpl;
 import org.apache.tuscany.sdo.util.DataObjectUtil;
 import org.apache.tuscany.sdo.util.SDOUtil;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.util.BasicExtendedMetaData;
+import org.apache.ws.commons.om.OMElement;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.TypeHelper;
