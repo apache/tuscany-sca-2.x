@@ -18,9 +18,19 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.client.Options;
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.description.AxisService;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis2.config.ExternalWebServiceContextFactory;
 import org.apache.tuscany.binding.axis2.handler.ExternalWebServiceClient;
+import org.apache.tuscany.binding.axis2.handler.WebServicePortMetaData;
+import org.apache.tuscany.binding.axis2.util.AxisServiceHelper;
+import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
+import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
@@ -115,10 +125,8 @@ public class ExternalWebServiceBuilder implements ContextFactoryBuilder {
             return;
         }
 
-        WebServiceBinding wsBinding=(WebServiceBinding)externalService.getBindings().get(0);
+        ExternalWebServiceClient externalWebServiceClient = createExternalWebServiceClient(externalService);
 
-        TypeHelper typeHelper=externalService.getAggregate().getAssemblyModelContext().getTypeHelper();
-        ExternalWebServiceClient externalWebServiceClient=new ExternalWebServiceClient(externalService, wsBinding, typeHelper);
         ExternalWebServiceContextFactory config = new ExternalWebServiceContextFactory(externalService.getName(), new SingletonObjectFactory<ExternalWebServiceClient>(externalWebServiceClient));
 
         ConfiguredService configuredService = externalService.getConfiguredService();
@@ -147,6 +155,38 @@ public class ExternalWebServiceBuilder implements ContextFactoryBuilder {
         }
 
         externalService.getConfiguredService().setContextFactory(config);
+    }
+
+    /**
+     * Create an ExternalWebServiceClient for the WebServiceBinding
+     */
+    protected ExternalWebServiceClient createExternalWebServiceClient(ExternalService externalService) {
+        // TODO: Review should there be a single global Axis ConfigurationContext
+        TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator(null, null);
+        ConfigurationContext configurationContext = tuscanyAxisConfigurator.getConfigurationContext();
+
+        WebServiceBinding wsBinding = (WebServiceBinding) externalService.getBindings().get(0);
+
+        WebServicePortMetaData wsPortMetaData = new WebServicePortMetaData(wsBinding.getWSDLDefinition(), wsBinding.getWSDLPort(),
+                wsBinding.getURI(), false);
+        QName serviceQName = wsPortMetaData.getServiceName();
+        String portName = wsPortMetaData.getPortName().getLocalPart();
+
+        AxisService axisService;
+        try {
+            axisService = AxisServiceHelper.createClientSideAxisService(wsBinding.getWSDLDefinition(), serviceQName, portName, new Options());
+        } catch (AxisFault e) {
+            BuilderConfigException bce = new BuilderConfigException("AxisFault creating external service", e);
+            bce.addContextName(externalService.getName());
+            throw bce;
+        }
+
+        TypeHelper typeHelper = externalService.getAggregate().getAssemblyModelContext().getTypeHelper();
+
+        ExternalWebServiceClient externalWebServiceClient = new ExternalWebServiceClient(configurationContext, axisService, wsPortMetaData,
+                typeHelper);
+
+        return externalWebServiceClient;
     }
 
 }

@@ -13,9 +13,6 @@
  */
 package org.apache.tuscany.binding.axis2.handler;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
-
 import javax.xml.namespace.QName;
 
 import org.apache.axis2.AxisFault;
@@ -23,11 +20,10 @@ import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
+import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContextConstants;
-import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
+import org.apache.axis2.description.AxisService;
 import org.apache.tuscany.binding.axis2.util.AxiomHelper;
-import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
-import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.ws.commons.om.OMElement;
 import org.osoa.sca.ServiceRuntimeException;
 
@@ -38,55 +34,46 @@ import commonj.sdo.helper.TypeHelper;
  */
 public class ExternalWebServiceClient {
 
-    private ExternalService externalService;
+    private ConfigurationContext configurationContext;
+
+    private AxisService axisService;
 
     private TypeHelper typeHelper;
 
     private WebServicePortMetaData wsPortMetaData;
 
-    /**
-     * Constructs a new ExternalWebServiceClient.
-     * 
-     * @param externalService
-     * @param wsBinding
-     */
-    public ExternalWebServiceClient(ExternalService externalService, WebServiceBinding wsBinding, TypeHelper typeHelper) {
-        this.externalService = externalService;
+    public ExternalWebServiceClient(ConfigurationContext configurationContext, AxisService axisService, WebServicePortMetaData wsPortMetaData,
+            TypeHelper typeHelper) {
+        this.configurationContext = configurationContext;
+        this.axisService = axisService;
+        this.wsPortMetaData = wsPortMetaData;
         this.typeHelper = typeHelper;
-        this.wsPortMetaData = new WebServicePortMetaData(wsBinding.getWSDLDefinition(), wsBinding.getWSDLPort(), wsBinding.getURI(), false);
     }
 
     /**
      * Invoke an operation on the external Web service.
      * 
-     * @param method
+     * @param operationName
+     *            the name of the WS operation to invoke
      * @param args
-     * @return
+     *            the Java object arguments to the WS operation
+     * @return the response from the WS as a Java object
      */
-    public Object invoke(Method method, Object[] args) {
+    public Object invoke(String operationName, Object[] args) {
 
-        ServiceClient serviceClient;
-        ClassLoader ccl = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(ExternalWebServiceClient.class.getClassLoader());
+        String serviceNamespace = wsPortMetaData.getServiceName().getNamespaceURI();
+        QName operationQName = new QName(serviceNamespace, operationName);
 
-            serviceClient = createServiceClient(method);
-
-        } finally {
-            Thread.currentThread().setContextClassLoader(ccl);
-        }
-
-        String typeName = method.getName();
-        String typeNS = wsPortMetaData.getPortType().getQName().getNamespaceURI();
-
-        OMElement requestOM = AxiomHelper.toOMElement(typeHelper, args, new QName(typeNS, typeName));
+        OMElement requestOM = AxiomHelper.toOMElement(typeHelper, args, operationQName);
 
         OMElement responseOM;
-        ccl = Thread.currentThread().getContextClassLoader();
+        ClassLoader ccl = Thread.currentThread().getContextClassLoader();
         try {
-            Thread.currentThread().setContextClassLoader(ExternalWebServiceClient.class.getClassLoader());
+            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
-            responseOM = serviceClient.sendReceive(requestOM);
+            ServiceClient serviceClient = new ServiceClient(configurationContext, axisService);
+            setServiceOptions(serviceClient, operationName);
+            responseOM = serviceClient.sendReceive(operationQName, requestOM);
 
         } catch (AxisFault e) {
             throw new ServiceRuntimeException(e);
@@ -105,18 +92,15 @@ public class ExternalWebServiceClient {
         return response;
     }
 
-    private ServiceClient createServiceClient(Method method) throws ServiceRuntimeException {
-
-        /*
-         * TODO: Simlistic impl for now, needs to be redone. Should cache our ConfigurationContext and pass in on ServiceClient constructor, should
-         * probably use WSDL configured Axis2 OperationClient
-         */
-
+    /**
+     * Set all the Axis2 options needed for the invocation TODO: review whats needed here once createClientSideAxisService is added to the Axis2 build
+     */
+    private void setServiceOptions(ServiceClient serviceClient, String operationName) {
         Options options = new Options();
 
-        options.setProperty(Constants.Configuration.DISABLE_ADDRESSING_FOR_OUT_MESSAGES, Boolean.TRUE);
+        WebServiceOperationMetaData operationMetaData = wsPortMetaData.getOperationMetaData(operationName);
 
-        WebServiceOperationMetaData operationMetaData = wsPortMetaData.getOperationMetaData(method.getName());
+        options.setProperty(Constants.Configuration.DISABLE_ADDRESSING_FOR_OUT_MESSAGES, Boolean.TRUE);
 
         EndpointReference targetEPR = new EndpointReference(wsPortMetaData.getEndpoint());
         options.setTo(targetEPR);
@@ -131,22 +115,7 @@ public class ExternalWebServiceClient {
             options.setProperty(MessageContextConstants.CHUNKED, Boolean.FALSE);
         }
 
-        try {
-            ServiceClient serviceClient;
-            // serviceClient = new ServiceClient();
-            TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator(null, null);
-
-            serviceClient = new ServiceClient(tuscanyAxisConfigurator.getConfigurationContext(), null);
-            serviceClient.setOptions(options);
-
-            return serviceClient;
-
-        } catch (org.apache.axis2.AxisFault e) {
-            throw new ServiceRuntimeException(e);
-        } catch (IOException e) {
-            throw new ServiceRuntimeException(e);
-        }
-
+        serviceClient.setOptions(options);
     }
 
 }
