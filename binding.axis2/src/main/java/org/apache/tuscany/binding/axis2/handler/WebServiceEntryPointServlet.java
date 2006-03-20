@@ -118,7 +118,6 @@ public class WebServiceEntryPointServlet extends AxisServlet {
                         false);
 
                 WebServiceEntryPointInOutSyncMessageReceiver msgrec = new WebServiceEntryPointInOutSyncMessageReceiver(
-                        moduleContext,
                         entryPoint,
                         (EntryPointContext) entryPointContext,
                         wsdlPortInfo);

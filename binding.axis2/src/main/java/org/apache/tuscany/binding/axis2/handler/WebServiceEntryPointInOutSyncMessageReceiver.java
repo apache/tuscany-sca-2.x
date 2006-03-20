@@ -2,7 +2,9 @@ package org.apache.tuscany.binding.axis2.handler;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import javax.wsdl.Part;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.xml.namespace.QName;
 
 import commonj.sdo.helper.TypeHelper;
@@ -18,44 +20,56 @@ import org.apache.ws.commons.soap.SOAPFactory;
 import org.apache.wsdl.WSDLConstants;
 
 import org.apache.tuscany.binding.axis2.util.AxiomHelper;
-import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.model.assembly.EntryPoint;
 
 public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {
     public static final String MEP_URL = WSDLConstants.MEP_URI_IN_OUT;
 
-    protected final AggregateContext moduleContext;
-
-    protected final EntryPoint entryPoint;
-    protected final EntryPointContext entryPointContext;
-
-    private final WebServicePortMetaData wsdlPortInfo;
+    private final EntryPointContext entryPointContext;
     private final TypeHelper typeHelper;
     private final ClassLoader classLoader;
-    private final Class<?> serviceInterface;
+    private final Map<String, QName> responseTypeMap;
+    private final Map<String, Method> methodMap;
 
     /**
      * Constructor WebServiceEntryPointInOutSyncMessageReceiver
      *
      * @param entryPoint
-     * @param moduleContext
      * @param context
      * @param wsdlPortInfo
      */
-    public WebServiceEntryPointInOutSyncMessageReceiver(AggregateContext moduleContext, EntryPoint entryPoint, EntryPointContext context, WebServicePortMetaData wsdlPortInfo) {
-        this.moduleContext = moduleContext;
-        this.entryPoint = entryPoint;
+    public WebServiceEntryPointInOutSyncMessageReceiver(EntryPoint entryPoint, EntryPointContext context, WebServicePortMetaData wsdlPortInfo) {
         this.entryPointContext = context;
-        this.wsdlPortInfo = wsdlPortInfo;
+
+        Class<?> serviceInterface = entryPoint.getConfiguredService().getService().getServiceContract().getInterface();
+        Method[] methods = serviceInterface.getMethods();
+        Map<String, Method> map = new HashMap<String, Method>(methods.length);
+        for (int i = 0; i < methods.length; i++) {
+            Method method = methods[i];
+            map.put(method.getName(), method);
+        }
+
+        // initialize maps
+        List<WebServiceOperationMetaData> operations = wsdlPortInfo.getAllOperationMetaData();
+        responseTypeMap = new HashMap<String, QName>(operations.size());
+        methodMap = new HashMap<String, Method>(operations.size());
+        for (WebServiceOperationMetaData operation : operations) {
+            String opName = operation.getBindingOperation().getOperation().getName();
+            QName qname = operation.getOutputPart(0).getElementName();
+            responseTypeMap.put(opName, qname);
+
+            Method method = map.get(opName);
+            methodMap.put(opName,method);
+        }
+
         typeHelper = entryPoint.getAggregate().getAssemblyModelContext().getTypeHelper();
         classLoader = entryPoint.getAggregate().getAssemblyModelContext().getApplicationResourceLoader().getClassLoader();
-        serviceInterface = entryPoint.getConfiguredService().getService().getServiceContract().getInterface();
     }
 
     public void invokeBusinessLogic(MessageContext msgContext, MessageContext outMsgContext) throws AxisFault {
         // set application classloader onto the thread
-        ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+        ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(classLoader);
 
@@ -67,16 +81,9 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
             OMElement requestOM = msgContext.getEnvelope().getBody().getFirstElement();
             Object[] args = AxiomHelper.toObjects(typeHelper, requestOM);
 
-            // map the operation and arguments to the service method
-            Class<?>[] argsClazz = new Class[args.length];
-            for (int i = args.length - 1; i > -1; --i) {
-                argsClazz[i] = args[i].getClass();
-
-            }
-            Method operationMethod = serviceInterface.getMethod(axisOperationName, argsClazz);
-
             // invoke the proxy's InvocationHandler
             // FIXME we should be invoking the Tuscany pipeline rather than the proxy
+            Method operationMethod = methodMap.get(axisOperationName);
             InvocationHandler handler = (InvocationHandler) entryPointContext.getImplementationInstance();
             Object response = handler.invoke(null, operationMethod, args);
 
@@ -86,7 +93,7 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
             SOAPBody soapbody = soapenv.getBody();
 
             // serialize the invocation respose into the message
-            QName responseTypeQN = getResponseTypeName(operationMethod.getName());
+            QName responseTypeQN = responseTypeMap.get(axisOperationName);
             OMElement responseOM = AxiomHelper.toOMElement(typeHelper, new Object[]{response}, responseTypeQN);
             soapbody.addChild(responseOM);
 
@@ -99,15 +106,7 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
             e.printStackTrace();
             throw new AxisFault("Error creating DataObject from Soapenvelope. " + e.getClass() + ' ' + e.getMessage(), e);
         } finally {
-            Thread.currentThread().setContextClassLoader(ccl);
+            Thread.currentThread().setContextClassLoader(oldCl);
         }
     }
-
-    protected QName getResponseTypeName(String operationName) {
-        WebServiceOperationMetaData op = wsdlPortInfo.getOperationMetaData(operationName);
-        Part part = op.getOutputPart(0);
-        return part.getElementName();
-    }
-
-
 }
