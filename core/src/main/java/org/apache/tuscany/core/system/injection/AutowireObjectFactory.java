@@ -59,20 +59,20 @@ public class AutowireObjectFactory<T> implements ObjectFactory<T> {
         if (parent == null) {
             return null;// FIXME semantic here means required is not followed
         }
-        if (parent != null && !(parent instanceof AutowireContext)) {
+        if (!(parent instanceof AutowireContext)) {
             ObjectCreationException e = new ObjectCreationException("Parent does not implement "
                     + AutowireContext.class.getName());
             e.setIdentifier(parent.getName());
             throw e;
         }
         AutowireContext ctx = (AutowireContext) parent;
-        if (ctx == null && required) {
-            AutowireResolutionException e = new AutowireResolutionException("Required autowire not found");
-            e.setIdentifier(autowireType.getName());
-            throw e;
-        } else if (ctx == null) {
-            return null;
-        }
+//        if (ctx == null && required) {
+//            AutowireResolutionException e = new AutowireResolutionException("Required autowire not found");
+//            e.setIdentifier(autowireType.getName());
+//            throw e;
+//        } else if (ctx == null) {
+//            return null;
+//        }
         return (T) ctx.resolveInstance(autowireType);
     }
 

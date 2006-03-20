@@ -44,10 +44,6 @@ public class SystemComponentContext extends AbstractContext implements SimpleCom
 
     private EventInvoker destroyInvoker;
 
-    private Injector componentName;
-
-    private Injector moduleContext;
-
     private boolean stateless;
 
     // the cached target instance
@@ -64,7 +60,7 @@ public class SystemComponentContext extends AbstractContext implements SimpleCom
             EventInvoker destroyInvoker, boolean stateless) {
         super(name);
         assert (objectFactory != null) : "Object factory was null";
-        if (eagerInit == true && initInvoker == null) {
+        if (eagerInit && initInvoker == null) {
             throw new AssertionError("No intialization method found for eager init implementation");
         }
         this.objectFactory = objectFactory;
@@ -110,9 +106,8 @@ public class SystemComponentContext extends AbstractContext implements SimpleCom
                 Object instance = objectFactory.getInstance();
                 startInstance(instance);
                 if (notify) {
-                    for (Iterator iter = contextListener.iterator(); iter.hasNext();) {
-                        LifecycleEventListener listener = (LifecycleEventListener) iter.next();
-                        listener.onInstanceCreate(this);
+                    for (LifecycleEventListener aContextListener : contextListener) {
+                        aContextListener.onInstanceCreate(this);
                     }
                 }
                 setLifecycleState(RUNNING);

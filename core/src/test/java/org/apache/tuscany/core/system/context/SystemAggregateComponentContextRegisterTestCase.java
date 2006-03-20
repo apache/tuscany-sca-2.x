@@ -33,8 +33,7 @@ public class SystemAggregateComponentContextRegisterTestCase extends AggregateCo
 
     protected AggregateContext createContext() {
         List<ContextFactoryBuilder> builders = MockFactory.createSystemBuilders();
-        AggregateContext moduleContext = new SystemAggregateContextImpl("test.context", null,
+        return new SystemAggregateContextImpl("test.context", null,
                 null, new DefaultScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory(), null, null);
-        return moduleContext;
     }
 }

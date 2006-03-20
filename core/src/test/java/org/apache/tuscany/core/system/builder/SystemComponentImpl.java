@@ -91,7 +91,7 @@ public class SystemComponentImpl {
     }
     
     public boolean initialized(){
-        return (inited == true);
+        return (inited);
     }
 
    private boolean destroyed;
@@ -102,7 +102,7 @@ public class SystemComponentImpl {
     }
     
     public boolean destroyed(){
-        return (destroyed == true);
+        return (destroyed);
     }
     
     @Property

@@ -52,9 +52,7 @@ public class SystemEntryPointBuilder implements ContextFactoryBuilder<AggregateC
             return;
         }
         try {
-            // Class type = entryPoint.getConfiguredReference().getReference().getServiceContract().getInterface();
-
-            String targetName = null;
+            String targetName;
             ConfiguredService targetService = entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0);
             if (targetService.getAggregatePart() == null) {
                 // FIXME not correct

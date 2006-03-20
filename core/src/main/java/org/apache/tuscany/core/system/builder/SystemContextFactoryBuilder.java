@@ -102,7 +102,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
         Component component = (Component) modelObject;
 
         Class implClass = null;
-        Scope scope = null;
+        Scope scope;
         // Get the component implementation
         ComponentImplementation componentImplementation = component.getComponentImplementation();
         if (componentImplementation instanceof SystemImplementation && componentImplementation.getContextFactory() == null) {
@@ -155,7 +155,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
         }
         Set<Field> fields;
         Set<Method> methods;
-        SystemContextFactory contextFactory = null;
+        SystemContextFactory contextFactory;
         try {
             fields = JavaIntrospectionHelper.getAllFields(implClass);
             methods = JavaIntrospectionHelper.getAllUniqueMethods(implClass);
@@ -170,7 +170,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
             }
             ContextObjectFactory contextObjectFactory = new ContextObjectFactory(contextFactory);
 
-            List<Injector> injectors = new ArrayList();
+            List<Injector> injectors = new ArrayList<Injector>();
 
             // handle properties
             List<ConfiguredProperty> configuredProperties = component.getConfiguredProperties();
@@ -200,7 +200,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
             for (Field field : fields) {
                 ComponentName compName = field.getAnnotation(ComponentName.class);
                 if (compName != null) {
-                    Injector injector = new FieldInjector(field, new SingletonObjectFactory(name));
+                    Injector injector = new FieldInjector(field, new SingletonObjectFactory<String>(name));
                     injectors.add(injector);
                 }
                 Context context = field.getAnnotation(Context.class);
@@ -245,7 +245,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
                 }
                 ComponentName compName = method.getAnnotation(ComponentName.class);
                 if (compName != null) {
-                    Injector injector = new MethodInjector(method, new SingletonObjectFactory(name));
+                    Injector injector = new MethodInjector(method, new SingletonObjectFactory<String>(name));
                     injectors.add(injector);
                 }
                 Context context = method.getAnnotation(Context.class);
@@ -333,7 +333,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
                 throw new NoAccessorException(propName);
             }
         }
-        Injector injector = null;
+        Injector injector;
         // FIXME support types other than String
         if (value instanceof DataObject) {
             if (field != null) {
@@ -365,14 +365,13 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
     private Injector createReferenceInjector(ConfiguredReference reference, Set<Field> fields, Set<Method> methods,
             ContextResolver resolver) {
 
-        List<ObjectFactory> objectFactories = new ArrayList();
+        List<ObjectFactory> objectFactories = new ArrayList<ObjectFactory>();
         String refName = reference.getReference().getName();
         Class refClass = reference.getReference().getServiceContract().getInterface();
         for (ConfiguredService configuredService : reference.getTargetConfiguredServices()) {
             String targetCompName = configuredService.getAggregatePart().getName();
             String targetSerivceName = configuredService.getService().getName();
             QualifiedName qName = new QualifiedName(targetCompName + QualifiedName.NAME_SEPARATOR + targetSerivceName);
-            Class interfaze = reference.getReference().getServiceContract().getInterface();
             objectFactories.add(new NonProxiedTargetFactory(configuredService, resolver));
         }
         boolean multiplicity = reference.getReference().getMultiplicity() == Multiplicity.ONE_N
@@ -386,7 +385,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
      */
     private Injector createInjector(String refName, Class refClass, boolean multiplicity, List<ObjectFactory> objectFactories,
             Set<Field> fields, Set<Method> methods) throws NoAccessorException, BuilderConfigException {
-        Field field = null;
+        Field field;
         Method method = null;
         if (multiplicity) {
             // since this is a multiplicity, we cannot match on business interface type, so scan through the fields,

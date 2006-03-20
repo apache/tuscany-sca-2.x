@@ -44,7 +44,6 @@ public class IntraAggregateWireTestCase extends TestCase {
         Assert.assertNotNull(targetRef);
         Target target = (Target) context.getContext("target").getImplementationInstance();
         Assert.assertSame(target, targetRef);
-        Source source2 = (Source) context.getContext("source").getImplementationInstance();
         Assert.assertSame(target, source.getTarget());
         context.fireEvent(EventContext.MODULE_STOP, null);
         context.stop();
@@ -61,7 +60,6 @@ public class IntraAggregateWireTestCase extends TestCase {
         Assert.assertNotNull(targetRef);
         Target target = (Target) context.getContext("target").getImplementationInstance();
         Assert.assertSame(target, targetRef);
-        Source source2 = (Source) context.getContext("source").getImplementationInstance();
         Assert.assertSame(target, source.getTarget());
         context.fireEvent(EventContext.MODULE_STOP, null);
         context.stop();

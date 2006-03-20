@@ -49,7 +49,7 @@ public class SystemObjectContextFactory implements ContextFactory {
      */
     public SystemObjectContextFactory(String name, Object instance) {
         this.name = name;
-        objectFactory = new SingletonObjectFactory(instance);
+        objectFactory = new SingletonObjectFactory<Object>(instance);
     }
 
     public Context createContext() throws ContextCreationException {
