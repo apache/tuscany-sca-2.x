@@ -4,6 +4,7 @@ import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.scdl.ScdlFactory;
 import org.apache.tuscany.core.system.scdl.SystemImplementation;
+import org.apache.tuscany.core.system.scdl.SystemBinding;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
@@ -43,6 +44,9 @@ public class SystemSCDLModelLoader implements SCDLModelLoader {
             }
             implementation.setImplementationClass(implementationClass);
             return implementation;
+        } else if (object instanceof SystemBinding) {
+            org.apache.tuscany.core.system.assembly.SystemBinding binding = systemFactory.createSystemBinding();
+            return binding;
         } else
             return null;
     }

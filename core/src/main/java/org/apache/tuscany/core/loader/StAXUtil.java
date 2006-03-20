@@ -35,6 +35,7 @@ import org.apache.tuscany.core.loader.assembly.ServiceLoader;
 import org.apache.tuscany.core.loader.assembly.InterfaceWSDLLoader;
 import org.apache.tuscany.core.loader.assembly.InterfaceJavaLoader;
 import org.apache.tuscany.core.loader.system.SystemImplementationLoader;
+import org.apache.tuscany.core.loader.system.SystemBindingLoader;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
@@ -108,6 +109,7 @@ public final class StAXUtil {
         components.add(bootstrapLoader(factory, ServiceLoader.class));
 
         components.add(bootstrapLoader(factory, SystemImplementationLoader.class));
+        components.add(bootstrapLoader(factory, SystemBindingLoader.class));
 
         ModuleComponent mc = factory.createModuleComponent();
         mc.setName(name);
