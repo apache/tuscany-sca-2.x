@@ -450,7 +450,7 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
 
             // Create a linker that gets the property value text and convert to the expected java type
             // This needs to be deferred until the Property has been located from the ComponentType
-            final Sequence text = propertyElement.getSequence("any");
+            final Sequence text = propertyElement.getSequence("mixed");
             if (text != null && text.size() != 0) {
                 linkers.add(new Runnable() {
                     public void run() {
