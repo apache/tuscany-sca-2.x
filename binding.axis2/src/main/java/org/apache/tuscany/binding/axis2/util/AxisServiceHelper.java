@@ -26,7 +26,7 @@ import org.apache.axis2.i18n.Messages;
 
 /**
  * createClientSideAxisService copied from AxisService and changed to use a Definition instead of URL to WSDL
- * TODO: The Axis2 guys are hopefully going to add this method so this class can be deleted when they do and we move to a new Axis2 build.
+ * TODO: The Axis2 guys are going to add this method so this class can be deleted when they do and we move to a new Axis2 build. See JIRA AXIS2-507.
  */
 public class AxisServiceHelper {
 
