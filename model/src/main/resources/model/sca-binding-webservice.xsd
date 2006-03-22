@@ -3,11 +3,12 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
 		targetNamespace="http://www.osoa.org/xmlns/sca/0.9" 
 		xmlns:sca="http://www.osoa.org/xmlns/sca/0.9"
+		xmlns:sdo="commonj.sdo/xml"
 		elementFormDefault="qualified">
 
 	<include schemaLocation="sca-core.xsd"/>
 
-	<element name="binding.ws" type="sca:WebServiceBinding" substitutionGroup="sca:binding"/>
+	<element name="binding.ws" type="sca:WebServiceBinding" substitutionGroup="sca:binding" sdo:name="bindingWs"/>
 	<complexType name="WebServiceBinding">
 		<complexContent>
 			<extension base="sca:Binding">

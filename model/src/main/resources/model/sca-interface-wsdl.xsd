@@ -3,11 +3,12 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
 		targetNamespace="http://www.osoa.org/xmlns/sca/0.9" 
 		xmlns:sca="http://www.osoa.org/xmlns/sca/0.9"
+		xmlns:sdo="commonj.sdo/xml"
 		elementFormDefault="qualified">
 
 	<include schemaLocation="sca-core.xsd"/>
 
-	<element name="interface.wsdl" type="sca:WSDLPortType" substitutionGroup="sca:interface"/>
+	<element name="interface.wsdl" type="sca:WSDLPortType" substitutionGroup="sca:interface" sdo:name="interfaceWsdl"/>
 	<complexType name="WSDLPortType">
 		<complexContent>
 			<extension base="sca:Interface">
@@ -22,7 +23,7 @@
 	</complexType>
 	
 	<!-- This is a Tuscany extension -->
-	<element name="import.wsdl" type="sca:WSDLImport" substitutionGroup="sca:import"/>
+	<element name="import.wsdl" type="sca:WSDLImport" substitutionGroup="sca:import"  sdo:name="importWsdl"/>
 	<complexType name="WSDLImport">
 		<complexContent>
 			<extension base="sca:Import">

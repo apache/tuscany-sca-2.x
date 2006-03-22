@@ -18,13 +18,14 @@
         targetNamespace="http://org.apache.tuscany/xmlns/system/0.9"
         xmlns:sca="http://www.osoa.org/xmlns/sca/0.9"
         xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
+		xmlns:sdo="commonj.sdo/xml"
 		xmlns:sdojava="commonj.sdo/java"
         elementFormDefault="qualified"
 		sdojava:package="org.apache.tuscany.core.system.scdl">
 
     <import namespace="http://www.osoa.org/xmlns/sca/0.9" schemaLocation="../../../../../model/src/main/resources/model/sca-core.xsd"/>
 
-    <element name="implementation.system" type="system:SystemImplementation" substitutionGroup="sca:implementation"/>
+    <element name="implementation.system" type="system:SystemImplementation" substitutionGroup="sca:implementation" sdo:name="implementationSystem"/>
     <complexType name="SystemImplementation">
         <complexContent>
             <extension base="sca:Implementation">
@@ -37,7 +38,7 @@
         </complexContent>
     </complexType>
 
-    <element name="binding.system" type="system:SystemBinding" substitutionGroup="sca:binding"/>
+    <element name="binding.system" type="system:SystemBinding" substitutionGroup="sca:binding" sdo:name="bindingSystem"/>
     <complexType name="SystemBinding">
         <complexContent>
             <extension base="sca:Binding">

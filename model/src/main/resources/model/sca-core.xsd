@@ -161,8 +161,8 @@
 	<element name="source" type="anyType"/>
 	<element name="target" type="anyType"/>
 	
-	<element name="source.uri" type="anyURI" substitutionGroup="sca:source"/>
-	<element name="target.uri" type="anyURI" substitutionGroup="sca:target"/>
+	<element name="source.uri" type="anyURI" substitutionGroup="sca:source" sdo:name="sourceUri"/>
+	<element name="target.uri" type="anyURI" substitutionGroup="sca:target" sdo:name="targetUri"/>
 
 	<element name="subsystem" type="sca:Subsystem"/>
 	<complexType name="Subsystem">
@@ -198,15 +198,15 @@
 		</sequence>
 	</complexType>
 
-	<element name="source.epr" type="anyType" substitutionGroup="sca:source"/>
-	<element name="target.epr" type="anyType" substitutionGroup="sca:target"/>
+	<element name="source.epr" type="anyType" substitutionGroup="sca:source" sdo:name="sourceEpr"/>
+	<element name="target.epr" type="anyType" substitutionGroup="sca:target" sdo:name="targetEpr"/>
 
 	<simpleType name="Multiplicity">
 		<restriction base="string">
-			<enumeration value="0..1"/>
-			<enumeration value="1..1"/>
-			<enumeration value="0..n"/>
-			<enumeration value="1..n"/>
+			<enumeration value="0..1" sdo:name="_01"/>
+			<enumeration value="1..1" sdo:name="_11"/>
+			<enumeration value="0..n" sdo:name="_0n"/>
+			<enumeration value="1..n" sdo:name="_1n"/>
 		</restriction>
 	</simpleType>
 

@@ -3,11 +3,12 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
 		targetNamespace="http://www.osoa.org/xmlns/sca/0.9" 
 		xmlns:sca="http://www.osoa.org/xmlns/sca/0.9"
+		xmlns:sdo="commonj.sdo/xml"
 		elementFormDefault="qualified">
 
 	<include schemaLocation="sca-core.xsd"/>
 
-	<element name="implementation.java" type="sca:JavaImplementation" substitutionGroup="sca:implementation"/>
+	<element name="implementation.java" type="sca:JavaImplementation" substitutionGroup="sca:implementation" sdo:name="implementationJava"/>
 	<complexType name="JavaImplementation">
 		<complexContent>
 			<extension base="sca:Implementation">
