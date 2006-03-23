@@ -7,6 +7,14 @@
         <param-name>org.apache.tuscany.core.webapp.ModuleComponentName</param-name>
         <param-value>testContext</param-value>
     </context-param>
+    <filter>
+        <filter-name>TuscanyFilter</filter-name>
+        <filter-class>org.apache.tuscany.core.webapp.TuscanyRequestFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>TuscanyFilter</filter-name>
+        <servlet-name>TestServlet</servlet-name>
+    </filter-mapping>
     <listener>
         <listener-class>org.apache.tuscany.core.webapp.TuscanyServletListener</listener-class>
     </listener>
@@ -18,12 +26,4 @@
         <servlet-name>TestServlet</servlet-name>
         <url-pattern>/servlet</url-pattern>
     </servlet-mapping>
-    <filter>
-        <filter-name>TuscanyFilter</filter-name>
-        <filter-class>org.apache.tuscany.core.webapp.TuscanyRequestFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>TuscanyFilter</filter-name>
-        <servlet-name>TestServlet</servlet-name>
-    </filter-mapping>
 </web-app>
