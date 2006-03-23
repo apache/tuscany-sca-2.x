@@ -114,7 +114,7 @@ public class JavaLoggingTestCase extends TestCase {
     }
 
     public static class MockHandler extends Handler {
-        List<LogRecord> logs = new ArrayList();
+        List<LogRecord> logs = new ArrayList<LogRecord>();
 
         public void publish(LogRecord record) {
             logs.add(record);

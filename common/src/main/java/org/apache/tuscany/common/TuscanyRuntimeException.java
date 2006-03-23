@@ -39,7 +39,7 @@ public abstract class TuscanyRuntimeException extends RuntimeException {
      */
     public List<String> returnContextNames(String name) {
         if (contextStack == null) {
-            contextStack = new ArrayList();
+            contextStack = new ArrayList<String>();
         }
         return contextStack;
     }
@@ -49,7 +49,7 @@ public abstract class TuscanyRuntimeException extends RuntimeException {
      */
     public void addContextName(String name) {
         if (contextStack == null) {
-            contextStack = new ArrayList();
+            contextStack = new ArrayList<String>();
         }
         contextStack.add(name);
     }

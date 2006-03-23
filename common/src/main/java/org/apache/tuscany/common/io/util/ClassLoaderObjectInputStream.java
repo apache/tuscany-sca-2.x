@@ -47,12 +47,12 @@ public class ClassLoaderObjectInputStream extends ObjectInputStream {
     /**
      * @see java.io.ObjectInputStream#resolveClass(java.io.ObjectStreamClass)
      */
-    protected Class resolveClass(final ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+    protected Class<?> resolveClass(final ObjectStreamClass desc) throws IOException, ClassNotFoundException {
 
         final String name = desc.getName();
         try {
-            return (Class) AccessController.doPrivileged(new PrivilegedExceptionAction() {
-                public Object run() throws ClassNotFoundException, IOException {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
+                public Class<?> run() throws ClassNotFoundException, IOException {
                     try {
                         return Class.forName(name, false, classLoader);
                     } catch (ClassNotFoundException e) {

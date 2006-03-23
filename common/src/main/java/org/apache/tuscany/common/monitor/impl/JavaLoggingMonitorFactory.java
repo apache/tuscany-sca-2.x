@@ -41,7 +41,7 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
     private final Level defaultLevel;
     private final Map<String, Level> levels;
 
-    private final Map<Class<?>, WeakReference<?>> proxies = new WeakHashMap();
+    private final Map<Class<?>, WeakReference<?>> proxies = new WeakHashMap<Class<?>, WeakReference<?>>();
 
     /**
      *
@@ -52,7 +52,7 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
     public JavaLoggingMonitorFactory(Properties levels, Level defaultLevel, String bundleName) {
         this.defaultLevel = defaultLevel;
         this.bundleName = bundleName;
-        this.levels = new HashMap(levels.size());
+        this.levels = new HashMap<String, Level>(levels.size());
         for (Iterator<Map.Entry<Object, Object>> i = levels.entrySet().iterator(); i.hasNext();) {
             Map.Entry<Object, Object> entry = i.next();
             String method = (String) entry.getKey();
@@ -69,21 +69,21 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
         T proxy = getCachedMonitor(monitorInterface);
         if (proxy == null) {
             proxy = createMonitor(monitorInterface);
-            proxies.put(monitorInterface, new WeakReference(proxy));
+            proxies.put(monitorInterface, new WeakReference<T>(proxy));
         }
         return proxy;
     }
 
     private <T>T getCachedMonitor(Class<T> monitorInterface) {
-        WeakReference<T> ref = (WeakReference<T>) proxies.get(monitorInterface);
-        return (ref != null) ? ref.get() : null;
+        WeakReference<?> ref = (WeakReference<?>)proxies.get(monitorInterface);
+        return (ref != null) ? monitorInterface.cast(ref.get()) : null;
     }
 
     private <T>T createMonitor(Class<T> monitorInterface) {
         String className = monitorInterface.getName();
         Logger logger = Logger.getLogger(className, bundleName);
         Method[] methods = monitorInterface.getMethods();
-        Map<String, Level> levels = new HashMap(methods.length);
+        Map<String, Level> levels = new HashMap<String, Level>(methods.length);
         for (int i = 0; i < methods.length; i++) {
             Method method = methods[i];
             String key = className + '#' + method.getName();
@@ -106,7 +106,7 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
             }
         }
         InvocationHandler handler = new LoggingHandler(logger, levels);
-        return (T) Proxy.newProxyInstance(monitorInterface.getClassLoader(), new Class<?>[]{monitorInterface}, handler);
+        return monitorInterface.cast(Proxy.newProxyInstance(monitorInterface.getClassLoader(), new Class<?>[]{monitorInterface}, handler));
     }
 
     private static final class LoggingHandler implements InvocationHandler {

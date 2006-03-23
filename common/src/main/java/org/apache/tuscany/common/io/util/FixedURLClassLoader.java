@@ -29,6 +29,7 @@ import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 import java.security.Permission;
+import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -177,7 +178,7 @@ public class FixedURLClassLoader extends URLClassLoader {
             return connection.getHeaderFieldKey(n);
         }
 
-        public Map getHeaderFields() {
+        public Map<String, List<String>> getHeaderFields() {
             return connection.getHeaderFields();
         }
 
@@ -253,7 +254,7 @@ public class FixedURLClassLoader extends URLClassLoader {
             return connection.getPermission();
         }
 
-        public Map getRequestProperties() {
+        public Map<String, List<String>> getRequestProperties() {
             return connection.getRequestProperties();
         }
 

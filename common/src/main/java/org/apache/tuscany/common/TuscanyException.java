@@ -34,7 +34,7 @@ public abstract class TuscanyException extends Exception {
      */
     public List<String> returnContextNames(String name) {
         if (contextStack == null) {
-            contextStack = new ArrayList();
+            contextStack = new ArrayList<String>();
         }
         return contextStack;
     }
@@ -44,7 +44,7 @@ public abstract class TuscanyException extends Exception {
      */
     public void addContextName(String name) {
         if (contextStack == null) {
-            contextStack = new ArrayList();
+            contextStack = new ArrayList<String>();
         }
         contextStack.add(name);
     }

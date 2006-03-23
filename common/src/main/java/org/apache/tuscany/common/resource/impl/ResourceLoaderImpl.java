@@ -66,10 +66,14 @@ public class ResourceLoaderImpl implements ResourceLoader {
      * @param classLoader
      */
     public ResourceLoaderImpl(ClassLoader classLoader) {
-        classLoaderReference = new WeakReference(classLoader);
-        generatedClassLoaderReference = new WeakReference(new GeneratedClassLoader(classLoader));
+        classLoaderReference = new WeakReference<ClassLoader>(classLoader);
+        generatedClassLoaderReference = new WeakReference<GeneratedClassLoader>(new GeneratedClassLoader(classLoader));
         ClassLoader parentCL = classLoader.getParent();
-        parents = parentCL == null ? Collections.EMPTY_LIST : Collections.singletonList(new ResourceLoaderImpl(parentCL));
+        if (null == parentCL) {
+            parents = Collections.emptyList();
+        } else {
+            parents = Collections.singletonList((ResourceLoader)new ResourceLoaderImpl(parentCL));
+        }
     }
 
 
@@ -92,7 +96,7 @@ public class ResourceLoaderImpl implements ResourceLoader {
         return parents;
     }
 
-    public Class loadClass(String name) throws ClassNotFoundException {
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
         GeneratedClassLoader cl = generatedClassLoaderReference.get();
         if (cl != null) {
             return Class.forName(name, true, cl);
@@ -105,7 +109,7 @@ public class ResourceLoaderImpl implements ResourceLoader {
         GeneratedClassLoader cl = generatedClassLoaderReference.get();
         if (cl == null) {
             cl=new GeneratedClassLoader(getClassLoader());
-            generatedClassLoaderReference = new WeakReference(cl);
+            generatedClassLoaderReference = new WeakReference<GeneratedClassLoader>(cl);
         }
         return cl.addClass(bytes);
     }
@@ -115,7 +119,7 @@ public class ResourceLoaderImpl implements ResourceLoader {
         // to ask for the same resource multiple times.
 
         // Create a new set, add all the resources visible from the current ClassLoader
-        Set<URL> set = new HashSet();
+        Set<URL> set = new HashSet<URL>();
         ClassLoader classLoader = getClassLoader();
         for (Enumeration<URL> e = classLoader.getResources(name); e.hasMoreElements();) {
             set.add(e.nextElement());
@@ -131,7 +135,7 @@ public class ResourceLoaderImpl implements ResourceLoader {
     }
 
     public Iterator<URL> getAllResources(String name) throws IOException {
-        return new EnumerationIterator(getClassLoader().getResources(name));
+        return new EnumerationIterator<URL>(getClassLoader().getResources(name));
     }
 
     public URL getResource(String name) throws IOException {
