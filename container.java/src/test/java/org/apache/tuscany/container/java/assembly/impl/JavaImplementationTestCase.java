@@ -38,7 +38,8 @@ import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
  */
 public class JavaImplementationTestCase extends TestCase {
     private JavaImplementationImpl impl = (JavaImplementationImpl) new JavaAssemblyFactoryImpl().createJavaImplementation();
-
+    private ClassLoader origLoader;
+    
     public void testFoo() {
         impl.setImplementationClass(HelloWorldImpl.class);
 
@@ -127,11 +128,12 @@ public class JavaImplementationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        origLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(JavaImplementationTestCase.class.getClassLoader());
     }
 
     protected void tearDown() throws Exception {
-        Thread.currentThread().setContextClassLoader(null);
+        Thread.currentThread().setContextClassLoader(origLoader);
         super.tearDown();
     }
 }

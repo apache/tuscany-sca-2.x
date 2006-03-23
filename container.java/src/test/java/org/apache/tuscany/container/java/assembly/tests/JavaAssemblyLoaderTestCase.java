@@ -40,7 +40,8 @@ import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 /**
  */
 public class JavaAssemblyLoaderTestCase extends TestCase {
-
+    ClassLoader origLoader;
+    
     /**
      *
      */
@@ -82,7 +83,12 @@ public class JavaAssemblyLoaderTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
+        origLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+    }
+    protected void tearDown() throws Exception {
+        Thread.currentThread().setContextClassLoader(origLoader);
+        super.tearDown();
     }
 
 }
