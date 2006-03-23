@@ -24,7 +24,6 @@ import java.util.WeakHashMap;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Properties;
-import java.util.Iterator;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -53,8 +52,7 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
         this.defaultLevel = defaultLevel;
         this.bundleName = bundleName;
         this.levels = new HashMap<String, Level>(levels.size());
-        for (Iterator<Map.Entry<Object, Object>> i = levels.entrySet().iterator(); i.hasNext();) {
-            Map.Entry<Object, Object> entry = i.next();
+        for (Map.Entry<Object, Object> entry : levels.entrySet()) {
             String method = (String) entry.getKey();
             String level = (String) entry.getValue();
             try {
@@ -75,7 +73,7 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
     }
 
     private <T>T getCachedMonitor(Class<T> monitorInterface) {
-        WeakReference<?> ref = (WeakReference<?>)proxies.get(monitorInterface);
+        WeakReference<?> ref = proxies.get(monitorInterface);
         return (ref != null) ? monitorInterface.cast(ref.get()) : null;
     }
 
@@ -84,8 +82,7 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
         Logger logger = Logger.getLogger(className, bundleName);
         Method[] methods = monitorInterface.getMethods();
         Map<String, Level> levels = new HashMap<String, Level>(methods.length);
-        for (int i = 0; i < methods.length; i++) {
-            Method method = methods[i];
+        for (Method method : methods) {
             String key = className + '#' + method.getName();
             Level level = this.levels.get(key);
 

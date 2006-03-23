@@ -54,7 +54,7 @@ public class IOHelper {
 
     public static void copy(InputStream in, OutputStream out, long byteCount) throws IOException {
         byte buffer[] = new byte[BYTES];
-        int len = BYTES;
+        int len;
 
         if (byteCount >= 0) {
             while (byteCount > 0) {
@@ -83,7 +83,7 @@ public class IOHelper {
     public static byte[] read(InputStream in) throws IOException {
         byte buffer[] = new byte[BYTES];
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        int len = BYTES;
+        int len;
         while (true) {
             len = in.read(buffer, 0, BYTES);
             if (len < 0) {
@@ -99,9 +99,8 @@ public class IOHelper {
      */
     public static boolean deleteDir(File pDir) {
         if (pDir.isDirectory()) {
-            String[] children = pDir.list();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(pDir, children[i]));
+            for (String aChildren : pDir.list()) {
+                boolean success = deleteDir(new File(pDir, aChildren));
                 if (!success) {
                     return false;
                 }
@@ -116,10 +115,9 @@ public class IOHelper {
      */
     public static InputStream getResource(File pRoot, String pPath) throws FileNotFoundException {
 
-        File[] files = pRoot.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].isFile() && files[i].getName().equals(pPath)) {
-                return new BufferedInputStream(new FileInputStream(files[i]));
+        for (File file : pRoot.listFiles()) {
+            if (file.isFile() && file.getName().equals(pPath)) {
+                return new BufferedInputStream(new FileInputStream(file));
             }
         }
         return null;

@@ -211,7 +211,7 @@ public class FixedURLClassLoader extends URLClassLoader {
                         jarStream = jFile.getInputStream(jarEntry);
                         ByteArrayOutputStream out = new ByteArrayOutputStream();
                         byte buf[] = new byte[4096];
-                        int length = 0;
+                        int length;
                         length = jarStream.read(buf);
                         while (length > 0) {
                             out.write(buf, 0, length);

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The root checked exception for the Tuscany rubntime
+ * The root checked exception for the Tuscany runtime.
  * 
  * @version $Rev: 368822 $ $Date: 2006-01-13 10:54:38 -0800 (Fri, 13 Jan 2006) $
  */
@@ -71,12 +71,12 @@ public abstract class TuscanyException extends Exception {
         }
         StringBuffer b = new StringBuffer();
         if (identifier != null) {
-            b.append(" [" + identifier + "]");
+            b.append(" [").append(identifier).append("]");
         }
         if (contextStack != null) {
             b.append("\nContext stack trace: ");
             for (int i = contextStack.size() - 1; i >= 0; i--) {
-                b.append("[" + contextStack.get(i) + "]");
+                b.append("[").append(contextStack.get(i)).append("]");
             }
         }
         return super.getMessage() + b.toString();

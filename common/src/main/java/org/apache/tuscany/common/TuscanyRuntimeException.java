@@ -76,12 +76,12 @@ public abstract class TuscanyRuntimeException extends RuntimeException {
         }
         StringBuffer b = new StringBuffer();
         if (identifier != null) {
-            b.append(" [" + identifier + "]");
+            b.append(" [").append(identifier).append("]");
         }
         if (contextStack != null) {
             b.append("\nContext stack trace: ");
             for (int i = contextStack.size() - 1; i >= 0; i--) {
-                b.append("[" + contextStack.get(i) + "]");
+                b.append("[").append(contextStack.get(i)).append("]");
             }
         }
         return super.getMessage() + b.toString();
