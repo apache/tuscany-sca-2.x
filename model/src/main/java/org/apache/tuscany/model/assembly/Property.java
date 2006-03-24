@@ -80,12 +80,12 @@ public interface Property extends Extensible {
      * Returns the type of this property as used by the runtime.
      * @return the type of this property as used by the runtime
      */
-    Class getType();
+    Class<?> getType();
 
     /**
      * Sets the type of this property as used by the runtime
      * @param value the type of this property as used by the runtime
      */
-    void setType(Class value);
+    void setType(Class<?> value);
 
 }

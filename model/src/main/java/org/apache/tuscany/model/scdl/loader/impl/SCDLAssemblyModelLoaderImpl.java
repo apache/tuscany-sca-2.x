@@ -28,7 +28,6 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Module;
@@ -187,11 +186,12 @@ public class SCDLAssemblyModelLoaderImpl implements AssemblyModelLoader {
     /**
      * Transform a model and return the handler containing the result of the transformation.
      * @param object
-     * @return
+     * @return a transformed model
      */
+    @SuppressWarnings("unchecked")
     private SCDLModelContentHandlerImpl transform(Object object) {
         //FIXME Remove this dependency on EMF
-        Iterator contents=EcoreUtil.getAllContents(Collections.singleton(object), true);
+        Iterator<Object> contents=EcoreUtil.getAllContents(Collections.singleton(object), true);
         
         ModelTransformer transformer=new ModelTransformerImpl();
         SCDLModelContentHandlerImpl handler=new SCDLModelContentHandlerImpl(modelContext, scdlModelLoaders);

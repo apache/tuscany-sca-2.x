@@ -20,6 +20,7 @@ import org.apache.tuscany.common.TuscanyRuntimeException;
  * 
  * @version $Rev$ $Date$
  */
+@SuppressWarnings({"serial"})
 public abstract class ModelRuntimeException extends TuscanyRuntimeException {
 
     public ModelRuntimeException() {

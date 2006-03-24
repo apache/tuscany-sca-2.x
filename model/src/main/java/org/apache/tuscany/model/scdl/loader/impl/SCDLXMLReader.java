@@ -26,7 +26,6 @@ import org.apache.tuscany.model.scdl.Module;
 import org.apache.tuscany.model.scdl.ModuleFragment;
 import org.apache.tuscany.model.scdl.ScdlFactory;
 import org.apache.tuscany.model.scdl.Subsystem;
-import org.apache.tuscany.model.scdl.impl.ScdlPackageImpl;
 import org.apache.tuscany.sdo.util.DataObjectUtil;
 import org.apache.tuscany.sdo.util.SDOUtil;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -37,7 +36,7 @@ import commonj.sdo.helper.XMLHelper;
 /**
  */
 public class SCDLXMLReader extends ResourceSetImpl {
-    
+    // FIXME cache is queried but never updated
     private Map<String, Object> cache=new HashMap<String, Object>();
 
     // Initialize the SDO runtime and register the SCDL model
@@ -55,7 +54,7 @@ public class SCDLXMLReader extends ResourceSetImpl {
     /**
      * Returns an SCDL module.
      * @param uri
-     * @return
+     * @return a SCDL Module loaded from the uri
      */
     public Module getModule(String uri) {
         return (Module)getRootObject(uri);
@@ -64,7 +63,7 @@ public class SCDLXMLReader extends ResourceSetImpl {
     /**
      * Returns an SCDL module fragment.
      * @param uri
-     * @return
+     * @return a SCDL ModuleFragment loaded from the uri
      */
     public ModuleFragment getModuleFragment(String uri) {
         return (ModuleFragment)getRootObject(uri);
@@ -73,7 +72,7 @@ public class SCDLXMLReader extends ResourceSetImpl {
     /**
      * Returns an SCDL component type.
      * @param uri
-     * @return
+     * @return a SCDL ComponentType loaded from the uri
      */
     public ComponentType getComponentType(String uri) {
         return (ComponentType)getRootObject(uri);
@@ -82,7 +81,7 @@ public class SCDLXMLReader extends ResourceSetImpl {
     /**
      * Returns an SCDL subsystem.
      * @param uri
-     * @return
+     * @return a SCDL Subsystem loaded from the uri
      */
     public Subsystem getSubsystem(String uri) {
         return (Subsystem)getRootObject(uri);
@@ -91,7 +90,7 @@ public class SCDLXMLReader extends ResourceSetImpl {
     /**
      * Returns the root object at the given URI.
      * @param uri
-     * @return
+     * @return the root object from the XML at the supplied uri
      */
     private Object getRootObject(String uri) {
         Object object = cache.get(uri);
@@ -99,9 +98,9 @@ public class SCDLXMLReader extends ResourceSetImpl {
             try {
                 XMLDocument document=XMLHelper.INSTANCE.load(new URL(uri).openStream());
                 return document.getRootObject();
-           } catch (IOException e) {
-               throw new RuntimeException(uri, e);
-           }
+            } catch (IOException e) {
+                throw new RuntimeException(uri, e);
+            }
         }
         return object;
     }

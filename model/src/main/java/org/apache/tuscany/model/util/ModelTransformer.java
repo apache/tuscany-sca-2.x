@@ -21,31 +21,35 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A model transformer. Invokes a model content handler to perform the actual transformation.
+ * A model transformer. Invokes a model content handler to perform the actual
+ * transformation.
  */
 public interface ModelTransformer {
 
     /**
-	 * Uses a ModelContentHandler to transform a model.
-	 */
-	public List transform(Iterator iterator, ModelContentHandler handler);
+     * Uses a ModelContentHandler to transform a model.
+     */
+    List<Object> transform(Iterator<Object> iterator, ModelContentHandler handler);
 
-	/**
-	 * Uses a ModelContentHandler to transform a model. Performs the first
-	 * transform pass.
-	 */
-	public List transformPass1(Iterator iterator, ModelContentHandler handler, List deferredHandlers);
+    /**
+     * Uses a ModelContentHandler to transform a model.
+     * Performs the first transform pass.
+     */
+    List<Object> transformPass1(Iterator<Object> iterator, ModelContentHandler handler,
+                                List<Runnable> deferredHandlers);
 
-	/**
-	 * Uses a ModelContentHandler to transform a model. Performs the first
-	 * transform pass.
-	 */
-	public List transformPass1(Iterator iterator, final ModelContentHandler handler, List deferredHandlers, Map targets, List contents);
+    /**
+     * Uses a ModelContentHandler to transform a model.
+     * Performs the first transform pass.
+     */
+    List<Object> transformPass1(Iterator<Object> iterator, final ModelContentHandler handler,
+                                List<Runnable> deferredHandlers, Map<Object, Object> targets,
+                                List<Object> contents);
 
-	/**
-	 * Uses a ModelContentHandler to transform a model. Performs the second
-	 * transform pass.
-	 */
-	public void transformPass2(List deferredHandlers);
+    /**
+     * Uses a ModelContentHandler to transform a model.
+     * Performs the second transform pass.
+     */
+    void transformPass2(List<Runnable> deferredHandlers);
 
 }

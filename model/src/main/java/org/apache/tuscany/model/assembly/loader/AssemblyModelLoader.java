@@ -19,7 +19,6 @@ package org.apache.tuscany.model.assembly.loader;
 import java.util.List;
 
 import javax.wsdl.Definition;
-import javax.wsdl.PortType;
 
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ComponentType;
@@ -48,28 +47,28 @@ public interface AssemblyModelLoader {
     /**
      * Returns the module at the given uri
      * @param uri
-     * @return
+     * @return the Module at the given uri
      */
     Module loadModule(String uri);
 
     /**
      * Returns the module at the given uri
      * @param uri
-     * @return
+     * @return the ModuleFragment at the given uri
      */
     ModuleFragment loadModuleFragment(String uri);
 
     /**
      * Returns the component type at the given uri
      * @param uri
-     * @return
+     * @return the ComponentType at the given uri
      */
     ComponentType loadComponentType(String uri);
 
     /**
      * Returns the subsystem at the given uri.
      * @param uri
-     * @return
+     * @return the Subsystem at the given uri
      */
     Subsystem loadSubsystem(String uri);
 
@@ -80,8 +79,6 @@ public interface AssemblyModelLoader {
 
     /**
      * Load definitions by namespace
-     * @param uri
-     * @return
      */
     List<Definition> loadDefinitions(String namespace);
 

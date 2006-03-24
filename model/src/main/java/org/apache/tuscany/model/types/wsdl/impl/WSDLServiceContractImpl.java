@@ -16,17 +16,18 @@
  */
 package org.apache.tuscany.model.types.wsdl.impl;
 
-import static org.objectweb.asm.Opcodes.ACC_ABSTRACT;
-import static org.objectweb.asm.Opcodes.ACC_INTERFACE;
-import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
-import static org.objectweb.asm.Opcodes.V1_5;
-
 import java.util.List;
-
 import javax.wsdl.Definition;
 import javax.wsdl.Operation;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
+
+import org.objectweb.asm.ClassWriter;
+import static org.objectweb.asm.Opcodes.ACC_ABSTRACT;
+import static org.objectweb.asm.Opcodes.ACC_INTERFACE;
+import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
+import static org.objectweb.asm.Opcodes.V1_5;
+import org.objectweb.asm.Type;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
@@ -34,10 +35,6 @@ import org.apache.tuscany.model.assembly.impl.ServiceContractImpl;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 import org.apache.tuscany.model.util.XMLNameUtil;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Type;
-
-import commonj.sdo.DataObject;
 
 /**
  * An implementation of WSDLServiceContract.
@@ -45,44 +42,37 @@ import commonj.sdo.DataObject;
 public class WSDLServiceContractImpl extends ServiceContractImpl implements WSDLServiceContract {
 
     private PortType portType;
+
     private PortType callbackPortType;
+
     private String portTypeURI;
+
     private String callbackPortTypeURI;
-    
+
+    private static final String[] EMPTY_STRINGS = new String[0];
+
     /**
      * Constructor
      */
     public WSDLServiceContractImpl() {
     }
 
-    /**
-     * @see org.apache.tuscany.model.types.wsdl.WSDLServiceContract#getPortType()
-     */
     public PortType getPortType() {
         return portType;
     }
-    
-    /**
-     * @see org.apache.tuscany.model.types.wsdl.WSDLServiceContract#setPortType(javax.wsdl.PortType)
-     */
+
     public void setPortType(PortType portType) {
         checkNotFrozen();
-        this.portType=portType;
+        this.portType = portType;
     }
 
-    /**
-     * @see org.apache.tuscany.model.types.wsdl.WSDLServiceContract#getCallbackPortType()
-     */
     public PortType getCallbackPortType() {
         return callbackPortType;
     }
-    
-    /**
-     * @see org.apache.tuscany.model.types.wsdl.WSDLServiceContract#setCallbackPortType(javax.wsdl.PortType)
-     */
+
     public void setCallbackPortType(PortType portType) {
         checkNotFrozen();
-        callbackPortType=portType;
+        callbackPortType = portType;
     }
 
     /**
@@ -91,14 +81,14 @@ public class WSDLServiceContractImpl extends ServiceContractImpl implements WSDL
     public void setPortTypeURI(String portTypeURI) {
         this.portTypeURI = portTypeURI;
     }
-    
+
     /**
      * @param callbackPortTypeURI The callbackPortTypeURI to set.
      */
     public void setCallbackPortTypeURI(String callbackPortTypeURI) {
         this.callbackPortTypeURI = callbackPortTypeURI;
     }
-    
+
     /**
      * @see org.apache.tuscany.model.assembly.impl.ExtensibleImpl#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
      */
@@ -106,42 +96,42 @@ public class WSDLServiceContractImpl extends ServiceContractImpl implements WSDL
         if (isInitialized())
             return;
         super.initialize(modelContext);
-        
+
         // Resolve the WSDL portType and callback portType
-        AssemblyModelLoader modelLoader=modelContext.getAssemblyLoader();
-        if (portTypeURI!=null && portType==null) {
-            portType=getPortType(modelLoader, portTypeURI);
+        AssemblyModelLoader modelLoader = modelContext.getAssemblyLoader();
+        if (portTypeURI != null && portType == null) {
+            portType = getPortType(modelLoader, portTypeURI);
         }
-        if (callbackPortTypeURI!=null && callbackPortType==null) {
-            callbackPortType=getPortType(modelLoader, callbackPortTypeURI);
+        if (callbackPortTypeURI != null && callbackPortType == null) {
+            callbackPortType = getPortType(modelLoader, callbackPortTypeURI);
         }
 
-        // Load the Java interface for the portType 
-        if (portType!=null && getInterface()==null) {
-            QName qname=portType.getQName();
-            String interfaceName=XMLNameUtil.getFullyQualifiedClassNameFromQName(qname.getNamespaceURI(), qname.getLocalPart());
-            Class interfaceClass;
+        // Load the Java interface for the portType
+        if (portType != null && getInterface() == null) {
+            QName qname = portType.getQName();
+            String interfaceName = XMLNameUtil.getFullyQualifiedClassNameFromQName(qname.getNamespaceURI(), qname.getLocalPart());
+            Class<?> interfaceClass;
             try {
                 // Load the interface
-                interfaceClass=modelContext.getApplicationResourceLoader().loadClass(interfaceName);
+                interfaceClass = modelContext.getApplicationResourceLoader().loadClass(interfaceName);
             } catch (ClassNotFoundException e) {
                 // Generate the interface on the fly
-                interfaceClass=generateJavaInterface(modelContext.getApplicationResourceLoader(), portType, interfaceName);
+                interfaceClass = generateJavaInterface(modelContext.getApplicationResourceLoader(), portType, interfaceName);
             }
             super.setInterface(interfaceClass);
         }
 
-        // Load the Java interface for the callback portType 
-        if (callbackPortType!=null && getCallbackInterface()==null) {
-            QName qname=callbackPortType.getQName();
-            String interfaceName=XMLNameUtil.getFullyQualifiedClassNameFromQName(qname.getNamespaceURI(), qname.getLocalPart());
-            Class interfaceClass;
+        // Load the Java interface for the callback portType
+        if (callbackPortType != null && getCallbackInterface() == null) {
+            QName qname = callbackPortType.getQName();
+            String interfaceName = XMLNameUtil.getFullyQualifiedClassNameFromQName(qname.getNamespaceURI(), qname.getLocalPart());
+            Class<?> interfaceClass;
             try {
                 // Load the interface
-                interfaceClass=modelContext.getApplicationResourceLoader().loadClass(interfaceName);
+                interfaceClass = modelContext.getApplicationResourceLoader().loadClass(interfaceName);
             } catch (ClassNotFoundException e) {
                 // Generate the interface on the fly
-                interfaceClass=generateJavaInterface(modelContext.getApplicationResourceLoader(), portType, interfaceName);
+                interfaceClass = generateJavaInterface(modelContext.getApplicationResourceLoader(), portType, interfaceName);
             }
             super.setCallbackInterface(interfaceClass);
         }
@@ -149,64 +139,64 @@ public class WSDLServiceContractImpl extends ServiceContractImpl implements WSDL
 
     /**
      * Get a portType from the given uri
+     *
      * @param loader
      * @param uri
-     * @return
+     * @return the portType
      */
-    private PortType getPortType(AssemblyModelLoader loader, String uri) {
+    private static PortType getPortType(AssemblyModelLoader loader, String uri) {
 
         // Get the WSDL port namespace and name
-        int h=uri.indexOf('#');
-        String namespace=uri.substring(0,h);
-        String name=uri.substring(h+1);
-        QName qname=new QName(namespace, name);
+        int h = uri.indexOf('#');
+        String namespace = uri.substring(0, h);
+        String name = uri.substring(h + 1);
+        QName qname = new QName(namespace, name);
 
         // Load the WSDL definitions for the given namespace
-        List<Definition> definitions=loader.loadDefinitions(namespace);
-        if (definitions==null)
-            throw new IllegalArgumentException("Cannot find WSDL definition for "+namespace);
-        for (Definition definition: definitions) {
+        List<Definition> definitions = loader.loadDefinitions(namespace);
+        if (definitions == null)
+            throw new IllegalArgumentException("Cannot find WSDL definition for " + namespace);
+        for (Definition definition : definitions) {
 
             // Find the port with the given name
-            PortType portType=definition.getPortType(qname);
-            return portType;
+            return definition.getPortType(qname);
         }
-        throw new IllegalArgumentException("Cannot find WSDL portType "+uri);
+        throw new IllegalArgumentException("Cannot find WSDL portType " + uri);
     }
-    
+
     /**
      * Generate a Java interface from a WSDL portType.
+     *
      * @param portType
      * @param interfaceName
-     * @return
+     * @return a Java interface that provides the same service contract as the WSDL portType
      */
-    private Class generateJavaInterface(ResourceLoader resourceLoader, PortType portType, String interfaceName) {
-        ClassWriter cw=new ClassWriter(false);
-        
+    @SuppressWarnings("unchecked")
+    private static Class<?> generateJavaInterface(ResourceLoader resourceLoader, PortType portType, String interfaceName) {
+        ClassWriter cw = new ClassWriter(false);
+
         // Generate the interface
-        interfaceName=interfaceName.replace('.', '/');
-        cw.visit(V1_5, ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE, interfaceName, null, "java/lang/Object", new String[0]);
-        
-        
+        interfaceName = interfaceName.replace('.', '/');
+        cw.visit(V1_5, ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE, interfaceName, null, "java/lang/Object", EMPTY_STRINGS);
+
         // Generate methods from the WSDL operations
-        for (Operation operation : (List<Operation>)portType.getOperations()) {
-            String methodName=XMLNameUtil.getJavaNameFromXMLName(operation.getName(), false);
-            
-            //FIXME integrate XSD to Java type mapping here
+        for (Operation operation : (List<Operation>) portType.getOperations()) {
+            String methodName = XMLNameUtil.getJavaNameFromXMLName(operation.getName(), false);
+
+            // FIXME integrate XSD to Java type mapping here
             String inputType = Type.getDescriptor(String.class);
             String outputType = Type.getDescriptor(String.class);
-            
-            cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, methodName, "("+inputType+")"+outputType, null, null).visitEnd();
+
+            cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, methodName, '(' + inputType + ')' + outputType, null, null).visitEnd();
         }
 
         // Generate the bytecodes
         cw.visitEnd();
-        byte[] bytes=cw.toByteArray();
-        
+        byte[] bytes = cw.toByteArray();
+
         // Add the class to the resource loader
-        Class interfaceClass=(Class)resourceLoader.addClass(bytes);
-        
-        return interfaceClass; 
+
+        return resourceLoader.addClass(bytes);
     }
-    
+
 }

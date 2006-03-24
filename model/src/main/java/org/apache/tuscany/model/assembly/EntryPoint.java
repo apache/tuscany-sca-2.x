@@ -48,16 +48,19 @@ public interface EntryPoint extends AggregatePart, Extensible {
     void setConfiguredService(ConfiguredService configuredService);
 
     /**
-     * Returns the configured reference that wires this entry point to the published service inside the aggregate.
+     * Returns the configured reference that wires this entry point to the published service
+     * inside the aggregate.
      *
      * @return the reference that wires this entry point to the published service
      */
     ConfiguredReference getConfiguredReference();
 
     /**
-     * Sets the configured reference that wires this entry point to the published service inside the aggregate.
+     * Sets the configured reference that wires this entry point to the published service
+     * inside the aggregate.
      *
-     * @param configuredReference the configured reference that wires this entry point to the published service inside the aggregate
+     * @param configuredReference the configured reference that wires this entry point to
+     * the published service inside the aggregate
      */
     void setConfiguredReference(ConfiguredReference configuredReference);
 

@@ -37,23 +37,26 @@ public class SCDLXMLReaderTestCase extends TestCase {
         super();
     }
 
+    @SuppressWarnings("unchecked")
     public void testLoader() {
 
         SCDLXMLReader loader = new SCDLXMLReader();
         Module module = loader.getModule(getClass().getResource("sca.module").toString());
-        Assert.assertTrue(module.getName().equals("tuscany.model.assembly.tests.bigbank.account"));
+        Assert.assertEquals("tuscany.model.assembly.tests.bigbank.account", module.getName());
 
         Component foundComponent=null;
         for (Component component : (List<Component>)module.getComponent()) {
-            if (component.getName().equals("AccountServiceComponent"))
+            if ("AccountServiceComponent".equals(component.getName())) {
                 foundComponent=component;
+            }
         }
         Assert.assertTrue(foundComponent!= null);
 
         EntryPoint foundEntryPoint=null;
         for (EntryPoint entryPoint: (List<EntryPoint>)module.getEntryPoint()) {
-            if (entryPoint.getName().equals("AccountService"))
+            if ("AccountService".equals(entryPoint.getName())) {
                 foundEntryPoint=entryPoint;
+            }
         }
         Assert.assertTrue(foundEntryPoint!= null);
     }

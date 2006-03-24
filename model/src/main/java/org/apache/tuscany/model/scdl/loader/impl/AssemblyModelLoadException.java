@@ -21,6 +21,7 @@ import org.apache.tuscany.common.TuscanyRuntimeException;
  * @version $Rev$ $Date$
  */
 public class AssemblyModelLoadException extends TuscanyRuntimeException {
+    private static final long serialVersionUID = -5891723952359470362L;
 
     public AssemblyModelLoadException() {
         super();

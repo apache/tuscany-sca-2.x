@@ -21,7 +21,7 @@ public class AccountDataServiceImpl implements AccountDataService {
     public CheckingAccount getCheckingAccount(String customerID) {
 
         CheckingAccount checkingAccount = new CheckingAccount();
-        checkingAccount.setAccountNumber(customerID + "_" + "CHA12345");
+        checkingAccount.setAccountNumber(customerID + "_CHA12345");
         checkingAccount.setBalance(1500.0f);
 
         return checkingAccount;
@@ -30,7 +30,7 @@ public class AccountDataServiceImpl implements AccountDataService {
     public SavingsAccount getSavingsAccount(String customerID) {
 
         SavingsAccount savingsAccount = new SavingsAccount();
-        savingsAccount.setAccountNumber(customerID + "_" + "SAA12345");
+        savingsAccount.setAccountNumber(customerID + "_SAA12345");
         savingsAccount.setBalance(1500.0f);
 
         return savingsAccount;
@@ -39,7 +39,7 @@ public class AccountDataServiceImpl implements AccountDataService {
     public StockAccount getStockAccount(String customerID) {
 
         StockAccount stockAccount = new StockAccount();
-        stockAccount.setAccountNumber(customerID + "_" + "STA12345");
+        stockAccount.setAccountNumber(customerID + "_STA12345");
         stockAccount.setSymbol("IBM");
         stockAccount.setQuantity(100);
 

@@ -19,7 +19,6 @@ package org.apache.tuscany.model.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
@@ -27,9 +26,9 @@ import org.eclipse.emf.common.util.URI;
 /**
  * A utility class that converts between XML names and Java names.
  */
-public class XMLNameUtil {
+public final class XMLNameUtil {
 
-    private static final List domains = Arrays.asList(new String[]{"COM", "com", "ORG", "org"});
+    private static final List<String> DOMAINS = Arrays.asList(new String[]{"COM", "com", "ORG", "org"});
 
     /**
      * Constructor
@@ -42,12 +41,12 @@ public class XMLNameUtil {
      * Return an EPackage name for the given namespace.
      *
      * @param namespace
-     * @return
+     * @return an EPackage name for the given namespace
      */
     public static String getPackageNameFromNamespace(String namespace) {
 
         URI uri = URI.createURI(namespace);
-        List parsedName;
+        List<String> parsedName;
         if (uri.isHierarchical()) {
             String host = uri.host();
             if (host != null && host.startsWith("www.")) {
@@ -56,7 +55,7 @@ public class XMLNameUtil {
             parsedName = parseName(host, '.');
             Collections.reverse(parsedName);
             if (!parsedName.isEmpty()) {
-                parsedName.set(0, ((String) parsedName.get(0)).toLowerCase());
+                parsedName.set(0, parsedName.get(0).toLowerCase());
             }
 
             parsedName.addAll(parseName(uri.trimFileExtension().path(), '/'));
@@ -66,9 +65,9 @@ public class XMLNameUtil {
             int index = opaquePart.indexOf(":");
             if (index != -1 && "urn".equalsIgnoreCase(uri.scheme())) {
                 parsedName = parseName(opaquePart.substring(0, index), '-');
-                if (parsedName.size() > 0 && domains.contains(parsedName.get(parsedName.size() - 1))) {
+                if (parsedName.size() > 0 && DOMAINS.contains(parsedName.get(parsedName.size() - 1))) {
                     Collections.reverse(parsedName);
-                    parsedName.set(0, ((String) parsedName.get(0)).toLowerCase());
+                    parsedName.set(0, parsedName.get(0).toLowerCase());
                 }
                 parsedName.addAll(parseName(opaquePart.substring(index + 1), '/'));
 
@@ -77,9 +76,8 @@ public class XMLNameUtil {
             }
         }
 
-        StringBuffer qualifiedPackageName = new StringBuffer();
-        for (Iterator i = parsedName.iterator(); i.hasNext();) {
-            String packageName = (String) i.next();
+        StringBuilder qualifiedPackageName = new StringBuilder(128);
+        for (String packageName : parsedName) {
             if (packageName.length() > 0) {
                 if (qualifiedPackageName.length() > 0) {
                     qualifiedPackageName.append('.');
@@ -92,15 +90,14 @@ public class XMLNameUtil {
     }
 
     /**
-     * Returns a namespace prefix for the given package Name
+     * Returns a namespace prefix for the given package Name.
      *
      * @param packageName
-     * @return
+     * @return a namespace prefix for the given package Name
      */
     public static String getNSPrefixFromPackageName(String packageName) {
-        String nsPrefix = packageName;
-        int index = nsPrefix.lastIndexOf('.');
-        return index == -1 ? nsPrefix : nsPrefix.substring(index + 1);
+        int index = packageName.lastIndexOf('.');
+        return index == -1 ? packageName : packageName.substring(index + 1);
     }
 
     /**
@@ -108,22 +105,28 @@ public class XMLNameUtil {
      *
      * @param sourceName
      * @param separator
-     * @return
+     * @return some stuff parsed from the name
      */
-    private static List parseName(String sourceName, char separator) {
-        List result = new ArrayList();
+    private static List<String> parseName(String sourceName, char separator) {
+        List<String> result = new ArrayList<String>();
         if (sourceName != null) {
-            StringBuffer currentWord = new StringBuffer();
+            StringBuilder currentWord = new StringBuilder(64);
             boolean lastIsLower = false;
-            for (int index = 0, length = sourceName.length(); index < length; ++index) {
+            int index;
+            int length;
+            for (index = 0, length = sourceName.length(); index < length; ++index) {
                 char curChar = sourceName.charAt(index);
                 if (!Character.isJavaIdentifierPart(curChar)) {
                     curChar = separator;
                 }
-                if (Character.isUpperCase(curChar) || (!lastIsLower && Character.isDigit(curChar)) || curChar == separator) {
-                    if (lastIsLower && currentWord.length() > 1 || curChar == separator && currentWord.length() > 0) {
+                if (Character.isUpperCase(curChar)
+                    || (!lastIsLower && Character.isDigit(curChar))
+                    || curChar == separator) {
+                    
+                    if (lastIsLower && currentWord.length() > 1 
+                        || curChar == separator && currentWord.length() > 0) {
                         result.add(currentWord.toString());
-                        currentWord = new StringBuffer();
+                        currentWord = new StringBuilder(64);
                     }
                     lastIsLower = false;
                 } else {
@@ -133,7 +136,7 @@ public class XMLNameUtil {
                             char lastChar = currentWord.charAt(--currentWordLength);
                             currentWord.setLength(currentWordLength);
                             result.add(currentWord.toString());
-                            currentWord = new StringBuffer();
+                            currentWord = new StringBuilder(64);
                             currentWord.append(lastChar);
                         }
                     }
@@ -151,17 +154,16 @@ public class XMLNameUtil {
     }
 
     /**
-     * Returns a valid Java name from an XML Name
+     * Returns a valid Java name from an XML Name.
      *
      * @param name
      * @param isUpperCase
-     * @return
+     * @return a valid Java name from an XML Name
      */
     public static String getJavaNameFromXMLName(String name, boolean isUpperCase) {
-        List parsedName = parseName(name, '_');
-        StringBuffer result = new StringBuffer();
-        for (Iterator i = parsedName.iterator(); i.hasNext();) {
-            String nameComponent = (String) i.next();
+        List<String> parsedName = parseName(name, '_');
+        StringBuilder result = new StringBuilder(64 * parsedName.size());
+        for (String nameComponent: parsedName) {
             if (nameComponent.length() > 0) {
                 if (result.length() > 0 || isUpperCase) {
                     result.append(Character.toUpperCase(nameComponent.charAt(0)));
@@ -172,23 +174,30 @@ public class XMLNameUtil {
             }
         }
 
-        return result.length() == 0 ? "_" : Character.isJavaIdentifierStart(result.charAt(0)) ? isUpperCase ? result.toString() : decapitalizeName(result.toString()) : "_" + result;
+        if (result.length() == 0) {
+            return "_";
+        }
+        if (Character.isJavaIdentifierStart(result.charAt(0))) {
+            return isUpperCase ? result.toString() : decapitalizeName(result.toString());
+        }
+        return "_" + result;
     }
 
     /**
-     * Returns a valid fully qualified class name from a QName
+     * Returns a valid fully qualified class name from a QName.
      * @param namespace
      * @param name
-     * @return
+     * @return a valid fully qualified class name from a QName
      */
     public static String getFullyQualifiedClassNameFromQName(String namespace, String name) {
-        return XMLNameUtil.getPackageNameFromNamespace(namespace)+'.'+XMLNameUtil.getJavaNameFromXMLName(name, true);
+        return XMLNameUtil.getPackageNameFromNamespace(namespace) + '.'
+            + XMLNameUtil.getJavaNameFromXMLName(name, true);
     }
     
     /**
      * Decapitalize a name.
      * @param name
-     * @return
+     * @return a decapitalized name
      */
     public static String decapitalizeName(String name) {
         if (name.length() == 0) {
@@ -211,13 +220,13 @@ public class XMLNameUtil {
     /**
      * Capitalize a name.
      * @param name
-     * @return
+     * @return a capitalized name
      */
     public static String capitalizeName(String name) {
-        int l=name.length();
+        int l = name.length();
         if (l == 0) {
             return name;
-        } else if (l==1) {
+        } else if (l == 1) {
             return name.toUpperCase();
         } else {
             return name.substring(0, 1).toUpperCase() + name.substring(1);

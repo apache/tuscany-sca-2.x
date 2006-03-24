@@ -22,104 +22,105 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-
 /**
- * @author jsdelfino
- *
- * Base implementation for a model transformer.
- * Invokes a model content handler to perform the actual transformation.
+ * @author jsdelfino Base implementation for a model transformer. Invokes a
+ *         model content handler to perform the actual transformation.
  */
 public class ModelTransformerImpl implements ModelTransformer {
 
-	/**
-	 * Uses a ModelContentHandler to transform a model.
-	 */
-	public List transform(Iterator iterator, ModelContentHandler handler) {
+    /**
+     * Uses a ModelContentHandler to transform a model.
+     */
+    public List<Object> transform(Iterator<Object> iterator,
+                                  ModelContentHandler handler) {
 
-		// Pass 1: visit the source model and create target model objects
-		List linkers=new ArrayList();
-		List contents=transformPass1(iterator, handler, linkers);
+        // Pass 1: visit the source model and create target model objects
+        List<Runnable> linkers = new ArrayList<Runnable>();
+        List<Object> contents = transformPass1(iterator, handler, linkers);
 
-		// Pass 2: resolve the links between the target model objects
-		transformPass2(linkers);
+        // Pass 2: resolve the links between the target model objects
+        transformPass2(linkers);
 
-		// Return the target model contents
-		return contents;
-	}
+        // Return the target model contents
+        return contents;
+    }
 
-	/**
-	 * Uses a ModelContentHandler to transform a model.
-	 */
-	public List transformPass1(Iterator iterator, final ModelContentHandler handler, List deferredHandlers, Map targets, List contents) {
+    /**
+     * Uses a ModelContentHandler to transform a model.
+     */
+    public List<Object> transformPass1(Iterator<Object> iterator,
+                                       final ModelContentHandler handler,
+                                       List<Runnable> deferredHandlers,
+                                       Map<Object, Object> targets,
+                                       List<Object> contents) {
 
-		// Initialize the handler
-		handler.setTargets(targets);
-		handler.setLinkers(deferredHandlers);
-		handler.setContents(contents);
+        // Initialize the handler
+        handler.setTargets(targets);
+        handler.setLinkers(deferredHandlers);
+        handler.setContents(contents);
 
-		// This runnable will invoke endModel and clean up the handler
-		Runnable cleanup=new Runnable() {
-			public void run() {
+        // This runnable will invoke endModel and clean up the handler
+        Runnable cleanup = new Runnable() {
+            public void run() {
 
-				// Cleanup
-				handler.endModel();
+                // Cleanup
+                handler.endModel();
 
-				handler.setTargets(null);
-				handler.setLinkers(null);
-				handler.setContents(null);
-			}
-		};
+                handler.setTargets(null);
+                handler.setLinkers(null);
+                handler.setContents(null);
+            }
+        };
 
-		// Run the handler
-		try {
-			handler.startModel();
+        // Run the handler
+        try {
+            handler.startModel();
 
-			// Pass 1: compile, visit the source model and create target model objects
-			for (; iterator.hasNext(); ) {
-				Object source=iterator.next();
-                if (source==null)
-                    System.out.println("Ooops");
-				Object target=handler.doSwitch(source);
+            // Pass 1: compile, visit the source model and create target model
+            // objects
+            for (; iterator.hasNext();) {
+                Object source = iterator.next();
 
-				// Record source to target associations
-				targets.put(source,target);
-			}
+                Object target = handler.doSwitch(source);
 
-			// Add the cleanup runnable
-			deferredHandlers.add(cleanup);
+                // Record source to target associations
+                targets.put(source, target);
+            }
 
-		} catch (Exception e) {
+            // Add the cleanup runnable
+            deferredHandlers.add(cleanup);
 
-			// An exception occurred, run the cleanup now
-			cleanup.run();
-			throw new RuntimeException(e);
-		}
+        } catch (Exception e) {
 
-		// return the target model contents
-		// note that this list may actually be populated in pass2
-		return contents;
-	}
+            // An exception occurred, run the cleanup now
+            cleanup.run();
+            throw new RuntimeException(e);
+        }
 
-	/**
-	 * Uses a ModelContentHandler to transform a model.
-	 */
-	public List transformPass1(Iterator iterator, final ModelContentHandler handler, List deferredHandlers) {
-		Map targets=new HashMap();
-		List contents=new ArrayList();
-		return transformPass1(iterator,handler,deferredHandlers,targets,contents);
-	}
+        // return the target model contents
+        // note that this list may actually be populated in pass2
+        return contents;
+    }
 
-	/**
-	 * Uses a ModelContentHandler to transform a model.
-	 */
-	public void transformPass2(List deferredHandlers) {
+    /**
+     * Uses a ModelContentHandler to transform a model.
+     */
+    public List<Object> transformPass1(Iterator<Object> iterator,
+                                       final ModelContentHandler handler,
+                                       List<Runnable> deferredHandlers) {
+        Map<Object, Object> targets = new HashMap<Object, Object>();
+        List<Object> contents = new ArrayList<Object>();
+        return transformPass1(iterator, handler, deferredHandlers, targets, contents);
+    }
 
-		// Pass 2: link, resolve the links between the target model objects
-		for (Iterator i=deferredHandlers.iterator(); i.hasNext(); ) {
-			Runnable runnable=(Runnable)i.next();
-			runnable.run();
-		}
-
-	}
+    /**
+     * Uses a ModelContentHandler to transform a model.
+     */
+    public void transformPass2(List<Runnable> deferredHandlers) {
+        // Pass 2: link, resolve the links between the target model objects
+        for (Runnable runnable : deferredHandlers) {
+            runnable.run();
+        }
+    }
 
 }

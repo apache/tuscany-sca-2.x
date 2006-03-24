@@ -53,5 +53,5 @@ public interface ConfiguredPort extends AssemblyModelObject, ContextFactoryHolde
      * todo should this be here or should it be provided in a sub-interface?
      */
     void setProxyFactory(Object proxyFactory);
-	
+
 }

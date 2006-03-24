@@ -27,45 +27,47 @@ import java.util.Map;
  */
 public interface ModelContentHandler {
 
-	/**
-	 * Starts handling of a model.
-	 */
-	public void startModel();
+    /**
+     * Starts handling of a model.
+     */
+    void startModel();
 
-	/**
-	 * Ends handling of a model.
-	 */
-	public void endModel();
+    /**
+     * Ends handling of a model.
+     */
+    void endModel();
 
-	/**
-	 * Sets the contents list, where the content handler should store
-	 * the contents that it produces.
-	 * @param contents The contents to set
-	 */
-	public void setContents(List contents);
+    /**
+     * Sets the contents list, where the content handler should store the
+     * contents that it produces.
+     * 
+     * @param contents The contents to set
+     */
+    void setContents(List<Object> contents);
 
-	/**
-	 * Sets the linkers list. A content handler can add linker objects to this
-	 * list. Linker objects must implement java.lang.Runnable. They are
-	 * run as part of the endModel notification processing.
-	 * Typically linker objects are used to resolve model forward references
-	 * or establish model relationships after the model content has been
-	 * handled.
-	 * @param linkers The linkers to set
-	 */
-	public void setLinkers(List linkers);
+    /**
+     * Sets the linkers list. A content handler can add linker objects to this
+     * list. Linker objects must implement java.lang.Runnable. They are run as
+     * part of the endModel notification processing. Typically linker objects
+     * are used to resolve model forward references or establish model
+     * relationships after the model content has been handled.
+     * 
+     * @param linkers The linkers to set
+     */
+    void setLinkers(List<Runnable> linkers);
 
-	/**
-	 * Sets the targets map. This map keeps track of the objects returned by
-	 * the content handler for each object passed to its doSwitch method.
-	 * @param targets The targets to set
-	 */
-	public void setTargets(Map targets);
+    /**
+     * Sets the targets map. This map keeps track of the objects returned by the
+     * content handler for each object passed to its doSwitch method.
+     * 
+     * @param targets The targets to set
+     */
+    void setTargets(Map<Object, Object> targets);
 
-	/**
-	 * This method dispatches handling of the given object (XYZ for example) to a
-	  * corresponding "caseXYZ()" method on the content handler.
-	 */
-	public Object doSwitch(Object object);
+    /**
+     * This method dispatches handling of the given object (XYZ for example) to
+     * a corresponding "caseXYZ()" method on the content handler.
+     */
+    Object doSwitch(Object object);
 
 }

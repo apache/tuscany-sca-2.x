@@ -37,7 +37,7 @@ public class PropertyImpl extends ExtensibleImpl implements Property {
     private String name;
     private boolean many;
     private boolean required;
-    private Class type;
+    private Class<?> type;
     
     private Type sdoType;
 
@@ -64,7 +64,7 @@ public class PropertyImpl extends ExtensibleImpl implements Property {
     /**
      * @see org.apache.tuscany.model.assembly.Property#getType()
      */
-    public Class getType() {
+    public Class<?> getType() {
         return type;
     }
 
@@ -116,7 +116,7 @@ public class PropertyImpl extends ExtensibleImpl implements Property {
     /**
      * @see org.apache.tuscany.model.assembly.Property#setType(java.lang.Class)
      */
-    public void setType(Class value) {
+    public void setType(Class<?> value) {
         checkNotFrozen();
         type=value;
     }
@@ -136,7 +136,7 @@ public class PropertyImpl extends ExtensibleImpl implements Property {
         return sdoType;
     }
     
-    private final static Map<Class, Type> typeMapping=new HashMap<Class, Type>();
+    private static final Map<Class, Type> typeMapping=new HashMap<Class, Type>();
     
     static {
         typeMapping.put(BigDecimal.class, SDOUtil.getXSDSDOType("decimal"));
