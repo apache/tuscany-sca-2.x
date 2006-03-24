@@ -114,7 +114,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     // protected ModuleComponent moduleComponent;
     protected Module module;
 
-    protected List<ContextFactory<InstanceContext>> configurations = new ArrayList();
+    protected List<ContextFactory<InstanceContext>> configurations = new ArrayList<ContextFactory<InstanceContext>>();
 
     protected ScopeStrategy scopeStrategy;
 
@@ -130,16 +130,18 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     protected Map<String, ScopeContext> scopeIndex;
 
     // Listeners for context events
-    protected List<RuntimeEventListener> listeners = new CopyOnWriteArrayList();
+    protected List<RuntimeEventListener> listeners = new CopyOnWriteArrayList<RuntimeEventListener>();
 
     // Blocking latch to ensure the module is initialized exactly once prior to servicing requests
     protected CountDownLatch initializeLatch = new CountDownLatch(1);
+
+    protected final Object lock = new Object();
 
     // Indicates whether the module context has been initialized
     protected boolean initialized;
 
     // a mapping of service type to component name
-    private Map<Class, NameToScope> autowireIndex = new ConcurrentHashMap();
+    private Map<Class, NameToScope> autowireIndex = new ConcurrentHashMap<Class, NameToScope>();
 
     @Autowire(required = false)
     private AutowireContext autowireContext;
@@ -154,7 +156,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
 
     public SystemAggregateContextImpl() {
         super();
-        scopeIndex = new ConcurrentHashMap();
+        scopeIndex = new ConcurrentHashMap<String, ScopeContext>();
         // FIXME the assembly factory should be injected here
         module = new AssemblyFactoryImpl().createModule();
         eventContext = new EventContextImpl();
@@ -173,7 +175,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         this.eventContext = ctx;
         this.configurationContext = configCtx;
         this.monitorFactory = factory;
-        scopeIndex = new ConcurrentHashMap();
+        scopeIndex = new ConcurrentHashMap<String, ScopeContext>();
         // FIXME the assembly factory should be injected here
         module = new AssemblyFactoryImpl().createModule();
         this.loaderRegistry = loaderRegistry;
@@ -185,7 +187,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     // ----------------------------------
 
     public void start() {
-        synchronized (initializeLatch) {
+        synchronized (lock) {
             try {
                 if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
                     throw new IllegalStateException("Context not in UNINITIALIZED state");
@@ -194,9 +196,9 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 lifecycleState = INITIALIZING;
                 initializeScopes();
 
-                Map<Scope, List<ContextFactory<SimpleComponentContext>>> configurationsByScope = new HashMap();
+                Map<Scope, List<ContextFactory<InstanceContext>>> configurationsByScope = new HashMap<Scope, List<ContextFactory<InstanceContext>>>();
                 if (configurations != null) {
-                    for (ContextFactory config : configurations) {
+                    for (ContextFactory<InstanceContext> config : configurations) {
                         // FIXME scopes are defined at the interface level
                         Scope scope = config.getScope();
                         // ensure duplicate names were not added before the context was started
@@ -204,9 +206,9 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                             throw new DuplicateNameException(config.getName());
                         }
                         scopeIndex.put(config.getName(), scopeContexts.get(scope));
-                        List<ContextFactory<SimpleComponentContext>> list = configurationsByScope.get(scope);
+                        List<ContextFactory<InstanceContext>> list = configurationsByScope.get(scope);
                         if (list == null) {
-                            list = new ArrayList();
+                            list = new ArrayList<ContextFactory<InstanceContext>>();
                             configurationsByScope.put(scope, list);
                         }
                         list.add(config);
@@ -333,7 +335,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 throw e;
             }
         }
-        ContextFactory<InstanceContext> configuration = null;
+        ContextFactory<InstanceContext> configuration;
         if (model instanceof Module) {
             // merge new module definition with the existing one
             Module oldModule = module;
@@ -618,7 +620,6 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
 
     private void registerAutowire(Extensible model) throws ConfigurationException {
         if (lifecycleState == INITIALIZING || lifecycleState == INITIALIZED || lifecycleState == RUNNING) {
-            // only autowire entry points with system bindings
             if (model instanceof EntryPoint) {
                 EntryPoint ep = (EntryPoint) model;
                 if (ep.getBindings() != null) {
@@ -637,6 +638,26 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 }
             }
         }
+
+            // only autowire entry points with system bindings
+//            if (model instanceof EntryPoint) {
+//                EntryPoint ep = (EntryPoint) model;
+//                if (ep.getBindings() != null) {
+//                    if (ep.getBindings().get(0) instanceof SystemBinding) {
+//                        ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getConfiguredReference().getContextFactory())
+//                                .getScope());
+//                        if (scope == null) {
+//                            ConfigurationException ce = new ConfigurationException("Scope not found for entry point");
+//                            ce.setIdentifier(ep.getName());
+//                            ce.addContextName(getName());
+//                            throw ce;
+//                        }
+//                        NameToScope mapping = new NameToScope(new QualifiedName(ep.getName()), scope);
+//                        autowireIndex.put(ep.getConfiguredService().getService().getServiceContract().getInterface(), mapping);
+//                    }
+//                }
+//            }
+//        }
     }
 
     // ----------------------------------
