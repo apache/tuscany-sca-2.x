@@ -19,11 +19,12 @@ package org.apache.tuscany.core.system.assembly.impl;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
-import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
@@ -63,4 +64,16 @@ public class SystemAssemblyFactoryImpl extends AssemblyFactoryImpl implements Sy
         sc.setComponentImplementation(sysImpl);
         return sc;
     }
+
+    public EntryPoint createSystemEntryPoint(String entryPointName, Class<?> serviceContract, String targetName) {
+        // create the system binding
+        SystemBinding systemBinding = createSystemBinding();
+
+        // define the EP's service contract
+        JavaServiceContract javaServiceContract = createJavaServiceContract();
+        javaServiceContract.setInterface(serviceContract);
+
+        return createEntryPoint(entryPointName, javaServiceContract, systemBinding, targetName);
+    }
+
 }

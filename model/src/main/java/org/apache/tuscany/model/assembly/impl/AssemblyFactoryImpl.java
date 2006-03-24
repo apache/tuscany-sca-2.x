@@ -38,6 +38,8 @@ import org.apache.tuscany.model.assembly.ServiceURI;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 import org.apache.tuscany.model.assembly.Subsystem;
 import org.apache.tuscany.model.assembly.Wire;
+import org.apache.tuscany.model.assembly.Binding;
+import org.apache.tuscany.model.assembly.ServiceContract;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 import org.apache.tuscany.model.types.java.impl.JavaServiceContractImpl;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
@@ -224,5 +226,31 @@ public class AssemblyFactoryImpl implements AssemblyFactory {
             ref.getTargets().add(target);
         }
         return ref;
+    }
+
+    public EntryPoint createEntryPoint(String entryPointName, ServiceContract serviceContract, Binding binding, String targetName) {
+        // create and configure the exposed service
+        Service service = createService();
+        service.setName(entryPointName);
+        service.setServiceContract(serviceContract);
+        ConfiguredService configuredService = createConfiguredService();
+        configuredService.setService(service);
+
+        // create and configure a reference to target
+        Reference reference = createReference();
+        reference.setMultiplicity(Multiplicity.ONE_ONE);
+        ConfiguredReference configuredReference = createConfiguredReference(null, targetName);
+        configuredReference.setReference(reference);
+
+        return createEntryPoint(entryPointName, configuredService, binding, configuredReference);
+    }
+
+    public EntryPoint createEntryPoint(String entryPointName, ConfiguredService configuredService, Binding binding, ConfiguredReference configuredReference) {
+        EntryPoint entryPoint = createEntryPoint();
+        entryPoint.setName(entryPointName);
+        entryPoint.setConfiguredService(configuredService);
+        entryPoint.setConfiguredReference(configuredReference);
+        entryPoint.getBindings().add((Binding)binding);
+        return entryPoint;
     }
 }

@@ -72,7 +72,6 @@ import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
-import org.apache.tuscany.model.assembly.AggregatePart;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ComponentType;
@@ -217,58 +216,6 @@ public class MockFactory {
     }
 
     /**
-     * Creates an entry point wired to the given target (e.g. component, external service) using the system binding
-     *
-     * @param name     the name of the entry point
-     * @param interfaz the inteface exposed by the entry point
-     * @param refName  the name of the entry point reference
-     * @param target   the target the entry point is wired to
-     */
-    public static EntryPoint createEPSystemBinding(String name, Class interfaz, String refName, AggregatePart target) {
-        JavaServiceContract contract = systemFactory.createJavaServiceContract();
-        contract.setInterface(interfaz);
-
-        EntryPoint ep = systemFactory.createEntryPoint();
-        ep.setName(name);
-
-        Reference ref = systemFactory.createReference();
-        ref.setName(refName);
-        ref.setServiceContract(contract);
-        ConfiguredReference configuredReference = systemFactory.createConfiguredReference();
-        configuredReference.setReference(ref);
-        Service service = systemFactory.createService();
-        service.setServiceContract(contract);
-
-        ConfiguredService cService = systemFactory.createConfiguredService();
-        cService.setService(service);
-        cService.initialize(MockFactory.assemblyContext);
-
-        configuredReference.getTargetConfiguredServices().add(cService);
-        ep.setConfiguredReference(configuredReference);
-
-        Service epService = systemFactory.createService();
-        epService.setServiceContract(contract);
-
-        ConfiguredService epCService = systemFactory.createConfiguredService();
-        epCService.initialize(MockFactory.assemblyContext);
-        epCService.setService(epService);
-
-        ep.setConfiguredService(epCService);
-        SystemBinding binding = systemFactory.createSystemBinding();
-        ep.getBindings().add(binding);
-        if (target != null) {
-            if (target instanceof Component) {
-                ((Component) target).getConfiguredServices().add(cService);
-            } else if (target instanceof ExternalService) {
-                ((ExternalService) target).setConfiguredService(cService);
-            }
-            target.initialize(MockFactory.assemblyContext);
-        }
-        ep.initialize(null);
-        return ep;
-    }
-
-    /**
      * Creates an external service configured with a {@link SystemBinding}
      */
     public static ExternalService createESSystemBinding(String name, String refName) {
@@ -373,7 +320,6 @@ public class MockFactory {
      * @param scope the scope of the target service
      */
     public static Module createModuleWithEntryPoint(Scope scope) {
-        EntryPoint sourceEP = createFooBindingEntryPoint("source", HelloWorldService.class);
         Component targetComponent = createComponent("target", HelloWorldImpl.class, scope);
 
         Service targetService = factory.createService();
@@ -395,6 +341,8 @@ public class MockFactory {
         cref.setReference(ref);
         cref.getTargetConfiguredServices().add(cTargetService);
         cref.initialize(assemblyContext);
+
+        EntryPoint sourceEP = createFooBindingEntryPoint("source", HelloWorldService.class);
         sourceEP.setConfiguredReference(cref);
         sourceEP.getConfiguredService().getService().setName("HelloWorldService");
         sourceEP.initialize(assemblyContext);

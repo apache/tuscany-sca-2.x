@@ -23,28 +23,31 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.core.loader.assembly.ComponentTypeLoader;
 import org.apache.tuscany.core.loader.assembly.ComponentLoader;
+import org.apache.tuscany.core.loader.assembly.ComponentTypeLoader;
 import org.apache.tuscany.core.loader.assembly.EntryPointLoader;
 import org.apache.tuscany.core.loader.assembly.ExternalServiceLoader;
+import org.apache.tuscany.core.loader.assembly.InterfaceJavaLoader;
+import org.apache.tuscany.core.loader.assembly.InterfaceWSDLLoader;
 import org.apache.tuscany.core.loader.assembly.ModuleFragmentLoader;
 import org.apache.tuscany.core.loader.assembly.ModuleLoader;
 import org.apache.tuscany.core.loader.assembly.PropertyLoader;
 import org.apache.tuscany.core.loader.assembly.ReferenceLoader;
 import org.apache.tuscany.core.loader.assembly.ServiceLoader;
-import org.apache.tuscany.core.loader.assembly.InterfaceWSDLLoader;
-import org.apache.tuscany.core.loader.assembly.InterfaceJavaLoader;
-import org.apache.tuscany.core.loader.system.SystemImplementationLoader;
+import org.apache.tuscany.core.loader.impl.StAXLoaderRegistryImpl;
 import org.apache.tuscany.core.loader.system.SystemBindingLoader;
+import org.apache.tuscany.core.loader.system.SystemImplementationLoader;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
+import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.OverrideOption;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * @version $Rev$ $Date$
@@ -94,6 +97,7 @@ public final class StAXUtil {
         SystemAssemblyFactory factory = new SystemAssemblyFactoryImpl();
         Module module = factory.createModule();
         module.setName("org.apache.tuscany.core.system.loader");
+
         List<Component> components = module.getComponents();
 
         components.add(bootstrapLoader(factory, ComponentLoader.class));
@@ -111,6 +115,8 @@ public final class StAXUtil {
         components.add(bootstrapLoader(factory, SystemImplementationLoader.class));
         components.add(bootstrapLoader(factory, SystemBindingLoader.class));
 
+        bootstrapLoaderRegistry(factory, module);
+
         ModuleComponent mc = factory.createModuleComponent();
         mc.setName(name);
         mc.setModuleImplementation(module);
@@ -122,10 +128,20 @@ public final class StAXUtil {
     private static Component bootstrapLoader(SystemAssemblyFactory factory, Class<?> loaderClass) {
         SystemImplementation implementation = factory.createSystemImplementation();
         implementation.setImplementationClass(loaderClass);
-
         Component component = factory.createSimpleComponent();
         component.setName(loaderClass.getName());
         component.setComponentImplementation(implementation);
         return component;
+    }
+
+    private static void bootstrapLoaderRegistry(SystemAssemblyFactory factory, Module module) {
+        String epName = StAXLoaderRegistry.class.getName();
+        String compName = StAXLoaderRegistryImpl.class.getName();
+
+        Component component = factory.createSystemComponent(compName, StAXLoaderRegistry.class, StAXLoaderRegistryImpl.class, Scope.MODULE);
+        EntryPoint entryPoint = factory.createSystemEntryPoint(epName, StAXLoaderRegistry.class, compName);
+
+        module.getComponents().add(component);
+        module.getEntryPoints().add(entryPoint);
     }
 }

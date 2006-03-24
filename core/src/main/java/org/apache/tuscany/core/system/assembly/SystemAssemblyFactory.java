@@ -19,6 +19,7 @@ package org.apache.tuscany.core.system.assembly;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.EntryPoint;
 
 /**
  * A factory for building system assembly model artifacts
@@ -47,4 +48,14 @@ public interface SystemAssemblyFactory extends AssemblyFactory {
      * @return a Component model object with the appropriate system implementation
      */
     <T> Component createSystemComponent(String name, Class<T> service, Class<? extends T> impl, Scope scope);
+
+    /**
+     * Helper method for creating a system entry point wired to a component.
+     *
+     * @param entryPointName the name of the entry point
+     * @param serviceContract the service contract exposed
+     * @param targetName the component to wire the entry point to
+     * @return a EntryPoint model object that exposes the service contract and is wired to the named component
+     */
+    EntryPoint createSystemEntryPoint(String entryPointName, Class<?> serviceContract, String targetName);
 }

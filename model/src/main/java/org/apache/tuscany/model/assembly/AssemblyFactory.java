@@ -28,162 +28,162 @@ public interface AssemblyFactory {
 
     /**
      * Returns a new SimpleComponent.
-     * 
-     * @return
+     *
+     * @return a new SimpleComponent
      */
     SimpleComponent createSimpleComponent();
 
     /**
      * Returns a new ComponentType.
-     * 
-     * @return
+     *
+     * @return a new ComponentType
      */
     ComponentType createComponentType();
 
     /**
      * Returns a new EntryPoint.
-     * 
-     * @return
+     *
+     * @return a new EntryPoint
      */
     EntryPoint createEntryPoint();
 
     /**
      * Returns a new ExternalService.
-     * 
-     * @return
+     *
+     * @return a new ExternalService
      */
     ExternalService createExternalService();
 
     /**
      * Returns a new JavaServiceContract.
-     * 
-     * @return
+     *
+     * @return a new JavaServiceContract
      */
     JavaServiceContract createJavaServiceContract();
 
     /**
      * Returns a new Module.
-     * 
-     * @return
+     *
+     * @return a new Module
      */
     Module createModule();
 
     /**
      * Returns a new ModuleComponent.
-     * 
-     * @return
+     *
+     * @return a new ModuleComponent
      */
     ModuleComponent createModuleComponent();
 
     /**
      * Returns a new ModuleFragment.
-     * 
-     * @return
+     *
+     * @return a new ModuleFragment
      */
     ModuleFragment createModuleFragment();
 
     /**
      * Returns a new Reference.
-     * 
-     * @return
+     *
+     * @return a new Reference
      */
     Reference createReference();
 
     /**
      * Returns a new ConfiguredReference.
-     * 
-     * @return
+     *
+     * @return a new ConfiguredReference
      */
     ConfiguredReference createConfiguredReference();
 
     /**
      * Returns a new Service.
-     * 
-     * @return
+     *
+     * @return a new Service
      */
     Service createService();
 
     /**
      * Returns a new ConfiguredService.
-     * 
-     * @return
+     *
+     * @return a new ConfiguredService
      */
     ConfiguredService createConfiguredService();
 
     /**
      * Returns a new Subsystem.
-     * 
-     * @return
+     *
+     * @return a new Subsystem
      */
     Subsystem createSubsystem();
 
     /**
-     * Returns Property.
-     * 
-     * @return
+     * Returns a new Property.
+     *
+     * @return a new Property
      */
     Property createProperty();
 
     /**
      * Returns a new ConfiguredProperty.
-     * 
-     * @return
+     *
+     * @return a new ConfiguredProperty
      */
     ConfiguredProperty createConfiguredProperty();
 
     /**
      * Returns a new WSDLServiceContract.
-     * 
-     * @return
+     *
+     * @return a new WSDLServiceContract
      */
     WSDLServiceContract createWSDLServiceContract();
 
     /**
      * Create a new ServiceURI from the given uri string.
-     * 
-     * @param uri
-     * @return
+     *
+     * @param uri the URI for the service
+     * @return a new ServiceURI created from the supplied URI
      */
     ServiceURI createServiceURI(String uri);
 
     /**
      * Creates a new ServiceURI from a module component and a service name.
-     * 
-     * @param moduleComponent
-     * @param serviceName
-     * @return
+     *
+     * @param moduleComponent the module component exposing the service
+     * @param serviceName     the name of the service exposed by the module
+     * @return a new ServiceURI for the exposed service
      */
     ServiceURI createServiceURI(ModuleComponent moduleComponent, String serviceName);
 
     /**
      * Creates a new ServiceURI from a module component and configured port.
-     * 
-     * @param moduleComponent
-     * @param aggregatePart
-     * @param configuredPort
-     * @return
+     *
+     * @param moduleComponent the module component exposing the service
+     * @param aggregatePart   the aggregatePart that is providing the service
+     * @param configuredPort  the port on the aggregatePart
+     * @return a new serviceURI for the exposed service
      */
     ServiceURI createServiceURI(ModuleComponent moduleComponent, AggregatePart aggregatePart, ConfiguredPort configuredPort);
 
     /**
      * Create a qname from a URI
-     * 
+     *
      * @param uri
-     * @return
+     * @return a new qname
      */
     QName createQName(String uri);
 
     /**
      * Create a wire
-     * 
-     * @return
+     *
+     * @return an new wire
      */
     Wire createWire();
 
     /**
      * Helper method for creating a reference.
-     * 
-     * @param name the name of the reference
+     *
+     * @param name    the name of the reference
      * @param service the Java type of the service
      * @return a Reference
      */
@@ -191,20 +191,42 @@ public interface AssemblyFactory {
 
     /**
      * Helper method for creating a reference.
-     * 
-     * @param name the name of the reference
-     * @param service the Java type of the service
-     * @param the multiplicity of the reference
+     *
+     * @param name         the name of the reference
+     * @param service      the Java type of the service
+     * @param multiplicity the multiplicity of the reference
      * @return a Reference
      */
     Reference createReference(String name, Class<?> service, Multiplicity multiplicity);
 
     /**
      * Helper method for creating a configured reference.
-     * 
-     * @param name the name of the reference
+     *
+     * @param name    the name of the reference
      * @param targets the targets for the reference
      * @return a ConfiguredReference
      */
     ConfiguredReference createConfiguredReference(String name, String... targets);
+
+    /**
+     * Helper method for creating an EntryPoint wired to a single target.
+     *
+     * @param entryPointName  the name of the entry point
+     * @param serviceContract the service contract the EntryPoint should expose
+     * @param binding         the binding the EntryPoint should use
+     * @param targetName      the target the EntryPoint exposes
+     * @return an EntryPoint that exposes the supplied service and is wired to the target
+     */
+    EntryPoint createEntryPoint(String entryPointName, ServiceContract serviceContract, Binding binding, String targetName);
+
+    /**
+     * Helper method for creating an EntryPoint wired to a single target.
+     *
+     * @param entryPointName      the name of the entry point
+     * @param configuredService   the configured service to expose
+     * @param binding             the binding the EntryPoint should use
+     * @param configuredReference a configured reference to the target
+     * @return an EntryPoint that exposes the supplied service using the supplied bindng and which is wired using the supplied reference
+     */
+    EntryPoint createEntryPoint(String entryPointName, ConfiguredService configuredService, Binding binding, ConfiguredReference configuredReference);
 }
