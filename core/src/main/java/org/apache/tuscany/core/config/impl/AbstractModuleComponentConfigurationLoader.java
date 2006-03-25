@@ -77,7 +77,7 @@ public abstract class AbstractModuleComponentConfigurationLoader implements Modu
         // Load the sca.fragment files
         Iterator<URL> i;
         try {
-            i = resourceLoader.getAllResources(fragmentFileName);
+            i = resourceLoader.getResources(fragmentFileName);
         } catch (IOException e) {
             throw new ConfigurationLoadException(fragmentFileName, e);
         }

@@ -21,10 +21,9 @@ import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.NoSuchElementException;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 
@@ -33,37 +32,16 @@ import org.apache.tuscany.common.resource.ResourceLoader;
  *
  * @version $Rev: 369102 $ $Date: 2006-01-14 13:48:56 -0800 (Sat, 14 Jan 2006) $
  */
+@SuppressWarnings({"ClassLoader2Instantiation"})
 public class ResourceLoaderImpl implements ResourceLoader {
     private final WeakReference<ClassLoader> classLoaderReference;
     private WeakReference<GeneratedClassLoader> generatedClassLoaderReference;
     private final List<ResourceLoader> parents;
 
     /**
-     * A class loader that allows new classes to be defined from an array of bytes
-     */
-    private class GeneratedClassLoader extends ClassLoader {
-        
-        /**
-         * Constructs a new ResourceLoaderImpl.GeneratedClassLoader.
-         */
-        public GeneratedClassLoader(ClassLoader classLoader) {
-            super(classLoader);
-        }
-
-        /**
-         * Converts an array of bytes into a Class.
-         * @param bytes
-         * @return
-         */
-        private Class<?> addClass(byte[] bytes) {
-            return defineClass(null, bytes, 0, bytes.length);
-        }
-        
-    }
-
-    /**
-     * Constructs a new ResourceLoaderImpl.
-     * @param classLoader
+     * Constructs a new ResourceLoaderImpl to wrap a ClassLoader.
+     *
+     * @param classLoader the classloader to wrap
      */
     public ResourceLoaderImpl(ClassLoader classLoader) {
         classLoaderReference = new WeakReference<ClassLoader>(classLoader);
@@ -72,18 +50,11 @@ public class ResourceLoaderImpl implements ResourceLoader {
         if (null == parentCL) {
             parents = Collections.emptyList();
         } else {
-            parents = Collections.singletonList((ResourceLoader)new ResourceLoaderImpl(parentCL));
+            parents = Collections.singletonList((ResourceLoader) new ResourceLoaderImpl(parentCL));
         }
     }
 
 
-    /**
-     * Return the classloader backing this resource loader.
-     *
-     * @return the classloader that backs this resource loader
-     * @throws IllegalStateException if the classloader has been garbage collected
-     */
-    //FIXME Temporary used to set the classloader on the thread context, need to changed to private 
     public ClassLoader getClassLoader() throws IllegalStateException {
         ClassLoader cl = classLoaderReference.get();
         if (cl == null) {
@@ -104,37 +75,17 @@ public class ResourceLoaderImpl implements ResourceLoader {
             return Class.forName(name, true, getClassLoader());
         }
     }
-    
+
     public Class<?> addClass(byte[] bytes) {
         GeneratedClassLoader cl = generatedClassLoaderReference.get();
         if (cl == null) {
-            cl=new GeneratedClassLoader(getClassLoader());
+            cl = new GeneratedClassLoader(getClassLoader());
             generatedClassLoaderReference = new WeakReference<GeneratedClassLoader>(cl);
         }
         return cl.addClass(bytes);
     }
 
     public Iterator<URL> getResources(String name) throws IOException {
-        // This implementation used to cache but users are not likely
-        // to ask for the same resource multiple times.
-
-        // Create a new set, add all the resources visible from the current ClassLoader
-        Set<URL> set = new HashSet<URL>();
-        ClassLoader classLoader = getClassLoader();
-        for (Enumeration<URL> e = classLoader.getResources(name); e.hasMoreElements();) {
-            set.add(e.nextElement());
-        }
-
-        // Remove the resources visible from the parent ClassLoaders
-        for (ResourceLoader parent : getParents()) {
-            for (Iterator<URL> i = parent.getAllResources(name); i.hasNext();) {
-                set.remove(i.next());
-            }
-        }
-        return set.iterator();
-    }
-
-    public Iterator<URL> getAllResources(String name) throws IOException {
         return new EnumerationIterator<URL>(getClassLoader().getResources(name));
     }
 
@@ -169,7 +120,14 @@ public class ResourceLoaderImpl implements ResourceLoader {
         }
 
         public E next() {
-            return e.nextElement();
+            // the try/catch is needed here to get IDEA to shut up
+            // there should be no performance overhead here except when the Exception is thrown
+            // so I am going to leave it in - feel free to remove if there is any issue
+            try {
+                return e.nextElement();
+            } catch (NoSuchElementException e1) {
+                throw e1;
+            }
         }
 
         public void remove() {

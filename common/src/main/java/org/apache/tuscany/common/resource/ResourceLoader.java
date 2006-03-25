@@ -50,11 +50,12 @@ public interface ResourceLoader {
 
     /**
      * Converts an array of bytes into a Class.
-     * @param bytes
-     * @return
+     *
+     * @param bytes the bytecode for the class; must match the class file format
+     * @return a Class defined from the supplied bytecode
      */
     Class<?> addClass(byte[] bytes);
-    
+
     /**
      * Finds the first resource with the given name.
      * <p/>
@@ -69,16 +70,6 @@ public interface ResourceLoader {
     URL getResource(String name) throws IOException;
 
     /**
-     * Find resources with the given name that are available directly from this
-     * ResourceLoader. Resources from parent ResourceLoaders are not returned.
-     *
-     * @param name the resource name
-     * @return an Iterator of {@link URL} objects for the resource
-     * @throws IOException if there was a problem locating the resources
-     */
-    Iterator<URL> getResources(String name) throws IOException;
-
-    /**
      * Find resources with the given name that are available from this
      * ResourceLoader or any of its parents.
      *
@@ -86,9 +77,15 @@ public interface ResourceLoader {
      * @return an Iterator of {@link URL} objects for the resource
      * @throws IOException if there was a problem locating the resources
      */
-    Iterator<URL> getAllResources(String name) throws IOException;
+    Iterator<URL> getResources(String name) throws IOException;
 
-    //FIXME this is temporary to work around classloader problems with SDO when running in Tomcat 
+    //FIXME this is temporary to work around classloader problems with SDO when running in Tomcat
+
+    /**
+     * Returns the underlying classloader this loader is wrapping.
+     *
+     * @return the underlying classloader this loader is wrapping
+     */
     ClassLoader getClassLoader();
-    
+
 }
