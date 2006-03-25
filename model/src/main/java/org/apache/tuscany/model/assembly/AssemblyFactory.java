@@ -229,4 +229,13 @@ public interface AssemblyFactory {
      * @return an EntryPoint that exposes the supplied service using the supplied bindng and which is wired using the supplied reference
      */
     EntryPoint createEntryPoint(String entryPointName, ConfiguredService configuredService, Binding binding, ConfiguredReference configuredReference);
+
+    /**
+     * Helper method for creating a simple Property.
+     *
+     * @param name the property name
+     * @param type the Java type of the property
+     * @return a Property with the supplied name and type
+     */
+    Property createProperty(String name, Class<?> type);
 }

@@ -27,6 +27,7 @@ import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyModelContext;
 
 /**
  * @version $Rev$ $Date$
@@ -52,4 +53,16 @@ public class StAXLoaderRegistryImpl implements StAXLoaderRegistry {
         }
     }
 
+
+    private final ThreadLocal<AssemblyModelContext> modelContext = new ThreadLocal<AssemblyModelContext>();
+
+    @Deprecated
+    public AssemblyModelContext getContext() {
+        return modelContext.get();
+    }
+
+    @Deprecated
+    public void setContext(AssemblyModelContext context) {
+        modelContext.set(context);
+    }
 }

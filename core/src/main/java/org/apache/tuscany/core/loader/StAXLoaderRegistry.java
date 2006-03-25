@@ -20,6 +20,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 
@@ -66,4 +67,22 @@ public interface StAXLoaderRegistry {
      * @throws XMLStreamException if there was a problem reading the stream
      */
     AssemblyModelObject load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException;
+
+    /**
+     * Hack to allow loaders to initialize model objects on the fly.
+     * Remove when initialization has been moved from the model implementation to the loader.
+     *
+     * @return the model context for this load operation
+     */
+    @Deprecated
+    AssemblyModelContext getContext();
+
+    /**
+     * Hack to allow loaders to initialize model objects on the fly.
+     * Remove when initialization has been moved from the model implementation to the loader.
+     *
+     * @param context the model context for this load operation
+     */
+    @Deprecated
+    void setContext(AssemblyModelContext context);
 }

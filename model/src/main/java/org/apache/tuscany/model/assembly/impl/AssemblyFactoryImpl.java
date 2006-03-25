@@ -253,4 +253,11 @@ public class AssemblyFactoryImpl implements AssemblyFactory {
         entryPoint.getBindings().add((Binding)binding);
         return entryPoint;
     }
+
+    public Property createProperty(String name, Class<?> type) {
+        Property property = createProperty();
+        property.setName(name);
+        property.setType(type);
+        return property;
+    }
 }

@@ -44,6 +44,7 @@ public class StAXModuleComponentConfigurationLoaderImpl extends AbstractModuleCo
     }
 
     public Module loadModule(URL url) throws ConfigurationLoadException {
+        registry.setContext(modelContext);
         try {
             XMLStreamReader reader = xmlFactory.createXMLStreamReader(url.openStream());
             getDocumentRoot(reader);
@@ -52,10 +53,13 @@ public class StAXModuleComponentConfigurationLoaderImpl extends AbstractModuleCo
             throw (ConfigurationLoadException) new ConfigurationLoadException(url.toString()).initCause(e);
         } catch (IOException e) {
             throw new ConfigurationLoadException(url.toString(), e);
+        } finally {
+            registry.setContext(null);
         }
     }
 
     public ModuleFragment loadModuleFragment(URL url) throws ConfigurationLoadException {
+        registry.setContext(modelContext);
         try {
             XMLStreamReader reader = xmlFactory.createXMLStreamReader(url.openStream());
             getDocumentRoot(reader);
@@ -64,10 +68,12 @@ public class StAXModuleComponentConfigurationLoaderImpl extends AbstractModuleCo
             throw (ConfigurationLoadException) new ConfigurationLoadException(url.toString()).initCause(e);
         } catch (IOException e) {
             throw new ConfigurationLoadException(url.toString(), e);
+        } finally {
+            registry.setContext(null);
         }
     }
 
-    private void getDocumentRoot(XMLStreamReader reader) throws XMLStreamException {
+    private static void getDocumentRoot(XMLStreamReader reader) throws XMLStreamException {
         while (true) {
             if (reader.next() == XMLStreamConstants.START_ELEMENT) {
                 return;

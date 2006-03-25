@@ -27,23 +27,31 @@ import javax.xml.stream.XMLStreamReader;
 import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.loader.InvalidPropertyFactoryException;
+import org.apache.tuscany.core.loader.StAXPropertyFactory;
+import org.apache.tuscany.core.loader.StAXUtil;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.COMPONENT;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.PROPERTIES;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.REFERENCES;
-import org.apache.tuscany.core.loader.StAXUtil;
+import org.apache.tuscany.core.loader.impl.StringParserPropertyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ComponentImplementation;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.OverrideOption;
+import org.apache.tuscany.model.assembly.Property;
 
 /**
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
 public class ComponentLoader extends AbstractLoader {
+    private static final StAXPropertyFactory<?> defaultPropertyFactory = new StringParserPropertyFactory();
+
     public QName getXMLType() {
         return COMPONENT;
     }
@@ -54,6 +62,7 @@ public class ComponentLoader extends AbstractLoader {
 
     public Component load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         assert COMPONENT.equals(reader.getName());
+
         Component component = factory.createSimpleComponent();
         component.setName(reader.getAttributeValue(null, "name"));
 
@@ -62,13 +71,15 @@ public class ComponentLoader extends AbstractLoader {
             case START_ELEMENT:
                 QName name = reader.getName();
                 if (PROPERTIES.equals(name)) {
-                    loadProperties(reader, component);
+                    loadProperties(reader, resourceLoader, component);
                 } else if (REFERENCES.equals(name)) {
                     loadReferences(reader, component);
                 } else {
                     AssemblyModelObject o = registry.load(reader, resourceLoader);
                     if (o instanceof ComponentImplementation) {
-                        component.setComponentImplementation((ComponentImplementation) o);
+                        ComponentImplementation impl = (ComponentImplementation) o;
+                        impl.initialize(registry.getContext());
+                        component.setComponentImplementation(impl);
                     }
                 }
                 reader.next();
@@ -79,15 +90,36 @@ public class ComponentLoader extends AbstractLoader {
         }
     }
 
-    protected void loadProperties(XMLStreamReader reader, Component component) throws XMLStreamException {
+    protected void loadProperties(XMLStreamReader reader, ResourceLoader resourceLoader, Component component) throws XMLStreamException, ConfigurationLoadException {
+        ComponentType componentType = component.getComponentImplementation().getComponentType();
         List<ConfiguredProperty> configuredProperties = component.getConfiguredProperties();
 
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
                 String name = reader.getLocalName();
+                Property property = componentType.getProperty(name);
+                if (property == null) {
+                    throw new ConfigurationLoadException(name);
+                }
                 OverrideOption override = StAXUtil.overrideOption(reader.getAttributeValue(null, "override"), OverrideOption.NO);
-                String value = reader.getElementText();
+
+                // get a factory for the property
+                StAXPropertyFactory<?> propertyFactory;
+                String factoryName = reader.getAttributeValue(null, "factory");
+                if (factoryName == null) {
+                    propertyFactory = defaultPropertyFactory;
+                } else {
+                    propertyFactory = getPropertyFactory(factoryName, resourceLoader);
+                }
+
+                // create the property value
+                // FIXME to support complex types we probably should store the factory in the ConfiguredProperty
+                // FIXME instead of the value as the value may be mutable and should not be shared between instances
+                ObjectFactory<?> objectFactory = propertyFactory.createObjectFactory(reader, property);
+                Object value = objectFactory.getInstance();
+
+                // create the configured property definition
                 ConfiguredProperty configuredProperty = factory.createConfiguredProperty();
                 configuredProperty.setName(name);
                 configuredProperty.setValue(value);
@@ -97,6 +129,30 @@ public class ComponentLoader extends AbstractLoader {
             case END_ELEMENT:
                 return;
             }
+        }
+    }
+
+    protected StAXPropertyFactory<?> getPropertyFactory(String factoryName, ResourceLoader resourceLoader) throws InvalidPropertyFactoryException {
+        Class<?> impl;
+        try {
+            // try to load factory from application classloader
+            impl = resourceLoader.loadClass(factoryName);
+        } catch (ClassNotFoundException e) {
+            try {
+                // try to load factory from container classloader
+                impl = Class.forName(factoryName);
+            } catch (ClassNotFoundException e1) {
+                throw new InvalidPropertyFactoryException(factoryName, e);
+            }
+        }
+        try {
+            return (StAXPropertyFactory<?>) impl.newInstance();
+        } catch (InstantiationException e) {
+            throw new InvalidPropertyFactoryException(factoryName, e);
+        } catch (IllegalAccessException e) {
+            throw new InvalidPropertyFactoryException(factoryName, e);
+        } catch (ClassCastException e) {
+            throw new InvalidPropertyFactoryException(factoryName, e);
         }
     }
 
