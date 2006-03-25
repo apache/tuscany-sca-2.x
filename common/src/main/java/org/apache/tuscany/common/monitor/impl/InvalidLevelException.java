@@ -17,22 +17,39 @@
 package org.apache.tuscany.common.monitor.impl;
 
 /**
+ * Exception indicating an invalid log level has been passed.
+ *
  * @version $Rev$ $Date$
  */
 public class InvalidLevelException extends IllegalArgumentException {
+    private static final long serialVersionUID = 7767234706427841915L;
     private final String method;
     private final String level;
 
+    /**
+     * Constructor specifying the method name and the level affected.
+     *
+     * @param method the name of the method being monitored
+     * @param level the invalid log level value
+     */
     public InvalidLevelException(String method, String level) {
         super();
         this.method = method;
         this.level = level;
     }
 
+    /**
+     * Returns the name of the method being monitored.
+     * @return the name of the method being monitored
+     */
     public String getMethod() {
         return method;
     }
 
+    /**
+     * Returns the invalid log level specified.
+     * @return the invalid log level that was specified
+     */
     public String getLevel() {
         return level;
     }

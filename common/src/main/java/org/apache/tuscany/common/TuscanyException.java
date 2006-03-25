@@ -5,34 +5,61 @@ import java.util.List;
 
 /**
  * The root checked exception for the Tuscany runtime.
- * 
+ *
  * @version $Rev: 368822 $ $Date: 2006-01-13 10:54:38 -0800 (Fri, 13 Jan 2006) $
  */
 public abstract class TuscanyException extends Exception {
+    private static final long serialVersionUID = -7847121698339635268L;
+    private List<String> contextStack;
+    private String identifier;
 
-    protected List<String> contextStack;
-
+    /**
+     * Override constructor from Exception.
+     *
+     * @see Exception
+     */
     public TuscanyException() {
         super();
     }
 
+    /**
+     * Override constructor from Exception.
+     *
+     * @param message passed to Exception
+     * @see Exception
+     */
     public TuscanyException(String message) {
         super(message);
     }
 
+    /**
+     * Override constructor from Exception.
+     *
+     * @param message passed to Exception
+     * @param cause   passed to Exception
+     * @see Exception
+     */
     public TuscanyException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * Override constructor from Exception.
+     *
+     * @param cause passed to Exception
+     * @see Exception
+     */
     public TuscanyException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Returns a collection of names representing the context call stack where the error occured. The top of the stack
-     * is the first element in the collection.
+     * Returns a collection of names representing the context call stack where the error occured.
+     * The top of the stack is the first element in the collection.
+     *
+     * @return a collection of names representing the context call stack
      */
-    public List<String> returnContextNames(String name) {
+    public List<String> returnContextNames() {
         if (contextStack == null) {
             contextStack = new ArrayList<String>();
         }
@@ -40,7 +67,9 @@ public abstract class TuscanyException extends Exception {
     }
 
     /**
-     * Pushes a context name where an error occured onto the call stack
+     * Pushes a context name where an error occured onto the call stack.
+     *
+     * @param name the name of a context to push on the stack
      */
     public void addContextName(String name) {
         if (contextStack == null) {
@@ -49,17 +78,19 @@ public abstract class TuscanyException extends Exception {
         contextStack.add(name);
     }
 
-    private String identifier;
-
     /**
-     * Returns a string representing additional error information referred to in the error message
+     * Returns a string representing additional error information referred to in the error message.
+     *
+     * @return additional error information
      */
     public String getIdentifier() {
         return identifier;
     }
 
     /**
-     * Sets an additional error information referred to in the error message
+     * Sets an additional error information referred to in the error message.
+     *
+     * @param identifier additional error information
      */
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
@@ -69,17 +100,18 @@ public abstract class TuscanyException extends Exception {
         if (identifier == null && contextStack == null) {
             return super.getMessage();
         }
-        StringBuffer b = new StringBuffer();
+        StringBuilder b = new StringBuilder(256);
+        b.append(super.getMessage());
+
         if (identifier != null) {
-            b.append(" [").append(identifier).append("]");
+            b.append(" [").append(identifier).append(']');
         }
         if (contextStack != null) {
             b.append("\nContext stack trace: ");
             for (int i = contextStack.size() - 1; i >= 0; i--) {
-                b.append("[").append(contextStack.get(i)).append("]");
+                b.append('[').append(contextStack.get(i)).append(']');
             }
         }
-        return super.getMessage() + b.toString();
-
+        return b.toString();
     }
 }

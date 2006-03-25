@@ -89,7 +89,7 @@ public class ResourceLoaderImpl implements ResourceLoader {
         return new EnumerationIterator<URL>(getClassLoader().getResources(name));
     }
 
-    public URL getResource(String name) throws IOException {
+    public URL getResource(String name) {
         return getClassLoader().getResource(name);
     }
 

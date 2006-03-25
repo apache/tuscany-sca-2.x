@@ -65,11 +65,9 @@ public abstract class AbstractModuleComponentConfigurationLoader implements Modu
 
         // Load the sca.module file
         URL moduleUrl;
-        try {
-            moduleUrl = resourceLoader.getResource(moduleFileName);
-        } catch (IOException e) {
-            throw new ConfigurationLoadException(moduleFileName, e);
-        }
+        moduleUrl = resourceLoader.getResource(moduleFileName);
+
+
         if (moduleUrl == null) {
             throw new ConfigurationLoadException(moduleFileName);
         }

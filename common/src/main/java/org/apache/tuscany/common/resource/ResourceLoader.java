@@ -65,9 +65,8 @@ public interface ResourceLoader {
      *
      * @param name the resource name
      * @return a {@link URL} that can be used to read the resource, or null if no resource could be found
-     * @throws IOException if there was a problem locating the resource
      */
-    URL getResource(String name) throws IOException;
+    URL getResource(String name);
 
     /**
      * Find resources with the given name that are available from this

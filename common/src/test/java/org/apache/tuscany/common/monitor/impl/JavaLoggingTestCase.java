@@ -30,6 +30,8 @@ import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.LogLevel;
 
 /**
+ * Test case for the JavaLoggingMonitorFactory.
+ * 
  * @version $Rev$ $Date$
  */
 public class JavaLoggingTestCase extends TestCase {
@@ -39,19 +41,25 @@ public class JavaLoggingTestCase extends TestCase {
     private MonitorFactory factory;
 
     /**
-     * Smoke test to ensure the logger is working
+     * Smoke test to ensure the logger is working.
      */
     public void testLogger() {
         logger.info("test");
         assertEquals(1, handler.logs.size());
     }
 
+    /**
+     * Test that no record is logged.
+     */
     public void testUnloggedEvent() {
         Monitor mon = factory.getMonitor(Monitor.class);
         mon.eventNotToLog();
         assertEquals(0, handler.logs.size());
     }
 
+    /**
+     * Test the correct record is written for an event with no arguments.
+     */
     public void testEventWithNoArgs() {
         Monitor mon = factory.getMonitor(Monitor.class);
         mon.eventWithNoArgs();
@@ -62,6 +70,9 @@ public class JavaLoggingTestCase extends TestCase {
         assertEquals(Monitor.class.getName() + "#eventWithNoArgs", record.getMessage());
     }
 
+    /**
+     * Test the correct record is written for an event defined by annotation.
+     */
     public void testEventWithAnnotation() {
         Monitor mon = factory.getMonitor(Monitor.class);
         mon.eventWithAnnotation();
@@ -72,6 +83,9 @@ public class JavaLoggingTestCase extends TestCase {
         assertEquals(Monitor.class.getName() + "#eventWithAnnotation", record.getMessage());
     }
 
+    /**
+     * Test a Throwable is logged when passed to an event.
+     */
     public void testEventWithThrowable() {
         Exception e = new Exception();
         Monitor mon = factory.getMonitor(Monitor.class);
@@ -84,6 +98,9 @@ public class JavaLoggingTestCase extends TestCase {
         assertSame(e, record.getThrown());
     }
 
+    /**
+     * Test the argument is logged.
+     */
     public void testEventWithOneArg() {
         Monitor mon = factory.getMonitor(Monitor.class);
         mon.eventWithOneArg("ARG");
@@ -113,6 +130,9 @@ public class JavaLoggingTestCase extends TestCase {
         super.tearDown();
     }
 
+    /**
+     * Mock log handler to capture records.
+     */
     public static class MockHandler extends Handler {
         List<LogRecord> logs = new ArrayList<LogRecord>();
 
@@ -128,14 +148,13 @@ public class JavaLoggingTestCase extends TestCase {
         }
     }
 
+    @SuppressWarnings({"JavaDoc"})
     public static interface Monitor {
         void eventNotToLog();
 
         void eventWithNoArgs();
 
         void eventWithOneArg(String msg);
-
-        void eventWithTwoArgs(String m1, String m2);
 
         void eventWithThrowable(Exception e);
 

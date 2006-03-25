@@ -16,7 +16,6 @@
  */
 package org.apache.tuscany.tomcat.lifecycle.listener;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,12 +109,7 @@ public class TomcatWebAppLifecycleListener implements LifecycleListener {
                 ResourceLoader resourceLoader = new ResourceLoaderImpl(applicationClassLoader);
 
                 // Check if the web app contains an sca.module file
-                URL url;
-                try {
-                    url = resourceLoader.getResource("sca.module");
-                } catch (IOException e) {
-                    url = null;
-                }
+                URL url = resourceLoader.getResource("sca.module");
                 if (url != null) {
                     // The Web app has an sca.module file
                     // Get the module component name from the context
@@ -124,12 +118,12 @@ public class TomcatWebAppLifecycleListener implements LifecycleListener {
 
                         // Create an assembly model factory
                         AssemblyFactory modelFactory=new AssemblyFactoryImpl();
-                        
+
                         // Create an assembly model loader
                         List<SCDLModelLoader> scdlLoaders=new ArrayList<SCDLModelLoader>();
                         scdlLoaders.add(new SystemSCDLModelLoader());
                         AssemblyModelLoader modelLoader=new SCDLAssemblyModelLoaderImpl(scdlLoaders);
-                        
+
                         // Create an assembly model context
                         AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, resourceLoader);
 
@@ -145,11 +139,11 @@ public class TomcatWebAppLifecycleListener implements LifecycleListener {
 
                         // Get the system context
                         AggregateContext systemContext = runtimeContext.getSystemContext();
-                        
+
                         // Load the system module component
                         ModuleComponentConfigurationLoader loader = new ModuleComponentConfigurationLoaderImpl(modelContext);
                         ModuleComponent systemModuleComponent = loader.loadSystemModuleComponent(SYSTEM_MODULE_COMPONENT, SYSTEM_MODULE_COMPONENT);
-                        
+
                         // Register it with the system context
                         systemContext.registerModelObject(systemModuleComponent);
 
@@ -157,11 +151,11 @@ public class TomcatWebAppLifecycleListener implements LifecycleListener {
                         AggregateContext systemModuleComponentContext = (AggregateContext) systemContext.getContext(SYSTEM_MODULE_COMPONENT);
                         systemModuleComponentContext.registerModelObject(systemModuleComponent.getComponentImplementation());
                         systemModuleComponentContext.fireEvent(EventContext.MODULE_START, null);
-                        
+
                         // Load the SCDL configuration of the application module
                         String uri = context.getPath().substring(1);
                         ModuleComponent moduleComponent = loader.loadModuleComponent(moduleComponentName, uri);
-                        
+
                         // Register it under the root application context
                         runtimeContext.getRootContext().registerModelObject(moduleComponent);
                         AggregateContext moduleContext=(AggregateContext)runtimeContext.getContext(moduleComponent.getName());

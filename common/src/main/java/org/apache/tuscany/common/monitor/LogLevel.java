@@ -30,8 +30,9 @@ import java.lang.annotation.Target;
 @Target({METHOD})
 @Retention(RUNTIME)
 public @interface LogLevel {
+
     /**
      * The log level as specified by {@link java.util.logging.Level}.
      */
-    String value();
+    @SuppressWarnings({"JavaDoc"}) String value();
 }
