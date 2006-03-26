@@ -26,7 +26,7 @@
     <description>Implementation of the SCA Web Services binding using Axis2.</description>
     <version>SNAPSHOT</version>
 
-    <repositories>
+    <!-- repositories>
         <repository>
             <id>jeremy</id>
             <url>http://people.apache.org/~jboynes/maven2</url>
@@ -34,7 +34,7 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-    </repositories>
+    </repositories -->
 
     <dependencies>
         <dependency>
@@ -53,43 +53,36 @@
         <!-- axis 2.0 -->
         <dependency>
             <groupId>axis2</groupId>
-            <artifactId>axis2-core</artifactId>
-            <version>0.95-SNAPSHOT</version>
+            <artifactId>axis2-kernel</artifactId>
+            <version>0.95</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>axis2</groupId>
-            <artifactId>axis2-common</artifactId>
-            <version>0.95-SNAPSHOT</version>
+            <groupId>ws-commons</groupId>
+            <artifactId>axiom-api</artifactId>
+            <version>0.95</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>axis2</groupId>
-            <artifactId>axis2-wsdl</artifactId>
-            <version>0.95-SNAPSHOT</version>
+            <groupId>ws-commons</groupId>
+            <artifactId>axiom-impl</artifactId>
+            <version>0.95</version>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>ws-commons</groupId>
             <artifactId>policy</artifactId>
-            <version>0.92-SNAPSHOT</version>
+            <version>1.0</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
-            <groupId>ws-commons</groupId>
+            <groupId>org.apache.ws.commons</groupId>
             <artifactId>XmlSchema</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
             <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>ws-commons</groupId>
-            <artifactId>axiom</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -111,7 +104,6 @@
             <artifactId>axis-wsdl4j</artifactId>
             <version>1.2</version>
         </dependency>
-
 
         <dependency>
           <groupId>stax</groupId>
