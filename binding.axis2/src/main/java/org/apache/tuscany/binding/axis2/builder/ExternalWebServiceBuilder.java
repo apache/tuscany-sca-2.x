@@ -28,7 +28,6 @@ import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis2.config.ExternalWebServiceContextFactory;
 import org.apache.tuscany.binding.axis2.handler.ExternalWebServiceClient;
 import org.apache.tuscany.binding.axis2.handler.WebServicePortMetaData;
-import org.apache.tuscany.binding.axis2.util.AxisServiceHelper;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
@@ -174,7 +173,7 @@ public class ExternalWebServiceBuilder implements ContextFactoryBuilder {
 
         AxisService axisService;
         try {
-            axisService = AxisServiceHelper.createClientSideAxisService(wsBinding.getWSDLDefinition(), serviceQName, portName, new Options());
+            axisService = AxisService.createClientSideAxisService(wsBinding.getWSDLDefinition(), serviceQName, portName, new Options());
         } catch (AxisFault e) {
             BuilderConfigException bce = new BuilderConfigException("AxisFault creating external service", e);
             bce.addContextName(externalService.getName());
