@@ -123,18 +123,18 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder<Ag
     }
 
 	private void buildJavaScriptComponent(SimpleComponent component, JavaScriptImplementation impl) {
-		Scope scope = impl.getComponentType().getServices().get(0).getServiceContract().getScope();
-		Map<String, Class> services = new HashMap<String, Class>();
+
+        Scope scope = impl.getComponentType().getServices().get(0).getServiceContract().getScope();
+
+        Map<String, Class> services = new HashMap<String, Class>();
 		for (Service service : impl.getComponentType().getServices()) {
 		    services.put(service.getName(), service.getServiceContract().getInterface());
 		}
-		Map<String, Object> properties = new HashMap<String, Object>();
-		List<ConfiguredProperty> configuredProperties = component.getConfiguredProperties();
-		if (configuredProperties != null) {
-		    for (ConfiguredProperty property : configuredProperties) {
-		        properties.put(property.getProperty().getName(), property.getValue());
-		    }
-		}
+
+        Map<String, Object> defaultProperties = new HashMap<String, Object>();
+        for (org.apache.tuscany.model.assembly.Property property: impl.getComponentType().getProperties()) {
+            defaultProperties.put(property.getName(), property.getDefaultValue());
+        }
 
         // TODO: avoid casting to JavaScriptImplementationImpl
 		String script;
@@ -145,7 +145,15 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder<Ag
 	    }
         ClassLoader cl = ((JavaScriptImplementationImpl) impl).getResourceLoader().getClassLoader();
         
-        RhinoScript invoker = new RhinoScript(component.getName(), script, properties, cl);
+        RhinoScript invoker = new RhinoScript(component.getName(), script, defaultProperties, cl);
+
+        Map<String, Object> properties = new HashMap<String, Object>();
+        List<ConfiguredProperty> configuredProperties = component.getConfiguredProperties();
+        if (configuredProperties != null) {
+            for (ConfiguredProperty property : configuredProperties) {
+                properties.put(property.getProperty().getName(), property.getValue());
+            }
+        }
 
         JavaScriptContextFactory contextFactory = new JavaScriptContextFactory(component.getName(),
 		        scope, services, properties, invoker);
