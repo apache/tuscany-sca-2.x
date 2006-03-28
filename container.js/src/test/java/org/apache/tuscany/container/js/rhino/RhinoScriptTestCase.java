@@ -26,11 +26,11 @@ import junit.framework.TestCase;
 import org.mozilla.javascript.EcmaError;
 
 /**
- * Tests for the RhinoInvoker
+ * Tests for the RhinoScript
  */
-public class RhinoInvokerTestCase extends TestCase {
+public class RhinoScriptTestCase extends TestCase {
 
-    private static final String scriptName = "RhinoInvokerTestCase.js";
+    private static final String scriptName = "RhinoScriptTestCase.js";
     private String script;
     
     protected void setUp() throws Exception {
