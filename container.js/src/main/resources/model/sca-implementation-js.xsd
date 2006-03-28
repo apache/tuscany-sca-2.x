@@ -33,10 +33,18 @@
                 <sequence>
                     <any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
                 </sequence>
+                <attribute name="style" type="js:Style" default="rpc" use="optional"/>
                 <attribute name="scriptFile" type="NCName" use="required"/>
                 <anyAttribute namespace="##any" processContents="lax"/>
             </extension>
         </complexContent>
     </complexType>
+
+	<simpleType name="Style">
+		<restriction base="string">
+			<enumeration value="rpc"/>
+			<enumeration value="e4x"/>
+		</restriction>
+	</simpleType>
 
 </schema>

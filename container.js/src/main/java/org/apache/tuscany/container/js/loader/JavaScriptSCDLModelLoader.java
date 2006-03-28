@@ -86,6 +86,7 @@ public class JavaScriptSCDLModelLoader implements SCDLModelLoader {
             org.apache.tuscany.container.js.scdl.JavaScriptImplementation scdlImplementation=(org.apache.tuscany.container.js.scdl.JavaScriptImplementation)object;
             JavaScriptImplementation implementation=jsFactory.createJavaScriptImplementation();
             implementation.setScriptFile(scdlImplementation.getScriptFile());
+            implementation.setStyle(scdlImplementation.getStyle().getLiteral());
             return implementation;
         } else
             return null;

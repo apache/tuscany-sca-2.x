@@ -36,6 +36,8 @@ public class JavaScriptImplementationImpl extends ComponentImplementationImpl im
 
     private String scriptFile;
 
+    private String style;
+
     private String scriptCode;
 
     private ResourceLoader resourceLoader;
@@ -78,6 +80,14 @@ public class JavaScriptImplementationImpl extends ComponentImplementationImpl im
 
     public void setScriptFile(String fn) {
         scriptFile = fn;
+    }
+
+    public String getStyle() {
+        return this.style;
+    }
+
+    public void setStyle(String style) {
+        this.style = style;
     }
 
     public String getScript() throws ModelInitException {
@@ -126,6 +136,5 @@ public class JavaScriptImplementationImpl extends ComponentImplementationImpl im
             return modelContext.getAssemblyFactory().createComponentType();
         }
     }
-    
-    
+
 }

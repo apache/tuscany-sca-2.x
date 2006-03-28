@@ -25,6 +25,7 @@ import java.util.Map;
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
 import org.apache.tuscany.container.js.assembly.impl.JavaScriptImplementationImpl;
 import org.apache.tuscany.container.js.config.JavaScriptContextFactory;
+import org.apache.tuscany.container.js.rhino.RhinoE4XScript;
 import org.apache.tuscany.container.js.rhino.RhinoScript;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
@@ -51,6 +52,8 @@ import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceContract;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 import org.osoa.sca.annotations.Init;
+
+import commonj.sdo.helper.TypeHelper;
 
 /**
  * Builds {@link org.apache.tuscany.container.js.config.JavaScriptContextFactory}s from a JavaScript
@@ -145,7 +148,13 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder<Ag
 	    }
         ClassLoader cl = ((JavaScriptImplementationImpl) impl).getResourceLoader().getClassLoader();
         
-        RhinoScript invoker = new RhinoScript(component.getName(), script, defaultProperties, cl);
+        RhinoScript invoker;
+        if ("e4x".equalsIgnoreCase(impl.getStyle())) {  // TODO is constant "e4x" somewhere?
+            TypeHelper typeHelper = component.getAggregate().getAssemblyModelContext().getTypeHelper();
+            invoker = new RhinoE4XScript(component.getName(), script, defaultProperties, cl, typeHelper);
+        } else {
+            invoker = new RhinoScript(component.getName(), script, defaultProperties, cl);
+        }
 
         Map<String, Object> properties = new HashMap<String, Object>();
         List<ConfiguredProperty> configuredProperties = component.getConfiguredProperties();

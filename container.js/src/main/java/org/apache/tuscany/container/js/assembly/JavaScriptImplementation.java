@@ -28,4 +28,8 @@ public interface JavaScriptImplementation extends ComponentImplementation {
     public String getScriptFile();
 
     public void setScriptFile(String fn);
+    
+    public String getStyle();
+    
+    public void setStyle(String style);
 }
