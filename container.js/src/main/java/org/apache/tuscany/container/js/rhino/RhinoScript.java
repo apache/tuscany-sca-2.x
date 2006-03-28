@@ -32,11 +32,11 @@ import org.mozilla.javascript.Wrapper;
  */
 public class RhinoScript {
 
-    private String scriptName;
+    protected String scriptName;
 
-    private String script;
+    protected String script;
 
-    private Scriptable scriptScope;
+    protected Scriptable scriptScope;
 
     private Scriptable sharedScope;
 
@@ -132,7 +132,7 @@ public class RhinoScript {
         try {
             Function function = getFunction(scriptScope, functionName);
             Scriptable invocationScope = getInvocationScope(cx, contexts);
-            Object[] args = processArgs(arg, invocationScope);
+            Object[] args = processArgs(functionName, arg, invocationScope);
             Object jsResponse = function.call(cx, invocationScope, invocationScope, args);
             Object response = processResponse(jsResponse, responseClass);
             return response;
@@ -144,17 +144,7 @@ public class RhinoScript {
     /**
      * Turn args to JS objects and convert any OMElement to E4X XML
      */
-    protected Object[] processArgs(Object arg, Scriptable scope) {
-        // TODO: implement pluggable way to transform objects (eg SDO or AXIOM) to E4X XML objects
-        // if (arg instanceof OMElement) {
-        // try {
-        // arg = E4XAXIOMUtils.toScriptableObject((OMElement) arg, scope);
-        // } catch (XmlException e) {
-        // throw new RuntimeException(e);
-        // }
-        // } else if (arg instanceof MessageContext) {
-        // arg = new E4XMessageContext((MessageContext) arg, scope);
-        // }
+    protected Object[] processArgs(String functionName, Object arg, Scriptable scope) {
         Object[] args;
         if (arg == null) {
             args = new Object[] { null };
@@ -173,18 +163,15 @@ public class RhinoScript {
      * Unwrap and convert response
      */
     protected Object processResponse(Object response, Class responseClass) {
-        // TODO: implement pluggable way to transform E4X XML into specific objects (eg SDO or AXIOM)
-        // } else if (response instanceof XMLObject) {
-        // response = E4XAXIOMUtils.toOMElement((XMLObject) response);
         if (Context.getUndefinedValue().equals(response)) {
             response = null;
         } else if (response instanceof Wrapper) {
             response = ((Wrapper) response).unwrap();
         } else {
             if (responseClass != null) {
-                response = Context.toType(response, responseClass);
+                response = Context.jsToJava(response, responseClass);
             } else {
-                response = Context.toType(response, String.class);
+                response = Context.jsToJava(response, String.class);
             }
         }
         return response;
