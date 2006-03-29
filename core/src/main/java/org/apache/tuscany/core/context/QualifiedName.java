@@ -72,8 +72,6 @@ public class QualifiedName {
 
     /**
      * Returns the full part/port name pair
-     * 
-     * @return
      */
     public String getQualifiedName() {
         return qName;

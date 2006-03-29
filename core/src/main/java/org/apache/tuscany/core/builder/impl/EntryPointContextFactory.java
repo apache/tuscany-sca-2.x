@@ -42,7 +42,7 @@ public abstract class EntryPointContextFactory implements ContextFactory<EntryPo
 
     private MessageFactory msgFactory;
 
-    private List sourceProxyFactories;
+    private List<ProxyFactory> sourceProxyFactories;
     
     private AggregateContext parentContext;
 
@@ -80,7 +80,7 @@ public abstract class EntryPointContextFactory implements ContextFactory<EntryPo
 
     public Map<String, ProxyFactory> getTargetProxyFactories() {
         // no wires to an entry point from with an aggregate
-        return Collections.EMPTY_MAP;
+        return Collections.emptyMap();
     }
 
     public void addSourceProxyFactory(String refName, ProxyFactory factory) {
@@ -90,9 +90,9 @@ public abstract class EntryPointContextFactory implements ContextFactory<EntryPo
         this.proxyFactory = factory;
     }
 
-    public List getSourceProxyFactories() {
+    public List<ProxyFactory> getSourceProxyFactories() {
         if (sourceProxyFactories == null) {
-            sourceProxyFactories = new ArrayList(1);
+            sourceProxyFactories = new ArrayList<ProxyFactory>(1);
             sourceProxyFactories.add(proxyFactory);
         }
         return sourceProxyFactories;

@@ -26,7 +26,7 @@ import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
- * Tests registering of arbirarily deep child aggregate contexts
+ * Tests registering arbirarily deep child aggregate contexts
  * 
  * @version $Rev$ $Date$
  */

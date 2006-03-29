@@ -35,7 +35,7 @@ public class EventContextImpl implements EventContext {
      * a map ( associated with the current thread) of scope identifiers keyed on the event context id type. the scope identifier
      * may be a {@link ScopeIdentifier} or an opaque id
      */
-    private ThreadLocal<Map> eventContext = new InheritableThreadLocal();
+    private ThreadLocal<Map> eventContext = new InheritableThreadLocal<Map>();
 
     public Object getIdentifier(Object type) {
         Map map = eventContext.get();

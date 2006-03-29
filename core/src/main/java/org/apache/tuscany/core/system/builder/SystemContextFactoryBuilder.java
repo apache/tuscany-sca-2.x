@@ -52,6 +52,7 @@ import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
+import org.apache.tuscany.core.system.assembly.SystemModule;
 import org.apache.tuscany.core.system.config.SystemContextFactory;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
 import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
@@ -141,11 +142,13 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
                 // of system module component context
                 implClass = SystemAggregateContextImpl.class;
                 scope = Scope.AGGREGATE;
-
+            } else if (componentImplementation instanceof SystemModule){
+                implClass = SystemAggregateContextImpl.class;
+                scope = Scope.AGGREGATE;
             } else {
-
                 // The component is an app module component, fix the implementation class to our implementation
                 // of app module component context
+                //FIXME this should be extensible, i.e. the model should specify the impl class of the module
                 implClass = AggregateContextImpl.class;
                 scope = Scope.AGGREGATE;
             }

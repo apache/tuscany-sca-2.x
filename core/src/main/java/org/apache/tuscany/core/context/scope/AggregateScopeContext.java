@@ -94,7 +94,7 @@ public class AggregateScopeContext extends AbstractContext implements ScopeConte
     // Methods
     // ----------------------------------
 
-    public void registerFactorys(List<ContextFactory<InstanceContext>> configurations) {
+    public void registerFactories(List<ContextFactory<InstanceContext>> configurations) {
         this.configs = configurations;
     }
 

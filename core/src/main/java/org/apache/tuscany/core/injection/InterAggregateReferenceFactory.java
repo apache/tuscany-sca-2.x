@@ -35,8 +35,7 @@ public class InterAggregateReferenceFactory<T> implements ObjectFactory<T> {
     /**
      * Reference source is an external service, target is in another module
      * 
-     * @param service
-     * @param parentContext
+     * @param targetName the name of the target service
      */
     public InterAggregateReferenceFactory(String targetName) {
         targetQualifiedName = new QualifiedName(targetName);

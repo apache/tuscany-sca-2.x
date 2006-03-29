@@ -20,13 +20,13 @@ import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
- * A <code>ContextFactory</code> that handles system component implementation types, which may be either simple,
- * leaf types or an aggregates.
+ * A <code>ContextFactory</code> that handles system component implementation types, which may be either simple, leaf
+ * types or an aggregates.
  * <p>
  * For aggregate types, this factory delegates to an {@link org.apache.tuscany.core.builder.ObjectFactory} to create an
- * instance of the aggregate implementation and perform injection of configuration and references. Once an aggregate instance is
- * created, the factory will register the aggregate's children. This process may be done recursively in a lazy fashion,
- * descending down an aggregate hierarchy as a child aggregate is instantiated.
+ * instance of the aggregate implementation and perform injection of configuration and references. Once an aggregate
+ * instance is created, the factory will register the aggregate's children. This process may be done recursively in a
+ * lazy fashion, descending down an aggregate hierarchy as a child aggregate is instantiated.
  * 
  * @version $Rev$ $Date$
  */
@@ -96,7 +96,11 @@ public class SystemContextFactory implements ContextFactory<InstanceContext>, Co
         this.ctr = ctr;
         this.isAggregate = AggregateContext.class.isAssignableFrom(ctr.getDeclaringClass());
         this.scope = scope;
-        stateless = (scope == Scope.INSTANCE);
+        if (isAggregate) {
+            scope = Scope.AGGREGATE;
+        } else {
+            stateless = (scope == Scope.INSTANCE);
+        }
     }
 
     // ----------------------------------

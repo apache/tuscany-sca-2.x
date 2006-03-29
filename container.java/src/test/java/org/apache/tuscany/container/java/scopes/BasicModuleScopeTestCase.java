@@ -48,7 +48,7 @@ public class BasicModuleScopeTestCase extends TestCase {
     public void testInstanceManagement() throws Exception {
         EventContext ctx = new EventContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        scope.registerFactorys(createConfigurations());
+        scope.registerFactories(createConfigurations());
         scope.start();
         // first request
         scope.onEvent(EventContext.MODULE_START, null);
@@ -65,7 +65,7 @@ public class BasicModuleScopeTestCase extends TestCase {
     public void testSetNullComponents() throws Exception {
         EventContext ctx = new EventContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        scope.registerFactorys(createConfigurations());
+        scope.registerFactories(createConfigurations());
         scope.start();
         scope.onEvent(EventContext.MODULE_START, null);
         scope.onEvent(EventContext.MODULE_STOP, null);
@@ -75,7 +75,7 @@ public class BasicModuleScopeTestCase extends TestCase {
     public void testRegisterContextBeforeStart() throws Exception {
         EventContext ctx = new EventContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        scope.registerFactorys(createConfigurations());
+        scope.registerFactories(createConfigurations());
         scope.start();
         scope.registerFactory(createConfiguration("NewTestService"));
         scope.onEvent(EventContext.MODULE_START,null);
@@ -93,7 +93,7 @@ public class BasicModuleScopeTestCase extends TestCase {
         scope.start();
         scope.registerFactory(createConfiguration("NewTestService"));
         scope.onEvent(EventContext.MODULE_START,null);
-        scope.registerFactorys(createConfigurations());
+        scope.registerFactories(createConfigurations());
         ModuleScopeInitDestroyComponent comp2 = (ModuleScopeInitDestroyComponent) scope.getContext("NewTestService").getInstance(null);
         Assert.assertNotNull(comp2);
         Assert.assertTrue(comp2.isInitialized());

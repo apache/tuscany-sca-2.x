@@ -51,7 +51,7 @@ import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 
 /**
  * Implementation of a RuntimeContext that forms the foundation for a Tuscany environment.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class RuntimeContextImpl extends AbstractContext implements RuntimeContext {
@@ -63,7 +63,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     // the top-level wire builder in the runtime
     private final HierarchicalWireBuilder wireBuilder;
 
-    private final List<RuntimeEventListener> listeners = new ArrayList(1);
+    private final List<RuntimeEventListener> listeners = new ArrayList<RuntimeEventListener>(1);
 
     private final AggregateContext rootContext;
 
@@ -80,27 +80,28 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
     /**
      * Constructor for creating a runtime with a specified MonitorFactory and pre-defined builders.
-     *
+     * 
      * @param monitorFactory the default {@link MonitorFactory} for this runtime
      * @param builders a list of builders automatically made available; may be null
      * @param wireBuilder the top-level hierarchical wire builder for the runtime; if not specified, a default
      *        implementation will be used
      */
-    public RuntimeContextImpl(MonitorFactory monitorFactory, List<SCDLModelLoader> loaders,
-            List<ContextFactoryBuilder> builders, HierarchicalWireBuilder wireBuilder) {
+    public RuntimeContextImpl(MonitorFactory monitorFactory, List<SCDLModelLoader> loaders, List<ContextFactoryBuilder> builders,
+            HierarchicalWireBuilder wireBuilder) {
         super(RUNTIME);
         this.monitorFactory = monitorFactory;
         this.builders = (builders == null) ? new ArrayList(1) : builders;
         this.loaders = (loaders == null) ? new ArrayList(1) : loaders;
         this.wireBuilder = (wireBuilder == null) ? new DefaultWireBuilder() : wireBuilder;
 
-        rootContext = new AggregateContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this, monitorFactory);
-        systemContext = new SystemAggregateContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(), this, monitorFactory, new StAXLoaderRegistryImpl(), new SystemAssemblyFactoryImpl());
+        rootContext = new AggregateContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this,
+                monitorFactory);
+        systemContext = new SystemAggregateContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(),
+                this, monitorFactory, new StAXLoaderRegistryImpl(), new SystemAssemblyFactoryImpl());
     }
 
     /**
-     * Specialized constructor that allows the default implementations of the root and system contexts to be
-     * overridden.
+     * Specialized constructor that allows the default implementations of the root and system contexts to be overridden.
      * 
      * @param monitorFactory the default {@link MonitorFactory} for this runtime
      * @param rootContext the context to use for the root of the user context tree
@@ -238,7 +239,8 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         wireBuilder.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
     }
 
-    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
+    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
+            throws BuilderConfigException {
         wireBuilder.completeTargetChain(targetFactory, targetType, targetScopeContext);
     }
 
@@ -257,8 +259,12 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
             return instanceInterface.cast(this);
         } else {
             // autowire to system components
-            return instanceInterface.cast(getSystemContext().resolveInstance(instanceInterface));
+            return instanceInterface.cast(getSystemContext().resolveExternalInstance(instanceInterface));
         }
+    }
+
+    public <T> T resolveExternalInstance(Class<T> instanceInterface) throws AutowireResolutionException {
+        return systemContext.resolveExternalInstance(instanceInterface);
     }
 
     // ----------------------------------
@@ -272,7 +278,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     public Object getImplementationInstance(boolean notify) throws TargetException {
         return this;
     }
-    
+
     public Aggregate getAggregate() {
         return systemContext.getAggregate();
     }
@@ -286,4 +292,5 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
             throw new IllegalStateException("Context must be in RUNNING state");
         }
     }
+
 }

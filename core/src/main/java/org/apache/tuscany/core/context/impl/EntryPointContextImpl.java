@@ -33,11 +33,7 @@ import org.apache.tuscany.core.message.MessageFactory;
  */
 public class EntryPointContextImpl extends AbstractContext implements EntryPointContext {
 
-    private MessageFactory messageFactory;
-
     private ProxyFactory proxyFactory;
-
-    private Object target;
 
     private InvocationHandler invocationHandler;
 
@@ -53,7 +49,6 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
      * 
      * @param name the entry point name
      * @param proxyFactory the proxy factory containing the invocation chains for the entry point
-     * @param parentContext the containing aggregate of the entry point
      * @param messageFactory a factory for generating invocation messages
      * @throws ContextInitException if an error occurs creating the entry point
      */
@@ -63,7 +58,6 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
         assert (proxyFactory != null) : "Proxy factory was null";
         assert (messageFactory != null) : "Message factory was null";
         this.proxyFactory = proxyFactory;
-        this.messageFactory = messageFactory;
         invocationHandler = new JDKInvocationHandler(messageFactory, proxyFactory.getProxyConfiguration()
                 .getInvocationConfigurations());
     }

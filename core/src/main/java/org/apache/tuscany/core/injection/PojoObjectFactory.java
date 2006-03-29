@@ -21,7 +21,7 @@ public class PojoObjectFactory<T> implements ObjectFactory<T> {
 
     private static final ObjectFactory[] NO_INIT_PARAM = {};
 
-    private static final List<Injector> NO_SETTER_PARAM = Collections.EMPTY_LIST;
+    private static final List<Injector> NO_SETTER_PARAM = Collections.emptyList();
 
     // ----------------------------------
     // Fields
@@ -60,7 +60,7 @@ public class PojoObjectFactory<T> implements ObjectFactory<T> {
         try {
             T instance = ctr.newInstance(initargs);
             // interate through the injectors and inject the instance
-            for (Injector setter : setters) {
+            for (Injector<T> setter : setters) {
                 setter.inject(instance);
             }
             return instance;

@@ -72,7 +72,7 @@ public abstract class AbstractScopeContext  extends AbstractContext implements S
     // Scope methods
     // ----------------------------------
 
-    public void registerFactorys(List<ContextFactory<InstanceContext>> configurations) {
+    public void registerFactories(List<ContextFactory<InstanceContext>> configurations) {
         for (ContextFactory<InstanceContext> configuration : configurations) {
             contextFactorys.put(configuration.getName(), configuration);
         }

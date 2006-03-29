@@ -53,7 +53,7 @@ public abstract class AbstractContext implements Context {
         lifecycleState = state;
     }
 
-    protected List<LifecycleEventListener> contextListener = new CopyOnWriteArrayList();
+    protected List<LifecycleEventListener> contextListener = new CopyOnWriteArrayList<LifecycleEventListener>();
 
     public void addContextListener(LifecycleEventListener listener) {
         contextListener.add(listener);

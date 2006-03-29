@@ -16,8 +16,12 @@
  */
 package org.apache.tuscany.core.context.impl;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.AutowireContext;
@@ -32,8 +36,15 @@ import org.apache.tuscany.core.context.ServiceNotFoundException;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.Binding;
+import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Extensible;
+import org.apache.tuscany.model.assembly.ModuleComponent;
+import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.Service;
 import org.osoa.sca.ModuleContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
@@ -46,16 +57,11 @@ import org.osoa.sca.ServiceUnavailableException;
  */
 public class AggregateContextImpl extends AbstractAggregateContext implements ConfigurationContext, ModuleContext {
 
-    // ----------------------------------
-    // Fields
-    // ----------------------------------
+    // a mapping of service type to component name
+    private Map<Class, NameToScope> autowireIndex = new ConcurrentHashMap<Class, NameToScope>();
 
     @Autowire(required = false)
-    private AutowireContext autowireContext;    
-    
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
+    private AutowireContext autowireContext;
 
     public AggregateContextImpl() {
         super();
@@ -135,6 +141,17 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Co
     // AutowireContext methods
     // ----------------------------------
 
+    public <T> T resolveExternalInstance(Class<T> instanceInterface) throws AutowireResolutionException {
+        NameToScope nts = autowireIndex.get(instanceInterface);
+        if (nts != null && nts.isVisible()) {
+            return instanceInterface.cast(nts.getScopeContext().getInstance(nts.getName()));
+            // } else if (autowireContext != null) {
+            // return instanceInterface.cast(autowireContext.resolveExternalInstance(instanceInterface));
+        } else {
+            return null;
+        }
+    }
+
     public <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException {
         if (MonitorFactory.class.equals(instanceInterface)) {
             return instanceInterface.cast(monitorFactory);
@@ -143,9 +160,14 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Co
         } else if (AutowireContext.class.equals(instanceInterface)) {
             return instanceInterface.cast(this);
         }
+        NameToScope nts = autowireIndex.get(instanceInterface);
+        if (nts != null) {
+            return instanceInterface.cast(nts.getScopeContext().getInstance(nts.getName()));
+        }
         if (autowireContext != null) {
             try {
-                return autowireContext.resolveInstance(instanceInterface);
+                // resolve to parent
+                return instanceInterface.cast(autowireContext.resolveInstance(instanceInterface));
             } catch (AutowireResolutionException e) {
                 e.addContextName(getName());
                 throw e;
@@ -154,14 +176,62 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Co
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    protected void registerAutowire(Extensible model) {
-        // this context only delegates autowiring
+    protected void registerAutowire(Extensible model) throws ConfigurationException {
+        if (lifecycleState == INITIALIZING || lifecycleState == INITIALIZED || lifecycleState == RUNNING) {
+            if (model instanceof EntryPoint) {
+                EntryPoint ep = (EntryPoint) model;
+                for (Binding binding : ep.getBindings()) {
+                    if (binding instanceof SystemBinding) {
+                        Class interfaze = ep.getConfiguredService().getService().getServiceContract().getInterface();
+                        NameToScope nts = autowireIndex.get(interfaze);
+                        if (nts == null || !nts.isEntryPoint()) { // handle special case where two entry points with
+                            // same interface register: first wins
+                            ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getConfiguredReference()
+                                    .getContextFactory()).getScope());
+                            if (scope == null) {
+                                ConfigurationException ce = new ConfigurationException("Scope not found for entry point");
+                                ce.setIdentifier(ep.getName());
+                                ce.addContextName(getName());
+                                throw ce;
+                            }
+                            // only register if an impl has not already been registered
+                            NameToScope mapping = new NameToScope(new QualifiedName(ep.getName()), scope, true, true);
+                            autowireIndex.put(interfaze, mapping);
+                        }
+                    }
+                }
+            } else if (model instanceof ModuleComponent) {
+                ModuleComponent component = (ModuleComponent) model;
+                for (EntryPoint ep : component.getModuleImplementation().getEntryPoints()) {
+                    for (Binding binding : ep.getBindings()) {
+                        if (binding instanceof SystemBinding) {
+                            Class interfaze = ep.getConfiguredService().getService().getServiceContract().getInterface();
+                            if (autowireIndex.get(interfaze) == null) {
+                                ScopeContext scope = scopeContexts.get(Scope.AGGREGATE);
+                                // only register if an impl has not already been registered, ensuring it is not visible outside the containment
+                                NameToScope mapping = new NameToScope(new QualifiedName(component.getName()
+                                        + QualifiedName.NAME_SEPARATOR + ep.getName()), scope, false, false);
+                                autowireIndex.put(interfaze, mapping);
+                            }
+                        }
+                    }
+                }
+            } else if (model instanceof Component) {
+                Component component = (Component) model;
+                for (Service service : component.getComponentImplementation().getComponentType().getServices()) {
+                    Class interfaze = service.getServiceContract().getInterface();
+                    if (autowireIndex.get(interfaze) == null) {
+                        // only register if an impl has not already been registered
+                        ScopeContext scopeCtx = scopeContexts.get(service.getServiceContract().getScope());
+                        NameToScope mapping = new NameToScope(new QualifiedName(component.getName()), scopeCtx, false, false);
+                        autowireIndex.put(interfaze, mapping);
+                    }
+                }
+            }
+        }
     }
-
-    // ----------------------------------
-    // ConfigurationContext methods
-    // ----------------------------------
 
     public void configure(Extensible model) throws ConfigurationException {
         if (configurationContext != null) {
@@ -197,7 +267,8 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Co
         }
     }
 
-    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
+    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
+            throws BuilderConfigException {
         if (configurationContext != null) {
             try {
                 configurationContext.completeTargetChain(targetFactory, targetType, targetScopeContext);
@@ -218,6 +289,45 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Co
 
     public Object getImplementationInstance(boolean notify) throws TargetException {
         return this;
+    }
+
+    // ----------------------------------
+    // Inner classes
+    // ----------------------------------
+
+    private class NameToScope {
+
+        private QualifiedName qName;
+
+        private ScopeContext scope;
+
+        private boolean visible;
+
+        private boolean entryPoint;
+
+        public NameToScope(QualifiedName name, ScopeContext scope, boolean visible, boolean entryPoint) {
+            this.qName = name;
+            this.scope = scope;
+            this.visible = visible;
+            this.entryPoint = entryPoint;
+        }
+
+        public QualifiedName getName() {
+            return qName;
+        }
+
+        public ScopeContext getScopeContext() {
+            return scope;
+        }
+
+        public boolean isVisible() {
+            return visible;
+        }
+
+        public boolean isEntryPoint() {
+            return entryPoint;
+        }
+
     }
 
 }

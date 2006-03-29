@@ -37,7 +37,7 @@ public interface ScopeContext extends InstanceContext, RuntimeEventListener {
     /**
      * Registers the context factory used to construct instance contexts for the scope
      */
-    public void registerFactorys(List<ContextFactory<InstanceContext>> configurations);
+    public void registerFactories(List<ContextFactory<InstanceContext>> configurations);
 
     /**
      * Adds a context factory to the scope

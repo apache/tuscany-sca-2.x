@@ -30,11 +30,11 @@ import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
+import org.apache.tuscany.core.system.assembly.SystemModule;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
-import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
 import org.apache.tuscany.model.assembly.AggregatePart;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Component;
@@ -69,10 +69,11 @@ public class MockFactory {
     /**
      * Creates an aggregate component with the given name
      */
-    public static Component createAggregateComponent(String name) {
-        Component sc = systemFactory.createModuleComponent();
-        SystemImplementation impl = systemFactory.createSystemImplementation();
-        impl.setImplementationClass(AggregateContextImpl.class);
+    public static ModuleComponent createAggregateComponent(String name) {
+        ModuleComponent sc = systemFactory.createModuleComponent();
+        Module impl = systemFactory.createModule();
+        impl.setName(name);
+        //impl.setImplementationClass(AggregateContextImpl.class);
         sc.setComponentImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
@@ -88,10 +89,11 @@ public class MockFactory {
     /**
      * Creates an aggregate component with the given name
      */
-    public static Component createSystemAggregateComponent(String name) {
-        Component sc = systemFactory.createModuleComponent();
-        SystemImplementation impl = systemFactory.createSystemImplementation();
-        impl.setImplementationClass(SystemAggregateContextImpl.class);
+    public static ModuleComponent createSystemAggregateComponent(String name) {
+        ModuleComponent sc = systemFactory.createModuleComponent();
+        SystemModule impl = systemFactory.createSystemModule();
+        impl.setName(name);
+        //impl.setImplementationClass(SystemAggregateContextImpl.class);
         sc.setComponentImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
@@ -251,6 +253,10 @@ public class MockFactory {
         return module;
     }
 
+    public static <T> Component createSystemComponent(String name,  Class<T> service, Class<? extends T> impl,Scope scope ){
+       return systemFactory.createSystemComponent(name,service,impl,scope);
+    }
+    
     /**
      * Creates a test system module with source and target components wired together.
      * 

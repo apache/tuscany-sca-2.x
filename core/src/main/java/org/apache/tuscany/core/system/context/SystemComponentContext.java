@@ -16,8 +16,6 @@
  */
 package org.apache.tuscany.core.system.context;
 
-import java.util.Iterator;
-
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.core.context.Context;
@@ -27,7 +25,6 @@ import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.injection.EventInvoker;
-import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.ObjectCreationException;
 

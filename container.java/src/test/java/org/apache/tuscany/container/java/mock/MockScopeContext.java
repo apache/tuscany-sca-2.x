@@ -98,7 +98,7 @@ public class MockScopeContext implements ScopeContext {
     }
 
 
-    public void registerFactorys(List<ContextFactory<InstanceContext>> configurations) {
+    public void registerFactories(List<ContextFactory<InstanceContext>> configurations) {
     } 
 
     public void registerFactory(ContextFactory<InstanceContext> configuration) {

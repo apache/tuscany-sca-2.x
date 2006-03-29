@@ -144,8 +144,9 @@ public class MockFactory {
      */
     public static Component createAggregateComponent(String name) {
         Component sc = sc = systemFactory.createModuleComponent();
-        SystemImplementation impl = systemFactory.createSystemImplementation();
-        impl.setImplementationClass(AggregateContextImpl.class);
+        Module impl = systemFactory.createModule();
+        impl.setName(name);
+        //impl.setImplementationClass(AggregateContextImpl.class);
         sc.setComponentImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
@@ -163,8 +164,9 @@ public class MockFactory {
      */
     public static Component createSystemAggregateComponent(String name) {
         Component sc = sc = systemFactory.createModuleComponent();
-        SystemImplementation impl = systemFactory.createSystemImplementation();
-        impl.setImplementationClass(SystemAggregateContextImpl.class);
+        Module impl = systemFactory.createSystemModule();
+        impl.setName(name);
+        //impl.setImplementationClass(SystemAggregateContextImpl.class);
         sc.setComponentImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();

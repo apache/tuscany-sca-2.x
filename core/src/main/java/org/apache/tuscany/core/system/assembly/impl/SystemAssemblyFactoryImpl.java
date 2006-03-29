@@ -19,6 +19,7 @@ package org.apache.tuscany.core.system.assembly.impl;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
+import org.apache.tuscany.core.system.assembly.SystemModule;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.EntryPoint;
@@ -74,6 +75,10 @@ public class SystemAssemblyFactoryImpl extends AssemblyFactoryImpl implements Sy
         javaServiceContract.setInterface(serviceContract);
 
         return createEntryPoint(entryPointName, javaServiceContract, systemBinding, targetName);
+    }
+
+    public SystemModule createSystemModule() {
+        return new SystemModuleImpl();
     }
 
 }

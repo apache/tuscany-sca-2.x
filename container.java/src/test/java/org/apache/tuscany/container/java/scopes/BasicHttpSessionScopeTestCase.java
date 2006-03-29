@@ -49,7 +49,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     public void testInstanceManagement() throws Exception {
         EventContext ctx = new EventContextImpl();
         HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
-        scope.registerFactorys(createConfigurations());
+        scope.registerFactories(createConfigurations());
         scope.start();
         Object session = new Object();
         Object session2 = new Object();
@@ -85,7 +85,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     public void testSetNullComponents() throws Exception {
         EventContext ctx = new EventContextImpl();
         HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
-        scope.registerFactorys(new ArrayList<ContextFactory<InstanceContext>>());
+        scope.registerFactories(new ArrayList<ContextFactory<InstanceContext>>());
         scope.start();
         scope.stop();
     }
@@ -93,7 +93,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     public void testGetContextByKey() throws Exception {
         EventContext ctx = new EventContextImpl();
         HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
-        scope.registerFactorys(createConfigurations());
+        scope.registerFactories(createConfigurations());
         scope.start();
         Object session = new Object();
         Object session2 = new Object();
@@ -126,7 +126,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     public void testRegisterContextBeforeSession() throws Exception {
         EventContext ctx = new EventContextImpl();
         HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
-        scope.registerFactorys(createConfigurations());
+        scope.registerFactories(createConfigurations());
         scope.start();
         Object session = new Object();
         scope.registerFactory(createConfiguration("NewTestService"));
@@ -164,7 +164,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     public void testRegisterContextAfterSession() throws Exception {
         EventContext ctx = new EventContextImpl();
         HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
-        scope.registerFactorys(createConfigurations());
+        scope.registerFactories(createConfigurations());
         scope.start();
         Object session = new Object();
 

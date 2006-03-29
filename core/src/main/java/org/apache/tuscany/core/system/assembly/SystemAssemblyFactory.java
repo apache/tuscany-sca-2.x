@@ -34,6 +34,11 @@ public interface SystemAssemblyFactory extends AssemblyFactory {
     SystemImplementation createSystemImplementation();
 
     /**
+     * Returns an assembly model artifact representing a system module 
+     */
+    SystemModule createSystemModule();
+
+    /**
      * Returns an assembly model artifact representing a system binding
      */
     SystemBinding createSystemBinding();

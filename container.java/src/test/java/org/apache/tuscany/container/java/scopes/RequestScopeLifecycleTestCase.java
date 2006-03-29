@@ -49,7 +49,7 @@ public class RequestScopeLifecycleTestCase extends TestCase {
     public void testInitDestroy() throws Exception {
         EventContext ctx = new EventContextImpl();
         RequestScopeContext scope = new RequestScopeContext(ctx);
-        scope.registerFactorys(createComponents());
+        scope.registerFactories(createComponents());
         scope.start();
         SessionScopeInitDestroyComponent initDestroy = (SessionScopeInitDestroyComponent) scope.getContext(
                 "TestServiceInitDestroy").getInstance(null);
@@ -80,7 +80,7 @@ public class RequestScopeLifecycleTestCase extends TestCase {
     public void testDestroyOrder() throws Exception {
         EventContext ctx = new EventContextImpl();
         RequestScopeContext scope = new RequestScopeContext(ctx);
-        scope.registerFactorys(createOrderedInitComponents());
+        scope.registerFactories(createOrderedInitComponents());
         scope.start();
         // request start
         OrderedInitPojo one = (OrderedInitPojo) scope.getContext("one").getInstance(null);

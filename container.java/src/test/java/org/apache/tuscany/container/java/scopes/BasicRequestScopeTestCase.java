@@ -48,7 +48,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     public void testInstanceManagement() throws Exception {
         EventContext ctx = new EventContextImpl();
         RequestScopeContext scope = new RequestScopeContext(ctx);
-        scope.registerFactorys(createConfigurations());
+        scope.registerFactories(createConfigurations());
         scope.start();
 
         // first request
@@ -68,7 +68,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     public void testRegisterContextBeforeRequest() throws Exception {
         EventContext ctx = new EventContextImpl();
         RequestScopeContext scope = new RequestScopeContext(ctx);
-        scope.registerFactorys(createConfigurations());
+        scope.registerFactories(createConfigurations());
         scope.registerFactory(createConfiguration("NewTestService"));
         scope.start();
         RequestScopeComponent comp1 = (RequestScopeComponent) scope.getContext("TestService1").getInstance(null);
@@ -82,7 +82,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     public void testRegisterContextAfterRequest() throws Exception {
         EventContext ctx = new EventContextImpl();
         RequestScopeContext scope = new RequestScopeContext(ctx);
-        scope.registerFactorys(createConfigurations());
+        scope.registerFactories(createConfigurations());
         scope.start();
         RequestScopeComponent comp1 = (RequestScopeComponent) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp1);
@@ -99,7 +99,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     public void testSetNullComponents() throws Exception {
         EventContext ctx = new EventContextImpl();
         RequestScopeContext scope = new RequestScopeContext(ctx);
-        scope.registerFactorys(createConfigurations());
+        scope.registerFactories(createConfigurations());
         scope.start();
         scope.stop();
     }
@@ -107,7 +107,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     public void testGetComponentByKey() throws Exception {
         EventContext ctx = new EventContextImpl();
         RequestScopeContext scope = new RequestScopeContext(ctx);
-        scope.registerFactorys(createConfigurations());
+        scope.registerFactories(createConfigurations());
         scope.start();
 
         RequestScopeComponentImpl comp1 = (RequestScopeComponentImpl) scope.getContext("TestService1").getInstance(null);

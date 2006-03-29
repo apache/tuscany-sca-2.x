@@ -22,10 +22,10 @@ import org.apache.tuscany.container.js.assembly.impl.JavaScriptAssemblyFactoryIm
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
-import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredService;
+import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.SimpleComponent;
@@ -75,8 +75,8 @@ public class MockAssemblyFactory {
         } else {
             sc = systemFactory.createSimpleComponent();
         }
-        SystemImplementation impl = systemFactory.createSystemImplementation();
-        impl.setImplementationClass(claz);
+        Module impl = systemFactory.createModule();
+        impl.setName(name);
         sc.setComponentImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();

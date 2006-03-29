@@ -48,7 +48,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
     public void testInstanceManagement() throws Exception {
         EventContext ctx = new EventContextImpl();
         StatelessScopeContext scope = new StatelessScopeContext(ctx);
-        scope.registerFactorys(createConfigurations());
+        scope.registerFactories(createConfigurations());
         scope.start();
         // first request
         StatelessComponentImpl comp1 = (StatelessComponentImpl) scope.getContext("TestService1").getInstance(null);
@@ -63,7 +63,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
     public void testRegisterContextBeforeRequest() throws Exception {
         EventContext ctx = new EventContextImpl();
         StatelessScopeContext scope = new StatelessScopeContext(ctx);
-        scope.registerFactorys(createConfigurations());
+        scope.registerFactories(createConfigurations());
         scope.registerFactory(createConfiguration("NewTestService"));
         scope.start();
         StatelessComponent comp1 = (StatelessComponent) scope.getContext("TestService1").getInstance(null);
@@ -76,7 +76,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
     public void testRegisterContextAfterRequest() throws Exception {
         EventContext ctx = new EventContextImpl();
         StatelessScopeContext scope = new StatelessScopeContext(ctx);
-        scope.registerFactorys(createConfigurations());
+        scope.registerFactories(createConfigurations());
         scope.start();
         StatelessComponent comp1 = (StatelessComponent) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp1);
@@ -93,7 +93,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
     public void testSetNullComponents() throws Exception {
         EventContext ctx = new EventContextImpl();
         StatelessScopeContext scope = new StatelessScopeContext(ctx);
-        scope.registerFactorys(createConfigurations());
+        scope.registerFactories(createConfigurations());
         scope.start();
         scope.stop();
     }

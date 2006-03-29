@@ -51,9 +51,7 @@ import org.apache.tuscany.core.context.LifecycleEventListener;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.RuntimeEventListener;
 import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.context.ScopeRuntimeException;
 import org.apache.tuscany.core.context.ScopeStrategy;
-import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
@@ -72,12 +70,15 @@ import org.apache.tuscany.core.system.config.SystemObjectContextFactory;
 import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.AggregatePart;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
+import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 
 /**
@@ -93,10 +94,6 @@ import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 public class SystemAggregateContextImpl extends AbstractContext implements SystemAggregateContext {
 
     public static final int DEFAULT_WAIT = 1000 * 60;
-
-    // ----------------------------------
-    // Fields
-    // ----------------------------------
 
     // The parent context, if one exists
     @ParentContext
@@ -223,10 +220,10 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 for (ExternalService es : module.getExternalServices()) {
                     registerAutowire(es);
                 }
-                for (Map.Entry entries : configurationsByScope.entrySet()) {
+                for (Map.Entry<Scope, List<ContextFactory<InstanceContext>>> entries : configurationsByScope.entrySet()) {
                     // register configurations with scope contexts
                     ScopeContext scope = scopeContexts.get(entries.getKey());
-                    scope.registerFactorys((List<ContextFactory<InstanceContext>>) entries.getValue());
+                    scope.registerFactories(entries.getValue());
                 }
                 for (ScopeContext scope : scopeContexts.values()) {
                     // register scope contexts as a listeners for events in the aggregate context
@@ -259,14 +256,10 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         initialized = false;
         if (scopeContexts != null) {
             for (ScopeContext scope : scopeContexts.values()) {
-                try {
-                    if (scope.getLifecycleState() == ScopeContext.RUNNING) {
-                        scope.stop();
-                    }
-                } catch (ScopeRuntimeException e) {
-                    // log.error("Error stopping scope container [" + scopeContainers[i].getName() + "]", e);
+                if (scope.getLifecycleState() == ScopeContext.RUNNING) {
+                    scope.stop();
                 }
-            }
+        }
         }
         scopeContexts = null;
         scopeIndex.clear();
@@ -274,10 +267,6 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         initializeLatch.countDown();
         lifecycleState = STOPPED;
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     public void setModule(Module module) {
         assert (module != null) : "Module cannot be null";
@@ -415,7 +404,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         SystemObjectContextFactory configuration = new SystemObjectContextFactory(componentName, instance);
         registerConfiguration(configuration);
         ScopeContext scope = scopeContexts.get(configuration.getScope());
-        NameToScope mapping = new NameToScope(new QualifiedName(componentName), scope);
+        NameToScope mapping = new NameToScope(new QualifiedName(componentName), scope, false, false);
         autowireIndex.put(service, mapping);
     }
 
@@ -475,9 +464,6 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
 
     }
 
-    /**
-     * @see org.apache.tuscany.core.context.AggregateContext#getAggregate()
-     */
     public Aggregate getAggregate() {
         return module;
     }
@@ -601,7 +587,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
             if (assemblyFactory != null) {
                 return instanceInterface.cast(assemblyFactory);
             } else {
-                return instanceInterface.cast(autowireContext.resolveInstance(instanceInterface));
+                return autowireContext.resolveInstance(instanceInterface);
             }
         }
 
@@ -615,49 +601,76 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 throw ae;
             }
         }
-        return null;
+        if (autowireContext != null) {
+            return autowireContext.resolveInstance(instanceInterface);
+        } else {
+            return null;
+        }
     }
 
+    public <T> T resolveExternalInstance(Class<T> instanceInterface) throws AutowireResolutionException {
+        NameToScope nts = autowireIndex.get(instanceInterface);
+        if (nts != null && nts.isVisible()) {
+            return instanceInterface.cast(nts.getScopeContext().getInstance(nts.getName()));
+        } else {
+            return null;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     private void registerAutowire(Extensible model) throws ConfigurationException {
         if (lifecycleState == INITIALIZING || lifecycleState == INITIALIZED || lifecycleState == RUNNING) {
             if (model instanceof EntryPoint) {
                 EntryPoint ep = (EntryPoint) model;
-                if (ep.getBindings() != null) {
-                    if (ep.getBindings().get(0) instanceof SystemBinding) {
-                        ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getConfiguredReference().getContextFactory())
-                                .getScope());
-                        if (scope == null) {
-                            ConfigurationException ce = new ConfigurationException("Scope not found for entry point");
-                            ce.setIdentifier(ep.getName());
-                            ce.addContextName(getName());
-                            throw ce;
+                for (Binding binding : ep.getBindings()) {
+                    if (binding instanceof SystemBinding) {
+                        Class interfaze = ep.getConfiguredService().getService().getServiceContract().getInterface();
+                        NameToScope nts = autowireIndex.get(interfaze);
+                        if (nts == null || !nts.isEntryPoint()) { // handle special case where two entry points with
+                                                                    // same interface register: first wins
+                            ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getConfiguredReference()
+                                    .getContextFactory()).getScope());
+                            if (scope == null) {
+                                ConfigurationException ce = new ConfigurationException("Scope not found for entry point");
+                                ce.setIdentifier(ep.getName());
+                                ce.addContextName(getName());
+                                throw ce;
+                            }
+                            // only register if an impl has not already been registered
+                            NameToScope mapping = new NameToScope(new QualifiedName(ep.getName()), scope, true, true);
+                            autowireIndex.put(interfaze, mapping);
                         }
-                        NameToScope mapping = new NameToScope(new QualifiedName(ep.getName()), scope);
-                        autowireIndex.put(ep.getConfiguredService().getService().getServiceContract().getInterface(), mapping);
+                    }
+                }
+            } else if (model instanceof ModuleComponent) {
+                ModuleComponent component = (ModuleComponent) model;
+                for (EntryPoint ep : component.getModuleImplementation().getEntryPoints()) {
+                    for (Binding binding : ep.getBindings()) {
+                        if (binding instanceof SystemBinding) {
+                            Class interfaze = ep.getConfiguredService().getService().getServiceContract().getInterface();
+                            if (autowireIndex.get(interfaze) == null) {
+                                ScopeContext scope = scopeContexts.get(Scope.AGGREGATE);
+                                // only register if an impl has not already been registered, ensuring it is not visible outside the containment
+                                NameToScope mapping = new NameToScope(new QualifiedName(component.getName()
+                                        + QualifiedName.NAME_SEPARATOR + ep.getName()), scope, false, false); 
+                                autowireIndex.put(interfaze, mapping);
+                            }
+                        }
+                    }
+                }
+            } else if (model instanceof Component) {
+                Component component = (Component) model;
+                for (Service service : component.getComponentImplementation().getComponentType().getServices()) {
+                    Class interfaze = service.getServiceContract().getInterface();
+                    if (autowireIndex.get(interfaze) == null) {
+                        // only register if an impl has not already been registered
+                        ScopeContext scopeCtx = scopeContexts.get(service.getServiceContract().getScope());
+                        NameToScope mapping = new NameToScope(new QualifiedName(component.getName()), scopeCtx, false, false);
+                        autowireIndex.put(interfaze, mapping);
                     }
                 }
             }
         }
-
-            // only autowire entry points with system bindings
-//            if (model instanceof EntryPoint) {
-//                EntryPoint ep = (EntryPoint) model;
-//                if (ep.getBindings() != null) {
-//                    if (ep.getBindings().get(0) instanceof SystemBinding) {
-//                        ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getConfiguredReference().getContextFactory())
-//                                .getScope());
-//                        if (scope == null) {
-//                            ConfigurationException ce = new ConfigurationException("Scope not found for entry point");
-//                            ce.setIdentifier(ep.getName());
-//                            ce.addContextName(getName());
-//                            throw ce;
-//                        }
-//                        NameToScope mapping = new NameToScope(new QualifiedName(ep.getName()), scope);
-//                        autowireIndex.put(ep.getConfiguredService().getService().getServiceContract().getInterface(), mapping);
-//                    }
-//                }
-//            }
-//        }
     }
 
     // ----------------------------------
@@ -706,24 +719,40 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
 
     /**
      * Maps a context name to a scope
+     * 
+     * TODO this is a duplicate of aggregate context
      */
     private class NameToScope {
 
-        private QualifiedName epName;
+        private QualifiedName qName;
 
         private ScopeContext scope;
 
-        public NameToScope(QualifiedName epName, ScopeContext scope) {
-            this.epName = epName;
+        private boolean visible;
+
+        private boolean entryPoint;
+
+        public NameToScope(QualifiedName name, ScopeContext scope, boolean visible, boolean entryPoint) {
+            this.qName = name;
             this.scope = scope;
+            this.visible = visible;
+            this.entryPoint = entryPoint;
         }
 
         public QualifiedName getName() {
-            return epName;
+            return qName;
         }
 
         public ScopeContext getScopeContext() {
             return scope;
+        }
+
+        public boolean isVisible() {
+            return visible;
+        }
+
+        public boolean isEntryPoint() {
+            return entryPoint;
         }
 
     }

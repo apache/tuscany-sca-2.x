@@ -33,10 +33,6 @@ public class ExternalServiceContextImpl extends AbstractContext implements Exter
 
     private ObjectFactory targetInstanceFactory;
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
     /**
      * Creates an external service context
      * 
@@ -54,10 +50,6 @@ public class ExternalServiceContextImpl extends AbstractContext implements Exter
         this.targetProxyFactory = targetProxyFactory;
         this.targetInstanceFactory = targetInstanceFactory;
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     public Object getInstance(QualifiedName qName) throws TargetException {
         try {

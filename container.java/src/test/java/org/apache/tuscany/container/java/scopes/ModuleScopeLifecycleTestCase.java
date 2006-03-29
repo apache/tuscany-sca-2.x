@@ -48,7 +48,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
     public void testInitDestroy() throws Exception {
         EventContext ctx = new EventContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        scope.registerFactorys(createComponents());
+        scope.registerFactories(createComponents());
         scope.start();
         scope.onEvent(EventContext.MODULE_START, null);
         ModuleScopeInitDestroyComponent initDestroy = (ModuleScopeInitDestroyComponent) scope.getContext(
@@ -78,7 +78,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
     public void testEagerInit() throws Exception {
         EventContext ctx = new EventContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        scope.registerFactorys(createEagerInitComponents());
+        scope.registerFactories(createEagerInitComponents());
         scope.start();
         scope.onEvent(EventContext.MODULE_START, null);
         ModuleScopeEagerInitDestroyComponent initDestroy = (ModuleScopeEagerInitDestroyComponent) scope.getContext(
@@ -104,7 +104,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
     public void testDestroyOrder() throws Exception {
         EventContext ctx = new EventContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        scope.registerFactorys(createOrderedInitComponents());
+        scope.registerFactories(createOrderedInitComponents());
         scope.start();
         scope.onEvent(EventContext.MODULE_START, null);
         OrderedInitPojo one = (OrderedInitPojo) scope.getContext("one").getInstance(null);
@@ -131,7 +131,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
     public void testEagerInitDestroyOrder() throws Exception {
         EventContext ctx = new EventContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        scope.registerFactorys(createOrderedEagerInitComponents());
+        scope.registerFactories(createOrderedEagerInitComponents());
         scope.start();
         scope.onEvent(EventContext.MODULE_START, null);
         OrderedEagerInitPojo one = (OrderedEagerInitPojo) scope.getContext("one").getInstance(null);

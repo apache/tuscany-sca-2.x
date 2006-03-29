@@ -20,7 +20,7 @@ public class MethodInjector<T> implements Injector<T> {
 
     public void inject(T instance) throws ObjectCreationException {
         try {
-            method.invoke(instance, new Object[]{objectFactory.getInstance()});
+            method.invoke(instance, objectFactory.getInstance());
         } catch (IllegalAccessException e) {
             throw new AssertionError("Method is not accessible [" + method + "]");
         } catch (InvocationTargetException e) {

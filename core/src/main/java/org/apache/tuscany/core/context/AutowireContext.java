@@ -23,7 +23,8 @@ package org.apache.tuscany.core.context;
 public interface AutowireContext extends AggregateContext {
 
     /**
-     * Returns an reference to the requested service.
+     * Used by child contexts to return an an autowire target. Resolved targets may be entry points or components in the parent
+     * or its ancestors, or entry points in a sibling context
      *
      * @param instanceInterface the type of service being requested
      * @return a reference to the requested service or null if none can be found
@@ -31,5 +32,12 @@ public interface AutowireContext extends AggregateContext {
      */
     <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException;
 
-    // todo add additional methods that allow other qualifications to be supplied
+    /**
+     * Used by 
+     * @param instanceInterface
+     * @return
+     * @throws AutowireResolutionException
+     */
+    <T> T resolveExternalInstance(Class<T> instanceInterface) throws AutowireResolutionException;
+
 }

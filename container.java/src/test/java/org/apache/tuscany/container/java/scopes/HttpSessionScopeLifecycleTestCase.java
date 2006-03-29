@@ -49,7 +49,7 @@ public class HttpSessionScopeLifecycleTestCase extends TestCase {
     public void testInitDestroy() throws Exception {
         EventContext ctx = new EventContextImpl();
         HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
-        scope.registerFactorys(createComponents());
+        scope.registerFactories(createComponents());
         scope.start();
         Object session = new Object();
         Object session2 = new Object();
@@ -86,7 +86,7 @@ public class HttpSessionScopeLifecycleTestCase extends TestCase {
     public void testDestroyOrder() throws Exception {
         EventContext ctx = new EventContextImpl();
         HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
-        scope.registerFactorys(createOrderedInitComponents());
+        scope.registerFactories(createOrderedInitComponents());
         scope.start();
         Object session = new Object();
         Object session2 = new Object();

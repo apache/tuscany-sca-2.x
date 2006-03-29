@@ -76,8 +76,8 @@ public interface AggregateContext extends InstanceContext {
     public Object locateInstance(String name) throws TargetException;
 
     /**
-     * Returns the aggregate managed by this aggregate context 
-     * @return
+     * Returns the aggregate managed by this aggregate context
+     *
      */
     @Deprecated
     public Aggregate getAggregate();
