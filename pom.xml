@@ -32,7 +32,6 @@
         <module>core</module>
         <module>bindings</module>
         <module>containers</module>
-        <module>container.java</module>
         <module>tomcat</module>
         <module>tools</module>
         <module>plugin</module>

@@ -15,11 +15,13 @@
  *  limitations under the License.
  -->
 <project>
+
     <parent>
-        <groupId>org.apache.tuscany</groupId>
-        <artifactId>tuscany-sca</artifactId>
+        <groupId>org.apache.tuscany.sca.containers</groupId>
+        <artifactId>tuscany-sca-containers</artifactId>
         <version>SNAPSHOT</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tuscany-container-java</artifactId>
     <name>Tuscany Java IoC Container</name>
