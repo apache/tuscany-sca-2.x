@@ -23,7 +23,7 @@
 	sdojava:package="org.apache.tuscany.container.js.scdl"
 	targetNamespace="http://org.apache.tuscany/xmlns/js/0.9">
 
-    <import namespace="http://www.osoa.org/xmlns/sca/0.9" schemaLocation="../../../../../model/src/main/resources/model/sca-core.xsd"/>
+    <import namespace="http://www.osoa.org/xmlns/sca/0.9" schemaLocation="../../../../../../model/src/main/resources/model/sca-core.xsd"/>
 
     <element name="implementation.js" substitutionGroup="sca:implementation" type="js:JavaScriptImplementation" sdo:name="implementationJs"/>
 
