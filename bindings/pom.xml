@@ -30,6 +30,7 @@
     <version>SNAPSHOT</version>
 
     <modules>
+        <module>binding.axis2</module>
         <module>binding.jsonrpc</module>
     </modules>
 

@@ -34,7 +34,7 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.tuscany</groupId>
+            <groupId>org.apache.tuscany.sca.bindings</groupId>
             <artifactId>tuscany-binding-axis2</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
