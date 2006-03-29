@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:jsonrpc="http://org.apache.tuscany/xmlns/jsonrpc/0.9" xmlns:sca="http://www.osoa.org/xmlns/sca/0.9" xmlns:sdo="commonj.sdo/xml" xmlns:sdojava="commonj.sdo/java" elementFormDefault="qualified" sdojava:package="org.apache.tuscany.binding.jsonrpc.scdl" targetNamespace="http://org.apache.tuscany/xmlns/jsonrpc/0.9">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+        xmlns:jsonrpc="http://org.apache.tuscany/xmlns/jsonrpc/0.9"
+        xmlns:sca="http://www.osoa.org/xmlns/sca/0.9"
+        xmlns:sdo="commonj.sdo/xml"
+        xmlns:sdojava="commonj.sdo/java"
+        elementFormDefault="qualified"
+        sdojava:package="org.apache.tuscany.binding.jsonrpc.scdl"
+        targetNamespace="http://org.apache.tuscany/xmlns/jsonrpc/0.9">
 
-   <import namespace="http://www.osoa.org/xmlns/sca/0.9" schemaLocation="../../../../../model/src/main/resources/model/sca-core.xsd"/>
+   <import namespace="http://www.osoa.org/xmlns/sca/0.9" schemaLocation="../../../../../../model/src/main/resources/model/sca-core.xsd"/>
 
    <element name="binding.jsonrpc" substitutionGroup="sca:binding" type="jsonrpc:JSONRPCBinding" sdo:name="bindingJsonrpc"/>
 

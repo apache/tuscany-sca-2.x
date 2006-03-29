@@ -17,8 +17,8 @@
 <project>
 
     <parent>
-        <groupId>org.apache.tuscany</groupId>
-        <artifactId>tuscany-sca</artifactId>
+        <groupId>org.apache.tuscany.sca.bindings</groupId>
+        <artifactId>tuscany-sca-bindings</artifactId>
         <version>SNAPSHOT</version>
     </parent>
 
