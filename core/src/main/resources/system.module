@@ -19,14 +19,4 @@
         xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
         name="org.apache.tuscany.core.system">
 
-    <entryPoint name="org.apache.tuscany.core.loader.StAXLoaderRegistry">
-        <interface.java interface="org.apache.tuscany.core.loader.StAXLoaderRegistry"/>
-        <system:binding.system/>
-        <reference>org.apache.tuscany.core.loader.StAXLoaderRegistryImpl</reference>
-    </entryPoint>
-
-    <component name="org.apache.tuscany.core.loader.StAXLoaderRegistryImpl">
-        <system:implementation.system class="org.apache.tuscany.core.loader.impl.StAXLoaderRegistryImpl"/>
-    </component>
-
 </module>

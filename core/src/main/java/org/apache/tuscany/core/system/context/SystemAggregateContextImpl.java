@@ -88,7 +88,7 @@ import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
  * according to their exposed interface. A system context may contain child aggregate contexts but an entry point in a
  * child context will only be outwardly accessible if there is an entry point that exposes it configured in the
  * top-level system context.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class SystemAggregateContextImpl extends AbstractContext implements SystemAggregateContext {
@@ -577,12 +577,6 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
             return instanceInterface.cast(messageFactory);
         } else if (ProxyFactoryFactory.class.equals(instanceInterface)) {
             return instanceInterface.cast(proxyFactoryFactory);
-        } else if (StAXLoaderRegistry.class.equals(instanceInterface)) {
-            if (loaderRegistry != null) {
-                return instanceInterface.cast(loaderRegistry);
-            } else {
-                return instanceInterface.cast(autowireContext.resolveInstance(StAXLoaderRegistry.class));
-            }
         } else if (instanceInterface.isAssignableFrom(SystemAssemblyFactory.class)) {
             if (assemblyFactory != null) {
                 return instanceInterface.cast(assemblyFactory);
