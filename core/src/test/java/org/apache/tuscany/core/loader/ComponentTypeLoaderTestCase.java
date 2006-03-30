@@ -23,15 +23,15 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.model.assembly.ComponentType;
-import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
+import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.assembly.AbstractLoader;
 import org.apache.tuscany.core.loader.assembly.ComponentTypeLoader;
 import org.apache.tuscany.core.loader.assembly.ServiceLoader;
 import org.apache.tuscany.core.loader.impl.StAXLoaderRegistryImpl;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
+import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
+import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.Service;
 
 /**
  * @version $Rev$ $Date$
@@ -39,7 +39,7 @@ import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 public class ComponentTypeLoaderTestCase extends TestCase {
     private XMLInputFactory xmlFactory;
     private StAXLoaderRegistry registry;
-    private AssemblyFactoryImpl assemblyFactory;
+    private SystemAssemblyFactoryImpl assemblyFactory;
     private ResourceLoaderImpl resourceLoader;
 
     public void testMinimal() throws XMLStreamException, ConfigurationLoadException {
@@ -57,7 +57,7 @@ public class ComponentTypeLoaderTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         xmlFactory = XMLInputFactory.newInstance();
-        assemblyFactory = new AssemblyFactoryImpl();
+        assemblyFactory = new SystemAssemblyFactoryImpl();
         registry = new StAXLoaderRegistryImpl();
         register(new ComponentTypeLoader());
         register(new ServiceLoader());

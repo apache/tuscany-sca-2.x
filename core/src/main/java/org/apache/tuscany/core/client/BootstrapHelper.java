@@ -99,9 +99,10 @@ public final class BootstrapHelper {
      * @return the default module configuration loader
      */
     public static ModuleComponentConfigurationLoader getConfigurationLoader(SystemAggregateContext systemContext, AssemblyModelContext modelContext) throws ConfigurationException {
+        // Bootstrap the StAX loader module
+        bootstrapStaxLoader(systemContext, modelContext);
+
         if (useStax) {
-            // Bootstrap the StAX loader module
-            bootstrapStaxLoader(systemContext, modelContext);
             return new StAXModuleComponentConfigurationLoaderImpl(modelContext, XMLInputFactory.newInstance(), systemContext.resolveInstance(StAXLoaderRegistry.class));
         } else {
             return new ModuleComponentConfigurationLoaderImpl(modelContext);

@@ -22,18 +22,18 @@ import org.osoa.sca.annotations.Init;
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.AssemblyFactory;
+import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 
 /**
  * @version $Rev$ $Date$
  */
 public abstract class AbstractLoader<T extends AssemblyModelObject> implements StAXElementLoader<T> {
-    protected AssemblyFactory factory;
+    protected SystemAssemblyFactory factory;
     protected StAXLoaderRegistry registry;
 
     @Autowire
-    public void setFactory(AssemblyFactory factory) {
+    public void setFactory(SystemAssemblyFactory factory) {
         this.factory = factory;
     }
 

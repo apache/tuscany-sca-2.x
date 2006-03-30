@@ -115,7 +115,8 @@ public final class StAXUtil {
         components.add(bootstrapLoader(factory, SystemImplementationLoader.class));
         components.add(bootstrapLoader(factory, SystemBindingLoader.class));
 
-        bootstrapLoaderRegistry(factory, module);
+        bootstrapService(factory, module, StAXLoaderRegistry.class, StAXLoaderRegistryImpl.class);
+        bootstrapService(factory, module, SystemAssemblyFactory.class, SystemAssemblyFactoryImpl.class);
 
         ModuleComponent mc = factory.createModuleComponent();
         mc.setName(name);
@@ -134,12 +135,12 @@ public final class StAXUtil {
         return component;
     }
 
-    private static void bootstrapLoaderRegistry(SystemAssemblyFactory factory, Module module) {
-        String epName = StAXLoaderRegistry.class.getName();
-        String compName = StAXLoaderRegistryImpl.class.getName();
+    private static <T> void bootstrapService(SystemAssemblyFactory factory, Module module, Class<T> service, Class<? extends T> impl) {
+        String epName = service.getName();
+        String compName = impl.getName();
 
-        Component component = factory.createSystemComponent(compName, StAXLoaderRegistry.class, StAXLoaderRegistryImpl.class, Scope.MODULE);
-        EntryPoint entryPoint = factory.createSystemEntryPoint(epName, StAXLoaderRegistry.class, compName);
+        Component component = factory.createSystemComponent(compName, service, impl, Scope.MODULE);
+        EntryPoint entryPoint = factory.createSystemEntryPoint(epName, service, compName);
 
         module.getComponents().add(component);
         module.getEntryPoints().add(entryPoint);
