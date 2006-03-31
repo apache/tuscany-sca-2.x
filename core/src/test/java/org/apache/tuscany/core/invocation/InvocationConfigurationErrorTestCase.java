@@ -38,7 +38,6 @@ public class InvocationConfigurationErrorTestCase extends TestCase {
 
     
     private Method hello;
-    private Method goodbye;
 
     private MessageFactory factory = new MessageFactoryImpl();
     
@@ -51,8 +50,7 @@ public class InvocationConfigurationErrorTestCase extends TestCase {
     }
     
     public void setUp() throws Exception {
-        hello = SimpleTarget.class.getMethod("hello", new Class[]{String.class});
-        goodbye = SimpleTarget.class.getMethod("goodbye", new Class[]{String.class});
+        hello = SimpleTarget.class.getMethod("hello", String.class);
     }
 
     public void testInvokeWithHandlers() throws Exception{
@@ -83,7 +81,7 @@ public class InvocationConfigurationErrorTestCase extends TestCase {
         
         Message msg = factory.createMessage();
         msg.setTargetInvoker(invoker);
-        Message response = (Message) source.getSourceInterceptor().invoke(msg);
+        Message response = source.getSourceInterceptor().invoke(msg);
         Assert.assertTrue(response.getBody() instanceof IllegalArgumentException);
         Assert.assertEquals(1,sourceRequestHandler.getCount());
         Assert.assertEquals(1,sourceResponseHandler.getCount());
@@ -117,7 +115,7 @@ public class InvocationConfigurationErrorTestCase extends TestCase {
         
         Message msg = factory.createMessage();
         msg.setTargetInvoker(invoker);
-        Message response = (Message) source.getSourceInterceptor().invoke(msg);
+        Message response = source.getSourceInterceptor().invoke(msg);
         Assert.assertTrue(response.getBody() instanceof IllegalArgumentException);
         Assert.assertEquals(1,sourceRequestHandler.getCount());
         Assert.assertEquals(1,sourceInterceptor.getCount());
@@ -147,7 +145,7 @@ public class InvocationConfigurationErrorTestCase extends TestCase {
         
         Message msg = factory.createMessage();
         msg.setTargetInvoker(invoker);
-        Message response = (Message) source.getSourceInterceptor().invoke(msg);
+        Message response = source.getSourceInterceptor().invoke(msg);
         Assert.assertTrue(response.getBody() instanceof IllegalArgumentException);
         Assert.assertEquals(1,sourceInterceptor.getCount());
         Assert.assertEquals(1,targetInterceptor.getCount());

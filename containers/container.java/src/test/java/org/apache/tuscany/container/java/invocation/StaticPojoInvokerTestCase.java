@@ -18,8 +18,7 @@ package org.apache.tuscany.container.java.invocation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import org.apache.tuscany.container.java.invocation.StaticJavaComponentTargetInvoker;
+import static java.lang.Integer.*;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -42,10 +41,10 @@ public class StaticPojoInvokerTestCase extends TestCase {
     }
 
     public void setUp() throws Exception {
-        echoMethod = TestBean.class.getDeclaredMethod("echo", new Class[]{String.class});
-        arrayMethod = TestBean.class.getDeclaredMethod("arrayEcho", new Class[]{String[].class});
+        echoMethod = TestBean.class.getDeclaredMethod("echo", String.class);
+        arrayMethod = TestBean.class.getDeclaredMethod("arrayEcho", String[].class);
         nullParamMethod = TestBean.class.getDeclaredMethod("nullParam", (Class[]) null);
-        primitiveMethod = TestBean.class.getDeclaredMethod("primitiveEcho", new Class[]{Integer.TYPE});
+        primitiveMethod = TestBean.class.getDeclaredMethod("primitiveEcho", TYPE);
         checkedMethod = TestBean.class.getDeclaredMethod("checkedException", (Class[]) null);
         runtimeMethod = TestBean.class.getDeclaredMethod("runtimeException", (Class[]) null);
         Assert.assertNotNull(echoMethod);
@@ -83,7 +82,7 @@ public class StaticPojoInvokerTestCase extends TestCase {
     public void testPrimitiveInvoke() throws Throwable {
         TestBean bean = new TestBean();
         StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(primitiveMethod, bean);
-        Object ret = invoker.invokeTarget(new Integer[]{new Integer(1)});
+        Object ret = invoker.invokeTarget(new Integer[]{1});
         Integer retI = (Integer) ret;
         Assert.assertEquals(1, retI.intValue());
     }

@@ -289,7 +289,7 @@ public class JavaIntrospectionHelper {
         return false;
     }
 
-    public static Constructor getDefaultConstructor(Class clazz) throws NoSuchMethodException {
+    public static <T> Constructor<T> getDefaultConstructor(Class<T> clazz) throws NoSuchMethodException {
         return clazz.getConstructor((Class[]) null);
     }
 

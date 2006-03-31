@@ -40,5 +40,5 @@ public interface TargetInvoker extends Interceptor, Cloneable{
      */
     public boolean isCacheable();
     
-    public Object clone();
+    public Object clone() throws CloneNotSupportedException;
 }

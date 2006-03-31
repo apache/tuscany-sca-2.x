@@ -46,7 +46,7 @@ public abstract class AbstractJavaComponentInvoker implements TargetInvoker {
         try {
             Object instance = getInstance();
             if (!operation.getDeclaringClass().isInstance(instance)) {
-                Set methods = JavaIntrospectionHelper.getAllUniqueMethods(instance.getClass());
+                Set<Method> methods = JavaIntrospectionHelper.getAllUniqueMethods(instance.getClass());
                 Method newOperation = JavaIntrospectionHelper.findClosestMatchingMethod(operation.getName(), operation
                         .getParameterTypes(), methods);
                 if (newOperation != null)
@@ -80,7 +80,8 @@ public abstract class AbstractJavaComponentInvoker implements TargetInvoker {
         throw new IllegalStateException("This interceptor must be the last interceptor in an interceptor chain");
     }
 
-    public Object clone(){
+    @Override
+    public Object clone() throws CloneNotSupportedException {
         try {
             AbstractJavaComponentInvoker clone = (AbstractJavaComponentInvoker) super.clone();
             clone.operation = this.operation;

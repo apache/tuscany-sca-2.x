@@ -17,7 +17,6 @@ import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.AutowireContext;
-import org.apache.tuscany.core.context.AutowireResolutionException;
 import org.apache.tuscany.core.injection.FactoryInitException;
 import org.apache.tuscany.core.injection.ObjectCreationException;
 
@@ -30,7 +29,7 @@ public class AutowireObjectFactory<T> implements ObjectFactory<T> {
 
     private ContextResolver resolver;
 
-    private Class autowireType;
+    private Class<T> autowireType;
 
     private boolean required;
 
@@ -73,7 +72,7 @@ public class AutowireObjectFactory<T> implements ObjectFactory<T> {
 //        } else if (ctx == null) {
 //            return null;
 //        }
-        return (T) ctx.resolveInstance(autowireType);
+        return ctx.resolveInstance(autowireType);
     }
 
     public void setContextResolver(ContextResolver resolver) {

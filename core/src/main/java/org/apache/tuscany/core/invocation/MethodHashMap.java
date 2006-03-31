@@ -22,32 +22,34 @@ import java.util.HashMap;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 
 /**
- * A HashMap keyed by method
+ * A Map implementation that performs a lookup on a collection of methods by method name. This implementation is used to
+ * map methods on one interface to compatible methods on another interface, for example, when flowing an invocation from
+ * a proxy injected on a source reference to a target service instance. 
+ *
+ * @version $Rev$ $Date$
  */
-public class MethodHashMap extends HashMap {
-    
-    /**
-     * Constructs a new MethodHashMap.
-     */
+public class MethodHashMap extends HashMap<Method, InvocationConfiguration> {
+
     public MethodHashMap() {
         super();
     }
-    
-    /**
-     * Constructs a new MethodHashMap.
-     */
+
     public MethodHashMap(int size) {
         super(size);
     }
-    
+
     /**
      * @see java.util.HashMap#get(java.lang.Object)
      */
-    public Object get(Object key) {
-        Method method=(Method)key;
-        //FIXME find a more efficient way to find a matching method
-        Method closestMethod=JavaIntrospectionHelper.findClosestMatchingMethod(method.getName(), method.getParameterTypes(), super.keySet());
-        return super.get(closestMethod);
+    public InvocationConfiguration get(Object key) {
+        if (key instanceof Method) {
+            Method m = (Method) key;
+            //FIXME find a more efficient way to find a matching method
+            Method closestMethod = JavaIntrospectionHelper.findClosestMatchingMethod(m.getName(), m.getParameterTypes(), super.keySet());
+            return super.get(closestMethod);
+        } else {
+            throw new IllegalArgumentException("Key must be a method");
+        }
     }
 
 }

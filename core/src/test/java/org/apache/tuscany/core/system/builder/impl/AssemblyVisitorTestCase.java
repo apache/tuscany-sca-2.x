@@ -108,7 +108,7 @@ public class AssemblyVisitorTestCase extends TestCase {
         ep.initialize(assemblyContext);
         module.getEntryPoints().add(ep);
 
-        List<ContextFactoryBuilder> builders = new ArrayList();
+        List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
         builders.add(new TestBuilder());
         AssemblyVisitor visitor = new AssemblyVisitor(builders);
         module.initialize(assemblyContext);

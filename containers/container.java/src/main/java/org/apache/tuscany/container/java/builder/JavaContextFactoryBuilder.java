@@ -1,10 +1,8 @@
 package org.apache.tuscany.container.java.builder;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -161,18 +159,16 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder<Aggregat
             Class implClass = null;
             Set<Field> fields;
             Set<Method> methods;
-            JavaContextFactory contextFactory = null;
+            JavaContextFactory contextFactory;
             try {
                 implClass = javaImpl.getImplementationClass();
                 fields = JavaIntrospectionHelper.getAllFields(implClass);
                 methods = JavaIntrospectionHelper.getAllUniqueMethods(implClass);
                 String name = component.getName();
-                Constructor ctr = implClass.getConstructor((Class[]) null);
-
                 contextFactory = new JavaContextFactory(name, JavaIntrospectionHelper
                         .getDefaultConstructor(implClass), scope);
                 
-                List<Injector> injectors = new ArrayList();
+                List<Injector> injectors = new ArrayList<Injector>();
 
                 EventInvoker initInvoker = null;
                 boolean eagerInit = false;
@@ -181,7 +177,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder<Aggregat
                 for (Field field : fields) {
                     ComponentName compName = field.getAnnotation(ComponentName.class);
                     if (compName != null) {
-                        Injector injector = new FieldInjector(field, new SingletonObjectFactory(name));
+                        Injector injector = new FieldInjector(field, new SingletonObjectFactory<Object>(name));
                         injectors.add(injector);
                     }
                     Context context = field.getAnnotation(Context.class);
@@ -205,7 +201,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder<Aggregat
                     }
                     ComponentName compName = method.getAnnotation(ComponentName.class);
                     if (compName != null) {
-                        Injector injector = new MethodInjector(method, new SingletonObjectFactory(name));
+                        Injector injector = new MethodInjector(method, new SingletonObjectFactory<Object>(name));
                         injectors.add(injector);
                     }
                     Context context = method.getAnnotation(Context.class);
@@ -248,7 +244,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder<Aggregat
                         policyBuilder.build(configuredService);
                     }
                     // add tail interceptor
-                    for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
+                    for (InvocationConfiguration iConfig : iConfigMap.values()) {
                         iConfig.addTargetInterceptor(new InvokerInterceptor());
                     }
 
@@ -310,9 +306,9 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder<Aggregat
             }
         } else if (JavaIntrospectionHelper.isImmutable(type)) {
             if (field != null) {
-                injector = new FieldInjector(field, new SingletonObjectFactory(value));
+                injector = new FieldInjector(field, new SingletonObjectFactory<Object>(value));
             } else {
-                injector = new MethodInjector(method, new SingletonObjectFactory(value));
+                injector = new MethodInjector(method, new SingletonObjectFactory<Object>(value));
             }
         }
         return injector;
@@ -327,8 +323,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder<Aggregat
             Set<Field> fields, Set<Method> methods) {
 
         // iterate through the targets
-        List<ProxyFactory> targetProxyFactories = new ArrayList();
-        List<ObjectFactory> objectFactories = new ArrayList();
+        List<ObjectFactory> objectFactories = new ArrayList<ObjectFactory>();
         String refName = reference.getReference().getName();
         Class refClass = reference.getReference().getServiceContract().getInterface();
         for (ConfiguredService configuredService : reference.getTargetConfiguredServices()) {
@@ -338,7 +333,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder<Aggregat
 
             ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
             Class interfaze = reference.getReference().getServiceContract().getInterface();
-            Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
+            Map<Method, InvocationConfiguration> iConfigMap = new HashMap<Method, InvocationConfiguration>();
             Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(interfaze);
             for (Method method : javaMethods) {
                 InvocationConfiguration iConfig = new InvocationConfiguration(method);
@@ -368,7 +363,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder<Aggregat
      */
     private Injector createInjector(String refName, Class refClass, boolean multiplicity, List<ObjectFactory> objectFactories,
             Set<Field> fields, Set<Method> methods) throws NoAccessorException, BuilderConfigException {
-        Field field = null;
+        Field field;
         Method method = null;
         if (multiplicity) {
             // since this is a multiplicity, we cannot match on business interface type, so scan through the fields,

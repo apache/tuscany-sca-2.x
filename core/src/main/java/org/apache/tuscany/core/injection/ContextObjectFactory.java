@@ -9,7 +9,7 @@ import org.apache.tuscany.core.context.AggregateContext;
  * 
  * @version $Rev: 380903 $ $Date: 2006-02-25 00:53:26 -0800 (Sat, 25 Feb 2006) $
  */
-public class ContextObjectFactory<T> implements ObjectFactory<AggregateContext> {
+public class ContextObjectFactory implements ObjectFactory<AggregateContext> {
     
     private final ContextResolver resolver;
 

@@ -42,7 +42,7 @@ public class StaticJavaComponentTargetInvoker extends AbstractJavaComponentInvok
         return true;
     }
 
-    public Object clone() {
+    public Object clone() throws CloneNotSupportedException {
         StaticJavaComponentTargetInvoker invoker = (StaticJavaComponentTargetInvoker) super.clone();
         invoker.instance = null;
         return invoker;

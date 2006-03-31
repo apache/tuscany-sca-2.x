@@ -29,7 +29,6 @@ import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
@@ -118,7 +117,6 @@ public class AutowireTestCase extends TestCase {
      */
     public void testScenario3() throws Exception {
         RuntimeContext runtime = createScenario3Runtime();
-        AggregateContext root = runtime.getRootContext();
         SystemAggregateContext system = runtime.getSystemContext();
 
         AggregateContext system2 = (AggregateContext) system.getContext("system2");
@@ -143,7 +141,6 @@ public class AutowireTestCase extends TestCase {
      */
     public void testScenario4() throws Exception {
         RuntimeContext runtime = createScenario4Runtime();
-        AggregateContext root = runtime.getRootContext();
         SystemAggregateContext system = runtime.getSystemContext();
         AggregateContext system1 = (AggregateContext) system.getContext("system1");
         system1.fireEvent(EventContext.MODULE_START, null);
@@ -164,7 +161,6 @@ public class AutowireTestCase extends TestCase {
      */
     public void testScenario5() throws Exception {
         RuntimeContext runtime = createScenario5Runtime();
-        AggregateContext root = runtime.getRootContext();
         SystemAggregateContext system = runtime.getSystemContext();
         AggregateContext system1 = (AggregateContext) system.getContext("system1");
         system1.fireEvent(EventContext.MODULE_START, null);
@@ -197,7 +193,7 @@ public class AutowireTestCase extends TestCase {
         systemEp.getBindings().add(systemFactory.createSystemBinding());
         Service service = systemFactory.createService();
         service.setName("system1/target.ep");
-        ((ConfiguredService) systemEp.getConfiguredReference().getTargetConfiguredServices().get(0)).setService(service);
+        (systemEp.getConfiguredReference().getTargetConfiguredServices().get(0)).setService(service);
 
         system.registerModelObject(systemEp);
         ModuleComponent app1Component = createAppModuleComponent("app1");
@@ -230,7 +226,7 @@ public class AutowireTestCase extends TestCase {
         ep.getBindings().add(systemFactory.createSystemBinding());
         Service service = systemFactory.createService();
         service.setName("target.ep");
-        ((ConfiguredService) ep.getConfiguredReference().getTargetConfiguredServices().get(0)).setService(service);
+        ep.getConfiguredReference().getTargetConfiguredServices().get(0).setService(service);
         app1bComponent.getModuleImplementation().getEntryPoints().add(ep);
 
         AggregateContext root = runtime.getRootContext();

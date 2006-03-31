@@ -37,9 +37,9 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
 
     private boolean eagerInit;
 
-    private EventInvoker initInvoker;
+    private EventInvoker<Object> initInvoker;
 
-    private EventInvoker destroyInvoker;
+    private EventInvoker<Object> destroyInvoker;
 
     private boolean stateless;
 
@@ -53,8 +53,8 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
     // Constructors
     // ----------------------------------
 
-    public JavaComponentContext(String name, ObjectFactory objectFactory, boolean eagerInit, EventInvoker initInvoker,
-            EventInvoker destroyInvoker, boolean stateless) {
+    public JavaComponentContext(String name, ObjectFactory objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
+            EventInvoker<Object> destroyInvoker, boolean stateless) {
         super(name);
         assert (objectFactory != null) : "Object factory was null";
         if (eagerInit && initInvoker == null) {

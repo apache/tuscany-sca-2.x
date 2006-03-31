@@ -21,8 +21,6 @@ public class JDKInvocationHandlerTestCase extends TestCase {
 
     private Method hello;
 
-    private Method goodbye;
-
     public JDKInvocationHandlerTestCase() {
         super();
     }
@@ -32,8 +30,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
     }
 
     public void setUp() throws Exception {
-        hello = SimpleTarget.class.getMethod("hello", new Class[] { String.class });
-        goodbye = SimpleTarget.class.getMethod("goodbye", new Class[] { String.class });
+        hello = SimpleTarget.class.getMethod("hello", String.class);
     }
 
     public void testBasicInvoke() throws Throwable {

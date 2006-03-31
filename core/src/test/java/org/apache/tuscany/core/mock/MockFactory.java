@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
 import org.apache.tuscany.core.mock.component.Source;
@@ -29,7 +28,6 @@ import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
-import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.SystemModule;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
@@ -343,7 +341,7 @@ public class MockFactory {
      * Returns a collection of bootstrap configuration builders
      */
     public static List<ContextFactoryBuilder> createSystemBuilders() {
-        List<ContextFactoryBuilder> builders = new ArrayList();
+        List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
         builders.add((new SystemContextFactoryBuilder()));
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());

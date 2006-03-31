@@ -35,7 +35,7 @@ public class MediationTestCase extends TestCase {
     private MessageFactory msgFactory = new MessageFactoryImpl();
 
     public void setUp() throws Exception {
-        hello = Hello.class.getMethod("hello", new Class[] { String.class });
+        hello = Hello.class.getMethod("hello", String.class);
     }
 
     public void testMediation() throws Exception {

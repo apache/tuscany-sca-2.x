@@ -46,7 +46,7 @@ public class SystemScopeStrategy extends AbstractScopeStrategy {
         ScopeContext aggregrateScope = new AggregateScopeContext(eventContext);
         ScopeContext moduleScoper = new ModuleScopeContext(eventContext);
         ScopeContext statelessScope = new StatelessScopeContext(eventContext);
-        Map<Scope, ScopeContext> scopes = new HashMap();
+        Map<Scope, ScopeContext> scopes = new HashMap<Scope, ScopeContext>();
         scopes.put(Scope.AGGREGATE, aggregrateScope);
         scopes.put(Scope.MODULE, moduleScoper);
         scopes.put(Scope.INSTANCE, statelessScope);

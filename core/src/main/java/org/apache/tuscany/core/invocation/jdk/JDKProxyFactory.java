@@ -38,8 +38,6 @@ public class JDKProxyFactory implements ProxyFactory {
 
     private static final int INITIALIZED = 1;
 
-    private static final int ERROR = -1;
-
     private int state = UNINITIALIZED;
 
     private Class[] businessInterfaceArray;

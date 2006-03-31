@@ -33,7 +33,7 @@ import org.apache.tuscany.model.assembly.Extensible;
  */
 public class MockConfigContext implements ConfigurationContext {
 
-    private List<ContextFactoryBuilder> builders = new ArrayList();
+    private List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
 
     public MockConfigContext(List<ContextFactoryBuilder> builders) {
         this.builders = builders;

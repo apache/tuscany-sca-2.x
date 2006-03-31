@@ -28,7 +28,6 @@ import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 public class JavaTargetWireBuilderTestCase extends TestCase {
 
     private Method hello;
-    private Method goodbye;
 
     public JavaTargetWireBuilderTestCase() {
     }
@@ -38,8 +37,7 @@ public class JavaTargetWireBuilderTestCase extends TestCase {
     }
 
     public void setUp() throws Exception {
-        hello = SimpleTarget.class.getMethod("hello", new Class[] { String.class });
-        goodbye = SimpleTarget.class.getMethod("goodbye", new Class[] { String.class });
+        hello = SimpleTarget.class.getMethod("hello", String.class);
     }
     
     
@@ -83,7 +81,7 @@ public class JavaTargetWireBuilderTestCase extends TestCase {
         targetFactory.setBusinessInterface(SimpleTarget.class);
 
         // bootstrap a scope container with the target in it
-        Map<String,Object> instances = new HashMap();
+        Map<String,Object> instances = new HashMap<String,Object>();
         SimpleTarget simpleTarget = new SimpleTargetImpl();
         instances.put("target",simpleTarget);
         MockScopeContext scopeCtx = new MockScopeContext(instances);
@@ -100,7 +98,7 @@ public class JavaTargetWireBuilderTestCase extends TestCase {
         Message msg = msgFactory.createMessage();
         msg.setBody("foo");
         msg.setTargetInvoker(source.getTargetInvoker());
-        Message response = (Message) source.getSourceInterceptor().invoke(msg);
+        Message response = source.getSourceInterceptor().invoke(msg);
         Assert.assertEquals("foo", response.getBody());
         Assert.assertEquals(1, sourceRequestHandler.getCount());
         Assert.assertEquals(1, sourceResponseHandler.getCount());

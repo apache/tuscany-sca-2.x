@@ -63,7 +63,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     public void testRefWithSourceInterceptor() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
-        List<ContextFactoryBuilder> builders = new ArrayList();
+        List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
         builders.add((new SystemContextFactoryBuilder()));
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
@@ -104,7 +104,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     public void testRefWithSourceInterceptorHandler() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
-        List<ContextFactoryBuilder> builders = new ArrayList();
+        List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
         builders.add((new SystemContextFactoryBuilder()));
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
@@ -150,7 +150,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     public void testRefWithTargetInterceptorHandler() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
-        List<ContextFactoryBuilder> builders = new ArrayList();
+        List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
         builders.add((new SystemContextFactoryBuilder()));
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
@@ -197,7 +197,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     public void testRefWithTargetInterceptor() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
-        List<ContextFactoryBuilder> builders = new ArrayList();
+        List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
         builders.add((new SystemContextFactoryBuilder()));
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());

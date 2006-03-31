@@ -75,7 +75,7 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
         }
     }
 
-    public Object clone() {
+    public Object clone() throws CloneNotSupportedException {
         ScopedJavaComponentInvoker invoker = (ScopedJavaComponentInvoker) super.clone();
         invoker.target = null;
         invoker.cacheable = this.cacheable;

@@ -45,19 +45,19 @@ public class JavaContextFactory implements ContextFactory<SimpleComponentContext
     private AggregateContext parentContext;
 
     // the implementation type constructor
-    private Constructor ctr;
+    private Constructor<Object> ctr;
 
     // injectors for properties, references and other metadata values such as
     private List<Injector> setters;
 
     // an invoker for a method decorated with @Init
-    private EventInvoker init;
+    private EventInvoker<Object> init;
 
     // whether the component should be eagerly initialized when its scope starts
     private boolean eagerInit;
 
     // an invoker for a method decorated with @Destroy
-    private EventInvoker destroy;
+    private EventInvoker<Object> destroy;
 
     // the scope of the implementation instance
     private Scope scope;
@@ -76,7 +76,7 @@ public class JavaContextFactory implements ContextFactory<SimpleComponentContext
      * @param ctr the implementation type constructor
      * @param scope the scope of the component implementation type
      */
-    public JavaContextFactory(String name, Constructor ctr, Scope scope) {
+    public JavaContextFactory(String name, Constructor<Object> ctr, Scope scope) {
         assert (name != null) : "Name was null";
         assert (ctr != null) : "Constructor was null";
         this.name = name;
@@ -98,11 +98,11 @@ public class JavaContextFactory implements ContextFactory<SimpleComponentContext
     }
 
     public SimpleComponentContext createContext() throws ContextCreationException {
-        PojoObjectFactory objectFactory = new PojoObjectFactory(ctr, null, setters);
+        PojoObjectFactory<?> objectFactory = new PojoObjectFactory<Object>(ctr, null, setters);
         return new JavaComponentContext(name, objectFactory, eagerInit, init, destroy, stateless);
     }
 
-    private Map<String, ProxyFactory> targetProxyFactories = new HashMap();
+    private Map<String, ProxyFactory> targetProxyFactories = new HashMap<String, ProxyFactory>();
 
     public void addTargetProxyFactory(String serviceName, ProxyFactory factory) {
         targetProxyFactories.put(serviceName, factory);
@@ -116,7 +116,7 @@ public class JavaContextFactory implements ContextFactory<SimpleComponentContext
         return targetProxyFactories;
     }
 
-    private List<ProxyFactory> sourceProxyFactories = new ArrayList();
+    private List<ProxyFactory> sourceProxyFactories = new ArrayList<ProxyFactory>();
 
     public void addSourceProxyFactory(String referenceName, ProxyFactory factory) {
         sourceProxyFactories.add(factory);
@@ -134,11 +134,11 @@ public class JavaContextFactory implements ContextFactory<SimpleComponentContext
         eagerInit = val;
     }
 
-    public void setInitInvoker(EventInvoker invoker) {
+    public void setInitInvoker(EventInvoker<Object> invoker) {
         init = invoker;
     }
 
-    public void setDestroyInvoker(EventInvoker invoker) {
+    public void setDestroyInvoker(EventInvoker<Object> invoker) {
         destroy = invoker;
     }
 

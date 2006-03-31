@@ -68,7 +68,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         context.setName("system.context");
         List<ContextFactoryBuilder>builders = MockFactory.createSystemBuilders();
         builders.add(new JavaContextFactoryBuilder(new JDKProxyFactoryFactory(), new MessageFactoryImpl()));
-        List<WireBuilder> wireBuilders = new ArrayList();
+        List<WireBuilder> wireBuilders = new ArrayList<WireBuilder>();
         wireBuilders.add(new JavaTargetWireBuilder());
         context.setConfigurationContext(new MockConfigContext(builders,wireBuilders));
         return context;

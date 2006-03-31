@@ -44,7 +44,7 @@ public class InterAggregateReferenceFactory<T> implements ObjectFactory<T> {
     public void setContextResolver(ContextResolver resolver){
         this.resolver = resolver;
     }
-    
+
     public T getInstance() throws ObjectCreationException {
         // only return entry points since this is an inter-module wire
         Object o = resolver.getCurrentContext().getInstance(targetQualifiedName);

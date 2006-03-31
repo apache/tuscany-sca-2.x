@@ -13,7 +13,6 @@
  */
 package org.apache.tuscany.core.system.builder;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -35,7 +34,6 @@ import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
-import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.injection.ContextObjectFactory;
@@ -102,7 +100,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
         }
         Component component = (Component) modelObject;
 
-        Class implClass = null;
+        Class implClass;
         Scope scope;
         // Get the component implementation
         ComponentImplementation componentImplementation = component.getComponentImplementation();
@@ -163,7 +161,6 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
             fields = JavaIntrospectionHelper.getAllFields(implClass);
             methods = JavaIntrospectionHelper.getAllUniqueMethods(implClass);
             String name = component.getName();
-            Constructor ctr = implClass.getConstructor((Class[]) null);
             if (componentImplementation instanceof Module) {
                 Module module = (Module)componentImplementation;
                 contextFactory = new SystemContextFactory(name, module, JavaIntrospectionHelper.getDefaultConstructor(implClass), scope);
@@ -346,9 +343,9 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
             }
         } else if (JavaIntrospectionHelper.isImmutable(type)) {
             if (field != null) {
-                injector = new FieldInjector(field, new SingletonObjectFactory(value));
+                injector = new FieldInjector(field, new SingletonObjectFactory<Object>(value));
             } else {
-                injector = new MethodInjector(method, new SingletonObjectFactory(value));
+                injector = new MethodInjector(method, new SingletonObjectFactory<Object>(value));
             }
         } else {
             if (field != null) {
@@ -372,9 +369,6 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder<Aggreg
         String refName = reference.getReference().getName();
         Class refClass = reference.getReference().getServiceContract().getInterface();
         for (ConfiguredService configuredService : reference.getTargetConfiguredServices()) {
-            String targetCompName = configuredService.getAggregatePart().getName();
-            String targetSerivceName = configuredService.getService().getName();
-            QualifiedName qName = new QualifiedName(targetCompName + QualifiedName.NAME_SEPARATOR + targetSerivceName);
             objectFactories.add(new NonProxiedTargetFactory(configuredService, resolver));
         }
         boolean multiplicity = reference.getReference().getMultiplicity() == Multiplicity.ONE_N

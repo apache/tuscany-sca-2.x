@@ -45,8 +45,7 @@ public class SystemSCDLModelLoader implements SCDLModelLoader {
             implementation.setImplementationClass(implementationClass);
             return implementation;
         } else if (object instanceof SystemBinding) {
-            org.apache.tuscany.core.system.assembly.SystemBinding binding = systemFactory.createSystemBinding();
-            return binding;
+            return systemFactory.createSystemBinding();
         } else
             return null;
     }

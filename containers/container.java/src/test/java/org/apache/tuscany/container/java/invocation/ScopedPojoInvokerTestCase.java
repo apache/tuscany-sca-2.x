@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.invocation.ScopedJavaComponentInvoker;
 import org.apache.tuscany.container.java.invocation.mock.SimpleTarget;
 import org.apache.tuscany.container.java.mock.MockScopeContext;
 import org.apache.tuscany.core.context.QualifiedName;
@@ -40,7 +39,7 @@ public class ScopedPojoInvokerTestCase extends TestCase {
     }
 
     public void setUp() throws Exception {
-        echoMethod = SimpleTarget.class.getDeclaredMethod("echo", new Class[]{String.class});
+        echoMethod = SimpleTarget.class.getDeclaredMethod("echo", String.class);
         Assert.assertNotNull(echoMethod);
     }
 

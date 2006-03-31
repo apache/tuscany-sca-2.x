@@ -31,10 +31,6 @@ import org.apache.tuscany.core.context.*;
  */
 public class RequestScopeContext extends AbstractScopeContext implements RuntimeEventListener, LifecycleEventListener {
 
-    // ----------------------------------
-    // Fields
-    // ----------------------------------
-
     // A collection of service component contexts keyed by thread. Note this could have been implemented with a ThreadLocal but
     // using a Map allows finer-grained concurrency.
     private Map<Object, Map<String, InstanceContext>> contextMap;
@@ -47,10 +43,6 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
         setName("Request Scope");
     }
 
-    // ----------------------------------
-    // Listener methods
-    // ----------------------------------
-
     public void onEvent(int type, Object key) {
         checkInit();
         /* clean up current context for pooled threads */
@@ -60,10 +52,6 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
             destroyContext();
         }
     }
-
-    // ----------------------------------
-    // Lifecycle methods
-    // ----------------------------------
 
     public synchronized void start() {
         if (lifecycleState != UNINITIALIZED) {

@@ -90,8 +90,8 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
             HierarchicalWireBuilder wireBuilder) {
         super(RUNTIME);
         this.monitorFactory = monitorFactory;
-        this.builders = (builders == null) ? new ArrayList(1) : builders;
-        this.loaders = (loaders == null) ? new ArrayList(1) : loaders;
+        this.builders = (builders == null) ? new ArrayList<ContextFactoryBuilder>(1) : builders;
+        this.loaders = (loaders == null) ? new ArrayList<SCDLModelLoader>(1) : loaders;
         this.wireBuilder = (wireBuilder == null) ? new DefaultWireBuilder() : wireBuilder;
 
         rootContext = new AggregateContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this,
@@ -116,8 +116,8 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         this.rootContext = rootContext;
         this.systemContext = systemContext;
         this.monitorFactory = monitorFactory;
-        this.loaders = (loaders == null) ? new ArrayList(1) : loaders;
-        this.builders = (builders == null) ? new ArrayList(1) : builders;
+        this.loaders = (loaders == null) ? new ArrayList<SCDLModelLoader>(1) : loaders;
+        this.builders = (builders == null) ? new ArrayList<ContextFactoryBuilder>(1) : builders;
         this.wireBuilder = (wireBuilder == null) ? new DefaultWireBuilder() : wireBuilder;
     }
 

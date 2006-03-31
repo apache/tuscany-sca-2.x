@@ -53,7 +53,7 @@ public class JDKInvocationHandler implements InvocationHandler {
 
     public JDKInvocationHandler(MessageFactory messageFactory, Map<Method, InvocationConfiguration> configuration) {
         assert (configuration != null) : "Configuration not specified";
-        this.configuration = new HashMap(configuration.size());
+        this.configuration = new HashMap<Method, ConfigHolder>(configuration.size());
         for (Map.Entry<Method, InvocationConfiguration> entry : configuration.entrySet()) {
             this.configuration.put(entry.getKey(), new ConfigHolder(entry.getValue()));
         }
@@ -81,9 +81,10 @@ public class JDKInvocationHandler implements InvocationHandler {
             headInterceptor = config.getSourceInterceptor();
         }
 
-        TargetInvoker invoker = null;
+        TargetInvoker invoker;
 
         if (holder.cachedInvoker == null) {
+            assert config != null;
             if(config.getTargetInvoker() == null){
                 TargetException e= new TargetException("No target invoker configured for operation");
                 e.setIdentifier(config.getMethod().getName());
@@ -97,6 +98,7 @@ public class JDKInvocationHandler implements InvocationHandler {
                 invoker = config.getTargetInvoker();
             }
         } else {
+            assert config != null;
             invoker = config.getTargetInvoker();
         }
         if (headInterceptor == null) {

@@ -60,7 +60,7 @@ public class SystemExternalServiceBuilder implements ContextFactoryBuilder<Aggre
             externalService.getConfiguredService().setContextFactory(contextFactory);
         } else if (externalService.getConfiguredService().getService().getServiceContract().getInterface() != null) {
             // autowire
-            Class<?> claz = externalService.getConfiguredService().getService().getServiceContract().getInterface();
+            Class<Object> claz = externalService.getConfiguredService().getService().getServiceContract().getInterface();
             if (claz == null) {
                 BuilderException e = new BuilderConfigException("Interface type not specified");
                 e.setIdentifier(externalService.getName());
@@ -68,7 +68,7 @@ public class SystemExternalServiceBuilder implements ContextFactoryBuilder<Aggre
                 throw e;
             }
             SystemExternalServiceContextFactory config = new SystemExternalServiceContextFactory(externalService
-                    .getName(), new AutowireObjectFactory(claz)); 
+                    .getName(), new AutowireObjectFactory<Object>(claz));
             externalService.getConfiguredService().setContextFactory(config);
         }
     }

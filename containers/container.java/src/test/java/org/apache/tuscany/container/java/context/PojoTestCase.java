@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.container.java.assembly.impl.JavaAssemblyFactoryImpl;
-import org.apache.tuscany.container.java.context.JavaComponentContext;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeComponentImpl;
 import org.apache.tuscany.container.java.mock.components.RequestScopeComponentImpl;
@@ -42,7 +41,7 @@ public class PojoTestCase extends TestCase {
     public void testGetModuleInstance() throws Exception {
         AggregateContext mc = new AggregateContextImpl();
         mc.setName("mc");
-        JavaComponentContext c = new JavaComponentContext("foo", new PojoObjectFactory(JavaIntrospectionHelper
+        JavaComponentContext c = new JavaComponentContext("foo", new PojoObjectFactory<ModuleScopeComponentImpl>(JavaIntrospectionHelper
                 .getDefaultConstructor(ModuleScopeComponentImpl.class), null, null), false, null, null, false);
         GenericComponent service = (GenericComponent) c.getInstance(null);
         Assert.assertNotNull(service);
@@ -55,7 +54,7 @@ public class PojoTestCase extends TestCase {
     public void testGetSessionInstance() throws Exception {
         AggregateContext mc = new AggregateContextImpl();
         mc.setName("mc");
-        JavaComponentContext c = new JavaComponentContext("foo", new PojoObjectFactory(JavaIntrospectionHelper
+        JavaComponentContext c = new JavaComponentContext("foo", new PojoObjectFactory<SessionScopeComponentImpl>(JavaIntrospectionHelper
                 .getDefaultConstructor(SessionScopeComponentImpl.class), null, null), false, null, null, false);
         GenericComponent service = (GenericComponent) c.getInstance(null);
         Assert.assertNotNull(service);
@@ -68,7 +67,7 @@ public class PojoTestCase extends TestCase {
     public void testGetRequestInstance() throws Exception {
         AggregateContext mc = new AggregateContextImpl();
         mc.setName("mc");
-        JavaComponentContext c = new JavaComponentContext("foo", new PojoObjectFactory(JavaIntrospectionHelper
+        JavaComponentContext c = new JavaComponentContext("foo", new PojoObjectFactory<RequestScopeComponentImpl>(JavaIntrospectionHelper
                 .getDefaultConstructor(RequestScopeComponentImpl.class), null, null), false, null, null, false);
         GenericComponent service = (GenericComponent) c.getInstance(null);
         Assert.assertNotNull(service);
@@ -81,7 +80,7 @@ public class PojoTestCase extends TestCase {
     public void testGetStatelessInstance() throws Exception { 
         AggregateContext mc = new AggregateContextImpl();
         mc.setName("fooContext");
-        JavaComponentContext c = new JavaComponentContext("foo", new PojoObjectFactory(JavaIntrospectionHelper
+        JavaComponentContext c = new JavaComponentContext("foo", new PojoObjectFactory<StatelessComponentImpl>(JavaIntrospectionHelper
                 .getDefaultConstructor(StatelessComponentImpl.class), null, null), false, null, null, true);
         GenericComponent service = (GenericComponent) c.getInstance(null);
         Assert.assertNotNull(service);
