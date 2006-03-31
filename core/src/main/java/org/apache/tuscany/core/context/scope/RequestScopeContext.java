@@ -29,7 +29,7 @@ import org.apache.tuscany.core.context.*;
  * 
  * @version $Rev$ $Date$
  */
-public class RequestScopeContext extends AbstractScopeContext<RequestScopeContext> implements RuntimeEventListener, LifecycleEventListener {
+public class RequestScopeContext extends AbstractScopeContext implements RuntimeEventListener, LifecycleEventListener {
 
     // ----------------------------------
     // Fields
@@ -173,14 +173,6 @@ public class RequestScopeContext extends AbstractScopeContext<RequestScopeContex
         } else {
             return null;
         }
-    }
-
-    public RequestScopeContext getImplementationInstance() throws TargetException {
-        return this;
-    }
-
-    public RequestScopeContext getImplementationInstance(boolean notify) throws TargetException{
-        return this;
     }
 
     private void destroyContext() {

@@ -27,15 +27,15 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class ExternalServiceContextImpl<T> extends AbstractContext implements ExternalServiceContext<T> {
+public class ExternalServiceContextImpl extends AbstractContext implements ExternalServiceContext {
 
     private ProxyFactory<?> targetProxyFactory;
 
-    private ObjectFactory<T> targetInstanceFactory;
+    private ObjectFactory targetInstanceFactory;
 
     /**
      * Creates an external service context
-     * 
+     *
      * @param name the name of the external service
      * @param targetProxyFactory the factory which creates proxies implementing the configured service interface for the
      *        external service. There is always only one proxy factory as an external service is configured with one
@@ -43,7 +43,7 @@ public class ExternalServiceContextImpl<T> extends AbstractContext implements Ex
      * @param targetInstanceFactory the object factory that creates an artifact capabile of communicating over the
      *        binding transport configured on the external service. The object factory may implement a caching strategy.
      */
-    public ExternalServiceContextImpl(String name, ProxyFactory targetProxyFactory, ObjectFactory<T> targetInstanceFactory) {
+    public ExternalServiceContextImpl(String name, ProxyFactory targetProxyFactory, ObjectFactory targetInstanceFactory) {
         super(name);
         assert (targetProxyFactory != null) : "Target proxy factory was null";
         assert (targetInstanceFactory != null) : "Target instance factory was null";
@@ -75,11 +75,11 @@ public class ExternalServiceContextImpl<T> extends AbstractContext implements Ex
         return getInstance(qName);
     }
 
-    public T getImplementationInstance() throws TargetException {
+    public Object getImplementationInstance() throws TargetException {
         return targetInstanceFactory.getInstance();
     }
 
-    public T getImplementationInstance(boolean notify) throws TargetException {
+    public Object getImplementationInstance(boolean notify) throws TargetException {
         return getImplementationInstance();
     }
 }

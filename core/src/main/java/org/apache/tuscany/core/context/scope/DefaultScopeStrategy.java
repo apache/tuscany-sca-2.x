@@ -40,7 +40,7 @@ public class DefaultScopeStrategy  extends AbstractScopeStrategy  {
         ScopeContext requestScope = new RequestScopeContext(eventContext);
         ScopeContext statelessScope = new StatelessScopeContext(eventContext);
         ScopeContext aggregrateScope = new AggregateScopeContext(eventContext);
-        Map<Scope,ScopeContext> scopes = new HashMap();
+        Map<Scope,ScopeContext> scopes = new HashMap<Scope,ScopeContext>();
         scopes.put(Scope.MODULE,moduleScope);
         scopes.put(Scope.SESSION,sessionScope);
         scopes.put(Scope.REQUEST,requestScope);
