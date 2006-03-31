@@ -14,7 +14,6 @@
 package org.apache.tuscany.container.java.mock.binding.foo;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -112,13 +111,12 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
             if (ep.getBindings().size() < 1 || !(ep.getBindings().get(0) instanceof FooBinding)) {
                 return;
             }
-            EntryPointContextFactory contextFactory = new FooEntryPointContextFactory(ep.getName(), ep.getConfiguredService()
-                    .getService().getName(), messageFactory);
+            EntryPointContextFactory contextFactory = new FooEntryPointContextFactory(ep.getName(), messageFactory);
 
             ConfiguredService configuredService = ep.getConfiguredService();
             Service service = configuredService.getService();
             ServiceContract serviceContract = service.getServiceContract();
-            Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
+            Map<Method, InvocationConfiguration> iConfigMap = new HashMap<Method, InvocationConfiguration>();
             ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
             Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
             for (Method method : javaMethods) {
@@ -136,7 +134,7 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
                 policyBuilder.build(configuredService);
             }
             // add tail interceptor
-            for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
+            for (InvocationConfiguration iConfig : iConfigMap.values()) {
                 iConfig.addTargetInterceptor(new InvokerInterceptor());
             }
             ep.getConfiguredReference().setContextFactory(contextFactory);
@@ -153,7 +151,7 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
             ConfiguredService configuredService = es.getConfiguredService();
             Service service = configuredService.getService();
             ServiceContract serviceContract = service.getServiceContract();
-            Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
+            Map<Method, InvocationConfiguration> iConfigMap = new HashMap<Method, InvocationConfiguration>();
             ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
             Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
             for (Method method : javaMethods) {
@@ -171,14 +169,11 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
                 policyBuilder.build(configuredService);
             }
             // add tail interceptor
-            for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
+            for (InvocationConfiguration iConfig : iConfigMap.values()) {
                 iConfig.addTargetInterceptor(new InvokerInterceptor());
             }
 
             es.getConfiguredService().setContextFactory(contextFactory);
-        } else {
-            return;
-
         }
     }
 

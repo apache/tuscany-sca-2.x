@@ -45,7 +45,7 @@ public class JavaIntrospectionHelper {
     /**
      * Recursively evaluates the type hierachy to return all fields on a given type
      * 
-     * @spec This raises an interesting issue - do we allow injection on private supertype fields in a subtype even if
+     * TODO spec This raises an interesting issue - do we allow injection on private supertype fields in a subtype even if
      *       they are annotated?
      */
     private static Set<Field> getAllFields(Class pClass, Set<Field> fields) {
@@ -54,9 +54,9 @@ public class JavaIntrospectionHelper {
         }
         fields = getAllFields(pClass.getSuperclass(), fields);
         Field[] declaredFields = pClass.getDeclaredFields();
-        for (int i = 0; i < declaredFields.length; i++) {
-            declaredFields[i].setAccessible(true); // ignore Java accessibility
-            fields.add(declaredFields[i]);
+        for (Field declaredField : declaredFields) {
+            declaredField.setAccessible(true); // ignore Java accessibility
+            fields.add(declaredField);
         }
         return fields;
     }
@@ -80,24 +80,24 @@ public class JavaIntrospectionHelper {
         }
         // we first evaluate methods of the subclass and then move to the parent
         Method[] declaredMethods = pClass.getDeclaredMethods();
-        for (int i = 0; i < declaredMethods.length; i++) {
+        for (Method declaredMethod : declaredMethods) {
             if (methods.size() == 0) {
-                methods.add(declaredMethods[i]);
+                methods.add(declaredMethod);
             } else {
-                List temp = new ArrayList();
+                List<Method> temp = new ArrayList<Method>();
                 boolean matched = false;
                 for (Method method : methods) {
                     // only add if not already in the set from a supclass (i.e. the
                     // method is not overrided)
-                    if (exactMethodMatch(declaredMethods[i], method)) {
+                    if (exactMethodMatch(declaredMethod, method)) {
                         matched = true;
                         break;
                     }
                 }
                 if (!matched) {
                     // TODO ignore Java accessibility
-                    declaredMethods[i].setAccessible(true);
-                    temp.add(declaredMethods[i]);
+                    declaredMethod.setAccessible(true);
+                    temp.add(declaredMethod);
 
                 }
                 methods.addAll(temp);
@@ -117,7 +117,6 @@ public class JavaIntrospectionHelper {
      * @param type the field type
      * @param fields the collection of fields to search
      * @return the matching field or null if not found
-     * @throws NoSuchFieldException if no field found
      */
     public static Field findClosestMatchingField(String name, Class type, Set<Field> fields) {
         Field candidate = null;
@@ -151,7 +150,6 @@ public class JavaIntrospectionHelper {
      * @param types the method parameter types
      * @param methods the collection of methods to search
      * @return the matching method or null if not found
-     * @throws NoSuchFieldException if no field found
      */
     public static Method findClosestMatchingMethod(String name, Class[] types, Set<Method> methods) {
         if (types == null) {
@@ -309,7 +307,6 @@ public class JavaIntrospectionHelper {
      * Returns the simple name of a class - i.e. the class name devoid of its package qualifier
      * 
      * @param implClass
-     * @return
      */
     public static String getBaseName(Class<?> implClass) {
         String baseName = implClass.getName();
@@ -401,14 +398,14 @@ public class JavaIntrospectionHelper {
      * 
      * @return the generic types in order of declaration or an empty array if the type is not genericized
      */
-    public static List<Class> getGenerics(Type genericType) {
-        List classes = new ArrayList();
+    public static List<? extends Type> getGenerics(Type genericType) {
+        List<Type> classes = new ArrayList<Type>();
         if (genericType instanceof ParameterizedType) {
             ParameterizedType ptype = (ParameterizedType) genericType;
             // get the type arguments
             Type[] targs = ptype.getActualTypeArguments();
-            for (int i = 0; i < targs.length; i++) {
-                classes.add(targs[i]);
+            for (Type targ : targs) {
+                classes.add(targ);
             }
         }
         return classes;

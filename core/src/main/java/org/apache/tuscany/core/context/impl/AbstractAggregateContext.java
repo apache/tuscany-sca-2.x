@@ -263,7 +263,6 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         }
     }
 
-    @SuppressWarnings("unchecked")
     public void registerModelObject(Extensible model) throws ConfigurationException {
         assert (model != null) : "Model object was null";
         initializeScopes();
@@ -582,10 +581,10 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     protected void wireSource(ContextFactory<InstanceContext> source) {
         Scope sourceScope = source.getScope();
         if (source.getSourceProxyFactories() != null) {
-            for (ProxyFactory sourceFactory : source.getSourceProxyFactories()) {
+            for (ProxyFactory<?> sourceFactory : source.getSourceProxyFactories()) {
                 ProxyConfiguration proxyConfiguration = sourceFactory.getProxyConfiguration();
                 QualifiedName targetName = proxyConfiguration.getTargetName();
-                ContextFactory target = configurations.get(targetName.getPartName());
+                ContextFactory<?> target = configurations.get(targetName.getPartName());
                 if (target == null) {
                     ContextInitException e = new ContextInitException("Target not found");
                     e.setIdentifier(targetName.getPartName());
@@ -634,10 +633,10 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     /**
      * Signals to target side of reference configurations to initialize
      */
-    protected void buildTarget(ContextFactory target) {
+    protected void buildTarget(ContextFactory<?> target) {
         Map<String, ProxyFactory>  targetProxyFactories = target.getTargetProxyFactories();
         if (targetProxyFactories != null) {
-            for (ProxyFactory targetFactory : targetProxyFactories.values()) {
+            for (ProxyFactory<?> targetFactory : targetProxyFactories.values()) {
                 for (InvocationConfiguration iConfig : targetFactory
                         .getProxyConfiguration().getInvocationConfigurations().values()) {
                     iConfig.build();
@@ -647,16 +646,16 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     }
 
     protected void initializeProxies() throws ProxyInitializationException {
-        for (ContextFactory config : configurations.values()) {
+        for (ContextFactory<?> config : configurations.values()) {
             List<ProxyFactory> sourceProxyFactories = config.getSourceProxyFactories();
             if (sourceProxyFactories != null) {
-                for (ProxyFactory sourceProxyFactory : sourceProxyFactories) {
+                for (ProxyFactory<?> sourceProxyFactory : sourceProxyFactories) {
                     sourceProxyFactory.initialize();
                 }
             }
             if (sourceProxyFactories != null) {
                 Map<String, ProxyFactory> targetProxyFactories = config.getTargetProxyFactories();
-                for (ProxyFactory targetProxyFactory : targetProxyFactories.values()) {
+                for (ProxyFactory<?> targetProxyFactory : targetProxyFactories.values()) {
                     targetProxyFactory.initialize();
                 }
             }

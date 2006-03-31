@@ -63,13 +63,18 @@ public interface InstanceContext extends Context {
     public Object getInstance(QualifiedName qName, boolean notify) throws TargetException;
 
     /**
-     * Returns the implementation instance associated witht he component. An implementation instance does not
-     * have a proxy invocation chainXXX
-     * @return
+     * Returns the implementation instance associated with the component. An implementation instance is the actual
+     * object a request is dispatched to sans proxy invocation chain.
      * @throws TargetException
      */
     public Object getImplementationInstance() throws TargetException;
 
+    /**
+     * Returns the implementation instance associated with the component. An implementation instance is the actual
+     * object a request is dispatched to sans proxy invocation chain.
+     * @param notify whether to notify <code>ContextEventListener</code>s
+     * @throws TargetException
+     */
     public Object getImplementationInstance(boolean notify) throws TargetException;
 
 }

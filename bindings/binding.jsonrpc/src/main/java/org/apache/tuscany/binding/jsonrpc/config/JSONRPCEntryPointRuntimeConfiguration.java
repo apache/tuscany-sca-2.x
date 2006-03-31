@@ -25,7 +25,7 @@ import org.apache.tuscany.core.message.MessageFactory;
 public class JSONRPCEntryPointRuntimeConfiguration extends EntryPointContextFactory {
 
     public JSONRPCEntryPointRuntimeConfiguration(String name, String serviceName, MessageFactory messageFactory) {
-        super(name, serviceName, messageFactory);
+        super(name, messageFactory);
     }
 
 }

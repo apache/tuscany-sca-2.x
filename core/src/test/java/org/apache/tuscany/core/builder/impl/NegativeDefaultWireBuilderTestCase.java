@@ -20,7 +20,6 @@ public class NegativeDefaultWireBuilderTestCase extends TestCase {
 
     private Method hello;
 
-    private Method goodbye;
 
     public NegativeDefaultWireBuilderTestCase() {
         super();
@@ -31,8 +30,7 @@ public class NegativeDefaultWireBuilderTestCase extends TestCase {
     }
 
     public void setUp() throws Exception {
-        hello = SimpleTarget.class.getMethod("hello", new Class[] { String.class });
-        goodbye = SimpleTarget.class.getMethod("goodbye", new Class[] { String.class });
+        hello = SimpleTarget.class.getMethod("hello", String.class);
     }
 
     public void testNoTargetInterceptorOrHandler() throws Exception {

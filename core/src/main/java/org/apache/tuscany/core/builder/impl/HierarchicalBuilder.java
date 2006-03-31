@@ -27,7 +27,7 @@ import org.apache.tuscany.model.assembly.AssemblyModelObject;
  * @version $Rev$ $Date$
  */
 public class HierarchicalBuilder implements ContextFactoryBuilder {
-    private List<ContextFactoryBuilder> builders = new CopyOnWriteArrayList();
+    private List<ContextFactoryBuilder> builders = new CopyOnWriteArrayList<ContextFactoryBuilder>();
     
     private List<ContextFactoryBuilder> readOnlyBuilders = Collections.unmodifiableList(builders); 
     

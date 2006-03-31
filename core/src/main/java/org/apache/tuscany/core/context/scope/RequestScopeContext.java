@@ -22,20 +22,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.InstanceContext;
-import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.LifecycleEventListener;
-import org.apache.tuscany.core.context.CoreRuntimeException;
-import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.RuntimeEventListener;
-import org.apache.tuscany.core.context.SimpleComponentContext;
+import org.apache.tuscany.core.context.*;
 
 /**
  * An implementation of a request-scoped component container.
  * 
  * @version $Rev$ $Date$
  */
-public class RequestScopeContext extends AbstractScopeContext implements RuntimeEventListener, LifecycleEventListener {
+public class RequestScopeContext extends AbstractScopeContext<RequestScopeContext> implements RuntimeEventListener, LifecycleEventListener {
 
     // ----------------------------------
     // Fields
@@ -46,11 +40,7 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
     private Map<Object, Map<String, InstanceContext>> contextMap;
 
     // stores ordered lists of contexts to shutdown for each thread.
-    private Map<Object, Queue> destroyComponents;
-
-    // ----------------------------------
-    // Constructor
-    // ----------------------------------
+    private Map<Object, Queue<SimpleComponentContext>> destroyComponents;
 
     public RequestScopeContext(EventContext eventContext) {
         super(eventContext);
@@ -80,8 +70,8 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
             throw new IllegalStateException("Scope must be in UNINITIALIZED state [" + lifecycleState + "]");
         }
         super.start();
-        contextMap = new ConcurrentHashMap();
-        destroyComponents = new ConcurrentHashMap();
+        contextMap = new ConcurrentHashMap<Object, Map<String, InstanceContext>>();
+        destroyComponents = new ConcurrentHashMap<Object, Queue<SimpleComponentContext>>();
         lifecycleState = RUNNING;
 
     }
@@ -107,7 +97,7 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
     public void registerFactory(ContextFactory<InstanceContext> configuration) {
         contextFactorys.put(configuration.getName(), configuration);
     }
-    
+
     public InstanceContext getContext(String ctxName) {
         checkInit();
         Map<String, InstanceContext> contexts = getComponentContexts();
@@ -130,7 +120,7 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
         if (key == null) {
             return null;
         }
-        Map<String, InstanceContext> components = (Map) contextMap.get(key);
+        Map<String, InstanceContext> components = contextMap.get(key);
         if (components == null) {
             return null;
         }
@@ -147,12 +137,12 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
         if (key == null || ctxName == null) {
             return;
         }
-        Map components = (Map) contextMap.get(key);
+        Map components = contextMap.get(key);
         if (components == null) {
             return;
         }
         components.remove(ctxName);
-        Map<String, InstanceContext> contexts = (Map) contextMap.get(key);
+        Map<String, InstanceContext> contexts = contextMap.get(key);
         // no synchronization for the following two operations since the request
         // context will not be shutdown before the second call is processed
         InstanceContext context = contexts.get(ctxName);
@@ -162,10 +152,11 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
     public void onInstanceCreate(Context context) {
         checkInit();
         if (context instanceof SimpleComponentContext) {
+            SimpleComponentContext simpleCtx = (SimpleComponentContext)context;
             // Queue the context to have its implementation instance released if destroyable
-            if (((SimpleComponentContext) context).isDestroyable()) {
-                Queue collection = destroyComponents.get(Thread.currentThread());
-                collection.add(context);
+            if (simpleCtx.isDestroyable()) {
+                Queue<SimpleComponentContext> collection = destroyComponents.get(Thread.currentThread());
+                collection.add(simpleCtx);
             }
         }
     }
@@ -175,18 +166,22 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
      */
     protected InstanceContext[] getShutdownContexts(Object key) {
         checkInit();
-        Queue queue = destroyComponents.get(Thread.currentThread());
+        Queue<SimpleComponentContext> queue = destroyComponents.get(Thread.currentThread());
         if (queue != null) {
             // create 0-length array since Queue.size() has O(n) traversal
-            return (InstanceContext[]) queue.toArray(new InstanceContext[0]);
+            return queue.toArray(new InstanceContext[0]);
         } else {
             return null;
         }
     }
 
-    // ----------------------------------
-    // Private methods
-    // ----------------------------------
+    public RequestScopeContext getImplementationInstance() throws TargetException {
+        return this;
+    }
+
+    public RequestScopeContext getImplementationInstance(boolean notify) throws TargetException{
+        return this;
+    }
 
     private void destroyContext() {
         // TODO uninitialize all request-scoped components
@@ -204,13 +199,12 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
      */
 
     private Map<String, InstanceContext> getComponentContexts() throws CoreRuntimeException {
-        Map contexts = (Map) contextMap.get(Thread.currentThread());
+        Map<String, InstanceContext>  contexts = contextMap.get(Thread.currentThread());
         if (contexts == null) {
-            contexts = new ConcurrentHashMap();
-            Queue shutdownQueue = new ConcurrentLinkedQueue();
+            contexts = new ConcurrentHashMap<String, InstanceContext>();
+            Queue<SimpleComponentContext> shutdownQueue = new ConcurrentLinkedQueue<SimpleComponentContext>();
             for (ContextFactory<InstanceContext> config : contextFactorys.values()) {
-                InstanceContext context = null;
-                context = config.createContext();
+                InstanceContext context = config.createContext();
                 context.addContextListener(this);
                 context.start();
                 contexts.put(context.getName(), context);

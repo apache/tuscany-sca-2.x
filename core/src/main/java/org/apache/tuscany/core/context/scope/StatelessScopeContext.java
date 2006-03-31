@@ -20,12 +20,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.InstanceContext;
-import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.LifecycleEventListener;
-import org.apache.tuscany.core.context.CoreRuntimeException;
-import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.RuntimeEventListener;
+import org.apache.tuscany.core.context.*;
 
 /**
  * A container that manages stateless components.
@@ -34,25 +29,13 @@ import org.apache.tuscany.core.context.RuntimeEventListener;
  */
 public class StatelessScopeContext extends AbstractScopeContext implements RuntimeEventListener, LifecycleEventListener {
 
-    // ----------------------------------
-    // Fields
-    // ----------------------------------
-
-    // Component contexts keyed by name
+   // Component contexts keyed by name
     private Map<String, InstanceContext> contextMap;
-
-    // ----------------------------------
-    // Constructor
-    // ----------------------------------
 
     public StatelessScopeContext(EventContext eventContext) {
         super(eventContext);
         setName("Stateless Scope");
     }
-
-    // ----------------------------------
-    // Lifecycle methods
-    // ----------------------------------
 
     public synchronized void start() {
         if (lifecycleState != UNINITIALIZED) {
@@ -71,10 +54,6 @@ public class StatelessScopeContext extends AbstractScopeContext implements Runti
         contextMap = null;
         lifecycleState = STOPPED;
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     public void registerFactory(ContextFactory<InstanceContext> configuration) {
         contextFactorys.put(configuration.getName(), configuration);
@@ -115,10 +94,6 @@ public class StatelessScopeContext extends AbstractScopeContext implements Runti
         return null;
     }
 
-    // ----------------------------------
-    // Private methods
-    // ----------------------------------
-
     public void onInstanceCreate(Context component) {
         // do nothing
     }
@@ -128,11 +103,10 @@ public class StatelessScopeContext extends AbstractScopeContext implements Runti
             throw new IllegalStateException("Scope not in INITIALIZED state [" + lifecycleState + "]");
         }
         if (contextMap == null) {
-            contextMap = new ConcurrentHashMap();
+            contextMap = new ConcurrentHashMap<String, InstanceContext> ();
             for (ContextFactory<InstanceContext> config : contextFactorys.values()) {
                 for (int i = 0; i < contextFactorys.size(); i++) {
-                    InstanceContext context = null;
-                    context = config.createContext();
+                    InstanceContext context = config.createContext();
                     context.addContextListener(this);
                     context.start();
                     contextMap.put(context.getName(), context);

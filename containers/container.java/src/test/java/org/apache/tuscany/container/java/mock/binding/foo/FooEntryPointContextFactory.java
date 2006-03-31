@@ -23,8 +23,8 @@ import org.apache.tuscany.core.message.MessageFactory;
  */
 public class FooEntryPointContextFactory extends EntryPointContextFactory {
 
-    public FooEntryPointContextFactory(String name, String serviceName, MessageFactory msgFactory) {
-        super(name, serviceName, msgFactory);
+    public FooEntryPointContextFactory(String name, MessageFactory msgFactory) {
+        super(name, msgFactory);
     }
 
 }

@@ -35,9 +35,9 @@ public class ListMultiplicityObjectFactory implements ObjectFactory<List> {
     }
 
     public List getInstance() throws ObjectCreationException {
-        List list = new ArrayList();
-        for (int i = 0; i < factories.length; i++) {
-            list.add(factories[i].getInstance());
+        List<Object> list = new ArrayList<Object>();
+        for (ObjectFactory factory : factories) {
+            list.add(factory.getInstance());
         }
         return list;
     }

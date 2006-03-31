@@ -119,8 +119,8 @@ public class SystemContextFactory implements ContextFactory<InstanceContext>, Co
         if (isAggregate) {
             try {
                 // aggregate context types are themselves an instance context
-                PojoObjectFactory objectFactory = new PojoObjectFactory(ctr, null, setters);
-                AggregateContext ctx = (AggregateContext) objectFactory.getInstance();
+                PojoObjectFactory<AggregateContext> objectFactory = new PojoObjectFactory<AggregateContext>(ctr, null, setters);
+                AggregateContext ctx = objectFactory.getInstance();
                 ctx.setName(name);
                 // the aggregate has been created, now register its children
                 if (module != null) {

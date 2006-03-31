@@ -81,7 +81,7 @@ public final class BootstrapHelper {
      * @return a default list of configuration builders
      */
     public static List<ContextFactoryBuilder> getBuilders() {
-        List<ContextFactoryBuilder> configBuilders = new ArrayList();
+        List<ContextFactoryBuilder> configBuilders = new ArrayList<ContextFactoryBuilder>();
         configBuilders.add((new SystemContextFactoryBuilder()));
         configBuilders.add(new SystemEntryPointBuilder());
         configBuilders.add(new SystemExternalServiceBuilder());

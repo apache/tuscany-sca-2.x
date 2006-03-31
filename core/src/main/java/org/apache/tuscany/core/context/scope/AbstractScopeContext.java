@@ -37,20 +37,13 @@ import org.apache.tuscany.core.context.TargetException;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class AbstractScopeContext  extends AbstractContext implements ScopeContext{
-    // ----------------------------------
-    // Fields
-    // ----------------------------------
+public abstract class AbstractScopeContext extends AbstractContext implements ScopeContext{
 
     // The collection of runtime configurations for the scope
-    protected Map<String, ContextFactory<InstanceContext>> contextFactorys = new ConcurrentHashMap();
+    protected Map<String, ContextFactory<InstanceContext>> contextFactorys = new ConcurrentHashMap<String, ContextFactory<InstanceContext>>();
 
     // The event context the scope container is associated with
     protected EventContext eventContext;
-
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
 
     public AbstractScopeContext(EventContext eventContext) {
         assert (eventContext != null) : "Event context was null";
@@ -79,7 +72,6 @@ public abstract class AbstractScopeContext  extends AbstractContext implements S
     }
 
     public Object getInstance(QualifiedName qName) throws TargetException {
-        Object instance = null;
         InstanceContext context = getContext(qName.getPartName());
         if (context == null) {
             TargetException e = new TargetException("Target not found");
@@ -92,12 +84,8 @@ public abstract class AbstractScopeContext  extends AbstractContext implements S
     public Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
         return getInstance(qName);
     }
-    
-    //----------------------------------
-    // InstanceContext methods
-    //----------------------------------
 
-    public Object getImplementationInstance() throws TargetException{
+    public Object getImplementationInstance() throws TargetException {
         return this;
     }
 
@@ -105,10 +93,6 @@ public abstract class AbstractScopeContext  extends AbstractContext implements S
         return this;
     }
     
-    // ----------------------------------
-    // Protected methods
-    // ----------------------------------
-
     protected EventContext getEventContext() {
         return eventContext;
     }

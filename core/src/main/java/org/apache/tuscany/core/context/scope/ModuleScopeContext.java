@@ -22,13 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.CoreRuntimeException;
-import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.InstanceContext;
-import org.apache.tuscany.core.context.LifecycleEventListener;
-import org.apache.tuscany.core.context.RuntimeEventListener;
-import org.apache.tuscany.core.context.SimpleComponentContext;
+import org.apache.tuscany.core.context.*;
 
 /**
  * Manages component contexts whose implementations are module scoped
@@ -37,29 +31,17 @@ import org.apache.tuscany.core.context.SimpleComponentContext;
  */
 public class ModuleScopeContext extends AbstractScopeContext implements RuntimeEventListener, LifecycleEventListener {
 
-    // ----------------------------------
-    // Fields
-    // ----------------------------------
-
     // Component contexts in this scope keyed by name
     private Map<String, InstanceContext> componentContexts;
 
     private Queue<SimpleComponentContext> destroyableContexts;
 
-    // ----------------------------------
-    // Constructor
-    // ----------------------------------
-
-    public ModuleScopeContext(EventContext eventContext) {
+     public ModuleScopeContext(EventContext eventContext) {
         super(eventContext);
         setName("Module Scope");
     }
 
-    // ----------------------------------
-    // Listener methods
-    // ----------------------------------
-
-    public void onEvent(int type, Object key) {
+     public void onEvent(int type, Object key) {
         if (type == EventContext.MODULE_START) {
             lifecycleState = RUNNING;
             initComponentContexts();
@@ -68,11 +50,7 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
         }
     }
 
-    // ----------------------------------
-    // Lifecycle methods
-    // ----------------------------------
-
-    public synchronized void start() {
+   public synchronized void start() {
         if (lifecycleState != UNINITIALIZED) {
             throw new IllegalStateException("Scope must be in UNINITIALIZED state [" + lifecycleState + "]");
         }
@@ -88,11 +66,7 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
         lifecycleState = STOPPED;
     }
 
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
-
-    public boolean isCacheable() {
+   public boolean isCacheable() {
         return true;
     }
 
@@ -115,9 +89,9 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
 
     public void removeContext(String ctxName) {
         checkInit();
-        Object component = componentContexts.remove(ctxName);
-        if (component != null) {
-            destroyableContexts.remove(component);
+        InstanceContext context = componentContexts.remove(ctxName);
+        if (context != null) {
+            destroyableContexts.remove(context);
         }
     }
 
@@ -143,20 +117,16 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
     protected InstanceContext[] getShutdownContexts(Object key) {
         if (destroyableContexts != null) {
             // create 0-length array since Queue.size() has O(n) traversal
-            return (InstanceContext[]) destroyableContexts.toArray(new InstanceContext[0]);
+            return destroyableContexts.toArray(new InstanceContext[0]);
         } else {
             return null;
         }
     }
 
-    // ----------------------------------
-    // Private methods
-    // ----------------------------------
-
     private synchronized void initComponentContexts() throws CoreRuntimeException {
         if (componentContexts == null) {
-            componentContexts = new ConcurrentHashMap();
-            destroyableContexts = new ConcurrentLinkedQueue();
+            componentContexts = new ConcurrentHashMap<String, InstanceContext> ();
+            destroyableContexts = new ConcurrentLinkedQueue<SimpleComponentContext>();
             for (ContextFactory<InstanceContext> config : contextFactorys.values()) {
                 InstanceContext context = config.createContext();
                 context.addContextListener(this);

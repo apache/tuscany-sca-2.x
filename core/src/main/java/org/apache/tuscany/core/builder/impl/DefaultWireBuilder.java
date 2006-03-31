@@ -21,7 +21,6 @@ import java.util.Map;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.HierarchicalWireBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
-import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
@@ -37,7 +36,7 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 public class DefaultWireBuilder implements HierarchicalWireBuilder {
 
     // collection configured wire builders
-    private List<WireBuilder> builders = new ArrayList();
+    private List<WireBuilder> builders = new ArrayList<WireBuilder>();
 
     public DefaultWireBuilder() {
     }
@@ -55,7 +54,6 @@ public class DefaultWireBuilder implements HierarchicalWireBuilder {
 
     public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) {
-        QualifiedName targetName = sourceFactory.getProxyConfiguration().getTargetName();
         // get the proxy chain for the target
         if (targetFactory != null) {
             // if null, the target side has no interceptors or handlers
@@ -96,7 +94,6 @@ public class DefaultWireBuilder implements HierarchicalWireBuilder {
             builder.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
         }
         // signal that wire build process is complete
-        boolean optimizable = true;
         for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations()
                 .values()) {
             sourceInvocationConfig.build();

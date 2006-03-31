@@ -26,7 +26,7 @@ import org.apache.tuscany.core.message.MessageFactory;
 public class WebServiceEntryPointContextFactory extends EntryPointContextFactory {
 
     public WebServiceEntryPointContextFactory(String name, String serviceName, MessageFactory messageFactory) {
-        super(name, serviceName, messageFactory);
+        super(name, messageFactory);
     }
 
 }

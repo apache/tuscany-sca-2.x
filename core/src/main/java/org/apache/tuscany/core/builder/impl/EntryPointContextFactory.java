@@ -38,19 +38,14 @@ public abstract class EntryPointContextFactory implements ContextFactory<EntryPo
 
     private ProxyFactory proxyFactory;
 
-    private String referenceName;
-
     private MessageFactory msgFactory;
 
     private List<ProxyFactory> sourceProxyFactories;
-    
-    private AggregateContext parentContext;
 
-    public EntryPointContextFactory(String name, String referenceName, MessageFactory msgFactory) {
+    public EntryPointContextFactory(String name, MessageFactory msgFactory) {
         assert (name != null) : "Entry point name was null";
         assert (msgFactory != null) : "Message factory was null";
         this.name = name;
-        this.referenceName = referenceName;
         this.msgFactory = msgFactory;
     }
 
@@ -86,7 +81,6 @@ public abstract class EntryPointContextFactory implements ContextFactory<EntryPo
     public void addSourceProxyFactory(String refName, ProxyFactory factory) {
         assert (refName != null) : "No reference name specified";
         assert (factory != null) : "Proxy factory was null";
-        this.referenceName = refName; // entry points are configured with only one reference
         this.proxyFactory = factory;
     }
 
@@ -99,6 +93,5 @@ public abstract class EntryPointContextFactory implements ContextFactory<EntryPo
     }
     
     public void prepare(AggregateContext parent) {
-        parentContext = parent;
     }
 }

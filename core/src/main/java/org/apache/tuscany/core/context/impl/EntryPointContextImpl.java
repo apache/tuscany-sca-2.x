@@ -33,16 +33,12 @@ import org.apache.tuscany.core.message.MessageFactory;
  */
 public class EntryPointContextImpl extends AbstractContext implements EntryPointContext {
 
-    private ProxyFactory proxyFactory;
+    private ProxyFactory<?> proxyFactory;
 
     private InvocationHandler invocationHandler;
 
     // a proxy implementing the service exposed by the entry point backed by the invocation handler
     private Object proxy;
-
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
 
     /**
      * Creates a new entry point
@@ -91,11 +87,7 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
         lifecycleState = STOPPED;
     }
 
-    // ----------------------------------
-    // InstanceContext methods
-    // ----------------------------------
-
-    public Object getImplementationInstance() throws TargetException {
+     public Object getImplementationInstance() throws TargetException {
         return invocationHandler;
     }
 

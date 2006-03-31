@@ -27,11 +27,11 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class ExternalServiceContextImpl extends AbstractContext implements ExternalServiceContext {
+public class ExternalServiceContextImpl<T> extends AbstractContext implements ExternalServiceContext<T> {
 
-    private ProxyFactory targetProxyFactory;
+    private ProxyFactory<?> targetProxyFactory;
 
-    private ObjectFactory targetInstanceFactory;
+    private ObjectFactory<T> targetInstanceFactory;
 
     /**
      * Creates an external service context
@@ -43,13 +43,22 @@ public class ExternalServiceContextImpl extends AbstractContext implements Exter
      * @param targetInstanceFactory the object factory that creates an artifact capabile of communicating over the
      *        binding transport configured on the external service. The object factory may implement a caching strategy.
      */
-    public ExternalServiceContextImpl(String name, ProxyFactory targetProxyFactory, ObjectFactory targetInstanceFactory) {
+    public ExternalServiceContextImpl(String name, ProxyFactory targetProxyFactory, ObjectFactory<T> targetInstanceFactory) {
         super(name);
         assert (targetProxyFactory != null) : "Target proxy factory was null";
         assert (targetInstanceFactory != null) : "Target instance factory was null";
         this.targetProxyFactory = targetProxyFactory;
         this.targetInstanceFactory = targetInstanceFactory;
     }
+
+    public void start() throws CoreRuntimeException {
+        lifecycleState = RUNNING;
+    }
+
+    public void stop() throws CoreRuntimeException {
+        lifecycleState = STOPPED;
+    }
+
 
     public Object getInstance(QualifiedName qName) throws TargetException {
         try {
@@ -66,19 +75,11 @@ public class ExternalServiceContextImpl extends AbstractContext implements Exter
         return getInstance(qName);
     }
 
-    public void start() throws CoreRuntimeException {
-        lifecycleState = RUNNING;
-    }
-
-    public void stop() throws CoreRuntimeException {
-        lifecycleState = STOPPED;
-    }
-
-    public Object getImplementationInstance() throws TargetException {
+    public T getImplementationInstance() throws TargetException {
         return targetInstanceFactory.getInstance();
     }
 
-    public Object getImplementationInstance(boolean notify) throws TargetException {
+    public T getImplementationInstance(boolean notify) throws TargetException {
         return getImplementationInstance();
     }
 }

@@ -30,7 +30,11 @@ import org.apache.tuscany.model.assembly.Scope;
 /**
  * A template implementation that creates instances of {@link org.apache.tuscany.core.context.ExternalServiceContext}
  * configured with the appropriate invocation chains and bindings. This class is intended to be subclassed when
- * contributing new bindings to the runtime. The subclass serves as a marker so the binding {@link WireBuilder}
+ * contributing new bindings to the runtime. The subclass serves as a marker so the binding {@link WireBuilder
+ *
+ *
+ *
+ * }
  * responsible for setting the proper {@link org.apache.tuscany.core.invocation.TargetInvoker} on the invocation chains
  * can be notified.
  * 
@@ -47,8 +51,6 @@ public abstract class BaseExternalServiceContextFactory implements ContextFactor
     private String targetServiceName;
 
     private Map<String,ProxyFactory> targetProxyFactories;
-    
-    private AggregateContext parentContext;
 
     public BaseExternalServiceContextFactory(String name, ObjectFactory objectFactory) {
         assert (name != null) : "Name was null";
@@ -89,7 +91,7 @@ public abstract class BaseExternalServiceContextFactory implements ContextFactor
 
     public Map<String,ProxyFactory> getTargetProxyFactories() {
         if (targetProxyFactories == null) {
-            targetProxyFactories = new HashMap(1);
+            targetProxyFactories = new HashMap<String,ProxyFactory> (1);
             targetProxyFactories.put(targetServiceName, proxyFactory);
         }
         return targetProxyFactories;
@@ -99,12 +101,12 @@ public abstract class BaseExternalServiceContextFactory implements ContextFactor
         // no wires inside an aggregate from an external service
     }
 
-    public List getSourceProxyFactories() {
-        return Collections.EMPTY_LIST;
+    public List<ProxyFactory> getSourceProxyFactories() {
+        return Collections.emptyList();
     }
     
     public void prepare(AggregateContext parent) {
-        parentContext = parent;
+        //parentContext = parent;
     }
 
 }

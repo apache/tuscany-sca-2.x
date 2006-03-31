@@ -22,14 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.CoreRuntimeException;
-import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.InstanceContext;
-import org.apache.tuscany.core.context.LifecycleEventListener;
-import org.apache.tuscany.core.context.RuntimeEventListener;
-import org.apache.tuscany.core.context.ScopeRuntimeException;
-import org.apache.tuscany.core.context.SimpleComponentContext;
+import org.apache.tuscany.core.context.*;
 
 /**
  * An implementation of an HTTP session-scoped component container where each HTTP session is mapped to a context in the scope
@@ -42,7 +35,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
     private Map<Object, Map<String, InstanceContext>> contexts;
 
     // Stores ordered lists of contexts to shutdown keyed by session
-    private Map<Object, Queue<InstanceContext>> destroyableContexts;
+    private Map<Object, Queue<SimpleComponentContext>> destroyableContexts;
 
     // ----------------------------------
     // Constructors
@@ -62,8 +55,8 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
             throw new IllegalStateException("Scope container must be in UNINITIALIZED state");
         }
         super.start();
-        contexts = new ConcurrentHashMap();
-        destroyableContexts = new ConcurrentHashMap();
+        contexts = new ConcurrentHashMap<Object, Map<String, InstanceContext>>();
+        destroyableContexts = new ConcurrentHashMap<Object, Queue<SimpleComponentContext>>();
         lifecycleState = RUNNING;
     }
 
@@ -134,7 +127,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
         if (key == null && ctxName == null) {
             return null;
         }
-        Map components = (Map) contexts.get(key);
+        Map components = contexts.get(key);
         if (components == null) {
             return null;
         }
@@ -152,30 +145,33 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
         if (key == null || ctxName == null) {
             return;
         }
-        Map components = (Map) contexts.get(key);
+        Map components = contexts.get(key);
         if (components == null) {
             return;
         }
         components.remove(ctxName);
-        Map definitions = contexts.get(key);
-        InstanceContext meta = (InstanceContext) definitions.get(ctxName);
-        destroyableContexts.get(key).remove(meta);
+        Map<String, InstanceContext> definitions = contexts.get(key);
+        InstanceContext ctx = definitions.get(ctxName);
+        if (ctx != null){
+            destroyableContexts.get(key).remove(ctx);
+        }
         definitions.remove(ctxName);
     }
- 
+
     public void onInstanceCreate(Context context) throws ScopeRuntimeException {
         checkInit();
         if (context instanceof SimpleComponentContext) {
+            SimpleComponentContext simpleCtx = (SimpleComponentContext)context;
             // if destroyable, queue the context to have its component implementation instance released
-            if (((SimpleComponentContext) context).isDestroyable()) {
+            if (simpleCtx.isDestroyable()) {
                 Object key = getEventContext().getIdentifier(EventContext.HTTP_SESSION);
-                Queue comps = destroyableContexts.get(key);
+                Queue<SimpleComponentContext> comps = destroyableContexts.get(key);
                 if (comps == null) {
                     ScopeRuntimeException e = new ScopeRuntimeException("Shutdown queue not found for key");
                     e.setIdentifier(key.toString());
                     throw e;
                 }
-                comps.add(context);
+                comps.add(simpleCtx);
             }
         }
     }
@@ -189,10 +185,10 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
          * This method will be called from the Listener which is associated with a different thread than the request. So, just
          * grab the key directly
          */
-        Queue queue = destroyableContexts.get(key);
+        Queue<SimpleComponentContext> queue = destroyableContexts.get(key);
         if (queue != null) {
             // create 0-length array since Queue.size() has O(n) traversal
-            return (InstanceContext[]) queue.toArray(new InstanceContext[0]);
+            return queue.toArray(new SimpleComponentContext[0]);
         } else {
             return null;
         }
@@ -210,20 +206,19 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
         if (key == null) {
             throw new ScopeRuntimeException("Session key not set in request context");
         }
-        Map m = contexts.get(key);
+        Map<String, InstanceContext> m = contexts.get(key);
         if (m != null) {
             return m; // already created, return
         }
-        Map<String, InstanceContext> sessionContext = new ConcurrentHashMap(contextFactorys.size());
+        Map<String, InstanceContext> sessionContext = new ConcurrentHashMap<String, InstanceContext>(contextFactorys.size());
         for (ContextFactory<InstanceContext> config : contextFactorys.values()) {
-            InstanceContext context = null;
-            context = config.createContext();
+            InstanceContext context = config.createContext();
             context.addContextListener(this);
             context.start();
             sessionContext.put(context.getName(), context);
         }
 
-        Queue shutdownQueue = new ConcurrentLinkedQueue();
+        Queue<SimpleComponentContext> shutdownQueue = new ConcurrentLinkedQueue<SimpleComponentContext>();
         contexts.put(key, sessionContext);
         destroyableContexts.put(key, shutdownQueue);
         // initialize eager components. Note this cannot be done when we initially create each context since a component may
@@ -235,7 +230,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
                     // Get the instance and perform manual shutdown registration to avoid a map lookup
                     context.getInstance(null, false);
                     if (simpleCtx.isDestroyable()) {
-                        shutdownQueue.add(context);
+                        shutdownQueue.add(simpleCtx);
                     }
                 }
             }

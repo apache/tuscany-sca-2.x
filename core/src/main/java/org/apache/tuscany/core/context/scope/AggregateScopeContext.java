@@ -41,33 +41,18 @@ import org.apache.tuscany.core.context.TargetException;
  */
 public class AggregateScopeContext extends AbstractContext implements ScopeContext {
 
-    // ----------------------------------
-    // Fields
-    // ----------------------------------
-
-    private EventContext eventContext;
-
-    private List<ContextFactory<InstanceContext>> configs = new ArrayList();
+    private List<ContextFactory<InstanceContext>> configs = new ArrayList<ContextFactory<InstanceContext>>();
 
     // Aggregate component contexts in this scope keyed by name
-    private Map<String, AggregateContext> contexts = new ConcurrentHashMap();
+    private Map<String, AggregateContext> contexts = new ConcurrentHashMap<String, AggregateContext>();
 
     // indicates if a module start event has been previously propagated so child contexts added after can be notified
     private boolean moduleScopeStarted;
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
     public AggregateScopeContext(EventContext eventContext) {
         assert (eventContext != null) : "Event context was null";
-        this.eventContext = eventContext;
         name = "Aggregate Scope";
     }
-
-    // ----------------------------------
-    // Lifecycle methods
-    // ----------------------------------
 
     public void start() throws ScopeInitializationException {
         for (ContextFactory<InstanceContext> configuration : configs) {
@@ -89,10 +74,6 @@ public class AggregateScopeContext extends AbstractContext implements ScopeConte
             context.stop();
         }
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     public void registerFactories(List<ContextFactory<InstanceContext>> configurations) {
         this.configs = configurations;
@@ -122,7 +103,6 @@ public class AggregateScopeContext extends AbstractContext implements ScopeConte
     }
 
     public Object getInstance(QualifiedName qName) throws TargetException {
-        Object instance = null;
         InstanceContext context = getContext(qName.getPartName());
         if (context == null) {
             TargetException e = new TargetException("Component not found");
@@ -167,7 +147,7 @@ public class AggregateScopeContext extends AbstractContext implements ScopeConte
             context.fireEvent(type, message);
         }
     }
-    
+
     public Object getImplementationInstance() throws TargetException{
         return this;
     }

@@ -36,7 +36,7 @@ public class MockScopeContext implements ScopeContext {
     Map<String, Object> components;
 
     public MockScopeContext() {
-        components = new HashMap();
+        components = new HashMap<String, Object>();
         components.put("foo", new SimpleTargetImpl());
         components.put("bar", new SimpleTargetImpl());
     }
