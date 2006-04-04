@@ -81,28 +81,37 @@ public class TuscanyContextListener implements LifecycleListener {
 
         try {
             loadContext(ctx);
+            moduleContext.fireEvent(EventContext.MODULE_START, null);
+
+            // add a valve to this context's pipeline that will associate the request with the runtime
+            Valve valve = new TuscanyValve(moduleContext);
+            ctx.getPipeline().addValve(valve);
+
+            // add the web service servlet wrapper
+            addWebServiceWrapper(ctx);
+            addJSONRPCServiceWrapper(ctx);
+
+            // add the RuntimeContext in as a servlet context parameter
+            ServletContext servletContext = ctx.getServletContext();
+            servletContext.setAttribute(TUSCANY_RUNTIME_NAME, runtime);
+            servletContext.setAttribute(MODULE_COMPONENT_NAME, moduleContext);
+
+            
         } catch (ConfigurationException e) {
+            e.printStackTrace();
+            e.printStackTrace(System.out);
             log.error("context.configError", e);
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException e1) {
             }
             return;
+        }catch( Exception e){
+            e.printStackTrace();
+            e.printStackTrace(System.out);
+            new RuntimeException(e);
+            
         }
-        moduleContext.fireEvent(EventContext.MODULE_START, null);
-
-        // add a valve to this context's pipeline that will associate the request with the runtime
-        Valve valve = new TuscanyValve(moduleContext);
-        ctx.getPipeline().addValve(valve);
-
-        // add the web service servlet wrapper
-        addWebServiceWrapper(ctx);
-        addJSONRPCServiceWrapper(ctx);
-
-        // add the RuntimeContext in as a servlet context parameter
-        ServletContext servletContext = ctx.getServletContext();
-        servletContext.setAttribute(TUSCANY_RUNTIME_NAME, runtime);
-        servletContext.setAttribute(MODULE_COMPONENT_NAME, moduleContext);
     }
 
     private void loadContext(Context ctx) throws ConfigurationException {
