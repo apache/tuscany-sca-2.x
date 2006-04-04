@@ -36,6 +36,7 @@ import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.EventException;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
@@ -81,37 +82,37 @@ public class TuscanyContextListener implements LifecycleListener {
 
         try {
             loadContext(ctx);
-            moduleContext.fireEvent(EventContext.MODULE_START, null);
-
-            // add a valve to this context's pipeline that will associate the request with the runtime
-            Valve valve = new TuscanyValve(moduleContext);
-            ctx.getPipeline().addValve(valve);
-
-            // add the web service servlet wrapper
-            addWebServiceWrapper(ctx);
-            addJSONRPCServiceWrapper(ctx);
-
-            // add the RuntimeContext in as a servlet context parameter
-            ServletContext servletContext = ctx.getServletContext();
-            servletContext.setAttribute(TUSCANY_RUNTIME_NAME, runtime);
-            servletContext.setAttribute(MODULE_COMPONENT_NAME, moduleContext);
-
-            
         } catch (ConfigurationException e) {
-            e.printStackTrace();
-            e.printStackTrace(System.out);
             log.error("context.configError", e);
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e1) {
-            }
+            // todo mark application as unavailable
             return;
-        }catch( Exception e){
-            e.printStackTrace();
-            e.printStackTrace(System.out);
-            new RuntimeException(e);
-            
         }
+
+        try {
+            moduleContext.fireEvent(EventContext.MODULE_START, null);
+        } catch (EventException e) {
+            log.error("context.moduleStartError", e);
+            // todo unload module component from runtime
+            // todo mark application as unavailable
+            return;
+        } catch (RuntimeException e) {
+            log.error("context.unknownRuntimeException", e);
+            // todo unload module component from runtime
+            throw e;
+        }
+
+        // add a valve to this context's pipeline that will associate the request with the runtime
+        Valve valve = new TuscanyValve(moduleContext);
+        ctx.getPipeline().addValve(valve);
+
+        // add the web service servlet wrapper
+        addWebServiceWrapper(ctx);
+        addJSONRPCServiceWrapper(ctx);
+
+        // add the RuntimeContext in as a servlet context parameter
+        ServletContext servletContext = ctx.getServletContext();
+        servletContext.setAttribute(TUSCANY_RUNTIME_NAME, runtime);
+        servletContext.setAttribute(MODULE_COMPONENT_NAME, moduleContext);
     }
 
     private void loadContext(Context ctx) throws ConfigurationException {
@@ -130,7 +131,6 @@ public class TuscanyContextListener implements LifecycleListener {
             AggregateContext rootContext = runtime.getRootContext();
             rootContext.registerModelObject(moduleComponent);
             moduleContext = (AggregateContext)rootContext.getContext(moduleComponent.getName());
-            //moduleContext.registerModelObject(moduleComponent.getComponentImplementation());
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }
