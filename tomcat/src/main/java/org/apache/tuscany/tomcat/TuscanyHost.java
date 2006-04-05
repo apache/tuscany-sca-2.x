@@ -23,8 +23,6 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.util.StringManager;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.common.resource.ResourceLoader;
@@ -53,7 +51,7 @@ import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 @SuppressWarnings({"serial"})
 public class TuscanyHost extends StandardHost {
     private static final String SYSTEM_MODULE_COMPONENT = "org.apache.tuscany.core.system";
-    private static final Log log = LogFactory.getLog(TuscanyHost.class);
+
     private static final StringManager sm = StringManager.getManager("org.apache.tuscany.tomcat");
 
     private RuntimeContext runtime;
@@ -91,16 +89,16 @@ public class TuscanyHost extends StandardHost {
             AggregateContext context = BootstrapHelper.registerModule(systemContext, systemModuleComponent);
             context.fireEvent(EventContext.MODULE_START, null);
         } catch (ConfigurationLoadException e) {
-            log.warn(sm.getString("runtime.loadSystemFailed"), e);
+            getLogger().warn(sm.getString("runtime.loadSystemFailed"), e);
             return;
         } catch (Exception e) {
-            log.warn(sm.getString("runtime.registerSystemFailed"), e);
+            getLogger().warn(sm.getString("runtime.registerSystemFailed"), e);
             runtime.stop();
             runtime = null;
             return;
         }
 
-        log.info(sm.getString("runtime.started"));
+        getLogger().info(sm.getString("runtime.started"));
     }
 
     private void stopRuntime() {
@@ -110,7 +108,7 @@ public class TuscanyHost extends StandardHost {
 
         runtime.stop();
         runtime = null;
-        log.info(sm.getString("runtime.stopped"));
+        getLogger().info(sm.getString("runtime.stopped"));
     }
 
     public synchronized void addChild(Container child) {

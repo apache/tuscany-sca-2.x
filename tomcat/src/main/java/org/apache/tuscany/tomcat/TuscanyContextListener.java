@@ -23,6 +23,7 @@ import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Valve;
+import org.apache.catalina.util.StringManager;
 import org.apache.catalina.core.StandardWrapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,6 +50,7 @@ import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
  */
 public class TuscanyContextListener implements LifecycleListener {
     private static final Log log = LogFactory.getLog(TuscanyContextListener.class);
+    private static final StringManager sm = StringManager.getManager("org.apache.tuscany.tomcat");
     private static final String TUSCANY_RUNTIME_NAME = RuntimeContext.class.getName();
     public static final String MODULE_COMPONENT_NAME = "org.apache.tuscany.core.webapp.ModuleComponentContext";
 
@@ -80,10 +82,11 @@ public class TuscanyContextListener implements LifecycleListener {
             return;
         }
 
+        log.info(sm.getString("context.configLoad", ctx.getName()));
         try {
             loadContext(ctx);
         } catch (ConfigurationException e) {
-            log.error("context.configError", e);
+            log.error(sm.getString("context.configError"), e);
             // todo mark application as unavailable
             return;
         }
@@ -91,12 +94,12 @@ public class TuscanyContextListener implements LifecycleListener {
         try {
             moduleContext.fireEvent(EventContext.MODULE_START, null);
         } catch (EventException e) {
-            log.error("context.moduleStartError", e);
+            log.error(sm.getString("context.moduleStartError"), e);
             // todo unload module component from runtime
             // todo mark application as unavailable
             return;
         } catch (RuntimeException e) {
-            log.error("context.unknownRuntimeException", e);
+            log.error(sm.getString("context.unknownRuntimeException"), e);
             // todo unload module component from runtime
             throw e;
         }
