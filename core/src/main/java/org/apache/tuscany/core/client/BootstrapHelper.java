@@ -26,7 +26,6 @@ import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.config.impl.ModuleComponentConfigurationLoaderImpl;
 import org.apache.tuscany.core.config.impl.StAXModuleComponentConfigurationLoaderImpl;
 import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.context.AggregateContext;
@@ -88,7 +87,6 @@ public final class BootstrapHelper {
         return configBuilders;
     }
 
-    private static final boolean useStax = false;
     private static final String SYSTEM_LOADER_COMPONENT = "tuscany.loader";
 
     /**
@@ -101,12 +99,7 @@ public final class BootstrapHelper {
     public static ModuleComponentConfigurationLoader getConfigurationLoader(SystemAggregateContext systemContext, AssemblyModelContext modelContext) throws ConfigurationException {
         // Bootstrap the StAX loader module
         bootstrapStaxLoader(systemContext, modelContext);
-
-        if (useStax) {
-            return new StAXModuleComponentConfigurationLoaderImpl(modelContext, XMLInputFactory.newInstance(), systemContext.resolveInstance(StAXLoaderRegistry.class));
-        } else {
-            return new ModuleComponentConfigurationLoaderImpl(modelContext);
-        }
+        return new StAXModuleComponentConfigurationLoaderImpl(modelContext, XMLInputFactory.newInstance(), systemContext.resolveInstance(StAXLoaderRegistry.class));
     }
 
     private static AggregateContext bootstrapStaxLoader(SystemAggregateContext systemContext, AssemblyModelContext modelContext) throws ConfigurationException {
