@@ -69,12 +69,6 @@ public interface RuntimeContext extends AutowireContext, ConfigurationContext {
     public void addBuilder(WireBuilder builder);
 
     /**
-     * Adds an SCDL model loader to the runtime
-     */
-    @Deprecated
-    public void addLoader(SCDLModelLoader loader);
-
-    /**
      * Returns the monitor factory in use by the runtime
      */
     @Deprecated

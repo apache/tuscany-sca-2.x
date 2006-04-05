@@ -352,7 +352,7 @@ public class MockFactory {
      * Creates a default {@link RuntimeContext} configured with support for Java component implementations
      */
     public static RuntimeContext createCoreRuntime() {
-        RuntimeContext runtime = new RuntimeContextImpl(null, null, createSystemBuilders(), null);
+        RuntimeContext runtime = new RuntimeContextImpl(null, createSystemBuilders(), null);
         runtime.start();
         return runtime;
     }

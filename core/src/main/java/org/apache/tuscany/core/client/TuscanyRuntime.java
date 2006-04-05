@@ -82,9 +82,8 @@ public class TuscanyRuntime extends SCA {
         AssemblyModelContext modelContext = BootstrapHelper.getModelContext(classLoader);
 
         // Create a runtime context and start it
-        List<SCDLModelLoader> loaders = modelContext.getAssemblyLoader().getLoaders();
         List<ContextFactoryBuilder> configBuilders = BootstrapHelper.getBuilders();
-        runtime = new RuntimeContextImpl(monitorFactory, loaders, configBuilders, new DefaultWireBuilder());
+        runtime = new RuntimeContextImpl(monitorFactory, configBuilders, new DefaultWireBuilder());
         runtime.start();
         monitor.started(runtime);
 

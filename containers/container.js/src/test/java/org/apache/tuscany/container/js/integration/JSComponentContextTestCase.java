@@ -70,7 +70,7 @@ public class JSComponentContextTestCase extends TestCase {
 
         DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
 
-        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, defaultWireBuilder);
+        RuntimeContext runtime = new RuntimeContextImpl(null, builders, defaultWireBuilder);
         runtime.addBuilder(new JavaScriptTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(

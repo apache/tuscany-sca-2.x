@@ -70,10 +70,6 @@ public class SCDLAssemblyModelLoaderImpl implements AssemblyModelLoader {
         this.modelContext = modelContext;
     }
 
-    public List<SCDLModelLoader> getLoaders() {
-        return scdlModelLoaders;
-    }
-
     /**
      * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#loadComponentType(java.lang.String)
      */
@@ -84,67 +80,14 @@ public class SCDLAssemblyModelLoaderImpl implements AssemblyModelLoader {
 
         // Load the SCDL component type
         org.apache.tuscany.model.scdl.ComponentType scdlComponentType=xmlReader.getComponentType(uri);
-        
+
         // Transform it to an assembly component type
         componentType=transform(scdlComponentType).getComponentType();
-        
+
         componentTypes.put(uri, componentType);
         return componentType;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#loadModule(java.lang.String)
-     */
-    public Module loadModule(String uri) {
-        Module module=modules.get(uri);
-        if (module!=null)
-            return module;
-
-        // Load the SCDL module
-        org.apache.tuscany.model.scdl.Module scdlModule=xmlReader.getModule(uri);
-        
-        // Transform it to an assembly module
-        module=transform(scdlModule).getModule();
-        
-        modules.put(uri, module);
-        return module;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#loadModuleFragment(java.lang.String)
-     */
-    public ModuleFragment loadModuleFragment(String uri) {
-        ModuleFragment moduleFragment=moduleFragments.get(uri);
-        if (moduleFragment!=null)
-            return moduleFragment;
-
-        // Load the SCDL module fragment
-        org.apache.tuscany.model.scdl.ModuleFragment scdlFragment=xmlReader.getModuleFragment(uri);
-        
-        // Transform it to an assembly module fragment
-        moduleFragment=transform(scdlFragment).getModuleFragment();
-        
-        moduleFragments.put(uri, moduleFragment);
-        return moduleFragment;
-    }
-    
-    /**
-     * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#loadSubsystem(java.lang.String)
-     */
-    public Subsystem loadSubsystem(String uri) {
-        Subsystem subsystem=subsystems.get(uri);
-        if (subsystem!=null)
-            return subsystem;
-
-        // Load the SCDL subsystem
-        org.apache.tuscany.model.scdl.Subsystem scdlSubsystem=xmlReader.getSubsystem(uri);
-        
-        subsystem=transform(scdlSubsystem).getSubsystem();
-        
-        subsystems.put(uri, subsystem);
-        return subsystem;
-    }
-    
     /**
      * @see org.apache.tuscany.model.assembly.loader.AssemblyModelLoader#loadDefinition(java.lang.String)
      */
@@ -152,7 +95,7 @@ public class SCDLAssemblyModelLoaderImpl implements AssemblyModelLoader {
         Definition definition=definitions.get(uri);
         if (definition!=null)
             return definition;
-        
+
         try {
             if (wsdlReader==null)
                 wsdlReader=WSDLFactory.newInstance().newWSDLReader();
@@ -162,9 +105,9 @@ public class SCDLAssemblyModelLoaderImpl implements AssemblyModelLoader {
         }
         if (definition==null)
             throw new IllegalArgumentException("Could not load WSDL definition at "+uri);
-        
+
         definitions.put(uri, definition);
-        
+
         String namespace=definition.getTargetNamespace();
         List<Definition> list=definitionsByNamespace.get(namespace);
         if (list==null) {
@@ -172,7 +115,7 @@ public class SCDLAssemblyModelLoaderImpl implements AssemblyModelLoader {
             definitionsByNamespace.put(namespace, list);
         }
         list.add(definition);
-       
+
         return definition;
     }
     

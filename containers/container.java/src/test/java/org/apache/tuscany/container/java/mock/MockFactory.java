@@ -54,7 +54,6 @@ import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.SystemAggregateContext;
-import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
@@ -66,12 +65,10 @@ import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
-import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
-import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ComponentType;
@@ -665,7 +662,7 @@ public class MockFactory {
      * @throws ConfigurationException
      */
     public static RuntimeContext createJavaRuntime() throws ConfigurationException {
-        RuntimeContext runtime = new RuntimeContextImpl(null, null, MockFactory.createSystemBuilders(), null);
+        RuntimeContext runtime = new RuntimeContextImpl(null, MockFactory.createSystemBuilders(), null);
         runtime.start();
         runtime.getSystemContext().registerModelObject(createSystemAggregateComponent(SYSTEM_CHILD));
         SystemAggregateContext ctx = (SystemAggregateContext) runtime.getSystemContext().getContext(SYSTEM_CHILD);

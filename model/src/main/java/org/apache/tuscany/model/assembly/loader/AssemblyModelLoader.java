@@ -39,38 +39,11 @@ public interface AssemblyModelLoader {
     void setModelContext(AssemblyModelContext modelContext);
 
     /**
-     * Returns the live list of sub-loaders this loader is using.
-     * @return the list of sub-loaders
-     */
-    List<SCDLModelLoader> getLoaders();
-
-    /**
-     * Returns the module at the given uri
-     * @param uri
-     * @return the Module at the given uri
-     */
-    Module loadModule(String uri);
-
-    /**
-     * Returns the module at the given uri
-     * @param uri
-     * @return the ModuleFragment at the given uri
-     */
-    ModuleFragment loadModuleFragment(String uri);
-
-    /**
      * Returns the component type at the given uri
      * @param uri
      * @return the ComponentType at the given uri
      */
     ComponentType loadComponentType(String uri);
-
-    /**
-     * Returns the subsystem at the given uri.
-     * @param uri
-     * @return the Subsystem at the given uri
-     */
-    Subsystem loadSubsystem(String uri);
 
     /**
      * Load a WSDL definition

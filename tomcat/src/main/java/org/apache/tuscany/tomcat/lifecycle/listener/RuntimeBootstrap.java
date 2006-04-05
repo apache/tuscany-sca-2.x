@@ -97,7 +97,7 @@ public class RuntimeBootstrap implements ObjectFactory {
 //            throw new BootstrapConfigurationException("Error initializing configuration loader in Tomcat configuration", e);
 //        }
         // create the SCA Runtime and have it bound in the global JNDI context
-        return new RuntimeContextImpl(monitorFactory, null, createBuilders(),null);
+        return new RuntimeContextImpl(monitorFactory, createBuilders(),null);
     }
 
     /**

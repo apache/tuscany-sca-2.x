@@ -57,7 +57,7 @@ public class RuntimeContextImplTestCase extends TestCase {
      * point
      */
     public void testSystemExplicitWiring() throws Exception {
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), null, builders, null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
         runtime.start();
 
         AggregateContext root = runtime.getRootContext();
@@ -106,7 +106,7 @@ public class RuntimeContextImplTestCase extends TestCase {
      * Tests autowiring an external service to a system entry point
      */
     public void testSystemAutoWiring() throws Exception {
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), null, builders, null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
         runtime.start();
 
         AggregateContext root = runtime.getRootContext();
@@ -136,7 +136,7 @@ public class RuntimeContextImplTestCase extends TestCase {
     }
 
     public void testServiceNotFound() throws Exception {
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), null, builders, null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
         runtime.start();
 
         // create a test module
@@ -155,7 +155,7 @@ public class RuntimeContextImplTestCase extends TestCase {
     }
 
     public void testExternalServiceReferenceNotFound() throws Exception {
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), null, builders, null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
         runtime.start();
         AggregateContext system = runtime.getSystemContext();
 
@@ -181,7 +181,7 @@ public class RuntimeContextImplTestCase extends TestCase {
     }
 
     public void testEntryPointReferenceNotFound() throws Exception {
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), null, builders, null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
         runtime.start();
 
         // create a test module
@@ -210,7 +210,7 @@ public class RuntimeContextImplTestCase extends TestCase {
      * Test two module components that have external services wired to entry points contained in each
      */
     public void testCircularWires() throws Exception {
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), null, builders, null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
         runtime.start();
 
         // create a test modules
@@ -248,7 +248,7 @@ public class RuntimeContextImplTestCase extends TestCase {
      * as an error condition FIXME this must be implemented
      */
     public void testInterModuleCircularReference() throws Exception {
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), null, builders, null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
         runtime.start();
 
         // create a test modules
@@ -279,7 +279,7 @@ public class RuntimeContextImplTestCase extends TestCase {
 
     public void testRuntimeBuilderAutowire() throws Exception {
 
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), null, builders, null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
         runtime.start();
 
         AggregateContext system = runtime.getSystemContext();

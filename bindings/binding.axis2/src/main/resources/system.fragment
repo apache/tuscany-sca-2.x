@@ -26,10 +26,6 @@
         <system:implementation.system class="org.apache.tuscany.binding.axis2.builder.ExternalWebServiceWireBuilder"/>
     </component>
 
-    <component name="org.apache.tuscany.binding.axis2.loader.WebServiceSCDLModelLoader">
-        <system:implementation.system class="org.apache.tuscany.binding.axis2.loader.WebServiceSCDLModelLoader"/>
-    </component>
-
     <component name="org.apache.tuscany.binding.axis2.builder.WebServiceEntryPointBuilder">
         <system:implementation.system class="org.apache.tuscany.binding.axis2.builder.WebServiceEntryPointBuilder"/>
     </component>

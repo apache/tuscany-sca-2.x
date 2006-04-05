@@ -18,10 +18,6 @@
         xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
 		name="org.apache.tuscany.binding.jsonrpc">
 
-    <component name="org.apache.tuscany.binding.jsonrpc.loader.JSONRPCSCDLModelLoader">
-        <system:implementation.system class="org.apache.tuscany.binding.jsonrpc.loader.JSONRPCSCDLModelLoader"/>
-    </component>
-
     <component name="org.apache.tuscany.binding.jsonrpc.builder.JSONRPCEntryPointConfigurationBuilder">
         <system:implementation.system class="org.apache.tuscany.binding.jsonrpc.builder.JSONRPCEntryPointConfigurationBuilder"/>
     </component>

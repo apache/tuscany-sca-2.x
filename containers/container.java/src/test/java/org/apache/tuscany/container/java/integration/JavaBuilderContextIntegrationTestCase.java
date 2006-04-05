@@ -83,7 +83,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
 
         DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
 
-        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, defaultWireBuilder);
+        RuntimeContext runtime = new RuntimeContextImpl(null, builders, defaultWireBuilder);
         runtime.addBuilder(new JavaTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
@@ -127,7 +127,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         builders.add(javaBuilder);
 
         DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
-        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, defaultWireBuilder);
+        RuntimeContext runtime = new RuntimeContextImpl(null, builders, defaultWireBuilder);
         runtime.addBuilder(new JavaTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
@@ -174,7 +174,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
 
         DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
 
-        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, defaultWireBuilder);
+        RuntimeContext runtime = new RuntimeContextImpl(null, builders, defaultWireBuilder);
         runtime.addBuilder(new JavaTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
@@ -217,7 +217,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
 
         DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
 
-        RuntimeContext runtime = new RuntimeContextImpl(null, null, builders, defaultWireBuilder);
+        RuntimeContext runtime = new RuntimeContextImpl(null, builders, defaultWireBuilder);
         runtime.addBuilder(new JavaTargetWireBuilder());
         
         runtime.start();

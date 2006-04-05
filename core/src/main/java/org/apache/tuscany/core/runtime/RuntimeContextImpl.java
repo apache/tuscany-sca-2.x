@@ -58,8 +58,6 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
     private final List<ContextFactoryBuilder> builders;
 
-    private final List<SCDLModelLoader> loaders;
-
     // the top-level wire builder in the runtime
     private final HierarchicalWireBuilder wireBuilder;
 
@@ -75,23 +73,20 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
      * Default constructor that creates a runtime with a NullMonitorFactory and no builders.
      */
     public RuntimeContextImpl() {
-        this(new NullMonitorFactory(), null, null, null);
+        this(new NullMonitorFactory(), null, null);
     }
 
     /**
      * Constructor for creating a runtime with a specified MonitorFactory and pre-defined builders.
      * 
-     * @param monitorFactory the default {@link MonitorFactory} for this runtime
+     * @param monitorFactory the default {@link org.apache.tuscany.common.monitor.MonitorFactory} for this runtime
      * @param builders a list of builders automatically made available; may be null
      * @param wireBuilder the top-level hierarchical wire builder for the runtime; if not specified, a default
-     *        implementation will be used
      */
-    public RuntimeContextImpl(MonitorFactory monitorFactory, List<SCDLModelLoader> loaders, List<ContextFactoryBuilder> builders,
-            HierarchicalWireBuilder wireBuilder) {
+    public RuntimeContextImpl(MonitorFactory monitorFactory, List<ContextFactoryBuilder> builders, HierarchicalWireBuilder wireBuilder) {
         super(RUNTIME);
         this.monitorFactory = monitorFactory;
         this.builders = (builders == null) ? new ArrayList<ContextFactoryBuilder>(1) : builders;
-        this.loaders = (loaders == null) ? new ArrayList<SCDLModelLoader>(1) : loaders;
         this.wireBuilder = (wireBuilder == null) ? new DefaultWireBuilder() : wireBuilder;
 
         rootContext = new AggregateContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this,
@@ -103,20 +98,21 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     /**
      * Specialized constructor that allows the default implementations of the root and system contexts to be overridden.
      * 
-     * @param monitorFactory the default {@link MonitorFactory} for this runtime
+     * @param monitorFactory the default {@link org.apache.tuscany.common.monitor.MonitorFactory} for this runtime
      * @param rootContext the context to use for the root of the user context tree
      * @param systemContext the context to use for the root of the system context tree
      * @param builders a list of builders automatically made available; may be null
      * @param wireBuilder the top-level hierarchical wire builder for the runtime; if not specified, a default
-     *        implementation will be used
      */
-    public RuntimeContextImpl(MonitorFactory monitorFactory, AggregateContext rootContext, SystemAggregateContext systemContext,
-            List<SCDLModelLoader> loaders, List<ContextFactoryBuilder> builders, HierarchicalWireBuilder wireBuilder) {
+    public RuntimeContextImpl(MonitorFactory monitorFactory,
+                              AggregateContext rootContext,
+                              SystemAggregateContext systemContext,
+                              List<ContextFactoryBuilder> builders,
+                              HierarchicalWireBuilder wireBuilder) {
         super(RUNTIME);
         this.rootContext = rootContext;
         this.systemContext = systemContext;
         this.monitorFactory = monitorFactory;
-        this.loaders = (loaders == null) ? new ArrayList<SCDLModelLoader>(1) : loaders;
         this.builders = (builders == null) ? new ArrayList<ContextFactoryBuilder>(1) : builders;
         this.wireBuilder = (wireBuilder == null) ? new DefaultWireBuilder() : wireBuilder;
     }
@@ -147,11 +143,6 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     public void addBuilder(WireBuilder builder) {
         assert (builder != null) : "Builder was null";
         wireBuilder.addWireBuilder(builder);
-    }
-
-    public void addLoader(SCDLModelLoader loader) {
-        assert (loader != null) : "Loader was null";
-        loaders.add(loader);
     }
 
     public AggregateContext getContext(String ctxName) {
