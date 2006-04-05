@@ -26,6 +26,10 @@
         <system:implementation.system class="org.apache.tuscany.container.java.builder.JavaTargetWireBuilder"/>
     </component>
 
+    <component name="org.apache.tuscany.container.java.assembly.JavaAssemblyFactory">
+        <system:implementation.system class="org.apache.tuscany.container.java.assembly.impl.JavaAssemblyFactoryImpl"/>
+    </component>
+
     <component name="org.apache.tuscany.container.java.loader.JavaImplementationLoader">
         <system:implementation.system class="org.apache.tuscany.container.java.loader.JavaImplementationLoader"/>
     </component>

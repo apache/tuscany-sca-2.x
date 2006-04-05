@@ -16,82 +16,29 @@
  */
 package org.apache.tuscany.container.java.assembly.impl;
 
-import java.net.URL;
-
-import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
-import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
-import org.apache.tuscany.core.config.ComponentTypeIntrospector;
-import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.impl.ComponentImplementationImpl;
 
 /**
  * An implementation of JavaImplementation.
+ *
+ * @version $Rev$ $Date$
  */
 public class JavaImplementationImpl extends ComponentImplementationImpl implements JavaImplementation {
-
     private Class<?> implementationClass;
 
     /**
-     * Constructor
+     * Default constructor.
      */
     protected JavaImplementationImpl() {
     }
 
-    /**
-     * @see org.apache.tuscany.container.java.assembly.JavaImplementation#getImplementationClass()
-     */
-    public Class getImplementationClass() {
+    public Class<?> getImplementationClass() {
         return implementationClass;
     }
 
-    /**
-     * @see org.apache.tuscany.container.java.assembly.JavaImplementation#setImplementationClass(java.lang.Class)
-     */
-    public void setImplementationClass(Class value) {
+    public void setImplementationClass(Class<?> value) {
         checkNotFrozen();
-        implementationClass=value;
+        implementationClass = value;
     }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
-     */
-    public void initialize(AssemblyModelContext modelContext) {
-        if (isInitialized())
-            return;
-
-        // Initialize the component type
-        ComponentType componentType=getComponentType();
-        if (componentType==null) {
-            componentType=createComponentType(modelContext, implementationClass);
-            setComponentType(componentType);
-        }
-        
-        super.initialize(modelContext);
-    }
-
-    /**
-     * Create the component type
-     * @param modelContext
-     * @param implClass
-     */
-    private static ComponentType createComponentType(AssemblyModelContext modelContext, Class<?> implClass) {
-        String baseName = JavaIntrospectionHelper.getBaseName(implClass);
-        URL componentTypeFile = implClass.getResource(baseName + ".componentType");
-        if (componentTypeFile != null) {
-            return modelContext.getAssemblyLoader().loadComponentType(componentTypeFile.toString());
-        } else {
-            JavaAssemblyFactory factory = new JavaAssemblyFactoryImpl();
-            ComponentTypeIntrospector introspector = new Java5ComponentTypeIntrospector(factory);
-            try {
-                return introspector.introspect(implClass);
-            } catch (ConfigurationException e) {
-                throw new IllegalArgumentException("Unable to introspect implementation class: " + implClass.getName(), e);
-            }
-        }
-    }
-
- }
+}

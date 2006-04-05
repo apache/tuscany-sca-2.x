@@ -21,17 +21,19 @@ import org.apache.tuscany.model.assembly.ComponentImplementation;
 
 /**
  * Represents a java implementation.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface JavaImplementation extends ComponentImplementation {
 
     /**
      * Returns the implementation class.
      */
-    Class getImplementationClass();
+    Class<?> getImplementationClass();
 
     /**
      * Sets the implementation class.
      */
-    void setImplementationClass(Class value);
+    void setImplementationClass(Class<?> value);
 
 }

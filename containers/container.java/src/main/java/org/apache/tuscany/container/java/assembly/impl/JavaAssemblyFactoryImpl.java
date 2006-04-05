@@ -16,6 +16,8 @@
  */
 package org.apache.tuscany.container.java.assembly.impl;
 
+import org.osoa.sca.annotations.Service;
+
 import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
@@ -23,6 +25,7 @@ import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 /**
  * A factory for the model.
  */
+@Service(interfaces = {JavaAssemblyFactory.class})
 public class JavaAssemblyFactoryImpl extends AssemblyFactoryImpl implements JavaAssemblyFactory {
 
     /**

@@ -23,10 +23,8 @@ import org.apache.tuscany.model.assembly.AssemblyFactory;
  * The Factory for the model.
  */
 public interface JavaAssemblyFactory extends AssemblyFactory {
-
     /**
      * Returns a new JavaImplementation.
      */
     JavaImplementation createJavaImplementation();
-
 }
