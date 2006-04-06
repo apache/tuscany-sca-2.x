@@ -69,27 +69,4 @@
 
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.tuscany</groupId>
-                <artifactId>tuscany-sdo-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <configuration>
-                            <schemaFile>${basedir}/src/main/resources/model/sca-binding-jsonrpc.xsd</schemaFile>
-                            <generateLoader>true</generateLoader>
-                            <generateSwitch>true</generateSwitch>
-                            <noNotification>true</noNotification>
-                            <noUnsettable>true</noUnsettable>
-                        </configuration>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>
