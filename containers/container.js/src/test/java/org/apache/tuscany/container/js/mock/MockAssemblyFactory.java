@@ -16,6 +16,9 @@
  */
 package org.apache.tuscany.container.js.mock;
 
+import java.io.InputStream;
+import java.io.IOException;
+
 import org.apache.tuscany.container.js.assembly.JavaScriptAssemblyFactory;
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
 import org.apache.tuscany.container.js.assembly.impl.JavaScriptAssemblyFactoryImpl;
@@ -31,6 +34,7 @@ import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
+import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 
 /**
  * Generates test components and module assemblies
@@ -48,6 +52,8 @@ public class MockAssemblyFactory {
         JavaScriptImplementation impl = factory.createJavaScriptImplementation();
         impl.setComponentType(factory.createComponentType());
         impl.setScriptFile(scriptFile);
+        impl.setScript(readScript(type.getClassLoader().getResourceAsStream(scriptFile)));
+        impl.setResourceLoader(new ResourceLoaderImpl(type.getClassLoader()));
         sc.setComponentImplementation(impl);
         Service s = factory.createService();
         String serviceName = type.getName().substring(type.getName().lastIndexOf('.')+1);
@@ -87,5 +93,19 @@ public class MockAssemblyFactory {
         sc.setName(name);
         sc.setComponentImplementation(impl);
         return sc;
+    }
+
+    private static String readScript(InputStream is) {
+        try {
+            StringBuilder sb = new StringBuilder(1024);
+            int n;
+            while ((n = is.read()) != -1) {
+                sb.append((char) n);
+            }
+            is.close();
+            return sb.toString();
+        } catch (IOException e) {
+            throw new AssertionError();
+        }
     }
 }

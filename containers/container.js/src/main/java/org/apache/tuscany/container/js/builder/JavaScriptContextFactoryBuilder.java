@@ -22,12 +22,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import commonj.sdo.helper.TypeHelper;
+import org.osoa.sca.annotations.Init;
+
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
-import org.apache.tuscany.container.js.assembly.impl.JavaScriptImplementationImpl;
 import org.apache.tuscany.container.js.config.JavaScriptContextFactory;
 import org.apache.tuscany.container.js.rhino.RhinoE4XScript;
 import org.apache.tuscany.container.js.rhino.RhinoScript;
-import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
@@ -46,14 +47,10 @@ import org.apache.tuscany.model.assembly.ComponentImplementation;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.ModelInitException;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceContract;
 import org.apache.tuscany.model.assembly.SimpleComponent;
-import org.osoa.sca.annotations.Init;
-
-import commonj.sdo.helper.TypeHelper;
 
 /**
  * Builds {@link org.apache.tuscany.container.js.config.JavaScriptContextFactory}s from a JavaScript
@@ -139,14 +136,8 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder<Ag
             defaultProperties.put(property.getName(), property.getDefaultValue());
         }
 
-        // TODO: avoid casting to JavaScriptImplementationImpl
-		String script;
-	    try {
-	        script = ((JavaScriptImplementationImpl) impl).getScript();
-	    } catch (ModelInitException e) {
-	        throw new BuilderConfigException(e);
-	    }
-        ClassLoader cl = ((JavaScriptImplementationImpl) impl).getResourceLoader().getClassLoader();
+		String script = impl.getScript();
+        ClassLoader cl = impl.getResourceLoader().getClassLoader();
         
         RhinoScript invoker;
         if ("e4x".equalsIgnoreCase(impl.getStyle())) {  // TODO is constant "e4x" somewhere?
@@ -197,7 +188,7 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder<Ag
 		        referenceBuilder.build(configuredService);
 		    }
 		    // add tail interceptor
-		    for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
+		    for (InvocationConfiguration iConfig : iConfigMap.values()) {
 		        iConfig.addTargetInterceptor(new InvokerInterceptor());
 		    }
 		    config.addTargetProxyFactory(service.getName(), proxyFactory);
@@ -218,7 +209,7 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder<Ag
 		        String targetCompName = reference.getTargetConfiguredServices().get(0).getAggregatePart().getName();
 		        String targetSerivceName = reference.getTargetConfiguredServices().get(0).getService().getName();
 
-		        QualifiedName qName = new QualifiedName(targetCompName + "/" + targetSerivceName);
+		        QualifiedName qName = new QualifiedName(targetCompName + '/' + targetSerivceName);
                 ProxyConfiguration pConfiguration = new ProxyConfiguration(reference.getReference().getName(), qName,
                         iConfigMap, interfaze.getInterface().getClassLoader(), msgFactory);
 		        proxyFactory.setBusinessInterface(interfaze.getInterface());

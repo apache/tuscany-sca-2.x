@@ -16,20 +16,13 @@
  */
 package org.apache.tuscany.container.js.assembly.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.ComponentType;
-import org.apache.tuscany.model.assembly.ModelInitException;
 import org.apache.tuscany.model.assembly.impl.ComponentImplementationImpl;
 
 /**
  * Default implementation of a JavScript component implementation type
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class JavaScriptImplementationImpl extends ComponentImplementationImpl implements JavaScriptImplementation {
@@ -38,7 +31,7 @@ public class JavaScriptImplementationImpl extends ComponentImplementationImpl im
 
     private String style;
 
-    private String scriptCode;
+    private String script;
 
     private ResourceLoader resourceLoader;
 
@@ -46,32 +39,12 @@ public class JavaScriptImplementationImpl extends ComponentImplementationImpl im
         super();
     }
 
-    public ResourceLoader getResourceLoader() {
-        return resourceLoader;
+    public void setResourceLoader(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
     }
 
-    public void initialize(AssemblyModelContext modelContext) throws ModelInitException {
-        if (isInitialized()) {
-            return;
-        }
-        this.resourceLoader = modelContext.getApplicationResourceLoader();
-        if(resourceLoader == null){
-            throw new ModelInitException("No resource loader set on model context");
-        }
-
-        // Initialize the component type
-        ComponentType componentType = getComponentType();
-        if (componentType == null) {
-            try {
-                componentType = createComponentType(modelContext);
-            } catch (IOException e) {
-                throw new ModelInitException("Error retrieving component type file",e);
-            }
-            setComponentType(componentType);
-        }
-
-        super.initialize(modelContext);
-
+    public ResourceLoader getResourceLoader() {
+        return resourceLoader;
     }
 
     public String getScriptFile() {
@@ -90,51 +63,11 @@ public class JavaScriptImplementationImpl extends ComponentImplementationImpl im
         this.style = style;
     }
 
-    public String getScript() throws ModelInitException {
-        if (scriptCode != null) {
-            return scriptCode;
-        }
-        try {
-            URL url = resourceLoader.getResource(getScriptFile());
-            if (url == null) {
-                ModelInitException ce = new ModelInitException("Script not found");
-                ce.setIdentifier(getScriptFile());
-                throw ce;
-            }
-            InputStream inputStream = url.openStream();
-            try {
-                StringBuffer sb = new StringBuffer();
-                int n = 0;
-                while ((n = inputStream.read()) != -1) {
-                    sb.append((char) n);
-                }
-                scriptCode = sb.toString();
-                return scriptCode;
-            } finally {
-                inputStream.close();
-            }
-        } catch (IOException e) {
-            ModelInitException ce = new ModelInitException("Error reading script file",e);
-            ce.setIdentifier(getScriptFile());
-            throw ce;
-        }
+    public String getScript() {
+        return script;
     }
 
-    /**
-     * Create the component type
-     * 
-     * @param modelContext
-     * @param implementationClass
-     */
-    private ComponentType createComponentType(AssemblyModelContext modelContext) throws IOException{
-        String prefix = scriptFile.substring(0,scriptFile.lastIndexOf('.'));
-        URL componentTypeFile = resourceLoader.getResource(prefix + ".componentType");
-        if (componentTypeFile != null) {
-            return modelContext.getAssemblyLoader().loadComponentType(componentTypeFile.toString());
-        } else {
-            // TODO we could introspect the JavaScript source
-            return modelContext.getAssemblyFactory().createComponentType();
-        }
+    public void setScript(String script) {
+        this.script = script;
     }
-
 }

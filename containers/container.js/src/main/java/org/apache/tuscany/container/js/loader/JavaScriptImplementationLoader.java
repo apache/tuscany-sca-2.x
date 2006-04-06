@@ -16,9 +16,13 @@
  */
 package org.apache.tuscany.container.js.loader;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLInputFactory;
 
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
@@ -31,7 +35,9 @@ import org.apache.tuscany.container.js.assembly.impl.JavaScriptAssemblyFactoryIm
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
+import org.apache.tuscany.core.loader.assembly.AssemblyConstants;
 import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.model.assembly.ComponentType;
 
 /**
  * @version $Rev$ $Date$
@@ -43,6 +49,13 @@ public class JavaScriptImplementationLoader implements StAXElementLoader<JavaScr
     private static final JavaScriptAssemblyFactory factory = new JavaScriptAssemblyFactoryImpl();
 
     protected StAXLoaderRegistry registry;
+
+    private XMLInputFactory xmlFactory;
+
+    public JavaScriptImplementationLoader() {
+        // todo make this a reference to a system service
+        xmlFactory = XMLInputFactory.newInstance();
+    }
 
     @Autowire
     public void setRegistry(StAXLoaderRegistry registry) {
@@ -63,14 +76,93 @@ public class JavaScriptImplementationLoader implements StAXElementLoader<JavaScr
         return IMPLEMENTATION_JS;
     }
 
-    public Class getModelType() {
+    public Class<JavaScriptImplementation> getModelType() {
         return JavaScriptImplementation.class;
     }
 
     public JavaScriptImplementation load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+        String scriptFile = reader.getAttributeValue(null, "scriptFile");
+        String style = reader.getAttributeValue(null, "style");
+        String script = loadScript(scriptFile, resourceLoader);
+        ComponentType componentType = loadComponentType(scriptFile, resourceLoader);
+
         JavaScriptImplementation jsImpl = factory.createJavaScriptImplementation();
-        jsImpl.setScriptFile(reader.getAttributeValue(null, "scriptFile"));
-        jsImpl.setStyle(reader.getAttributeValue(null, "style"));
+        jsImpl.setComponentType(componentType);
+        jsImpl.setScriptFile(scriptFile);
+        jsImpl.setStyle(style);
+        jsImpl.setScript(script);
+        jsImpl.setResourceLoader(resourceLoader);
         return jsImpl;
+    }
+
+    protected String loadScript(String scriptFile, ResourceLoader resourceLoader) throws ConfigurationLoadException {
+        URL url = resourceLoader.getResource(scriptFile);
+        if (url == null) {
+            throw new ConfigurationLoadException(scriptFile);
+        }
+        InputStream inputStream;
+        try {
+            inputStream = url.openStream();
+        } catch (IOException e) {
+            throw new ConfigurationLoadException(scriptFile, e);
+        }
+        try {
+            StringBuilder sb = new StringBuilder(1024);
+            int n;
+            while ((n = inputStream.read()) != -1) {
+                sb.append((char) n);
+            }
+            return sb.toString();
+        } catch (IOException e) {
+            throw new ConfigurationLoadException(scriptFile, e);
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                // ignore
+            }
+        }
+    }
+
+    protected ComponentType loadComponentType(String scriptFile, ResourceLoader resourceLoader) throws ConfigurationLoadException, XMLStreamException {
+        String sidefile = scriptFile.substring(0, scriptFile.lastIndexOf('.')) + ".componentType";
+        URL componentTypeFile = resourceLoader.getResource(sidefile);
+        if (componentTypeFile == null) {
+            throw new ConfigurationLoadException(sidefile);
+        }
+
+        XMLStreamReader reader;
+        InputStream is;
+        try {
+            is = componentTypeFile.openStream();
+        } catch (IOException e) {
+            throw (ConfigurationLoadException) new ConfigurationLoadException(e.getMessage()).initCause(e);
+        }
+        try {
+            try {
+                reader = xmlFactory.createXMLStreamReader(is);
+            } catch (XMLStreamException e) {
+                throw (ConfigurationLoadException) new ConfigurationLoadException(e.getMessage()).initCause(e);
+            }
+            try {
+                reader.nextTag();
+                if (!AssemblyConstants.COMPONENT_TYPE.equals(reader.getName())) {
+                    throw new ConfigurationLoadException(sidefile + " is not a <componentType> document");
+                }
+                return (ComponentType) registry.load(reader, resourceLoader);
+            } finally{
+                try {
+                    reader.close();
+                } catch (XMLStreamException e) {
+                    // ignore
+                }
+            }
+        } finally{
+            try {
+                is.close();
+            } catch (IOException e) {
+                // ignore
+            }
+        }
     }
 }

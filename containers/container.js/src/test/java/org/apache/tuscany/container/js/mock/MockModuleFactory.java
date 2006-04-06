@@ -79,36 +79,4 @@ public class MockModuleFactory {
         module.initialize(assemblyContext);
         return module;
     }
-
-    // public static Module createModule() throws Exception {
-    // Component sourceComponent =
-    // MockAssemblyFactory.createComponent("source","org/apache/tuscany/container/js/assembly/mock/HelloWorldImpl.js",HelloWorldService.class.getCanonicalName(),ScopeEnum.MODULE_LITERAL);
-    // Component targetComponent =
-    // MockAssemblyFactory.createComponent("target","org/apache/tuscany/container/js/assembly/mock/HelloWorldImpl.js",HelloWorldService.class.getCanonicalName(),ScopeEnum.MODULE_LITERAL);
-    // PojoReference ref = new PojoReference();
-    // PojoConfiguredReference cref = new PojoConfiguredReference();
-    // ref.setName("helloWorld");
-    // PojoInterface inter = new PojoJavaInterface();
-    // PojoInterfaceType type = new PojoInterfaceType();
-    // type.setInstanceClass(HelloWorldService.class);
-    // PojoOperationType oType = new PojoOperationType();
-    // oType.setName("hello");
-    // SDOType inputType = new SDOType("String","",String.class,null);
-    // oType.setInputType(inputType);
-    // type.addOperationType(oType);
-    // inter.setInterfaceType(type);
-    // ref.setInterfaceContract(inter);
-    // cref.setReference(ref);
-    // cref.setPart(targetComponent);
-    // PojoPort port = new PojoPort();
-    // port.setName("HelloWorldService");
-    // cref.setPort(port);
-    // sourceComponent.getConfiguredReferences().add(cref);
-    // PojoModule module = new PojoModule();
-    // module.setName("test.module");
-    // module.addComponent(sourceComponent);
-    // module.addComponent(targetComponent);
-    // return module;
-    // }
-
 }

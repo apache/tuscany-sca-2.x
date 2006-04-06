@@ -17,6 +17,7 @@
 package org.apache.tuscany.container.js.assembly;
 
 import org.apache.tuscany.model.assembly.ComponentImplementation;
+import org.apache.tuscany.common.resource.ResourceLoader;
 
 /**
  * A representation of a JavaScript component implementation type
@@ -28,8 +29,16 @@ public interface JavaScriptImplementation extends ComponentImplementation {
     public String getScriptFile();
 
     public void setScriptFile(String fn);
-    
+
     public String getStyle();
-    
+
     public void setStyle(String style);
+
+    String getScript();
+
+    void setScript(String script);
+
+    void setResourceLoader(ResourceLoader resourceLoader);
+
+    ResourceLoader getResourceLoader();
 }
