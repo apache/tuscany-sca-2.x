@@ -26,6 +26,9 @@ import junit.framework.TestCase;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.config.ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.ConfigurationException;
+import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
@@ -47,6 +50,7 @@ public class ComponentLoaderTestCase extends TestCase {
     private SystemAssemblyFactory assemblyFactory;
     private ResourceLoader resourceLoader;
     private AssemblyModelContext modelContext;
+    private ComponentTypeIntrospector introspector;
 
     public void testStringProperty() throws XMLStreamException, ConfigurationLoadException {
         String xml = "<properties><propString>HelloWorld</propString></properties>";
@@ -91,7 +95,12 @@ public class ComponentLoaderTestCase extends TestCase {
     private Component createFooComponent() {
         SystemImplementation impl = assemblyFactory.createSystemImplementation();
         impl.setImplementationClass(ServiceImpl.class);
-        impl.initialize(modelContext);
+        try {
+            impl.setComponentType(introspector.introspect(ServiceImpl.class));
+        } catch (ConfigurationException e) {
+            throw new AssertionError();
+        }
+        impl.initialize(null);
         Component component = assemblyFactory.createSimpleComponent();
         component.setComponentImplementation(impl);
         return component;
@@ -105,6 +114,7 @@ public class ComponentLoaderTestCase extends TestCase {
         loader = new ComponentLoader();
         loader.setFactory(assemblyFactory);
         modelContext = new AssemblyModelContextImpl(assemblyFactory, null, resourceLoader);
+        introspector = new Java5ComponentTypeIntrospector(assemblyFactory);
     }
 
     public static interface Service {

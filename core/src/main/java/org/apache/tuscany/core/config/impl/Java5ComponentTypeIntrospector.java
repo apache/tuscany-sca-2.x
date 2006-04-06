@@ -29,6 +29,8 @@ import org.osoa.sca.annotations.Remotable;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
+import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
+import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Multiplicity;
@@ -44,10 +46,19 @@ import org.apache.tuscany.model.types.java.JavaServiceContract;
  *
  * @version $Rev$ $Date$
  */
+@org.osoa.sca.annotations.Service(interfaces = {ComponentTypeIntrospector.class})
 public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector {
-    private final AssemblyFactory factory;
+    private AssemblyFactory factory;
+
+    public Java5ComponentTypeIntrospector() {
+    }
 
     public Java5ComponentTypeIntrospector(AssemblyFactory factory) {
+        this.factory = factory;
+    }
+
+    @Autowire
+    public void setFactory(SystemAssemblyFactory factory) {
         this.factory = factory;
     }
 
@@ -141,9 +152,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         }
 
         // no @Service annotation, add all implemented interfaces with an @Remotable annotation
-        Class[] interfaces = implClass.getInterfaces();
-        for (int i = 0; i < interfaces.length; i++) {
-            Class<?> intf = interfaces[i];
+        for (Class<?> intf : implClass.getInterfaces()) {
             if (intf.isAnnotationPresent(Remotable.class)) {
                 addService(services, intf);
             }

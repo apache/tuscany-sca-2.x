@@ -28,11 +28,11 @@ public interface SystemImplementation extends ComponentImplementation {
     /**
      * Returns the implementation class of the system component
      */
-    Class getImplementationClass();
+    Class<?> getImplementationClass();
 
     /**
      * Sets the implementation class of the system component
      */
-    void setImplementationClass(Class value);
+    void setImplementationClass(Class<?> value);
 
 }

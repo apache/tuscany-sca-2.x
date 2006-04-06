@@ -45,50 +45,12 @@ public class SystemImplementationImpl extends ComponentImplementationImpl implem
     protected SystemImplementationImpl() {
     }
 
-    public Class getImplementationClass() {
+    public Class<?> getImplementationClass() {
         return implementationClass;
     }
 
-    public void setImplementationClass(Class value) {
+    public void setImplementationClass(Class<?> value) {
         checkNotFrozen();
         implementationClass = value;
-    }
-
-    public void initialize(AssemblyModelContext context) {
-        if (isInitialized())
-            return;
-        this.modelContext = context;
-        // Initialize the component type
-        ComponentType componentType = getComponentType();
-        if (componentType == null) {
-            componentType = createComponentType(implementationClass);
-            setComponentType(componentType);
-        }
-        super.initialize(modelContext);
-    }
-
-    /**
-     * Creates the component type
-     */
-    private ComponentType createComponentType(Class<?> implClass) {
-        ComponentType componentType;
-        String baseName = JavaIntrospectionHelper.getBaseName(implClass);
-        URL componentTypeFile = implClass.getResource(baseName + ".componentType");
-        if (componentTypeFile != null) {
-            componentType = modelContext.getAssemblyLoader().loadComponentType(componentTypeFile.toString());
-            // FIXME workaround for TUSCANY-46 where the scope is not read - default system implementations to MODULE scope
-            for (Service service : componentType.getServices()) {
-                service.getServiceContract().setScope(Scope.MODULE);
-            }
-        } else {
-            AssemblyFactory factory = new AssemblyFactoryImpl();
-            ComponentTypeIntrospector introspector = new Java5ComponentTypeIntrospector(factory);
-            try {
-                componentType = introspector.introspect(implClass);
-            } catch (ConfigurationException e) {
-                throw new IllegalArgumentException("Unable to introspect implementation class: " + implClass.getName(), e);
-            }
-        }
-        return componentType;
     }
 }

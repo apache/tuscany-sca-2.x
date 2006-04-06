@@ -40,6 +40,9 @@ import org.apache.tuscany.core.loader.system.SystemImplementationLoader;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
+import org.apache.tuscany.core.config.ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.ConfigurationException;
+import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
@@ -95,40 +98,48 @@ public final class StAXUtil {
 
     public static ModuleComponent bootstrapLoader(String name, AssemblyModelContext context) {
         SystemAssemblyFactory factory = new SystemAssemblyFactoryImpl();
+        ComponentTypeIntrospector introspector = new Java5ComponentTypeIntrospector(factory);
+
         Module module = factory.createModule();
         module.setName("org.apache.tuscany.core.system.loader");
 
         List<Component> components = module.getComponents();
 
-        components.add(bootstrapLoader(factory, ComponentLoader.class));
-        components.add(bootstrapLoader(factory, ComponentTypeLoader.class));
-        components.add(bootstrapLoader(factory, EntryPointLoader.class));
-        components.add(bootstrapLoader(factory, ExternalServiceLoader.class));
-        components.add(bootstrapLoader(factory, InterfaceJavaLoader.class));
-        components.add(bootstrapLoader(factory, InterfaceWSDLLoader.class));
-        components.add(bootstrapLoader(factory, ModuleFragmentLoader.class));
-        components.add(bootstrapLoader(factory, ModuleLoader.class));
-        components.add(bootstrapLoader(factory, PropertyLoader.class));
-        components.add(bootstrapLoader(factory, ReferenceLoader.class));
-        components.add(bootstrapLoader(factory, ServiceLoader.class));
+        components.add(bootstrapLoader(factory, introspector, ComponentLoader.class));
+        components.add(bootstrapLoader(factory, introspector, ComponentTypeLoader.class));
+        components.add(bootstrapLoader(factory, introspector, EntryPointLoader.class));
+        components.add(bootstrapLoader(factory, introspector, ExternalServiceLoader.class));
+        components.add(bootstrapLoader(factory, introspector, InterfaceJavaLoader.class));
+        components.add(bootstrapLoader(factory, introspector, InterfaceWSDLLoader.class));
+        components.add(bootstrapLoader(factory, introspector, ModuleFragmentLoader.class));
+        components.add(bootstrapLoader(factory, introspector, ModuleLoader.class));
+        components.add(bootstrapLoader(factory, introspector, PropertyLoader.class));
+        components.add(bootstrapLoader(factory, introspector, ReferenceLoader.class));
+        components.add(bootstrapLoader(factory, introspector, ServiceLoader.class));
 
-        components.add(bootstrapLoader(factory, SystemImplementationLoader.class));
-        components.add(bootstrapLoader(factory, SystemBindingLoader.class));
+        components.add(bootstrapLoader(factory, introspector, SystemImplementationLoader.class));
+        components.add(bootstrapLoader(factory, introspector, SystemBindingLoader.class));
 
         bootstrapService(factory, module, StAXLoaderRegistry.class, StAXLoaderRegistryImpl.class);
         bootstrapService(factory, module, SystemAssemblyFactory.class, SystemAssemblyFactoryImpl.class);
+        bootstrapService(factory, module, ComponentTypeIntrospector.class, Java5ComponentTypeIntrospector.class);
+
 
         ModuleComponent mc = factory.createModuleComponent();
         mc.setName(name);
         mc.setModuleImplementation(module);
-
         mc.initialize(context);
         return mc;
     }
 
-    private static Component bootstrapLoader(SystemAssemblyFactory factory, Class<?> loaderClass) {
+    private static Component bootstrapLoader(SystemAssemblyFactory factory, ComponentTypeIntrospector introspector, Class<?> loaderClass) {
         SystemImplementation implementation = factory.createSystemImplementation();
         implementation.setImplementationClass(loaderClass);
+        try {
+            implementation.setComponentType(introspector.introspect(loaderClass));
+        } catch (ConfigurationException e) {
+            throw (AssertionError) new AssertionError("Invalid bootstrap loader").initCause(e);
+        }
         Component component = factory.createSimpleComponent();
         component.setName(loaderClass.getName());
         component.setComponentImplementation(implementation);

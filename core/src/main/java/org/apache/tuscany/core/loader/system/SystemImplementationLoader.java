@@ -22,10 +22,13 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.osoa.sca.annotations.Scope;
 
-import org.apache.tuscany.core.loader.StAXUtil;
-import org.apache.tuscany.core.system.assembly.SystemImplementation;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.core.config.ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.ConfigurationException;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.loader.StAXUtil;
+import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.core.system.assembly.SystemImplementation;
 
 /**
  * @version $Rev$ $Date$
@@ -33,6 +36,13 @@ import org.apache.tuscany.common.resource.ResourceLoader;
 @Scope("MODULE")
 public class SystemImplementationLoader extends AbstractLoader {
     public static final QName SYSTEM_IMPLEMENTATION = new QName("http://org.apache.tuscany/xmlns/system/0.9", "implementation.system");
+
+    private ComponentTypeIntrospector introspector;
+
+    @Autowire
+    public void setIntrospector(ComponentTypeIntrospector introspector) {
+        this.introspector = introspector;
+    }
 
     public QName getXMLType() {
         return SYSTEM_IMPLEMENTATION;
@@ -46,9 +56,18 @@ public class SystemImplementationLoader extends AbstractLoader {
         assert SYSTEM_IMPLEMENTATION.equals(reader.getName());
         SystemImplementation implementation = factory.createSystemImplementation();
         String implClass = reader.getAttributeValue(null, "class");
+        Class<?> implementationClass;
         try {
-            implementation.setImplementationClass(resourceLoader.loadClass(implClass));
+            implementationClass = resourceLoader.loadClass(implClass);
+            implementation.setImplementationClass(implementationClass);
         } catch (ClassNotFoundException e) {
+            throw (ConfigurationLoadException) new ConfigurationLoadException(e.getMessage()).initCause(e);
+        }
+
+        // todo we should allow componentType sidefiles for system implementations
+        try {
+            implementation.setComponentType(introspector.introspect(implementationClass));
+        } catch (ConfigurationException e) {
             throw (ConfigurationLoadException) new ConfigurationLoadException(e.getMessage()).initCause(e);
         }
 
