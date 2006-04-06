@@ -16,6 +16,8 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
+import java.util.Map;
+import java.util.HashMap;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -33,6 +35,14 @@ import org.apache.tuscany.common.resource.ResourceLoader;
  */
 @Scope("MODULE")
 public class PropertyLoader extends AbstractLoader {
+    private static final String XSD = "http://www.w3.org/2001/XMLSchema";
+
+    private static final Map<QName, Class<?>> TYPE_MAP;
+    static {
+        // todo support more XSD types, or remove if we store the QName
+        TYPE_MAP = new HashMap<QName, Class<?>>(17);
+        TYPE_MAP.put(new QName(XSD, "string"), String.class);
+    }
 
     public QName getXMLType() {
         return PROPERTY;
@@ -47,12 +57,21 @@ public class PropertyLoader extends AbstractLoader {
         Property property = factory.createProperty();
         property.setName(reader.getAttributeValue(null, "name"));
         String typeName = reader.getAttributeValue(null, "type");
-        try {
-            // todo the type information should not require loading of an application class, save until build time
-            Class<?> type = resourceLoader.loadClass(typeName);
-            property.setType(type);
-        } catch (ClassNotFoundException e) {
-            throw (ConfigurationLoadException) new ConfigurationLoadException(e.getMessage()).initCause(e);
+        // support XSD type or Java class name
+        // todo perhaps we should just store the QName for the PropertyFactory to use
+        int index = typeName.indexOf(':');
+        if (index != -1) {
+            String prefix = typeName.substring(0, index);
+            String namespaceURI = reader.getNamespaceURI(prefix);
+            QName qname = new QName(namespaceURI, typeName.substring(index+1));
+            property.setType(TYPE_MAP.get(qname));
+        } else {
+            try {
+                Class<?> type = resourceLoader.loadClass(typeName);
+                property.setType(type);
+            } catch (ClassNotFoundException e) {
+                throw (ConfigurationLoadException) new ConfigurationLoadException(e.getMessage()).initCause(e);
+            }
         }
         property.setMany(Boolean.parseBoolean(reader.getAttributeValue(null, "many")));
         property.setDefaultValue(reader.getAttributeValue(null, "default"));
