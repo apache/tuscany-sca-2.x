@@ -62,7 +62,11 @@ public class JavaScriptComponentContext extends AbstractContext implements Simpl
         return getInstance(qName, true);
     }
 
-    public synchronized Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
+    public void init() throws TargetException{
+        getInstance(null,false);
+    }
+    
+    private synchronized Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
         String portName=qName.getPortName();
         ProxyFactory targetFactory;
         if (portName!=null) {
@@ -92,10 +96,6 @@ public class JavaScriptComponentContext extends AbstractContext implements Simpl
     }
 
     public Object getImplementationInstance() throws TargetException {
-        return getImplementationInstance(true);
-    }
-
-    public Object getImplementationInstance(boolean notify) throws TargetException {
         rhinoInvoker.updateScriptScope(createServiceReferences()); // create references
         rhinoInvoker.updateScriptScope(properties); // create prop values
         return rhinoInvoker;

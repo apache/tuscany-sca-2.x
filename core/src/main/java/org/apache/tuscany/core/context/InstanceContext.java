@@ -49,32 +49,5 @@ public interface InstanceContext extends Context {
      */
     public Object getInstance(QualifiedName qName) throws TargetException;
 
-    /**
-     * Returns an instance associated with the requested name without notifying <code>ContextEventListener</code>s
-     * that may be registered with this context on instance creation. Note that {@link #getInstance(QualifiedName)}
-     * should generally be called and this method is only provided as an optimization for particular circumstances.
-     * 
-     * @param qName a qualified name of the requested instance
-     * @param notify whether to notify <code>ContextEventListener</code>s
-     * @return the instance or a proxy to it
-     * @throws TargetException if an error occurs retrieving the instance or proxy
-     * @see LifecycleEventListener
-     */
-    public Object getInstance(QualifiedName qName, boolean notify) throws TargetException;
-
-    /**
-     * Returns the implementation instance associated with the component. An implementation instance is the actual
-     * object a request is dispatched to sans proxy invocation chain.
-     * @throws TargetException
-     */
-    public Object getImplementationInstance() throws TargetException;
-
-    /**
-     * Returns the implementation instance associated with the component. An implementation instance is the actual
-     * object a request is dispatched to sans proxy invocation chain.
-     * @param notify whether to notify <code>ContextEventListener</code>s
-     * @throws TargetException
-     */
-    public Object getImplementationInstance(boolean notify) throws TargetException;
 
 }

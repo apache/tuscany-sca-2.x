@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.core.context.ScopeContext;
+import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.invocation.Interceptor;
 import org.apache.tuscany.core.invocation.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
@@ -53,11 +54,11 @@ public class RhinoTargetInvoker implements TargetInvoker {
         RhinoScript rhinoScript;
         if (cacheable) {
             if (target == null) {
-                target = (RhinoScript) container.getContext(serviceName).getImplementationInstance();
+                target = (RhinoScript) ((SimpleComponentContext)container.getContext(serviceName)).getImplementationInstance();
             }
             rhinoScript = target;
         } else {
-            rhinoScript = (RhinoScript) container.getContext(serviceName).getImplementationInstance();
+            rhinoScript = (RhinoScript) ((SimpleComponentContext)container.getContext(serviceName)).getImplementationInstance();
         }
         return rhinoScript;
     }

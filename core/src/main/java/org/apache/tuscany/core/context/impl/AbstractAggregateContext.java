@@ -111,10 +111,6 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     // Indicates whether the module context has been initialized
     protected boolean initialized;
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
     public AbstractAggregateContext() {
         scopeIndex = new ConcurrentHashMap<String, ScopeContext>();
         // FIXME the factory should be injected
@@ -133,10 +129,6 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         // FIXME the factory should be injected
         module = new AssemblyFactoryImpl().createModule();
     }
-
-    // ----------------------------------
-    // Lifecycle methods
-    // ----------------------------------
 
     public void start() {
         synchronized (lock) {
@@ -489,10 +481,6 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     }
 
     public Object getInstance(QualifiedName qName) throws TargetException {
-        return getInstance(qName, true);
-    }
-
-    public Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
         assert (qName != null) : "Name was null ";
         // use the port name to get the context since entry points ports
         ScopeContext scope = scopeIndex.get(qName.getPortName());
@@ -506,7 +494,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
             e.addContextName(name);
             throw e;
         }
-        return ctx.getInstance(null, notify);
+        return ctx.getInstance(null);
     }
 
     public Object locateInstance(String qualifiedName) throws TargetException {
@@ -521,7 +509,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         }
         InstanceContext ctx = scope.getContext(qName.getPartName());
         try {
-            return ctx.getInstance(qName, true);
+            return ctx.getInstance(qName);
         } catch (TargetException e) {
             e.addContextName(getName());
             throw e;
@@ -533,20 +521,12 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         return immutableScopeContexts;
     }
 
-    // ----------------------------------
-    // Abstract methods
-    // ----------------------------------
-
     /**
      * Registers a model object as autowirable
      * 
      * @throws ContextInitException
      */
     protected abstract void registerAutowire(Extensible model) throws ConfigurationException;
-
-    // ----------------------------------
-    // Protected methods
-    // ----------------------------------
 
     /**
      * Blocks until the module context has been initialized

@@ -20,5 +20,12 @@ package org.apache.tuscany.core.context;
  */
 public interface ExternalServiceContext extends InstanceContext {
 
+    /**
+     * Returns the implementation instance associated with the context. An implementation instance is the actual
+     * object a request is dispatched to sans proxy invocation chain.
+     * @throws TargetException
+     */
+    public Object getImplementationInstance() throws TargetException;
+    
 }
 

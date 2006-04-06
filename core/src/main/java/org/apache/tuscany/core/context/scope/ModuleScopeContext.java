@@ -140,7 +140,7 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
                     SimpleComponentContext simpleCtx = (SimpleComponentContext) context;
                     if (simpleCtx.isEagerInit()) {
                         // perform silent creation and manual shutdown registration
-                        simpleCtx.getInstance(null, false);
+                        simpleCtx.init();
                         if (simpleCtx.isDestroyable()) {
                             destroyableContexts.add(simpleCtx);
                         }

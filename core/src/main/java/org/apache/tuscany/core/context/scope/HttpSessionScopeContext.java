@@ -46,10 +46,6 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
         setName("Http Session Scope");
     }
 
-    // ----------------------------------
-    // Lifecycle methods
-    // ----------------------------------
-
     public synchronized void start() {
         if (lifecycleState != UNINITIALIZED) {
             throw new IllegalStateException("Scope container must be in UNINITIALIZED state");
@@ -71,10 +67,6 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
         lifecycleState = STOPPED;
     }
 
-    // ----------------------------------
-    // Listener methods
-    // ----------------------------------
-
     public void onEvent(int type, Object key) {
         checkInit();
         if (key == null) {
@@ -85,10 +77,6 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
             destroyComponentContext(key);
         }
     }
-
-    // ----------------------------------
-    // Scope methods
-    // ----------------------------------
 
     public boolean isCacheable() {
         return true;
@@ -227,8 +215,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
             if (context instanceof SimpleComponentContext) {
                 SimpleComponentContext simpleCtx = (SimpleComponentContext) context;
                 if (simpleCtx.isEagerInit()) {
-                    // Get the instance and perform manual shutdown registration to avoid a map lookup
-                    context.getInstance(null, false);
+                    context.notify();  // Notify the instance
                     if (simpleCtx.isDestroyable()) {
                         shutdownQueue.add(simpleCtx);
                     }

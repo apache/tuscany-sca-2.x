@@ -72,10 +72,6 @@ public class MockScopeContext implements ScopeContext {
         return components.get(name.getPartName());
     }
 
-    public Object getInstance(QualifiedName componentName, boolean notify) throws TargetException {
-        return getInstance(componentName);
-    }
-    
     public SimpleComponentContext getContextByKey(String name, Object key) {
         return null;
     }
@@ -123,14 +119,6 @@ public class MockScopeContext implements ScopeContext {
     public void removeContextListener(LifecycleEventListener listener) {
     }
 
-    public Object getImplementationInstance() throws TargetException{
-        return this;
-    }
-
-    public Object getImplementationInstance(boolean notify) throws TargetException{
-        return this;
-    }
-    
 
 }
 

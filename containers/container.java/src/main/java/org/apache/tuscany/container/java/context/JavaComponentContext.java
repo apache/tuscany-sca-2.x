@@ -17,20 +17,14 @@
 package org.apache.tuscany.container.java.context;
 
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.context.AbstractContext;
-import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.ContextInitException;
-import org.apache.tuscany.core.context.LifecycleEventListener;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.SimpleComponentContext;
-import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.*;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.ObjectCreationException;
 
 /**
  * Manages Java service component implementation instances
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class JavaComponentContext extends AbstractContext implements SimpleComponentContext {
@@ -54,7 +48,7 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
     // ----------------------------------
 
     public JavaComponentContext(String name, ObjectFactory objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
-            EventInvoker<Object> destroyInvoker, boolean stateless) {
+                                EventInvoker<Object> destroyInvoker, boolean stateless) {
         super(name);
         assert (objectFactory != null) : "Object factory was null";
         if (eagerInit && initInvoker == null) {
@@ -88,11 +82,15 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
         this.type = type;
     }
 
+    public void init() throws TargetException{
+        getInstance(null,false);
+    }
+
     public synchronized Object getInstance(QualifiedName qName) throws TargetException {
         return getInstance(qName, true);
     }
 
-    public synchronized Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
+    private synchronized Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
         //TODO implement returning of proxy and invocation chain for service
         if (cachedTargetInstance != null) {
             return cachedTargetInstance; // already cached, just return
@@ -128,16 +126,16 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
 
     }
 
-    public Object getImplementationInstance() throws TargetException{
+    public Object getImplementationInstance() throws TargetException {
         //TODO refactor when getInstance() returns a proxy
         return getInstance(null);
     }
 
-    public Object getImplementationInstance(boolean notify) throws TargetException{
-        //TODO refactor when getInstance() returns a proxy
-        return getInstance(null,notify);
-    }
-    
+//    public Object getImplementationInstance(boolean notify) throws TargetException {
+//        //TODO refactor when getInstance() returns a proxy
+//        return getInstance(null, notify);
+//    }
+
 
     public boolean isEagerInit() {
         return eagerInit;
@@ -153,7 +151,7 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
 
     public void start() throws ContextInitException {
         if (getLifecycleState() != UNINITIALIZED && getLifecycleState() != STOPPED) {
-            throw new IllegalStateException("Component must be in UNINITIALIZED state [" + getLifecycleState() + "]");
+            throw new IllegalStateException("Context must be in UNINITIALIZED state [" + getLifecycleState() + "]");
         }
         if (objectFactory == null) {
             setLifecycleState(ERROR);

@@ -29,8 +29,21 @@ public interface SimpleComponentContext extends InstanceContext {
     public boolean isEagerInit();
 
     /**
+     * Notifies the context of an initialization event
+     * @throws TargetException
+     */
+    public void init() throws TargetException;
+
+    /**
      * Returns whether a the context should be called back when its scope ends
      */
     public boolean isDestroyable();
+
+    /**
+     * Returns the implementation instance associated with the context. An implementation instance is the actual
+     * object a request is dispatched to sans proxy invocation chain.
+     * @throws TargetException
+     */
+    public Object getImplementationInstance() throws TargetException;
 
 }

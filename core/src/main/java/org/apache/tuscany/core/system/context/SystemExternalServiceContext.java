@@ -33,25 +33,13 @@ public class SystemExternalServiceContext extends AbstractContext implements Ext
     // the cached target
     private Object cachedInstance;
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
     public SystemExternalServiceContext(String name, ObjectFactory factory) {
         super(name);
         assert (factory != null) : "Object factory was null";
         this.factory = factory;
     }
 
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
-
     public Object getInstance(QualifiedName qName) throws TargetException {
-        return getInstance(qName, false);
-    }
-
-    public Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
         try {
             if (cachedInstance == null) {
                 cachedInstance = factory.getInstance();
@@ -76,7 +64,4 @@ public class SystemExternalServiceContext extends AbstractContext implements Ext
         return this;
     }
 
-    public Object getImplementationInstance(boolean notify) throws TargetException {
-        return this;
-    }
 }

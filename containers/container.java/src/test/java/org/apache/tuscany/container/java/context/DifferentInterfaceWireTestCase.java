@@ -30,6 +30,7 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.SimpleComponentContext;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
@@ -48,9 +49,9 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         context.start();
         context.registerModelObject(MockFactory.createModuleWithWiredComponentsOfDifferentInterface(Scope.MODULE, Scope.MODULE));
         context.fireEvent(EventContext.MODULE_START, null);
-        Source source = (Source) context.getContext("source").getImplementationInstance();
+        Source source = (Source) ((SimpleComponentContext) context.getContext("source")).getImplementationInstance();
         Assert.assertNotNull(source);
-        OtherTarget target = (OtherTarget) context.getContext("target").getImplementationInstance();
+        OtherTarget target = (OtherTarget) ((SimpleComponentContext)context.getContext("target")).getImplementationInstance();
         Assert.assertNotNull(target);
         // test setter injection
         List<Target> targets = source.getTargets();

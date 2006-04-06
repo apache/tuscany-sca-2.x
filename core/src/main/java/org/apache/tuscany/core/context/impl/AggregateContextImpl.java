@@ -102,7 +102,7 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Co
         }
         InstanceContext ctx = scope.getContext(qName.getPartName());
         try {
-            Object o = ctx.getInstance(qName, true);
+            Object o = ctx.getInstance(qName);
             if (o == null) {
                 throw new ServiceUnavailableException(qualifiedName);
             }
@@ -278,22 +278,6 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Co
             }
         }
     }
-
-    // ----------------------------------
-    // InstanceContext methods
-    // ----------------------------------
-
-    public Object getImplementationInstance() throws TargetException {
-        return this;
-    }
-
-    public Object getImplementationInstance(boolean notify) throws TargetException {
-        return this;
-    }
-
-    // ----------------------------------
-    // Inner classes
-    // ----------------------------------
 
     private class NameToScope {
 

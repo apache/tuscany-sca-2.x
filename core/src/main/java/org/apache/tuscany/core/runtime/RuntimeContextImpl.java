@@ -209,14 +209,6 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         return getSystemContext().getInstance(qName);
     }
 
-    public Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
-        return getInstance(qName);
-    }
-
-    // ----------------------------------
-    // ConfigurationContext methods
-    // ----------------------------------
-
     public synchronized void build(AssemblyModelObject model) throws BuilderConfigException {
         AssemblyVisitor visitor = new AssemblyVisitor(builders);
         visitor.start(model);
@@ -234,10 +226,6 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
             throws BuilderConfigException {
         wireBuilder.completeTargetChain(targetFactory, targetType, targetScopeContext);
     }
-
-    // ----------------------------------
-    // AutowireContext methods
-    // ----------------------------------
 
     public <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException {
         if (MonitorFactory.class.equals(instanceInterface)) {
@@ -258,25 +246,9 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         return systemContext.resolveExternalInstance(instanceInterface);
     }
 
-    // ----------------------------------
-    // InstanceContext methods
-    // ----------------------------------
-
-    public Object getImplementationInstance() throws TargetException {
-        return this;
-    }
-
-    public Object getImplementationInstance(boolean notify) throws TargetException {
-        return this;
-    }
-
     public Aggregate getAggregate() {
         return systemContext.getAggregate();
     }
-
-    // ----------------------------------
-    // Private methods
-    // ----------------------------------
 
     private void checkRunning() {
         if (lifecycleState != RUNNING) {

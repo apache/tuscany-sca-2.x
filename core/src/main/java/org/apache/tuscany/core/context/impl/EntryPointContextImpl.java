@@ -58,10 +58,6 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
                 .getInvocationConfigurations());
     }
 
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
-
     public Object getInstance(QualifiedName qName) throws TargetException {
         if (proxy == null) {
             try {
@@ -75,10 +71,6 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
         return proxy;
     }
 
-    public Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
-        return getInstance(qName);
-    }
-
     public void start() throws ContextInitException {
         lifecycleState = RUNNING;
     }
@@ -89,10 +81,6 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
 
      public Object getImplementationInstance() throws TargetException {
         return invocationHandler;
-    }
-
-    public Object getImplementationInstance(boolean notify) throws TargetException {
-        return getImplementationInstance();
     }
 
 }

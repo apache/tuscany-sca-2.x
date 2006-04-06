@@ -469,10 +469,6 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     }
 
     public Object getInstance(QualifiedName qName) throws TargetException {
-        return getInstance(qName, true);
-    }
-
-    public Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
         assert (qName != null) : "Name was null ";
         // use the port name to get the context since entry points ports
         ScopeContext scope = scopeIndex.get(qName.getPortName());
@@ -486,7 +482,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
             e.addContextName(name);
             throw e;
         }
-        return ctx.getInstance(null, notify);
+        return ctx.getInstance(null);
     }
 
     public Object locateInstance(String qualifiedName) throws TargetException {
@@ -501,23 +497,11 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         }
         InstanceContext ctx = scope.getContext(qName.getPartName());
         try {
-            return ctx.getInstance(qName, true);
+            return ctx.getInstance(qName);
         } catch (TargetException e) {
             e.addContextName(getName());
             throw e;
         }
-    }
-
-    // ----------------------------------
-    // InstanceContext methods
-    // ----------------------------------
-
-    public Object getImplementationInstance() throws TargetException {
-        return this;
-    }
-
-    public Object getImplementationInstance(boolean notify) throws TargetException {
-        return this;
     }
 
     public Map<Scope, ScopeContext> getScopeContexts() {

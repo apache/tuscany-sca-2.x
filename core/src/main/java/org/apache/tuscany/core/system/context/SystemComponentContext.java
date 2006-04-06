@@ -90,6 +90,10 @@ public class SystemComponentContext extends AbstractContext implements SimpleCom
         return getInstance(qName, true);
     }
 
+    public void init() throws TargetException{
+        getInstance(null);
+    }
+    
     public synchronized Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
         if (cachedTargetInstance != null) {
             return cachedTargetInstance; // already cached, just return
@@ -127,10 +131,6 @@ public class SystemComponentContext extends AbstractContext implements SimpleCom
 
     public Object getImplementationInstance() throws TargetException {
         return getInstance(null);
-    }
-
-    public Object getImplementationInstance(boolean notify) throws TargetException {
-        return getInstance(null, notify);
     }
 
     public boolean isEagerInit() {

@@ -41,7 +41,6 @@ public class ExternalWebServiceTargetInvoker implements TargetInvoker {
 
     /**
      * Constructs a new ExternalWebServiceTargetInvoker.
-     * @param esName
      * @param container
      */
     public ExternalWebServiceTargetInvoker(QualifiedName serviceName, Method method, ScopeContext container) {
@@ -65,7 +64,7 @@ public class ExternalWebServiceTargetInvoker implements TargetInvoker {
             }
             context = (ExternalServiceContext) iContext;
         }
-        ExternalWebServiceClient client = (ExternalWebServiceClient) context.getImplementationInstance(true);
+        ExternalWebServiceClient client = (ExternalWebServiceClient) context.getImplementationInstance();
         if (payload != null) {
             return client.invoke(method.getName(), (Object[])payload);
         } else {

@@ -54,7 +54,7 @@ public class FooESTargetInvoker implements TargetInvoker {
             }
             context = (ExternalServiceContext) iContext;
         }
-        FooClient client = (FooClient) context.getImplementationInstance(true);
+        FooClient client = (FooClient) context.getImplementationInstance();
         if (payload != null) {
             return client.invoke(payload);
         } else {
@@ -82,7 +82,7 @@ public class FooESTargetInvoker implements TargetInvoker {
         throw new UnsupportedOperationException();
     }
 
-    public Object clone() {
+    public Object clone() throws CloneNotSupportedException {
         try {
             FooESTargetInvoker invoker = (FooESTargetInvoker) super.clone();
             invoker.container = container;

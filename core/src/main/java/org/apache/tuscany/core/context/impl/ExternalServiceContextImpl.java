@@ -71,15 +71,7 @@ public class ExternalServiceContextImpl extends AbstractContext implements Exter
         }
     }
 
-    public Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
-        return getInstance(qName);
-    }
-
     public Object getImplementationInstance() throws TargetException {
         return targetInstanceFactory.getInstance();
-    }
-
-    public Object getImplementationInstance(boolean notify) throws TargetException {
-        return getImplementationInstance();
     }
 }

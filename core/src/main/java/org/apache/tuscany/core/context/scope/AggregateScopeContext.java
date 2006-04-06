@@ -112,10 +112,6 @@ public class AggregateScopeContext extends AbstractContext implements ScopeConte
         return context.getInstance(qName);
     }
 
-    public Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
-        return getInstance(qName);
-    }
-    
     public InstanceContext getContext(String ctxName) {
         checkInit();
         return contexts.get(ctxName);
@@ -148,13 +144,6 @@ public class AggregateScopeContext extends AbstractContext implements ScopeConte
         }
     }
 
-    public Object getImplementationInstance() throws TargetException{
-        return this;
-    }
-
-    public Object getImplementationInstance(boolean notify) throws TargetException{
-        return this;
-    }
 
     private void checkInit() {
         if (lifecycleState != RUNNING) {

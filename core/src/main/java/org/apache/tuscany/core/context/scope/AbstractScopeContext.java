@@ -50,20 +50,11 @@ public abstract class AbstractScopeContext extends AbstractContext implements Sc
         this.eventContext = eventContext;
     }
 
-    // ----------------------------------
-    // Lifecycle methods
-    // --------------------------_--------
-
     public synchronized void start() {
     }
 
     public synchronized void stop() {
     }
-
-
-    // ----------------------------------
-    // Scope methods
-    // ----------------------------------
 
     public void registerFactories(List<ContextFactory<InstanceContext>> configurations) {
         for (ContextFactory<InstanceContext> configuration : configurations) {
@@ -81,18 +72,6 @@ public abstract class AbstractScopeContext extends AbstractContext implements Sc
         return context.getInstance(qName);
     }
 
-    public Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
-        return getInstance(qName);
-    }
-
-    public Object getImplementationInstance() throws TargetException {
-        return this;
-    }
-
-    public Object getImplementationInstance(boolean notify) throws TargetException{
-        return this;
-    }
-    
     protected EventContext getEventContext() {
         return eventContext;
     }

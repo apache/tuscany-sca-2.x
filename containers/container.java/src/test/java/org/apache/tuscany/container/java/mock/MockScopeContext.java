@@ -37,7 +37,7 @@ public class MockScopeContext implements ScopeContext {
     Map<String, Object> components;
 
     public MockScopeContext() {
-        components = new HashMap();
+        components = new HashMap<String, Object>();
         components.put("foo", new SimpleTargetImpl());
         components.put("bar", new SimpleTargetImpl());
     }
@@ -73,10 +73,6 @@ public class MockScopeContext implements ScopeContext {
         return components.get(name.getPartName());
     }
 
-    public Object getInstance(QualifiedName componentName, boolean notify) throws TargetException {
-        return getInstance(componentName);
-    }
-    
     public SimpleComponentContext getContextByKey(String name, Object key) {
         return null;
     }
@@ -124,14 +120,6 @@ public class MockScopeContext implements ScopeContext {
     public void removeContextListener(LifecycleEventListener listener) {
     }
 
-    public Object getImplementationInstance() throws TargetException{
-        return this;
-    }
-
-    public Object getImplementationInstance(boolean notify) throws TargetException{
-        return this;
-    }
-    
 
 }
 

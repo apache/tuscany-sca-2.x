@@ -36,10 +36,6 @@ public class SystemEntryPointContext extends AbstractContext implements EntryPoi
     
     private QualifiedName targetName;
     
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
     public SystemEntryPointContext(String name, String targetName, ContextResolver resolver) {
         super(name);
         assert (resolver != null) : "Context resolver was null";
@@ -48,15 +44,7 @@ public class SystemEntryPointContext extends AbstractContext implements EntryPoi
         this.targetName = new QualifiedName(targetName);
     }
 
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
-
     public Object getInstance(QualifiedName qName) throws TargetException {
-        return getInstance(qName, true);
-    }
-
-    public Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
         try {
             if (cachedInstance == null) {
                 InstanceContext ctx = resolver.getCurrentContext().getContext(targetName.getPartName());
@@ -84,7 +72,4 @@ public class SystemEntryPointContext extends AbstractContext implements EntryPoi
         return getInstance(null);
     }
 
-    public Object getImplementationInstance(boolean notify) throws TargetException {
-        return getInstance(null, notify);
-    }
 }
