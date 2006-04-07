@@ -16,20 +16,19 @@
  */
 package org.apache.tuscany.core.invocation;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.Map;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.jdk.JDKInvocationHandler;
 import org.apache.tuscany.core.invocation.mock.MockHandler;
 import org.apache.tuscany.core.invocation.mock.MockStaticInvoker;
 import org.apache.tuscany.core.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Map;
 
 /**
  * Tests handling of exceptions thrown during an invocation

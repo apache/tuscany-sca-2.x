@@ -20,7 +20,6 @@ import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.SystemAggregateContext;
-import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 
 /**
  * Represents a top-level component context in the runtime, that is the bootstrap context.

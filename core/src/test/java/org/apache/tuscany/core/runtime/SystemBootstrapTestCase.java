@@ -13,11 +13,8 @@
  */
 package org.apache.tuscany.core.runtime;
 
-import java.util.List;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
@@ -30,12 +27,10 @@ import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.ExternalService;
-import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.*;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
+
+import java.util.List;
 
 /**
  * Tests bootstrapping a system module
@@ -72,10 +67,10 @@ public class SystemBootstrapTestCase extends TestCase {
         systemContext.fireEvent(EventContext.MODULE_START, null);
         moduleContext.fireEvent(EventContext.MODULE_START, null);
 
-        Assert.assertNotNull(systemContext.locateInstance("TestService1EP"));
-        GenericSystemComponent testService = (GenericSystemComponent) systemContext.locateInstance("TestService1");
+        Assert.assertNotNull(systemContext.getContext("TestService1EP").getInstance(null));
+        GenericSystemComponent testService = (GenericSystemComponent) systemContext.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(testService);
-        GenericSystemComponent testES = (GenericSystemComponent) moduleContext.locateInstance("TestServiceES");
+        GenericSystemComponent testES = (GenericSystemComponent) moduleContext.getContext("TestServiceES").getInstance(null);
         Assert.assertNotNull(testES);
         Assert.assertSame(testService, testES);
     }
@@ -101,8 +96,8 @@ public class SystemBootstrapTestCase extends TestCase {
         ep.getConfiguredReference().getTargetConfiguredServices().get(0).setService(service);
         system.registerModelObject(ep);
         system.fireEvent(EventContext.MODULE_START, null);
-        Assert.assertNotNull(system.locateInstance("TestService1"));
-        Assert.assertNotNull(system.locateInstance("TestService2EP"));
+        Assert.assertNotNull(system.getContext("TestService1").getInstance(null));
+        Assert.assertNotNull(system.getContext("TestService2EP").getInstance(null));
 
         Assert.assertNotNull(((AutowireContext) system).resolveInstance(ModuleScopeSystemComponent.class));
         // create a test module
@@ -113,7 +108,7 @@ public class SystemBootstrapTestCase extends TestCase {
         ExternalService es = MockFactory.createESSystemBinding("TestService2ES", "tuscany.system/TestService2EP");
         moduleContext.registerModelObject(es);
         moduleContext.fireEvent(EventContext.MODULE_START, null);
-        Assert.assertNotNull(moduleContext.locateInstance("TestService2ES"));
+        Assert.assertNotNull(moduleContext.getContext("TestService2ES").getInstance(null));
 
         moduleContext.fireEvent(EventContext.MODULE_STOP, null);
         system.fireEvent(EventContext.MODULE_STOP, null);

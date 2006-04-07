@@ -16,23 +16,18 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.model.assembly.*;
+
+import javax.wsdl.Definition;
+import javax.wsdl.Import;
+import javax.wsdl.WSDLException;
+import javax.wsdl.factory.WSDLFactory;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.wsdl.Import;
-import javax.wsdl.WSDLException;
-import javax.wsdl.Definition;
-import javax.wsdl.factory.WSDLFactory;
-
-import org.apache.tuscany.model.assembly.Aggregate;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
-import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.ExternalService;
-import org.apache.tuscany.model.assembly.Wire;
-import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
 
 /**
  * @version $Rev$ $Date$

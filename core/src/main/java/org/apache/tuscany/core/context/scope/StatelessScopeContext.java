@@ -16,11 +16,11 @@
  */
 package org.apache.tuscany.core.context.scope;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.*;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A container that manages stateless components.

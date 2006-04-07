@@ -16,9 +16,9 @@
  */
 package org.apache.tuscany.core.context;
 
-import java.util.List;
-
 import org.apache.tuscany.core.builder.ContextFactory;
+
+import java.util.List;
 
 /**
  * Manages the lifecycle and visibility of <code>InstanceContext</code>s.

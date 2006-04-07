@@ -67,18 +67,6 @@ public interface Context {
     public int getLifecycleState();
 
     /**
-     * Sets the lifecycle state
-     * 
-     * @see #UNINITIALIZED
-     * @see #INITIALIZING
-     * @see #INITIALIZED
-     * @see #RUNNING
-     * @see #STOPPING
-     * @see #STOPPED
-     */
-    public void setLifecycleState(int state);
-
-    /**
      * Starts the container
      * 
      * @throws CoreRuntimeException

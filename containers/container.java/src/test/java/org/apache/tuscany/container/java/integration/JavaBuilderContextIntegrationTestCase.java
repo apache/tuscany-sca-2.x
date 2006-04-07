@@ -31,6 +31,7 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
@@ -91,7 +92,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);
-        GenericComponent source = (GenericComponent) child.locateInstance("source");
+        GenericComponent source = (GenericComponent) child.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         source.getGenericComponent().getString();
         Assert.assertEquals(1, mockInterceptor.getCount());
@@ -135,7 +136,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);
-        GenericComponent source = (GenericComponent) child.locateInstance("source");
+        GenericComponent source = (GenericComponent) child.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         source.getGenericComponent().getString();
         Assert.assertEquals(1, mockInterceptor.getCount());
@@ -182,7 +183,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);
-        GenericComponent source = (GenericComponent) child.locateInstance("source");
+        GenericComponent source = (GenericComponent) child.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         source.getGenericComponent().getString();
         Assert.assertEquals(1, mockInterceptor.getCount());
@@ -226,7 +227,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);
-        GenericComponent source = (GenericComponent) child.locateInstance("source");
+        GenericComponent source = (GenericComponent) child.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         source.getGenericComponent().getString();
         Assert.assertEquals(1, mockInterceptor.getCount());

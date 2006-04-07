@@ -1,12 +1,12 @@
 package org.apache.tuscany.core.builder;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.model.assembly.Scope;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementations serve the dual purpose of creating instances of {@link org.apache.tuscany.core.context.Context} based

@@ -16,21 +16,17 @@
  */
 package org.apache.tuscany.core.config.impl;
 
-import java.net.URL;
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
+import org.apache.tuscany.model.assembly.*;
+
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-
-import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.model.assembly.ModuleComponent;
-import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.ModuleFragment;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.common.resource.ResourceLoader;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @version $Rev$ $Date$

@@ -16,20 +16,20 @@
  */
 package org.apache.tuscany.core.loader.impl;
 
+import org.apache.tuscany.core.builder.ObjectFactory;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.injection.SingletonObjectFactory;
+import org.apache.tuscany.core.loader.StAXPropertyFactory;
+import org.apache.tuscany.model.assembly.Property;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorManager;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Constructor;
-import java.beans.PropertyEditorManager;
-import java.beans.PropertyEditor;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamException;
-
-import org.apache.tuscany.core.loader.StAXPropertyFactory;
-import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.injection.SingletonObjectFactory;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.model.assembly.Property;
 
 /**
  * @version $Rev$ $Date$

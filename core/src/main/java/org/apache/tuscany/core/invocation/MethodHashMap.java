@@ -16,10 +16,10 @@
  */
 package org.apache.tuscany.core.invocation;
 
+import org.apache.tuscany.core.config.JavaIntrospectionHelper;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
-
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 
 /**
  * A Map implementation that performs a lookup on a collection of methods by method name. This implementation is used to

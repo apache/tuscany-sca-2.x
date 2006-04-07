@@ -16,13 +16,13 @@
  */
 package org.apache.tuscany.core.context.scope;
 
+import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.context.*;
+
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.*;
 
 /**
  * An implementation of an HTTP session-scoped component container where each HTTP session is mapped to a context in the scope

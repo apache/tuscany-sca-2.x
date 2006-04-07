@@ -16,11 +16,11 @@
  */
 package org.apache.tuscany.core.message;
 
-import java.util.Map;
-
 import org.apache.tuscany.core.addressing.EndpointReference;
 import org.apache.tuscany.core.invocation.MessageChannel;
 import org.apache.tuscany.core.invocation.TargetInvoker;
+
+import java.util.Map;
 
 /**
  * Represents a request, response, or exception for an invocation

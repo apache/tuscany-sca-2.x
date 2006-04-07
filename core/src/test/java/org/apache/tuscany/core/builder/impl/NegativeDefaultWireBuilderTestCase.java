@@ -1,10 +1,6 @@
 package org.apache.tuscany.core.builder.impl;
 
-import java.lang.reflect.Method;
-import java.util.Map;
-
 import junit.framework.TestCase;
-
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
@@ -15,6 +11,9 @@ import org.apache.tuscany.core.invocation.mock.SimpleTarget;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
+
+import java.lang.reflect.Method;
+import java.util.Map;
 
 public class NegativeDefaultWireBuilderTestCase extends TestCase {
 

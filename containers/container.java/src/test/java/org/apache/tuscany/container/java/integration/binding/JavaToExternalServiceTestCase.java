@@ -23,6 +23,7 @@ import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBindingBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 
 /**
@@ -49,7 +50,7 @@ public class JavaToExternalServiceTestCase extends TestCase {
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModuleWithExternalService());
         child.fireEvent(EventContext.MODULE_START, null);
-        HelloWorldService source = (HelloWorldService) child.locateInstance("source");
+        HelloWorldService source = (HelloWorldService) child.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         Assert.assertEquals(0, mockInterceptor.getCount());
         Assert.assertEquals("foo", source.hello("foo"));

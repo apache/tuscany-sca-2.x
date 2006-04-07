@@ -32,7 +32,7 @@ package org.apache.tuscany.core.context;
  *              AggregateContext aggregateContext = ...
  *              EntryPointContext ctx = (EntryPointContext) aggregateContext.getContext(&quot;source&quot;);
  *              Assert.assertNotNull(ctx);
- *              InvocationHandler handler = (InvocationHandler) ctx.getImplementationInstance();
+ *              InvocationHandler handler = (InvocationHandler) ctx.getHandler();
  *              Object response = handler.invoke(null, operation, new Object[] { param });
  * </pre>
  * 
@@ -55,11 +55,10 @@ package org.apache.tuscany.core.context;
 public interface EntryPointContext extends InstanceContext {
 
     /**
-     * Returns the implementation instance associated with the context. An implementation instance is the actual
-     * object a request is dispatched to sans proxy invocation chain.
+     * Returns the handler responsible for flowing a request through the entry point
      * @throws TargetException
      */
-    public Object getImplementationInstance() throws TargetException;
+    public Object getHandler() throws TargetException;
 
 
 }

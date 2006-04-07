@@ -16,12 +16,12 @@
  */
 package org.apache.tuscany.core.loader;
 
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamException;
-
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.model.assembly.Property;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 /**
  * A factory that will create an ObjectFactory for a property by parsing a StAX XMLStreamReader.

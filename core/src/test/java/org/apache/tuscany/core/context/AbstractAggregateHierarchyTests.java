@@ -13,11 +13,8 @@
  */
 package org.apache.tuscany.core.context;
 
-import java.util.List;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
@@ -33,6 +30,8 @@ import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Scope;
 import org.osoa.sca.ModuleContext;
+
+import java.util.List;
 
 /**
  * Performs testing of various hierarchical scenarios
@@ -52,7 +51,7 @@ public abstract class AbstractAggregateHierarchyTests extends TestCase {
         parent.registerModelObject(ep);
         parent.fireEvent(EventContext.MODULE_START, null);
         child.fireEvent(EventContext.MODULE_START, null);
-        Assert.assertNotNull(parent.locateInstance("TestService1EP"));
+        Assert.assertNotNull(parent.getContext("TestService1EP").getInstance(null));
         try {
             ((ModuleContext) child).locateService("TestService1EP");
             fail("Expexcted " + ServiceNotFoundException.class.getName());

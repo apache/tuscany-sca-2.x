@@ -16,10 +16,10 @@
  */
 package org.apache.tuscany.core.config;
 
-import java.util.Collection;
-import java.net.URL;
-
 import org.apache.tuscany.model.assembly.ModuleComponent;
+
+import java.net.URL;
+import java.util.Collection;
 
 /**
  * Interface for loading configuration information from some external

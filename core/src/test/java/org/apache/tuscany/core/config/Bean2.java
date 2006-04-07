@@ -1,8 +1,8 @@
 package org.apache.tuscany.core.config;
 
-import java.util.List;
-
 import junit.framework.AssertionFailedError;
+
+import java.util.List;
 
 public class Bean2 {
 

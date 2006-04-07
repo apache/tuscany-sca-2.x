@@ -16,9 +16,9 @@
  */
 package org.apache.tuscany.core.context;
 
-import java.util.Map;
-
 import org.apache.tuscany.model.assembly.Scope;
+
+import java.util.Map;
 
 /**
  * Implementations provide scope container creation facilities and scope semantics to the runtime

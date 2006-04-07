@@ -1,42 +1,11 @@
 package org.apache.tuscany.core.context.impl;
 
-import static org.apache.tuscany.core.context.EventContext.HTTP_SESSION;
-import static org.apache.tuscany.core.context.EventContext.REQUEST_END;
-import static org.apache.tuscany.core.context.EventContext.SESSION_NOTIFY;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import javax.wsdl.Part;
-
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.context.AbstractContext;
-import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.AutowireContext;
-import org.apache.tuscany.core.context.ConfigurationContext;
-import org.apache.tuscany.core.context.ContextInitException;
-import org.apache.tuscany.core.context.CoreRuntimeException;
-import org.apache.tuscany.core.context.DuplicateNameException;
-import org.apache.tuscany.core.context.EntryPointContext;
-import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.EventException;
-import org.apache.tuscany.core.context.InstanceContext;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.RuntimeEventListener;
-import org.apache.tuscany.core.context.ScopeAwareContext;
-import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.context.ScopeStrategy;
-import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.*;
+import static org.apache.tuscany.core.context.EventContext.*;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
@@ -44,15 +13,15 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyInitializationException;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
-import org.apache.tuscany.model.assembly.Aggregate;
-import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentImplementation;
-import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.Extensible;
-import org.apache.tuscany.model.assembly.ExternalService;
-import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.*;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
+
+import javax.wsdl.Part;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The base implementation of an aggregate context
@@ -62,10 +31,6 @@ import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 public abstract class AbstractAggregateContext extends AbstractContext implements AutowireContext, ScopeAwareContext {
 
     public static final int DEFAULT_WAIT = 1000 * 60;
-
-    // ----------------------------------
-    // Fields
-    // ----------------------------------
 
     // The parent context, if one exists
     @ParentContext
@@ -495,25 +460,6 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
             throw e;
         }
         return ctx.getInstance(null);
-    }
-
-    public Object locateInstance(String qualifiedName) throws TargetException {
-        checkInit();
-        QualifiedName qName = new QualifiedName(qualifiedName);
-        ScopeContext scope = scopeIndex.get(qName.getPartName());
-        if (scope == null) {
-            TargetException e = new TargetException("Component not found");
-            e.setIdentifier(qualifiedName);
-            e.addContextName(getName());
-            throw e;
-        }
-        InstanceContext ctx = scope.getContext(qName.getPartName());
-        try {
-            return ctx.getInstance(qName);
-        } catch (TargetException e) {
-            e.addContextName(getName());
-            throw e;
-        }
     }
 
     public Map<Scope, ScopeContext> getScopeContexts() {

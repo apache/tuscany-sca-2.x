@@ -16,8 +16,8 @@
  */
 package org.apache.tuscany.core.webapp;
 
-import org.osoa.sca.SCA;
 import org.osoa.sca.ModuleContext;
+import org.osoa.sca.SCA;
 
 /**
  * @version $Rev$ $Date$

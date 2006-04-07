@@ -13,17 +13,17 @@
  */
 package org.apache.tuscany.core.system.config;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.tuscany.core.builder.ContextCreationException;
-import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemEntryPointContext;
 import org.apache.tuscany.model.assembly.Scope;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Creates {@link SystemEntryPointContext} instances based on an entry point configuration in an assembly model

@@ -128,7 +128,7 @@ public class JSONRPCEntryPointServlet extends JSONRPCServlet {
         final EntryPointContext entryPointContext = (EntryPointContext) moduleContext.getContext(entryPointName);
         InvocationHandler ih = new InvocationHandler() {
             public Object invoke(Object o, Method method, Object[] args) throws Throwable {
-                Object target = entryPointContext.getImplementationInstance();
+                Object target = entryPointContext.getHandler();
                 if (target instanceof InvocationHandler) {
                     return ((InvocationHandler) target).invoke(this, method, args);
                 } else {

@@ -13,17 +13,16 @@
  */
 package org.apache.tuscany.core.runtime;
 
-import java.util.List;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.mock.MockFactory;
+
+import java.util.List;
 
 /**
  * Tests runtime boot scenarios

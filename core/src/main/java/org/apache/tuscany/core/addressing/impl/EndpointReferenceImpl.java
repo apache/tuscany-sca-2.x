@@ -16,13 +16,13 @@
  */
 package org.apache.tuscany.core.addressing.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.tuscany.core.addressing.EndpointReference;
 import org.apache.tuscany.core.invocation.MessageHandler;
 import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.model.assembly.ConfiguredPort;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * An implementation of EndpointReference.

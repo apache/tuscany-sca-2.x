@@ -16,11 +16,11 @@
  */
 package org.apache.tuscany.core.invocation;
 
-import java.lang.reflect.Method;
-import java.util.Map;
-
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.message.MessageFactory;
+
+import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * Represents configuration information for creating a service proxy. When a client component implementation is injected

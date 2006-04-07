@@ -13,9 +13,6 @@
  */
 package org.apache.tuscany.core.runtime;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
@@ -25,18 +22,7 @@ import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.context.AbstractContext;
-import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.AutowireContext;
-import org.apache.tuscany.core.context.AutowireResolutionException;
-import org.apache.tuscany.core.context.ConfigurationContext;
-import org.apache.tuscany.core.context.CoreRuntimeException;
-import org.apache.tuscany.core.context.EventException;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.RuntimeEventListener;
-import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.context.SystemAggregateContext;
-import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.*;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -47,7 +33,9 @@ import org.apache.tuscany.core.system.context.SystemScopeStrategy;
 import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.Extensible;
-import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implementation of a RuntimeContext that forms the foundation for a Tuscany environment.
@@ -78,7 +66,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
     /**
      * Constructor for creating a runtime with a specified MonitorFactory and pre-defined builders.
-     * 
+     *
      * @param monitorFactory the default {@link org.apache.tuscany.common.monitor.MonitorFactory} for this runtime
      * @param builders a list of builders automatically made available; may be null
      * @param wireBuilder the top-level hierarchical wire builder for the runtime; if not specified, a default
@@ -97,7 +85,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
     /**
      * Specialized constructor that allows the default implementations of the root and system contexts to be overridden.
-     * 
+     *
      * @param monitorFactory the default {@link org.apache.tuscany.common.monitor.MonitorFactory} for this runtime
      * @param rootContext the context to use for the root of the user context tree
      * @param systemContext the context to use for the root of the system context tree
@@ -197,11 +185,11 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         return null; // there is no parent
     }
 
-    public Object locateService(String serviceName) {
+    public Object locateService(QualifiedName serviceName) {
         return null;
     }
 
-    public Object locateInstance(String serviceName) {
+    public Object locateInstance(QualifiedName serviceName) {
         return null;
     }
 

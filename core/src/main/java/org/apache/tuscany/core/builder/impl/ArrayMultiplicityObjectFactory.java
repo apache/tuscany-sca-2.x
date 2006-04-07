@@ -13,11 +13,11 @@
  */
 package org.apache.tuscany.core.builder.impl;
 
-import java.lang.reflect.Array;
-import java.util.List;
-
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.injection.ObjectCreationException;
+
+import java.lang.reflect.Array;
+import java.util.List;
 
 /**
  * Resolves targets configured in a multiplicity by delegating to object factories and returning an

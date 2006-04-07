@@ -15,7 +15,6 @@ package org.apache.tuscany.core.integration;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;

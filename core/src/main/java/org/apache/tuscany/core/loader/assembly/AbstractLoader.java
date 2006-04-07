@@ -16,14 +16,13 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
 
 /**
  * @version $Rev$ $Date$

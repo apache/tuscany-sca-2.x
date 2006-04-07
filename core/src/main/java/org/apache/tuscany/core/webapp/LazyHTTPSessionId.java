@@ -16,9 +16,9 @@
  */
 package org.apache.tuscany.core.webapp;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.tuscany.core.context.ScopeIdentifier;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Implements a <code>ScopeIdentifier</code> for a Servlet-based transport.

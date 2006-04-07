@@ -16,13 +16,13 @@
  */
 package org.apache.tuscany.core.context.scope;
 
+import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.context.*;
+
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.*;
 
 /**
  * Manages component contexts whose implementations are module scoped

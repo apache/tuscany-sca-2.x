@@ -15,7 +15,6 @@ package org.apache.tuscany.core.system.context;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.mock.MockFactory;
@@ -88,7 +87,7 @@ public class AggregateNestingTestCase extends TestCase {
     }
     
     private void analyzeLeafComponents(AggregateContext ctx) throws Exception {
-        Source source = (Source) ctx.locateInstance("source");
+        Source source = (Source) ctx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         Target target = source.getTarget();
         Assert.assertNotNull(target);

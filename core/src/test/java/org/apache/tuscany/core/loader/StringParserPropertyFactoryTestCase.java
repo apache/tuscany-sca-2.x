@@ -16,23 +16,22 @@
  */
 package org.apache.tuscany.core.loader;
 
-import java.io.StringReader;
-import java.net.URI;
-import java.util.Arrays;
-import java.beans.PropertyEditorManager;
-import java.beans.PropertyEditorSupport;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
 import junit.framework.TestCase;
-
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.impl.StringParserPropertyFactory;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.Property;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.beans.PropertyEditorManager;
+import java.beans.PropertyEditorSupport;
+import java.io.StringReader;
+import java.net.URI;
+import java.util.Arrays;
 
 /**
  * @version $Rev$ $Date$

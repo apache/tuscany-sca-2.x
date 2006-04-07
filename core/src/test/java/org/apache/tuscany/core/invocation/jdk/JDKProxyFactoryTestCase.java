@@ -13,12 +13,8 @@
  */
 package org.apache.tuscany.core.invocation.jdk;
 
-import java.lang.reflect.Method;
-import java.util.Map;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.MethodHashMap;
@@ -29,6 +25,9 @@ import org.apache.tuscany.core.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.core.invocation.mock.SimpleTarget;
 import org.apache.tuscany.core.invocation.mock.SimpleTargetImpl;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
+
+import java.lang.reflect.Method;
+import java.util.Map;
 
 public class JDKProxyFactoryTestCase extends TestCase {
 

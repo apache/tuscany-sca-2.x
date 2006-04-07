@@ -14,11 +14,7 @@
 package org.apache.tuscany.core.context.impl;
 
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.context.AbstractContext;
-import org.apache.tuscany.core.context.CoreRuntimeException;
-import org.apache.tuscany.core.context.ExternalServiceContext;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.*;
 import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 
@@ -71,7 +67,7 @@ public class ExternalServiceContextImpl extends AbstractContext implements Exter
         }
     }
 
-    public Object getImplementationInstance() throws TargetException {
+    public Object getHandler() throws TargetException {
         return targetInstanceFactory.getInstance();
     }
 }

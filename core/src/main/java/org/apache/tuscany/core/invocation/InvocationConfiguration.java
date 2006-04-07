@@ -16,13 +16,13 @@
  */
 package org.apache.tuscany.core.invocation;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.tuscany.core.invocation.impl.MessageChannelImpl;
 import org.apache.tuscany.core.invocation.impl.MessageDispatcher;
 import org.apache.tuscany.core.invocation.impl.RequestResponseInterceptor;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains a source- or target-side invocation pipeline for a service operation. Source and target invocation pipelines

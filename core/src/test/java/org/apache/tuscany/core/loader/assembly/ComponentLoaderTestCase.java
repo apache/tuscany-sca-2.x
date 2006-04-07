@@ -16,30 +16,29 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import java.io.StringReader;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
 import junit.framework.TestCase;
-
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationException;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
+import org.apache.tuscany.core.injection.SingletonObjectFactory;
+import org.apache.tuscany.core.loader.StAXPropertyFactory;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.core.loader.StAXPropertyFactory;
-import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.Property;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.io.StringReader;
 
 /**
  * @version $Rev$ $Date$

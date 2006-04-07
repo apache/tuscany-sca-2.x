@@ -16,19 +16,8 @@
  */
 package org.apache.tuscany.core.system.assembly.impl;
 
-import java.net.URL;
-
-import org.apache.tuscany.core.config.ComponentTypeIntrospector;
-import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
-import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
-import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.ComponentType;
-import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.impl.ComponentImplementationImpl;
 
 /**

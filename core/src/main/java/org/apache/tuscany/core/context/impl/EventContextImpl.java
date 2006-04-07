@@ -16,11 +16,11 @@
  */
 package org.apache.tuscany.core.context.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.ScopeIdentifier;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * An implementation of an {@link org.apache.tuscany.core.context.EventContext} that handles event-to-thread associations using an

@@ -16,34 +16,24 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import java.util.List;
-import java.util.Map;
-import javax.xml.namespace.QName;
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.osoa.sca.annotations.Scope;
-
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.InvalidPropertyFactoryException;
 import org.apache.tuscany.core.loader.StAXPropertyFactory;
 import org.apache.tuscany.core.loader.StAXUtil;
-import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.COMPONENT;
-import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.PROPERTIES;
-import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.REFERENCES;
+import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.*;
 import org.apache.tuscany.core.loader.impl.StringParserPropertyFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
-import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentImplementation;
-import org.apache.tuscany.model.assembly.ComponentType;
-import org.apache.tuscany.model.assembly.ConfiguredProperty;
-import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.OverrideOption;
-import org.apache.tuscany.model.assembly.Property;
+import org.apache.tuscany.model.assembly.*;
+import org.osoa.sca.annotations.Scope;
+
+import javax.xml.namespace.QName;
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @version $Rev$ $Date$

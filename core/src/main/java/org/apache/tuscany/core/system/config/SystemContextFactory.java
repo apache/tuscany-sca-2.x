@@ -1,9 +1,5 @@
 package org.apache.tuscany.core.system.config;
 
-import java.lang.reflect.Constructor;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.tuscany.common.TuscanyRuntimeException;
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextFactory;
@@ -18,6 +14,10 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemComponentContext;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Scope;
+
+import java.lang.reflect.Constructor;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A <code>ContextFactory</code> that handles system component implementation types, which may be either simple, leaf

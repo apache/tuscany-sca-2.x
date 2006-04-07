@@ -155,7 +155,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
 
     JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
-    private List<ContextFactory<InstanceContext>> createComponents() throws NoSuchMethodException, BuilderException {
+    private List<ContextFactory<InstanceContext>> createComponents() throws BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
         ca[0] = MockFactory.createComponent("TestServiceInitDestroy", ModuleScopeInitDestroyComponent.class,
                 Scope.MODULE);
@@ -163,17 +163,17 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
                 Scope.MODULE);
         ca[2] = MockFactory.createComponent("TestServiceDestroyOnly", ModuleScopeDestroyOnlyComponent.class,
                 Scope.MODULE);
-        List<ContextFactory<InstanceContext>> configs = new ArrayList();
-        for (int i = 0; i < ca.length; i++) {
-            builder.build(ca[i]);
-            configs.add((ContextFactory<InstanceContext>) ca[i].getComponentImplementation()
+        List<ContextFactory<InstanceContext>> configs = new ArrayList<ContextFactory<InstanceContext>> ();
+        for (SimpleComponent aCa : ca) {
+            builder.build(aCa);
+            configs.add((ContextFactory<InstanceContext>) aCa.getComponentImplementation()
                     .getContextFactory());
 
         }
         return configs;
     }
 
-    private List<ContextFactory<InstanceContext>> createEagerInitComponents() throws NoSuchMethodException,
+    private List<ContextFactory<InstanceContext>> createEagerInitComponents() throws
             BuilderException {
         SimpleComponent[] ca = new SimpleComponent[2];
         ca[0] = MockFactory.createComponent("TestServiceEagerInitDestroy", ModuleScopeEagerInitDestroyComponent.class,
@@ -190,13 +190,13 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         return configs;
     }
 
-    private List<ContextFactory<InstanceContext>> createOrderedInitComponents() throws NoSuchMethodException,
+    private List<ContextFactory<InstanceContext>> createOrderedInitComponents() throws
             BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
         ca[0] = MockFactory.createComponent("one", OrderedInitPojo.class, Scope.MODULE);
         ca[1] = MockFactory.createComponent("two", OrderedInitPojo.class, Scope.MODULE);
         ca[2] = MockFactory.createComponent("three", OrderedInitPojo.class, Scope.MODULE);
-        List<ContextFactory<InstanceContext>> configs = new ArrayList();
+        List<ContextFactory<InstanceContext>> configs = new ArrayList<ContextFactory<InstanceContext>>();
         for (int i = 0; i < ca.length; i++) {
             builder.build(ca[i]);
             configs.add((ContextFactory<InstanceContext>) ca[i].getComponentImplementation()
@@ -206,7 +206,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         return configs;
     }
 
-    private List<ContextFactory<InstanceContext>> createOrderedEagerInitComponents() throws NoSuchMethodException,
+    private List<ContextFactory<InstanceContext>> createOrderedEagerInitComponents() throws
             BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
         ca[0] = MockFactory.createComponent("one", OrderedEagerInitPojo.class, Scope.MODULE);

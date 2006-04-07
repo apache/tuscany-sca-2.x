@@ -43,10 +43,6 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
     // creates a new implementation instance with injected references and properties
     private ObjectFactory objectFactory;
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
     public JavaComponentContext(String name, ObjectFactory objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
                                 EventInvoker<Object> destroyInvoker, boolean stateless) {
         super(name);
@@ -63,10 +59,6 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
         this.destroyInvoker = destroyInvoker;
         this.stateless = stateless;
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     public void setName(String name) {
         super.setName(name);
@@ -131,12 +123,6 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
         return getInstance(null);
     }
 
-//    public Object getImplementationInstance(boolean notify) throws TargetException {
-//        //TODO refactor when getInstance() returns a proxy
-//        return getInstance(null, notify);
-//    }
-
-
     public boolean isEagerInit() {
         return eagerInit;
     }
@@ -144,10 +130,6 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
     public boolean isDestroyable() {
         return (destroyInvoker != null);
     }
-
-    // ----------------------------------
-    // Lifecycle methods
-    // ----------------------------------
 
     public void start() throws ContextInitException {
         if (getLifecycleState() != UNINITIALIZED && getLifecycleState() != STOPPED) {
@@ -163,6 +145,7 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
     }
 
     public void stop() {
+        setLifecycleState(STOPPING);
         if (cachedTargetInstance != null) {
             if (destroyInvoker != null) {
                 try {
@@ -177,9 +160,6 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
         setLifecycleState(STOPPED);
     }
 
-    // ----------------------------------
-    // Private methods
-    // ----------------------------------
     private void startInstance(Object instance) throws TargetException {
         try {
             // handle @Init

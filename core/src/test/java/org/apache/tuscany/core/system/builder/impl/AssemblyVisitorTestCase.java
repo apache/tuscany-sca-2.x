@@ -13,12 +13,8 @@
  */
 package org.apache.tuscany.core.system.builder.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
@@ -27,20 +23,12 @@ import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
-import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentType;
-import org.apache.tuscany.model.assembly.ConfiguredPort;
-import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.Reference;
-import org.apache.tuscany.model.assembly.ContextFactoryHolder;
-import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.*;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Tests decorating a logical configuration model

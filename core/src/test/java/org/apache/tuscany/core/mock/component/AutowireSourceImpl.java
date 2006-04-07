@@ -13,9 +13,9 @@
  */
 package org.apache.tuscany.core.mock.component;
 
-import java.util.List;
-
 import org.apache.tuscany.core.system.annotation.Autowire;
+
+import java.util.List;
 
 /**
  * Mock system component implementation used in autowire tests

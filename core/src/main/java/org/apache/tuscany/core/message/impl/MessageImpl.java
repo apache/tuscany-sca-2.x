@@ -16,13 +16,13 @@
  */
 package org.apache.tuscany.core.message.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.tuscany.core.addressing.EndpointReference;
 import org.apache.tuscany.core.invocation.MessageChannel;
 import org.apache.tuscany.core.invocation.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  */

@@ -16,20 +16,19 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
+import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.SERVICE;
+import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.ServiceContract;
+import org.osoa.sca.annotations.Scope;
+
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.osoa.sca.annotations.Scope;
-
-import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.SERVICE;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
-import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.ServiceContract;
-import org.apache.tuscany.common.resource.ResourceLoader;
 
 /**
  * @version $Rev$ $Date$

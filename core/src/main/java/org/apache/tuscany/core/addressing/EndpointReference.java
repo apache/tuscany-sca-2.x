@@ -16,10 +16,10 @@
  */
 package org.apache.tuscany.core.addressing;
 
-import java.util.Map;
-
 import org.apache.tuscany.core.invocation.MessageHandler;
 import org.apache.tuscany.model.assembly.ConfiguredPort;
+
+import java.util.Map;
 
 /**
  * A representation of the model object '<em><b>Endpoint Reference</b></em>'.

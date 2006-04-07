@@ -13,11 +13,6 @@
  */
 package org.apache.tuscany.core.builder.impl;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.HierarchicalWireBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
@@ -26,6 +21,11 @@ import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.impl.MessageChannelImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The top-most <code>WireBuilder</code> configured in a runtime. Responsible for constructing wires from source and target chains,

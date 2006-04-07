@@ -15,7 +15,6 @@ package org.apache.tuscany.core.system.builder;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.AggregateContext;

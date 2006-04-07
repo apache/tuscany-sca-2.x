@@ -13,10 +13,7 @@
  */
 package org.apache.tuscany.core.context;
 
-import java.util.List;
-
 import junit.framework.Assert;
-
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
@@ -30,9 +27,10 @@ import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
-
 import org.osoa.sca.ModuleContext;
 import org.osoa.sca.ServiceUnavailableException;
+
+import java.util.List;
 
 /**
  * Performs testing of various hierarchical scenarios
@@ -54,7 +52,7 @@ public class AggregateHierarchyTestCase extends AbstractAggregateHierarchyTests 
         child.registerModelObject(component);
         parent.fireEvent(EventContext.MODULE_START, null);
         child.fireEvent(EventContext.MODULE_START, null);
-        Assert.assertNotNull(child.locateInstance("TestService1"));
+        Assert.assertNotNull(child.getContext("TestService1").getInstance(null));
         try {
             ((ModuleContext) parent).locateService("test.child/TestService1");
             fail("Expected " + ServiceUnavailableException.class.getName()
@@ -69,14 +67,14 @@ public class AggregateHierarchyTestCase extends AbstractAggregateHierarchyTests 
         EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1",
                 component);
         child.registerModelObject(ep);
-        Assert.assertNotNull(child.locateInstance("TestService1EP"));
-        Assert.assertNotNull(parent.locateInstance("test.child/TestService1EP"));
+        Assert.assertNotNull(child.getContext("TestService1EP").getInstance(null));
+        Assert.assertNotNull(parent.getContext("test.child").getInstance(new QualifiedName("./TestService1EP")));
 
         // now expose the child entry point from the parent context
         EntryPoint parentEp = MockFactory.createEntryPointWithStringRef("TestService1EP", ModuleScopeSystemComponent.class,
                 "TestService1", "test.child/TestService1EP");
         parent.registerModelObject(parentEp);
-        Assert.assertNotNull(parent.locateInstance("TestService1EP"));
+        Assert.assertNotNull(parent.getContext("TestService1EP").getInstance(null));
 
         parent.fireEvent(EventContext.MODULE_STOP, null);
         child.fireEvent(EventContext.MODULE_STOP, null);

@@ -16,12 +16,6 @@
  */
 package org.apache.tuscany.core.client;
 
-import java.util.List;
-
-import org.osoa.sca.ModuleContext;
-import org.osoa.sca.SCA;
-import org.osoa.sca.ServiceRuntimeException;
-
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
@@ -36,7 +30,11 @@ import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
-import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
+import org.osoa.sca.ModuleContext;
+import org.osoa.sca.SCA;
+import org.osoa.sca.ServiceRuntimeException;
+
+import java.util.List;
 
 /**
  * Create and initialize a Tuscany SCA runtime environment.

@@ -16,22 +16,13 @@
  */
 package org.apache.tuscany.core.context.scope;
 
+import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.context.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.AbstractContext;
-import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.EventException;
-import org.apache.tuscany.core.context.InstanceContext;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.context.ScopeInitializationException;
-import org.apache.tuscany.core.context.ScopeRuntimeException;
-import org.apache.tuscany.core.context.TargetException;
 
 /**
  * Manages the lifecycle of aggregate component contexts, i.e. contexts which contain child contexts

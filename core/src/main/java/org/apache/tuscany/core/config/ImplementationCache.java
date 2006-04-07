@@ -16,9 +16,9 @@
  */
 package org.apache.tuscany.core.config;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.model.assembly.ComponentImplementation;
+
+import javax.xml.namespace.QName;
 
 /**
  * Cache of introspected implementations.

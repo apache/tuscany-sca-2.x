@@ -16,18 +16,12 @@
  */
 package org.apache.tuscany.core.context.scope;
 
+import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.context.*;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.AbstractContext;
-import org.apache.tuscany.core.context.InstanceContext;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.context.TargetException;
 
 /**
  * Implements functionality common to scope contexts.
@@ -93,7 +87,7 @@ public abstract class AbstractScopeContext extends AbstractContext implements Sc
 
             if (context.getLifecycleState() == Context.RUNNING) {
                 synchronized (context) {
-                    context.setLifecycleState(Context.STOPPING);
+  //                  context.setLifecycleState(Context.STOPPING);
                     removeContextByKey(context.getName(), key);
                     try {
                         context.stop();

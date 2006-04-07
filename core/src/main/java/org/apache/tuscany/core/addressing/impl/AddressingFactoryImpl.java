@@ -16,10 +16,9 @@
  */
 package org.apache.tuscany.core.addressing.impl;
 
-import org.eclipse.emf.ecore.util.EcoreUtil;
-
 import org.apache.tuscany.core.addressing.AddressingFactory;
 import org.apache.tuscany.core.addressing.EndpointReference;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * A factory for endpoint references.

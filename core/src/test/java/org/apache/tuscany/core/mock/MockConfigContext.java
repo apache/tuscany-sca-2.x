@@ -13,9 +13,6 @@
  */
 package org.apache.tuscany.core.mock;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
@@ -25,6 +22,9 @@ import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.Extensible;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A mock configuration context

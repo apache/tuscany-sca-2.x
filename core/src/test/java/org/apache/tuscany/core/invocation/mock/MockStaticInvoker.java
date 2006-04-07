@@ -1,12 +1,12 @@
 package org.apache.tuscany.core.invocation.mock;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import org.apache.tuscany.core.invocation.Interceptor;
 import org.apache.tuscany.core.invocation.InvocationRuntimeException;
 import org.apache.tuscany.core.invocation.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Caches component instances that do not need to be resolved for every invocation, e.g. an invocation originating from

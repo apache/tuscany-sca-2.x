@@ -13,10 +13,7 @@
  */
 package org.apache.tuscany.core.system.context;
 
-import java.util.List;
-
 import junit.framework.Assert;
-
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.AbstractAggregateHierarchyTests;
@@ -25,6 +22,8 @@ import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.mock.MockConfigContext;
 import org.apache.tuscany.core.mock.MockFactory;
+
+import java.util.List;
 
 /**
  * Performs testing of various hierarchical scenarios

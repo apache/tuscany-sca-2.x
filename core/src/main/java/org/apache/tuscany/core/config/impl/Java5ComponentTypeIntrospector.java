@@ -16,30 +16,22 @@
  */
 package org.apache.tuscany.core.config.impl;
 
+import org.apache.tuscany.core.config.ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.ConfigurationException;
+import org.apache.tuscany.core.config.JavaIntrospectionHelper;
+import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
+import org.apache.tuscany.model.assembly.*;
+import org.apache.tuscany.model.types.java.JavaServiceContract;
+import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.annotations.Remotable;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Remotable;
-
-import org.apache.tuscany.core.config.ComponentTypeIntrospector;
-import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
-import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
-import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.ComponentType;
-import org.apache.tuscany.model.assembly.Multiplicity;
-import org.apache.tuscany.model.assembly.Property;
-import org.apache.tuscany.model.assembly.Reference;
-import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.ServiceContract;
-import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
  * Introspects Java annotation-based metata data

@@ -64,9 +64,9 @@ public class AggregateScopeTestCase extends TestCase {
         scopeContainer.onEvent(EventContext.REQUEST_START, null);
         scopeContainer.onEvent(EventContext.SESSION_NOTIFY, session);
         AggregateContext componentCtx = (AggregateContext) scopeContainer.getContext("AggregateComponent");
-        GenericComponent testService1 = (GenericComponent) componentCtx.locateInstance("TestService1");
-        GenericComponent testService2 = (GenericComponent) componentCtx.locateInstance("TestService2");
-        GenericComponent testService3 = (GenericComponent) componentCtx.locateInstance("TestService3");
+        GenericComponent testService1 = (GenericComponent) componentCtx.getContext("TestService1").getInstance(null);
+        GenericComponent testService2 = (GenericComponent) componentCtx.getContext("TestService2").getInstance(null);
+        GenericComponent testService3 = (GenericComponent) componentCtx.getContext("TestService3").getInstance(null);
         Assert.assertNotNull(testService1);
         Assert.assertNotNull(testService2);
         Assert.assertNotNull(testService3);
@@ -74,9 +74,9 @@ public class AggregateScopeTestCase extends TestCase {
         scopeContainer.onEvent(EventContext.REQUEST_START, null);
         scopeContainer.onEvent(EventContext.SESSION_NOTIFY, session);
 
-        GenericComponent testService2a = (GenericComponent) componentCtx.locateInstance("TestService2");
+        GenericComponent testService2a = (GenericComponent) componentCtx.getContext("TestService2").getInstance(null);
         Assert.assertNotNull(testService2a);
-        GenericComponent testService3a = (GenericComponent) componentCtx.locateInstance("TestService3");
+        GenericComponent testService3a = (GenericComponent) componentCtx.getContext("TestService3").getInstance(null);
         Assert.assertNotNull(testService3a);
         Assert.assertEquals(testService2, testService2a);
         Assert.assertNotSame(testService3, testService3a);
@@ -86,7 +86,7 @@ public class AggregateScopeTestCase extends TestCase {
         Object session2 = new Object();
         scopeContainer.onEvent(EventContext.REQUEST_START, null);
         scopeContainer.onEvent(EventContext.SESSION_NOTIFY, session2);
-        GenericComponent testService2b = (GenericComponent) componentCtx.locateInstance("TestService2");
+        GenericComponent testService2b = (GenericComponent) componentCtx.getContext("TestService2").getInstance(null);
         Assert.assertNotNull(testService2b);
         Assert.assertNotSame(testService2, testService2b);
 

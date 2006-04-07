@@ -1,16 +1,15 @@
 package org.apache.tuscany.core.config;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
+import org.apache.tuscany.core.mock.component.Target;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.tuscany.core.mock.component.Target;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class JavaIntrospectionHelperTestCase extends TestCase {
 

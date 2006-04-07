@@ -13,11 +13,11 @@
  */
 package org.apache.tuscany.core.builder.impl;
 
-import java.util.List;
-
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
+
+import java.util.List;
 
 /**
  * Decorates an assembly object graph with runtime configurations using a set of builders

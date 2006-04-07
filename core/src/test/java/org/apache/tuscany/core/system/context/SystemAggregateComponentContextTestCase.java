@@ -13,15 +13,13 @@
  */
 package org.apache.tuscany.core.system.context;
 
-import java.util.List;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.mock.MockConfigContext;
 import org.apache.tuscany.core.mock.MockFactory;
@@ -33,6 +31,8 @@ import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Scope;
 
+import java.util.List;
+
 /**
  * Tests the system aggregate context
  * 
@@ -40,7 +40,6 @@ import org.apache.tuscany.model.assembly.Scope;
  */
 public class SystemAggregateComponentContextTestCase extends TestCase {
     private SystemAssemblyFactory factory;
-    private List<ContextFactoryBuilder> builders;
     private SystemAggregateContextImpl system;
 
     public void testChildLocate() throws Exception {
@@ -55,7 +54,7 @@ public class SystemAggregateComponentContextTestCase extends TestCase {
         childContext.registerModelObject(component);
         childContext.registerModelObject(ep);
         childContext.fireEvent(EventContext.MODULE_START, null);
-        Assert.assertNotNull(system.locateInstance("system.child/TestService1EP"));
+        Assert.assertNotNull(system.getContext("system.child").getInstance(new QualifiedName("./TestService1EP")));
         childContext.fireEvent(EventContext.MODULE_STOP, null);
     }
 
@@ -66,7 +65,7 @@ public class SystemAggregateComponentContextTestCase extends TestCase {
         system.registerModelObject(ep);
         system.start();
         system.fireEvent(EventContext.MODULE_START, null);
-        Assert.assertSame(system.locateInstance("TestService1EP"), system.resolveInstance(ModuleScopeSystemComponent.class));
+        Assert.assertSame(system.getContext("TestService1EP").getInstance(null), system.resolveInstance(ModuleScopeSystemComponent.class));
     }
 
     public void testAutowireRegisterAfterStart() throws Exception {
@@ -76,27 +75,27 @@ public class SystemAggregateComponentContextTestCase extends TestCase {
         system.fireEvent(EventContext.MODULE_START, null);
         EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1", component);
         system.registerModelObject(ep);
-        Assert.assertSame(system.locateInstance("TestService1EP"), system.resolveInstance(ModuleScopeSystemComponent.class));
+        Assert.assertSame(system.getContext("TestService1EP").getInstance(null), system.resolveInstance(ModuleScopeSystemComponent.class));
     }
 
     public void testAutowireModuleRegisterBeforeStart() throws Exception {
         system.registerModelObject(MockFactory.createSystemModule());
         system.start();
         system.fireEvent(EventContext.MODULE_START, null);
-        Assert.assertSame(system.locateInstance("TestService1EP"), system.resolveInstance(ModuleScopeSystemComponent.class));
+        Assert.assertSame(system.getContext("TestService1EP").getInstance(null), system.resolveInstance(ModuleScopeSystemComponent.class));
     }
 
     public void testAutowireModuleRegisterAfterStart() throws Exception {
         system.start();
         system.fireEvent(EventContext.MODULE_START, null);
         system.registerModelObject(MockFactory.createSystemModule());
-        Assert.assertSame(system.locateInstance("TestService1EP"), system.resolveInstance(ModuleScopeSystemComponent.class));
+        Assert.assertSame(system.getContext("TestService1EP").getInstance(null), system.resolveInstance(ModuleScopeSystemComponent.class));
     }
 
     protected void setUp() throws Exception {
         super.setUp();
         factory = new SystemAssemblyFactoryImpl();
-        builders = MockFactory.createSystemBuilders();
+        List<ContextFactoryBuilder> builders = MockFactory.createSystemBuilders();
 
         system = new SystemAggregateContextImpl("system", null, null, new SystemScopeStrategy(),
                 new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory(), null, null);

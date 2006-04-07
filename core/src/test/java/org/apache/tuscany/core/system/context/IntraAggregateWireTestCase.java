@@ -13,19 +13,18 @@
  */
 package org.apache.tuscany.core.system.context;
 
-import java.util.List;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.context.SimpleComponentContext;
+import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.mock.MockConfigContext;
 import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.model.assembly.Scope;
+
+import java.util.List;
 
 /**
  * Tests intra-aggregate system component wiring scenarios

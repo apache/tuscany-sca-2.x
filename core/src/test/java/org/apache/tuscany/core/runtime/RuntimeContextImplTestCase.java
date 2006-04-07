@@ -13,11 +13,8 @@
  */
 package org.apache.tuscany.core.runtime;
 
-import java.util.List;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
@@ -31,14 +28,11 @@ import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.context.TestBuilder;
-import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.ExternalService;
-import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.*;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 import org.osoa.sca.ServiceUnavailableException;
+
+import java.util.List;
 
 /**
  * Performs basic tests on the runtime context
@@ -84,8 +78,8 @@ public class RuntimeContextImplTestCase extends TestCase {
         service.setServiceContract(inter);
         system.registerModelObject(ep);
         system.fireEvent(EventContext.MODULE_START, null);
-        Assert.assertNotNull(system.locateInstance("TestService1"));
-        Assert.assertNotNull(system.locateInstance("TestService2EP"));
+        Assert.assertNotNull(system.getContext("TestService1").getInstance(null));
+        Assert.assertNotNull(system.getContext("TestService2EP").getInstance(null));
 
         // create a test module and wire an external service to the system entry point
         Component moduleComponent = MockFactory.createAggregateComponent("test.module");
@@ -95,7 +89,7 @@ public class RuntimeContextImplTestCase extends TestCase {
         ExternalService es = MockFactory.createESSystemBinding("TestService2ES", "tuscany.system/TestService2EP");
         moduleContext.registerModelObject(es);
         moduleContext.fireEvent(EventContext.MODULE_START, null);
-        Assert.assertNotNull(moduleContext.locateInstance("TestService2ES"));
+        Assert.assertNotNull(moduleContext.getContext("TestService2ES").getInstance(null));
 
         moduleContext.fireEvent(EventContext.MODULE_STOP, null);
         system.fireEvent(EventContext.MODULE_STOP, null);
@@ -128,7 +122,7 @@ public class RuntimeContextImplTestCase extends TestCase {
         system.fireEvent(EventContext.MODULE_START, null);
         moduleContext.fireEvent(EventContext.MODULE_START, null);
         // test that the autowire was resolved
-        Assert.assertNotNull(moduleContext.locateInstance("TestService2ES"));
+        Assert.assertNotNull(moduleContext.getContext("TestService2ES").getInstance(null));
 
         moduleContext.fireEvent(EventContext.MODULE_STOP, null);
         system.fireEvent(EventContext.MODULE_STOP, null);
@@ -238,8 +232,8 @@ public class RuntimeContextImplTestCase extends TestCase {
 
         moduleContext1.fireEvent(EventContext.MODULE_START, null);
         moduleContext2.fireEvent(EventContext.MODULE_START, null);
-        Assert.assertNotNull(moduleContext2.locateInstance("ExternalService2"));
-        Assert.assertNotNull(moduleContext1.locateInstance("ExternalService1"));
+        Assert.assertNotNull(moduleContext2.getContext("ExternalService2").getInstance(null));
+        Assert.assertNotNull(moduleContext1.getContext("ExternalService1").getInstance(null));
         runtime.stop();
     }
 
@@ -289,7 +283,7 @@ public class RuntimeContextImplTestCase extends TestCase {
         Component module1 = MockFactory.createAggregateComponent("module1");
         runtime.registerModelObject(module1);
         runtime.getContext("module1");
-        Assert.assertTrue(((TestBuilder) system.locateInstance("TestBuilder")).invoked());
+        Assert.assertTrue(((TestBuilder) system.getContext("TestBuilder").getInstance(null)).invoked());
         system.fireEvent(EventContext.MODULE_STOP, null);
         runtime.stop();
 

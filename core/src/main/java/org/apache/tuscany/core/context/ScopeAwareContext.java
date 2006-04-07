@@ -13,9 +13,9 @@
  */
 package org.apache.tuscany.core.context;
 
-import java.util.Map;
-
 import org.apache.tuscany.model.assembly.Scope;
+
+import java.util.Map;
 
 /**
  * Denotes an aggregate context that supports scopes

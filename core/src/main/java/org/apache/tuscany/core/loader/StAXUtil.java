@@ -16,41 +16,24 @@
  */
 package org.apache.tuscany.core.loader;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.apache.tuscany.core.loader.assembly.ComponentLoader;
-import org.apache.tuscany.core.loader.assembly.ComponentTypeLoader;
-import org.apache.tuscany.core.loader.assembly.EntryPointLoader;
-import org.apache.tuscany.core.loader.assembly.ExternalServiceLoader;
-import org.apache.tuscany.core.loader.assembly.InterfaceJavaLoader;
-import org.apache.tuscany.core.loader.assembly.InterfaceWSDLLoader;
-import org.apache.tuscany.core.loader.assembly.ModuleFragmentLoader;
-import org.apache.tuscany.core.loader.assembly.ModuleLoader;
-import org.apache.tuscany.core.loader.assembly.PropertyLoader;
-import org.apache.tuscany.core.loader.assembly.ReferenceLoader;
-import org.apache.tuscany.core.loader.assembly.ServiceLoader;
+import org.apache.tuscany.core.config.ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.ConfigurationException;
+import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
+import org.apache.tuscany.core.loader.assembly.*;
 import org.apache.tuscany.core.loader.impl.StAXLoaderRegistryImpl;
 import org.apache.tuscany.core.loader.system.SystemBindingLoader;
 import org.apache.tuscany.core.loader.system.SystemImplementationLoader;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.core.config.ComponentTypeIntrospector;
-import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.ModuleComponent;
-import org.apache.tuscany.model.assembly.Multiplicity;
-import org.apache.tuscany.model.assembly.OverrideOption;
-import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.*;
+
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @version $Rev$ $Date$

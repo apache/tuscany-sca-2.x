@@ -13,19 +13,19 @@
  */
 package org.apache.tuscany.core.builder.impl;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.tuscany.core.builder.ContextCreationException;
-import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.context.impl.ExternalServiceContextImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.model.assembly.Scope;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A template implementation that creates instances of {@link org.apache.tuscany.core.context.ExternalServiceContext}

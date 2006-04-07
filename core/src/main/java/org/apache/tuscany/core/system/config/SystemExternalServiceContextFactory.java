@@ -13,9 +13,6 @@
  */
 package org.apache.tuscany.core.system.config;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ContextResolver;
@@ -27,6 +24,9 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemExternalServiceContext;
 import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
 import org.apache.tuscany.model.assembly.Scope;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Creates system type external service contexts

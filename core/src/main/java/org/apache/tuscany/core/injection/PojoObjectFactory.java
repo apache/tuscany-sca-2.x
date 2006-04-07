@@ -1,11 +1,11 @@
 package org.apache.tuscany.core.injection;
 
+import org.apache.tuscany.core.builder.ObjectFactory;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
-
-import org.apache.tuscany.core.builder.ObjectFactory;
 
 /**
  * Creates new instances of a Java class, calling a given set of injectors to configure the instance

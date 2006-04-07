@@ -18,12 +18,11 @@
 package org.apache.tuscany.core.system.context;
 
 import junit.framework.TestCase;
-
+import org.apache.tuscany.core.config.ConfigurationException;
+import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
-import org.apache.tuscany.core.context.SystemAggregateContext;
-import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.config.ConfigurationException;
 
 /**
  * @version $Rev$ $Date$
@@ -35,7 +34,7 @@ public class SystemObjectRegistrationTestCase extends TestCase {
     public void testRegistration() throws ConfigurationException {
         MockComponent instance = new MockComponent();
         systemContext.registerJavaObject("foo", MockComponent.class, instance);
-        assertSame(instance, systemContext.locateInstance("foo"));
+        assertSame(instance, systemContext.getContext("foo").getInstance(null));
     }
 
     protected void setUp() throws Exception {

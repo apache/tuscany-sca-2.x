@@ -16,13 +16,13 @@
  */
 package org.apache.tuscany.core.loader;
 
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.model.assembly.AssemblyModelObject;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
-import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
 
 /**
  * A loader that creates a model object from a StAX input stream.

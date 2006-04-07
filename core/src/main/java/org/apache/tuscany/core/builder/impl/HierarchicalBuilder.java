@@ -13,13 +13,13 @@
  */
 package org.apache.tuscany.core.builder.impl;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * A builder that contains nested builders. Used for synchronizing parts of the build process, such as references.

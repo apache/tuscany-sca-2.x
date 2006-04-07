@@ -16,16 +16,15 @@
  */
 package org.apache.tuscany.core.loader.system;
 
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.osoa.sca.annotations.Scope;
-
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
+import org.osoa.sca.annotations.Scope;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 /**
  * @version $Rev$ $Date$

@@ -16,14 +16,14 @@
  */
 package org.apache.tuscany.core.runtime;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.scope.AbstractScopeStrategy;
 import org.apache.tuscany.core.context.scope.AggregateScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Implements a {@link org.apache.tuscany.core.context.ScopeStrategy} for a runtime context. Specifically, a runtime

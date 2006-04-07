@@ -16,20 +16,13 @@
  */
 package org.apache.tuscany.core.invocation.mock;
 
+import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.context.*;
+import org.apache.tuscany.model.assembly.SimpleComponent;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.InstanceContext;
-import org.apache.tuscany.core.context.EventException;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.LifecycleEventListener;
-import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.context.ScopeRuntimeException;
-import org.apache.tuscany.core.context.SimpleComponentContext;
-import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.model.assembly.SimpleComponent;
 
 public class MockScopeContext implements ScopeContext {
 

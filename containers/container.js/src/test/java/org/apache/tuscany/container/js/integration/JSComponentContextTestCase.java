@@ -31,6 +31,7 @@ import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
@@ -52,7 +53,7 @@ public class JSComponentContextTestCase extends TestCase {
     public void testBasicInvocation() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
-        List<ContextFactoryBuilder> builders = new ArrayList();
+        List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
         builders.add((new SystemContextFactoryBuilder()));
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
@@ -79,7 +80,7 @@ public class JSComponentContextTestCase extends TestCase {
         AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockModuleFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);
-        HelloWorldService source = (HelloWorldService) child.locateInstance("source/HelloWorldService");
+        HelloWorldService source = (HelloWorldService) child.getContext("source").getInstance(new QualifiedName("./HelloWorldService"));
         Assert.assertNotNull(source);
         Assert.assertEquals("Hello foo",source.hello("foo"));
         //Assert.assertEquals(1, mockInterceptor.getCount());

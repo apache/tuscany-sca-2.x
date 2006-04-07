@@ -54,7 +54,7 @@ public class FooESTargetInvoker implements TargetInvoker {
             }
             context = (ExternalServiceContext) iContext;
         }
-        FooClient client = (FooClient) context.getImplementationInstance();
+        FooClient client = (FooClient) context.getHandler();
         if (payload != null) {
             return client.invoke(payload);
         } else {

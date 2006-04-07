@@ -13,18 +13,13 @@
  */
 package org.apache.tuscany.core.context.impl;
 
-import java.lang.reflect.InvocationHandler;
-
-import org.apache.tuscany.core.context.AbstractContext;
-import org.apache.tuscany.core.context.ContextInitException;
-import org.apache.tuscany.core.context.CoreRuntimeException;
-import org.apache.tuscany.core.context.EntryPointContext;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.*;
 import org.apache.tuscany.core.invocation.jdk.JDKInvocationHandler;
 import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.message.MessageFactory;
+
+import java.lang.reflect.InvocationHandler;
 
 /**
  * The default implementation of an entry point context
@@ -79,7 +74,7 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
         lifecycleState = STOPPED;
     }
 
-     public Object getImplementationInstance() throws TargetException {
+     public Object getHandler() throws TargetException {
         return invocationHandler;
     }
 

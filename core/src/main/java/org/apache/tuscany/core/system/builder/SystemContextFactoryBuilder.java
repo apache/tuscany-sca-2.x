@@ -13,21 +13,9 @@
  */
 package org.apache.tuscany.core.system.builder;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import commonj.sdo.DataObject;
 import org.apache.tuscany.common.monitor.MonitorFactory;
-import org.apache.tuscany.core.builder.BuilderConfigException;
-import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.builder.ContextResolver;
-import org.apache.tuscany.core.builder.NoAccessorException;
-import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.builder.UnknownTypeException;
+import org.apache.tuscany.core.builder.*;
 import org.apache.tuscany.core.builder.impl.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.builder.impl.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
@@ -36,16 +24,7 @@ import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
-import org.apache.tuscany.core.injection.ContextObjectFactory;
-import org.apache.tuscany.core.injection.EventInvoker;
-import org.apache.tuscany.core.injection.FactoryInitException;
-import org.apache.tuscany.core.injection.FieldInjector;
-import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.injection.MethodInjector;
-import org.apache.tuscany.core.injection.NonProxiedTargetFactory;
-import org.apache.tuscany.core.injection.SDOObjectFactory;
-import org.apache.tuscany.core.injection.SingletonObjectFactory;
+import org.apache.tuscany.core.injection.*;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
@@ -54,22 +33,18 @@ import org.apache.tuscany.core.system.assembly.SystemModule;
 import org.apache.tuscany.core.system.config.SystemContextFactory;
 import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
 import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
-import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentImplementation;
-import org.apache.tuscany.model.assembly.ConfiguredProperty;
-import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.Multiplicity;
-import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.*;
 import org.osoa.sca.annotations.ComponentName;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 
-import commonj.sdo.DataObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Decorates components whose implementation type is a

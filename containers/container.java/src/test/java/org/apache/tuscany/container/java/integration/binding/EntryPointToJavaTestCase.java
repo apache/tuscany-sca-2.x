@@ -60,7 +60,7 @@ public class EntryPointToJavaTestCase extends TestCase {
         child.fireEvent(EventContext.REQUEST_START, null);
         EntryPointContext ctx = (EntryPointContext) child.getContext("source");
         Assert.assertNotNull(ctx);
-        InvocationHandler handler = (InvocationHandler) ctx.getImplementationInstance();
+        InvocationHandler handler = (InvocationHandler) ctx.getHandler();
         Assert.assertEquals(0, mockInterceptor.getCount());
         Object response = handler.invoke(null, hello, new Object[] { "foo" });
         Assert.assertEquals("Hello foo", response);
@@ -71,7 +71,7 @@ public class EntryPointToJavaTestCase extends TestCase {
         child.fireEvent(EventContext.REQUEST_START, null);
         ctx = (EntryPointContext) child.getContext("source");
         Assert.assertNotNull(ctx);
-        handler = (InvocationHandler) ctx.getImplementationInstance();
+        handler = (InvocationHandler) ctx.getHandler();
         Assert.assertEquals(1, mockInterceptor.getCount());
         response = handler.invoke(null, hello, new Object[] { "foo" });
         Assert.assertEquals("Hello foo", response);
@@ -106,7 +106,7 @@ public class EntryPointToJavaTestCase extends TestCase {
         
         EntryPointContext ctx = (EntryPointContext) child.getContext("source");
         Assert.assertNotNull(ctx);
-        InvocationHandler handler = (InvocationHandler) ctx.getImplementationInstance();
+        InvocationHandler handler = (InvocationHandler) ctx.getHandler();
         Assert.assertEquals(0, mockInterceptor.getCount());
         Object response = handler.invoke(null, hello, new Object[] { "foo" });
         Assert.assertEquals("Hello foo", response);
@@ -175,7 +175,7 @@ public class EntryPointToJavaTestCase extends TestCase {
         child.fireEvent(EventContext.REQUEST_START, null);
         EntryPointContext ctx = (EntryPointContext) child.getContext("source");
         Assert.assertNotNull(ctx);
-        InvocationHandler handler = (InvocationHandler) ctx.getImplementationInstance();
+        InvocationHandler handler = (InvocationHandler) ctx.getHandler();
         Assert.assertEquals(0, mockInterceptor.getCount());
         Object response = handler.invoke(null, hello, new Object[] { "foo" });
         Assert.assertEquals("Hello foo", response);
@@ -186,7 +186,7 @@ public class EntryPointToJavaTestCase extends TestCase {
         child.fireEvent(EventContext.REQUEST_START, null);
         ctx = (EntryPointContext) child.getContext("source");
         Assert.assertNotNull(ctx);
-        handler = (InvocationHandler) ctx.getImplementationInstance();
+        handler = (InvocationHandler) ctx.getHandler();
         Assert.assertEquals(1, mockInterceptor.getCount());
         response = handler.invoke(null, hello, new Object[] { "foo" });
         Assert.assertEquals("Hello foo", response);
@@ -213,7 +213,7 @@ public class EntryPointToJavaTestCase extends TestCase {
         child.fireEvent(EventContext.REQUEST_START, null);
         EntryPointContext ctx = (EntryPointContext) child.getContext("source");
         Assert.assertNotNull(ctx);
-        InvocationHandler handler = (InvocationHandler) ctx.getImplementationInstance();
+        InvocationHandler handler = (InvocationHandler) ctx.getHandler();
         Assert.assertEquals(0, mockInterceptor.getCount());
         Object response = handler.invoke(null, hello, new Object[] { "foo" });
         Assert.assertEquals("Hello foo", response);
@@ -221,7 +221,7 @@ public class EntryPointToJavaTestCase extends TestCase {
 
         ctx = (EntryPointContext) child.getContext("source");
         Assert.assertNotNull(ctx);
-        handler = (InvocationHandler) ctx.getImplementationInstance();
+        handler = (InvocationHandler) ctx.getHandler();
         response = handler.invoke(null, hello, new Object[] { "foo" });
         HelloWorldService service1 = (HelloWorldService)child.getContext("target").getInstance(null);
         Assert.assertEquals(2, service1.count());
@@ -232,7 +232,7 @@ public class EntryPointToJavaTestCase extends TestCase {
         child.fireEvent(EventContext.REQUEST_START, null);
         ctx = (EntryPointContext) child.getContext("source");
         Assert.assertNotNull(ctx);
-        handler = (InvocationHandler) ctx.getImplementationInstance();
+        handler = (InvocationHandler) ctx.getHandler();
         Assert.assertEquals(2, mockInterceptor.getCount());
         response = handler.invoke(null, hello, new Object[] { "foo" });
         Assert.assertEquals("Hello foo", response);

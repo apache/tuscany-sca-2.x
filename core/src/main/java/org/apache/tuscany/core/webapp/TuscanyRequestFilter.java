@@ -16,22 +16,14 @@
  */
 package org.apache.tuscany.core.webapp;
 
-import java.io.IOException;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
-import org.osoa.sca.ModuleContext;
-import org.osoa.sca.CurrentModuleContext;
-
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
+import org.osoa.sca.CurrentModuleContext;
+import org.osoa.sca.ModuleContext;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * Notifies the {@link org.apache.tuscany.core.context.AggregateContext} of web request start and end events as well as setting up the

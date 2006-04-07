@@ -1,9 +1,9 @@
 package org.apache.tuscany.core.injection;
 
+import org.apache.tuscany.core.builder.ObjectFactory;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import org.apache.tuscany.core.builder.ObjectFactory;
 
 /**
  * Injects a value created by an {@link ObjectFactory} using a given method

@@ -16,19 +16,18 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import java.util.Map;
-import java.util.HashMap;
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.loader.StAXUtil;
+import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.PROPERTY;
+import org.apache.tuscany.model.assembly.Property;
+import org.osoa.sca.annotations.Scope;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.osoa.sca.annotations.Scope;
-
-import org.apache.tuscany.core.loader.StAXUtil;
-import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.PROPERTY;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.model.assembly.Property;
-import org.apache.tuscany.common.resource.ResourceLoader;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @version $Rev$ $Date$

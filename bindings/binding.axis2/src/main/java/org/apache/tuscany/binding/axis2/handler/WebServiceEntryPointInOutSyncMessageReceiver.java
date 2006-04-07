@@ -84,7 +84,7 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
             // invoke the proxy's InvocationHandler
             // FIXME we should be invoking the Tuscany pipeline rather than the proxy
             Method operationMethod = methodMap.get(axisOperationName);
-            InvocationHandler handler = (InvocationHandler) entryPointContext.getImplementationInstance();
+            InvocationHandler handler = (InvocationHandler) entryPointContext.getHandler();
             Object response = handler.invoke(null, operationMethod, args);
 
             // construct the response message

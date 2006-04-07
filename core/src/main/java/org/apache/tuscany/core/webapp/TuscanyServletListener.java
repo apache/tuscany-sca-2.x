@@ -16,20 +16,11 @@
  */
 package org.apache.tuscany.core.webapp;
 
-import java.util.List;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
-
-import org.osoa.sca.CurrentModuleContext;
-import org.osoa.sca.ModuleContext;
-
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
+import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.context.AggregateContext;
@@ -37,10 +28,17 @@ import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
-import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
-import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
+import org.osoa.sca.CurrentModuleContext;
+import org.osoa.sca.ModuleContext;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+import java.util.List;
 
 /**
  * ServletContextListener that can be added to a standard web application to boot

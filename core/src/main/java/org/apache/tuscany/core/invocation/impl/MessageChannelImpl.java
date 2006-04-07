@@ -16,11 +16,11 @@
  */
 package org.apache.tuscany.core.invocation.impl;
 
-import java.util.List;
-
 import org.apache.tuscany.core.invocation.MessageChannel;
 import org.apache.tuscany.core.invocation.MessageHandler;
 import org.apache.tuscany.core.message.Message;
+
+import java.util.List;
 
 /**
  * A channel comprising an ordered collection of message handlers.

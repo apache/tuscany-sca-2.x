@@ -1,21 +1,16 @@
 package org.apache.tuscany.core.invocation.jdk;
 
-import java.lang.reflect.Method;
-import java.util.Map;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.MethodHashMap;
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.impl.MessageChannelImpl;
-import org.apache.tuscany.core.invocation.mock.MockHandler;
-import org.apache.tuscany.core.invocation.mock.MockStaticInvoker;
-import org.apache.tuscany.core.invocation.mock.MockSyncInterceptor;
-import org.apache.tuscany.core.invocation.mock.SimpleTarget;
-import org.apache.tuscany.core.invocation.mock.SimpleTargetImpl;
+import org.apache.tuscany.core.invocation.mock.*;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
+
+import java.lang.reflect.Method;
+import java.util.Map;
 
 public class JDKInvocationHandlerTestCase extends TestCase {
 

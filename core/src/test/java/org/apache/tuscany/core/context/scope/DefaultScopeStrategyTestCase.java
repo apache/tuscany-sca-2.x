@@ -13,10 +13,9 @@
  */
 package org.apache.tuscany.core.context.scope;
 
-import org.apache.tuscany.model.assembly.Scope;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Basic scope strategy tests, including downscope referencing 

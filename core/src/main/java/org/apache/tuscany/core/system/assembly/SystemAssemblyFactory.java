@@ -18,8 +18,8 @@ package org.apache.tuscany.core.system.assembly;
 
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.EntryPoint;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * A factory for building system assembly model artifacts

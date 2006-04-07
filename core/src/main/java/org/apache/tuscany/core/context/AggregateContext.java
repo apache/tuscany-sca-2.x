@@ -1,11 +1,11 @@
 package org.apache.tuscany.core.context;
 
-import java.util.List;
-
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.model.assembly.Aggregate;
-import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.assembly.AggregatePart;
+import org.apache.tuscany.model.assembly.Extensible;
+
+import java.util.List;
 
 /**
  * A context which contains child component contexts.
@@ -13,6 +13,11 @@ import org.apache.tuscany.model.assembly.AggregatePart;
  * @version $Rev$ $Date$
  */
 public interface AggregateContext extends InstanceContext {
+
+    /**
+     * Returns the parent context, or null if the context does not have one
+     */
+    public AggregateContext getParent();
 
     /**
      * Propagates an event to registered listeners. All lifecycle events will be propagated to children in the order
@@ -62,22 +67,16 @@ public interface AggregateContext extends InstanceContext {
     public InstanceContext getContext(String name);
 
     /**
-     * Returns the parent context, or null if the context does not have one
-     */
-    public AggregateContext getParent();
-
-    /**
      * Intended for internal use by the runtime, returns an implementation instance for the given context name, which
      * may be a compound component/service form. Unlike {@link InstanceContext#getInstance(QualifiedName)}, which for aggregate contexts only returns
      * entry point proxies, this method will return any type of contained implementation instance.
      * 
      * @throws TargetException if there was an error returning the instance
      */
-    public Object locateInstance(String name) throws TargetException;
+    //public Object locateInstance(QualifiedName name) throws TargetException;
 
     /**
      * Returns the aggregate managed by this aggregate context
-     *
      */
     @Deprecated
     public Aggregate getAggregate();

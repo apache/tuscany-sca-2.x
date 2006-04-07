@@ -15,6 +15,7 @@ package org.apache.tuscany.core.injection;
 
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ObjectFactory;
+import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 
 /**
@@ -28,8 +29,8 @@ public class NonProxiedTargetFactory<T> implements ObjectFactory<T> {
     private ContextResolver resolver;
 
     // the SCDL name of the target component/service for this reference
-    private String targetName;
-
+    private QualifiedName targetName;
+    private QualifiedName qualifiedServiceName;
     /**
      * Constructs a reference object factory from a configured reference on a type
      * 
@@ -45,14 +46,16 @@ public class NonProxiedTargetFactory<T> implements ObjectFactory<T> {
             if (targetService.getService() == null) {
                 throw new FactoryInitException("No target service specified");
             }
-            targetName = targetService.getService().getName();
+            targetName = new QualifiedName(targetService.getService().getName());
         } else {
-            targetName = targetService.getAggregatePart().getName();
+            targetName = new QualifiedName(targetService.getAggregatePart().getName());
         }
+        qualifiedServiceName = new QualifiedName("./"+targetName.getPortName());
     }
 
     public T getInstance() throws ObjectCreationException {
-        return (T) resolver.getCurrentContext().locateInstance(targetName);
+        return (T) resolver.getCurrentContext().getContext(targetName.getPartName()).getInstance(qualifiedServiceName); //locateInstance(targetName);  //locateInstance(targetName);
     }
+
 
 }

@@ -16,29 +16,18 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.loader.StAXUtil;
+import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.ENTRY_POINT;
+import org.apache.tuscany.model.assembly.*;
+import org.osoa.sca.annotations.Scope;
+
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.osoa.sca.annotations.Scope;
-
-import org.apache.tuscany.core.loader.StAXUtil;
-import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.ENTRY_POINT;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
-import org.apache.tuscany.model.assembly.Binding;
-import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.Multiplicity;
-import org.apache.tuscany.model.assembly.Reference;
-import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.ServiceURI;
-import org.apache.tuscany.model.assembly.ServiceContract;
-import org.apache.tuscany.model.assembly.impl.ServiceContractImpl;
-import org.apache.tuscany.common.resource.ResourceLoader;
 
 /**
  * @version $Rev$ $Date$
