@@ -16,7 +16,7 @@ package org.apache.tuscany.core.context;
 import junit.framework.Assert;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.context.impl.AggregateContextImpl;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.mock.MockConfigContext;
@@ -37,7 +37,7 @@ import java.util.List;
  * 
  * @version $Rev$ $Date$
  */
-public class AggregateHierarchyTestCase extends AbstractAggregateHierarchyTests {
+public class CompositeHierarchyTestCase extends AbstractCompositeHierarchyTests {
 
     /**
      * FIXME model Tests adding a component, accessing it and then exposing it as an entry point after the first access
@@ -45,8 +45,8 @@ public class AggregateHierarchyTestCase extends AbstractAggregateHierarchyTests 
      * @throws Exception
      */
     public void testChildContextIsolation() throws Exception {
-        AggregateContext parent = createContextHierachy();
-        AggregateContext child = (AggregateContext) parent.getContext("test.child");
+        CompositeContext parent = createContextHierachy();
+        CompositeContext child = (CompositeContext) parent.getContext("test.child");
         Component component = factory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
         component.initialize(new AssemblyModelContextImpl(factory, null, null));
         child.registerModelObject(component);
@@ -81,14 +81,14 @@ public class AggregateHierarchyTestCase extends AbstractAggregateHierarchyTests 
         parent.stop();
     }
 
-    protected AggregateContext createContextHierachy() throws Exception {
+    protected CompositeContext createContextHierachy() throws Exception {
         List<ContextFactoryBuilder> systemBuilders = MockFactory.createSystemBuilders();
-        AggregateContext parent = new AggregateContextImpl("test.parent", null, new DefaultScopeStrategy(),
+        CompositeContext parent = new CompositeContextImpl("test.parent", null, new DefaultScopeStrategy(),
                 new EventContextImpl(), new MockConfigContext(systemBuilders), new NullMonitorFactory());
-        Component component = MockFactory.createAggregateComponent("test.child");
+        Component component = MockFactory.createCompositeComponent("test.child");
         parent.registerModelObject(component);
         parent.start();
-        AggregateContext child = (AggregateContext) parent.getContext("test.child");
+        CompositeContext child = (CompositeContext) parent.getContext("test.child");
         Assert.assertNotNull(child);
         return parent;
     }

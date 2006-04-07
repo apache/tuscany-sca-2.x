@@ -17,7 +17,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
@@ -34,19 +34,19 @@ import org.apache.tuscany.model.assembly.Scope;
 import java.util.List;
 
 /**
- * Tests the system aggregate context
+ * Tests the system composite context
  * 
  * @version $Rev$ $Date$
  */
-public class SystemAggregateComponentContextTestCase extends TestCase {
+public class SystemCompositeComponentContextTestCase extends TestCase {
     private SystemAssemblyFactory factory;
-    private SystemAggregateContextImpl system;
+    private SystemCompositeContextImpl system;
 
     public void testChildLocate() throws Exception {
         system.start();
-        Component aggregateComponent = MockFactory.createAggregateComponent("system.child");
-        system.registerModelObject(aggregateComponent);
-        AggregateContext childContext = (AggregateContext) system.getContext("system.child");
+        Component compositeComponent = MockFactory.createCompositeComponent("system.child");
+        system.registerModelObject(compositeComponent);
+        CompositeContext childContext = (CompositeContext) system.getContext("system.child");
         Assert.assertNotNull(childContext);
 
         Component component = factory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
@@ -97,7 +97,7 @@ public class SystemAggregateComponentContextTestCase extends TestCase {
         factory = new SystemAssemblyFactoryImpl();
         List<ContextFactoryBuilder> builders = MockFactory.createSystemBuilders();
 
-        system = new SystemAggregateContextImpl("system", null, null, new SystemScopeStrategy(),
+        system = new SystemCompositeContextImpl("system", null, null, new SystemScopeStrategy(),
                 new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory(), null, null);
     }
 

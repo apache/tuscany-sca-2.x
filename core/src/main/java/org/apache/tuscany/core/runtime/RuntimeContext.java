@@ -16,10 +16,10 @@ package org.apache.tuscany.core.runtime;
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
-import org.apache.tuscany.core.context.SystemAggregateContext;
+import org.apache.tuscany.core.context.SystemCompositeContext;
 
 /**
  * Represents a top-level component context in the runtime, that is the bootstrap context.
@@ -34,10 +34,10 @@ public interface RuntimeContext extends AutowireContext, ConfigurationContext {
     /* the symbolic name of the runtime bootstrap context */
     public static final String RUNTIME = "tuscany.runtime";
 
-    /* the symbolic name of the aggregate context containing all system components in the runtime */
+    /* the symbolic name of the composite context containing all system components in the runtime */
     public static final String SYSTEM = "tuscany.system";
 
-    /* the symbolic name of the aggregate context containing all user components in the runtime */
+    /* the symbolic name of the composite context containing all user components in the runtime */
     public static final String ROOT = "tuscany.root";
 
     /**
@@ -45,7 +45,7 @@ public interface RuntimeContext extends AutowireContext, ConfigurationContext {
      * All user components will managed by contexts that are children of this root.
      * @return the root of the user component tree
      */
-    public AggregateContext getRootContext();
+    public CompositeContext getRootContext();
 
     /**
      * Returns the context that forms the root of the system component tree.
@@ -53,7 +53,7 @@ public interface RuntimeContext extends AutowireContext, ConfigurationContext {
      * Tuscany runtime itself, will be managed by contexts that are children of this root.
      * @return the root of the system component tree
      */
-    public SystemAggregateContext getSystemContext();
+    public SystemCompositeContext getSystemContext();
 
     /**
      * Adds a configuration builder to the runtime

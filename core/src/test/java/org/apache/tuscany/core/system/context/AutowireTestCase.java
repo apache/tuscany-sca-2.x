@@ -15,9 +15,9 @@
 package org.apache.tuscany.core.system.context;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.SystemAggregateContext;
+import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.AutowireSourceImpl;
 import org.apache.tuscany.core.mock.component.Source;
@@ -65,15 +65,15 @@ public class AutowireTestCase extends TestCase {
      */
     public void testScenario1() throws Exception {
         RuntimeContext runtime = createScenario1Runtime();
-        AggregateContext root = runtime.getRootContext();
-        SystemAggregateContext system = runtime.getSystemContext();
-        AggregateContext system1 = (AggregateContext) system.getContext("system1");
+        CompositeContext root = runtime.getRootContext();
+        SystemCompositeContext system = runtime.getSystemContext();
+        CompositeContext system1 = (CompositeContext) system.getContext("system1");
         system1.fireEvent(EventContext.MODULE_START, null);
         Target target = (Target) system.getContext("target.system.ep").getInstance(null);
         assertNotNull(target);
-        AggregateContext app1 = (AggregateContext) root.getContext("app1");
+        CompositeContext app1 = (CompositeContext) root.getContext("app1");
         app1.fireEvent(EventContext.MODULE_START, null);
-        AggregateContext app1a = (AggregateContext) app1.getContext("app1a");
+        CompositeContext app1a = (CompositeContext) app1.getContext("app1a");
         app1a.fireEvent(EventContext.MODULE_START, null);
         app1a.fireEvent(EventContext.MODULE_STOP, null);
         app1.fireEvent(EventContext.MODULE_STOP, null);
@@ -89,12 +89,12 @@ public class AutowireTestCase extends TestCase {
      */
     public void testScenario2() throws Exception {
         RuntimeContext runtime = createScenario2Runtime();
-        AggregateContext root = runtime.getRootContext();
-        AggregateContext app1 = (AggregateContext) root.getContext("app1");
+        CompositeContext root = runtime.getRootContext();
+        CompositeContext app1 = (CompositeContext) root.getContext("app1");
         app1.fireEvent(EventContext.MODULE_START, null);
-        AggregateContext app1b = (AggregateContext) app1.getContext("app1b");
+        CompositeContext app1b = (CompositeContext) app1.getContext("app1b");
         app1b.fireEvent(EventContext.MODULE_START, null);
-        AggregateContext app1a = (AggregateContext) app1.getContext("app1a");
+        CompositeContext app1a = (CompositeContext) app1.getContext("app1a");
         app1a.fireEvent(EventContext.MODULE_START, null);
         Target target = (Target) app1b.getContext("target.ep").getInstance(null);
         assertNotNull(target);
@@ -110,16 +110,16 @@ public class AutowireTestCase extends TestCase {
      */
     public void testScenario3() throws Exception {
         RuntimeContext runtime = createScenario3Runtime();
-        SystemAggregateContext system = runtime.getSystemContext();
+        SystemCompositeContext system = runtime.getSystemContext();
 
-        AggregateContext system2 = (AggregateContext) system.getContext("system2");
+        CompositeContext system2 = (CompositeContext) system.getContext("system2");
         system2.fireEvent(EventContext.MODULE_START, null);
         Target target = (Target) system2.getContext("target.ep").getInstance(null);
         assertNotNull(target);
 
-        AggregateContext system1 = (AggregateContext) system.getContext("system1");
+        CompositeContext system1 = (CompositeContext) system.getContext("system1");
         system1.fireEvent(EventContext.MODULE_START, null);
-        AggregateContext system1a = (AggregateContext) system1.getContext("system1a");
+        CompositeContext system1a = (CompositeContext) system1.getContext("system1a");
         system1a.fireEvent(EventContext.MODULE_START, null);
 
         Source source = (Source) system1a.getContext("source").getInstance(null);
@@ -134,12 +134,12 @@ public class AutowireTestCase extends TestCase {
      */
     public void testScenario4() throws Exception {
         RuntimeContext runtime = createScenario4Runtime();
-        SystemAggregateContext system = runtime.getSystemContext();
-        AggregateContext system1 = (AggregateContext) system.getContext("system1");
+        SystemCompositeContext system = runtime.getSystemContext();
+        CompositeContext system1 = (CompositeContext) system.getContext("system1");
         system1.fireEvent(EventContext.MODULE_START, null);
         Target target = (Target) system1.getContext("target").getInstance(null);
         assertNotNull(target);
-        AggregateContext system1a = (AggregateContext) system1.getContext("system1a");
+        CompositeContext system1a = (CompositeContext) system1.getContext("system1a");
         system1a.fireEvent(EventContext.MODULE_START, null);
 
         Source source = (Source) system1a.getContext("source").getInstance(null);
@@ -154,12 +154,12 @@ public class AutowireTestCase extends TestCase {
      */
     public void testScenario5() throws Exception {
         RuntimeContext runtime = createScenario5Runtime();
-        SystemAggregateContext system = runtime.getSystemContext();
-        AggregateContext system1 = (AggregateContext) system.getContext("system1");
+        SystemCompositeContext system = runtime.getSystemContext();
+        CompositeContext system1 = (CompositeContext) system.getContext("system1");
         system1.fireEvent(EventContext.MODULE_START, null);
         Target target = (Target) system.getContext("target").getInstance(null);
         assertNotNull(target);
-        AggregateContext system1a = (AggregateContext) system1.getContext("system1a");
+        CompositeContext system1a = (CompositeContext) system1.getContext("system1a");
         system1a.fireEvent(EventContext.MODULE_START, null);
 
         Source source = (Source) system1a.getContext("source").getInstance(null);
@@ -171,9 +171,9 @@ public class AutowireTestCase extends TestCase {
     private RuntimeContext createScenario1Runtime() throws Exception {
         RuntimeContext runtime = MockFactory.createCoreRuntime();
         runtime.start();
-        SystemAggregateContext system = runtime.getSystemContext();
-        ModuleComponent system1Component = MockFactory.createSystemAggregateComponent("system1");
-        ModuleComponent system1aComponent = MockFactory.createSystemAggregateComponent("system1a");
+        SystemCompositeContext system = runtime.getSystemContext();
+        ModuleComponent system1Component = MockFactory.createSystemCompositeComponent("system1");
+        ModuleComponent system1aComponent = MockFactory.createSystemCompositeComponent("system1a");
         system1Component.getModuleImplementation().getComponents().add(system1aComponent);
         Component target = MockFactory.createSystemComponent("target", Target.class, TargetImpl.class, Scope.MODULE);
         system1Component.getModuleImplementation().getComponents().add(target);
@@ -194,7 +194,7 @@ public class AutowireTestCase extends TestCase {
         Component source = MockFactory.createSystemComponent("source", Source.class, AutowireSourceImpl.class, Scope.MODULE);
         app1aComponent.getModuleImplementation().getComponents().add(source);
         app1Component.getModuleImplementation().getComponents().add(app1aComponent);
-        AggregateContext root = runtime.getRootContext();
+        CompositeContext root = runtime.getRootContext();
         root.registerModelObject(app1Component);
         system.fireEvent(EventContext.MODULE_START, null);
         return runtime;
@@ -222,7 +222,7 @@ public class AutowireTestCase extends TestCase {
         ep.getConfiguredReference().getTargetConfiguredServices().get(0).setService(service);
         app1bComponent.getModuleImplementation().getEntryPoints().add(ep);
 
-        AggregateContext root = runtime.getRootContext();
+        CompositeContext root = runtime.getRootContext();
         root.registerModelObject(app1Component);
         return runtime;
     }
@@ -230,10 +230,10 @@ public class AutowireTestCase extends TestCase {
     private RuntimeContext createScenario3Runtime() throws Exception {
         RuntimeContext runtime = MockFactory.createCoreRuntime();
         runtime.start();
-        SystemAggregateContext system = runtime.getSystemContext();
-        ModuleComponent system1Component = MockFactory.createSystemAggregateComponent("system1");
-        ModuleComponent system2Component = MockFactory.createSystemAggregateComponent("system2");
-        ModuleComponent system1aComponent = MockFactory.createSystemAggregateComponent("system1a");
+        SystemCompositeContext system = runtime.getSystemContext();
+        ModuleComponent system1Component = MockFactory.createSystemCompositeComponent("system1");
+        ModuleComponent system2Component = MockFactory.createSystemCompositeComponent("system2");
+        ModuleComponent system1aComponent = MockFactory.createSystemCompositeComponent("system1a");
         system1Component.getModuleImplementation().getComponents().add(system1aComponent);
 
         Component target = MockFactory.createSystemComponent("target", Target.class, TargetImpl.class, Scope.MODULE);
@@ -252,9 +252,9 @@ public class AutowireTestCase extends TestCase {
     private RuntimeContext createScenario4Runtime() throws Exception {
         RuntimeContext runtime = MockFactory.createCoreRuntime();
         runtime.start();
-        SystemAggregateContext system = runtime.getSystemContext();
-        ModuleComponent system1Component = MockFactory.createSystemAggregateComponent("system1");
-        ModuleComponent system1aComponent = MockFactory.createSystemAggregateComponent("system1a");
+        SystemCompositeContext system = runtime.getSystemContext();
+        ModuleComponent system1Component = MockFactory.createSystemCompositeComponent("system1");
+        ModuleComponent system1aComponent = MockFactory.createSystemCompositeComponent("system1a");
         system1Component.getModuleImplementation().getComponents().add(system1aComponent);
 
         Component target = MockFactory.createSystemComponent("target", Target.class, TargetImpl.class, Scope.MODULE);
@@ -270,9 +270,9 @@ public class AutowireTestCase extends TestCase {
     private RuntimeContext createScenario5Runtime() throws Exception {
         RuntimeContext runtime = MockFactory.createCoreRuntime();
         runtime.start();
-        SystemAggregateContext system = runtime.getSystemContext();
-        ModuleComponent system1Component = MockFactory.createSystemAggregateComponent("system1");
-        ModuleComponent system1aComponent = MockFactory.createSystemAggregateComponent("system1a");
+        SystemCompositeContext system = runtime.getSystemContext();
+        ModuleComponent system1Component = MockFactory.createSystemCompositeComponent("system1");
+        ModuleComponent system1aComponent = MockFactory.createSystemCompositeComponent("system1a");
         system1Component.getModuleImplementation().getComponents().add(system1aComponent);
 
         Component target = MockFactory.createSystemComponent("target", Target.class, TargetImpl.class, Scope.MODULE);

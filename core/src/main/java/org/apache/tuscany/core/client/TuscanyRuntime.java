@@ -22,10 +22,10 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.SystemAggregateContext;
+import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
@@ -46,7 +46,7 @@ public class TuscanyRuntime extends SCA {
     private final Object sessionKey = new Object();
 
     private final RuntimeContext runtime;
-    private final AggregateContext moduleContext;
+    private final CompositeContext moduleContext;
 
     private static final String SYSTEM_MODULE_COMPONENT = "org.apache.tuscany.core.system";
 
@@ -86,14 +86,14 @@ public class TuscanyRuntime extends SCA {
         monitor.started(runtime);
 
         // Load and start the system configuration
-        SystemAggregateContext systemContext = runtime.getSystemContext();
+        SystemCompositeContext systemContext = runtime.getSystemContext();
         ModuleComponentConfigurationLoader loader = BootstrapHelper.getConfigurationLoader(systemContext, modelContext);
         ModuleComponent systemModuleComponent = loader.loadSystemModuleComponent(SYSTEM_MODULE_COMPONENT, SYSTEM_MODULE_COMPONENT);
-        AggregateContext context = BootstrapHelper.registerModule(systemContext, systemModuleComponent);
+        CompositeContext context = BootstrapHelper.registerModule(systemContext, systemModuleComponent);
         context.fireEvent(EventContext.MODULE_START, null);
 
         // Load the SCDL configuration of the application module
-        AggregateContext rootContext = runtime.getRootContext();
+        CompositeContext rootContext = runtime.getRootContext();
         ModuleComponent moduleComponent = loader.loadModuleComponent(name, uri);
         moduleContext = BootstrapHelper.registerModule(rootContext, moduleComponent);
     }
@@ -142,7 +142,7 @@ public class TuscanyRuntime extends SCA {
          *
          * @param ctx the runtime's module component context
          */
-        void started(AggregateContext ctx);
+        void started(CompositeContext ctx);
 
         /**
          * Event emitted when an attempt to start the runtime failed.
@@ -150,13 +150,13 @@ public class TuscanyRuntime extends SCA {
          * @param ctx the runtime's module component context
          * @param e   the exception that caused the failure
          */
-        void startFailed(AggregateContext ctx, CoreRuntimeException e);
+        void startFailed(CompositeContext ctx, CoreRuntimeException e);
 
         /**
          * Event emitted after the runtime has been stopped.
          *
          * @param ctx the runtime's module component context
          */
-        void stopped(AggregateContext ctx);
+        void stopped(CompositeContext ctx);
     }
 }

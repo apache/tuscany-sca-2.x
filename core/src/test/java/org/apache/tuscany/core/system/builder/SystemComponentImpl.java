@@ -13,7 +13,7 @@
  */
 package org.apache.tuscany.core.system.builder;
 
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
@@ -33,14 +33,14 @@ public class SystemComponentImpl {
     private ConfigurationContext ctx;
 
     @ParentContext
-    private AggregateContext parent;
+    private CompositeContext parent;
 
     @Autowire
     private AutowireContext autowireCtx;
 
     private ConfigurationContext ctxSetter;
 
-    private AggregateContext parentSetter;
+    private CompositeContext parentSetter;
 
     private AutowireContext autowireCtxSetter;
 
@@ -48,7 +48,7 @@ public class SystemComponentImpl {
         return ctx;
     }
 
-    public AggregateContext getParentContext() {
+    public CompositeContext getParentContext() {
         return parent;
     }
 
@@ -66,11 +66,11 @@ public class SystemComponentImpl {
     }
 
     @ParentContext
-    public void setParentContex(AggregateContext ctx) {
+    public void setParentContex(CompositeContext ctx) {
         parentSetter = ctx;
     }
 
-    public AggregateContext getParentContextSetter() {
+    public CompositeContext getParentContextSetter() {
         return parentSetter;
     }
 

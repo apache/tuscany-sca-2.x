@@ -17,7 +17,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.context.impl.AggregateContextImpl;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.mock.MockConfigContext;
@@ -38,13 +38,13 @@ import java.util.List;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class AbstractAggregateHierarchyTests extends TestCase {
+public abstract class AbstractCompositeHierarchyTests extends TestCase {
     protected List<ContextFactoryBuilder> builders;
     protected SystemAssemblyFactory factory;
 
     public void testParentContextIsolation() throws Exception {
-        AggregateContext parent = createContextHierachy();
-        AggregateContext child = (AggregateContext) parent.getContext("test.child");
+        CompositeContext parent = createContextHierachy();
+        CompositeContext child = (CompositeContext) parent.getContext("test.child");
         Component component = factory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
         parent.registerModelObject(component);
         EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1", component);
@@ -68,11 +68,11 @@ public abstract class AbstractAggregateHierarchyTests extends TestCase {
      * Checks that registration of duplicate named model objects before context start throws an exception
      */
     public void testRegisterSameName() throws Exception {
-        AggregateContext parent = new AggregateContextImpl("test.parent", null, new DefaultScopeStrategy(),
+        CompositeContext parent = new CompositeContextImpl("test.parent", null, new DefaultScopeStrategy(),
                 new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
-        parent.registerModelObject(MockFactory.createSystemAggregateComponent("test.child"));
+        parent.registerModelObject(MockFactory.createSystemCompositeComponent("test.child"));
         try {
-            parent.registerModelObject(MockFactory.createSystemAggregateComponent("test.child"));
+            parent.registerModelObject(MockFactory.createSystemCompositeComponent("test.child"));
             parent.start();
             fail("Expected " + DuplicateNameException.class.getName());
         } catch (DuplicateNameException e) {
@@ -84,21 +84,21 @@ public abstract class AbstractAggregateHierarchyTests extends TestCase {
      * Checks that registration of duplicate named model objects after context start throws an exception
      */
     public void testRegisterSameNameAfterStart() throws Exception {
-        AggregateContext parent = new AggregateContextImpl("test.parent", null, new DefaultScopeStrategy(),
+        CompositeContext parent = new CompositeContextImpl("test.parent", null, new DefaultScopeStrategy(),
                 new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
-        parent.registerModelObject(MockFactory.createSystemAggregateComponent("test.child"));
+        parent.registerModelObject(MockFactory.createSystemCompositeComponent("test.child"));
         parent.start();
-        AggregateContext child = (AggregateContext) parent.getContext("test.child");
+        CompositeContext child = (CompositeContext) parent.getContext("test.child");
         Assert.assertNotNull(child);
         try {
-            parent.registerModelObject(MockFactory.createSystemAggregateComponent("test.child"));
+            parent.registerModelObject(MockFactory.createSystemCompositeComponent("test.child"));
             fail("Expected " + DuplicateNameException.class.getName());
         } catch (DuplicateNameException e) {
             // expected
         }
     }
 
-    protected abstract AggregateContext createContextHierachy() throws Exception;
+    protected abstract CompositeContext createContextHierachy() throws Exception;
 
     protected void setUp() throws Exception {
         super.setUp();

@@ -23,7 +23,7 @@ import org.apache.tuscany.container.js.assembly.JavaScriptAssemblyFactory;
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
 import org.apache.tuscany.container.js.assembly.impl.JavaScriptAssemblyFactoryImpl;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.Component;
@@ -76,7 +76,7 @@ public class MockAssemblyFactory {
             ClassNotFoundException {
         Class claz = JavaIntrospectionHelper.loadClass(type);
         Component sc = null;
-        if (AggregateContext.class.isAssignableFrom(claz)) {
+        if (CompositeContext.class.isAssignableFrom(claz)) {
             sc = systemFactory.createModuleComponent();
         } else {
             sc = systemFactory.createSimpleComponent();

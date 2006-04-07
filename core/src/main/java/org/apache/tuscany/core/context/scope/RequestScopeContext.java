@@ -36,7 +36,7 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
     private Map<Object, Map<String, Context>> contextMap;
 
     // stores ordered lists of contexts to shutdown for each thread.
-    private Map<Object, Queue<SimpleComponentContext>> destroyComponents;
+    private Map<Object, Queue<AtomicContext>> destroyComponents;
 
     public RequestScopeContext(EventContext eventContext) {
         super(eventContext);
@@ -56,11 +56,11 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
                 checkInit();
                 assert(key instanceof Context): "Context must be passed on created event";
                 Context context = (Context)key;
-                if (context instanceof SimpleComponentContext) {
-                    SimpleComponentContext simpleCtx = (SimpleComponentContext)context;
+                if (context instanceof AtomicContext) {
+                    AtomicContext simpleCtx = (AtomicContext)context;
                     // Queue the context to have its implementation instance released if destroyable
                     if (simpleCtx.isDestroyable()) {
-                        Queue<SimpleComponentContext> collection = destroyComponents.get(Thread.currentThread());
+                        Queue<AtomicContext> collection = destroyComponents.get(Thread.currentThread());
                         collection.add(simpleCtx);
                     }
                 }
@@ -74,7 +74,7 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
         }
         super.start();
         contextMap = new ConcurrentHashMap<Object, Map<String, Context>>();
-        destroyComponents = new ConcurrentHashMap<Object, Queue<SimpleComponentContext>>();
+        destroyComponents = new ConcurrentHashMap<Object, Queue<AtomicContext>>();
         lifecycleState = RUNNING;
 
     }
@@ -154,11 +154,11 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
 
 
     /**
-     * Returns an array of {@link SimpleComponentContext}s representing components that need to be notified of scope shutdown.
+     * Returns an array of {@link AtomicContext}s representing components that need to be notified of scope shutdown.
      */
     protected Context[] getShutdownContexts(Object key) {
         checkInit();
-        Queue<SimpleComponentContext> queue = destroyComponents.get(Thread.currentThread());
+        Queue<AtomicContext> queue = destroyComponents.get(Thread.currentThread());
         if (queue != null) {
             // create 0-length array since Queue.size() has O(n) traversal
             return queue.toArray(new Context[0]);
@@ -186,7 +186,7 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
         Map<String, Context>  contexts = contextMap.get(Thread.currentThread());
         if (contexts == null) {
             contexts = new ConcurrentHashMap<String, Context>();
-            Queue<SimpleComponentContext> shutdownQueue = new ConcurrentLinkedQueue<SimpleComponentContext>();
+            Queue<AtomicContext> shutdownQueue = new ConcurrentLinkedQueue<AtomicContext>();
             for (ContextFactory<Context> config : contextFactorys.values()) {
                 Context context = config.createContext();
                 context.addListener(this);

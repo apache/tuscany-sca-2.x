@@ -25,8 +25,8 @@ import org.apache.tuscany.container.js.context.JavaScriptComponentContext;
 import org.apache.tuscany.container.js.rhino.RhinoScript;
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.SimpleComponentContext;
+import org.apache.tuscany.core.context.CompositeContext;
+import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.model.assembly.Scope;
 
@@ -35,7 +35,7 @@ import org.apache.tuscany.model.assembly.Scope;
  * 
  * @version $Rev$ $Date$
  */
-public class JavaScriptContextFactory implements ContextFactory<SimpleComponentContext> {
+public class JavaScriptContextFactory implements ContextFactory<AtomicContext> {
 
     private Scope scope;
 
@@ -47,7 +47,7 @@ public class JavaScriptContextFactory implements ContextFactory<SimpleComponentC
 
     private RhinoScript invoker;
 
-    private AggregateContext parentContext;
+    private CompositeContext parentContext;
     
     public JavaScriptContextFactory(String name, Scope scope, Map<String, Class> services,
             Map<String, Object> properties, RhinoScript invoker) {
@@ -58,7 +58,7 @@ public class JavaScriptContextFactory implements ContextFactory<SimpleComponentC
         this.invoker = invoker;
     }
 
-    public SimpleComponentContext createContext() throws ContextCreationException {
+    public AtomicContext createContext() throws ContextCreationException {
         return new JavaScriptComponentContext(name, services, properties, sourceProxyFactories, targetProxyFactories, invoker
                 .copy());
     }
@@ -95,7 +95,7 @@ public class JavaScriptContextFactory implements ContextFactory<SimpleComponentC
         return sourceProxyFactories;
     }
 
-    public void prepare(AggregateContext parent) {
+    public void prepare(CompositeContext parent) {
         parentContext = parent;
     }
 

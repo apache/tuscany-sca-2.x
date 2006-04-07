@@ -52,9 +52,6 @@ public class JavaIntegrationTestCase extends TestCase {
         // Create and bootstrap an empty Tuscany runtime
         this.runtime = new RuntimeContextImpl();
         this.runtime.start();
-
-//        Component component = MockSystemAssemblyFactory.createComponent(RuntimeContext.SYSTEM, SystemAggregateContextImpl.class.getName(), ContextConstants.AGGREGATE_SCOPE_ENUM);
-//        runtime.registerModelObject(component);
     }
 
     protected void tearDown() throws Exception {

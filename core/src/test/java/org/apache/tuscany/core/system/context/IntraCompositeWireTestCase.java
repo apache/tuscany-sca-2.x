@@ -16,8 +16,8 @@ package org.apache.tuscany.core.system.context;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.SimpleComponentContext;
-import org.apache.tuscany.core.context.SystemAggregateContext;
+import org.apache.tuscany.core.context.AtomicContext;
+import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.mock.MockConfigContext;
 import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.Source;
@@ -27,22 +27,22 @@ import org.apache.tuscany.model.assembly.Scope;
 import java.util.List;
 
 /**
- * Tests intra-aggregate system component wiring scenarios
+ * Tests intra-composite system component wiring scenarios
  * 
  * @version $Rev$ $Date$
  */
-public class IntraAggregateWireTestCase extends TestCase {
+public class IntraCompositeWireTestCase extends TestCase {
 
     public void testModuleToModuleScope() throws Exception {
-        SystemAggregateContext context = createContext();
+        SystemCompositeContext context = createContext();
         context.start();
         context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE, Scope.MODULE));
         context.fireEvent(EventContext.MODULE_START, null);
-        Source source = (Source) ((SimpleComponentContext) context.getContext("source")).getImplementationInstance();
+        Source source = (Source) ((AtomicContext) context.getContext("source")).getImplementationInstance();
         Assert.assertNotNull(source);
         Target targetRef = source.getTarget();
         Assert.assertNotNull(targetRef);
-        Target target = (Target) ((SimpleComponentContext) context.getContext("target")).getImplementationInstance();
+        Target target = (Target) ((AtomicContext) context.getContext("target")).getImplementationInstance();
         Assert.assertSame(target, targetRef);
         Assert.assertSame(target, source.getTarget());
         context.fireEvent(EventContext.MODULE_STOP, null);
@@ -50,16 +50,16 @@ public class IntraAggregateWireTestCase extends TestCase {
     }
 
     public void testStatelessToModuleScope() throws Exception {
-        SystemAggregateContext context = createContext();
+        SystemCompositeContext context = createContext();
         context.start();
         context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.INSTANCE, Scope.MODULE));
         context.fireEvent(EventContext.MODULE_START, null);
-        Source source = (Source) ((SimpleComponentContext) context.getContext("source")).getImplementationInstance();
+        Source source = (Source) ((AtomicContext) context.getContext("source")).getImplementationInstance();
         Assert.assertNotNull(source);
         Target targetRef = source.getTarget();
         Assert.assertNotNull(targetRef);
-        source = (Source) ((SimpleComponentContext) context.getContext("source")).getImplementationInstance();
-        Target target = (Target) ((SimpleComponentContext) context.getContext("target")).getImplementationInstance();
+        source = (Source) ((AtomicContext) context.getContext("source")).getImplementationInstance();
+        Target target = (Target) ((AtomicContext) context.getContext("target")).getImplementationInstance();
         Assert.assertSame(target, targetRef);
         Assert.assertSame(target, source.getTarget());
         context.fireEvent(EventContext.MODULE_STOP, null);
@@ -67,17 +67,17 @@ public class IntraAggregateWireTestCase extends TestCase {
     }
 
     public void testModuleToStatelessScope() throws Exception {
-        SystemAggregateContext context = createContext();
+        SystemCompositeContext context = createContext();
         context.start();
         context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE, Scope.INSTANCE));
         context.fireEvent(EventContext.MODULE_START, null);
-        Source source = (Source) ((SimpleComponentContext) context.getContext("source")).getImplementationInstance();
+        Source source = (Source) ((AtomicContext) context.getContext("source")).getImplementationInstance();
         Assert.assertNotNull(source);
         Target targetRef = source.getTarget();
         Assert.assertNotNull(targetRef);
-        Target target = (Target) ((SimpleComponentContext) context.getContext("target")).getImplementationInstance();
+        Target target = (Target) ((AtomicContext) context.getContext("target")).getImplementationInstance();
         Assert.assertNotSame(target, targetRef);
-        Source source2 = (Source) ((SimpleComponentContext) context.getContext("source")).getImplementationInstance();
+        Source source2 = (Source) ((AtomicContext) context.getContext("source")).getImplementationInstance();
         // should be the same since the module scope component was alreadyy created and the stateless
         // component will be "attached" to it
         Assert.assertSame(source.getTarget(), source2.getTarget());
@@ -86,13 +86,13 @@ public class IntraAggregateWireTestCase extends TestCase {
     }
 
     public void testMultiplicity() throws Exception {
-        SystemAggregateContext context = createContext();
+        SystemCompositeContext context = createContext();
         context.start();
         context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE, Scope.MODULE));
         context.fireEvent(EventContext.MODULE_START, null);
-        Source source = (Source) ((SimpleComponentContext) context.getContext("source")).getImplementationInstance();
+        Source source = (Source) ((AtomicContext) context.getContext("source")).getImplementationInstance();
         Assert.assertNotNull(source);
-        Target target = (Target) ((SimpleComponentContext) context.getContext("target")).getImplementationInstance();
+        Target target = (Target) ((AtomicContext) context.getContext("target")).getImplementationInstance();
         Assert.assertNotNull(target);
         // test setter injection
         List<Target> targets = source.getTargets();
@@ -112,8 +112,8 @@ public class IntraAggregateWireTestCase extends TestCase {
     
     }
 
-    private SystemAggregateContext createContext() {
-        SystemAggregateContextImpl context = new SystemAggregateContextImpl();
+    private SystemCompositeContext createContext() {
+        SystemCompositeContextImpl context = new SystemCompositeContextImpl();
         context.setName("system.context");
         context.setConfigurationContext(new MockConfigContext(MockFactory.createSystemBuilders()));
         return context;

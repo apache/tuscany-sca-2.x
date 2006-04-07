@@ -23,17 +23,17 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The base implementation of an aggregate context
+ * The base implementation of an composite context
  * 
  * @version $Rev$ $Date$
  */
-public abstract class AbstractAggregateContext extends AbstractContext implements AutowireContext, ScopeAwareContext {
+public abstract class AbstractCompositeContext extends AbstractContext implements AutowireContext, ScopeAwareContext {
 
     public static final int DEFAULT_WAIT = 1000 * 60;
 
     // The parent context, if one exists
     @ParentContext
-    protected AggregateContext parentContext;
+    protected CompositeContext parentContext;
 
     // The parent configuration context, if one exists
     @Autowire(required = false)
@@ -72,14 +72,14 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     // Indicates whether the module context has been initialized
     protected boolean initialized;
 
-    public AbstractAggregateContext() {
+    public AbstractCompositeContext() {
         scopeIndex = new ConcurrentHashMap<String, ScopeContext>();
         // FIXME the factory should be injected
         module = new AssemblyFactoryImpl().createModule();
     }
 
-    public AbstractAggregateContext(String name, AggregateContext parent, ScopeStrategy strategy, EventContext ctx,
-            ConfigurationContext configCtx, MonitorFactory factory) {
+    public AbstractCompositeContext(String name, CompositeContext parent, ScopeStrategy strategy, EventContext ctx,
+                                    ConfigurationContext configCtx, MonitorFactory factory) {
         super(name);
         this.scopeStrategy = strategy;
         this.eventContext = ctx;
@@ -132,7 +132,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 }
                 initializeProxies();
                 for (ScopeContext scope : scopeContexts.values()) {
-                    // register scope contexts as a listeners for events in the aggregate context
+                    // register scope contexts as a listeners for events in the composite context
                     addListener(scope);
                     scope.start();
                 }
@@ -205,7 +205,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         this.configurationContext = context;
     }
 
-    public AggregateContext getParent() {
+    public CompositeContext getParent() {
         return parentContext;
     }
 

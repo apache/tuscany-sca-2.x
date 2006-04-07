@@ -27,8 +27,8 @@ import org.apache.tuscany.container.java.mock.components.RequestScopeComponentIm
 import org.apache.tuscany.container.java.mock.components.SessionScopeComponentImpl;
 import org.apache.tuscany.container.java.mock.components.StatelessComponentImpl;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
-import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.impl.AggregateContextImpl;
+import org.apache.tuscany.core.context.CompositeContext;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 
 /**
@@ -39,7 +39,7 @@ public class PojoTestCase extends TestCase {
     JavaAssemblyFactory factory = new JavaAssemblyFactoryImpl();
 
     public void testGetModuleInstance() throws Exception {
-        AggregateContext mc = new AggregateContextImpl();
+        CompositeContext mc = new CompositeContextImpl();
         mc.setName("mc");
         JavaComponentContext c = new JavaComponentContext("foo", new PojoObjectFactory<ModuleScopeComponentImpl>(JavaIntrospectionHelper
                 .getDefaultConstructor(ModuleScopeComponentImpl.class), null, null), false, null, null, false);
@@ -52,7 +52,7 @@ public class PojoTestCase extends TestCase {
     }
 
     public void testGetSessionInstance() throws Exception {
-        AggregateContext mc = new AggregateContextImpl();
+        CompositeContext mc = new CompositeContextImpl();
         mc.setName("mc");
         JavaComponentContext c = new JavaComponentContext("foo", new PojoObjectFactory<SessionScopeComponentImpl>(JavaIntrospectionHelper
                 .getDefaultConstructor(SessionScopeComponentImpl.class), null, null), false, null, null, false);
@@ -65,7 +65,7 @@ public class PojoTestCase extends TestCase {
     }
 
     public void testGetRequestInstance() throws Exception {
-        AggregateContext mc = new AggregateContextImpl();
+        CompositeContext mc = new CompositeContextImpl();
         mc.setName("mc");
         JavaComponentContext c = new JavaComponentContext("foo", new PojoObjectFactory<RequestScopeComponentImpl>(JavaIntrospectionHelper
                 .getDefaultConstructor(RequestScopeComponentImpl.class), null, null), false, null, null, false);
@@ -78,7 +78,7 @@ public class PojoTestCase extends TestCase {
     }
 
     public void testGetStatelessInstance() throws Exception { 
-        AggregateContext mc = new AggregateContextImpl();
+        CompositeContext mc = new CompositeContextImpl();
         mc.setName("fooContext");
         JavaComponentContext c = new JavaComponentContext("foo", new PojoObjectFactory<StatelessComponentImpl>(JavaIntrospectionHelper
                 .getDefaultConstructor(StatelessComponentImpl.class), null, null), false, null, null, true);

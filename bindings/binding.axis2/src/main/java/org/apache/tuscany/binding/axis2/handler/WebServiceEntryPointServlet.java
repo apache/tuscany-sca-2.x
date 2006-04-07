@@ -46,7 +46,7 @@ import org.apache.axis2.transport.http.AxisServlet;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.model.assembly.Binding;
@@ -96,7 +96,7 @@ public class WebServiceEntryPointServlet extends AxisServlet {
 
         ServletContext servletContext = config.getServletContext();
         
-        AggregateContext moduleContext = (AggregateContext) servletContext.getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
+        CompositeContext moduleContext = (CompositeContext) servletContext.getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
         Module module = (Module) moduleContext.getAggregate();
        
 
@@ -168,7 +168,7 @@ public class WebServiceEntryPointServlet extends AxisServlet {
         if (axis2xmlFile.exists())
             return; // do nothing if there.
         
-        AggregateContext moduleContext = (AggregateContext) config.getServletContext().getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
+        CompositeContext moduleContext = (CompositeContext) config.getServletContext().getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
         Module module = (Module) moduleContext.getAggregate();
 
 

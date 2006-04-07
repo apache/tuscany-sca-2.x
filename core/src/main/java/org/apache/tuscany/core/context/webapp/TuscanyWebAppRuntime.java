@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.core.context.webapp;
 
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.osoa.sca.ModuleContext;
 import org.osoa.sca.SCA;
 
@@ -26,13 +26,13 @@ import org.osoa.sca.SCA;
  * @version $Rev$ $Date$
  */
 public class TuscanyWebAppRuntime extends SCA {
-    private AggregateContext moduleComponentContext;
+    private CompositeContext moduleComponentContext;
 
     // ----------------------------------
     // Constructors
     // ----------------------------------
 
-    public TuscanyWebAppRuntime(AggregateContext moduleComponentContext) {
+    public TuscanyWebAppRuntime(CompositeContext moduleComponentContext) {
         this.moduleComponentContext = moduleComponentContext;
     }
 
@@ -43,7 +43,7 @@ public class TuscanyWebAppRuntime extends SCA {
     /**
      * Returns the module component context associated with this runtime
      */
-    public AggregateContext getModuleComponentContext() {
+    public CompositeContext getModuleComponentContext() {
         return moduleComponentContext;
     }
 

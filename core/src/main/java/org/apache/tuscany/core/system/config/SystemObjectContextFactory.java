@@ -20,7 +20,7 @@ package org.apache.tuscany.core.system.config;
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -88,6 +88,6 @@ public class SystemObjectContextFactory implements ContextFactory {
         throw new UnsupportedOperationException();
     }
 
-    public void prepare(AggregateContext parent) {
+    public void prepare(CompositeContext parent) {
     }
 }

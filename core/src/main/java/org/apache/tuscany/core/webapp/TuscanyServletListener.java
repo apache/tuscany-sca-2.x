@@ -23,9 +23,9 @@ import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.SystemAggregateContext;
+import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
@@ -53,7 +53,7 @@ public class TuscanyServletListener implements ServletContextListener, HttpSessi
     public static final String TUSCANY_RUNTIME_NAME = RuntimeContext.class.getName();
 
     private RuntimeContext runtime;
-    private AggregateContext moduleContext;
+    private CompositeContext moduleContext;
 
     private static final String SYSTEM_MODULE_COMPONENT = "org.apache.tuscany.core.system";
 
@@ -76,7 +76,7 @@ public class TuscanyServletListener implements ServletContextListener, HttpSessi
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         moduleContext.fireEvent(EventContext.MODULE_STOP, null);
         moduleContext.stop();
-        SystemAggregateContext systemContext = runtime.getSystemContext();
+        SystemCompositeContext systemContext = runtime.getSystemContext();
         systemContext.fireEvent(EventContext.MODULE_STOP, null);
         systemContext.stop();
         runtime.stop();
@@ -111,14 +111,14 @@ public class TuscanyServletListener implements ServletContextListener, HttpSessi
         runtime.start();
 
         // Load and start the system configuration
-        SystemAggregateContext systemContext = runtime.getSystemContext();
+        SystemCompositeContext systemContext = runtime.getSystemContext();
         ModuleComponentConfigurationLoader loader = BootstrapHelper.getConfigurationLoader(systemContext, modelContext);
         ModuleComponent systemModuleComponent = loader.loadSystemModuleComponent(SYSTEM_MODULE_COMPONENT, SYSTEM_MODULE_COMPONENT);
-        AggregateContext context = BootstrapHelper.registerModule(systemContext, systemModuleComponent);
+        CompositeContext context = BootstrapHelper.registerModule(systemContext, systemModuleComponent);
         context.fireEvent(EventContext.MODULE_START, null);
 
         // Load the SCDL configuration of the application module
-        AggregateContext rootContext = runtime.getRootContext();
+        CompositeContext rootContext = runtime.getRootContext();
         ModuleComponent moduleComponent = loader.loadModuleComponent(name, uri);
         moduleContext = BootstrapHelper.registerModule(rootContext, moduleComponent);
 

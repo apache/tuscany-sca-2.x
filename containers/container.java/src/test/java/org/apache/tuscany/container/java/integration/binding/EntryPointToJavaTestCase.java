@@ -24,7 +24,7 @@ import org.apache.tuscany.container.java.builder.MockInterceptorBuilder;
 import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBindingBuilder;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.runtime.RuntimeContext;
@@ -48,13 +48,13 @@ public class EntryPointToJavaTestCase extends TestCase {
      */
     public void testEPtoJavaModuleScopeInvoke() throws Throwable {
         RuntimeContext runtime = MockFactory.registerFooBinding(MockFactory.createJavaRuntime());
-        FooBindingBuilder builder = (FooBindingBuilder) ((AggregateContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD))
+        FooBindingBuilder builder = (FooBindingBuilder) ((CompositeContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD))
                 .getContext(MockFactory.FOO_BUILDER).getInstance(null);
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
         builder.addPolicyBuilder(interceptorBuilder);
-        runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test.module"));
-        AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
+        runtime.getRootContext().registerModelObject(MockFactory.createCompositeComponent("test.module"));
+        CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModuleWithEntryPoint(Scope.MODULE));
         child.fireEvent(EventContext.MODULE_START, null);
         child.fireEvent(EventContext.REQUEST_START, null);
@@ -89,13 +89,13 @@ public class EntryPointToJavaTestCase extends TestCase {
      */
     public void testEPtoJavaSessionScopeInvoke() throws Throwable {
         RuntimeContext runtime = MockFactory.registerFooBinding(MockFactory.createJavaRuntime());
-        FooBindingBuilder builder = (FooBindingBuilder) ((AggregateContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD))
+        FooBindingBuilder builder = (FooBindingBuilder) ((CompositeContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD))
                 .getContext(MockFactory.FOO_BUILDER).getInstance(null);
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
         builder.addPolicyBuilder(interceptorBuilder);
-        runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test.module"));
-        AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
+        runtime.getRootContext().registerModelObject(MockFactory.createCompositeComponent("test.module"));
+        CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModuleWithEntryPoint(Scope.SESSION));
         child.fireEvent(EventContext.MODULE_START, null);
 
@@ -163,13 +163,13 @@ public class EntryPointToJavaTestCase extends TestCase {
      */
     public void testEPtoJavaStatelessInvoke() throws Throwable {
         RuntimeContext runtime = MockFactory.registerFooBinding(MockFactory.createJavaRuntime());
-        FooBindingBuilder builder = (FooBindingBuilder) ((AggregateContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD))
+        FooBindingBuilder builder = (FooBindingBuilder) ((CompositeContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD))
                 .getContext(MockFactory.FOO_BUILDER).getInstance(null);
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
         builder.addPolicyBuilder(interceptorBuilder);
-        runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test.module"));
-        AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
+        runtime.getRootContext().registerModelObject(MockFactory.createCompositeComponent("test.module"));
+        CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModuleWithEntryPoint(Scope.INSTANCE));
         child.fireEvent(EventContext.MODULE_START, null);
         child.fireEvent(EventContext.REQUEST_START, null);
@@ -201,13 +201,13 @@ public class EntryPointToJavaTestCase extends TestCase {
     
     public void testEPtoJavaRequestInvoke() throws Throwable {
         RuntimeContext runtime = MockFactory.registerFooBinding(MockFactory.createJavaRuntime());
-        FooBindingBuilder builder = (FooBindingBuilder) ((AggregateContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD))
+        FooBindingBuilder builder = (FooBindingBuilder) ((CompositeContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD))
                 .getContext(MockFactory.FOO_BUILDER).getInstance(null);
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
         builder.addPolicyBuilder(interceptorBuilder);
-        runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test.module"));
-        AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
+        runtime.getRootContext().registerModelObject(MockFactory.createCompositeComponent("test.module"));
+        CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModuleWithEntryPoint(Scope.REQUEST));
         child.fireEvent(EventContext.MODULE_START, null);
         child.fireEvent(EventContext.REQUEST_START, null);

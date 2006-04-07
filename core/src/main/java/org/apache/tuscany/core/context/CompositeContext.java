@@ -12,12 +12,12 @@ import java.util.List;
  * 
  * @version $Rev$ $Date$
  */
-public interface AggregateContext extends Context {
+public interface CompositeContext extends Context {
 
     /**
      * Returns the parent context, or null if the context does not have one
      */
-    public AggregateContext getParent();
+    public CompositeContext getParent();
 
     /**
      * Propagates an event to registered listeners. All lifecycle events will be propagated to children in the order
@@ -31,14 +31,7 @@ public interface AggregateContext extends Context {
     public void fireEvent(int pEventType, Object pMessage) throws EventException;
 
     /**
-     * Registers a listener to receive notifications for the context
-     *
-     * @throws ContextRuntimeException if an error occurs during registration
-     */
-    public void addListener(RuntimeEventListener listener) throws ContextRuntimeException;
-
-    /**
-     * Adds runtime artifacts represented by the set of model objects to the aggregate context by merging them with
+     * Adds runtime artifacts represented by the set of model objects to the composite context by merging them with
      * existing artifacts. Implementing classes may support only a subset of {@link AggregatePart} types.
      * 
      * @see org.apache.tuscany.model.assembly.Component
@@ -50,7 +43,7 @@ public interface AggregateContext extends Context {
     public void registerModelObjects(List<? extends Extensible> models) throws ConfigurationException;
 
     /**
-     * Adds a runtime artifact represented by the model object to the aggregate context by merging it with existing
+     * Adds a runtime artifact represented by the model object to the composite context by merging it with existing
      * artifacts. Implementing classes may support only a subset of {@link AggregatePart} types.
      * 
      * @see org.apache.tuscany.model.assembly.Component
@@ -68,7 +61,7 @@ public interface AggregateContext extends Context {
 
     /**
      * Intended for internal use by the runtime, returns an implementation instance for the given context name, which
-     * may be a compound component/service form. Unlike {@link Context#getInstance(QualifiedName)}, which for aggregate contexts only returns
+     * may be a compound component/service form. Unlike {@link Context#getInstance(QualifiedName)}, which for composite contexts only returns
      * entry point proxies, this method will return any type of contained implementation instance.
      * 
      * @throws TargetException if there was an error returning the instance
@@ -76,7 +69,7 @@ public interface AggregateContext extends Context {
     //public Object locateInstance(QualifiedName name) throws TargetException;
 
     /**
-     * Returns the aggregate managed by this aggregate context
+     * Returns the composite managed by this composite context
      */
     @Deprecated
     public Aggregate getAggregate();

@@ -16,7 +16,7 @@ package org.apache.tuscany.core.system.builder;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.injection.InterAggregateReferenceFactory;
+import org.apache.tuscany.core.injection.InterCompositeReferenceFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemExternalServiceContextFactory;
 import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
@@ -48,7 +48,7 @@ public class SystemExternalServiceBuilder implements ContextFactoryBuilder {
         SystemBinding binding = (SystemBinding)externalService.getBindings().get(0);
         if (binding.getTargetName() != null) {
             SystemExternalServiceContextFactory contextFactory = new SystemExternalServiceContextFactory(externalService
-                    .getName(), new InterAggregateReferenceFactory(binding.getTargetName()));
+                    .getName(), new InterCompositeReferenceFactory(binding.getTargetName()));
             externalService.getConfiguredService().setContextFactory(contextFactory);
         } else if (externalService.getConfiguredService().getService().getServiceContract().getInterface() != null) {
             // autowire

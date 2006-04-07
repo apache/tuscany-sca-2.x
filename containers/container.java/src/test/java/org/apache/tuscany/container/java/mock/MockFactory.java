@@ -50,10 +50,10 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.SystemAggregateContext;
+import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
@@ -136,13 +136,13 @@ public class MockFactory {
     }
 
     /**
-     * Creates an aggregate component with the given name
+     * Creates an composite component with the given name
      */
-    public static Component createAggregateComponent(String name) {
+    public static Component createCompositeComponent(String name) {
         Component sc = sc = systemFactory.createModuleComponent();
         Module impl = systemFactory.createModule();
         impl.setName(name);
-        //impl.setImplementationClass(AggregateContextImpl.class);
+        //impl.setImplementationClass(CompositeContextImpl.class);
         sc.setComponentImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
@@ -156,13 +156,13 @@ public class MockFactory {
     }
 
     /**
-     * Creates a system aggregate component with the given name
+     * Creates a system composite component with the given name
      */
-    public static Component createSystemAggregateComponent(String name) {
+    public static Component createSystemCompositeComponent(String name) {
         Component sc = sc = systemFactory.createModuleComponent();
         Module impl = systemFactory.createSystemModule();
         impl.setName(name);
-        //impl.setImplementationClass(SystemAggregateContextImpl.class);
+        //impl.setImplementationClass(SystemCompositeContextImpl.class);
         sc.setComponentImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
@@ -570,7 +570,7 @@ public class MockFactory {
      * Returns a collection of bootstrap configuration builders
      */
     public static List<ContextFactoryBuilder> createSystemBuilders() {
-        List<ContextFactoryBuilder> builders = new ArrayList();
+        List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
         builders.add((new SystemContextFactoryBuilder()));
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
@@ -578,17 +578,16 @@ public class MockFactory {
     }
 
     /**
-     * Creates an aggregate context faxtory
+     * Creates an composite context faxtory
      *
      * @param name             the name of the component
-     * @param aggregateContext the containing aggregate context
      * @throws BuilderException
      * @see ContextFactory
      */
-    public static ContextFactory<Context> createAggregateConfiguration(String name,
-                                                                                     AggregateContext aggregateContext) throws BuilderException {
+    public static ContextFactory<Context> createCompositeConfiguration(String name
+    ) throws BuilderException {
 
-        Component sc = createAggregateComponent(name);
+        Component sc = createCompositeComponent(name);
         SystemContextFactoryBuilder builder = new SystemContextFactoryBuilder();
         builder.build(sc);
         return (ContextFactory<Context>) sc.getComponentImplementation().getContextFactory();
@@ -600,16 +599,17 @@ public class MockFactory {
      * @param name                   the name of the context
      * @param implType               the POJO class
      * @param scope                  the component scope
-     * @param moduleComponentContext the containing aggregate context
+     * @param moduleComponentContext the containing composite context
      * @throws NoSuchMethodException if the POJO does not have a default noi-args constructor
      */
     public static JavaComponentContext createPojoContext(String name, Class implType, Scope scope,
-                                                         AggregateContext moduleComponentContext) throws NoSuchMethodException {
+                                                         CompositeContext moduleComponentContext) throws NoSuchMethodException {
         SimpleComponent component = createComponent(name, implType, scope);
 
         Set<Field> fields = JavaIntrospectionHelper.getAllFields(implType);
         Set<Method> methods = JavaIntrospectionHelper.getAllUniqueMethods(implType);
-        List<Injector> injectors = new ArrayList();
+        List<Injector> injectors = new ArrayList<Injector>();
+
         EventInvoker initInvoker = null;
         boolean eagerInit = false;
         EventInvoker destroyInvoker = null;
@@ -663,8 +663,8 @@ public class MockFactory {
     public static RuntimeContext createJavaRuntime() throws ConfigurationException {
         RuntimeContext runtime = new RuntimeContextImpl(null, MockFactory.createSystemBuilders(), null);
         runtime.start();
-        runtime.getSystemContext().registerModelObject(createSystemAggregateComponent(SYSTEM_CHILD));
-        SystemAggregateContext ctx = (SystemAggregateContext) runtime.getSystemContext().getContext(SYSTEM_CHILD);
+        runtime.getSystemContext().registerModelObject(createSystemCompositeComponent(SYSTEM_CHILD));
+        SystemCompositeContext ctx = (SystemCompositeContext) runtime.getSystemContext().getContext(SYSTEM_CHILD);
         ctx.registerModelObject(systemFactory.createSystemComponent(JAVA_BUILDER, ContextFactoryBuilder.class, JavaContextFactoryBuilder.class, Scope.MODULE));
         ctx.registerModelObject(systemFactory.createSystemComponent(JAVA_WIRE_BUILDER, WireBuilder.class, JavaTargetWireBuilder.class, Scope.MODULE));
         ctx.fireEvent(EventContext.MODULE_START, null);
@@ -677,9 +677,8 @@ public class MockFactory {
      * @throws ConfigurationException
      */
     public static RuntimeContext registerFooBinding(RuntimeContext runtime) throws ConfigurationException {
-        AggregateContext child = (AggregateContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD);
-        JavaContextFactoryBuilder javaBuilder = (JavaContextFactoryBuilder) child.getContext(MockFactory.JAVA_BUILDER)
-                .getInstance(null);
+        CompositeContext child = (CompositeContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD);
+        child.getContext(MockFactory.JAVA_BUILDER).getInstance(null);
         child.registerModelObject(systemFactory.createSystemComponent(FOO_BUILDER, ContextFactoryBuilder.class, FooBindingBuilder.class, Scope.MODULE));
         child.registerModelObject(systemFactory.createSystemComponent(FOO_WIRE_BUILDER, WireBuilder.class, FooBindingWireBuilder.class, Scope.MODULE));
         // since the child context is already started, we need to manually retrieve the components to init them

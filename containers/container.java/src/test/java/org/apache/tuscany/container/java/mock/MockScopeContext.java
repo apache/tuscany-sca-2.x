@@ -64,7 +64,7 @@ public class MockScopeContext implements ScopeContext {
         return null;
     }
 
-    public SimpleComponentContext getContext(String name) {
+    public AtomicContext getContext(String name) {
         return null;
     }
 
@@ -72,7 +72,7 @@ public class MockScopeContext implements ScopeContext {
         return components.get(name.getPartName());
     }
 
-    public SimpleComponentContext getContextByKey(String name, Object key) {
+    public AtomicContext getContextByKey(String name, Object key) {
         return null;
     }
 

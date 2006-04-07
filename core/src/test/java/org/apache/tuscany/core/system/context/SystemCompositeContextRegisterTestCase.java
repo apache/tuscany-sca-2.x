@@ -15,8 +15,8 @@ package org.apache.tuscany.core.system.context;
 
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.context.AggregateComponentContextRegisterTestCase;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContextRegisterTestCase;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.mock.MockConfigContext;
@@ -25,15 +25,15 @@ import org.apache.tuscany.core.mock.MockFactory;
 import java.util.List;
 
 /**
- * Tests registration of model objects for an system aggregate context
+ * Tests registration of model objects for an system composite context
  * 
  * @version $Rev$ $Date$
  */
-public class SystemAggregateComponentContextRegisterTestCase extends AggregateComponentContextRegisterTestCase {
+public class SystemCompositeContextRegisterTestCase extends CompositeContextRegisterTestCase {
 
-    protected AggregateContext createContext() {
+    protected CompositeContext createContext() {
         List<ContextFactoryBuilder> builders = MockFactory.createSystemBuilders();
-        return new SystemAggregateContextImpl("test.context", null,
+        return new SystemCompositeContextImpl("test.context", null,
                 null, new DefaultScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory(), null, null);
     }
 }

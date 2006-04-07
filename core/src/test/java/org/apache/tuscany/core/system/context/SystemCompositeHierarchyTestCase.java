@@ -16,8 +16,8 @@ package org.apache.tuscany.core.system.context;
 import junit.framework.Assert;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.context.AbstractAggregateHierarchyTests;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.AbstractCompositeHierarchyTests;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.mock.MockConfigContext;
@@ -30,17 +30,17 @@ import java.util.List;
  * 
  * @version $Rev$ $Date$
  */
-public class SystemAggregateHierarchyTestCase extends AbstractAggregateHierarchyTests {
+public class SystemCompositeHierarchyTestCase extends AbstractCompositeHierarchyTests {
 
 
 
-    protected AggregateContext createContextHierachy() throws Exception {
+    protected CompositeContext createContextHierachy() throws Exception {
         List<ContextFactoryBuilder> mockBuilders = MockFactory.createSystemBuilders();
-        AggregateContext parent = new SystemAggregateContextImpl("test.parent", null, null, new DefaultScopeStrategy(),
+        CompositeContext parent = new SystemCompositeContextImpl("test.parent", null, null, new DefaultScopeStrategy(),
                 new EventContextImpl(), new MockConfigContext(mockBuilders), new NullMonitorFactory(), null, null);
-        parent.registerModelObject(MockFactory.createAggregateComponent("test.child"));
+        parent.registerModelObject(MockFactory.createCompositeComponent("test.child"));
         parent.start();
-        AggregateContext child = (AggregateContext) parent.getContext("test.child");
+        CompositeContext child = (CompositeContext) parent.getContext("test.child");
         Assert.assertNotNull(child);
         return parent;
     }

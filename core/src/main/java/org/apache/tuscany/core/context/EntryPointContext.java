@@ -18,7 +18,7 @@ package org.apache.tuscany.core.context;
 
 /**
  * The runtime artifact representing an entry point, <code>EntryPointContext</code> manages invocation handler
- * instances that expose service operations offered by a component in the parent aggregate. The invocation handler
+ * instances that expose service operations offered by a component in the parent composite. The invocation handler
  * instance is responsible for dispatching the request down an invocation chain to the target instance. The invocation
  * chain may contain {@link org.apache.tuscany.core.invocation.Interceptor}s and
  * {@link org.apache.tuscany.core.invocation.MessageHandler}s that implement policies or perform mediations on the
@@ -29,8 +29,8 @@ package org.apache.tuscany.core.context;
  * to perform the invocation as in:
  * 
  * <pre>
- *              AggregateContext aggregateContext = ...
- *              EntryPointContext ctx = (EntryPointContext) aggregateContext.getContext(&quot;source&quot;);
+ *              CompositeContext compositeContext = ...
+ *              EntryPointContext ctx = (EntryPointContext) compositeContext.getContext(&quot;source&quot;);
  *              Assert.assertNotNull(ctx);
  *              InvocationHandler handler = (InvocationHandler) ctx.getHandler();
  *              Object response = handler.invoke(null, operation, new Object[] { param });
@@ -42,8 +42,8 @@ package org.apache.tuscany.core.context;
  * Alternatively, the following will return a proxy implementing the service interface exposed by the entry point:
  * 
  * <pre>
- *              AggregateContext aggregateContext = ...
- *              EntryPointContext ctx = (EntryPointContext) aggregateContext.getContext(&quot;source&quot;);
+ *              CompositeContext compositeContext = ...
+ *              EntryPointContext ctx = (EntryPointContext) compositeContext.getContext(&quot;source&quot;);
  *              Assert.assertNotNull(ctx);
  *              HelloWorld proxy = (Helloworld) ctx.getInstance(null); // service name not necessary
  * </pre>

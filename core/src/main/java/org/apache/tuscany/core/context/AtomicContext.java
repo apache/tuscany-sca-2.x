@@ -17,11 +17,11 @@
 package org.apache.tuscany.core.context;
 
 /**
- * A runtime entity that manages a non-aggregate (i.e. leaf-type) instance.
+ * A runtime entity that manages an atomic (i.e. leaf-type) instance.
  * 
  * @version $Rev$ $Date$
  */
-public interface SimpleComponentContext extends Context {
+public interface AtomicContext extends Context {
 
     /**
      * Returns whether a the context should be eagerly initialized

@@ -16,9 +16,9 @@ package org.apache.tuscany.core.integration;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.SimpleComponentContext;
+import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.Target;
@@ -26,7 +26,7 @@ import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
+import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.Scope;
@@ -34,29 +34,29 @@ import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
- * Tests intra-aggregate system wires are properly constructed in the runtime
+ * Tests intra-composite system wires are properly constructed in the runtime
  * 
  * @version $Rev$ $Date$
  */
-public class IntraAggregateWireIntegrationTestCase extends TestCase {
+public class IntraCompositeWireIntegrationTestCase extends TestCase {
 
   
     public void testWireConstruction2() throws Exception {
         RuntimeContext runtime = MockFactory.createCoreRuntime();
-        ModuleComponent moduleComponent = createSystemAggregateComponent("test.system");
+        ModuleComponent moduleComponent = createSystemCompositeComponent("test.system");
         Module module = MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE, Scope.MODULE);
         moduleComponent.setModuleImplementation(module);
         runtime.getSystemContext().registerModelObject(moduleComponent);
-        AggregateContext context = (AggregateContext) runtime.getSystemContext().getContext("test.system");
+        CompositeContext context = (CompositeContext) runtime.getSystemContext().getContext("test.system");
         context.fireEvent(EventContext.MODULE_START, null);
         //context.registerModelObject(module);
-        Source source = (Source) ((SimpleComponentContext)context.getContext("source")).getImplementationInstance();
+        Source source = (Source) ((AtomicContext)context.getContext("source")).getImplementationInstance();
         Assert.assertNotNull(source);
         Target targetRef = source.getTarget();
         Assert.assertNotNull(targetRef);
-        Target target = (Target) ((SimpleComponentContext)context.getContext("target")).getImplementationInstance();
+        Target target = (Target) ((AtomicContext)context.getContext("target")).getImplementationInstance();
         Assert.assertSame(target, targetRef);
-        Source source2 = (Source) ((SimpleComponentContext)context.getContext("source")).getImplementationInstance();
+        Source source2 = (Source) ((AtomicContext)context.getContext("source")).getImplementationInstance();
         Assert.assertSame(target, source2.getTarget());
         context.fireEvent(EventContext.MODULE_STOP, null);
         context.stop();
@@ -65,12 +65,12 @@ public class IntraAggregateWireIntegrationTestCase extends TestCase {
     private static SystemAssemblyFactory systemFactory = new SystemAssemblyFactoryImpl();
 
     /**
-     * Creates an aggregate component with the given name
+     * Creates an composite component with the given name
      */
-    public static ModuleComponent createSystemAggregateComponent(String name) {
+    public static ModuleComponent createSystemCompositeComponent(String name) {
         ModuleComponent sc = systemFactory.createModuleComponent();
         SystemImplementation impl = systemFactory.createSystemImplementation();
-        impl.setImplementationClass(SystemAggregateContextImpl.class);
+        impl.setImplementationClass(SystemCompositeContextImpl.class);
         sc.setComponentImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
@@ -86,18 +86,18 @@ public class IntraAggregateWireIntegrationTestCase extends TestCase {
     
     public void testWireConstruction() throws ConfigurationException {
         RuntimeContext runtime = MockFactory.createCoreRuntime();
-        runtime.getSystemContext().registerModelObject(MockFactory.createSystemAggregateComponent("test.system"));
-        AggregateContext context = (AggregateContext) runtime.getSystemContext().getContext("test.system");
+        runtime.getSystemContext().registerModelObject(MockFactory.createSystemCompositeComponent("test.system"));
+        CompositeContext context = (CompositeContext) runtime.getSystemContext().getContext("test.system");
 
         context.fireEvent(EventContext.MODULE_START, null);
         context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE,Scope.MODULE));
-        Source source = (Source) ((SimpleComponentContext)context.getContext("source")).getImplementationInstance();
+        Source source = (Source) ((AtomicContext)context.getContext("source")).getImplementationInstance();
         Assert.assertNotNull(source);
         Target targetRef = source.getTarget();
         Assert.assertNotNull(targetRef);
-        Target target = (Target) ((SimpleComponentContext)context.getContext("target")).getImplementationInstance();
+        Target target = (Target) ((AtomicContext)context.getContext("target")).getImplementationInstance();
         Assert.assertSame(target, targetRef);
-        Source source2 = (Source) ((SimpleComponentContext)context.getContext("source")).getImplementationInstance();
+        Source source2 = (Source) ((AtomicContext)context.getContext("source")).getImplementationInstance();
         Assert.assertSame(target, source2.getTarget());
         context.fireEvent(EventContext.MODULE_STOP, null);
         context.stop();

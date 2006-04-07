@@ -15,7 +15,7 @@ package org.apache.tuscany.core.system.injection;
 
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.injection.FactoryInitException;
 import org.apache.tuscany.core.injection.ObjectCreationException;
@@ -54,7 +54,7 @@ public class AutowireObjectFactory<T> implements ObjectFactory<T> {
     }
 
     public T getInstance() throws ObjectCreationException {
-        AggregateContext parent = resolver.getCurrentContext();
+        CompositeContext parent = resolver.getCurrentContext();
         if (parent == null) {
             return null;// FIXME semantic here means required is not followed
         }

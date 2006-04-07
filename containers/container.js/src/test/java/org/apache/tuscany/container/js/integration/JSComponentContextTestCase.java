@@ -29,10 +29,10 @@ import org.apache.tuscany.container.js.mock.MockModuleFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.impl.AggregateContextImpl;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
@@ -75,9 +75,9 @@ public class JSComponentContextTestCase extends TestCase {
         runtime.addBuilder(new JavaScriptTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
-                MockAssemblyFactory.createSystemComponent("test.module", AggregateContextImpl.class.getName(),
+                MockAssemblyFactory.createSystemComponent("test.module", CompositeContextImpl.class.getName(),
                         Scope.AGGREGATE));
-        AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
+        CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockModuleFactory.createModule());
         child.fireEvent(EventContext.MODULE_START, null);
         HelloWorldService source = (HelloWorldService) child.getContext("source").getInstance(new QualifiedName("./HelloWorldService"));

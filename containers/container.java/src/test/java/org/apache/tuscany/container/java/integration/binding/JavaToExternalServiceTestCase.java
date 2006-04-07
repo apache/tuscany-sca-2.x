@@ -21,9 +21,8 @@ import org.apache.tuscany.container.java.builder.MockInterceptorBuilder;
 import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBindingBuilder;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 
 /**
@@ -41,13 +40,13 @@ public class JavaToExternalServiceTestCase extends TestCase {
      */
     public void testJavaToESInvoke() throws Exception {
         RuntimeContext runtime = MockFactory.registerFooBinding(MockFactory.createJavaRuntime());
-        FooBindingBuilder builder = (FooBindingBuilder) ((AggregateContext) runtime.getSystemContext().getContext(
+        FooBindingBuilder builder = (FooBindingBuilder) ((CompositeContext) runtime.getSystemContext().getContext(
                 MockFactory.SYSTEM_CHILD)).getContext(MockFactory.FOO_BUILDER).getInstance(null);
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
         builder.addPolicyBuilder(interceptorBuilder);
-        runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test.module"));
-        AggregateContext child = (AggregateContext) runtime.getRootContext().getContext("test.module");
+        runtime.getRootContext().registerModelObject(MockFactory.createCompositeComponent("test.module"));
+        CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModuleWithExternalService());
         child.fireEvent(EventContext.MODULE_START, null);
         HelloWorldService source = (HelloWorldService) child.getContext("source").getInstance(null);

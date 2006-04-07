@@ -35,7 +35,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
     private Map<Object, Map<String, Context>> contexts;
 
     // Stores ordered lists of contexts to shutdown keyed by session
-    private Map<Object, Queue<SimpleComponentContext>> destroyableContexts;
+    private Map<Object, Queue<AtomicContext>> destroyableContexts;
 
     public HttpSessionScopeContext(EventContext eventContext) {
         super(eventContext);
@@ -48,7 +48,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
         }
         super.start();
         contexts = new ConcurrentHashMap<Object, Map<String, Context>>();
-        destroyableContexts = new ConcurrentHashMap<Object, Queue<SimpleComponentContext>>();
+        destroyableContexts = new ConcurrentHashMap<Object, Queue<AtomicContext>>();
         lifecycleState = RUNNING;
     }
 
@@ -75,12 +75,12 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
                 break;
             case EventContext.CONTEXT_CREATED:
                 checkInit();
-                if (key instanceof SimpleComponentContext) {
-                     SimpleComponentContext simpleCtx = (SimpleComponentContext)key;
+                if (key instanceof AtomicContext) {
+                     AtomicContext simpleCtx = (AtomicContext)key;
                      // if destroyable, queue the context to have its component implementation instance released
                      if (simpleCtx.isDestroyable()) {
                          Object sessionKey = getEventContext().getIdentifier(EventContext.HTTP_SESSION);
-                         Queue<SimpleComponentContext> comps = destroyableContexts.get(sessionKey);
+                         Queue<AtomicContext> comps = destroyableContexts.get(sessionKey);
                          if (comps == null) {
                              ScopeRuntimeException e = new ScopeRuntimeException("Shutdown queue not found for key");
                              e.setIdentifier(sessionKey.toString());
@@ -163,7 +163,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
 
 
     /**
-     * Returns an array of {@link SimpleComponentContext}s representing components that need to be notified of scope shutdown or
+     * Returns an array of {@link AtomicContext}s representing components that need to be notified of scope shutdown or
      * null if none found.
      */
     protected Context[] getShutdownContexts(Object key) {
@@ -171,10 +171,10 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
          * This method will be called from the Listener which is associated with a different thread than the request. So, just
          * grab the key directly
          */
-        Queue<SimpleComponentContext> queue = destroyableContexts.get(key);
+        Queue<AtomicContext> queue = destroyableContexts.get(key);
         if (queue != null) {
             // create 0-length array since Queue.size() has O(n) traversal
-            return queue.toArray(new SimpleComponentContext[0]);
+            return queue.toArray(new AtomicContext[0]);
         } else {
             return null;
         }
@@ -204,14 +204,14 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
             sessionContext.put(context.getName(), context);
         }
 
-        Queue<SimpleComponentContext> shutdownQueue = new ConcurrentLinkedQueue<SimpleComponentContext>();
+        Queue<AtomicContext> shutdownQueue = new ConcurrentLinkedQueue<AtomicContext>();
         contexts.put(key, sessionContext);
         destroyableContexts.put(key, shutdownQueue);
         // initialize eager components. Note this cannot be done when we initially create each context since a component may
         // contain a forward reference to a component which has not been instantiated
         for (Context context : sessionContext.values()) {
-            if (context instanceof SimpleComponentContext) {
-                SimpleComponentContext simpleCtx = (SimpleComponentContext) context;
+            if (context instanceof AtomicContext) {
+                AtomicContext simpleCtx = (AtomicContext) context;
                 if (simpleCtx.isEagerInit()) {
                     context.notify();  // Notify the instance
                     if (simpleCtx.isDestroyable()) {

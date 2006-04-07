@@ -34,11 +34,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * The standard implementation of an aggregate context. Autowiring is performed by delegating to the parent context.
+ * The standard implementation of an composite context. Autowiring is performed by delegating to the parent context.
  * 
  * @version $Rev$ $Date$
  */
-public class AggregateContextImpl extends AbstractAggregateContext implements ConfigurationContext, ModuleContext {
+public class CompositeContextImpl extends AbstractCompositeContext implements ConfigurationContext, ModuleContext {
 
     // a mapping of service type to component name
     private Map<Class, NameToScope> autowireIndex = new ConcurrentHashMap<Class, NameToScope>();
@@ -46,18 +46,18 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Co
     @Autowire(required = false)
     private AutowireContext autowireContext;
 
-    public AggregateContextImpl() {
+    public CompositeContextImpl() {
         super();
         eventContext = new EventContextImpl();
     }
 
-    public AggregateContextImpl(String name, AggregateContext parent, ScopeStrategy strategy, EventContext ctx,
-            ConfigurationContext configCtx, MonitorFactory factory) {
+    public CompositeContextImpl(String name, CompositeContext parent, ScopeStrategy strategy, EventContext ctx,
+                                ConfigurationContext configCtx, MonitorFactory factory) {
         super(name, parent, strategy, ctx, configCtx, factory);
     }
 
-    public AggregateContextImpl(String name, AggregateContext parent, AutowireContext autowireContext, ScopeStrategy strategy,
-            EventContext ctx, ConfigurationContext configCtx, MonitorFactory factory) {
+    public CompositeContextImpl(String name, CompositeContext parent, AutowireContext autowireContext, ScopeStrategy strategy,
+                                EventContext ctx, ConfigurationContext configCtx, MonitorFactory factory) {
         super(name, parent, strategy, ctx, configCtx, factory);
         this.autowireContext = autowireContext;
     }

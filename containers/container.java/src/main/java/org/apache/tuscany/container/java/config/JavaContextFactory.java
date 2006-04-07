@@ -23,8 +23,8 @@ import org.apache.tuscany.container.java.context.JavaComponentContext;
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.SimpleComponentContext;
+import org.apache.tuscany.core.context.CompositeContext;
+import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
@@ -36,13 +36,13 @@ import org.apache.tuscany.model.assembly.Scope;
  * 
  * @version $Rev$ $Date$
  */
-public class JavaContextFactory implements ContextFactory<SimpleComponentContext>, ContextResolver {
+public class JavaContextFactory implements ContextFactory<AtomicContext>, ContextResolver {
 
     // the component name as configured in the hosting module
     private String name;
 
     // the parent context of the component
-    private AggregateContext parentContext;
+    private CompositeContext parentContext;
 
     // the implementation type constructor
     private Constructor<Object> ctr;
@@ -97,7 +97,7 @@ public class JavaContextFactory implements ContextFactory<SimpleComponentContext
         return scope;
     }
 
-    public SimpleComponentContext createContext() throws ContextCreationException {
+    public AtomicContext createContext() throws ContextCreationException {
         PojoObjectFactory<?> objectFactory = new PojoObjectFactory<Object>(ctr, null, setters);
         return new JavaComponentContext(name, objectFactory, eagerInit, init, destroy, stateless);
     }
@@ -142,11 +142,11 @@ public class JavaContextFactory implements ContextFactory<SimpleComponentContext
         destroy = invoker;
     }
 
-    public void prepare(AggregateContext parent) {
+    public void prepare(CompositeContext parent) {
         parentContext = parent;
     }
 
-    public AggregateContext getCurrentContext() {
+    public CompositeContext getCurrentContext() {
         return parentContext;
     }
 

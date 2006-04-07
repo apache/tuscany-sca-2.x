@@ -19,7 +19,7 @@ package org.apache.tuscany.core.system.context;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.scope.AbstractScopeStrategy;
-import org.apache.tuscany.core.context.scope.AggregateScopeContext;
+import org.apache.tuscany.core.context.scope.CompositeScopeContext;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.context.scope.StatelessScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Implements a {@link org.apache.tuscany.core.context.ScopeStrategy} for a system aggregate context with the following scopes:
+ * Implements a {@link org.apache.tuscany.core.context.ScopeStrategy} for a system composite context with the following scopes:
  * <ul>
  * <li>{@link org.apache.tuscany.model.assembly.Scope#AGGREGATE}</li>
  * <li>{@link org.apache.tuscany.model.assembly.Scope#MODULE}</li>
@@ -43,7 +43,7 @@ public class SystemScopeStrategy extends AbstractScopeStrategy {
     }
 
     public Map<Scope, ScopeContext> createScopes(EventContext eventContext) {
-        ScopeContext aggregrateScope = new AggregateScopeContext(eventContext);
+        ScopeContext aggregrateScope = new CompositeScopeContext(eventContext);
         ScopeContext moduleScoper = new ModuleScopeContext(eventContext);
         ScopeContext statelessScope = new StatelessScopeContext(eventContext);
         Map<Scope, ScopeContext> scopes = new HashMap<Scope, ScopeContext>();

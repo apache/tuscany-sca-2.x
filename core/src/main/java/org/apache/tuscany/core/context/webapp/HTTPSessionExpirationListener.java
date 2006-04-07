@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.core.context.webapp;
 
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
 
 import javax.servlet.http.HttpSessionEvent;
@@ -52,7 +52,7 @@ public class HTTPSessionExpirationListener implements HttpSessionListener {
             tuscanyRuntime.start();
 
             // End the session
-            AggregateContext context = tuscanyRuntime.getModuleComponentContext();
+            CompositeContext context = tuscanyRuntime.getModuleComponentContext();
             context.fireEvent(EventContext.SESSION_END, event.getSession());
         } finally {
             if (tuscanyRuntime != null)

@@ -35,7 +35,7 @@ import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.EventException;
 import org.apache.tuscany.core.runtime.RuntimeContext;
@@ -58,7 +58,7 @@ public class TuscanyContextListener implements LifecycleListener {
     private final AssemblyModelLoader modelLoader;
     private final RuntimeContext runtime;
     private final ResourceLoader systemLoader;
-    private AggregateContext moduleContext;
+    private CompositeContext moduleContext;
 
     public TuscanyContextListener(RuntimeContext runtimeContext, AssemblyFactory modelFactory, AssemblyModelLoader modelLoader, ResourceLoader systemLoader) {
         this.runtime = runtimeContext;
@@ -131,9 +131,9 @@ public class TuscanyContextListener implements LifecycleListener {
             ModuleComponent moduleComponent = loader.loadModuleComponent(ctx.getName(), ctx.getPath());
 
             // Register it under the root application context
-            AggregateContext rootContext = runtime.getRootContext();
+            CompositeContext rootContext = runtime.getRootContext();
             rootContext.registerModelObject(moduleComponent);
-            moduleContext = (AggregateContext)rootContext.getContext(moduleComponent.getName());
+            moduleContext = (CompositeContext)rootContext.getContext(moduleComponent.getName());
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }

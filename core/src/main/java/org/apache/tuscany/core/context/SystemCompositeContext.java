@@ -16,11 +16,11 @@ package org.apache.tuscany.core.context;
 import org.apache.tuscany.core.config.ConfigurationException;
 
 /**
- * Marker type for system aggregate contexts
+ * Marker type for system composite contexts
  *
  * @version $Rev$ $Date$
  */
-public interface SystemAggregateContext extends AutowireContext, ScopeAwareContext, ConfigurationContext {
+public interface SystemCompositeContext extends AutowireContext, ScopeAwareContext, ConfigurationContext {
 
     /**
      * Register a simple Java Object as a system component.

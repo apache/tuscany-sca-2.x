@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.core.context.webapp;
 
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.webapp.LazyHTTPSessionId;
 
@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * Notifies the {@link org.apache.tuscany.core.context.AggregateContext} of web request start and end events as well as setting up the
+ * Notifies the {@link org.apache.tuscany.core.context.CompositeContext} of web request start and end events as well as setting up the
  * current session context. The latter is done using lazy Servlet-based session retrieval. The filter fires a session
  * start event, passing a <tt>LazyServletSessionId</tt> as the session id. The <tt>LazyServletSessionId</tt> is a
  * wrapper for the servlet request which may be called by the <tt>ModuleContext</tt> to retrieve the session id
@@ -60,7 +60,7 @@ public class TuscanyRequestFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws ServletException,
             IOException {
         // Get the module component context from the tuscany runtime
-        AggregateContext context = tuscanyRuntime.getModuleComponentContext();
+        CompositeContext context = tuscanyRuntime.getModuleComponentContext();
         try {
 
             // Start the SCA implementation

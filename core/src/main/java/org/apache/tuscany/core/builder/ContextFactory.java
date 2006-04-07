@@ -1,6 +1,6 @@
 package org.apache.tuscany.core.builder;
 
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.model.assembly.Scope;
@@ -82,6 +82,6 @@ public interface ContextFactory<T extends Context> {
      * 
      * @param parent the parent context's configuration
      */
-    public void prepare(AggregateContext parent);
+    public void prepare(CompositeContext parent);
 
 }

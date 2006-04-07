@@ -17,7 +17,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.context.impl.AggregateContextImpl;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.mock.MockConfigContext;
@@ -35,15 +35,15 @@ import org.apache.tuscany.model.assembly.Scope;
 import java.util.List;
 
 /**
- * Tests registration of model objects for an aggregate context
+ * Tests registration of model objects for an composite context
  * 
  * @version $Rev$ $Date$
  */
-public class AggregateComponentContextRegisterTestCase extends TestCase {
+public class CompositeContextRegisterTestCase extends TestCase {
     private SystemAssemblyFactory factory;
 
     public void testModuleRegistration() throws Exception {
-        AggregateContext moduleContext = createContext();
+        CompositeContext moduleContext = createContext();
         Module module = MockFactory.createSystemModule();
         moduleContext.registerModelObject(module);
         moduleContext.start();
@@ -57,7 +57,7 @@ public class AggregateComponentContextRegisterTestCase extends TestCase {
     }
 
     public void testModuleRegistrationAfterStart() throws Exception {
-        AggregateContext moduleContext = createContext();
+        CompositeContext moduleContext = createContext();
         moduleContext.start();
         Module module = MockFactory.createSystemModule();
         moduleContext.registerModelObject(module);
@@ -71,7 +71,7 @@ public class AggregateComponentContextRegisterTestCase extends TestCase {
     }
 
     public void testRegistration() throws Exception {
-        AggregateContext moduleContext = createContext();
+        CompositeContext moduleContext = createContext();
         Component component = factory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
         moduleContext.registerModelObject(component);
         EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1", component);
@@ -87,7 +87,7 @@ public class AggregateComponentContextRegisterTestCase extends TestCase {
     }
 
     public void testRegistrationAfterStart() throws Exception {
-        AggregateContext moduleContext = createContext();
+        CompositeContext moduleContext = createContext();
         Component component = factory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
         moduleContext.start();
         moduleContext.registerModelObject(component);
@@ -103,7 +103,7 @@ public class AggregateComponentContextRegisterTestCase extends TestCase {
     }
 
     public void testEPRegistrationAfterModuleStart() throws Exception {
-        AggregateContext moduleContext = createContext();
+        CompositeContext moduleContext = createContext();
         Component component = factory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
         moduleContext.start();
         moduleContext.registerModelObject(component);
@@ -118,9 +118,9 @@ public class AggregateComponentContextRegisterTestCase extends TestCase {
         moduleContext.stop();
     }
 
-    protected AggregateContext createContext() {
+    protected CompositeContext createContext() {
         List<ContextFactoryBuilder> builders = MockFactory.createSystemBuilders();
-        return new AggregateContextImpl("test.context", null, new DefaultScopeStrategy(), new EventContextImpl(),
+        return new CompositeContextImpl("test.context", null, new DefaultScopeStrategy(), new EventContextImpl(),
                 new MockConfigContext(builders), new NullMonitorFactory());
     }
 

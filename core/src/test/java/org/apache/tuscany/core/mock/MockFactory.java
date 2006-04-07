@@ -47,13 +47,13 @@ public class MockFactory {
     }
 
     /**
-     * Creates an aggregate component with the given name
+     * Creates an composite component with the given name
      */
-    public static ModuleComponent createAggregateComponent(String name) {
+    public static ModuleComponent createCompositeComponent(String name) {
         ModuleComponent sc = systemFactory.createModuleComponent();
         Module impl = systemFactory.createModule();
         impl.setName(name);
-        //impl.setImplementationClass(AggregateContextImpl.class);
+        //impl.setImplementationClass(CompositeContextImpl.class);
         sc.setComponentImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
@@ -67,13 +67,13 @@ public class MockFactory {
     }
 
     /**
-     * Creates an aggregate component with the given name
+     * Creates an composite component with the given name
      */
-    public static ModuleComponent createSystemAggregateComponent(String name) {
+    public static ModuleComponent createSystemCompositeComponent(String name) {
         ModuleComponent sc = systemFactory.createModuleComponent();
         SystemModule impl = systemFactory.createSystemModule();
         impl.setName(name);
-        //impl.setImplementationClass(SystemAggregateContextImpl.class);
+        //impl.setImplementationClass(SystemCompositeContextImpl.class);
         sc.setComponentImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();

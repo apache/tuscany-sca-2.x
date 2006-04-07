@@ -18,14 +18,14 @@ import org.apache.tuscany.model.assembly.Scope;
 import java.util.Map;
 
 /**
- * Denotes an aggregate context that supports scopes
+ * Denotes a composite context that supports scopes
  * 
  * @version $Rev$ $Date$
  */
-public interface ScopeAwareContext extends AggregateContext {
+public interface ScopeAwareContext extends CompositeContext {
 
     /**
-     * Returns an immutable collection of scopes keyed by type for the aggregate context
+     * Returns an immutable collection of scopes keyed by type for the composite context
      */
     public Map<Scope, ScopeContext> getScopeContexts();
 }

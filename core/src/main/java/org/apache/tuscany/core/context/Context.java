@@ -101,7 +101,7 @@ public interface Context {
          * null.
          * <p>
          * Composite contexts will return an instance (likely a proxy) of a contained entry point context. In this case, the
-         * port name on the qualified name will correspond to the aggregate context name and the part name will be used to
+         * port name on the qualified name will correspond to the composite context name and the part name will be used to
          * retrieve the contained entry point context. The latter may be null. If the contained context is not an entry
          * point context, an exception will be thrown.
          *
@@ -110,7 +110,7 @@ public interface Context {
          * @throws org.apache.tuscany.core.context.TargetException if an error occurs retrieving the instance or the requested component is not an entry
          *         point.
          *
-         * @see org.apache.tuscany.core.context.AggregateContext
+         * @see org.apache.tuscany.core.context.CompositeContext
          * @see org.apache.tuscany.model.assembly.EntryPoint
          */
         Object getInstance(QualifiedName qName) throws TargetException;

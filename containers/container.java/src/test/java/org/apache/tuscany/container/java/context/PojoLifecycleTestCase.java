@@ -21,8 +21,8 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeInitOnlyComponent;
-import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.impl.AggregateContextImpl;
+import org.apache.tuscany.core.context.CompositeContext;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
@@ -33,7 +33,7 @@ import org.apache.tuscany.model.assembly.Scope;
 public class PojoLifecycleTestCase extends TestCase {
 
     public void testComponentNameSet() throws Exception {
-        AggregateContext mc = new AggregateContextImpl();
+        CompositeContext mc = new CompositeContextImpl();
         mc.setName("mc");
         JavaComponentContext context = MockFactory.createPojoContext("TestServiceInit",
                 ModuleScopeInitOnlyComponent.class, Scope.MODULE, mc);
@@ -45,7 +45,7 @@ public class PojoLifecycleTestCase extends TestCase {
     }
 
     public void testModuleContextSet() throws Exception {
-        AggregateContext mc = new AggregateContextImpl();
+        CompositeContext mc = new CompositeContextImpl();
         mc.setName("mc");
         JavaComponentContext context = MockFactory.createPojoContext("TestServiceInit",
                 ModuleScopeInitOnlyComponent.class, Scope.MODULE, mc);
@@ -57,7 +57,7 @@ public class PojoLifecycleTestCase extends TestCase {
     }
 
     public void testInit() throws Exception {
-        AggregateContext mc = new AggregateContextImpl();
+        CompositeContext mc = new CompositeContextImpl();
         mc.setName("mc");
         JavaComponentContext context = MockFactory.createPojoContext("TestServiceInit",
                 ModuleScopeInitOnlyComponent.class, Scope.MODULE, mc);

@@ -27,7 +27,7 @@ import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
 import org.apache.tuscany.common.TuscanyRuntimeException;
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.webapp.HTTPSessionExpirationListener;
 import org.apache.tuscany.core.context.webapp.TuscanyRequestFilter;
@@ -87,14 +87,14 @@ public class WebAppLifecycleListener implements LifecycleListener {
                 }
                 // create the module component
                 runtime.registerModelObject(moduleComponent);
-                AggregateContext aggregateContext = (AggregateContext) runtime.getContext(moduleComponent.getName());
-                TuscanyWebAppRuntime tuscanyRuntime = new TuscanyWebAppRuntime(aggregateContext);
+                CompositeContext compositeContext = (CompositeContext) runtime.getContext(moduleComponent.getName());
+                TuscanyWebAppRuntime tuscanyRuntime = new TuscanyWebAppRuntime(compositeContext);
                 context.getServletContext().setAttribute(TuscanyWebAppRuntime.class.getName(), tuscanyRuntime);
                 // Start the runtime and the module component context
                 tuscanyRuntime.start();
                 try {
-                    aggregateContext.start();
-                    aggregateContext.fireEvent(EventContext.MODULE_START, null);
+                    compositeContext.start();
+                    compositeContext.fireEvent(EventContext.MODULE_START, null);
                 } finally {
                     tuscanyRuntime.stop();
                 }
@@ -131,9 +131,9 @@ public class WebAppLifecycleListener implements LifecycleListener {
             try {
                 // Stop the module context
                 tuscanyRuntime.start();
-                AggregateContext aggregateContext = tuscanyRuntime.getModuleComponentContext();
-                aggregateContext.fireEvent(EventContext.MODULE_STOP, null);
-                aggregateContext.stop();
+                CompositeContext compositeContext = tuscanyRuntime.getModuleComponentContext();
+                compositeContext.fireEvent(EventContext.MODULE_STOP, null);
+                compositeContext.stop();
             } catch (TuscanyRuntimeException e) {
                 monitor.log(e);
             } finally {

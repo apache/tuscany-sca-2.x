@@ -23,12 +23,12 @@ import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.*;
-import org.apache.tuscany.core.context.impl.AggregateContextImpl;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.loader.impl.StAXLoaderRegistryImpl;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
+import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
 import org.apache.tuscany.model.assembly.Aggregate;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
@@ -51,9 +51,9 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
     private final List<RuntimeEventListener> listeners = new ArrayList<RuntimeEventListener>(1);
 
-    private final AggregateContext rootContext;
+    private final CompositeContext rootContext;
 
-    private final SystemAggregateContext systemContext;
+    private final SystemCompositeContext systemContext;
 
     private final MonitorFactory monitorFactory;
 
@@ -77,9 +77,9 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         this.builders = (builders == null) ? new ArrayList<ContextFactoryBuilder>(1) : builders;
         this.wireBuilder = (wireBuilder == null) ? new DefaultWireBuilder() : wireBuilder;
 
-        rootContext = new AggregateContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this,
+        rootContext = new CompositeContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this,
                 monitorFactory);
-        systemContext = new SystemAggregateContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(),
+        systemContext = new SystemCompositeContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(),
                 this, monitorFactory, new StAXLoaderRegistryImpl(), new SystemAssemblyFactoryImpl());
     }
 
@@ -93,8 +93,8 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
      * @param wireBuilder the top-level hierarchical wire builder for the runtime; if not specified, a default
      */
     public RuntimeContextImpl(MonitorFactory monitorFactory,
-                              AggregateContext rootContext,
-                              SystemAggregateContext systemContext,
+                              CompositeContext rootContext,
+                              SystemCompositeContext systemContext,
                               List<ContextFactoryBuilder> builders,
                               HierarchicalWireBuilder wireBuilder) {
         super(RUNTIME);
@@ -133,22 +133,22 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         wireBuilder.addWireBuilder(builder);
     }
 
-    public AggregateContext getContext(String ctxName) {
+    public CompositeContext getContext(String ctxName) {
         checkRunning();
         if (ROOT.equals(ctxName)) {
             return rootContext;
         } else if (SYSTEM.equals(ctxName)) {
             return systemContext;
         }
-        return (AggregateContext) rootContext.getContext(ctxName);
+        return (CompositeContext) rootContext.getContext(ctxName);
     }
 
-    public AggregateContext getRootContext() {
+    public CompositeContext getRootContext() {
         checkRunning();
         return rootContext;
     }
 
-    public SystemAggregateContext getSystemContext() {
+    public SystemCompositeContext getSystemContext() {
         checkRunning();
         return systemContext;
     }
@@ -181,7 +181,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         }
     }
 
-    public AggregateContext getParent() {
+    public CompositeContext getParent() {
         return null; // there is no parent
     }
 

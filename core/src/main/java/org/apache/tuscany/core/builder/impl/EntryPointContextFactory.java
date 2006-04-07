@@ -15,7 +15,7 @@ package org.apache.tuscany.core.builder.impl;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.impl.EntryPointContextImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -65,16 +65,16 @@ public abstract class EntryPointContextFactory implements ContextFactory<EntryPo
     }
 
     public void addTargetProxyFactory(String serviceName, ProxyFactory factory) {
-        // no wires to an entry point from with an aggregate
+        // no wires to an entry point from with a composite
     }
 
     public ProxyFactory getTargetProxyFactory(String serviceName) {
-        // no wires to an entry point from with an aggregate
+        // no wires to an entry point from with a composite
         return null;
     }
 
     public Map<String, ProxyFactory> getTargetProxyFactories() {
-        // no wires to an entry point from with an aggregate
+        // no wires to an entry point from with a composite
         return Collections.emptyMap();
     }
 
@@ -92,6 +92,6 @@ public abstract class EntryPointContextFactory implements ContextFactory<EntryPo
         return sourceProxyFactories;
     }
     
-    public void prepare(AggregateContext parent) {
+    public void prepare(CompositeContext parent) {
     }
 }

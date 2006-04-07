@@ -13,17 +13,17 @@
  */
 package org.apache.tuscany.core.builder;
 
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 
 /**
- * Implementations are responsible for resolving the current aggregate context
+ * Implementations are responsible for resolving the current composite context
  * 
  * @version $Rev$ $Date$
  */
 public interface ContextResolver {
 
     /**
-     * Returns the current aggregate context
+     * Returns the current composite context
      */
-    AggregateContext getCurrentContext();
+    CompositeContext getCurrentContext();
 }

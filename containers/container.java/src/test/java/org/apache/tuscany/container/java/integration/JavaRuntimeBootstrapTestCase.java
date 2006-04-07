@@ -15,7 +15,7 @@ package org.apache.tuscany.container.java.integration;
 
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.runtime.RuntimeContext;
@@ -37,8 +37,8 @@ public class JavaRuntimeBootstrapTestCase extends TestCase {
         RuntimeContext runtime = MockFactory.createJavaRuntime();
         Context ctx = runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD);
         Assert.assertNotNull(ctx);
-        runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
-        AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
+        runtime.getRootContext().registerModelObject(MockFactory.createCompositeComponent("test"));
+        CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule());
         testCtx.fireEvent(EventContext.MODULE_START,null);

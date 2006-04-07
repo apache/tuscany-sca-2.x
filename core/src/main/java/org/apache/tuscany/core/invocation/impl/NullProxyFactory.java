@@ -1,6 +1,6 @@
 package org.apache.tuscany.core.invocation.impl;
 
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
 import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -13,11 +13,11 @@ import org.apache.tuscany.core.invocation.spi.ProxyInitializationException;
  */
 public class NullProxyFactory implements ProxyFactory {
 
-    private AggregateContext parentContext;
+    private CompositeContext parentContext;
 
     private String targetName;
 
-    public NullProxyFactory(String componentName, AggregateContext parentContext) {
+    public NullProxyFactory(String componentName, CompositeContext parentContext) {
         assert (parentContext != null) : "Parent context was null";
         this.targetName = componentName;
         this.parentContext = parentContext;

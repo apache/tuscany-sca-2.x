@@ -5,7 +5,7 @@ import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
@@ -21,12 +21,12 @@ import java.util.Map;
 
 /**
  * A <code>ContextFactory</code> that handles system component implementation types, which may be either simple, leaf
- * types or an aggregates.
+ * types or an composites.
  * <p>
- * For aggregate types, this factory delegates to an {@link org.apache.tuscany.core.builder.ObjectFactory} to create an
- * instance of the aggregate implementation and perform injection of configuration and references. Once an aggregate
- * instance is created, the factory will register the aggregate's children. This process may be done recursively in a
- * lazy fashion, descending down an aggregate hierarchy as a child aggregate is instantiated.
+ * For composite types, this factory delegates to an {@link org.apache.tuscany.core.builder.ObjectFactory} to create an
+ * instance of the composite implementation and perform injection of configuration and references. Once an composite
+ * instance is created, the factory will register the composite's children. This process may be done recursively in a
+ * lazy fashion, descending down an composite hierarchy as a child composite is instantiated.
  * 
  * @version $Rev$ $Date$
  */
@@ -35,10 +35,10 @@ public class SystemContextFactory implements ContextFactory<Context>, ContextRes
     // the component name as configured in the hosting module
     private String name;
 
-    // if this factory produces aggregates, the module will be the logical model associated with its children
+    // if this factory produces composites, the module will be the logical model associated with its children
     private Module module;
 
-    private AggregateContext parentContext;
+    private CompositeContext parentContext;
 
     // the implementation type constructor
     private Constructor ctr;
@@ -61,8 +61,8 @@ public class SystemContextFactory implements ContextFactory<Context>, ContextRes
     // if the component implementation scope is stateless
     private boolean stateless;
 
-    // if the component implementation is an aggregate context
-    private boolean isAggregate;
+    // if the component implementation is an composite context
+    private boolean isComposite;
 
     // ----------------------------------
     // Constructors
@@ -94,9 +94,9 @@ public class SystemContextFactory implements ContextFactory<Context>, ContextRes
         this.name = name;
         this.module = module;
         this.ctr = ctr;
-        this.isAggregate = AggregateContext.class.isAssignableFrom(ctr.getDeclaringClass());
+        this.isComposite = CompositeContext.class.isAssignableFrom(ctr.getDeclaringClass());
         this.scope = scope;
-        if (isAggregate) {
+        if (isComposite) {
             scope = Scope.AGGREGATE;
         } else {
             stateless = (scope == Scope.INSTANCE);
@@ -116,13 +116,13 @@ public class SystemContextFactory implements ContextFactory<Context>, ContextRes
     }
 
     public Context createContext() throws ContextCreationException {
-        if (isAggregate) {
+        if (isComposite) {
             try {
-                // aggregate context types are themselves an instance context
-                PojoObjectFactory<AggregateContext> objectFactory = new PojoObjectFactory<AggregateContext>(ctr, null, setters);
-                AggregateContext ctx = objectFactory.getInstance();
+                // composite context types are themselves an instance context
+                PojoObjectFactory<CompositeContext> objectFactory = new PojoObjectFactory<CompositeContext>(ctr, null, setters);
+                CompositeContext ctx = objectFactory.getInstance();
                 ctx.setName(name);
-                // the aggregate has been created, now register its children
+                // the composite has been created, now register its children
                 if (module != null) {
                     try {
                         ctx.registerModelObject(module);
@@ -180,11 +180,11 @@ public class SystemContextFactory implements ContextFactory<Context>, ContextRes
         destroy = invoker;
     }
 
-    public void prepare(AggregateContext parent) {
+    public void prepare(CompositeContext parent) {
         parentContext = parent;
     }
 
-    public AggregateContext getCurrentContext() {
+    public CompositeContext getCurrentContext() {
         return parentContext;
     }
 

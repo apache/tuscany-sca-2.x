@@ -28,10 +28,10 @@ import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.SimpleComponentContext;
-import org.apache.tuscany.core.context.impl.AggregateContextImpl;
+import org.apache.tuscany.core.context.AtomicContext;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.model.assembly.Scope;
@@ -45,13 +45,13 @@ public class DifferentInterfaceWireTestCase extends TestCase {
 
     public void testMultiplicity() throws Exception {
         
-        AggregateContext context = createContext();
+        CompositeContext context = createContext();
         context.start();
         context.registerModelObject(MockFactory.createModuleWithWiredComponentsOfDifferentInterface(Scope.MODULE, Scope.MODULE));
         context.fireEvent(EventContext.MODULE_START, null);
-        Source source = (Source) ((SimpleComponentContext) context.getContext("source")).getImplementationInstance();
+        Source source = (Source) ((AtomicContext) context.getContext("source")).getImplementationInstance();
         Assert.assertNotNull(source);
-        OtherTarget target = (OtherTarget) ((SimpleComponentContext)context.getContext("target")).getImplementationInstance();
+        OtherTarget target = (OtherTarget) ((AtomicContext)context.getContext("target")).getImplementationInstance();
         Assert.assertNotNull(target);
         // test setter injection
         List<Target> targets = source.getTargets();
@@ -64,8 +64,8 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         Assert.assertEquals("foo",target.getString());
     }
 
-    private AggregateContext createContext() {
-        AggregateContextImpl context = new AggregateContextImpl();
+    private CompositeContext createContext() {
+        CompositeContextImpl context = new CompositeContextImpl();
         context.setName("system.context");
         List<ContextFactoryBuilder>builders = MockFactory.createSystemBuilders();
         builders.add(new JavaContextFactoryBuilder(new JDKProxyFactoryFactory(), new MessageFactoryImpl()));

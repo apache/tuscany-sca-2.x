@@ -19,7 +19,7 @@ package org.apache.tuscany.core.runtime;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.scope.AbstractScopeStrategy;
-import org.apache.tuscany.core.context.scope.AggregateScopeContext;
+import org.apache.tuscany.core.context.scope.CompositeScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
 
 import java.util.HashMap;
@@ -37,7 +37,7 @@ public class RuntimeScopeStrategy extends AbstractScopeStrategy {
     }
 
     public Map<Scope, ScopeContext> createScopes(EventContext eventContext) {
-        ScopeContext aggregrateScope = new AggregateScopeContext(eventContext);
+        ScopeContext aggregrateScope = new CompositeScopeContext(eventContext);
         Map<Scope, ScopeContext> scopes = new HashMap<Scope, ScopeContext>();
         scopes.put(Scope.AGGREGATE, aggregrateScope);
         return scopes;

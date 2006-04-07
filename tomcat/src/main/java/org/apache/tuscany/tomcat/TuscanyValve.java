@@ -27,7 +27,7 @@ import org.osoa.sca.CurrentModuleContext;
 import org.osoa.sca.ModuleContext;
 import org.osoa.sca.SCA;
 
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.webapp.LazyHTTPSessionId;
 
@@ -44,9 +44,9 @@ public class TuscanyValve extends ValveBase {
 
     private static final ContextBinder BINDER = new ContextBinder();
 
-    private final AggregateContext moduleComponentContext;
+    private final CompositeContext moduleComponentContext;
 
-    public TuscanyValve(AggregateContext moduleComponentContext) {
+    public TuscanyValve(CompositeContext moduleComponentContext) {
         this.moduleComponentContext = moduleComponentContext;
     }
 

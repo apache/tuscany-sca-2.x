@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.tuscany.binding.jsonrpc.assembly.JSONRPCBinding;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.EntryPoint;
@@ -97,7 +97,7 @@ public class JSONRPCEntryPointServlet extends JSONRPCServlet {
     private void initTuscany(ServletConfig config) {
 
         ServletContext servletContext = config.getServletContext();
-        AggregateContext moduleContext = (AggregateContext) servletContext.getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
+        CompositeContext moduleContext = (CompositeContext) servletContext.getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
         Module module = (Module) moduleContext.getAggregate();
 
         Map<String, Object> entryPoints = new HashMap<String, Object>();
@@ -124,7 +124,7 @@ public class JSONRPCEntryPointServlet extends JSONRPCServlet {
         return false;
     }
 
-    private Object createProxy(AggregateContext moduleContext, EntryPoint entryPoint, String entryPointName) {
+    private Object createProxy(CompositeContext moduleContext, EntryPoint entryPoint, String entryPointName) {
         final EntryPointContext entryPointContext = (EntryPointContext) moduleContext.getContext(entryPointName);
         InvocationHandler ih = new InvocationHandler() {
             public Object invoke(Object o, Method method, Object[] args) throws Throwable {

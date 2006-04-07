@@ -25,43 +25,43 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Manages the lifecycle of aggregate component contexts, i.e. contexts which contain child contexts
+ * Manages the lifecycle of composite component contexts, i.e. contexts which contain child contexts
  * 
- * @see org.apache.tuscany.core.context.AggregateContext
+ * @see org.apache.tuscany.core.context.CompositeContext
  * @version $Rev$ $Date$
  */
-public class AggregateScopeContext extends AbstractContext implements ScopeContext {
+public class CompositeScopeContext extends AbstractContext implements ScopeContext {
 
     private List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
 
-    // Aggregate component contexts in this scope keyed by name
-    private Map<String, AggregateContext> contexts = new ConcurrentHashMap<String, AggregateContext>();
+    // Composite component contexts in this scope keyed by name
+    private Map<String, CompositeContext> contexts = new ConcurrentHashMap<String, CompositeContext>();
 
     // indicates if a module start event has been previously propagated so child contexts added after can be notified
     private boolean moduleScopeStarted;
 
-    public AggregateScopeContext(EventContext eventContext) {
+    public CompositeScopeContext(EventContext eventContext) {
         assert (eventContext != null) : "Event context was null";
-        name = "Aggregate Scope";
+        name = "Composite Scope";
     }
 
     public void start() throws ScopeInitializationException {
         for (ContextFactory<Context> configuration : configs) {
             Context context = configuration.createContext();
-            if (!(context instanceof AggregateContext)) {
-                ScopeInitializationException e = new ScopeInitializationException("Context not an aggregate type");
+            if (!(context instanceof CompositeContext)) {
+                ScopeInitializationException e = new ScopeInitializationException("Context not an composite type");
                 e.addContextName(context.getName());
                 throw e;
             }
-            AggregateContext aggregateCtx = (AggregateContext) context;
-            aggregateCtx.start();
-            contexts.put(aggregateCtx.getName(), aggregateCtx);
+            CompositeContext compositeCtx = (CompositeContext) context;
+            compositeCtx.start();
+            contexts.put(compositeCtx.getName(), compositeCtx);
         }
         lifecycleState = RUNNING;
     }
 
     public void stop() throws ScopeRuntimeException {
-        for (AggregateContext context : contexts.values()) {
+        for (CompositeContext context : contexts.values()) {
             context.stop();
         }
     }
@@ -75,17 +75,17 @@ public class AggregateScopeContext extends AbstractContext implements ScopeConte
         configs.add(configuration);
         if (lifecycleState == RUNNING) {
             Context context = configuration.createContext();
-            if (!(context instanceof AggregateContext)) {
-                ScopeInitializationException e = new ScopeInitializationException("Context not an aggregate type");
+            if (!(context instanceof CompositeContext)) {
+                ScopeInitializationException e = new ScopeInitializationException("Context not an composite type");
                 e.setIdentifier(context.getName());
                 throw e;
             }
-            AggregateContext aggregateCtx = (AggregateContext) context;
-            aggregateCtx.start();
+            CompositeContext compositeCtx = (CompositeContext) context;
+            compositeCtx.start();
             if (moduleScopeStarted) {
-                aggregateCtx.fireEvent(EventContext.MODULE_START, null);
+                compositeCtx.fireEvent(EventContext.MODULE_START, null);
             }
-            contexts.put(aggregateCtx.getName(), aggregateCtx);
+            contexts.put(compositeCtx.getName(), compositeCtx);
         }
     }
 
@@ -124,13 +124,13 @@ public class AggregateScopeContext extends AbstractContext implements ScopeConte
 
     public void onEvent(int type, Object message) throws EventException {
         if (type == EventContext.MODULE_START) {
-            // track module starting so that aggregate contexts registered after the event are notified properly
+            // track module starting so that composite contexts registered after the event are notified properly
             moduleScopeStarted = true;
         } else if (type == EventContext.MODULE_STOP) {
             moduleScopeStarted = false;
         }
         // propagate events to child contexts
-        for (AggregateContext context : contexts.values()) {
+        for (CompositeContext context : contexts.values()) {
             context.fireEvent(type, message);
         }
     }

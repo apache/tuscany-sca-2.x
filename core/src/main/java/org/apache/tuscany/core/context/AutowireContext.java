@@ -14,13 +14,13 @@
 package org.apache.tuscany.core.context;
 
 /**
- * A specialization of an AggregateContext that is able to automatically resolve references
+ * A specialization of an CompositeContext that is able to automatically resolve references
  * for its children using EntryPoint or Service interfaces exposed by it or, recursively, any
  * of it parents.
  *
  * @version $Rev$ $Date$
  */
-public interface AutowireContext extends AggregateContext {
+public interface AutowireContext extends CompositeContext {
 
     /**
      * Used by child contexts to return an an autowire target. Resolved targets may be entry points or components in the parent

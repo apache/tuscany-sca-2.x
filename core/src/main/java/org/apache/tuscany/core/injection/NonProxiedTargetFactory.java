@@ -19,7 +19,7 @@ import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 
 /**
- * Returns a direct reference to a target within the same aggregate, i.e. the factory avoids creating proxies and
+ * Returns a direct reference to a target within the same composite, i.e. the factory avoids creating proxies and
  * returns the actual target instance
  * 
  * @version $Rev$ $Date$

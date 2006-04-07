@@ -17,7 +17,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.mock.MockFactory;
@@ -33,13 +33,13 @@ public class RuntimeBootTestCase extends TestCase {
     private RuntimeContext runtime;
 
     public void testContextParents() {
-        AggregateContext rootContext = runtime.getRootContext();
+        CompositeContext rootContext = runtime.getRootContext();
         assertNotNull(rootContext);
         assertEquals("tuscany.root", rootContext.getName());
         assertSame(runtime, rootContext.getParent());
         assertSame(rootContext, runtime.getContext("tuscany.root"));
 
-        AggregateContext systemContext = runtime.getSystemContext();
+        CompositeContext systemContext = runtime.getSystemContext();
         assertNotNull(systemContext);
         assertEquals("tuscany.system", systemContext.getName());
         assertSame(runtime, systemContext.getParent());
@@ -63,7 +63,7 @@ public class RuntimeBootTestCase extends TestCase {
         RuntimeContext runtimeContext = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
         runtimeContext.start();
 
-        AggregateContext system = runtimeContext.getSystemContext();
+        CompositeContext system = runtimeContext.getSystemContext();
         Assert.assertNotNull(system);
         // register system components
         system.registerModelObject(MockFactory.createSystemModule());

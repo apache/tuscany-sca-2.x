@@ -22,9 +22,9 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.config.impl.StAXModuleComponentConfigurationLoaderImpl;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.SystemAggregateContext;
+import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
@@ -93,14 +93,14 @@ public final class BootstrapHelper {
      * @param modelContext  the model context the loader will use
      * @return the default module configuration loader
      */
-    public static ModuleComponentConfigurationLoader getConfigurationLoader(SystemAggregateContext systemContext, AssemblyModelContext modelContext) throws ConfigurationException {
+    public static ModuleComponentConfigurationLoader getConfigurationLoader(SystemCompositeContext systemContext, AssemblyModelContext modelContext) throws ConfigurationException {
         // Bootstrap the StAX loader module
         bootstrapStaxLoader(systemContext, modelContext);
         return new StAXModuleComponentConfigurationLoaderImpl(modelContext, XMLInputFactory.newInstance(), systemContext.resolveInstance(StAXLoaderRegistry.class));
     }
 
-    private static AggregateContext bootstrapStaxLoader(SystemAggregateContext systemContext, AssemblyModelContext modelContext) throws ConfigurationException {
-        AggregateContext loaderContext = (AggregateContext) systemContext.getContext(SYSTEM_LOADER_COMPONENT);
+    private static CompositeContext bootstrapStaxLoader(SystemCompositeContext systemContext, AssemblyModelContext modelContext) throws ConfigurationException {
+        CompositeContext loaderContext = (CompositeContext) systemContext.getContext(SYSTEM_LOADER_COMPONENT);
         if (loaderContext == null) {
             ModuleComponent loaderComponent = StAXUtil.bootstrapLoader(SYSTEM_LOADER_COMPONENT, modelContext);
             loaderContext = registerModule(systemContext, loaderComponent);
@@ -109,11 +109,11 @@ public final class BootstrapHelper {
         return loaderContext;
     }
 
-    public static AggregateContext registerModule(AggregateContext parent, ModuleComponent component) throws ConfigurationException {
+    public static CompositeContext registerModule(CompositeContext parent, ModuleComponent component) throws ConfigurationException {
         // register the component
         parent.registerModelObject(component);
 
-        // Get the aggregate context representing the component
-        return (AggregateContext) parent.getContext(component.getName());
+        // Get the composite context representing the component
+        return (CompositeContext) parent.getContext(component.getName());
     }
 }

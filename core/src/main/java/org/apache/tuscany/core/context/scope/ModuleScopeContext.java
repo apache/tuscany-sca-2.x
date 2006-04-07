@@ -34,7 +34,7 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
     // Component contexts in this scope keyed by name
     private Map<String, Context> componentContexts;
 
-    private Queue<SimpleComponentContext> destroyableContexts;
+    private Queue<AtomicContext> destroyableContexts;
 
      public ModuleScopeContext(EventContext eventContext) {
         super(eventContext);
@@ -52,8 +52,8 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
                 break;
             case EventContext.CONTEXT_CREATED:
                 checkInit();
-                if (key instanceof SimpleComponentContext) {
-                    SimpleComponentContext serviceContext = (SimpleComponentContext) key;
+                if (key instanceof AtomicContext) {
+                    AtomicContext serviceContext = (AtomicContext) key;
                     // Queue the context to have its implementation instance released if destroyable
                     if (serviceContext.isDestroyable()) {
                         destroyableContexts.add(serviceContext);
@@ -114,7 +114,7 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
     }
 
     /**
-     * Returns an array of {@link SimpleComponentContext}s representing components that need to be notified of scope shutdown.
+     * Returns an array of {@link AtomicContext}s representing components that need to be notified of scope shutdown.
      */
     protected Context[] getShutdownContexts(Object key) {
         if (destroyableContexts != null) {
@@ -128,7 +128,7 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
     private synchronized void initComponentContexts() throws CoreRuntimeException {
         if (componentContexts == null) {
             componentContexts = new ConcurrentHashMap<String, Context> ();
-            destroyableContexts = new ConcurrentLinkedQueue<SimpleComponentContext>();
+            destroyableContexts = new ConcurrentLinkedQueue<AtomicContext>();
             for (ContextFactory<Context> config : contextFactorys.values()) {
                 Context context = config.createContext();
                 context.addListener(this);
@@ -138,8 +138,8 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
             // Initialize eager contexts. Note this cannot be done when we initially create each context since a component may
             // contain a forward reference to a component which has not been instantiated
             for (Context context : componentContexts.values()) {
-                if (context instanceof SimpleComponentContext) {
-                    SimpleComponentContext simpleCtx = (SimpleComponentContext) context;
+                if (context instanceof AtomicContext) {
+                    AtomicContext simpleCtx = (AtomicContext) context;
                     if (simpleCtx.isEagerInit()) {
                         // perform silent creation and manual shutdown registration
                         simpleCtx.init();

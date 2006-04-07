@@ -16,7 +16,7 @@ package org.apache.tuscany.core.builder.impl;
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.context.impl.ExternalServiceContextImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * A template implementation that creates instances of {@link org.apache.tuscany.core.context.ExternalServiceContext}
  * configured with the appropriate invocation chains and bindings. This class is intended to be subclassed when
- * contributing new bindings to the runtime. The subclass serves as a marker so the binding {@link WireBuilder
+ * contributing new bindings to the runtime. The subclass serves as a marker so the binding {@link org.apache.tuscany.core.builder.WireBuilder
  *
  *
  *
@@ -98,14 +98,14 @@ public abstract class BaseExternalServiceContextFactory implements ContextFactor
     }
 
     public void addSourceProxyFactory(String referenceName, ProxyFactory factory) {
-        // no wires inside an aggregate from an external service
+        // no wires inside a composite from an external service
     }
 
     public List<ProxyFactory> getSourceProxyFactories() {
         return Collections.emptyList();
     }
     
-    public void prepare(AggregateContext parent) {
+    public void prepare(CompositeContext parent) {
         //parentContext = parent;
     }
 

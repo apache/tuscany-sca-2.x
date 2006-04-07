@@ -20,7 +20,7 @@ package org.apache.tuscany.core.system.context;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.SystemAggregateContext;
+import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 
@@ -29,7 +29,7 @@ import org.apache.tuscany.core.runtime.RuntimeContextImpl;
  */
 public class SystemObjectRegistrationTestCase extends TestCase {
     private RuntimeContext runtime;
-    private SystemAggregateContext systemContext;
+    private SystemCompositeContext systemContext;
 
     public void testRegistration() throws ConfigurationException {
         MockComponent instance = new MockComponent();

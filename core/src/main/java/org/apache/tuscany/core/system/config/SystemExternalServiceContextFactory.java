@@ -17,9 +17,9 @@ import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ExternalServiceContext;
-import org.apache.tuscany.core.injection.InterAggregateReferenceFactory;
+import org.apache.tuscany.core.injection.InterCompositeReferenceFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemExternalServiceContext;
 import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
@@ -45,7 +45,7 @@ public class SystemExternalServiceContextFactory implements ContextFactory<Exter
     // service
     private ObjectFactory factory;
 
-    private AggregateContext parentContext;
+    private CompositeContext parentContext;
 
     // ----------------------------------
     // Constructors
@@ -98,16 +98,16 @@ public class SystemExternalServiceContextFactory implements ContextFactory<Exter
         return null;
     }
 
-    public void prepare(AggregateContext parent) {
+    public void prepare(CompositeContext parent) {
         parentContext = parent;
-        if (factory instanceof InterAggregateReferenceFactory){
-            ((InterAggregateReferenceFactory)factory).setContextResolver(this);
+        if (factory instanceof InterCompositeReferenceFactory){
+            ((InterCompositeReferenceFactory)factory).setContextResolver(this);
         }else if (factory instanceof AutowireObjectFactory){
             ((AutowireObjectFactory)factory).setContextResolver(this);
         }
     }
 
-    public AggregateContext getCurrentContext() {
+    public CompositeContext getCurrentContext() {
         return parentContext;
     }
 

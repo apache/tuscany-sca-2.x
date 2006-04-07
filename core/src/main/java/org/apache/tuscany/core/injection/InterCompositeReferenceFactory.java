@@ -15,18 +15,18 @@ package org.apache.tuscany.core.injection;
 
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.TargetException;
 
 /**
- * Returns a direct reference to a target service exposed in another aggregate, i.e. the factory avoids creating proxies
+ * Returns a direct reference to a target service exposed in another composite, i.e. the factory avoids creating proxies
  * and returns the actual target instance
  * 
  * @version $Rev: 384135 $ $Date: 2006-03-07 22:53:58 -0800 (Tue, 07 Mar 2006) $
  */
-public class InterAggregateReferenceFactory<T> implements ObjectFactory<T> {
+public class InterCompositeReferenceFactory<T> implements ObjectFactory<T> {
 
     private ContextResolver resolver;
 
@@ -37,7 +37,7 @@ public class InterAggregateReferenceFactory<T> implements ObjectFactory<T> {
      * 
      * @param targetName the name of the target service
      */
-    public InterAggregateReferenceFactory(String targetName) {
+    public InterCompositeReferenceFactory(String targetName) {
         targetQualifiedName = new QualifiedName(targetName);
     }
 
@@ -51,8 +51,8 @@ public class InterAggregateReferenceFactory<T> implements ObjectFactory<T> {
         if (o != null) {
             return (T) o;
         } else {
-            // walk up the hierarchy of aggregate contexts
-            AggregateContext ctx = resolver.getCurrentContext();
+            // walk up the hierarchy of composite contexts
+            CompositeContext ctx = resolver.getCurrentContext();
             do {
                 if (ctx == null) {
                     break; // reached top of context hierarchy

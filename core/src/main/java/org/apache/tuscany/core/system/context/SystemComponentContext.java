@@ -27,7 +27,7 @@ import org.apache.tuscany.core.injection.ObjectCreationException;
  * 
  * @version $Rev$ $Date$
  */
-public class SystemComponentContext extends AbstractContext implements SimpleComponentContext {
+public class SystemComponentContext extends AbstractContext implements AtomicContext {
 
     private boolean eagerInit;
 

@@ -21,8 +21,8 @@ import junit.framework.TestCase;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.BadContextPojo;
 import org.apache.tuscany.container.java.mock.components.BadNamePojo;
-import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.impl.AggregateContextImpl;
+import org.apache.tuscany.core.context.CompositeContext;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.model.assembly.Scope;
 
 public class BadPojoTestCase extends TestCase {
@@ -34,7 +34,7 @@ public class BadPojoTestCase extends TestCase {
      * "@ComponentName" is generated
      */
     public void testBadNameType() throws Exception {
-        AggregateContext mc = new AggregateContextImpl();
+        CompositeContext mc = new CompositeContextImpl();
         mc.setName("mc");
         try {
             JavaComponentContext context = MockFactory.createPojoContext("BadNamePojo", BadNamePojo.class,
@@ -54,7 +54,7 @@ public class BadPojoTestCase extends TestCase {
      * "@Context" is generated
      */
     public void testContextType() throws Exception {
-        AggregateContext mc = new AggregateContextImpl();
+        CompositeContext mc = new CompositeContextImpl();
         mc.setName("mc");
         try {
             JavaComponentContext context = MockFactory.createPojoContext("BadContextPojo", BadContextPojo.class,

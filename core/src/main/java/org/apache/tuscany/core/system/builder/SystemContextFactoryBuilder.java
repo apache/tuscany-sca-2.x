@@ -19,11 +19,10 @@ import org.apache.tuscany.core.builder.*;
 import org.apache.tuscany.core.builder.impl.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.builder.impl.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
-import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
-import org.apache.tuscany.core.context.SystemAggregateContext;
-import org.apache.tuscany.core.context.impl.AggregateContextImpl;
+import org.apache.tuscany.core.context.SystemCompositeContext;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.injection.*;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
@@ -31,7 +30,7 @@ import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.SystemModule;
 import org.apache.tuscany.core.system.config.SystemContextFactory;
-import org.apache.tuscany.core.system.context.SystemAggregateContextImpl;
+import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
 import org.apache.tuscany.model.assembly.*;
 import org.osoa.sca.annotations.ComponentName;
@@ -49,8 +48,8 @@ import java.util.Set;
 /**
  * Decorates components whose implementation type is a
  * {@link org.apache.tuscany.core.system.assembly.SystemImplementation} with the appropriate runtime configuration. This
- * builder handles both system aggregate components as well as system leaf or "simple" components. Consequently, both
- * simple and aggregate component types may be injected and autowired.
+ * builder handles both system composite components as well as system leaf or "simple" components. Consequently, both
+ * simple and composite component types may be injected and autowired.
  * <p>
  * Note that system component references are not proxied.
  * 
@@ -105,16 +104,16 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
             if (((Module) componentImplementation).getName().startsWith("org.apache.tuscany.core.system")) {
                 // The component is a system module component, fix the implementation class to our implementation
                 // of system module component context
-                implClass = SystemAggregateContextImpl.class;
+                implClass = SystemCompositeContextImpl.class;
                 scope = Scope.AGGREGATE;
             } else if (componentImplementation instanceof SystemModule){
-                implClass = SystemAggregateContextImpl.class;
+                implClass = SystemCompositeContextImpl.class;
                 scope = Scope.AGGREGATE;
             } else {
                 // The component is an app module component, fix the implementation class to our implementation
                 // of app module component context
                 //FIXME this should be extensible, i.e. the model should specify the impl class of the module
-                implClass = AggregateContextImpl.class;
+                implClass = CompositeContextImpl.class;
                 scope = Scope.AGGREGATE;
             }
 
@@ -149,7 +148,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
             }
 
             // FIXME do not inject references on an application module yet
-            if (implClass != AggregateContextImpl.class) {
+            if (implClass != CompositeContextImpl.class) {
                 // handle references
                 Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
                 if (configuredReferences != null) {
@@ -182,9 +181,9 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
                 }
                 Autowire autowire = field.getAnnotation(Autowire.class);
                 if (autowire != null) {
-                    // for system aggregate context types, only allow autowire of certain types, otherwise we have a
+                    // for system composite context types, only allow autowire of certain types, otherwise we have a
                     // chicken-and-egg problem
-                    if (SystemAggregateContext.class.isAssignableFrom(implClass)
+                    if (SystemCompositeContext.class.isAssignableFrom(implClass)
                             && !(field.getType().equals(ConfigurationContext.class)
                                     || field.getType().equals(MonitorFactory.class)
                                     || field.getType().equals(RuntimeContext.class) || field.getType().equals(
@@ -222,9 +221,9 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
                 }
                 ParentContext parentMethod = method.getAnnotation(ParentContext.class);
                 if (parentMethod != null) {
-                    // if (!(parentContext instanceof AggregateContext)) {
+                    // if (!(parentContext instanceof CompositeContext)) {
                     // BuilderConfigException e = new BuilderConfigException("Component must be a child of ");
-                    // e.setIdentifier(AggregateContext.class.getName());
+                    // e.setIdentifier(CompositeContext.class.getName());
                     // throw e;
                     // }
                     Injector injector = new MethodInjector(method, contextObjectFactory);
@@ -245,7 +244,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
                     Class paramType = method.getParameterTypes()[0];
                     // for system aggregate context types, only allow autowire of certain types, otherwise we have a
                     // chicken-and-egg problem
-                    if (SystemAggregateContext.class.isAssignableFrom(implClass)
+                    if (SystemCompositeContext.class.isAssignableFrom(implClass)
                             && !(paramType.equals(ConfigurationContext.class) || paramType.equals(MonitorFactory.class)
                                     || paramType.equals(RuntimeContext.class) || paramType.equals(AutowireContext.class))) {
                         BuilderConfigException e = new BuilderConfigException("Illegal autowire type for system context");

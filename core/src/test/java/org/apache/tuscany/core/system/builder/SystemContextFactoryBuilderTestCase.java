@@ -17,9 +17,9 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.impl.AggregateContextImpl;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.mock.MockConfigContext;
@@ -127,8 +127,8 @@ public class SystemContextFactoryBuilderTestCase extends TestCase {
         Assert.assertTrue(instance.destroyed());
     }
 
-    private static AggregateContext createContext() {
-        return new AggregateContextImpl("test.parent", null, new DefaultScopeStrategy(), new EventContextImpl(),
+    private static CompositeContext createContext() {
+        return new CompositeContextImpl("test.parent", null, new DefaultScopeStrategy(), new EventContextImpl(),
                 new MockConfigContext(null), new NullMonitorFactory());
     }
 

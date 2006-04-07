@@ -25,12 +25,11 @@ import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeComponentImpl;
 import org.apache.tuscany.container.java.mock.components.SessionScopeComponentImpl;
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.impl.AggregateContextImpl;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
-import org.apache.tuscany.core.context.scope.AggregateScopeContext;
+import org.apache.tuscany.core.context.scope.CompositeScopeContext;
 import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.SimpleComponent;
@@ -41,20 +40,20 @@ import org.apache.tuscany.model.assembly.SimpleComponent;
  * 
  * @version $Rev$ $Date$
  */
-public class AggregateScopeTestCase extends TestCase {
+public class CompositeScopeTestCase extends TestCase {
 
     /**
-     * Ensures scope events are propagated in an aggregate scope
+     * Ensures scope events are propagated in an composite scope
      */
-    public void testAggregateScopePropagation() throws Exception {
+    public void testCompositeScopePropagation() throws Exception {
         EventContext ctx = new EventContextImpl();
-        AggregateContext moduleComponentCtx = new AggregateContextImpl();
+        CompositeContext moduleComponentCtx = new CompositeContextImpl();
         moduleComponentCtx.setName("testMC");
-        AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
-        scopeContainer.registerFactory(MockFactory.createAggregateConfiguration("AggregateComponent", moduleComponentCtx));
+        CompositeScopeContext scopeContainer = new CompositeScopeContext(ctx);
+        scopeContainer.registerFactory(MockFactory.createCompositeConfiguration("CompositeComponent"));
         scopeContainer.start();
-        AggregateContext child = (AggregateContext) scopeContainer.getContext("AggregateComponent");
-        List<Extensible> models = createAssembly(moduleComponentCtx);
+        CompositeContext child = (CompositeContext) scopeContainer.getContext("CompositeComponent");
+        List<Extensible> models = createAssembly();
         for (Extensible model : models) {
             child.registerModelObject(model);
         }
@@ -63,7 +62,7 @@ public class AggregateScopeTestCase extends TestCase {
         Object session = new Object();
         scopeContainer.onEvent(EventContext.REQUEST_START, null);
         scopeContainer.onEvent(EventContext.SESSION_NOTIFY, session);
-        AggregateContext componentCtx = (AggregateContext) scopeContainer.getContext("AggregateComponent");
+        CompositeContext componentCtx = (CompositeContext) scopeContainer.getContext("CompositeComponent");
         GenericComponent testService1 = (GenericComponent) componentCtx.getContext("TestService1").getInstance(null);
         GenericComponent testService2 = (GenericComponent) componentCtx.getContext("TestService2").getInstance(null);
         GenericComponent testService3 = (GenericComponent) componentCtx.getContext("TestService3").getInstance(null);
@@ -98,23 +97,22 @@ public class AggregateScopeTestCase extends TestCase {
     /**
      * Ensures only child entry points (and not components) are accessible from parents
      */
-    public void testAggregateNoEntryPoint() throws Exception {
+    public void testCompositeNoEntryPoint() throws Exception {
         EventContext ctx = new EventContextImpl();
-        AggregateContext moduleComponentCtx = new AggregateContextImpl();
+        CompositeContext moduleComponentCtx = new CompositeContextImpl();
         moduleComponentCtx.setName("testMC");
-        AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
-        scopeContainer.registerFactory(MockFactory.createAggregateConfiguration("AggregateComponent", moduleComponentCtx));
+        CompositeScopeContext scopeContainer = new CompositeScopeContext(ctx);
+        scopeContainer.registerFactory(MockFactory.createCompositeConfiguration("CompositeComponent"));
         scopeContainer.start();
-        AggregateContext child = (AggregateContext) scopeContainer.getContext("AggregateComponent");
-        List<Extensible> parts = createAssembly(moduleComponentCtx);
+        CompositeContext child = (CompositeContext) scopeContainer.getContext("CompositeComponent");
+        List<Extensible> parts = createAssembly();
         for (Extensible part : parts) {
             child.registerModelObject(part);
         }
 
-        // aggregate.onEvent(EventContext.SYSTEM_START, null);
+        // composite.onEvent(EventContext.SYSTEM_START, null);
         scopeContainer.onEvent(EventContext.MODULE_START, null);
-        QualifiedName name = new QualifiedName("AggregateComponent/TestService1");
-        AggregateContext componentCtx = (AggregateContext) scopeContainer.getContext("AggregateComponent");
+        scopeContainer.getContext("CompositeComponent");
     }
 
     /**
@@ -122,14 +120,13 @@ public class AggregateScopeTestCase extends TestCase {
      */
     public void testRegisterContextBeforeStart() throws Exception {
         EventContext ctx = new EventContextImpl();
-        AggregateContext moduleComponentCtx = new AggregateContextImpl();
+        CompositeContext moduleComponentCtx = new CompositeContextImpl();
         moduleComponentCtx.setName("testMC");
-        AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
-        scopeContainer.registerFactory(MockFactory.createAggregateConfiguration("AggregateComponent", moduleComponentCtx));
+        CompositeScopeContext scopeContainer = new CompositeScopeContext(ctx);
+        scopeContainer.registerFactory(MockFactory.createCompositeConfiguration("CompositeComponent"));
         scopeContainer.start();
         scopeContainer.onEvent(EventContext.MODULE_START, null);
-        QualifiedName name = new QualifiedName("AggregateComponent/TestService1");
-        AggregateContext componentCtx = (AggregateContext) scopeContainer.getContext("AggregateComponent");
+        scopeContainer.getContext("CompositeComponent");
         scopeContainer.onEvent(EventContext.MODULE_STOP, null);
         scopeContainer.stop();
     }
@@ -139,15 +136,14 @@ public class AggregateScopeTestCase extends TestCase {
      */
     public void testRegisterContextAfterStart() throws Exception {
         EventContext ctx = new EventContextImpl();
-        AggregateContext moduleComponentCtx = new AggregateContextImpl();
+        CompositeContext moduleComponentCtx = new CompositeContextImpl();
         moduleComponentCtx.setName("testMC");
-        AggregateScopeContext scopeContainer = new AggregateScopeContext(ctx);
+        CompositeScopeContext scopeContainer = new CompositeScopeContext(ctx);
         scopeContainer.start();
 
         scopeContainer.onEvent(EventContext.MODULE_START, null);
-        scopeContainer.registerFactory(MockFactory.createAggregateConfiguration("AggregateComponent", moduleComponentCtx));
-        QualifiedName name = new QualifiedName("AggregateComponent/TestService1");
-        AggregateContext componentCtx = (AggregateContext) scopeContainer.getContext("AggregateComponent");
+        scopeContainer.registerFactory(MockFactory.createCompositeConfiguration("CompositeComponent"));
+        scopeContainer.getContext("CompositeComponent");
         scopeContainer.onEvent(EventContext.MODULE_STOP, null);
         scopeContainer.stop();
     }
@@ -155,10 +151,9 @@ public class AggregateScopeTestCase extends TestCase {
     /**
      * Creats an assembly containing a module-scoped component definition, a session-scoped component definition, and a
      * request-scoped component definition
-     * 
-     * @param ctx the parent module context
+     *
      */
-    private List<Extensible> createAssembly(AggregateContext ctx) throws BuilderException {
+    private List<Extensible> createAssembly() throws BuilderException {
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
         SimpleComponent component = MockFactory.createComponent("TestService1", ModuleScopeComponentImpl.class, Scope.MODULE);
         SimpleComponent sessionComponent = MockFactory.createComponent("TestService2", SessionScopeComponentImpl.class,

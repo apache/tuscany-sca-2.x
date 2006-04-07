@@ -38,7 +38,7 @@ public class TestServlet extends GenericServlet {
         }
 
         Object module = getServletContext().getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
-        if (module == null || "org.apache.tuscany.core.context.AggregateContext".equals(module.getClass().getName())) {
+        if (module == null || "org.apache.tuscany.core.context.CompositeContext".equals(module.getClass().getName())) {
             throw new ServletException("Module aggregate not bound to org.apache.tuscany.core.webapp.ModuleComponentContext");
         }
 

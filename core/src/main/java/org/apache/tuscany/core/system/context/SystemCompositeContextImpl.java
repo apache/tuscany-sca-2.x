@@ -46,22 +46,22 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Implements an aggregate context for system components. By default a system context uses the scopes specified by
+ * Implements an composite context for system components. By default a system context uses the scopes specified by
  * {@link org.apache.tuscany.core.system.context.SystemScopeStrategy}. In addition, it implements an autowire policy
  * where entry points configured with a {@link org.apache.tuscany.core.system.assembly.SystemBinding} are matched
- * according to their exposed interface. A system context may contain child aggregate contexts but an entry point in a
+ * according to their exposed interface. A system context may contain child composite contexts but an entry point in a
  * child context will only be outwardly accessible if there is an entry point that exposes it configured in the
  * top-level system context.
  *
  * @version $Rev$ $Date$
  */
-public class SystemAggregateContextImpl extends AbstractContext implements SystemAggregateContext {
+public class SystemCompositeContextImpl extends AbstractContext implements SystemCompositeContext {
 
     public static final int DEFAULT_WAIT = 1000 * 60;
 
     // The parent context, if one exists
     @ParentContext
-    protected AggregateContext parentContext;
+    protected CompositeContext parentContext;
 
     // The parent configuration context, if one exists
     @Autowire(required = false)
@@ -115,7 +115,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     // Constructors
     // ----------------------------------
 
-    public SystemAggregateContextImpl() {
+    public SystemCompositeContextImpl() {
         super();
         scopeIndex = new ConcurrentHashMap<String, ScopeContext>();
         // FIXME the assembly factory should be injected here
@@ -126,9 +126,9 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         this.assemblyFactory = null;
     }
 
-    public SystemAggregateContextImpl(String name, AggregateContext parent, AutowireContext autowire, ScopeStrategy strategy,
-            EventContext ctx, ConfigurationContext configCtx, MonitorFactory factory, StAXLoaderRegistry loaderRegistry,
-            SystemAssemblyFactory assemblyFactory) {
+    public SystemCompositeContextImpl(String name, CompositeContext parent, AutowireContext autowire, ScopeStrategy strategy,
+                                      EventContext ctx, ConfigurationContext configCtx, MonitorFactory factory, StAXLoaderRegistry loaderRegistry,
+                                      SystemAssemblyFactory assemblyFactory) {
         super(name);
         this.parentContext = parent;
         this.autowireContext = autowire;
@@ -190,7 +190,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                     scope.registerFactories(entries.getValue());
                 }
                 for (ScopeContext scope : scopeContexts.values()) {
-                    // register scope contexts as a listeners for events in the aggregate context
+                    // register scope contexts as a listeners for events in the composite context
                     addListener(scope);
                     scope.start();
                 }
@@ -246,11 +246,11 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         this.monitorFactory = factory;
     }
 
-    public AggregateContext getParent() {
+    public CompositeContext getParent() {
         return parentContext;
     }
 
-    public void setParent(AggregateContext context) {
+    public void setParent(CompositeContext context) {
         parentContext = context;
     }
 
@@ -490,7 +490,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
             return instanceInterface.cast(monitorFactory);
         } else if (ConfigurationContext.class.equals(instanceInterface)) {
             return instanceInterface.cast(this);
-        } else if (AggregateContext.class.equals(instanceInterface)) {
+        } else if (CompositeContext.class.equals(instanceInterface)) {
             return instanceInterface.cast(this);
         } else if (AutowireContext.class.equals(instanceInterface)) {
             return instanceInterface.cast(this);
@@ -625,7 +625,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     /**
      * Maps a context name to a scope
      * 
-     * TODO this is a duplicate of aggregate context
+     * TODO this is a duplicate of composite context
      */
     private class NameToScope {
 

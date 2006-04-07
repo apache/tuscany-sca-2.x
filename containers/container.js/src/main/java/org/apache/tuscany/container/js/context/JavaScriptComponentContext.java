@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JavaScriptComponentContext extends AbstractContext implements SimpleComponentContext {
+public class JavaScriptComponentContext extends AbstractContext implements AtomicContext {
 
     private Map<String, Class> services;
 

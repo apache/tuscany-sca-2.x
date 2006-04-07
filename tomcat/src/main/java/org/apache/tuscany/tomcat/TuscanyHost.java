@@ -31,9 +31,9 @@ import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.SystemAggregateContext;
+import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
@@ -83,10 +83,10 @@ public class TuscanyHost extends StandardHost {
 
         // Load and start the system configuration
         try {
-            SystemAggregateContext systemContext = runtime.getSystemContext();
+            SystemCompositeContext systemContext = runtime.getSystemContext();
             ModuleComponentConfigurationLoader loader = BootstrapHelper.getConfigurationLoader(systemContext, modelContext);
             ModuleComponent systemModuleComponent = loader.loadSystemModuleComponent(SYSTEM_MODULE_COMPONENT, SYSTEM_MODULE_COMPONENT);
-            AggregateContext context = BootstrapHelper.registerModule(systemContext, systemModuleComponent);
+            CompositeContext context = BootstrapHelper.registerModule(systemContext, systemModuleComponent);
             context.fireEvent(EventContext.MODULE_START, null);
         } catch (ConfigurationLoadException e) {
             getLogger().warn(sm.getString("runtime.loadSystemFailed"), e);

@@ -16,7 +16,7 @@ package org.apache.tuscany.core.system.config;
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ContextResolver;
-import org.apache.tuscany.core.context.AggregateContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemEntryPointContext;
@@ -35,7 +35,7 @@ public class SystemEntryPointContextFactory implements ContextFactory<EntryPoint
     // the name of the entry point
     private String name;
 
-    private AggregateContext parentContext;
+    private CompositeContext parentContext;
 
     private String targetName;
 
@@ -84,11 +84,11 @@ public class SystemEntryPointContextFactory implements ContextFactory<EntryPoint
         return null;
     }
 
-    public void prepare(AggregateContext parent) {
+    public void prepare(CompositeContext parent) {
         this.parentContext = parent;
     }
 
-    public AggregateContext getCurrentContext() {
+    public CompositeContext getCurrentContext() {
         return parentContext;
     }
 
