@@ -54,11 +54,11 @@ public class RhinoTargetInvoker implements TargetInvoker {
         RhinoScript rhinoScript;
         if (cacheable) {
             if (target == null) {
-                target = (RhinoScript) ((AtomicContext)container.getContext(serviceName)).getImplementationInstance();
+                target = (RhinoScript) ((AtomicContext)container.getContext(serviceName)).getTargetInstance();
             }
             rhinoScript = target;
         } else {
-            rhinoScript = (RhinoScript) ((AtomicContext)container.getContext(serviceName)).getImplementationInstance();
+            rhinoScript = (RhinoScript) ((AtomicContext)container.getContext(serviceName)).getTargetInstance();
         }
         return rhinoScript;
     }

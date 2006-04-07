@@ -38,11 +38,11 @@ public class IntraCompositeWireTestCase extends TestCase {
         context.start();
         context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE, Scope.MODULE));
         context.fireEvent(EventContext.MODULE_START, null);
-        Source source = (Source) ((AtomicContext) context.getContext("source")).getImplementationInstance();
+        Source source = (Source) ((AtomicContext) context.getContext("source")).getTargetInstance();
         Assert.assertNotNull(source);
         Target targetRef = source.getTarget();
         Assert.assertNotNull(targetRef);
-        Target target = (Target) ((AtomicContext) context.getContext("target")).getImplementationInstance();
+        Target target = (Target) ((AtomicContext) context.getContext("target")).getTargetInstance();
         Assert.assertSame(target, targetRef);
         Assert.assertSame(target, source.getTarget());
         context.fireEvent(EventContext.MODULE_STOP, null);
@@ -54,12 +54,12 @@ public class IntraCompositeWireTestCase extends TestCase {
         context.start();
         context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.INSTANCE, Scope.MODULE));
         context.fireEvent(EventContext.MODULE_START, null);
-        Source source = (Source) ((AtomicContext) context.getContext("source")).getImplementationInstance();
+        Source source = (Source) ((AtomicContext) context.getContext("source")).getTargetInstance();
         Assert.assertNotNull(source);
         Target targetRef = source.getTarget();
         Assert.assertNotNull(targetRef);
-        source = (Source) ((AtomicContext) context.getContext("source")).getImplementationInstance();
-        Target target = (Target) ((AtomicContext) context.getContext("target")).getImplementationInstance();
+        source = (Source) ((AtomicContext) context.getContext("source")).getTargetInstance();
+        Target target = (Target) ((AtomicContext) context.getContext("target")).getTargetInstance();
         Assert.assertSame(target, targetRef);
         Assert.assertSame(target, source.getTarget());
         context.fireEvent(EventContext.MODULE_STOP, null);
@@ -71,13 +71,13 @@ public class IntraCompositeWireTestCase extends TestCase {
         context.start();
         context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE, Scope.INSTANCE));
         context.fireEvent(EventContext.MODULE_START, null);
-        Source source = (Source) ((AtomicContext) context.getContext("source")).getImplementationInstance();
+        Source source = (Source) ((AtomicContext) context.getContext("source")).getTargetInstance();
         Assert.assertNotNull(source);
         Target targetRef = source.getTarget();
         Assert.assertNotNull(targetRef);
-        Target target = (Target) ((AtomicContext) context.getContext("target")).getImplementationInstance();
+        Target target = (Target) ((AtomicContext) context.getContext("target")).getTargetInstance();
         Assert.assertNotSame(target, targetRef);
-        Source source2 = (Source) ((AtomicContext) context.getContext("source")).getImplementationInstance();
+        Source source2 = (Source) ((AtomicContext) context.getContext("source")).getTargetInstance();
         // should be the same since the module scope component was alreadyy created and the stateless
         // component will be "attached" to it
         Assert.assertSame(source.getTarget(), source2.getTarget());
@@ -90,9 +90,9 @@ public class IntraCompositeWireTestCase extends TestCase {
         context.start();
         context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE, Scope.MODULE));
         context.fireEvent(EventContext.MODULE_START, null);
-        Source source = (Source) ((AtomicContext) context.getContext("source")).getImplementationInstance();
+        Source source = (Source) ((AtomicContext) context.getContext("source")).getTargetInstance();
         Assert.assertNotNull(source);
-        Target target = (Target) ((AtomicContext) context.getContext("target")).getImplementationInstance();
+        Target target = (Target) ((AtomicContext) context.getContext("target")).getTargetInstance();
         Assert.assertNotNull(target);
         // test setter injection
         List<Target> targets = source.getTargets();

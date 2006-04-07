@@ -49,9 +49,9 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         context.start();
         context.registerModelObject(MockFactory.createModuleWithWiredComponentsOfDifferentInterface(Scope.MODULE, Scope.MODULE));
         context.fireEvent(EventContext.MODULE_START, null);
-        Source source = (Source) ((AtomicContext) context.getContext("source")).getImplementationInstance();
+        Source source = (Source) ((AtomicContext) context.getContext("source")).getTargetInstance();
         Assert.assertNotNull(source);
-        OtherTarget target = (OtherTarget) ((AtomicContext)context.getContext("target")).getImplementationInstance();
+        OtherTarget target = (OtherTarget) ((AtomicContext)context.getContext("target")).getTargetInstance();
         Assert.assertNotNull(target);
         // test setter injection
         List<Target> targets = source.getTargets();

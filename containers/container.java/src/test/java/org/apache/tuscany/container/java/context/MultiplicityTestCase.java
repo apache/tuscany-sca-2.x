@@ -47,9 +47,9 @@ public class MultiplicityTestCase extends TestCase {
         context.start();
         context.registerModelObject(MockFactory.createModuleWithWiredComponents(Scope.MODULE, Scope.MODULE));
         context.fireEvent(EventContext.MODULE_START, null);
-        Source source = (Source) ((AtomicContext) context.getContext("source")).getImplementationInstance();
+        Source source = (Source) ((AtomicContext) context.getContext("source")).getTargetInstance();
         Assert.assertNotNull(source);
-        Target target = (Target) ((AtomicContext)context.getContext("target")).getImplementationInstance();
+        Target target = (Target) ((AtomicContext)context.getContext("target")).getTargetInstance();
         Assert.assertNotNull(target);
         // test setter injection
         List<Target> targets = source.getTargets();

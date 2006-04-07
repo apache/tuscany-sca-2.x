@@ -50,13 +50,13 @@ public class IntraCompositeWireIntegrationTestCase extends TestCase {
         CompositeContext context = (CompositeContext) runtime.getSystemContext().getContext("test.system");
         context.fireEvent(EventContext.MODULE_START, null);
         //context.registerModelObject(module);
-        Source source = (Source) ((AtomicContext)context.getContext("source")).getImplementationInstance();
+        Source source = (Source) ((AtomicContext)context.getContext("source")).getTargetInstance();
         Assert.assertNotNull(source);
         Target targetRef = source.getTarget();
         Assert.assertNotNull(targetRef);
-        Target target = (Target) ((AtomicContext)context.getContext("target")).getImplementationInstance();
+        Target target = (Target) ((AtomicContext)context.getContext("target")).getTargetInstance();
         Assert.assertSame(target, targetRef);
-        Source source2 = (Source) ((AtomicContext)context.getContext("source")).getImplementationInstance();
+        Source source2 = (Source) ((AtomicContext)context.getContext("source")).getTargetInstance();
         Assert.assertSame(target, source2.getTarget());
         context.fireEvent(EventContext.MODULE_STOP, null);
         context.stop();
@@ -91,13 +91,13 @@ public class IntraCompositeWireIntegrationTestCase extends TestCase {
 
         context.fireEvent(EventContext.MODULE_START, null);
         context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE,Scope.MODULE));
-        Source source = (Source) ((AtomicContext)context.getContext("source")).getImplementationInstance();
+        Source source = (Source) ((AtomicContext)context.getContext("source")).getTargetInstance();
         Assert.assertNotNull(source);
         Target targetRef = source.getTarget();
         Assert.assertNotNull(targetRef);
-        Target target = (Target) ((AtomicContext)context.getContext("target")).getImplementationInstance();
+        Target target = (Target) ((AtomicContext)context.getContext("target")).getTargetInstance();
         Assert.assertSame(target, targetRef);
-        Source source2 = (Source) ((AtomicContext)context.getContext("source")).getImplementationInstance();
+        Source source2 = (Source) ((AtomicContext)context.getContext("source")).getTargetInstance();
         Assert.assertSame(target, source2.getTarget());
         context.fireEvent(EventContext.MODULE_STOP, null);
         context.stop();

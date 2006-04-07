@@ -123,7 +123,7 @@ public class SystemComponentContext extends AbstractContext implements AtomicCon
 
     }
 
-    public Object getImplementationInstance() throws TargetException {
+    public Object getTargetInstance() throws TargetException {
         return getInstance(null);
     }
 

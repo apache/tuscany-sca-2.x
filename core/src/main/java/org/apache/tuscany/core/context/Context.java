@@ -96,7 +96,7 @@ public interface Context {
 
 
         /**
-         * Returns the instance associated with the requested name, which may be in a simple or compound form. Atomic (i.e.
+         * Returns the instance associated with the requested name, which may be in a atomic or composite form. Atomic (i.e.
          * leaf) contexts will return an instance associated with the service name part of the compound name, which may be
          * null.
          * <p>
@@ -113,6 +113,6 @@ public interface Context {
          * @see org.apache.tuscany.core.context.CompositeContext
          * @see org.apache.tuscany.model.assembly.EntryPoint
          */
-        Object getInstance(QualifiedName qName) throws TargetException;
+        public Object getInstance(QualifiedName qName) throws TargetException;
 
 }

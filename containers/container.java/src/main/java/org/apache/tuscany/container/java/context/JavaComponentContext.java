@@ -118,7 +118,7 @@ public class JavaComponentContext extends AbstractContext implements AtomicConte
 
     }
 
-    public Object getImplementationInstance() throws TargetException {
+    public Object getTargetInstance() throws TargetException {
         //TODO refactor when getInstance() returns a proxy
         return getInstance(null);
     }

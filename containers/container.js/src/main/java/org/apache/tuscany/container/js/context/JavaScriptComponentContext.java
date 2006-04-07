@@ -89,7 +89,7 @@ public class JavaScriptComponentContext extends AbstractContext implements Atomi
         }
     }
 
-    public Object getImplementationInstance() throws TargetException {
+    public Object getTargetInstance() throws TargetException {
         rhinoInvoker.updateScriptScope(createServiceReferences()); // create references
         rhinoInvoker.updateScriptScope(properties); // create prop values
         return rhinoInvoker;

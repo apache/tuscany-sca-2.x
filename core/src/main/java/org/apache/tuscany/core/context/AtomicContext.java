@@ -17,7 +17,7 @@
 package org.apache.tuscany.core.context;
 
 /**
- * A runtime entity that manages an atomic (i.e. leaf-type) instance.
+ * A runtime entity that manages an atomic (i.e. leaf-type) artifact.
  * 
  * @version $Rev$ $Date$
  */
@@ -40,10 +40,10 @@ public interface AtomicContext extends Context {
     public boolean isDestroyable();
 
     /**
-     * Returns the implementation instance associated with the context. An implementation instance is the actual
+     * Returns the target instance associated with the context. A target instance is the actual
      * object a request is dispatched to sans proxy invocation chain.
      * @throws TargetException
      */
-    public Object getImplementationInstance() throws TargetException;
+    public Object getTargetInstance() throws TargetException;
 
 }
