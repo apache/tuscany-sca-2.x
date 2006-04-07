@@ -101,11 +101,11 @@ public class SystemComponentContext extends AbstractContext implements SimpleCom
                 Object instance = objectFactory.getInstance();
                 startInstance(instance);
                 if (notify) {
-                    for (LifecycleEventListener aContextListener : contextListener) {
-                        aContextListener.onInstanceCreate(this);
+                    for (RuntimeEventListener listener : listeners) {
+                        listener.onEvent(EventContext.CONTEXT_CREATED,this);
                     }
                 }
-                setLifecycleState(RUNNING);
+                lifecycleState = RUNNING;
                 if (stateless) {
                     return instance;
                 } else {
@@ -114,7 +114,7 @@ public class SystemComponentContext extends AbstractContext implements SimpleCom
                     return cachedTargetInstance;
                 }
             } catch (ObjectCreationException e) {
-                setLifecycleState(Context.ERROR);
+                lifecycleState = Context.ERROR;
                 TargetException te = new TargetException("Error creating instance for component", e);
                 te.setIdentifier(getName());
                 throw te;
@@ -144,12 +144,12 @@ public class SystemComponentContext extends AbstractContext implements SimpleCom
             throw new IllegalStateException("Component must be in UNINITIALIZED state [" + getLifecycleState() + "]");
         }
         if (objectFactory == null) {
-            setLifecycleState(ERROR);
+            lifecycleState = ERROR;
             ContextInitException e = new ContextInitException("Object factory not found ");
             e.setIdentifier(getName());
             throw e;
         }
-        setLifecycleState(INITIALIZED);
+        lifecycleState = INITIALIZED;
     }
 
     public void stop() {
@@ -162,7 +162,7 @@ public class SystemComponentContext extends AbstractContext implements SimpleCom
                 }
             }
         }
-        setLifecycleState(STOPPED);
+        lifecycleState = STOPPED;
     }
 
     // ----------------------------------

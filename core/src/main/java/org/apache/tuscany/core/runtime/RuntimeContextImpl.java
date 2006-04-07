@@ -169,7 +169,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         }
     }
 
-    public void registerListener(RuntimeEventListener listener) {
+    public void addListener(RuntimeEventListener listener) {
         assert (listener != null) : "Listener cannot be null";
         listeners.add(listener);
     }

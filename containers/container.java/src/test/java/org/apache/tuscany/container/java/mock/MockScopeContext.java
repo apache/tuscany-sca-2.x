@@ -16,21 +16,14 @@
  */
 package org.apache.tuscany.container.java.mock;
 
+import org.apache.tuscany.container.java.invocation.mock.SimpleTargetImpl;
+import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.context.*;
+import org.apache.tuscany.model.assembly.SimpleComponent;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.tuscany.container.java.invocation.mock.SimpleTargetImpl;
-import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.InstanceContext;
-import org.apache.tuscany.core.context.EventException;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.LifecycleEventListener;
-import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.context.ScopeRuntimeException;
-import org.apache.tuscany.core.context.SimpleComponentContext;
-import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.model.assembly.SimpleComponent;
 
 public class MockScopeContext implements ScopeContext {
 
@@ -51,6 +44,12 @@ public class MockScopeContext implements ScopeContext {
     }
 
     public void stop() {
+    }
+
+    public void addListener(RuntimeEventListener listener) throws ContextRuntimeException {
+    }
+
+    public void removeListener(RuntimeEventListener listener) throws ContextRuntimeException {
     }
 
     public String getName() {
@@ -110,14 +109,6 @@ public class MockScopeContext implements ScopeContext {
 
 
     public void setName(String name) {
-    }
-
-
-    public void addContextListener(LifecycleEventListener listener) {
-    }
-
-
-    public void removeContextListener(LifecycleEventListener listener) {
     }
 
 

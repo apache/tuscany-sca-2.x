@@ -16,21 +16,15 @@
  */
 package org.apache.tuscany.container.js.context;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.tuscany.container.js.rhino.RhinoScript;
-import org.apache.tuscany.core.context.AbstractContext;
-import org.apache.tuscany.core.context.CoreRuntimeException;
-import org.apache.tuscany.core.context.LifecycleEventListener;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.SimpleComponentContext;
-import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.*;
 import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.osoa.sca.ServiceRuntimeException;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class JavaScriptComponentContext extends AbstractContext implements SimpleComponentContext {
 
@@ -103,9 +97,8 @@ public class JavaScriptComponentContext extends AbstractContext implements Simpl
 
     private void notifyListeners(boolean notify) {
         if (notify) {
-            for (Iterator iter = contextListener.iterator(); iter.hasNext();) {
-                LifecycleEventListener listener = (LifecycleEventListener) iter.next();
-                listener.onInstanceCreate(this);
+            for (RuntimeEventListener listener : listeners) {
+                listener.onEvent(EventContext.CONTEXT_CREATED,this);
             }
         }
     }

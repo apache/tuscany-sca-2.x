@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * 
  * @version $Rev$ $Date$
  */
-public class RequestScopeContext extends AbstractScopeContext implements RuntimeEventListener, LifecycleEventListener {
+public class RequestScopeContext extends AbstractScopeContext implements RuntimeEventListener {
 
     // A collection of service component contexts keyed by thread. Note this could have been implemented with a ThreadLocal but
     // using a Map allows finer-grained concurrency.
@@ -44,12 +44,27 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
     }
 
     public void onEvent(int type, Object key) {
-        checkInit();
         /* clean up current context for pooled threads */
-        if (type == EventContext.REQUEST_END) {
-            getEventContext().clearIdentifier(EventContext.HTTP_SESSION);
-            notifyInstanceShutdown(Thread.currentThread());
-            destroyContext();
+        switch(type){
+            case EventContext.REQUEST_END:
+                checkInit();
+                getEventContext().clearIdentifier(EventContext.HTTP_SESSION);
+                notifyInstanceShutdown(Thread.currentThread());
+                destroyContext();
+                break;
+            case EventContext.CONTEXT_CREATED:
+                checkInit();
+                assert(key instanceof Context): "Context must be passed on created event";
+                Context context = (Context)key;
+                if (context instanceof SimpleComponentContext) {
+                    SimpleComponentContext simpleCtx = (SimpleComponentContext)context;
+                    // Queue the context to have its implementation instance released if destroyable
+                    if (simpleCtx.isDestroyable()) {
+                        Queue<SimpleComponentContext> collection = destroyComponents.get(Thread.currentThread());
+                        collection.add(simpleCtx);
+                    }
+                }
+                break;
         }
     }
 
@@ -95,7 +110,7 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
             ContextFactory<InstanceContext> configuration = contextFactorys.get(ctxName);
             if (configuration != null) {
                 ctx = configuration.createContext();
-                ctx.addContextListener(this);
+                ctx.addListener(this);
                 ctx.start();
                 contexts.put(ctx.getName(), ctx);
             }
@@ -137,17 +152,6 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
         destroyComponents.get(key).remove(context);
     }
 
-    public void onInstanceCreate(Context context) {
-        checkInit();
-        if (context instanceof SimpleComponentContext) {
-            SimpleComponentContext simpleCtx = (SimpleComponentContext)context;
-            // Queue the context to have its implementation instance released if destroyable
-            if (simpleCtx.isDestroyable()) {
-                Queue<SimpleComponentContext> collection = destroyComponents.get(Thread.currentThread());
-                collection.add(simpleCtx);
-            }
-        }
-    }
 
     /**
      * Returns an array of {@link SimpleComponentContext}s representing components that need to be notified of scope shutdown.
@@ -185,7 +189,7 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
             Queue<SimpleComponentContext> shutdownQueue = new ConcurrentLinkedQueue<SimpleComponentContext>();
             for (ContextFactory<InstanceContext> config : contextFactorys.values()) {
                 InstanceContext context = config.createContext();
-                context.addContextListener(this);
+                context.addListener(this);
                 context.start();
                 contexts.put(context.getName(), context);
             }

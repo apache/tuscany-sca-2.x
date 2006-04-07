@@ -96,11 +96,11 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
                 Object instance = objectFactory.getInstance();
                 startInstance(instance);
                 if (notify) {
-                    for (LifecycleEventListener aContextListener : contextListener) {
-                        aContextListener.onInstanceCreate(this);
+                    for (RuntimeEventListener listener : listeners) {
+                        listener.onEvent(EventContext.CONTEXT_CREATED,this);
                     }
                 }
-                setLifecycleState(RUNNING);
+                lifecycleState = RUNNING;
                 if (stateless) {
                     return instance;
                 } else {
@@ -109,7 +109,7 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
                     return cachedTargetInstance;
                 }
             } catch (ObjectCreationException e) {
-                setLifecycleState(Context.ERROR);
+                lifecycleState = ERROR;
                 TargetException te = new TargetException("Error creating instance for component", e);
                 te.setIdentifier(getName());
                 throw te;
@@ -136,16 +136,16 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
             throw new IllegalStateException("Context must be in UNINITIALIZED state [" + getLifecycleState() + "]");
         }
         if (objectFactory == null) {
-            setLifecycleState(ERROR);
+            lifecycleState = ERROR;
             ContextInitException e = new ContextInitException("Object factory not found");
             e.setIdentifier(getName());
             throw e;
         }
-        setLifecycleState(INITIALIZED);
+        lifecycleState = INITIALIZED;
     }
 
     public void stop() {
-        setLifecycleState(STOPPING);
+        lifecycleState = STOPPING;
         if (cachedTargetInstance != null) {
             if (destroyInvoker != null) {
                 try {
@@ -157,7 +157,7 @@ public class JavaComponentContext extends AbstractContext implements SimpleCompo
                 }
             }
         }
-        setLifecycleState(STOPPED);
+        lifecycleState = STOPPED;
     }
 
     private void startInstance(Object instance) throws TargetException {

@@ -19,7 +19,6 @@ import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import javax.wsdl.Part;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -64,9 +63,6 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
 
     // A component context name to scope context index
     protected Map<String, ScopeContext> scopeIndex;
-
-    // Listeners for context events
-    protected List<RuntimeEventListener> listeners = new CopyOnWriteArrayList<RuntimeEventListener>();
 
     // Blocking latch to ensure the module is initialized exactly once prior to servicing requests
     protected CountDownLatch initializeLatch = new CountDownLatch(1);
@@ -137,7 +133,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 initializeProxies();
                 for (ScopeContext scope : scopeContexts.values()) {
                     // register scope contexts as a listeners for events in the aggregate context
-                    registerListener(scope);
+                    addListener(scope);
                     scope.start();
                 }
                 lifecycleState = RUNNING;
@@ -413,11 +409,6 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
             configurations.put(configuration.getName(), configuration);
         }
 
-    }
-
-    public void registerListener(RuntimeEventListener listener) {
-        assert (listener != null) : "Listener cannot be null";
-        listeners.add(listener);
     }
 
     public void fireEvent(int eventType, Object message) throws EventException {

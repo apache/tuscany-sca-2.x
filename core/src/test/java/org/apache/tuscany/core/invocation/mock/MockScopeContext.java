@@ -45,6 +45,12 @@ public class MockScopeContext implements ScopeContext {
     public void stop() {
     }
 
+    public void addListener(RuntimeEventListener listener) throws ContextRuntimeException {
+    }
+
+    public void removeListener(RuntimeEventListener listener) throws ContextRuntimeException {
+    }
+
     public String getName() {
         return "Mock Scope Container";
     }
@@ -104,13 +110,6 @@ public class MockScopeContext implements ScopeContext {
     public void setName(String name) {
     }
 
-
-    public void addContextListener(LifecycleEventListener listener) {
-    }
-
-
-    public void removeContextListener(LifecycleEventListener listener) {
-    }
 
 
 }

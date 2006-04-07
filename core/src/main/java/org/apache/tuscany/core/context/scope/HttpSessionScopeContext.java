@@ -29,17 +29,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * 
  * @version $Rev$ $Date$
  */
-public class HttpSessionScopeContext extends AbstractScopeContext implements RuntimeEventListener, LifecycleEventListener {
+public class HttpSessionScopeContext extends AbstractScopeContext implements RuntimeEventListener {
 
     // The collection of service component contexts keyed by session
     private Map<Object, Map<String, InstanceContext>> contexts;
 
     // Stores ordered lists of contexts to shutdown keyed by session
     private Map<Object, Queue<SimpleComponentContext>> destroyableContexts;
-
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
 
     public HttpSessionScopeContext(EventContext eventContext) {
         super(eventContext);
@@ -68,13 +64,32 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
     }
 
     public void onEvent(int type, Object key) {
-        checkInit();
         if (key == null) {
             return;
         }
-        if (type == EventContext.SESSION_END) {
-            notifyInstanceShutdown(key);
-            destroyComponentContext(key);
+        switch(type){
+            case EventContext.SESSION_END:
+                checkInit();
+                notifyInstanceShutdown(key);
+                destroyComponentContext(key);
+                break;
+            case EventContext.CONTEXT_CREATED:
+                checkInit();
+                if (key instanceof SimpleComponentContext) {
+                     SimpleComponentContext simpleCtx = (SimpleComponentContext)key;
+                     // if destroyable, queue the context to have its component implementation instance released
+                     if (simpleCtx.isDestroyable()) {
+                         Object sessionKey = getEventContext().getIdentifier(EventContext.HTTP_SESSION);
+                         Queue<SimpleComponentContext> comps = destroyableContexts.get(sessionKey);
+                         if (comps == null) {
+                             ScopeRuntimeException e = new ScopeRuntimeException("Shutdown queue not found for key");
+                             e.setIdentifier(sessionKey.toString());
+                             throw e;
+                         }
+                         comps.add(simpleCtx);
+                     }
+                }
+                break;
         }
     }
 
@@ -102,7 +117,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
             ContextFactory<InstanceContext> configuration = contextFactorys.get(ctxName);
             if (configuration != null) {
                 ctx = configuration.createContext();
-                ctx.addContextListener(this);
+                ctx.addListener(this);
                 ctx.start();
                 ctxs.put(ctx.getName(), ctx);
             }
@@ -146,23 +161,6 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
         definitions.remove(ctxName);
     }
 
-    public void onInstanceCreate(Context context) throws ScopeRuntimeException {
-        checkInit();
-        if (context instanceof SimpleComponentContext) {
-            SimpleComponentContext simpleCtx = (SimpleComponentContext)context;
-            // if destroyable, queue the context to have its component implementation instance released
-            if (simpleCtx.isDestroyable()) {
-                Object key = getEventContext().getIdentifier(EventContext.HTTP_SESSION);
-                Queue<SimpleComponentContext> comps = destroyableContexts.get(key);
-                if (comps == null) {
-                    ScopeRuntimeException e = new ScopeRuntimeException("Shutdown queue not found for key");
-                    e.setIdentifier(key.toString());
-                    throw e;
-                }
-                comps.add(simpleCtx);
-            }
-        }
-    }
 
     /**
      * Returns an array of {@link SimpleComponentContext}s representing components that need to be notified of scope shutdown or
@@ -201,7 +199,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
         Map<String, InstanceContext> sessionContext = new ConcurrentHashMap<String, InstanceContext>(contextFactorys.size());
         for (ContextFactory<InstanceContext> config : contextFactorys.values()) {
             InstanceContext context = config.createContext();
-            context.addContextListener(this);
+            context.addListener(this);
             context.start();
             sessionContext.put(context.getName(), context);
         }

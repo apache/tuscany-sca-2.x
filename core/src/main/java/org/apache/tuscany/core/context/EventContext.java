@@ -45,6 +45,8 @@ public interface EventContext {
     
     public static final int SYSTEM_STOP = 8;
 
+    public static final int CONTEXT_CREATED = 9;
+
     /* An identifier type associated with an HTTP session */
     public static final Object HTTP_SESSION = new Object();
 

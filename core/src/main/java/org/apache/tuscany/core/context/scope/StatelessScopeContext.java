@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 
  * @version $Rev$ $Date$
  */
-public class StatelessScopeContext extends AbstractScopeContext implements RuntimeEventListener, LifecycleEventListener {
+public class StatelessScopeContext extends AbstractScopeContext implements RuntimeEventListener {
 
    // Component contexts keyed by name
     private Map<String, InstanceContext> contextMap;
@@ -94,10 +94,6 @@ public class StatelessScopeContext extends AbstractScopeContext implements Runti
         return null;
     }
 
-    public void onInstanceCreate(Context component) {
-        // do nothing
-    }
-
     private void prepare() throws CoreRuntimeException {
         if (lifecycleState != RUNNING) {
             throw new IllegalStateException("Scope not in INITIALIZED state [" + lifecycleState + "]");
@@ -107,7 +103,7 @@ public class StatelessScopeContext extends AbstractScopeContext implements Runti
             for (ContextFactory<InstanceContext> config : contextFactorys.values()) {
                 for (int i = 0; i < contextFactorys.size(); i++) {
                     InstanceContext context = config.createContext();
-                    context.addContextListener(this);
+                    context.addListener(this);
                     context.start();
                     contextMap.put(context.getName(), context);
                 }

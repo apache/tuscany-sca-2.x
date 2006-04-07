@@ -191,7 +191,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 }
                 for (ScopeContext scope : scopeContexts.values()) {
                     // register scope contexts as a listeners for events in the aggregate context
-                    registerListener(scope);
+                    addListener(scope);
                     scope.start();
                 }
                 lifecycleState = RUNNING;
@@ -236,10 +236,6 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         assert (module != null) : "Module cannot be null";
         name = module.getName();
         this.module = module;
-    }
-
-    public void addContextListener(LifecycleEventListener listener) {
-        super.addContextListener(listener);
     }
 
     public void setEventContext(EventContext eventContext) {
@@ -398,7 +394,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
 
     }
 
-    public void registerListener(RuntimeEventListener listener) {
+    public void addListener(RuntimeEventListener listener) {
         assert (listener != null) : "Listener cannot be null";
         listeners.add(listener);
     }

@@ -49,18 +49,17 @@ public abstract class AbstractContext implements Context {
         return lifecycleState;
     }
 
-    public void setLifecycleState(int state) {
-        lifecycleState = state;
+    // Listeners for context events
+    protected List<RuntimeEventListener> listeners = new CopyOnWriteArrayList<RuntimeEventListener>();
+
+    public void addListener(RuntimeEventListener listener) {
+        assert (listener != null) : "Listener cannot be null";
+        listeners.add(listener);
     }
 
-    protected List<LifecycleEventListener> contextListener = new CopyOnWriteArrayList<LifecycleEventListener>();
-
-    public void addContextListener(LifecycleEventListener listener) {
-        contextListener.add(listener);
-    }
-
-    public void removeContextListener(LifecycleEventListener listener) {
-        contextListener.remove(listener);
+    public void removeListener(RuntimeEventListener listener) {
+        assert (listener != null) : "Listener cannot be null";
+        listeners.remove(listener);
     }
 
     public String toString() {

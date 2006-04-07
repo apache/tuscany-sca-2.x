@@ -56,7 +56,7 @@ public interface Context {
 
     /**
      * Returns the lifecycle state
-     * 
+     *
      * @see #UNINITIALIZED
      * @see #INITIALIZING
      * @see #INITIALIZED
@@ -68,27 +68,27 @@ public interface Context {
 
     /**
      * Starts the container
-     * 
+     *
      * @throws CoreRuntimeException
      */
     public void start() throws CoreRuntimeException;
 
     /**
      * Stops the container
-     * 
+     *
      * @throws CoreRuntimeException
      */
     public void stop() throws CoreRuntimeException;
 
     /**
-     * Registers a listener for context events
+     * Registers a listener to receive notifications for the context
+     *
+     * @throws ContextRuntimeException if an error occurs during registration
      */
-    public void addContextListener(LifecycleEventListener listener);
+    public void addListener(RuntimeEventListener listener) throws ContextRuntimeException;
 
-    /**
-     * Deregisters a context event listener
-     */
-    public void removeContextListener(LifecycleEventListener listener);
+    public void removeListener(RuntimeEventListener listener) throws ContextRuntimeException;
+
 
 }
 

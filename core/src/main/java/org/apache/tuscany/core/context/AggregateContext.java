@@ -23,7 +23,7 @@ public interface AggregateContext extends InstanceContext {
      * Propagates an event to registered listeners. All lifecycle events will be propagated to children in the order
      * that they were registered. Listeners are expected to be well-behaved and if an exception is thrown the
      * notification process will be aborted.
-     * 
+     *
      * @param pEventType the type of event. Basic types are defined in {@link EventContext}
      * @param pMessage the message associated with the event or null
      * @throws EventException if an error occurs while sending the event
@@ -32,10 +32,10 @@ public interface AggregateContext extends InstanceContext {
 
     /**
      * Registers a listener to receive notifications for the context
-     * 
+     *
      * @throws ContextRuntimeException if an error occurs during registration
      */
-    public void registerListener(RuntimeEventListener listener) throws ContextRuntimeException;
+    public void addListener(RuntimeEventListener listener) throws ContextRuntimeException;
 
     /**
      * Adds runtime artifacts represented by the set of model objects to the aggregate context by merging them with

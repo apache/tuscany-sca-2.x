@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * 
  * @version $Rev$ $Date$
  */
-public class ModuleScopeContext extends AbstractScopeContext implements RuntimeEventListener, LifecycleEventListener {
+public class ModuleScopeContext extends AbstractScopeContext implements RuntimeEventListener {
 
     // Component contexts in this scope keyed by name
     private Map<String, InstanceContext> componentContexts;
@@ -42,11 +42,24 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
     }
 
      public void onEvent(int type, Object key) {
-        if (type == EventContext.MODULE_START) {
-            lifecycleState = RUNNING;
-            initComponentContexts();
-        } else if (type == EventContext.MODULE_STOP) {
-            notifyInstanceShutdown(key);
+         switch(type){
+             case EventContext.MODULE_START:
+                lifecycleState = RUNNING;
+                initComponentContexts();
+                break;
+            case EventContext.MODULE_STOP:
+                notifyInstanceShutdown(key);
+                break;
+            case EventContext.CONTEXT_CREATED:
+                checkInit();
+                if (key instanceof SimpleComponentContext) {
+                    SimpleComponentContext serviceContext = (SimpleComponentContext) key;
+                    // Queue the context to have its implementation instance released if destroyable
+                    if (serviceContext.isDestroyable()) {
+                        destroyableContexts.add(serviceContext);
+                    }
+                }
+                break;
         }
     }
 
@@ -100,17 +113,6 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
         removeContext(ctxName);
     }
 
-    public void onInstanceCreate(Context context) {
-        checkInit();
-        if (context instanceof SimpleComponentContext) {
-            SimpleComponentContext serviceContext = (SimpleComponentContext) context;
-            // Queue the context to have its implementation instance released if destroyable
-            if (serviceContext.isDestroyable()) {
-                destroyableContexts.add(serviceContext);
-            }
-        }
-    }
-
     /**
      * Returns an array of {@link SimpleComponentContext}s representing components that need to be notified of scope shutdown.
      */
@@ -129,7 +131,7 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
             destroyableContexts = new ConcurrentLinkedQueue<SimpleComponentContext>();
             for (ContextFactory<InstanceContext> config : contextFactorys.values()) {
                 InstanceContext context = config.createContext();
-                context.addContextListener(this);
+                context.addListener(this);
                 context.start();
                 componentContexts.put(context.getName(), context);
             }
