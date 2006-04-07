@@ -30,7 +30,7 @@ import org.apache.tuscany.container.java.mock.components.SessionScopeInitOnlyCom
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.RequestScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
@@ -111,7 +111,7 @@ public class RequestScopeLifecycleTestCase extends TestCase {
 
     JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
-    private List<ContextFactory<InstanceContext>> createComponents() throws BuilderException {
+    private List<ContextFactory<Context>> createComponents() throws BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
         ca[0] = MockFactory.createComponent("TestServiceInitDestroy", SessionScopeInitDestroyComponent.class,
                 Scope.REQUEST);
@@ -119,25 +119,25 @@ public class RequestScopeLifecycleTestCase extends TestCase {
                 Scope.REQUEST);
         ca[2] = MockFactory.createComponent("TestServiceDestroyOnly", SessionScopeDestroyOnlyComponent.class,
                 Scope.REQUEST);
-        List<ContextFactory<InstanceContext>> configs = new ArrayList<ContextFactory<InstanceContext>>();
+        List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
         for (SimpleComponent aCa : ca) {
             builder.build(aCa);
-            configs.add((ContextFactory<InstanceContext>) aCa.getComponentImplementation().getContextFactory());
+            configs.add((ContextFactory<Context>) aCa.getComponentImplementation().getContextFactory());
 
         }
         return configs;
     }
 
-    private List<ContextFactory<InstanceContext>> createOrderedInitComponents() throws
+    private List<ContextFactory<Context>> createOrderedInitComponents() throws
             BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
         ca[0] = MockFactory.createComponent("one", OrderedInitPojo.class, Scope.REQUEST);
         ca[1] = MockFactory.createComponent("two", OrderedInitPojo.class, Scope.REQUEST);
         ca[2] = MockFactory.createComponent("three", OrderedInitPojo.class, Scope.REQUEST);
-        List<ContextFactory<InstanceContext>> configs = new ArrayList<ContextFactory<InstanceContext>>();
+        List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
         for (SimpleComponent aCa : ca) {
             builder.build(aCa);
-            configs.add((ContextFactory<InstanceContext>) aCa.getComponentImplementation().getContextFactory());
+            configs.add((ContextFactory<Context>) aCa.getComponentImplementation().getContextFactory());
 
         }
         return configs;

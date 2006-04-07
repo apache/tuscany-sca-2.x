@@ -1,7 +1,7 @@
 package org.apache.tuscany.core.builder;
 
 import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.model.assembly.Scope;
 
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Implementations serve the dual purpose of creating instances of {@link org.apache.tuscany.core.context.InstanceContext} based
+ * Implementations serve the dual purpose of creating instances of {@link org.apache.tuscany.core.context.Context} based
  * on a compiled configuration such as a logical assembly model and holding a
  * {@link org.apache.tuscany.core.invocation.spi.ProxyFactory} for the instance type associated with the context.
  * <p>
@@ -25,7 +25,7 @@ import java.util.Map;
  * 
  * @version $Rev: 385747 $ $Date: 2006-03-13 22:12:53 -0800 (Mon, 13 Mar 2006) $
  */
-public interface ContextFactory<T extends InstanceContext> {
+public interface ContextFactory<T extends Context> {
 
     /**
      * Creates a <code>Context</code> based on configuration supplied by a logical model assembly

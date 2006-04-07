@@ -75,7 +75,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
     // protected ModuleComponent moduleComponent;
     protected Module module;
 
-    protected List<ContextFactory<InstanceContext>> configurations = new ArrayList<ContextFactory<InstanceContext>>();
+    protected List<ContextFactory<Context>> configurations = new ArrayList<ContextFactory<Context>>();
 
     protected ScopeStrategy scopeStrategy;
 
@@ -157,9 +157,9 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 lifecycleState = INITIALIZING;
                 initializeScopes();
 
-                Map<Scope, List<ContextFactory<InstanceContext>>> configurationsByScope = new HashMap<Scope, List<ContextFactory<InstanceContext>>>();
+                Map<Scope, List<ContextFactory<Context>>> configurationsByScope = new HashMap<Scope, List<ContextFactory<Context>>>();
                 if (configurations != null) {
-                    for (ContextFactory<InstanceContext> config : configurations) {
+                    for (ContextFactory<Context> config : configurations) {
                         // FIXME scopes are defined at the interface level
                         Scope scope = config.getScope();
                         // ensure duplicate names were not added before the context was started
@@ -167,9 +167,9 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                             throw new DuplicateNameException(config.getName());
                         }
                         scopeIndex.put(config.getName(), scopeContexts.get(scope));
-                        List<ContextFactory<InstanceContext>> list = configurationsByScope.get(scope);
+                        List<ContextFactory<Context>> list = configurationsByScope.get(scope);
                         if (list == null) {
-                            list = new ArrayList<ContextFactory<InstanceContext>>();
+                            list = new ArrayList<ContextFactory<Context>>();
                             configurationsByScope.put(scope, list);
                         }
                         list.add(config);
@@ -184,7 +184,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 for (ExternalService es : module.getExternalServices()) {
                     registerAutowire(es);
                 }
-                for (Map.Entry<Scope, List<ContextFactory<InstanceContext>>> entries : configurationsByScope.entrySet()) {
+                for (Map.Entry<Scope, List<ContextFactory<Context>>> entries : configurationsByScope.entrySet()) {
                     // register configurations with scope contexts
                     ScopeContext scope = scopeContexts.get(entries.getKey());
                     scope.registerFactories(entries.getValue());
@@ -284,14 +284,14 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 throw e;
             }
         }
-        ContextFactory<InstanceContext> configuration;
+        ContextFactory<Context> configuration;
         if (model instanceof Module) {
             // merge new module definition with the existing one
             Module oldModule = module;
             Module newModule = (Module) model;
             module = newModule;
             for (Component component : newModule.getComponents()) {
-                configuration = (ContextFactory<InstanceContext>) component.getComponentImplementation().getContextFactory();
+                configuration = (ContextFactory<Context>) component.getComponentImplementation().getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new ConfigurationException("Runtime configuration not set");
                     e.addContextName(component.getName());
@@ -302,7 +302,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 registerAutowire(component);
             }
             for (EntryPoint ep : newModule.getEntryPoints()) {
-                configuration = (ContextFactory<InstanceContext>) ep.getConfiguredReference().getContextFactory();
+                configuration = (ContextFactory<Context>) ep.getConfiguredReference().getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new ConfigurationException("Runtime configuration not set");
                     e.setIdentifier(ep.getName());
@@ -313,7 +313,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
                 registerAutowire(ep);
             }
             for (ExternalService service : newModule.getExternalServices()) {
-                configuration = (ContextFactory<InstanceContext>) service.getConfiguredService().getContextFactory();
+                configuration = (ContextFactory<Context>) service.getConfiguredService().getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new ConfigurationException("Runtime configuration not set");
                     e.setIdentifier(service.getName());
@@ -331,15 +331,15 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
             if (model instanceof Component) {
                 Component component = (Component) model;
                 module.getComponents().add(component);
-                configuration = (ContextFactory<InstanceContext>) component.getComponentImplementation().getContextFactory();
+                configuration = (ContextFactory<Context>) component.getComponentImplementation().getContextFactory();
             } else if (model instanceof EntryPoint) {
                 EntryPoint ep = (EntryPoint) model;
                 module.getEntryPoints().add(ep);
-                configuration = (ContextFactory<InstanceContext>) ep.getConfiguredReference().getContextFactory();
+                configuration = (ContextFactory<Context>) ep.getConfiguredReference().getContextFactory();
             } else if (model instanceof ExternalService) {
                 ExternalService service = (ExternalService) model;
                 module.getExternalServices().add(service);
-                configuration = (ContextFactory<InstanceContext>) service.getConfiguredService().getContextFactory();
+                configuration = (ContextFactory<Context>) service.getConfiguredService().getContextFactory();
             } else {
                 BuilderConfigException e = new BuilderConfigException("Unknown model type");
                 e.setIdentifier(model.getClass().getName());
@@ -368,7 +368,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         autowireIndex.put(service, mapping);
     }
 
-    protected void registerConfiguration(ContextFactory<InstanceContext> factory) throws ConfigurationException {
+    protected void registerConfiguration(ContextFactory<Context> factory) throws ConfigurationException {
         factory.prepare(this);
         if (lifecycleState == RUNNING) {
             if (scopeIndex.get(factory.getName()) != null) {
@@ -413,7 +413,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         }
     }
 
-    public InstanceContext getContext(String componentName) {
+    public Context getContext(String componentName) {
         checkInit();
         assert (componentName != null) : "Name was null";
         ScopeContext scope = scopeIndex.get(componentName);
@@ -435,7 +435,7 @@ public class SystemAggregateContextImpl extends AbstractContext implements Syste
         if (scope == null) {
             return null;
         }
-        InstanceContext ctx = scope.getContext(qName.getPortName());
+        Context ctx = scope.getContext(qName.getPortName());
         if (!(ctx instanceof EntryPointContext)) {
             TargetException e = new TargetException("Target not an entry point");
             e.setIdentifier(qName.getQualifiedName());

@@ -21,7 +21,7 @@ import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemComponentContext;
@@ -52,7 +52,7 @@ public class SystemObjectContextFactory implements ContextFactory {
         objectFactory = new SingletonObjectFactory<Object>(instance);
     }
 
-    public InstanceContext createContext() throws ContextCreationException {
+    public Context createContext() throws ContextCreationException {
         return new SystemComponentContext(name, objectFactory, false, null, null, false);
     }
 

@@ -8,7 +8,7 @@ import org.apache.tuscany.container.js.config.JavaScriptContextFactory;
 import org.apache.tuscany.container.js.mock.MockAssemblyFactory;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
@@ -31,7 +31,7 @@ public class JSContextFactoryBuilderTestCase extends TestCase {
         component.initialize(new AssemblyModelContextImpl(new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(null), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader())));
         jsBuilder.build(component);
         ModuleScopeContext context = new ModuleScopeContext(new EventContextImpl());
-        ContextFactory<InstanceContext> contextFactory = (ContextFactory) component.getComponentImplementation()
+        ContextFactory<Context> contextFactory = (ContextFactory) component.getComponentImplementation()
                 .getContextFactory();
         context.registerFactory(contextFactory);
         context.start();
@@ -40,7 +40,7 @@ public class JSContextFactoryBuilderTestCase extends TestCase {
             jsWireBuilder.completeTargetChain(proxyFactory, JavaScriptContextFactory.class, context);
             proxyFactory.initialize();
         }
-        InstanceContext ctx = contextFactory.createContext();
+        Context ctx = contextFactory.createContext();
         HelloWorldService hello = (HelloWorldService) ctx.getInstance(new QualifiedName("foo/HelloWorldService"));
         Assert.assertNotNull(hello);
         Assert.assertEquals("Hello foo", hello.hello("foo"));

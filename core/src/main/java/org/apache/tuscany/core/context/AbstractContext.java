@@ -24,7 +24,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class AbstractContext implements InstanceContext {
+public abstract class AbstractContext implements Context {
 
     public AbstractContext() {
     }

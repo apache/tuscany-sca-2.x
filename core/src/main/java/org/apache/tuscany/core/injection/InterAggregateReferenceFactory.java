@@ -16,7 +16,7 @@ package org.apache.tuscany.core.injection;
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.TargetException;
 
@@ -57,7 +57,7 @@ public class InterAggregateReferenceFactory<T> implements ObjectFactory<T> {
                 if (ctx == null) {
                     break; // reached top of context hierarchy
                 }
-                InstanceContext compContext = ctx.getContext(targetQualifiedName.getPartName());
+                Context compContext = ctx.getContext(targetQualifiedName.getPartName());
                 if (compContext != null) {
                     o = compContext.getInstance(targetQualifiedName);
                     if (o != null) {

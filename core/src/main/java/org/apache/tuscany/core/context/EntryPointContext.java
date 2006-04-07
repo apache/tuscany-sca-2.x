@@ -52,7 +52,7 @@ package org.apache.tuscany.core.context;
  * 
  * @version $Rev$ $Date$
  */
-public interface EntryPointContext extends InstanceContext {
+public interface EntryPointContext extends Context {
 
     /**
      * Returns the handler responsible for flowing a request through the entry point

@@ -21,7 +21,7 @@ package org.apache.tuscany.core.context;
  * 
  * @version $Rev$ $Date$
  */
-public interface SimpleComponentContext extends InstanceContext {
+public interface SimpleComponentContext extends Context {
 
     /**
      * Returns whether a the context should be eagerly initialized

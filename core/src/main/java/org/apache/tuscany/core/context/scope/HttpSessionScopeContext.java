@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class HttpSessionScopeContext extends AbstractScopeContext implements RuntimeEventListener {
 
     // The collection of service component contexts keyed by session
-    private Map<Object, Map<String, InstanceContext>> contexts;
+    private Map<Object, Map<String, Context>> contexts;
 
     // Stores ordered lists of contexts to shutdown keyed by session
     private Map<Object, Queue<SimpleComponentContext>> destroyableContexts;
@@ -47,7 +47,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
             throw new IllegalStateException("Scope container must be in UNINITIALIZED state");
         }
         super.start();
-        contexts = new ConcurrentHashMap<Object, Map<String, InstanceContext>>();
+        contexts = new ConcurrentHashMap<Object, Map<String, Context>>();
         destroyableContexts = new ConcurrentHashMap<Object, Queue<SimpleComponentContext>>();
         lifecycleState = RUNNING;
     }
@@ -97,24 +97,24 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
         return true;
     }
 
-    public void registerFactory(ContextFactory<InstanceContext> configuration) {
+    public void registerFactory(ContextFactory<Context> configuration) {
         contextFactorys.put(configuration.getName(), configuration);
     }
 
-    public InstanceContext getContext(String ctxName) {
+    public Context getContext(String ctxName) {
         checkInit();
         if (ctxName == null) {
             return null;
         }
         // try{
-        Map<String, InstanceContext> ctxs = getSessionContext();
+        Map<String, Context> ctxs = getSessionContext();
         if (ctxs == null) {
             return null;
         }
-        InstanceContext ctx = ctxs.get(ctxName);
+        Context ctx = ctxs.get(ctxName);
         if (ctx == null) {
             // the configuration was added after the session had started, so create a context now and start it
-            ContextFactory<InstanceContext> configuration = contextFactorys.get(ctxName);
+            ContextFactory<Context> configuration = contextFactorys.get(ctxName);
             if (configuration != null) {
                 ctx = configuration.createContext();
                 ctx.addListener(this);
@@ -125,7 +125,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
         return ctx;
     }
 
-    public InstanceContext getContextByKey(String ctxName, Object key) {
+    public Context getContextByKey(String ctxName, Object key) {
         checkInit();
         if (key == null && ctxName == null) {
             return null;
@@ -134,7 +134,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
         if (components == null) {
             return null;
         }
-        return (InstanceContext) components.get(ctxName);
+        return (Context) components.get(ctxName);
     }
 
     public void removeContext(String ctxName) {
@@ -153,8 +153,8 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
             return;
         }
         components.remove(ctxName);
-        Map<String, InstanceContext> definitions = contexts.get(key);
-        InstanceContext ctx = definitions.get(ctxName);
+        Map<String, Context> definitions = contexts.get(key);
+        Context ctx = definitions.get(ctxName);
         if (ctx != null){
             destroyableContexts.get(key).remove(ctx);
         }
@@ -166,7 +166,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
      * Returns an array of {@link SimpleComponentContext}s representing components that need to be notified of scope shutdown or
      * null if none found.
      */
-    protected InstanceContext[] getShutdownContexts(Object key) {
+    protected Context[] getShutdownContexts(Object key) {
         /*
          * This method will be called from the Listener which is associated with a different thread than the request. So, just
          * grab the key directly
@@ -187,18 +187,18 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
     /**
      * Returns and, if necessary, creates a context for the current sesion
      */
-    private Map<String, InstanceContext> getSessionContext() throws CoreRuntimeException {
+    private Map<String, Context> getSessionContext() throws CoreRuntimeException {
         Object key = getEventContext().getIdentifier(EventContext.HTTP_SESSION);
         if (key == null) {
             throw new ScopeRuntimeException("Session key not set in request context");
         }
-        Map<String, InstanceContext> m = contexts.get(key);
+        Map<String, Context> m = contexts.get(key);
         if (m != null) {
             return m; // already created, return
         }
-        Map<String, InstanceContext> sessionContext = new ConcurrentHashMap<String, InstanceContext>(contextFactorys.size());
-        for (ContextFactory<InstanceContext> config : contextFactorys.values()) {
-            InstanceContext context = config.createContext();
+        Map<String, Context> sessionContext = new ConcurrentHashMap<String, Context>(contextFactorys.size());
+        for (ContextFactory<Context> config : contextFactorys.values()) {
+            Context context = config.createContext();
             context.addListener(this);
             context.start();
             sessionContext.put(context.getName(), context);
@@ -209,7 +209,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
         destroyableContexts.put(key, shutdownQueue);
         // initialize eager components. Note this cannot be done when we initially create each context since a component may
         // contain a forward reference to a component which has not been instantiated
-        for (InstanceContext context : sessionContext.values()) {
+        for (Context context : sessionContext.values()) {
             if (context instanceof SimpleComponentContext) {
                 SimpleComponentContext simpleCtx = (SimpleComponentContext) context;
                 if (simpleCtx.isEagerInit()) {

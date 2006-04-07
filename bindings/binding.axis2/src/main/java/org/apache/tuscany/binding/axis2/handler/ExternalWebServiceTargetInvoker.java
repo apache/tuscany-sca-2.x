@@ -51,7 +51,7 @@ public class ExternalWebServiceTargetInvoker implements TargetInvoker {
 
     public Object invokeTarget(Object payload) throws InvocationTargetException {
         if (context == null) {
-            InstanceContext iContext = container.getContext(esName);
+            Context iContext = container.getContext(esName);
             if (!(iContext instanceof ExternalServiceContext)) {
                 TargetException te = new TargetException("Unexpected target context type");
                 te.setIdentifier(iContext.getClass().getName());

@@ -42,7 +42,7 @@ public class SystemEntryPointContext extends AbstractContext implements EntryPoi
     public Object getInstance(QualifiedName qName) throws TargetException {
         try {
             if (cachedInstance == null) {
-                InstanceContext ctx = resolver.getCurrentContext().getContext(targetName.getPartName());
+                Context ctx = resolver.getCurrentContext().getContext(targetName.getPartName());
                 if (ctx == null){
                     return null;
                 }

@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AggregateScopeContext extends AbstractContext implements ScopeContext {
 
-    private List<ContextFactory<InstanceContext>> configs = new ArrayList<ContextFactory<InstanceContext>>();
+    private List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
 
     // Aggregate component contexts in this scope keyed by name
     private Map<String, AggregateContext> contexts = new ConcurrentHashMap<String, AggregateContext>();
@@ -46,8 +46,8 @@ public class AggregateScopeContext extends AbstractContext implements ScopeConte
     }
 
     public void start() throws ScopeInitializationException {
-        for (ContextFactory<InstanceContext> configuration : configs) {
-            InstanceContext context = configuration.createContext();
+        for (ContextFactory<Context> configuration : configs) {
+            Context context = configuration.createContext();
             if (!(context instanceof AggregateContext)) {
                 ScopeInitializationException e = new ScopeInitializationException("Context not an aggregate type");
                 e.addContextName(context.getName());
@@ -66,15 +66,15 @@ public class AggregateScopeContext extends AbstractContext implements ScopeConte
         }
     }
 
-    public void registerFactories(List<ContextFactory<InstanceContext>> configurations) {
+    public void registerFactories(List<ContextFactory<Context>> configurations) {
         this.configs = configurations;
     }
 
-    public void registerFactory(ContextFactory<InstanceContext> configuration) {
+    public void registerFactory(ContextFactory<Context> configuration) {
         assert (configuration != null) : "Configuration was null";
         configs.add(configuration);
         if (lifecycleState == RUNNING) {
-            InstanceContext context = configuration.createContext();
+            Context context = configuration.createContext();
             if (!(context instanceof AggregateContext)) {
                 ScopeInitializationException e = new ScopeInitializationException("Context not an aggregate type");
                 e.setIdentifier(context.getName());
@@ -94,7 +94,7 @@ public class AggregateScopeContext extends AbstractContext implements ScopeConte
     }
 
     public Object getInstance(QualifiedName qName) throws TargetException {
-        InstanceContext context = getContext(qName.getPartName());
+        Context context = getContext(qName.getPartName());
         if (context == null) {
             TargetException e = new TargetException("Component not found");
             e.setIdentifier(qName.getQualifiedName());
@@ -103,17 +103,17 @@ public class AggregateScopeContext extends AbstractContext implements ScopeConte
         return context.getInstance(qName);
     }
 
-    public InstanceContext getContext(String ctxName) {
+    public Context getContext(String ctxName) {
         checkInit();
         return contexts.get(ctxName);
     }
 
-    public InstanceContext getContextByKey(String ctxName, Object key) {
+    public Context getContextByKey(String ctxName, Object key) {
         return getContext(ctxName);
     }
 
     public void removeContext(String ctxName) throws ScopeRuntimeException {
-        InstanceContext context = contexts.remove(ctxName);
+        Context context = contexts.remove(ctxName);
         if (context != null) {
             context.stop();
         }

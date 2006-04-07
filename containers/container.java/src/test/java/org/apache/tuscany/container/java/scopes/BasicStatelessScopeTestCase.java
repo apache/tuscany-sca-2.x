@@ -29,7 +29,7 @@ import org.apache.tuscany.container.java.mock.components.StatelessComponentImpl;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.StatelessScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
@@ -104,22 +104,22 @@ public class BasicStatelessScopeTestCase extends TestCase {
 
     JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
-    private List<ContextFactory<InstanceContext>> createConfigurations()
+    private List<ContextFactory<Context>> createConfigurations()
             throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockFactory.createComponent("TestService1", StatelessComponentImpl.class,
                 Scope.INSTANCE);
         builder.build(component);
-        List<ContextFactory<InstanceContext>> configs = new ArrayList();
-        configs.add((ContextFactory<InstanceContext>) component.getComponentImplementation().getContextFactory());
+        List<ContextFactory<Context>> configs = new ArrayList();
+        configs.add((ContextFactory<Context>) component.getComponentImplementation().getContextFactory());
         return configs;
     }
 
-    private ContextFactory<InstanceContext> createConfiguration(String name)
+    private ContextFactory<Context> createConfiguration(String name)
             throws NoSuchMethodException, BuilderException {
         SimpleComponent component = MockFactory.createComponent(name, StatelessComponentImpl.class,
                 Scope.INSTANCE);
         builder.build(component);
-        return (ContextFactory<InstanceContext>) component.getComponentImplementation().getContextFactory();
+        return (ContextFactory<Context>) component.getComponentImplementation().getContextFactory();
     }
 
 }

@@ -6,7 +6,7 @@ import org.apache.tuscany.model.assembly.AssemblyModelObject;
  * Implementations perform the first phase of converting a logical model representing an assembly into a series of
  * runtime or executable artifacts. Specifically, <code>ContextFactoryBuilder</code>s are responsible for analyzing
  * logical model elements and producing {@link ContextFactory}s that are used to generate executable artifacts such as
- * an {@link org.apache.tuscany.core.context.InstanceContext}. In the case of components, the
+ * an {@link org.apache.tuscany.core.context.Context}. In the case of components, the
  * <code>ContextFactory</code> will typically contain configuration for instantiating implementation instances with
  * injected properties and references; invocation chains; and configuration necessary to build proxies to implementation
  * instances.

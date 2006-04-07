@@ -48,7 +48,7 @@ import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EntryPointContext;
-import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
@@ -104,7 +104,7 @@ public class WebServiceEntryPointServlet extends AxisServlet {
             EntryPoint entryPoint = i.next();
             final String epName = entryPoint.getName();
 
-            InstanceContext entryPointContext = moduleContext.getContext(epName);
+            Context entryPointContext = moduleContext.getContext(epName);
 
             Binding binding = entryPoint.getBindings().get(0);
             if (binding instanceof WebServiceBinding) {

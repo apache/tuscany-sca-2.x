@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class AbstractScopeContext extends AbstractContext implements ScopeContext {
 
     // The collection of runtime configurations for the scope
-    protected Map<String, ContextFactory<InstanceContext>> contextFactorys = new ConcurrentHashMap<String, ContextFactory<InstanceContext>>();
+    protected Map<String, ContextFactory<Context>> contextFactorys = new ConcurrentHashMap<String, ContextFactory<Context>>();
 
     // The event context the scope container is associated with
     protected EventContext eventContext;
@@ -50,14 +50,14 @@ public abstract class AbstractScopeContext extends AbstractContext implements Sc
     public synchronized void stop() {
     }
 
-    public void registerFactories(List<ContextFactory<InstanceContext>> configurations) {
-        for (ContextFactory<InstanceContext> configuration : configurations) {
+    public void registerFactories(List<ContextFactory<Context>> configurations) {
+        for (ContextFactory<Context> configuration : configurations) {
             contextFactorys.put(configuration.getName(), configuration);
         }
     }
 
     public Object getInstance(QualifiedName qName) throws TargetException {
-        InstanceContext context = getContext(qName.getPartName());
+        Context context = getContext(qName.getPartName());
         if (context == null) {
             TargetException e = new TargetException("Target not found");
             e.setIdentifier(qName.getQualifiedName());
@@ -77,13 +77,13 @@ public abstract class AbstractScopeContext extends AbstractContext implements Sc
      * @param key the context key
      */
     protected void notifyInstanceShutdown(Object key) {
-        InstanceContext[] contexts = getShutdownContexts(key);
+        Context[] contexts = getShutdownContexts(key);
         if ((contexts == null) || (contexts.length < 1)) {
             return;
         }
         // shutdown destroyable instances in reverse instantiation order
         for (int i = contexts.length - 1; i >= 0; i--) {
-            InstanceContext context = contexts[i];
+            Context context = contexts[i];
 
             if (context.getLifecycleState() == RUNNING) {
                 synchronized (context) {
@@ -109,6 +109,6 @@ public abstract class AbstractScopeContext extends AbstractContext implements Sc
      * Returns an array of contexts that need to be notified of scope shutdown. The array must be in the order in which
      * component contexts were created
      */
-    protected abstract InstanceContext[] getShutdownContexts(Object key);
+    protected abstract Context[] getShutdownContexts(Object key);
 
 }

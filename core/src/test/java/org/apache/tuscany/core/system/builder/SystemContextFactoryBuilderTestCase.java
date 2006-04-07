@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
@@ -103,7 +103,7 @@ public class SystemContextFactoryBuilderTestCase extends TestCase {
         ContextFactory contextFactory = (ContextFactory) component.getComponentImplementation().getContextFactory();
         Assert.assertNotNull(contextFactory);
         contextFactory.prepare(createContext());
-        InstanceContext ctx = contextFactory.createContext();
+        Context ctx = contextFactory.createContext();
 
         ctx.start();
         SystemComponentImpl instance = (SystemComponentImpl) ctx.getInstance(null);

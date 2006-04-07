@@ -19,7 +19,7 @@ import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.mock.MockFactory;
 
 import java.util.List;
@@ -47,13 +47,13 @@ public class RuntimeBootTestCase extends TestCase {
     }
 
     public void testRuntimeLifecycle() {
-        assertEquals(InstanceContext.RUNNING, runtime.getLifecycleState());
+        assertEquals(Context.RUNNING, runtime.getLifecycleState());
         runtime.stop();
 
-        assertEquals(InstanceContext.STOPPED, runtime.getLifecycleState());
+        assertEquals(Context.STOPPED, runtime.getLifecycleState());
 
         runtime.start();
-        assertEquals(InstanceContext.RUNNING, runtime.getLifecycleState());
+        assertEquals(Context.RUNNING, runtime.getLifecycleState());
     }
 
     public void testIncrementalBoot() throws Exception{
@@ -77,7 +77,7 @@ public class RuntimeBootTestCase extends TestCase {
 
         system.fireEvent(EventContext.MODULE_STOP, null);
         runtimeContext.stop();
-        Assert.assertEquals(InstanceContext.STOPPED,system.getLifecycleState());
+        Assert.assertEquals(Context.STOPPED,system.getLifecycleState());
     }
 
     protected void setUp() throws Exception {

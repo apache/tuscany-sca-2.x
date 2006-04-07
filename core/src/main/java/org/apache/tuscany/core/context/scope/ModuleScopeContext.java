@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ModuleScopeContext extends AbstractScopeContext implements RuntimeEventListener {
 
     // Component contexts in this scope keyed by name
-    private Map<String, InstanceContext> componentContexts;
+    private Map<String, Context> componentContexts;
 
     private Queue<SimpleComponentContext> destroyableContexts;
 
@@ -83,26 +83,26 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
         return true;
     }
 
-    public void registerFactory(ContextFactory<InstanceContext> configuration) {
+    public void registerFactory(ContextFactory<Context> configuration) {
         contextFactorys.put(configuration.getName(), configuration);
         if (lifecycleState == RUNNING) {
             componentContexts.put(configuration.getName(), configuration.createContext());
         }
     }
 
-    public InstanceContext getContext(String ctxName) {
+    public Context getContext(String ctxName) {
         checkInit();
         return componentContexts.get(ctxName);
     }
 
-    public InstanceContext getContextByKey(String ctxName, Object key) {
+    public Context getContextByKey(String ctxName, Object key) {
         checkInit();
         return componentContexts.get(ctxName);
     }
 
     public void removeContext(String ctxName) {
         checkInit();
-        InstanceContext context = componentContexts.remove(ctxName);
+        Context context = componentContexts.remove(ctxName);
         if (context != null) {
             destroyableContexts.remove(context);
         }
@@ -116,10 +116,10 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
     /**
      * Returns an array of {@link SimpleComponentContext}s representing components that need to be notified of scope shutdown.
      */
-    protected InstanceContext[] getShutdownContexts(Object key) {
+    protected Context[] getShutdownContexts(Object key) {
         if (destroyableContexts != null) {
             // create 0-length array since Queue.size() has O(n) traversal
-            return destroyableContexts.toArray(new InstanceContext[0]);
+            return destroyableContexts.toArray(new Context[0]);
         } else {
             return null;
         }
@@ -127,17 +127,17 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
 
     private synchronized void initComponentContexts() throws CoreRuntimeException {
         if (componentContexts == null) {
-            componentContexts = new ConcurrentHashMap<String, InstanceContext> ();
+            componentContexts = new ConcurrentHashMap<String, Context> ();
             destroyableContexts = new ConcurrentLinkedQueue<SimpleComponentContext>();
-            for (ContextFactory<InstanceContext> config : contextFactorys.values()) {
-                InstanceContext context = config.createContext();
+            for (ContextFactory<Context> config : contextFactorys.values()) {
+                Context context = config.createContext();
                 context.addListener(this);
                 context.start();
                 componentContexts.put(context.getName(), context);
             }
             // Initialize eager contexts. Note this cannot be done when we initially create each context since a component may
             // contain a forward reference to a component which has not been instantiated
-            for (InstanceContext context : componentContexts.values()) {
+            for (Context context : componentContexts.values()) {
                 if (context instanceof SimpleComponentContext) {
                     SimpleComponentContext simpleCtx = (SimpleComponentContext) context;
                     if (simpleCtx.isEagerInit()) {

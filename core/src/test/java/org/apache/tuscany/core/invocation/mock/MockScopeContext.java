@@ -92,10 +92,10 @@ public class MockScopeContext implements ScopeContext {
     }
 
 
-    public void registerFactories(List<ContextFactory<InstanceContext>> configurations) {
+    public void registerFactories(List<ContextFactory<Context>> configurations) {
     } 
 
-    public void registerFactory(ContextFactory<InstanceContext> configuration) {
+    public void registerFactory(ContextFactory<Context> configuration) {
     } 
     
     public int getLifecycleState(){

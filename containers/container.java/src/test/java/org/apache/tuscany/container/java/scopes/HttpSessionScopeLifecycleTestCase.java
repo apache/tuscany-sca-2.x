@@ -30,7 +30,7 @@ import org.apache.tuscany.container.java.mock.components.SessionScopeInitOnlyCom
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.HttpSessionScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
@@ -123,32 +123,32 @@ public class HttpSessionScopeLifecycleTestCase extends TestCase {
 
     JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
-    private List<ContextFactory<InstanceContext>> createComponents() throws NoSuchMethodException, BuilderException {
+    private List<ContextFactory<Context>> createComponents() throws NoSuchMethodException, BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
         ca[0] = MockFactory.createComponent("TestServiceInitDestroy", SessionScopeInitDestroyComponent.class,
                 Scope.SESSION);
         ca[1] = MockFactory.createComponent("TestServiceInitOnly", SessionScopeInitOnlyComponent.class, Scope.SESSION);
         ca[2] = MockFactory.createComponent("TestServiceDestroyOnly", SessionScopeDestroyOnlyComponent.class,
                 Scope.SESSION);
-        List<ContextFactory<InstanceContext>> configs = new ArrayList();
+        List<ContextFactory<Context>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
             builder.build(ca[i]);
-            configs.add((ContextFactory<InstanceContext>) ca[i].getComponentImplementation().getContextFactory());
+            configs.add((ContextFactory<Context>) ca[i].getComponentImplementation().getContextFactory());
 
         }
         return configs;
     }
 
-    private List<ContextFactory<InstanceContext>> createOrderedInitComponents() throws NoSuchMethodException,
+    private List<ContextFactory<Context>> createOrderedInitComponents() throws NoSuchMethodException,
             BuilderException {
         SimpleComponent[] ca = new SimpleComponent[3];
         ca[0] = MockFactory.createComponent("one", OrderedInitPojo.class, Scope.SESSION);
         ca[1] = MockFactory.createComponent("two", OrderedInitPojo.class, Scope.SESSION);
         ca[2] = MockFactory.createComponent("three", OrderedInitPojo.class, Scope.SESSION);
-        List<ContextFactory<InstanceContext>> configs = new ArrayList();
+        List<ContextFactory<Context>> configs = new ArrayList();
         for (int i = 0; i < ca.length; i++) {
             builder.build(ca[i]);
-            configs.add((ContextFactory<InstanceContext>) ca[i].getComponentImplementation().getContextFactory());
+            configs.add((ContextFactory<Context>) ca[i].getComponentImplementation().getContextFactory());
 
         }
         return configs;

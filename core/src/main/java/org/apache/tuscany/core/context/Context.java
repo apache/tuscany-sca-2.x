@@ -17,22 +17,12 @@
 package org.apache.tuscany.core.context;
 
 /**
- * Manages instances of a runtime artifact. An <code>InstanceContext</code> may contain child contexts which
- * themselves manage implementation instances or it may be a leaf context.
+ * An entity that provides an execution context for a runtime artifact or artifacts. An <code>Context</code> may
+ * be a composite, managing child contexts or it may be an atomic, i.e. leaf, context.
  * 
- * @see org.apache.tuscany.core.context.SimpleComponentContext
- * @see org.apache.tuscany.core.context.AggregateContext
- * @see org.apache.tuscany.core.context.EntryPointContext
- * @see org.apache.tuscany.core.context.ExternalServiceContext
- * An entity that provides an execution context for a runtime artifact
- * Manages instances of a runtime artifact. An <code>InstanceContext</code> may contain child contexts which
- * themselves manage implementation instances or it may be a leaf context.
- *
- *
  * @version $Rev$ $Date$
  */
-public interface InstanceContext{
-
+public interface Context {
 
         /* A configuration error state */
         public static final int CONFIG_ERROR = -1;
@@ -106,11 +96,11 @@ public interface InstanceContext{
 
 
         /**
-         * Returns the instance associated with the requested name, which may be in a simple or compound form. Simple (i.e.
+         * Returns the instance associated with the requested name, which may be in a simple or compound form. Atomic (i.e.
          * leaf) contexts will return an instance associated with the service name part of the compound name, which may be
          * null.
          * <p>
-         * Aggregate contexts will return an instance (likely a proxy) of a contained entry point context. In this case, the
+         * Composite contexts will return an instance (likely a proxy) of a contained entry point context. In this case, the
          * port name on the qualified name will correspond to the aggregate context name and the part name will be used to
          * retrieve the contained entry point context. The latter may be null. If the contained context is not an entry
          * point context, an exception will be thrown.

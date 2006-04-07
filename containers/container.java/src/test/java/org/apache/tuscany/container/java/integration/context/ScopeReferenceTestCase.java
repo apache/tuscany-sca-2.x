@@ -17,7 +17,7 @@ import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.model.assembly.Scope;
 
@@ -36,7 +36,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testModuleToModule() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Context ctx = runtime.getSystemContext().getContext("tuscany.system.child");
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
@@ -55,7 +55,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testModuleToSession() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Context ctx = runtime.getSystemContext().getContext("tuscany.system.child");
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
@@ -96,7 +96,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testModuleToRequest() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Context ctx = runtime.getSystemContext().getContext("tuscany.system.child");
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
@@ -132,7 +132,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testModuleToStateless() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Context ctx = runtime.getSystemContext().getContext("tuscany.system.child");
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
@@ -166,7 +166,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testSessionToSession() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Context ctx = runtime.getSystemContext().getContext("tuscany.system.child");
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
@@ -212,7 +212,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testSessionToModule() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Context ctx = runtime.getSystemContext().getContext("tuscany.system.child");
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
@@ -258,7 +258,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testSessionToRequest() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Context ctx = runtime.getSystemContext().getContext("tuscany.system.child");
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
@@ -303,7 +303,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testSessionToStateless() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Context ctx = runtime.getSystemContext().getContext("tuscany.system.child");
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
@@ -347,7 +347,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testRequestToRequest() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Context ctx = runtime.getSystemContext().getContext("tuscany.system.child");
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
@@ -387,7 +387,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testRequestToModule() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Context ctx = runtime.getSystemContext().getContext("tuscany.system.child");
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
@@ -428,7 +428,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testRequestToSession() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Context ctx = runtime.getSystemContext().getContext("tuscany.system.child");
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
@@ -487,7 +487,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testRequestToStateless() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Context ctx = runtime.getSystemContext().getContext("tuscany.system.child");
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
@@ -528,7 +528,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testStatelessToStateless() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Context ctx = runtime.getSystemContext().getContext("tuscany.system.child");
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
@@ -568,7 +568,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testStatelessToRequest() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Context ctx = runtime.getSystemContext().getContext("tuscany.system.child");
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
@@ -612,7 +612,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testStatelessToSession() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Context ctx = runtime.getSystemContext().getContext("tuscany.system.child");
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");
@@ -671,7 +671,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testStatelessToModule() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext("tuscany.system.child");
+        Context ctx = runtime.getSystemContext().getContext("tuscany.system.child");
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");

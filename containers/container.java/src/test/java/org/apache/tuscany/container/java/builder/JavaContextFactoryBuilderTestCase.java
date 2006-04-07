@@ -56,7 +56,7 @@ public class JavaContextFactoryBuilderTestCase extends TestCase {
             Assert.assertNotNull(contextFactory);
         }
         for (Component component : components) {
-            ContextFactory<InstanceContext> source = (ContextFactory<InstanceContext>) component.getComponentImplementation().getContextFactory();
+            ContextFactory<Context> source = (ContextFactory<Context>) component.getComponentImplementation().getContextFactory();
             Assert.assertNotNull(source);
             for (ProxyFactory pFactory : source.getSourceProxyFactories()) {
                 ProxyConfiguration pConfig = pFactory.getProxyConfiguration();
@@ -76,7 +76,7 @@ public class JavaContextFactoryBuilderTestCase extends TestCase {
         }
         for (Component component : components) {
             ContextFactory config = (ContextFactory) component.getComponentImplementation().getContextFactory();
-            InstanceContext context = config.createContext();
+            Context context = config.createContext();
             if ("source".equals(component.getName())) {
                 ModuleScopeComponent source = (ModuleScopeComponent) context.getInstance(null);
                 Assert.assertNotNull(source);

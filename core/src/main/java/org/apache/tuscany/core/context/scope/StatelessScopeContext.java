@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class StatelessScopeContext extends AbstractScopeContext implements RuntimeEventListener {
 
    // Component contexts keyed by name
-    private Map<String, InstanceContext> contextMap;
+    private Map<String, Context> contextMap;
 
     public StatelessScopeContext(EventContext eventContext) {
         super(eventContext);
@@ -55,7 +55,7 @@ public class StatelessScopeContext extends AbstractScopeContext implements Runti
         lifecycleState = STOPPED;
     }
 
-    public void registerFactory(ContextFactory<InstanceContext> configuration) {
+    public void registerFactory(ContextFactory<Context> configuration) {
         contextFactorys.put(configuration.getName(), configuration);
         if (lifecycleState == RUNNING) {
             contextMap.put(configuration.getName(), configuration.createContext());
@@ -71,11 +71,11 @@ public class StatelessScopeContext extends AbstractScopeContext implements Runti
         return true;
     }
 
-    public InstanceContext getContext(String ctxName) {
+    public Context getContext(String ctxName) {
         return contextMap.get(ctxName);
     }
 
-    public InstanceContext getContextByKey(String ctxName, Object key) {
+    public Context getContextByKey(String ctxName, Object key) {
         return getContext(ctxName);
     }
 
@@ -90,7 +90,7 @@ public class StatelessScopeContext extends AbstractScopeContext implements Runti
     /**
      * Always returns null since stateless components cannot be shutdown
      */
-    protected InstanceContext[] getShutdownContexts(Object key) {
+    protected Context[] getShutdownContexts(Object key) {
         return null;
     }
 
@@ -99,10 +99,10 @@ public class StatelessScopeContext extends AbstractScopeContext implements Runti
             throw new IllegalStateException("Scope not in INITIALIZED state [" + lifecycleState + "]");
         }
         if (contextMap == null) {
-            contextMap = new ConcurrentHashMap<String, InstanceContext> ();
-            for (ContextFactory<InstanceContext> config : contextFactorys.values()) {
+            contextMap = new ConcurrentHashMap<String, Context> ();
+            for (ContextFactory<Context> config : contextFactorys.values()) {
                 for (int i = 0; i < contextFactorys.size(); i++) {
-                    InstanceContext context = config.createContext();
+                    Context context = config.createContext();
                     context.addListener(this);
                     context.start();
                     contextMap.put(context.getName(), context);

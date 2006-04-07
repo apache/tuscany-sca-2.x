@@ -6,7 +6,7 @@ import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
@@ -30,7 +30,7 @@ import java.util.Map;
  * 
  * @version $Rev$ $Date$
  */
-public class SystemContextFactory implements ContextFactory<InstanceContext>, ContextResolver {
+public class SystemContextFactory implements ContextFactory<Context>, ContextResolver {
 
     // the component name as configured in the hosting module
     private String name;
@@ -115,7 +115,7 @@ public class SystemContextFactory implements ContextFactory<InstanceContext>, Co
         return scope;
     }
 
-    public InstanceContext createContext() throws ContextCreationException {
+    public Context createContext() throws ContextCreationException {
         if (isAggregate) {
             try {
                 // aggregate context types are themselves an instance context

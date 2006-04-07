@@ -20,7 +20,7 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
@@ -56,7 +56,7 @@ public class RuntimeContextImplTestCase extends TestCase {
 
         AggregateContext root = runtime.getRootContext();
         Assert.assertNotNull(root);
-        Assert.assertTrue(root.getLifecycleState() == InstanceContext.RUNNING);
+        Assert.assertTrue(root.getLifecycleState() == Context.RUNNING);
 
         AggregateContext system = runtime.getSystemContext();
         Assert.assertNotNull(system);
@@ -105,7 +105,7 @@ public class RuntimeContextImplTestCase extends TestCase {
 
         AggregateContext root = runtime.getRootContext();
         Assert.assertNotNull(root);
-        Assert.assertTrue(root.getLifecycleState() == InstanceContext.RUNNING);
+        Assert.assertTrue(root.getLifecycleState() == Context.RUNNING);
 
         AggregateContext system = runtime.getSystemContext();
         Assert.assertNotNull(system);

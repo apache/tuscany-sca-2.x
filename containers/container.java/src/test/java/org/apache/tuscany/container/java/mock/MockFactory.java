@@ -52,7 +52,7 @@ import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.SystemAggregateContext;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
@@ -85,7 +85,6 @@ import org.apache.tuscany.model.assembly.SimpleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 import org.osoa.sca.annotations.ComponentName;
-import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 
@@ -586,13 +585,13 @@ public class MockFactory {
      * @throws BuilderException
      * @see ContextFactory
      */
-    public static ContextFactory<InstanceContext> createAggregateConfiguration(String name,
+    public static ContextFactory<Context> createAggregateConfiguration(String name,
                                                                                      AggregateContext aggregateContext) throws BuilderException {
 
         Component sc = createAggregateComponent(name);
         SystemContextFactoryBuilder builder = new SystemContextFactoryBuilder();
         builder.build(sc);
-        return (ContextFactory<InstanceContext>) sc.getComponentImplementation().getContextFactory();
+        return (ContextFactory<Context>) sc.getComponentImplementation().getContextFactory();
     }
 
     /**
@@ -620,7 +619,7 @@ public class MockFactory {
                 Injector injector = new FieldInjector(field, new SingletonObjectFactory(name));
                 injectors.add(injector);
             }
-            Context context = field.getAnnotation(Context.class);
+            org.osoa.sca.annotations.Context context = field.getAnnotation(org.osoa.sca.annotations.Context.class);
             if (context != null) {
                 Injector injector = new FieldInjector(field, new SingletonObjectFactory(moduleComponentContext));
                 injectors.add(injector);
@@ -644,7 +643,7 @@ public class MockFactory {
                 Injector injector = new MethodInjector(method, new SingletonObjectFactory(name));
                 injectors.add(injector);
             }
-            Context context = method.getAnnotation(Context.class);
+            org.osoa.sca.annotations.Context context = method.getAnnotation(org.osoa.sca.annotations.Context.class);
             if (context != null) {
                 Injector injector = new MethodInjector(method, new SingletonObjectFactory(moduleComponentContext));
                 injectors.add(injector);

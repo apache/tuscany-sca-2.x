@@ -83,7 +83,7 @@ public class AggregateContextImpl extends AbstractAggregateContext implements Co
         if (scope == null) {
             throw new ServiceNotFoundException(qualifiedName);
         }
-        InstanceContext ctx = scope.getContext(qName.getPartName());
+        Context ctx = scope.getContext(qName.getPartName());
         try {
             Object o = ctx.getInstance(qName);
             if (o == null) {

@@ -42,7 +42,7 @@ public class FooESTargetInvoker implements TargetInvoker {
 
     public Object invokeTarget(Object payload) throws InvocationTargetException {
         if (context == null) {
-            InstanceContext iContext = container.getContext(name);
+            Context iContext = container.getContext(name);
             if (!(iContext instanceof ExternalServiceContext)) {
                 TargetException te = new TargetException("Unexpected target context type");
                 te.setIdentifier(iContext.getClass().getName());

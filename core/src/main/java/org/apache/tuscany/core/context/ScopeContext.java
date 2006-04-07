@@ -21,13 +21,13 @@ import org.apache.tuscany.core.builder.ContextFactory;
 import java.util.List;
 
 /**
- * Manages the lifecycle and visibility of <code>InstanceContext</code>s.
+ * Manages the lifecycle and visibility of <code>Context</code>s.
  * 
- * @see org.apache.tuscany.core.context.InstanceContext
+ * @see org.apache.tuscany.core.context.Context
  * 
  * @version $Rev$ $Date$
  */
-public interface ScopeContext extends InstanceContext, RuntimeEventListener {
+public interface ScopeContext extends Context, RuntimeEventListener {
 
     /**
      * Returns whether implementation instances may be held for the duration of an invocation
@@ -37,23 +37,23 @@ public interface ScopeContext extends InstanceContext, RuntimeEventListener {
     /**
      * Registers the context factory used to construct instance contexts for the scope
      */
-    public void registerFactories(List<ContextFactory<InstanceContext>> configurations);
+    public void registerFactories(List<ContextFactory<Context>> configurations);
 
     /**
      * Adds a context factory to the scope
      */
-    public void registerFactory(ContextFactory<InstanceContext> configuration);
+    public void registerFactory(ContextFactory<Context> configuration);
 
     /**
      * Returns a context bound to the given name or null if the component does not exist. The returned context is bound
      * to a key determined from the thread context.
      */
-    public InstanceContext getContext(String name);
+    public Context getContext(String name);
 
     /**
      * Returns a context bound to the given name and scoped to the given key or null if the context does not exist
      */
-    public InstanceContext getContextByKey(String name, Object key);
+    public Context getContextByKey(String name, Object key);
 
     /**
      * Removes a context with the given name, determining the scope key from the thread context

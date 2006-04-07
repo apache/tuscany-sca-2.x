@@ -17,7 +17,7 @@ import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.InstanceContext;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 
 import junit.framework.Assert;
@@ -35,7 +35,7 @@ public class JavaRuntimeBootstrapTestCase extends TestCase {
      */
     public void testRuntimeBoot() throws Exception{
         RuntimeContext runtime = MockFactory.createJavaRuntime();
-        InstanceContext ctx = runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD);
+        Context ctx = runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD);
         Assert.assertNotNull(ctx);
         runtime.getRootContext().registerModelObject(MockFactory.createAggregateComponent("test"));
         AggregateContext testCtx = (AggregateContext) runtime.getRootContext().getContext("test");

@@ -47,7 +47,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     // protected ModuleComponent moduleComponent;
     protected Module module;
 
-    protected Map<String, ContextFactory<InstanceContext>> configurations = new HashMap<String, ContextFactory<InstanceContext>>();
+    protected Map<String, ContextFactory<Context>> configurations = new HashMap<String, ContextFactory<Context>>();
 
     // Factory for scope contexts
     @Autowire(required = false)
@@ -100,17 +100,17 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 lifecycleState = INITIALIZING;
                 initializeScopes();
 
-                Map<Scope, List<ContextFactory<InstanceContext>>> configurationsByScope = new HashMap<Scope, List<ContextFactory<InstanceContext>>>();
+                Map<Scope, List<ContextFactory<Context>>> configurationsByScope = new HashMap<Scope, List<ContextFactory<Context>>>();
                 if (configurations != null) {
-                    for (ContextFactory<InstanceContext> source : configurations.values()) {
+                    for (ContextFactory<Context> source : configurations.values()) {
                         // FIXME scopes are defined at the interface level
                         Scope sourceScope = source.getScope();
                         wireSource(source);
                         buildTarget(source);
                         scopeIndex.put(source.getName(), scopeContexts.get(sourceScope));
-                        List<ContextFactory<InstanceContext>> list = configurationsByScope.get(sourceScope);
+                        List<ContextFactory<Context>> list = configurationsByScope.get(sourceScope);
                         if (list == null) {
-                            list = new ArrayList<ContextFactory<InstanceContext>>();
+                            list = new ArrayList<ContextFactory<Context>>();
                             configurationsByScope.put(sourceScope, list);
                         }
                         list.add(source);
@@ -125,7 +125,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 for (ExternalService es : module.getExternalServices()) {
                     registerAutowire(es);
                 }
-                for (Map.Entry<Scope, List<ContextFactory<InstanceContext>>> entries : configurationsByScope.entrySet()) {
+                for (Map.Entry<Scope, List<ContextFactory<Context>>> entries : configurationsByScope.entrySet()) {
                     // register configurations with scope contexts
                     ScopeContext scope = scopeContexts.get(entries.getKey());
                     scope.registerFactories(entries.getValue());
@@ -231,7 +231,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
                 throw e;
             }
         }
-        ContextFactory<InstanceContext> configuration;
+        ContextFactory<Context> configuration;
         if (model instanceof Module) {
             // merge new module definition with the existing one
             Module oldModule = module;
@@ -279,7 +279,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
             }
             if (lifecycleState == RUNNING) {
                 for (Component component : newModule.getComponents()) {
-                    ContextFactory<InstanceContext> contextFactory = (ContextFactory<InstanceContext>) component
+                    ContextFactory<Context> contextFactory = (ContextFactory<Context>) component
                             .getComponentImplementation().getContextFactory();
                     wireSource(contextFactory);
                     buildTarget(contextFactory);
@@ -302,7 +302,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
 
                 }
                 for (EntryPoint ep : newModule.getEntryPoints()) {
-                    ContextFactory<InstanceContext> contextFactory = (ContextFactory<InstanceContext>) ep
+                    ContextFactory<Context> contextFactory = (ContextFactory<Context>) ep
                             .getConfiguredReference().getContextFactory();
                     wireSource(contextFactory);
                     buildTarget(contextFactory);
@@ -325,7 +325,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
 
                 }
                 for (ExternalService es : newModule.getExternalServices()) {
-                    ContextFactory<InstanceContext> contextFactory = (ContextFactory<InstanceContext>) es
+                    ContextFactory<Context> contextFactory = (ContextFactory<Context>) es
                             .getConfiguredService().getContextFactory();
                     buildTarget(contextFactory);
                     contextFactory.prepare(this);
@@ -356,16 +356,16 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
             if (model instanceof Component) {
                 Component component = (Component) model;
                 module.getComponents().add(component);
-                configuration = (ContextFactory<InstanceContext>) component.getComponentImplementation()
+                configuration = (ContextFactory<Context>) component.getComponentImplementation()
                         .getContextFactory();
             } else if (model instanceof EntryPoint) {
                 EntryPoint ep = (EntryPoint) model;
                 module.getEntryPoints().add(ep);
-                configuration = (ContextFactory<InstanceContext>) ep.getConfiguredReference().getContextFactory();
+                configuration = (ContextFactory<Context>) ep.getConfiguredReference().getContextFactory();
             } else if (model instanceof ExternalService) {
                 ExternalService service = (ExternalService) model;
                 module.getExternalServices().add(service);
-                configuration = (ContextFactory<InstanceContext>) service.getConfiguredService().getContextFactory();
+                configuration = (ContextFactory<Context>) service.getConfiguredService().getContextFactory();
             } else {
                 BuilderConfigException e = new BuilderConfigException("Unknown model type");
                 e.setIdentifier(model.getClass().getName());
@@ -385,7 +385,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         }
     }
 
-    protected void registerConfiguration(ContextFactory<InstanceContext> configuration) throws ConfigurationException {
+    protected void registerConfiguration(ContextFactory<Context> configuration) throws ConfigurationException {
         configuration.prepare(this);
         if (lifecycleState == RUNNING) {
             if (scopeIndex.get(configuration.getName()) != null) {
@@ -425,7 +425,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         }
     }
 
-    public InstanceContext getContext(String componentName) {
+    public Context getContext(String componentName) {
         checkInit();
         assert (componentName != null) : "Name was null";
         ScopeContext scope = scopeIndex.get(componentName);
@@ -443,7 +443,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
         if (scope == null) {
             return null;
         }
-        InstanceContext ctx = scope.getContext(qName.getPortName());
+        Context ctx = scope.getContext(qName.getPortName());
         if (!(ctx instanceof EntryPointContext)) {
             TargetException e = new TargetException("Target not an entry point");
             e.setIdentifier(qName.getQualifiedName());
@@ -495,7 +495,7 @@ public abstract class AbstractAggregateContext extends AbstractContext implement
     /**
      * Iterates through references and delegates to the configuration context to wire them to their targets
      */
-    protected void wireSource(ContextFactory<InstanceContext> source) {
+    protected void wireSource(ContextFactory<Context> source) {
         Scope sourceScope = source.getScope();
         if (source.getSourceProxyFactories() != null) {
             for (ProxyFactory<?> sourceFactory : source.getSourceProxyFactories()) {

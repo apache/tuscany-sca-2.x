@@ -12,7 +12,7 @@ import java.util.List;
  * 
  * @version $Rev$ $Date$
  */
-public interface AggregateContext extends InstanceContext {
+public interface AggregateContext extends Context {
 
     /**
      * Returns the parent context, or null if the context does not have one
@@ -64,11 +64,11 @@ public interface AggregateContext extends InstanceContext {
     /**
      * Returns the child context associated with a given name
      */
-    public InstanceContext getContext(String name);
+    public Context getContext(String name);
 
     /**
      * Intended for internal use by the runtime, returns an implementation instance for the given context name, which
-     * may be a compound component/service form. Unlike {@link InstanceContext#getInstance(QualifiedName)}, which for aggregate contexts only returns
+     * may be a compound component/service form. Unlike {@link Context#getInstance(QualifiedName)}, which for aggregate contexts only returns
      * entry point proxies, this method will return any type of contained implementation instance.
      * 
      * @throws TargetException if there was an error returning the instance

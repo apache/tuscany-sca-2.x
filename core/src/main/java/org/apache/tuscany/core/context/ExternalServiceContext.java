@@ -18,7 +18,7 @@ package org.apache.tuscany.core.context;
  * 
  * @version $Rev$ $Date$
  */
-public interface ExternalServiceContext extends InstanceContext {
+public interface ExternalServiceContext extends Context {
 
     /**
      * Returns the handler responsible for flowing a request through the entry point
