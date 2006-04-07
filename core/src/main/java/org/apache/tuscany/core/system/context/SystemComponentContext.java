@@ -114,7 +114,7 @@ public class SystemComponentContext extends AbstractContext implements SimpleCom
                     return cachedTargetInstance;
                 }
             } catch (ObjectCreationException e) {
-                lifecycleState = Context.ERROR;
+                lifecycleState = ERROR;
                 TargetException te = new TargetException("Error creating instance for component", e);
                 te.setIdentifier(getName());
                 throw te;

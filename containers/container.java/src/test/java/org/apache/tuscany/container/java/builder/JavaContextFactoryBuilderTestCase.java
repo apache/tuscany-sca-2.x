@@ -13,10 +13,7 @@ import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeComponent;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
-import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.InstanceContext;
-import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.context.ScopeStrategy;
+import org.apache.tuscany.core.context.*;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
@@ -79,7 +76,7 @@ public class JavaContextFactoryBuilderTestCase extends TestCase {
         }
         for (Component component : components) {
             ContextFactory config = (ContextFactory) component.getComponentImplementation().getContextFactory();
-            InstanceContext context = (InstanceContext) config.createContext();
+            InstanceContext context = config.createContext();
             if ("source".equals(component.getName())) {
                 ModuleScopeComponent source = (ModuleScopeComponent) context.getInstance(null);
                 Assert.assertNotNull(source);

@@ -14,7 +14,7 @@
 package org.apache.tuscany.core.context;
 
 /**
- * An unchecked exception encountered by an {@link org.apache.tuscany.core.context.Context}
+ * An unchecked exception encountered by an {@link org.apache.tuscany.core.context.InstanceContext}
  * 
  * @version $Rev$ $Date$
  */

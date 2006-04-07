@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class AbstractScopeContext extends AbstractContext implements ScopeContext{
+public abstract class AbstractScopeContext extends AbstractContext implements ScopeContext {
 
     // The collection of runtime configurations for the scope
     protected Map<String, ContextFactory<InstanceContext>> contextFactorys = new ConcurrentHashMap<String, ContextFactory<InstanceContext>>();
@@ -85,9 +85,8 @@ public abstract class AbstractScopeContext extends AbstractContext implements Sc
         for (int i = contexts.length - 1; i >= 0; i--) {
             InstanceContext context = contexts[i];
 
-            if (context.getLifecycleState() == Context.RUNNING) {
+            if (context.getLifecycleState() == RUNNING) {
                 synchronized (context) {
-  //                  context.setLifecycleState(Context.STOPPING);
                     removeContextByKey(context.getName(), key);
                     try {
                         context.stop();

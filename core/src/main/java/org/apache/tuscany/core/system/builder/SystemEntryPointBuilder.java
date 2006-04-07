@@ -16,7 +16,6 @@ package org.apache.tuscany.core.system.builder;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.BuilderInitException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.injection.FactoryInitException;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemEntryPointContextFactory;
@@ -29,7 +28,7 @@ import org.apache.tuscany.model.assembly.EntryPoint;
  * 
  * @version $Rev: 385747 $ $Date: 2006-03-13 22:12:53 -0800 (Mon, 13 Mar 2006) $
  */
-public class SystemEntryPointBuilder implements ContextFactoryBuilder<AggregateContext> {
+public class SystemEntryPointBuilder implements ContextFactoryBuilder {
 
     // ----------------------------------
     // Constructors

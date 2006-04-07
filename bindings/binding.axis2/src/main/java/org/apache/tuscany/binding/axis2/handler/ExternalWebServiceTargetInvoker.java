@@ -13,17 +13,13 @@
  */
 package org.apache.tuscany.binding.axis2.handler;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import org.apache.tuscany.core.context.ExternalServiceContext;
-import org.apache.tuscany.core.context.InstanceContext;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.*;
 import org.apache.tuscany.core.invocation.Interceptor;
 import org.apache.tuscany.core.invocation.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Responsible for invoking an external web service

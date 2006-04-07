@@ -54,8 +54,8 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
                 break;
             case EventContext.CONTEXT_CREATED:
                 checkInit();
-                assert(key instanceof Context): "Context must be passed on created event";
-                Context context = (Context)key;
+                assert(key instanceof InstanceContext): "Context must be passed on created event";
+                InstanceContext context = (InstanceContext)key;
                 if (context instanceof SimpleComponentContext) {
                     SimpleComponentContext simpleCtx = (SimpleComponentContext)context;
                     // Queue the context to have its implementation instance released if destroyable

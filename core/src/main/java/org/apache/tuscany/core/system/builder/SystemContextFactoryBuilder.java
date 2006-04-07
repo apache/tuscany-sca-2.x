@@ -56,18 +56,10 @@ import java.util.Set;
  * 
  * @version $Rev$ $Date$
  */
-public class SystemContextFactoryBuilder implements ContextFactoryBuilder<AggregateContext> {
-
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
+public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
 
     public SystemContextFactoryBuilder() {
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     public void build(AssemblyModelObject modelObject) throws BuilderException {
         if (!(modelObject instanceof Component)) {

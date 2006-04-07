@@ -16,22 +16,13 @@
  */
 package org.apache.tuscany.container.js.builder;
 
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import commonj.sdo.helper.TypeHelper;
-import org.osoa.sca.annotations.Init;
-
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
 import org.apache.tuscany.container.js.config.JavaScriptContextFactory;
 import org.apache.tuscany.container.js.rhino.RhinoE4XScript;
 import org.apache.tuscany.container.js.rhino.RhinoScript;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.MethodHashMap;
@@ -42,15 +33,13 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
-import org.apache.tuscany.model.assembly.ComponentImplementation;
-import org.apache.tuscany.model.assembly.ConfiguredProperty;
-import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.ServiceContract;
-import org.apache.tuscany.model.assembly.SimpleComponent;
+import org.apache.tuscany.model.assembly.*;
+import org.osoa.sca.annotations.Init;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Builds {@link org.apache.tuscany.container.js.config.JavaScriptContextFactory}s from a JavaScript
@@ -59,7 +48,7 @@ import org.apache.tuscany.model.assembly.SimpleComponent;
  * @version $Rev$ $Date$
  */
 @org.osoa.sca.annotations.Scope("MODULE")
-public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder<AggregateContext> {
+public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
 
     private ProxyFactoryFactory factory;
 

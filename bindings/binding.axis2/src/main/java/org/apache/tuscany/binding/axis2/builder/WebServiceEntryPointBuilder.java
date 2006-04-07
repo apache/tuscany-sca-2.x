@@ -52,7 +52,7 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class WebServiceEntryPointBuilder implements ContextFactoryBuilder<AggregateContext> {
+public class WebServiceEntryPointBuilder implements ContextFactoryBuilder {
 
     private RuntimeContext runtimeContext;
 

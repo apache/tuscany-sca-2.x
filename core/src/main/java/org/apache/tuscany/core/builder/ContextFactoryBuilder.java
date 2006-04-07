@@ -1,6 +1,5 @@
 package org.apache.tuscany.core.builder;
 
-import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
 
 /**
@@ -31,7 +30,7 @@ import org.apache.tuscany.model.assembly.AssemblyModelObject;
  * @see ContextFactory
  * @see org.apache.tuscany.core.builder.WireBuilder
  */
-public interface ContextFactoryBuilder<Y extends Context> {
+public interface ContextFactoryBuilder{
 
     /**
      * Creates or updates a context factory based on configuration contained in the given model object. The model object

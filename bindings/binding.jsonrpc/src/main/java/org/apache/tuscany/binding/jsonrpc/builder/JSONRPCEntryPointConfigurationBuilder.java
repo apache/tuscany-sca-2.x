@@ -13,19 +13,12 @@
  */
 package org.apache.tuscany.binding.jsonrpc.builder;
 
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.tuscany.binding.jsonrpc.assembly.JSONRPCBinding;
 import org.apache.tuscany.binding.jsonrpc.config.JSONRPCEntryPointRuntimeConfiguration;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
-import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
@@ -35,13 +28,15 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.ServiceContract;
+import org.apache.tuscany.model.assembly.*;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
+
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Creates a <code>RuntimeConfigurationBuilder</code> for an entry point configured with the {@link JSONRPCBinding}
@@ -49,7 +44,7 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuilder<AggregateContext> {
+public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuilder {
 
     private RuntimeContext runtimeContext;
 

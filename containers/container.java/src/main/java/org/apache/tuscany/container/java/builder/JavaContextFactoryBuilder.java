@@ -1,35 +1,16 @@
 package org.apache.tuscany.container.java.builder;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import commonj.sdo.DataObject;
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
 import org.apache.tuscany.container.java.config.JavaContextFactory;
-import org.apache.tuscany.core.builder.BuilderConfigException;
-import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.builder.NoAccessorException;
-import org.apache.tuscany.core.builder.ObjectFactory;
+import org.apache.tuscany.core.builder.*;
 import org.apache.tuscany.core.builder.impl.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.builder.impl.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.builder.impl.ProxyObjectFactory;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
-import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.injection.ContextObjectFactory;
-import org.apache.tuscany.core.injection.EventInvoker;
-import org.apache.tuscany.core.injection.FieldInjector;
-import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.injection.MethodInjector;
-import org.apache.tuscany.core.injection.SDOObjectFactory;
-import org.apache.tuscany.core.injection.SingletonObjectFactory;
+import org.apache.tuscany.core.injection.*;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.MethodHashMap;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
@@ -39,21 +20,15 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
-import org.apache.tuscany.model.assembly.ConfiguredProperty;
-import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.Multiplicity;
-import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.ServiceContract;
-import org.apache.tuscany.model.assembly.SimpleComponent;
+import org.apache.tuscany.model.assembly.*;
 import org.osoa.sca.annotations.ComponentName;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 
-import commonj.sdo.DataObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * Builds context factories for component implementations that map to
@@ -65,7 +40,7 @@ import commonj.sdo.DataObject;
  * @version $Rev: 368822 $ $Date: 2006-01-13 10:54:38 -0800 (Fri, 13 Jan 2006) $
  */
 @org.osoa.sca.annotations.Scope("MODULE")
-public class JavaContextFactoryBuilder implements ContextFactoryBuilder<AggregateContext> {
+public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
 
     private RuntimeContext runtimeContext;
 

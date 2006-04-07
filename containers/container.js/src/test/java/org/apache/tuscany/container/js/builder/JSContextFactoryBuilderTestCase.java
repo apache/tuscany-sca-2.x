@@ -1,10 +1,7 @@
 package org.apache.tuscany.container.js.builder;
 
-import java.util.Collection;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.container.js.assembly.mock.HelloWorldService;
 import org.apache.tuscany.container.js.config.JavaScriptContextFactory;
@@ -39,7 +36,7 @@ public class JSContextFactoryBuilderTestCase extends TestCase {
         context.registerFactory(contextFactory);
         context.start();
         context.onEvent(EventContext.MODULE_START, null);
-        for (ProxyFactory proxyFactory : (Collection<ProxyFactory>) contextFactory.getTargetProxyFactories().values()) {
+        for (ProxyFactory proxyFactory : contextFactory.getTargetProxyFactories().values()) {
             jsWireBuilder.completeTargetChain(proxyFactory, JavaScriptContextFactory.class, context);
             proxyFactory.initialize();
         }

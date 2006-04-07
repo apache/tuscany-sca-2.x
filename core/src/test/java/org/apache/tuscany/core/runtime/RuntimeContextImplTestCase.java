@@ -19,8 +19,8 @@ import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AggregateContext;
-import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.InstanceContext;
 import org.apache.tuscany.core.context.impl.AggregateContextImpl;
 import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
@@ -56,7 +56,7 @@ public class RuntimeContextImplTestCase extends TestCase {
 
         AggregateContext root = runtime.getRootContext();
         Assert.assertNotNull(root);
-        Assert.assertTrue(root.getLifecycleState() == Context.RUNNING);
+        Assert.assertTrue(root.getLifecycleState() == InstanceContext.RUNNING);
 
         AggregateContext system = runtime.getSystemContext();
         Assert.assertNotNull(system);
@@ -72,7 +72,7 @@ public class RuntimeContextImplTestCase extends TestCase {
         ep.getBindings().add(systemFactory.createSystemBinding());
         Service service = systemFactory.createService();
         service.setName("system.child/TestService2EP");
-        ((ConfiguredService) ep.getConfiguredReference().getTargetConfiguredServices().get(0)).setService(service);
+        ep.getConfiguredReference().getTargetConfiguredServices().get(0).setService(service);
         JavaServiceContract inter = systemFactory.createJavaServiceContract();
         inter.setInterface(ModuleScopeSystemComponentImpl.class);
         service.setServiceContract(inter);
@@ -105,7 +105,7 @@ public class RuntimeContextImplTestCase extends TestCase {
 
         AggregateContext root = runtime.getRootContext();
         Assert.assertNotNull(root);
-        Assert.assertTrue(root.getLifecycleState() == Context.RUNNING);
+        Assert.assertTrue(root.getLifecycleState() == InstanceContext.RUNNING);
 
         AggregateContext system = runtime.getSystemContext();
         Assert.assertNotNull(system);

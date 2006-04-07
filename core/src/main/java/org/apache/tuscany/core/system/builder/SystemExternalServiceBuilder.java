@@ -16,7 +16,6 @@ package org.apache.tuscany.core.system.builder;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.context.AggregateContext;
 import org.apache.tuscany.core.injection.InterAggregateReferenceFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemExternalServiceContextFactory;
@@ -29,17 +28,10 @@ import org.apache.tuscany.model.assembly.ExternalService;
  * 
  * @version $Rev$ $Date$
  */
-public class SystemExternalServiceBuilder implements ContextFactoryBuilder<AggregateContext> {
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
+public class SystemExternalServiceBuilder implements ContextFactoryBuilder {
 
     public SystemExternalServiceBuilder() {
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     public void build(AssemblyModelObject modelObject) throws BuilderException {
         if (!(modelObject instanceof ExternalService)) {
