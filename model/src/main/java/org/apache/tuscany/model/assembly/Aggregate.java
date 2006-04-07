@@ -99,14 +99,14 @@ public interface Aggregate extends Extensible {
      * Returns the WSDL imports.
      * @return
      */
-    List<Import> getWSDLImports();
+    List<ImportWSDL> getWSDLImports();
     
     /**
      * Returns the WSDL imports for the given namespace. 
      * @param namespace
      * @return
      */
-    List<Import> getWSDLImports(String namespace);
+    List<ImportWSDL> getWSDLImports(String namespace);
 
     /**
      * Returns the assembly model context used by this aggregate.

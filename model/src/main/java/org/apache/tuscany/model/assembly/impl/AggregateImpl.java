@@ -23,9 +23,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.wsdl.Definition;
-import javax.wsdl.Import;
+
+import commonj.sdo.helper.XSDHelper;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.model.assembly.Aggregate;
@@ -36,11 +36,10 @@ import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;
+import org.apache.tuscany.model.assembly.ImportWSDL;
 import org.apache.tuscany.model.assembly.ServiceURI;
 import org.apache.tuscany.model.assembly.Wire;
 import org.apache.tuscany.sdo.util.SDOUtil;
-
-import commonj.sdo.helper.XSDHelper;
 
 /**
  * An implementation of Aggregate.
@@ -65,9 +64,9 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
 
     private List<Wire> wires = new ArrayList<Wire>();
 
-    private List<Import> wsdlImports = new ArrayList<Import>();
+    private List<ImportWSDL> wsdlImports = new ArrayList<ImportWSDL>();
 
-    private Map<String, List<Import>> wsdlImportsMap;
+    private Map<String, List<ImportWSDL>> wsdlImportsMap;
 
     private AssemblyModelContext modelContext;
 
@@ -155,14 +154,14 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
     /**
      * @see org.apache.tuscany.model.assembly.Aggregate#getWSDLImports()
      */
-    public List<Import> getWSDLImports() {
+    public List<ImportWSDL> getWSDLImports() {
         return wsdlImports;
     }
 
     /**
      * @see org.apache.tuscany.model.assembly.Aggregate#getWSDLImports(java.lang.String)
      */
-    public List<Import> getWSDLImports(String namespace) {
+    public List<ImportWSDL> getWSDLImports(String namespace) {
         checkInitialized();
         return wsdlImportsMap.get(namespace);
     }
@@ -216,19 +215,19 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
 
         // Populate map of WSDL imports
         ResourceLoader resourceLoader = modelContext.getApplicationResourceLoader();
-        wsdlImportsMap = new HashMap<String, List<Import>>();
-        for (Import wsdlImport : wsdlImports) {
-            String namespace = wsdlImport.getNamespaceURI();
-            List<Import> list = wsdlImportsMap.get(namespace);
+        wsdlImportsMap = new HashMap<String, List<ImportWSDL>>();
+        for (ImportWSDL wsdlImport : wsdlImports) {
+            String namespace = wsdlImport.getNamespace();
+            List<ImportWSDL> list = wsdlImportsMap.get(namespace);
             if (list == null) {
-                list = new ArrayList<Import>();
+                list = new ArrayList<ImportWSDL>();
                 wsdlImportsMap.put(namespace, list);
             }
             list.add(wsdlImport);
 
             // Load the WSDL definition if necessary
             if (wsdlImport.getDefinition() == null) {
-                String location = wsdlImport.getLocationURI();
+                String location = wsdlImport.getLocation();
                 Definition definition;
                 ClassLoader ccl = Thread.currentThread().getContextClassLoader();
                 try {

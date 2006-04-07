@@ -273,6 +273,8 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
      * @see org.apache.tuscany.model.scdl.util.ScdlSwitch#caseWSDLImport(org.apache.tuscany.model.scdl.WSDLImport)
      */
     public Object caseWSDLImport(WSDLImport object) {
+        throw new UnsupportedOperationException();
+/*
         if (definition == null) {
             try {
                 WSDLFactory wsdlFactory = WSDLFactory.newInstance();
@@ -293,6 +295,7 @@ public class SCDLModelContentHandlerImpl extends ScdlSwitch implements ModelCont
         });
 
         return wsdlImport;
+*/
     }
 
     /**

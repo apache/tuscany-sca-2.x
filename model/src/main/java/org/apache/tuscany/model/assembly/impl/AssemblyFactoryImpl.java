@@ -40,6 +40,7 @@ import org.apache.tuscany.model.assembly.Subsystem;
 import org.apache.tuscany.model.assembly.Wire;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.ServiceContract;
+import org.apache.tuscany.model.assembly.ImportWSDL;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 import org.apache.tuscany.model.types.java.impl.JavaServiceContractImpl;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
@@ -259,5 +260,16 @@ public class AssemblyFactoryImpl implements AssemblyFactory {
         property.setName(name);
         property.setType(type);
         return property;
+    }
+
+    public ImportWSDL createImportWSDL() {
+        return new ImportWSDLImpl();
+    }
+
+    public ImportWSDL createImportWSDL(String location, String namespace) {
+        ImportWSDL importWSDL = createImportWSDL();
+        importWSDL.setLocation(location);
+        importWSDL.setNamespace(namespace);
+        return importWSDL;
     }
 }

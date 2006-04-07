@@ -16,54 +16,41 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.model.assembly.*;
-
-import javax.wsdl.Definition;
-import javax.wsdl.Import;
-import javax.wsdl.WSDLException;
-import javax.wsdl.factory.WSDLFactory;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.model.assembly.Aggregate;
+import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.EntryPoint;
+import org.apache.tuscany.model.assembly.ExternalService;
+import org.apache.tuscany.model.assembly.ImportWSDL;
+import org.apache.tuscany.model.assembly.Wire;
+
 /**
  * @version $Rev$ $Date$
  */
 public abstract class AggregateLoader extends AbstractLoader {
-    private static final WSDLFactory wsdlFactory;
-    static {
-        try {
-            wsdlFactory = WSDLFactory.newInstance();
-        } catch (WSDLException e) {
-            throw new ExceptionInInitializerError(e);
-        }
-    }
-
     public void loadAggregate(XMLStreamReader reader, Aggregate aggregate, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         aggregate.setName(reader.getAttributeValue(null, "name"));
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
-                if (AssemblyConstants.IMPORT_WSDL.equals(reader.getName())) {
-                    Definition definition = wsdlFactory.newDefinition();
-                    Import wsdlImport = definition.createImport();
-                    wsdlImport.setNamespaceURI(reader.getAttributeValue(null, "namespace"));
-                    wsdlImport.setLocationURI(reader.getAttributeValue(null, "location"));
-                    aggregate.getWSDLImports().add(wsdlImport);
-                } else {
-                    AssemblyModelObject o = registry.load(reader, resourceLoader);
-                    if (o instanceof EntryPoint) {
-                        aggregate.getEntryPoints().add((EntryPoint) o);
-                    } else if (o instanceof ExternalService) {
-                        aggregate.getExternalServices().add((ExternalService) o);
-                    } else if (o instanceof Component) {
-                        aggregate.getComponents().add((Component) o);
-                    } else if (o instanceof Wire) {
-                        aggregate.getWires().add((Wire) o);
-                    }
+                AssemblyModelObject o = registry.load(reader, resourceLoader);
+                if (o instanceof EntryPoint) {
+                    aggregate.getEntryPoints().add((EntryPoint) o);
+                } else if (o instanceof ExternalService) {
+                    aggregate.getExternalServices().add((ExternalService) o);
+                } else if (o instanceof Component) {
+                    aggregate.getComponents().add((Component) o);
+                } else if (o instanceof Wire) {
+                    aggregate.getWires().add((Wire) o);
+                } else if (o instanceof ImportWSDL) {
+                    aggregate.getWSDLImports().add((ImportWSDL) o);
                 }
                 reader.next();
                 break;

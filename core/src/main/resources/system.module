@@ -19,4 +19,15 @@
         xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
         name="org.apache.tuscany.core.system">
 
+    <component name="org.apache.tuscany.core.loader.WSDLDefinitionRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.loader.impl.WSDLDefinitionRegistryImpl"/>
+    </component>
+
+    <component name="org.apache.tuscany.core.loader.assembly.ImportWSDLLoader">
+        <system:implementation.system class="org.apache.tuscany.core.loader.assembly.ImportWSDLLoader"/>
+    </component>
+
+    <component name="org.apache.tuscany.core.loader.assembly.InterfaceWSDLLoader">
+        <system:implementation.system class="org.apache.tuscany.core.loader.assembly.InterfaceWSDLLoader"/>
+    </component>
 </module>

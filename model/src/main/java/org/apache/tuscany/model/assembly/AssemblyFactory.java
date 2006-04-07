@@ -238,4 +238,18 @@ public interface AssemblyFactory {
      * @return a Property with the supplied name and type
      */
     Property createProperty(String name, Class<?> type);
+
+    /**
+     * Returns a new ImportWSDL model object.
+     * @return a new ImportWSDL model object
+     */
+    ImportWSDL createImportWSDL();
+
+    /**
+     * Returns a new ImportWSDL model object initialized with the supplied values.
+     * @param location the location where the WSDL definition can be found
+     * @param namespace the namespace URI for this import
+     * @return a new ImportWSDL model object
+     */
+    ImportWSDL createImportWSDL(String location, String namespace);
 }
