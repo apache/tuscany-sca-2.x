@@ -36,7 +36,7 @@ public class DefaultScopeStrategy  extends AbstractScopeStrategy  {
 
     public Map<Scope,ScopeContext> createScopes(EventContext eventContext) {
         ScopeContext moduleScope = new ModuleScopeContext(eventContext);
-        ScopeContext sessionScope = new HttpSessionScopeContext(eventContext);
+        ScopeContext sessionScope = new SessionScopeContext(eventContext);
         ScopeContext requestScope = new RequestScopeContext(eventContext);
         ScopeContext statelessScope = new StatelessScopeContext(eventContext);
         ScopeContext aggregrateScope = new CompositeScopeContext(eventContext);

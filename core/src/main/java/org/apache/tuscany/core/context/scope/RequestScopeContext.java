@@ -72,7 +72,6 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
         if (lifecycleState != UNINITIALIZED) {
             throw new IllegalStateException("Scope must be in UNINITIALIZED state [" + lifecycleState + "]");
         }
-        super.start();
         contextMap = new ConcurrentHashMap<Object, Map<String, Context>>();
         destroyComponents = new ConcurrentHashMap<Object, Queue<AtomicContext>>();
         lifecycleState = RUNNING;
@@ -83,7 +82,6 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
         if (lifecycleState != RUNNING) {
             throw new IllegalStateException("Scope in wrong state [" + lifecycleState + "]");
         }
-        super.stop();
         contextMap = null;
         destroyComponents = null;
         lifecycleState = STOPPED;

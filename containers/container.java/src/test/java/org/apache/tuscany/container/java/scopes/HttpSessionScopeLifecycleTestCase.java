@@ -32,7 +32,7 @@ import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
-import org.apache.tuscany.core.context.scope.HttpSessionScopeContext;
+import org.apache.tuscany.core.context.scope.SessionScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 
@@ -48,7 +48,7 @@ public class HttpSessionScopeLifecycleTestCase extends TestCase {
      */
     public void testInitDestroy() throws Exception {
         EventContext ctx = new EventContextImpl();
-        HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
+        SessionScopeContext scope = new SessionScopeContext(ctx);
         scope.registerFactories(createComponents());
         scope.start();
         Object session = new Object();
@@ -85,7 +85,7 @@ public class HttpSessionScopeLifecycleTestCase extends TestCase {
      */
     public void testDestroyOrder() throws Exception {
         EventContext ctx = new EventContextImpl();
-        HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
+        SessionScopeContext scope = new SessionScopeContext(ctx);
         scope.registerFactories(createOrderedInitComponents());
         scope.start();
         Object session = new Object();

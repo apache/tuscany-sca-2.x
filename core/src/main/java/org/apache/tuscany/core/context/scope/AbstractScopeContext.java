@@ -44,12 +44,6 @@ public abstract class AbstractScopeContext extends AbstractContext implements Sc
         this.eventContext = eventContext;
     }
 
-    public synchronized void start() {
-    }
-
-    public synchronized void stop() {
-    }
-
     public void registerFactories(List<ContextFactory<Context>> configurations) {
         for (ContextFactory<Context> configuration : configurations) {
             contextFactorys.put(configuration.getName(), configuration);

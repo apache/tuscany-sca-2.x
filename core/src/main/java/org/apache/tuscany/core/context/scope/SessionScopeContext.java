@@ -25,11 +25,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * An implementation of an HTTP session-scoped component container where each HTTP session is mapped to a context in the scope
+ * An implementation of an session-scoped component container where each HTTP session is mapped to a context in the scope
  * 
  * @version $Rev$ $Date$
  */
-public class HttpSessionScopeContext extends AbstractScopeContext implements RuntimeEventListener {
+public class SessionScopeContext extends AbstractScopeContext implements RuntimeEventListener {
 
     // The collection of service component contexts keyed by session
     private Map<Object, Map<String, Context>> contexts;
@@ -37,16 +37,15 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
     // Stores ordered lists of contexts to shutdown keyed by session
     private Map<Object, Queue<AtomicContext>> destroyableContexts;
 
-    public HttpSessionScopeContext(EventContext eventContext) {
+    public SessionScopeContext(EventContext eventContext) {
         super(eventContext);
-        setName("Http Session Scope");
+        setName("Session Scope");
     }
 
     public synchronized void start() {
         if (lifecycleState != UNINITIALIZED) {
             throw new IllegalStateException("Scope container must be in UNINITIALIZED state");
         }
-        super.start();
         contexts = new ConcurrentHashMap<Object, Map<String, Context>>();
         destroyableContexts = new ConcurrentHashMap<Object, Queue<AtomicContext>>();
         lifecycleState = RUNNING;
@@ -56,7 +55,6 @@ public class HttpSessionScopeContext extends AbstractScopeContext implements Run
         if (lifecycleState != RUNNING) {
             throw new IllegalStateException("Scope container in wrong state");
         }
-        super.stop();
         contexts = null;
         contexts = null;
         destroyableContexts = null;

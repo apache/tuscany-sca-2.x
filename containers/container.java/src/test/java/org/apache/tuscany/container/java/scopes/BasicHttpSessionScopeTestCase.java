@@ -32,7 +32,7 @@ import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
-import org.apache.tuscany.core.context.scope.HttpSessionScopeContext;
+import org.apache.tuscany.core.context.scope.SessionScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 
@@ -48,7 +48,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
      */
     public void testInstanceManagement() throws Exception {
         EventContext ctx = new EventContextImpl();
-        HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
+        SessionScopeContext scope = new SessionScopeContext(ctx);
         scope.registerFactories(createConfigurations());
         scope.start();
         Object session = new Object();
@@ -84,7 +84,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
      */
     public void testSetNullComponents() throws Exception {
         EventContext ctx = new EventContextImpl();
-        HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
+        SessionScopeContext scope = new SessionScopeContext(ctx);
         scope.registerFactories(new ArrayList<ContextFactory<Context>>());
         scope.start();
         scope.stop();
@@ -92,7 +92,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     public void testGetContextByKey() throws Exception {
         EventContext ctx = new EventContextImpl();
-        HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
+        SessionScopeContext scope = new SessionScopeContext(ctx);
         scope.registerFactories(createConfigurations());
         scope.start();
         Object session = new Object();
@@ -125,7 +125,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     public void testRegisterContextBeforeSession() throws Exception {
         EventContext ctx = new EventContextImpl();
-        HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
+        SessionScopeContext scope = new SessionScopeContext(ctx);
         scope.registerFactories(createConfigurations());
         scope.start();
         Object session = new Object();
@@ -163,7 +163,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
      */
     public void testRegisterContextAfterSession() throws Exception {
         EventContext ctx = new EventContextImpl();
-        HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
+        SessionScopeContext scope = new SessionScopeContext(ctx);
         scope.registerFactories(createConfigurations());
         scope.start();
         Object session = new Object();

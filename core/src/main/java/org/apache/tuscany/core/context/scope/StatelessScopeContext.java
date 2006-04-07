@@ -41,7 +41,6 @@ public class StatelessScopeContext extends AbstractScopeContext implements Runti
         if (lifecycleState != UNINITIALIZED) {
             throw new IllegalStateException("Scope must be in UNINITIALIZED state [" + lifecycleState + "]");
         }
-        super.start();
         lifecycleState = RUNNING;
         prepare();
     }
@@ -50,7 +49,6 @@ public class StatelessScopeContext extends AbstractScopeContext implements Runti
         if (lifecycleState != RUNNING) {
             throw new IllegalStateException("Scope in wrong state [" + lifecycleState + "]");
         }
-        super.stop();
         contextMap = null;
         lifecycleState = STOPPED;
     }

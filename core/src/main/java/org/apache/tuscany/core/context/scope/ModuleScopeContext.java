@@ -73,7 +73,6 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
         if (lifecycleState != RUNNING) {
             throw new IllegalStateException("Scope in wrong state [" + lifecycleState + "]");
         }
-        super.stop();
         componentContexts = null;
         destroyableContexts = null;
         lifecycleState = STOPPED;
