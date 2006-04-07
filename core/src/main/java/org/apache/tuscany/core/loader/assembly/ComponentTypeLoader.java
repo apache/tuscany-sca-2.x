@@ -19,7 +19,11 @@ package org.apache.tuscany.core.loader.assembly;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.COMPONENT_TYPE;
-import org.apache.tuscany.model.assembly.*;
+import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.Property;
+import org.apache.tuscany.model.assembly.Reference;
+import org.apache.tuscany.model.assembly.Service;
 import org.osoa.sca.annotations.Scope;
 
 import javax.xml.namespace.QName;

@@ -17,9 +17,15 @@
 package org.apache.tuscany.container.js.context;
 
 import org.apache.tuscany.container.js.rhino.RhinoScript;
-import org.apache.tuscany.core.context.*;
 import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.apache.tuscany.core.context.AtomicContext;
+import org.apache.tuscany.core.context.AbstractContext;
+import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.core.context.RuntimeEventListener;
+import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.osoa.sca.ServiceRuntimeException;
 
 import java.util.HashMap;

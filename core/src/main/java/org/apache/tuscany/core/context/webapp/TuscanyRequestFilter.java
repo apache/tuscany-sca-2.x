@@ -20,8 +20,13 @@ import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.webapp.LazyHTTPSessionId;
 
-import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.Filter;
+import javax.servlet.ServletException;
+import javax.servlet.FilterConfig;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletResponse;
+import javax.servlet.ServletRequest;
 import java.io.IOException;
 
 /**

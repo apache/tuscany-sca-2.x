@@ -21,8 +21,14 @@ import org.apache.tuscany.core.context.EventContext;
 import org.osoa.sca.CurrentModuleContext;
 import org.osoa.sca.ModuleContext;
 
-import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.Filter;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletResponse;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletRequest;
 import java.io.IOException;
 
 /**

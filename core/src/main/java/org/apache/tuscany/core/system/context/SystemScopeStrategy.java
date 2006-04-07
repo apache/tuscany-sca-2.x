@@ -42,7 +42,7 @@ public class SystemScopeStrategy extends AbstractScopeStrategy {
     public SystemScopeStrategy() {
     }
 
-    public Map<Scope, ScopeContext> createScopes(EventContext eventContext) {
+    public Map<Scope, ScopeContext> getScopeContexts(EventContext eventContext) {
         ScopeContext aggregrateScope = new CompositeScopeContext(eventContext);
         ScopeContext moduleScoper = new ModuleScopeContext(eventContext);
         ScopeContext statelessScope = new StatelessScopeContext(eventContext);

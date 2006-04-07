@@ -17,10 +17,16 @@
 package org.apache.tuscany.core.system.context;
 
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.context.*;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.ObjectCreationException;
+import org.apache.tuscany.core.context.AtomicContext;
+import org.apache.tuscany.core.context.AbstractContext;
+import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.core.context.ContextInitException;
+import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.RuntimeEventListener;
 
 /**
  * Manages system component implementation instances
@@ -48,7 +54,7 @@ public class SystemComponentContext extends AbstractContext implements AtomicCon
     // ----------------------------------
 
     public SystemComponentContext(String name, ObjectFactory objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
-            EventInvoker<Object> destroyInvoker, boolean stateless) {
+                                  EventInvoker<Object> destroyInvoker, boolean stateless) {
         super(name);
         assert (objectFactory != null) : "Object factory was null";
         if (eagerInit && initInvoker == null) {

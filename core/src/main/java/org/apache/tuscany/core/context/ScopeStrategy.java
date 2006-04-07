@@ -33,7 +33,7 @@ public interface ScopeStrategy {
     /**
      * Creates and returns new instances of configured scope containers
      */
-    public Map<Scope, ScopeContext> createScopes(EventContext eventContext);
+    public Map<Scope, ScopeContext> getScopeContexts(EventContext eventContext);
 
     /**
      * Determines whether a wire proceeds from a source of higher scope to a target of lesser scope

@@ -24,7 +24,14 @@ import org.apache.tuscany.core.loader.StAXPropertyFactory;
 import org.apache.tuscany.core.loader.StAXUtil;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.*;
 import org.apache.tuscany.core.loader.impl.StringParserPropertyFactory;
-import org.apache.tuscany.model.assembly.*;
+import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.ComponentImplementation;
+import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.ConfiguredProperty;
+import org.apache.tuscany.model.assembly.ConfiguredReference;
+import org.apache.tuscany.model.assembly.OverrideOption;
+import org.apache.tuscany.model.assembly.Property;
 import org.osoa.sca.annotations.Scope;
 
 import javax.xml.namespace.QName;

@@ -36,7 +36,7 @@ public class RuntimeScopeStrategy extends AbstractScopeStrategy {
     public RuntimeScopeStrategy() {
     }
 
-    public Map<Scope, ScopeContext> createScopes(EventContext eventContext) {
+    public Map<Scope, ScopeContext> getScopeContexts(EventContext eventContext) {
         ScopeContext aggregrateScope = new CompositeScopeContext(eventContext);
         Map<Scope, ScopeContext> scopes = new HashMap<Scope, ScopeContext>();
         scopes.put(Scope.AGGREGATE, aggregrateScope);

@@ -17,7 +17,16 @@
 package org.apache.tuscany.core.context.scope;
 
 import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.*;
+import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.core.context.ScopeContext;
+import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.AbstractContext;
+import org.apache.tuscany.core.context.CompositeContext;
+import org.apache.tuscany.core.context.ScopeInitializationException;
+import org.apache.tuscany.core.context.ScopeRuntimeException;
+import org.apache.tuscany.core.context.EventException;
 
 import java.util.ArrayList;
 import java.util.List;

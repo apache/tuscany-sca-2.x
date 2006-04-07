@@ -14,7 +14,12 @@
 package org.apache.tuscany.core.system.context;
 
 import org.apache.tuscany.core.builder.ContextResolver;
-import org.apache.tuscany.core.context.*;
+import org.apache.tuscany.core.context.AbstractContext;
+import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.CoreRuntimeException;
+import org.apache.tuscany.core.context.EntryPointContext;
+import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.core.context.TargetException;
 
 /**
  * Manages an entry point into a system module. System entry points cache a direct (i.e. non-proxied) reference to a

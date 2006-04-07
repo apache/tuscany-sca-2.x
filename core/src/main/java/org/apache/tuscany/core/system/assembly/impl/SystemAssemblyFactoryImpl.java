@@ -20,7 +20,11 @@ import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.SystemModule;
-import org.apache.tuscany.model.assembly.*;
+import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.EntryPoint;
+import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 

@@ -28,7 +28,11 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.*;
+import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.EntryPoint;
+import org.apache.tuscany.model.assembly.ServiceContract;
+import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 

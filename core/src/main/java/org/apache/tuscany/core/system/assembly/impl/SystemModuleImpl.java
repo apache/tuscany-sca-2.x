@@ -17,10 +17,31 @@
 package org.apache.tuscany.core.system.assembly.impl;
 
 import org.apache.tuscany.core.system.assembly.SystemModule;
-import org.apache.tuscany.model.assembly.*;
+import org.apache.tuscany.model.assembly.AssemblyFactory;
+import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
+import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.ConfiguredProperty;
+import org.apache.tuscany.model.assembly.ConfiguredReference;
+import org.apache.tuscany.model.assembly.ConfiguredService;
+import org.apache.tuscany.model.assembly.EntryPoint;
+import org.apache.tuscany.model.assembly.ExternalService;
+import org.apache.tuscany.model.assembly.ModuleFragment;
+import org.apache.tuscany.model.assembly.Multiplicity;
+import org.apache.tuscany.model.assembly.OverrideOption;
+import org.apache.tuscany.model.assembly.Reference;
+import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.ServiceContract;
+import org.apache.tuscany.model.assembly.ServiceURI;
+import org.apache.tuscany.model.assembly.Wire;
 import org.apache.tuscany.model.assembly.impl.AggregateImpl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An implementation of Module.
@@ -119,7 +140,7 @@ public class SystemModuleImpl extends AggregateImpl implements SystemModule {
                 }
             }
             for (ExternalService externalService : getExternalServices()) {
-                if (externalService.getOverrideOption()==null || externalService.getOverrideOption()==OverrideOption.NO)
+                if (externalService.getOverrideOption()==null || externalService.getOverrideOption()== OverrideOption.NO)
                     continue;
                 Reference reference = factory.createReference();
                 reference.setName(externalService.getName());

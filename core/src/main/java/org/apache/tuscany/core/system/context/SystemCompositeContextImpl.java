@@ -21,8 +21,25 @@ import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.context.*;
+import org.apache.tuscany.core.context.AbstractContext;
+import org.apache.tuscany.core.context.AutowireContext;
+import org.apache.tuscany.core.context.AutowireResolutionException;
+import org.apache.tuscany.core.context.CompositeContext;
+import org.apache.tuscany.core.context.ConfigurationContext;
+import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.ContextInitException;
+import org.apache.tuscany.core.context.CoreRuntimeException;
+import org.apache.tuscany.core.context.DuplicateNameException;
+import org.apache.tuscany.core.context.EntryPointContext;
+import org.apache.tuscany.core.context.EventContext;
 import static org.apache.tuscany.core.context.EventContext.*;
+import org.apache.tuscany.core.context.EventException;
+import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.core.context.RuntimeEventListener;
+import org.apache.tuscany.core.context.ScopeContext;
+import org.apache.tuscany.core.context.ScopeStrategy;
+import org.apache.tuscany.core.context.SystemCompositeContext;
+import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -36,10 +53,25 @@ import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemObjectContextFactory;
-import org.apache.tuscany.model.assembly.*;
+import org.apache.tuscany.model.assembly.Aggregate;
+import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.EntryPoint;
+import org.apache.tuscany.model.assembly.Extensible;
+import org.apache.tuscany.model.assembly.ExternalService;
+import org.apache.tuscany.model.assembly.Module;
+import org.apache.tuscany.model.assembly.ModuleComponent;
+import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.AggregatePart;
+import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
@@ -469,7 +501,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
 
     protected void initializeScopes() {
         if (scopeContexts == null) {
-            scopeContexts = scopeStrategy.createScopes(eventContext);
+            scopeContexts = scopeStrategy.getScopeContexts(eventContext);
             immutableScopeContexts = Collections.unmodifiableMap(scopeContexts);
         }
     }

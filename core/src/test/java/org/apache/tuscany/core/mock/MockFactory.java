@@ -14,7 +14,12 @@
 package org.apache.tuscany.core.mock;
 
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.mock.component.*;
+import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
+import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
+import org.apache.tuscany.core.mock.component.Source;
+import org.apache.tuscany.core.mock.component.SourceImpl;
+import org.apache.tuscany.core.mock.component.Target;
+import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
@@ -24,7 +29,20 @@ import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
-import org.apache.tuscany.model.assembly.*;
+import org.apache.tuscany.model.assembly.AggregatePart;
+import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.ConfiguredReference;
+import org.apache.tuscany.model.assembly.ConfiguredService;
+import org.apache.tuscany.model.assembly.EntryPoint;
+import org.apache.tuscany.model.assembly.ExternalService;
+import org.apache.tuscany.model.assembly.Module;
+import org.apache.tuscany.model.assembly.ModuleComponent;
+import org.apache.tuscany.model.assembly.Multiplicity;
+import org.apache.tuscany.model.assembly.Reference;
+import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 

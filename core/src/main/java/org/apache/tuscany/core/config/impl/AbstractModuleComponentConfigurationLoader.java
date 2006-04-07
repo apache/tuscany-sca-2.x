@@ -19,7 +19,11 @@ package org.apache.tuscany.core.config.impl;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
-import org.apache.tuscany.model.assembly.*;
+import org.apache.tuscany.model.assembly.AssemblyFactory;
+import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.Module;
+import org.apache.tuscany.model.assembly.ModuleComponent;
+import org.apache.tuscany.model.assembly.ModuleFragment;
 
 import java.io.IOException;
 import java.net.URL;

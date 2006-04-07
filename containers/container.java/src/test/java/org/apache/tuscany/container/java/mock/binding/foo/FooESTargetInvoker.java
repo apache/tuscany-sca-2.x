@@ -15,10 +15,13 @@ package org.apache.tuscany.container.java.mock.binding.foo;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.tuscany.core.context.*;
 import org.apache.tuscany.core.invocation.Interceptor;
 import org.apache.tuscany.core.invocation.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
+import org.apache.tuscany.core.context.ExternalServiceContext;
+import org.apache.tuscany.core.context.ScopeContext;
+import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.Context;
 
 /**
  * Responsible for invoking a mock transport binding client configured for an external service

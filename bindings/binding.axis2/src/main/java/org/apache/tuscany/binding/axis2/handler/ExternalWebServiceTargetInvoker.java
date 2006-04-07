@@ -13,10 +13,14 @@
  */
 package org.apache.tuscany.binding.axis2.handler;
 
-import org.apache.tuscany.core.context.*;
 import org.apache.tuscany.core.invocation.Interceptor;
 import org.apache.tuscany.core.invocation.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
+import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.core.context.ExternalServiceContext;
+import org.apache.tuscany.core.context.ScopeContext;
+import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.TargetException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -88,7 +92,7 @@ public class ExternalWebServiceTargetInvoker implements TargetInvoker {
         throw new UnsupportedOperationException();
     }
 
-    public Object clone() {
+    public Object clone() throws CloneNotSupportedException {
         try {
             ExternalWebServiceTargetInvoker invoker = (ExternalWebServiceTargetInvoker) super.clone();
             invoker.container = container;

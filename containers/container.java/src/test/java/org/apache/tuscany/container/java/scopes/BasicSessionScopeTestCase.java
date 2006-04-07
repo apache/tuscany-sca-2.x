@@ -41,7 +41,7 @@ import org.apache.tuscany.model.assembly.SimpleComponent;
  * 
  * @version $Rev$ $Date$
  */
-public class BasicHttpSessionScopeTestCase extends TestCase {
+public class BasicSessionScopeTestCase extends TestCase {
 
     /**
      * Tests instance identity is properly maintained
