@@ -20,21 +20,21 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.WeakHashMap;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Logger;
+import java.util.WeakHashMap;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.LogLevel;
+import org.apache.tuscany.common.monitor.MonitorFactory;
 
 /**
  * A factory for monitors that forwards events to a {@link java.util.logging.Logger Java Logging (JSR47) Logger}.
  *
- * @see java.util.logging
  * @version $Rev$ $Date$
+ * @see java.util.logging
  */
 public class JavaLoggingMonitorFactory implements MonitorFactory {
     private final String bundleName;
@@ -52,9 +52,9 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
      * <code>Class.getName() + '#' + Method.getName()</code> and the value the log level to use
      * as defined by {@link java.util.logging.Level}.
      *
-     * @param levels definition of custom levels for specific monitored methods
+     * @param levels       definition of custom levels for specific monitored methods
      * @param defaultLevel the default log level to use
-     * @param bundleName the name of a resource bundle that will be passed to the logger
+     * @param bundleName   the name of a resource bundle that will be passed to the logger
      * @see java.util.logging.Logger
      */
     public JavaLoggingMonitorFactory(Properties levels, Level defaultLevel, String bundleName) {
@@ -75,7 +75,7 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
     public synchronized <T> T getMonitor(Class<T> monitorInterface) {
         T proxy = getCachedMonitor(monitorInterface);
         if (proxy == null) {
-            proxy = createMonitor(monitorInterface);
+            proxy = createMonitor(monitorInterface, bundleName);
             proxies.put(monitorInterface, new WeakReference<T>(proxy));
         }
         return proxy;
@@ -86,7 +86,7 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
         return (ref != null) ? monitorInterface.cast(ref.get()) : null;
     }
 
-    private <T>T createMonitor(Class<T> monitorInterface) {
+    private <T>T createMonitor(Class<T> monitorInterface, String bundleName) {
         String className = monitorInterface.getName();
         Logger logger = Logger.getLogger(className, bundleName);
         Method[] methods = monitorInterface.getMethods();
@@ -107,9 +107,10 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
                     }
                 }
             }
-            if (level != null) {
-                levels.put(method.getName(), level);
+            if (level == null) {
+                level = defaultLevel;
             }
+            levels.put(method.getName(), level);
         }
         InvocationHandler handler = new LoggingHandler(logger, levels);
         return monitorInterface.cast(Proxy.newProxyInstance(monitorInterface.getClassLoader(), new Class<?>[]{monitorInterface}, handler));

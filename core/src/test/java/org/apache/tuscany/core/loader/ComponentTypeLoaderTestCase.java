@@ -31,13 +31,14 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.namespace.QName;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ComponentTypeLoaderTestCase extends TestCase {
     private XMLInputFactory xmlFactory;
-    private StAXLoaderRegistry registry;
+    private StAXLoaderRegistryImpl registry;
     private SystemAssemblyFactoryImpl assemblyFactory;
     private ResourceLoaderImpl resourceLoader;
 
@@ -58,6 +59,7 @@ public class ComponentTypeLoaderTestCase extends TestCase {
         xmlFactory = XMLInputFactory.newInstance();
         assemblyFactory = new SystemAssemblyFactoryImpl();
         registry = new StAXLoaderRegistryImpl();
+        registry.setMonitor(NULL_MONITOR);
         register(new ComponentTypeLoader());
         register(new ServiceLoader());
         resourceLoader = new ResourceLoaderImpl(getClass().getClassLoader());
@@ -68,4 +70,15 @@ public class ComponentTypeLoaderTestCase extends TestCase {
         loader.setRegistry(registry);
         loader.start();
     }
+
+    private static final StAXLoaderRegistryImpl.Monitor NULL_MONITOR = new StAXLoaderRegistryImpl.Monitor() {
+        public void registeringLoader(QName xmlType) {
+        }
+
+        public void unregisteringLoader(QName xmlType) {
+        }
+
+        public void elementLoad(QName xmlType) {
+        }
+    };
 }

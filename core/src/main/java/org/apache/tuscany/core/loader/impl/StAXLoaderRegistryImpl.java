@@ -35,16 +35,28 @@ import java.util.Map;
 public class StAXLoaderRegistryImpl implements StAXLoaderRegistry {
     private final Map<QName, StAXElementLoader<? extends AssemblyModelObject>> loaders = new HashMap<QName, StAXElementLoader<? extends AssemblyModelObject>>();
 
+    private Monitor monitor;
+
+    @org.apache.tuscany.core.system.annotation.Monitor
+    public void setMonitor(Monitor monitor) {
+        this.monitor = monitor;
+    }
+
     public <T extends AssemblyModelObject> void registerLoader(StAXElementLoader<T> loader) {
-        loaders.put(loader.getXMLType(), loader);
+        QName xmlType = loader.getXMLType();
+        monitor.registeringLoader(xmlType);
+        loaders.put(xmlType, loader);
     }
 
     public <T extends AssemblyModelObject> void unregisterLoader(StAXElementLoader<T> loader) {
-        loaders.remove(loader.getXMLType());
+        QName xmlType = loader.getXMLType();
+        monitor.unregisteringLoader(xmlType);
+        loaders.remove(xmlType);
     }
 
     public AssemblyModelObject load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         QName name = reader.getName();
+        monitor.elementLoad(name);
         StAXElementLoader<? extends AssemblyModelObject> loader = loaders.get(name);
         if (loader == null) {
             throw new ConfigurationLoadException("Unrecognized element: " + name);
@@ -64,5 +76,28 @@ public class StAXLoaderRegistryImpl implements StAXLoaderRegistry {
     @Deprecated
     public void setContext(AssemblyModelContext context) {
         modelContext.set(context);
+    }
+
+    public static interface Monitor {
+        /**
+         * Event emitted when a StAX element loader is registered.
+         *
+         * @param xmlType the QName of the element the loader will handle
+         */
+        void registeringLoader(QName xmlType);
+
+        /**
+         * Event emitted when a StAX element loader is unregistered.
+         *
+         * @param xmlType the QName of the element the loader will handle
+         */
+        void unregisteringLoader(QName xmlType);
+
+        /**
+         * Event emitted when a request is made to load an element.
+         *
+         * @param xmlType the QName of the element that should be loaded
+         */
+        void elementLoad(QName xmlType);
     }
 }
