@@ -107,7 +107,6 @@ public class JavaLoggingTestCase extends TestCase {
         assertEquals(1, handler.logs.size());
         LogRecord record = handler.logs.get(0);
         assertEquals(Monitor.class.getName() + "#eventWithOneArg", record.getMessage());
-        assertEquals(Monitor.class.getName(), record.getResourceBundleName());
     }
 
     protected void setUp() throws Exception {
@@ -121,7 +120,7 @@ public class JavaLoggingTestCase extends TestCase {
         levels.setProperty(sourceClass + "#eventWithNoArgs", "INFO");
         levels.setProperty(sourceClass + "#eventWithOneArg", "INFO");
         levels.setProperty(sourceClass + "#eventWithThrowable", "WARNING");
-        factory = new JavaLoggingMonitorFactory(levels, Level.FINE, sourceClass);
+        factory = new JavaLoggingMonitorFactory(levels, Level.FINE, "TestMessages");
     }
 
     protected void tearDown() throws Exception {

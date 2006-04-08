@@ -24,8 +24,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.WeakHashMap;
+import java.util.ResourceBundle;
+import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.LogRecord;
 
 import org.apache.tuscany.common.monitor.LogLevel;
 import org.apache.tuscany.common.monitor.MonitorFactory;
@@ -88,7 +92,7 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
 
     private <T>T createMonitor(Class<T> monitorInterface, String bundleName) {
         String className = monitorInterface.getName();
-        Logger logger = Logger.getLogger(className, bundleName);
+        Logger logger = Logger.getLogger(className);
         Method[] methods = monitorInterface.getMethods();
         Map<String, Level> levels = new HashMap<String, Level>(methods.length);
         for (Method method : methods) {
@@ -112,17 +116,44 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
             }
             levels.put(method.getName(), level);
         }
-        InvocationHandler handler = new LoggingHandler(logger, levels);
+
+        ResourceBundle bundle = locateBundle(monitorInterface, bundleName);
+
+        InvocationHandler handler = new LoggingHandler(logger, levels, bundle);
         return monitorInterface.cast(Proxy.newProxyInstance(monitorInterface.getClassLoader(), new Class<?>[]{monitorInterface}, handler));
+    }
+
+    private static <T>ResourceBundle locateBundle(Class<T> monitorInterface, String bundleName) {
+        Locale locale = Locale.getDefault();
+        ClassLoader cl = monitorInterface.getClassLoader();
+        String packageName = monitorInterface.getPackage().getName();
+        while (true) {
+            try {
+                return ResourceBundle.getBundle(packageName + '.' + bundleName, locale, cl);
+            } catch (MissingResourceException e) {
+            }
+            int index = packageName.lastIndexOf('.');
+            if (index == -1) {
+                break;
+            }
+            packageName = packageName.substring(0, index);
+        }
+        try {
+            return ResourceBundle.getBundle(bundleName, locale, cl);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private static final class LoggingHandler implements InvocationHandler {
         private final Logger logger;
         private final Map<String, Level> methodLevels;
+        private final ResourceBundle bundle;
 
-        public LoggingHandler(Logger logger, Map<String, Level> methodLevels) {
+        public LoggingHandler(Logger logger, Map<String, Level> methodLevels, ResourceBundle bundle) {
             this.logger = logger;
             this.methodLevels = methodLevels;
+            this.bundle = bundle;
         }
 
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -133,12 +164,21 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
                 String className = logger.getName();
                 String key = className + '#' + sourceMethod;
 
-                // if the only argument is a Throwable use the special logger for it
-                if (args != null && args.length == 1 && args[0] instanceof Throwable) {
-                    logger.logp(level, className, sourceMethod, key, (Throwable) args[0]);
-                } else {
-                    logger.logp(level, className, sourceMethod, key, args);
+                LogRecord logRecord = new LogRecord(level, key);
+                logRecord.setLoggerName(className);
+                logRecord.setSourceClassName(className);
+                logRecord.setSourceMethodName(sourceMethod);
+                logRecord.setParameters(args);
+                if (args != null) {
+                    for (Object o : args) {
+                        if (o instanceof Throwable) {
+                            logRecord.setThrown((Throwable) o);
+                            break;
+                        }
+                    }
                 }
+                logRecord.setResourceBundle(bundle);
+                logger.log(logRecord);
             }
             return null;
         }
