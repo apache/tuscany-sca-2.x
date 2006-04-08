@@ -16,7 +16,14 @@
  */
 package org.apache.tuscany.core.client;
 
+import java.util.List;
+
+import org.osoa.sca.ModuleContext;
+import org.osoa.sca.SCA;
+import org.osoa.sca.ServiceRuntimeException;
+
 import org.apache.tuscany.common.monitor.MonitorFactory;
+import org.apache.tuscany.common.monitor.LogLevel;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
@@ -30,11 +37,6 @@ import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
-import org.osoa.sca.ModuleContext;
-import org.osoa.sca.SCA;
-import org.osoa.sca.ServiceRuntimeException;
-
-import java.util.List;
 
 /**
  * Create and initialize a Tuscany SCA runtime environment.
@@ -83,7 +85,6 @@ public class TuscanyRuntime extends SCA {
         List<ContextFactoryBuilder> configBuilders = BootstrapHelper.getBuilders(monitorFactory);
         runtime = new RuntimeContextImpl(monitorFactory, configBuilders, new DefaultWireBuilder());
         runtime.start();
-        monitor.started(runtime);
 
         // Load and start the system configuration
         SystemCompositeContext systemContext = runtime.getSystemContext();
@@ -109,10 +110,10 @@ public class TuscanyRuntime extends SCA {
             moduleContext.fireEvent(EventContext.MODULE_START, null);
             moduleContext.fireEvent(EventContext.REQUEST_START, null);
             moduleContext.fireEvent(EventContext.SESSION_NOTIFY, sessionKey);
-            monitor.started(moduleContext);
+            monitor.moduleStarted(moduleContext.getName());
         } catch (CoreRuntimeException e) {
             setModuleContext(null);
-            monitor.startFailed(moduleContext, e);
+            monitor.moduleStartFailed(moduleContext.getName(), e);
             //FIXME throw a better exception
             throw new ServiceRuntimeException(e);
         }
@@ -128,9 +129,14 @@ public class TuscanyRuntime extends SCA {
         moduleContext.fireEvent(EventContext.SESSION_END, sessionKey);
         moduleContext.fireEvent(EventContext.MODULE_STOP, null);
         moduleContext.stop();
-        monitor.stopped(moduleContext);
+        monitor.moduleStopped(moduleContext.getName());
+    }
+
+    /**
+     * Shut down the Tuscany runtime.
+     */
+    public void shutdown() {
         runtime.stop();
-        monitor.stopped(runtime);
     }
 
     /**
@@ -138,25 +144,28 @@ public class TuscanyRuntime extends SCA {
      */
     public static interface Monitor {
         /**
-         * Event emitted after the runtime has been started.
+         * Event emitted after an application module has been started.
          *
-         * @param ctx the runtime's module component context
+         * @param name the name of the application module
          */
-        void started(CompositeContext ctx);
+        @LogLevel("INFO")
+        void moduleStarted(String name);
 
         /**
-         * Event emitted when an attempt to start the runtime failed.
+         * Event emitted when an attempt to start an application module failed.
          *
-         * @param ctx the runtime's module component context
-         * @param e   the exception that caused the failure
+         * @param name the name of the application module
+         * @param e    the exception that caused the failure
          */
-        void startFailed(CompositeContext ctx, CoreRuntimeException e);
+        @LogLevel("SEVERE")
+        void moduleStartFailed(String name, CoreRuntimeException e);
 
         /**
-         * Event emitted after the runtime has been stopped.
+         * Event emitted after an application module has been stopped.
          *
-         * @param ctx the runtime's module component context
+         * @param name the name of the application module
          */
-        void stopped(CompositeContext ctx);
+        @LogLevel("INFO")
+        void moduleStopped(String name);
     }
 }
