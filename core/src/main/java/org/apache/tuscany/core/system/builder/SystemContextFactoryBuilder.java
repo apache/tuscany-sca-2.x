@@ -42,6 +42,7 @@ import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
+import org.apache.tuscany.core.system.annotation.Monitor;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.SystemModule;
 import org.apache.tuscany.core.system.config.SystemContextFactory;
@@ -80,8 +81,10 @@ import java.util.Set;
  * @version $Rev$ $Date$
  */
 public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
+    private final MonitorFactory monitorFactory;
 
-    public SystemContextFactoryBuilder() {
+    public SystemContextFactoryBuilder(MonitorFactory monitorFactory) {
+        this.monitorFactory = monitorFactory;
     }
 
     public void build(AssemblyModelObject modelObject) throws BuilderException {
@@ -220,6 +223,12 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
                             contextFactory));
                     injectors.add(injector);
                 }
+                Monitor monitor = field.getAnnotation(Monitor.class);
+                if (monitor != null) {
+                    Object instance = monitorFactory.getMonitor(field.getType());
+                    Injector<?> injector = new FieldInjector(field, new SingletonObjectFactory(instance));
+                    injectors.add(injector);
+                }
             }
             for (Method method : methods) {
                 Init init = method.getAnnotation(Init.class);
@@ -277,6 +286,19 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
                     }
                     Injector injector = new MethodInjector(method, new AutowireObjectFactory(paramType, autowire.required(),
                             contextFactory));
+                    injectors.add(injector);
+                }
+
+                Monitor monitor = method.getAnnotation(Monitor.class);
+                if (monitor != null) {
+                    if (method.getParameterTypes() == null || method.getParameterTypes().length != 1) {
+                        BuilderConfigException e = new BuilderConfigException("Monitor setter methods must take one parameter");
+                        e.setIdentifier(method.getName());
+                        throw e;
+                    }
+                    Class<?> paramType = method.getParameterTypes()[0];
+                    Object instance = monitorFactory.getMonitor(paramType);
+                    Injector<?> injector = new MethodInjector(method, new SingletonObjectFactory(instance));
                     injectors.add(injector);
                 }
             }

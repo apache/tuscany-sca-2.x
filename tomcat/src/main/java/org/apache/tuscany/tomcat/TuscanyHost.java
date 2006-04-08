@@ -77,8 +77,9 @@ public class TuscanyHost extends StandardHost {
         systemLoader = modelContext.getSystemResourceLoader();
 
         // Create and start the runtime
-        List<ContextFactoryBuilder> configBuilders = BootstrapHelper.getBuilders();
-        runtime = new RuntimeContextImpl(new NullMonitorFactory(), configBuilders, new DefaultWireBuilder());
+        NullMonitorFactory monitorFactory = new NullMonitorFactory();
+        List<ContextFactoryBuilder> configBuilders = BootstrapHelper.getBuilders(monitorFactory);
+        runtime = new RuntimeContextImpl(monitorFactory, configBuilders, new DefaultWireBuilder());
         runtime.start();
 
         // Load and start the system configuration

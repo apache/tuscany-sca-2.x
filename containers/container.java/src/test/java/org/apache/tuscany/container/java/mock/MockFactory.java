@@ -571,7 +571,7 @@ public class MockFactory {
      */
     public static List<ContextFactoryBuilder> createSystemBuilders() {
         List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
-        builders.add((new SystemContextFactoryBuilder()));
+        builders.add((new SystemContextFactoryBuilder(null)));
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
         return builders;
@@ -588,7 +588,7 @@ public class MockFactory {
     ) throws BuilderException {
 
         Component sc = createCompositeComponent(name);
-        SystemContextFactoryBuilder builder = new SystemContextFactoryBuilder();
+        SystemContextFactoryBuilder builder = new SystemContextFactoryBuilder(null);
         builder.build(sc);
         return (ContextFactory<Context>) sc.getComponentImplementation().getContextFactory();
     }

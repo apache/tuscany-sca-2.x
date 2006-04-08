@@ -342,7 +342,7 @@ public class MockFactory {
      */
     public static List<ContextFactoryBuilder> createSystemBuilders() {
         List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
-        builders.add((new SystemContextFactoryBuilder()));
+        builders.add((new SystemContextFactoryBuilder(null)));
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
         return builders;

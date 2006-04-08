@@ -106,7 +106,7 @@ public class TuscanyServletListener implements ServletContextListener, HttpSessi
         AssemblyModelContext modelContext = BootstrapHelper.getModelContext(classLoader);
 
         // Create a runtime context and start it
-        List<ContextFactoryBuilder> configBuilders = BootstrapHelper.getBuilders();
+        List<ContextFactoryBuilder> configBuilders = BootstrapHelper.getBuilders(monitorFactory);
         runtime = new RuntimeContextImpl(monitorFactory, configBuilders, new DefaultWireBuilder());
         runtime.start();
 

@@ -105,7 +105,7 @@ public class RuntimeBootstrap implements ObjectFactory {
      */
     private List<ContextFactoryBuilder> createBuilders() {
         List<ContextFactoryBuilder> builders = new ArrayList();
-        builders.add((new SystemContextFactoryBuilder()));
+        builders.add((new SystemContextFactoryBuilder(null)));
         builders.add(new SystemEntryPointBuilder());
         builders.add(new SystemExternalServiceBuilder());
         return builders;

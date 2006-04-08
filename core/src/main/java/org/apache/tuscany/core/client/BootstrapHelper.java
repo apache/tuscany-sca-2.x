@@ -18,6 +18,7 @@ package org.apache.tuscany.core.client;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
+import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
@@ -73,10 +74,11 @@ public final class BootstrapHelper {
      * Returns a default list of configuration builders.
      *
      * @return a default list of configuration builders
+     * @param monitorFactory
      */
-    public static List<ContextFactoryBuilder> getBuilders() {
+    public static List<ContextFactoryBuilder> getBuilders(MonitorFactory monitorFactory) {
         List<ContextFactoryBuilder> configBuilders = new ArrayList<ContextFactoryBuilder>();
-        configBuilders.add((new SystemContextFactoryBuilder()));
+        configBuilders.add((new SystemContextFactoryBuilder(monitorFactory)));
         configBuilders.add(new SystemEntryPointBuilder());
         configBuilders.add(new SystemExternalServiceBuilder());
         return configBuilders;

@@ -40,7 +40,7 @@ public class SystemContextFactoryBuilderTestCase extends TestCase {
     private SystemAssemblyFactory factory = new SystemAssemblyFactoryImpl();
 
     public void testComponentContextBuilder() throws Exception {
-        SystemContextFactoryBuilder builder = new SystemContextFactoryBuilder();
+        SystemContextFactoryBuilder builder = new SystemContextFactoryBuilder(null);
         Component component = factory.createSystemComponent("test", null, SystemComponentImpl.class, Scope.AGGREGATE);
 
         ConfiguredProperty cProp = factory.createConfiguredProperty();
