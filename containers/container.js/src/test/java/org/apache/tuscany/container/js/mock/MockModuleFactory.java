@@ -39,7 +39,7 @@ public class MockModuleFactory {
     private static AssemblyFactory factory = new AssemblyFactoryImpl();
 
     private static AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(new AssemblyFactoryImpl(),
-            new SCDLAssemblyModelLoaderImpl(null), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader()));
+            new SCDLAssemblyModelLoaderImpl(), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader()));
 
     private MockModuleFactory() {
     }

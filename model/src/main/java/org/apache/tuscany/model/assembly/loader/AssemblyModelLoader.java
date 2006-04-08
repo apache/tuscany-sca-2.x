@@ -20,30 +20,10 @@ import java.util.List;
 
 import javax.wsdl.Definition;
 
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.ComponentType;
-import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.ModuleFragment;
-import org.apache.tuscany.model.assembly.Subsystem;
-import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
-
 /**
  * An assembly model loader.
  */
 public interface AssemblyModelLoader {
-
-    /**
-     * Sets the model context to use.
-     * @param modelContext
-     */
-    void setModelContext(AssemblyModelContext modelContext);
-
-    /**
-     * Returns the component type at the given uri
-     * @param uri
-     * @return the ComponentType at the given uri
-     */
-    ComponentType loadComponentType(String uri);
 
     /**
      * Load a WSDL definition

@@ -36,7 +36,6 @@ import org.apache.tuscany.model.assembly.AssemblyModelContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
-import org.apache.tuscany.model.scdl.loader.SCDLModelLoader;
 import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 
 import javax.xml.stream.XMLInputFactory;
@@ -61,8 +60,7 @@ public final class BootstrapHelper {
         AssemblyFactory modelFactory = new SystemAssemblyFactoryImpl();
 
         // Create a default assembly model loader
-        List<SCDLModelLoader> scdlLoaders = new ArrayList<SCDLModelLoader>();
-        AssemblyModelLoader modelLoader = new SCDLAssemblyModelLoaderImpl(scdlLoaders);
+        AssemblyModelLoader modelLoader = new SCDLAssemblyModelLoaderImpl();
 
         // Create a resource loader from the supplied classloader
         ResourceLoader resourceLoader = new ResourceLoaderImpl(classLoader);

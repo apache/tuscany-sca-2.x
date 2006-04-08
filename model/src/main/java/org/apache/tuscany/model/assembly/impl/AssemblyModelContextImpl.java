@@ -52,10 +52,6 @@ public class AssemblyModelContextImpl implements AssemblyModelContext {
         this.systemResourceLoader = resourceLoader;
         this.applicationResourceLoader = artifactLoader;
         this.typeHelper=typeHelper;
-        
-        //FIXME the caller should configure the assemblyLoader himself
-        if (assemblyLoader!=null)
-            assemblyLoader.setModelContext(this);
     }
 
     /**
