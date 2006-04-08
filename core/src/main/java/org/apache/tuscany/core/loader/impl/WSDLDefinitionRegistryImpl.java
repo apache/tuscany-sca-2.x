@@ -18,16 +18,16 @@ package org.apache.tuscany.core.loader.impl;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
 import javax.wsdl.Definition;
 import javax.wsdl.PortType;
-import javax.wsdl.WSDLException;
 import javax.wsdl.Service;
-import javax.wsdl.xml.WSDLReader;
+import javax.wsdl.WSDLException;
 import javax.wsdl.factory.WSDLFactory;
+import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
@@ -42,8 +42,15 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
     private final Map<URL, Definition> definitionsByLocation = new HashMap<URL, Definition>();
     private final Map<String, List<Definition>> definitionsByNamespace = new HashMap<String, List<Definition>>();
 
+    private Monitor monitor;
+
     public WSDLDefinitionRegistryImpl() throws WSDLException {
         wsdlFactory = WSDLFactory.newInstance();
+    }
+
+    @org.apache.tuscany.core.system.annotation.Monitor
+    public void setMonitor(Monitor monitor) {
+        this.monitor = monitor;
     }
 
     public Definition loadDefinition(String namespace, URL location) throws IOException, WSDLException {
@@ -53,12 +60,15 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
             return definition;
         }
 
+        monitor.readingWSDL(namespace, location);
         WSDLReader reader = wsdlFactory.newWSDLReader();
         definition = reader.readWSDL(location.toString());
         String definitionNamespace = definition.getTargetNamespace();
         if (namespace != null && !namespace.equals(definitionNamespace)) {
             throw new WSDLException(WSDLException.CONFIGURATION_ERROR, namespace + " != " + definition.getTargetNamespace());
         }
+
+        monitor.cachingDefinition(definitionNamespace, location);
         definitionsByLocation.put(location, definition);
         List<Definition> definitions = definitionsByNamespace.get(definitionNamespace);
         if (definitions == null) {
@@ -85,7 +95,7 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         return null;
     }
 
-    public javax.wsdl.Service getService(QName name) {
+    public Service getService(QName name) {
         String namespace = name.getNamespaceURI();
         List<Definition> definitions = definitionsByNamespace.get(namespace);
         if (definitions == null) {
@@ -98,5 +108,25 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
             }
         }
         return null;
+    }
+
+    public static interface Monitor {
+        /**
+         * Monitor event emitted immediately before an attempt is made to
+         * read WSDL for the supplied namespace from the supplied location.
+         *
+         * @param namespace the target namespace expected in the WSDL; may be null
+         * @param location the location where we will attempt to read the WSDL definition from
+         */
+        void readingWSDL(String namespace, URL location);
+
+        /**
+         * Monitor event emitted immediately before registering a WSDL definition
+         * in the cache.
+         *
+         * @param namespace the target namespace for the WSDL
+         * @param location the location where the WSDL definition was read from
+         */
+        void cachingDefinition(String namespace, URL location);
     }
 }
