@@ -16,10 +16,20 @@
  */
 package org.apache.tuscany.core.config.impl;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.annotations.Remotable;
+
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
-import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.InvalidSetterException;
+import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
@@ -31,15 +41,6 @@ import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceContract;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Remotable;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Introspects Java annotation-based metata data
@@ -62,12 +63,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         this.factory = factory;
     }
 
-    /**
-     * Returns a component type for the given class
-     *
-     * @throws ConfigurationException
-     */
-    public ComponentType introspect(Class<?> implClass) throws ConfigurationException {
+    public ComponentType introspect(Class<?> implClass) throws ConfigurationLoadException {
         ComponentType compType = factory.createComponentType();
         introspectServices(compType, implClass);
         introspectAnnotatedMembers(compType, implClass);
@@ -124,9 +120,8 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
      *
      * @param compType  the component type being generated
      * @param implClass the component implementation type class
-     * @throws ConfigurationException
      */
-    protected void introspectServices(ComponentType compType, Class<?> implClass) throws ConfigurationException {
+    protected void introspectServices(ComponentType compType, Class<?> implClass) {
         List<Service> services = compType.getServices();
         assert services.isEmpty() : "componentType already has services defined";
 
@@ -167,9 +162,8 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
     /**
      * Recursively adds supported services to a component type by walking the class hierarchy
      *
-     * @throws ConfigurationException
      */
-    protected void addService(List<Service> services, Class<?> serviceClass) throws ConfigurationException {
+    protected void addService(List<Service> services, Class<?> serviceClass) {
         JavaServiceContract javaInterface = factory.createJavaServiceContract();
         javaInterface.setInterface(serviceClass);
         Callback callback = serviceClass.getAnnotation(Callback.class);
@@ -187,9 +181,9 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
     /**
      * Root method for determining public field and method metadata
      *
-     * @throws ConfigurationException
+     * @throws ConfigurationLoadException
      */
-    protected void introspectAnnotatedMembers(ComponentType compType, Class<?> implClass) throws ConfigurationException {
+    protected void introspectAnnotatedMembers(ComponentType compType, Class<?> implClass) throws ConfigurationLoadException {
 
         introspectPublicFields(compType, implClass);
         introspectPrivateFields(compType, implClass);
@@ -201,9 +195,8 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
     /**
      * Introspects metdata for all public fields and methods for a class hierarchy
      *
-     * @throws ConfigurationException
      */
-    protected void introspectMembers(ComponentType compType, Class<?> implClass) throws ConfigurationException {
+    protected void introspectMembers(ComponentType compType, Class<?> implClass) {
         List<Property> properties = compType.getProperties();
         List<Reference> references = compType.getReferences();
 
@@ -240,7 +233,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         }
     }
 
-    private void introspectPublicFields(ComponentType compType, Class<?> implClass) throws ConfigurationException {
+    private void introspectPublicFields(ComponentType compType, Class<?> implClass) {
         List<Property> properties = compType.getProperties();
         List<Reference> references = compType.getReferences();
 
@@ -259,7 +252,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         }
     }
 
-    private void introspectPrivateFields(ComponentType compType, Class<?> implClass) throws ConfigurationException {
+    private void introspectPrivateFields(ComponentType compType, Class<?> implClass) {
         List<Property> properties = compType.getProperties();
         List<Reference> references = compType.getReferences();
 
@@ -278,7 +271,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         }
     }
 
-    private void introspectPublicMethods(ComponentType compType, Class<?> implClass) throws ConfigurationException {
+    private void introspectPublicMethods(ComponentType compType, Class<?> implClass) throws ConfigurationLoadException {
         List<Property> properties = compType.getProperties();
         List<Reference> references = compType.getReferences();
 
@@ -294,7 +287,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         }
     }
 
-    private void introspectPrivateMethods(ComponentType compType, Class<?> implClass) throws ConfigurationException {
+    private void introspectPrivateMethods(ComponentType compType, Class<?> implClass) throws ConfigurationLoadException {
         List<Property> properties = compType.getProperties();
         List<Reference> references = compType.getReferences();
 
@@ -313,7 +306,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         }
     }
 
-    protected void addProperty(List<Property> properties, Field field) throws ConfigurationException {
+    protected void addProperty(List<Property> properties, Field field) {
         String name;
         boolean required;
         org.osoa.sca.annotations.Property annotation = field.getAnnotation(org.osoa.sca.annotations.Property.class);
@@ -330,7 +323,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         addProperty(properties, name, field.getType(), required);
     }
 
-    protected void addProperty(List<Property> properties, Method method) throws ConfigurationException {
+    protected void addProperty(List<Property> properties, Method method) throws ConfigurationLoadException {
         if (!Void.class.equals(method.getReturnType())) {
             throw new InvalidSetterException(method.toString());
         }
@@ -358,8 +351,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         addProperty(properties, name, params[0], required);
     }
 
-    protected void addProperty(List<Property> properties, String name, Class<?> type, boolean required)
-            throws ConfigurationException {
+    protected void addProperty(List<Property> properties, String name, Class<?> type, boolean required) {
         Property prop = factory.createProperty();
         prop.setName(name);
         prop.setType(type);
@@ -374,7 +366,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         properties.add(prop);
     }
 
-    protected void addReference(List<Reference> references, Field field) throws ConfigurationException {
+    protected void addReference(List<Reference> references, Field field) {
         String name;
         boolean required;
         org.osoa.sca.annotations.Reference annotation = field.getAnnotation(org.osoa.sca.annotations.Reference.class);
@@ -391,7 +383,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         addReference(references, name, field.getType(), required);
     }
 
-    protected void addReference(List<Reference> references, Method method) throws ConfigurationException {
+    protected void addReference(List<Reference> references, Method method) throws ConfigurationLoadException {
         if (!Void.TYPE.equals(method.getReturnType())) {
             throw new InvalidSetterException(method.toString());
         }
@@ -419,8 +411,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         addReference(references, name, params[0], required);
     }
 
-    protected void addReference(List<Reference> references, String name, Class<?> type, boolean required)
-            throws ConfigurationException {
+    protected void addReference(List<Reference> references, String name, Class<?> type, boolean required) {
         Reference ref = factory.createReference();
         ref.setName(name);
         boolean many = type.isArray() || Collection.class.isAssignableFrom(type);

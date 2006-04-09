@@ -33,8 +33,7 @@ public class InvalidPropertyFactoryException extends ConfigurationLoadException 
      * @param cause the Throwable that prevented the PropertyFactory from being created
      */
     public InvalidPropertyFactoryException(String className, Throwable cause) {
-        super(className);
-        initCause(cause);
+        super(className, cause);
     }
 
     /**

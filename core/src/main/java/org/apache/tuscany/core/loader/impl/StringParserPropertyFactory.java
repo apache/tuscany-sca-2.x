@@ -64,7 +64,7 @@ public class StringParserPropertyFactory implements StAXPropertyFactory {
                     throw new AssertionError("getMethod returned an inaccessible method");
                 } catch (InvocationTargetException e) {
                     // FIXME we should throw something better
-                    throw (ConfigurationLoadException) new ConfigurationLoadException(property.getName()).initCause(e.getCause());
+                    throw new ConfigurationLoadException(e.getCause());
                 }
             }
         } catch (NoSuchMethodException e) {
@@ -83,7 +83,7 @@ public class StringParserPropertyFactory implements StAXPropertyFactory {
             throw new ConfigurationLoadException("Property type cannot be instantiated: " + type.getName());
         } catch (InvocationTargetException e) {
             // FIXME we should throw something better
-            throw (ConfigurationLoadException) new ConfigurationLoadException(property.getName()).initCause(e.getCause());
+            throw new ConfigurationLoadException(e.getCause());
         }
 
         // do we have a property editor for it?
@@ -94,7 +94,8 @@ public class StringParserPropertyFactory implements StAXPropertyFactory {
                 return new SingletonObjectFactory(editor.getValue());
             } catch (IllegalArgumentException e) {
                 // FIXME we should throw something better
-                throw (ConfigurationLoadException) new ConfigurationLoadException(property.getName()).initCause(e.getCause());
+                throw new ConfigurationLoadException(e);
+
             }
         }
 

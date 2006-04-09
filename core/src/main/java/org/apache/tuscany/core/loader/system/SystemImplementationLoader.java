@@ -60,15 +60,11 @@ public class SystemImplementationLoader extends AbstractLoader {
             implementationClass = resourceLoader.loadClass(implClass);
             implementation.setImplementationClass(implementationClass);
         } catch (ClassNotFoundException e) {
-            throw (ConfigurationLoadException) new ConfigurationLoadException(e.getMessage()).initCause(e);
+            throw new ConfigurationLoadException(e);
         }
 
         // todo we should allow componentType sidefiles for system implementations
-        try {
-            implementation.setComponentType(introspector.introspect(implementationClass));
-        } catch (ConfigurationException e) {
-            throw (ConfigurationLoadException) new ConfigurationLoadException(e.getMessage()).initCause(e);
-        }
+        implementation.setComponentType(introspector.introspect(implementationClass));
 
         StAXUtil.skipToEndElement(reader);
         return implementation;

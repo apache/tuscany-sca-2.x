@@ -33,6 +33,9 @@ import org.apache.tuscany.container.js.assembly.JavaScriptAssemblyFactory;
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
 import org.apache.tuscany.container.js.assembly.impl.JavaScriptAssemblyFactoryImpl;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.config.MissingResourceException;
+import org.apache.tuscany.core.config.InvalidRootElementException;
+import org.apache.tuscany.core.config.SidefileLoadException;
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.core.loader.assembly.AssemblyConstants;
@@ -124,45 +127,53 @@ public class JavaScriptImplementationLoader implements StAXElementLoader<JavaScr
         }
     }
 
-    protected ComponentType loadComponentType(String scriptFile, ResourceLoader resourceLoader) throws ConfigurationLoadException, XMLStreamException {
+    protected ComponentType loadComponentType(String scriptFile, ResourceLoader resourceLoader) throws SidefileLoadException, MissingResourceException{
         String sidefile = scriptFile.substring(0, scriptFile.lastIndexOf('.')) + ".componentType";
         URL componentTypeFile = resourceLoader.getResource(sidefile);
         if (componentTypeFile == null) {
-            throw new ConfigurationLoadException(sidefile);
+            throw new MissingResourceException(sidefile);
         }
 
-        XMLStreamReader reader;
-        InputStream is;
         try {
-            is = componentTypeFile.openStream();
-        } catch (IOException e) {
-            throw (ConfigurationLoadException) new ConfigurationLoadException(e.getMessage()).initCause(e);
-        }
-        try {
+            XMLStreamReader reader;
+            InputStream is;
+                is = componentTypeFile.openStream();
             try {
                 reader = xmlFactory.createXMLStreamReader(is);
-            } catch (XMLStreamException e) {
-                throw (ConfigurationLoadException) new ConfigurationLoadException(e.getMessage()).initCause(e);
-            }
-            try {
-                reader.nextTag();
-                if (!AssemblyConstants.COMPONENT_TYPE.equals(reader.getName())) {
-                    throw new ConfigurationLoadException(sidefile + " is not a <componentType> document");
-                }
-                return (ComponentType) registry.load(reader, resourceLoader);
-            } finally{
                 try {
-                    reader.close();
-                } catch (XMLStreamException e) {
+                    reader.nextTag();
+                    if (!AssemblyConstants.COMPONENT_TYPE.equals(reader.getName())) {
+                        InvalidRootElementException e = new InvalidRootElementException(AssemblyConstants.COMPONENT_TYPE, reader.getName());
+                        e.setResourceURI(componentTypeFile.toString());
+                        throw e;
+                    }
+                    return (ComponentType) registry.load(reader, resourceLoader);
+                } finally {
+                    try {
+                        reader.close();
+                    } catch (XMLStreamException e) {
+                        // ignore
+                    }
+                }
+            } finally {
+                try {
+                    is.close();
+                } catch (IOException e) {
                     // ignore
                 }
             }
-        } finally{
-            try {
-                is.close();
-            } catch (IOException e) {
-                // ignore
-            }
+        } catch (IOException e) {
+            SidefileLoadException sfe = new SidefileLoadException(e.getMessage());
+            sfe.setResourceURI(componentTypeFile.toString());
+            throw sfe;
+        } catch (XMLStreamException e) {
+            SidefileLoadException sfe = new SidefileLoadException(e.getMessage());
+            sfe.setResourceURI(componentTypeFile.toString());
+            throw sfe;
+        } catch (ConfigurationLoadException e) {
+            SidefileLoadException sfe = new SidefileLoadException(e.getMessage());
+            sfe.setResourceURI(componentTypeFile.toString());
+            throw sfe;
         }
     }
 }

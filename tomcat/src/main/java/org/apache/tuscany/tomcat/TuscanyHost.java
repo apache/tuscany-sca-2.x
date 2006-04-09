@@ -90,7 +90,7 @@ public class TuscanyHost extends StandardHost {
             CompositeContext context = BootstrapHelper.registerModule(systemContext, systemModuleComponent);
             context.fireEvent(EventContext.MODULE_START, null);
         } catch (ConfigurationLoadException e) {
-            getLogger().warn(sm.getString("runtime.loadSystemFailed"), e);
+            getLogger().warn(sm.getString("runtime.loadSystemFailed", e.getResourceURI()), e);
             return;
         } catch (Exception e) {
             getLogger().warn(sm.getString("runtime.registerSystemFailed"), e);

@@ -17,23 +17,34 @@
 package org.apache.tuscany.core.config;
 
 /**
+ * Exception indicating that there was a problem loading a sidefile.
+ *
  * @version $Rev$ $Date$
  */
-public class InvalidSetterException extends ConfigurationLoadException {
-    private static final long serialVersionUID = -3298236203808038211L;
+public class SidefileLoadException extends ConfigurationLoadException {
+    private static final long serialVersionUID = -3530306758412789392L;
+    private String sidefileURI;
 
-    public InvalidSetterException() {
+    public SidefileLoadException() {
     }
 
-    public InvalidSetterException(String message) {
+    public SidefileLoadException(String message) {
         super(message);
     }
 
-    public InvalidSetterException(String message, Throwable cause) {
+    public SidefileLoadException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public InvalidSetterException(Throwable cause) {
+    public SidefileLoadException(Throwable cause) {
         super(cause);
+    }
+
+    public String getSidefileURI() {
+        return sidefileURI;
+    }
+
+    public void setSidefileURI(String sidefileURI) {
+        this.sidefileURI = sidefileURI;
     }
 }

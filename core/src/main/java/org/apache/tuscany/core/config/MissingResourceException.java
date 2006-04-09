@@ -21,7 +21,7 @@ package org.apache.tuscany.core.config;
  *
  * @version $Rev$ $Date$
  */
-public class MissingResourceException extends ConfigurationException {
+public class MissingResourceException extends ConfigurationLoadException {
     /**
      * Constructor that indicates which resource could not be found.
      * The supplied parameter is also returned as the message.
@@ -30,14 +30,6 @@ public class MissingResourceException extends ConfigurationException {
      */
     public MissingResourceException(String resource) {
         super(resource);
-    }
-
-    /**
-     * Return the name of the expected resource.
-     *
-     * @return the name of the expected resource
-     */
-    public String getResource() {
-        return getMessage();
+        setResourceURI(resource);
     }
 }

@@ -69,7 +69,7 @@ public class PropertyLoader extends AbstractLoader {
                 Class<?> type = resourceLoader.loadClass(typeName);
                 property.setType(type);
             } catch (ClassNotFoundException e) {
-                throw (ConfigurationLoadException) new ConfigurationLoadException(e.getMessage()).initCause(e);
+                throw new ConfigurationLoadException(e);
             }
         }
         property.setMany(Boolean.parseBoolean(reader.getAttributeValue(null, "many")));

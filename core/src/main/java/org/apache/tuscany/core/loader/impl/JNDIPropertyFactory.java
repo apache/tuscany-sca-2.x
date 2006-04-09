@@ -56,7 +56,7 @@ public class JNDIPropertyFactory implements StAXPropertyFactory {
             Context context = new InitialContext();
             return new JNDIObjectFactory(context, text);
         } catch (NamingException e) {
-            throw (ConfigurationLoadException) new ConfigurationLoadException(e.getMessage()).initCause(e);
+            throw new ConfigurationLoadException(e);
         }
     }
 }

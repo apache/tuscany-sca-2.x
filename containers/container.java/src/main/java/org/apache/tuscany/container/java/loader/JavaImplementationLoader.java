@@ -26,16 +26,16 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
-import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
+import org.apache.tuscany.core.config.SidefileLoadException;
+import org.apache.tuscany.core.config.InvalidRootElementException;
 import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
@@ -106,7 +106,7 @@ public class JavaImplementationLoader implements StAXElementLoader<JavaImplement
             Thread.currentThread().setContextClassLoader(resourceLoader.getClassLoader());
             return resourceLoader.loadClass(typeName);
         } catch (ClassNotFoundException e) {
-            throw (ConfigurationLoadException) new ConfigurationLoadException(e.getMessage()).initCause(e);
+            throw new ConfigurationLoadException(e.getMessage(), e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCL);
         }
@@ -123,46 +123,50 @@ public class JavaImplementationLoader implements StAXElementLoader<JavaImplement
     }
 
     protected ComponentType loadComponentTypeByIntrospection(Class<?> implClass) throws ConfigurationLoadException {
-        try {
-            return introspector.introspect(implClass);
-        } catch (ConfigurationException e) {
-            throw (ConfigurationLoadException) new ConfigurationLoadException(e.getMessage()).initCause(e);
-        }
+        return introspector.introspect(implClass);
     }
 
-    protected ComponentType loadComponentTypeFromSidefile(URL sidefile, ResourceLoader loader) throws ConfigurationLoadException, XMLStreamException {
-        XMLStreamReader reader;
-        InputStream is;
+    protected ComponentType loadComponentTypeFromSidefile(URL sidefile, ResourceLoader loader) throws SidefileLoadException {
         try {
-            is = sidefile.openStream();
-        } catch (IOException e) {
-            throw (ConfigurationLoadException) new ConfigurationLoadException(e.getMessage()).initCause(e);
-        }
-        try {
+            XMLStreamReader reader;
+            InputStream is;
+                is = sidefile.openStream();
             try {
                 reader = xmlFactory.createXMLStreamReader(is);
-            } catch (XMLStreamException e) {
-                throw (ConfigurationLoadException) new ConfigurationLoadException(e.getMessage()).initCause(e);
-            }
-            try {
-                reader.nextTag();
-                if (!AssemblyConstants.COMPONENT_TYPE.equals(reader.getName())) {
-                    throw new ConfigurationLoadException(sidefile + " is not a <componentType> document");
-                }
-                return (ComponentType) registry.load(reader, loader);
-            } finally{
                 try {
-                    reader.close();
-                } catch (XMLStreamException e) {
+                    reader.nextTag();
+                    if (!AssemblyConstants.COMPONENT_TYPE.equals(reader.getName())) {
+                        InvalidRootElementException e = new InvalidRootElementException(AssemblyConstants.COMPONENT_TYPE, reader.getName());
+                        e.setResourceURI(sidefile.toString());
+                        throw e;
+                    }
+                    return (ComponentType) registry.load(reader, loader);
+                } finally {
+                    try {
+                        reader.close();
+                    } catch (XMLStreamException e) {
+                        // ignore
+                    }
+                }
+            } finally {
+                try {
+                    is.close();
+                } catch (IOException e) {
                     // ignore
                 }
             }
-        } finally{
-            try {
-                is.close();
-            } catch (IOException e) {
-                // ignore
-            }
+        } catch (IOException e) {
+            SidefileLoadException sfe = new SidefileLoadException(e.getMessage());
+            sfe.setResourceURI(sidefile.toString());
+            throw sfe;
+        } catch (XMLStreamException e) {
+            SidefileLoadException sfe = new SidefileLoadException(e.getMessage());
+            sfe.setResourceURI(sidefile.toString());
+            throw sfe;
+        } catch (ConfigurationLoadException e) {
+            SidefileLoadException sfe = new SidefileLoadException(e.getMessage());
+            sfe.setResourceURI(sidefile.toString());
+            throw sfe;
         }
     }
 }

@@ -27,6 +27,8 @@ import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.config.MissingResourceException;
+import org.apache.tuscany.core.config.SidefileLoadException;
 import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.IMPORT_WSDL;
@@ -66,18 +68,22 @@ public class ImportWSDLLoader extends AbstractLoader {
         return factory.createImportWSDL(location, namespace);
     }
 
-    protected void loadDefinition(String namespace, String location, ResourceLoader resourceLoader) throws ConfigurationLoadException {
+    protected void loadDefinition(String namespace, String location, ResourceLoader resourceLoader) throws MissingResourceException, SidefileLoadException {
         URL wsdlURL = resourceLoader.getResource(location);
         if (wsdlURL == null) {
-            throw new ConfigurationLoadException("WSDL import not found: " + wsdlURL);
+            throw new MissingResourceException(location);
         }
 
         try {
             wsdlRegistry.loadDefinition(namespace, wsdlURL);
         } catch (IOException e) {
-            throw new ConfigurationLoadException(wsdlURL.toString(), e);
+            SidefileLoadException sfe = new SidefileLoadException(e.getMessage());
+            sfe.setResourceURI(location);
+            throw sfe;
         } catch (WSDLException e) {
-            throw (ConfigurationLoadException) new ConfigurationLoadException(wsdlURL.toString()).initCause(e);
+            SidefileLoadException sfe = new SidefileLoadException(e.getMessage());
+            sfe.setResourceURI(location);
+            throw sfe;
         }
     }
 }

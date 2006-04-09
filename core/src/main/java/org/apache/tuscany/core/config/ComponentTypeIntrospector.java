@@ -30,8 +30,8 @@ public interface ComponentTypeIntrospector {
      *
      * @param implClass the class to inspect
      * @return a componentType definition
-     * @throws ConfigurationException if the Class does not define a valid component type
+     * @throws ConfigurationLoadException if the Class does not define a valid component type
      */
-    ComponentType introspect(Class<?> implClass) throws ConfigurationException;
+    ComponentType introspect(Class<?> implClass) throws ConfigurationLoadException;
 
 }

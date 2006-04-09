@@ -16,32 +16,44 @@
  */
 package org.apache.tuscany.core.config;
 
-import java.io.IOException;
-
 /**
  * Exception indicating that there was a problem loading a configuration resource.
  *
  * @version $Rev$ $Date$
  */
 public class ConfigurationLoadException extends ConfigurationException {
+    private static final long serialVersionUID = -2310798146091959144L;
 
-    /**
-     * Constructor specifying the resource that was being loaded and the IOException that resulted.
-     * These are returned as the message and cause respectively.
-     *
-     * @param resource the resource being loaded
-     * @param cause the IOException that occurred
-     */
-    public ConfigurationLoadException(String resource, IOException cause) {
-        super(resource, cause);
+    private String resourceURI;
+
+    public ConfigurationLoadException() {
+    }
+
+    public ConfigurationLoadException(String message) {
+        super(message);
+    }
+
+    public ConfigurationLoadException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ConfigurationLoadException(Throwable cause) {
+        super(cause);
     }
 
     /**
-     * Constructor specifying the resource that was being loaded.
-     *
-     * @param resource the resource being loaded
+     * Returns the location of the resource that was being loaded.
+     * @return the location of the resource that was being loaded
      */
-    public ConfigurationLoadException(String resource) {
-        super(resource);
+    public String getResourceURI() {
+        return resourceURI;
+    }
+
+    /**
+     * Sets the location of the resource that was being loaded.
+     * @param resourceURI the location of the resource that was being loaded
+     */
+    public void setResourceURI(String resourceURI) {
+        this.resourceURI = resourceURI;
     }
 }

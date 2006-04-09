@@ -49,9 +49,13 @@ public class StAXModuleComponentConfigurationLoaderImpl extends AbstractModuleCo
             getDocumentRoot(reader);
             return (Module) registry.load(reader, resourceLoader);
         } catch (XMLStreamException e) {
-            throw (ConfigurationLoadException) new ConfigurationLoadException(url.toString()).initCause(e);
+            ConfigurationLoadException ce = new ConfigurationLoadException(e);
+            ce.setResourceURI(url.toString());
+            throw ce;
         } catch (IOException e) {
-            throw new ConfigurationLoadException(url.toString(), e);
+            ConfigurationLoadException ce = new ConfigurationLoadException(e);
+            ce.setResourceURI(url.toString());
+            throw ce;
         } finally {
             registry.setContext(null);
         }
@@ -64,9 +68,13 @@ public class StAXModuleComponentConfigurationLoaderImpl extends AbstractModuleCo
             getDocumentRoot(reader);
             return (ModuleFragment) registry.load(reader, resourceLoader);
         } catch (XMLStreamException e) {
-            throw (ConfigurationLoadException) new ConfigurationLoadException(url.toString()).initCause(e);
+            ConfigurationLoadException ce = new ConfigurationLoadException(e);
+            ce.setResourceURI(url.toString());
+            throw ce;
         } catch (IOException e) {
-            throw new ConfigurationLoadException(url.toString(), e);
+            ConfigurationLoadException ce = new ConfigurationLoadException(e);
+            ce.setResourceURI(url.toString());
+            throw ce;
         } finally {
             registry.setContext(null);
         }

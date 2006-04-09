@@ -16,36 +16,30 @@
  */
 package org.apache.tuscany.core.config;
 
+import javax.xml.namespace.QName;
+
 /**
- * Configuration exception that indicates the root element in an XML file was not the one expected.
+ * Configuration exception that indicates the actual root element in an XML file was not the one expected.
  *
  * @version $Rev$ $Date$
  */
-public class InvalidRootElementException extends ConfigurationException {
-    private final String resource;
-    private final String element;
+public class InvalidRootElementException extends ConfigurationLoadException {
+    private static final long serialVersionUID = 2376629433948140418L;
 
-    /**
-     * Constructor specifying the location of the resource and the element that was expected.
-     *
-     * @param resource the resource
-     * @param element the expected root element
-     */
-    public InvalidRootElementException(String resource, String element) {
-        super();
-        this.resource = resource;
-        this.element = element;
+    private final QName expected;
+    private final QName actual;
+
+    public InvalidRootElementException(QName expected, QName actual) {
+        super("Invalid root element, expected [" + expected + "], was [" + actual + ']');
+        this.expected = expected;
+        this.actual = actual;
     }
 
-    public String getMessage() {
-        return "XML document element in resource " + resource + " is not a " + element;
+    public QName getExpected() {
+        return expected;
     }
 
-    public String getResource() {
-        return resource;
-    }
-
-    public String getElement() {
-        return element;
+    public QName getActual() {
+        return actual;
     }
 }
