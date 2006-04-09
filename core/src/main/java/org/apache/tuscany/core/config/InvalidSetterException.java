@@ -1,6 +1,6 @@
 /**
  *
- *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ * Copyright 2006 The Apache Software Foundation
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,29 +16,24 @@
  */
 package org.apache.tuscany.core.config;
 
-import org.apache.tuscany.common.TuscanyException;
-
-
 /**
- * Base class for exceptions that pertain to configuration.
- * 
  * @version $Rev$ $Date$
  */
-public abstract class ConfigurationException extends TuscanyException {
-    private static final long serialVersionUID = 7441469809266868036L;
+public class InvalidSetterException extends ConfigurationException {
+    private static final long serialVersionUID = -3298236203808038211L;
 
-    public ConfigurationException() {
+    public InvalidSetterException() {
     }
 
-    public ConfigurationException(String message) {
+    public InvalidSetterException(String message) {
         super(message);
     }
 
-    public ConfigurationException(String message, Throwable cause) {
+    public InvalidSetterException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ConfigurationException(Throwable cause) {
+    public InvalidSetterException(Throwable cause) {
         super(cause);
     }
 }

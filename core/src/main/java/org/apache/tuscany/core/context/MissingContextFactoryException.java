@@ -1,6 +1,6 @@
 /**
  *
- *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ * Copyright 2006 The Apache Software Foundation
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,31 +14,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.config;
+package org.apache.tuscany.core.context;
 
-import org.apache.tuscany.common.TuscanyException;
-
+import org.apache.tuscany.core.config.ConfigurationException;
 
 /**
- * Base class for exceptions that pertain to configuration.
- * 
+ *
  * @version $Rev$ $Date$
  */
-public abstract class ConfigurationException extends TuscanyException {
-    private static final long serialVersionUID = 7441469809266868036L;
+public class MissingContextFactoryException extends ConfigurationException {
+    private static final long serialVersionUID = 5140433835245354247L;
 
-    public ConfigurationException() {
+    public MissingContextFactoryException() {
     }
 
-    public ConfigurationException(String message) {
+    public MissingContextFactoryException(String message) {
         super(message);
     }
 
-    public ConfigurationException(String message, Throwable cause) {
+    public MissingContextFactoryException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ConfigurationException(Throwable cause) {
+    public MissingContextFactoryException(Throwable cause) {
         super(cause);
     }
 }

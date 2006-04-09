@@ -19,6 +19,7 @@ package org.apache.tuscany.core.config.impl;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
+import org.apache.tuscany.core.config.InvalidSetterException;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
@@ -331,11 +332,11 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
     protected void addProperty(List<Property> properties, Method method) throws ConfigurationException {
         if (!Void.class.equals(method.getReturnType())) {
-            throw new ConfigurationException("Property setter method does not return void: " + method.toString());
+            throw new InvalidSetterException(method.toString());
         }
         Class<?>[] params = method.getParameterTypes();
         if (params.length != 1) {
-            throw new ConfigurationException("Property setter method does not have 1 parameter: " + method.toString());
+            throw new InvalidSetterException(method.toString());
         }
 
         String name;
@@ -392,11 +393,11 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
     protected void addReference(List<Reference> references, Method method) throws ConfigurationException {
         if (!Void.TYPE.equals(method.getReturnType())) {
-            throw new ConfigurationException("Reference setter method does not return void: " + method.toString());
+            throw new InvalidSetterException(method.toString());
         }
         Class<?>[] params = method.getParameterTypes();
         if (params.length != 1) {
-            throw new ConfigurationException("Reference setter method does not have 1 parameter: " + method.toString());
+            throw new InvalidSetterException(method.toString());
         }
 
         String name;

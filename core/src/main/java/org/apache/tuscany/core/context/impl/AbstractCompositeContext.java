@@ -22,6 +22,10 @@ import org.apache.tuscany.core.context.ScopeAwareContext;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.ScopeStrategy;
 import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.MissingImplementationException;
+import org.apache.tuscany.core.context.MissingContextFactoryException;
+import org.apache.tuscany.core.context.ProxyConfigurationException;
+import org.apache.tuscany.core.context.MissingScopeException;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
@@ -51,7 +55,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * The base implementation of an composite context
- * 
+ *
  * @version $Rev$ $Date$
  */
 public abstract class AbstractCompositeContext extends AbstractContext implements AutowireContext, ScopeAwareContext {
@@ -267,14 +271,14 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
             for (Component component : newModule.getComponents()) {
                 ComponentImplementation componentImplementation = component.getComponentImplementation();
                 if (componentImplementation == null) {
-                    ConfigurationException e = new ConfigurationException("Component implementation not set");
+                    ConfigurationException e = new MissingImplementationException("Component implementation not set");
                     e.addContextName(component.getName());
                     e.addContextName(getName());
                     throw e;
                 }
                 configuration = (ContextFactory) componentImplementation.getContextFactory();
                 if (configuration == null) {
-                    ConfigurationException e = new ConfigurationException("Context factory not set");
+                    ConfigurationException e = new MissingContextFactoryException("Context factory not set");
                     e.addContextName(component.getName());
                     e.addContextName(getName());
                     throw e;
@@ -285,7 +289,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
             for (EntryPoint ep : newModule.getEntryPoints()) {
                 configuration = (ContextFactory) ep.getConfiguredReference().getContextFactory();
                 if (configuration == null) {
-                    ConfigurationException e = new ConfigurationException("Context factory not set");
+                    ConfigurationException e = new MissingContextFactoryException("Context factory not set");
                     e.setIdentifier(ep.getName());
                     e.addContextName(getName());
                     throw e;
@@ -296,7 +300,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
             for (ExternalService service : newModule.getExternalServices()) {
                 configuration = (ContextFactory) service.getConfiguredService().getContextFactory();
                 if (configuration == null) {
-                    ConfigurationException e = new ConfigurationException("Context factory not set");
+                    ConfigurationException e = new MissingContextFactoryException("Context factory not set");
                     e.setIdentifier(service.getName());
                     e.addContextName(getName());
                     throw e;
@@ -324,7 +328,9 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                             }
                         }
                     } catch (ProxyInitializationException e) {
-                        throw new ConfigurationException(e);
+                        ProxyConfigurationException ce = new ProxyConfigurationException(e);
+                        ce.addContextName(getName());
+                        throw ce;
                     }
 
                 }
@@ -347,7 +353,9 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                             }
                         }
                     } catch (ProxyInitializationException e) {
-                        throw new ConfigurationException(e);
+                        ProxyConfigurationException ce = new ProxyConfigurationException(e);
+                        ce.addContextName(getName());
+                        throw ce;
                     }
 
                 }
@@ -369,7 +377,9 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                             }
                         }
                     } catch (ProxyInitializationException e) {
-                        throw new ConfigurationException(e);
+                        ProxyConfigurationException ce = new ProxyConfigurationException(e);
+                        ce.addContextName(getName());
+                        throw ce;
                     }
 
                 }
@@ -400,7 +410,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                 throw e;
             }
             if (configuration == null) {
-                ConfigurationException e = new ConfigurationException("Context factory not set");
+                ConfigurationException e = new MissingContextFactoryException("Context factory not set");
                 if (model instanceof Part) {
                     e.setIdentifier(((Part) model).getName());
                 }
@@ -421,7 +431,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
             // configuration.prepare(this);
             ScopeContext scope = scopeContexts.get(configuration.getScope());
             if (scope == null) {
-                ConfigurationException e = new ConfigurationException("Component has an unknown scope");
+                ConfigurationException e = new MissingScopeException("Component has an unknown scope");
                 e.addContextName(configuration.getName());
                 e.addContextName(getName());
                 throw e;
@@ -487,7 +497,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
 
     /**
      * Registers a model object as autowirable
-     * 
+     *
      * @throws org.apache.tuscany.core.context.ContextInitException
      */
     protected abstract void registerAutowire(Extensible model) throws ConfigurationException;

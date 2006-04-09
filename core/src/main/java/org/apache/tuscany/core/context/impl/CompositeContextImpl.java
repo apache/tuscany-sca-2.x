@@ -31,6 +31,7 @@ import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.AutowireResolutionException;
+import org.apache.tuscany.core.context.MissingScopeException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
@@ -52,7 +53,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The standard implementation of an composite context. Autowiring is performed by delegating to the parent context.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class CompositeContextImpl extends AbstractCompositeContext implements ConfigurationContext, ModuleContext {
@@ -191,7 +192,7 @@ public class CompositeContextImpl extends AbstractCompositeContext implements Co
                             ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getConfiguredReference()
                                     .getContextFactory()).getScope());
                             if (scope == null) {
-                                ConfigurationException ce = new ConfigurationException("Scope not found for entry point");
+                                ConfigurationException ce = new MissingScopeException("Scope not found for entry point");
                                 ce.setIdentifier(ep.getName());
                                 ce.addContextName(getName());
                                 throw ce;

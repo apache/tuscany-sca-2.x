@@ -40,6 +40,8 @@ import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.ScopeStrategy;
 import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.MissingContextFactoryException;
+import org.apache.tuscany.core.context.MissingScopeException;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -325,7 +327,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
             for (Component component : newModule.getComponents()) {
                 configuration = (ContextFactory<Context>) component.getComponentImplementation().getContextFactory();
                 if (configuration == null) {
-                    ConfigurationException e = new ConfigurationException("Runtime configuration not set");
+                    ConfigurationException e = new MissingContextFactoryException("Context factory not set");
                     e.addContextName(component.getName());
                     e.addContextName(getName());
                     throw e;
@@ -336,7 +338,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
             for (EntryPoint ep : newModule.getEntryPoints()) {
                 configuration = (ContextFactory<Context>) ep.getConfiguredReference().getContextFactory();
                 if (configuration == null) {
-                    ConfigurationException e = new ConfigurationException("Runtime configuration not set");
+                    ConfigurationException e = new MissingContextFactoryException("Context factory not set");
                     e.setIdentifier(ep.getName());
                     e.addContextName(getName());
                     throw e;
@@ -347,7 +349,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
             for (ExternalService service : newModule.getExternalServices()) {
                 configuration = (ContextFactory<Context>) service.getConfiguredService().getContextFactory();
                 if (configuration == null) {
-                    ConfigurationException e = new ConfigurationException("Runtime configuration not set");
+                    ConfigurationException e = new MissingContextFactoryException("Context factory not set");
                     e.setIdentifier(service.getName());
                     e.addContextName(getName());
                     throw e;
@@ -379,8 +381,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
                 throw e;
             }
             if (configuration == null) {
-                ConfigurationException e = new ConfigurationException(
-                        "Runtime configuration not set. Ensure a runtime configuration builder is registered for the component implementation type");
+                ConfigurationException e = new MissingContextFactoryException("Context factory not set");
                 if (model instanceof AggregatePart) {
                     e.setIdentifier(((AggregatePart) model).getName());
                 }
@@ -409,7 +410,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
             try {
                 ScopeContext scope = scopeContexts.get(factory.getScope());
                 if (scope == null) {
-                    ConfigurationException e = new ConfigurationException("Component has an unknown scope");
+                    ConfigurationException e = new MissingScopeException("Component has an unknown scope");
                     e.addContextName(factory.getName());
                     e.addContextName(getName());
                     throw e;
@@ -572,7 +573,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
                             ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getConfiguredReference()
                                     .getContextFactory()).getScope());
                             if (scope == null) {
-                                ConfigurationException ce = new ConfigurationException("Scope not found for entry point");
+                                ConfigurationException ce = new MissingScopeException("Scope not found for entry point");
                                 ce.setIdentifier(ep.getName());
                                 ce.addContextName(getName());
                                 throw ce;
