@@ -16,7 +16,6 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,8 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.wsdl.Definition;
-
-import commonj.sdo.helper.XSDHelper;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.model.assembly.Aggregate;
@@ -39,7 +36,6 @@ import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.ImportWSDL;
 import org.apache.tuscany.model.assembly.ServiceURI;
 import org.apache.tuscany.model.assembly.Wire;
-import org.apache.tuscany.sdo.util.SDOUtil;
 
 /**
  * An implementation of Aggregate.
@@ -228,13 +224,15 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
             // Load the WSDL definition if necessary
             if (wsdlImport.getDefinition() == null) {
                 String location = wsdlImport.getLocation();
-                Definition definition;
+                URL url = resourceLoader.getResource(location);
+                if (url == null)
+                    throw new IllegalArgumentException("Cannot find " + location);
+
+                Definition definition = modelContext.getAssemblyLoader().loadDefinition(url.toString());
+                wsdlImport.setDefinition(definition);
+/*
                 ClassLoader ccl = Thread.currentThread().getContextClassLoader();
                 try {
-                    URL url = resourceLoader.getResource(location);
-                    if (url == null)
-                        throw new IllegalArgumentException("Cannot find " + location);
-                    definition = modelContext.getAssemblyLoader().loadDefinition(url.toString());
                     Thread.currentThread().setContextClassLoader(modelContext.getApplicationResourceLoader().getClassLoader());
                     XSDHelper xsdHelper = SDOUtil.createXSDHelper(modelContext.getTypeHelper());
                     xsdHelper.define(url.openStream(), null);
@@ -243,7 +241,7 @@ public abstract class AggregateImpl extends ExtensibleImpl implements Aggregate 
                 } finally {
                     Thread.currentThread().setContextClassLoader(ccl);
                 }
-                wsdlImport.setDefinition(definition);
+*/
             }
         }
 

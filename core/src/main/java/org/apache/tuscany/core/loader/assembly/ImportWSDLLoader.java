@@ -17,8 +17,10 @@
 package org.apache.tuscany.core.loader.assembly;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import javax.wsdl.WSDLException;
+import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -34,6 +36,10 @@ import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.IMPORT_WSDL;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.ImportWSDL;
+import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.sdo.util.SDOUtil;
+
+import commonj.sdo.helper.XSDHelper;
 
 /**
  * Loader that handles &lt;import.wsdl&gt; elements.
@@ -61,21 +67,24 @@ public class ImportWSDLLoader extends AbstractLoader {
         assert AssemblyConstants.IMPORT_WSDL.equals(reader.getName());
         String namespace = reader.getAttributeValue(null, "namespace");
         String location = reader.getAttributeValue(null, "location");
+        ImportWSDL importWSDL = factory.createImportWSDL(location, namespace);
 
-        loadDefinition(namespace, location, resourceLoader);
+        Definition definition = loadDefinition(namespace, location, resourceLoader);
+//        importWSDL.setDefinition(definition);
 
         StAXUtil.skipToEndElement(reader);
-        return factory.createImportWSDL(location, namespace);
+        return importWSDL;
     }
 
-    protected void loadDefinition(String namespace, String location, ResourceLoader resourceLoader) throws MissingResourceException, SidefileLoadException {
+    protected Definition loadDefinition(String namespace, String location, ResourceLoader resourceLoader) throws MissingResourceException, SidefileLoadException {
+        Definition definition;
         URL wsdlURL = resourceLoader.getResource(location);
         if (wsdlURL == null) {
             throw new MissingResourceException(location);
         }
 
         try {
-            wsdlRegistry.loadDefinition(namespace, wsdlURL);
+            definition = wsdlRegistry.loadDefinition(namespace, wsdlURL);
         } catch (IOException e) {
             SidefileLoadException sfe = new SidefileLoadException(e.getMessage());
             sfe.setResourceURI(location);
@@ -85,5 +94,22 @@ public class ImportWSDLLoader extends AbstractLoader {
             sfe.setResourceURI(location);
             throw sfe;
         }
+
+        try {
+            InputStream xsdInputStream = wsdlURL.openStream();
+            try {
+                AssemblyModelContext context = registry.getContext();
+                XSDHelper xsdHelper = SDOUtil.createXSDHelper(context.getTypeHelper());
+                xsdHelper.define(xsdInputStream, null);
+            } finally {
+                xsdInputStream.close();
+            }
+        } catch (IOException e) {
+            SidefileLoadException sfe = new SidefileLoadException(e.getMessage());
+            sfe.setResourceURI(location);
+            throw sfe;
+        }
+
+        return definition;
     }
 }
