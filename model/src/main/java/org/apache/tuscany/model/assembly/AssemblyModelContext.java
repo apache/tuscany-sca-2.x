@@ -34,13 +34,6 @@ public interface AssemblyModelContext {
     AssemblyFactory getAssemblyFactory();
 
     /**
-     * Returns a loader for resources in the system environment
-     *
-     * @return a resource loader
-     */
-    ResourceLoader getSystemResourceLoader();
-
-    /**
      * Returns a loader for resources in the application environment.
      *
      * @return a loader for resources in the system environment

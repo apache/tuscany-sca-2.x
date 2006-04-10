@@ -25,7 +25,6 @@ import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.util.StringManager;
 
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.client.BootstrapHelper;
@@ -57,7 +56,6 @@ public class TuscanyHost extends StandardHost {
     private RuntimeContext runtime;
     private AssemblyModelLoader modelLoader;
     private AssemblyFactory modelFactory;
-    private ResourceLoader systemLoader;
 
     public synchronized void start() throws LifecycleException {
         startRuntime();
@@ -74,7 +72,6 @@ public class TuscanyHost extends StandardHost {
         AssemblyModelContext modelContext = BootstrapHelper.getModelContext(getClass().getClassLoader());
         modelFactory = modelContext.getAssemblyFactory();
         modelLoader = modelContext.getAssemblyLoader();
-        systemLoader = modelContext.getSystemResourceLoader();
 
         // Create and start the runtime
         NullMonitorFactory monitorFactory = new NullMonitorFactory();
@@ -117,7 +114,7 @@ public class TuscanyHost extends StandardHost {
             throw new IllegalArgumentException(sm.getString("tuscanyHost.notContext"));
         }
         StandardContext ctx = (StandardContext) child;
-        ctx.addLifecycleListener(new TuscanyContextListener(runtime, modelFactory, modelLoader, systemLoader));
+        ctx.addLifecycleListener(new TuscanyContextListener(runtime, modelFactory, modelLoader));
         super.addChild(child);
     }
 

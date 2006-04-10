@@ -30,26 +30,20 @@ public class AssemblyModelContextImpl implements AssemblyModelContext {
 
     private final AssemblyFactory assemblyFactory;
     private final AssemblyModelLoader assemblyLoader;
-    private final ResourceLoader systemResourceLoader;
     private final ResourceLoader applicationResourceLoader;
     private final TypeHelper typeHelper;
 
     public AssemblyModelContextImpl(AssemblyModelLoader assemblyLoader, ResourceLoader resourceLoader) {
-        this(new AssemblyFactoryImpl(), assemblyLoader, resourceLoader, resourceLoader);
+        this(new AssemblyFactoryImpl(), assemblyLoader, resourceLoader);
     }
 
-    public AssemblyModelContextImpl(AssemblyFactory assemblyFactory, AssemblyModelLoader assemblyLoader, ResourceLoader resourceLoader) {
-        this(assemblyFactory, assemblyLoader, resourceLoader, resourceLoader);
-    }
-
-    public AssemblyModelContextImpl(AssemblyFactory assemblyFactory, AssemblyModelLoader assemblyLoader, ResourceLoader resourceLoader, ResourceLoader artifactLoader) {
-        this(assemblyFactory, assemblyLoader, resourceLoader, artifactLoader, SDOUtil.createTypeHelper());
+    public AssemblyModelContextImpl(AssemblyFactory assemblyFactory, AssemblyModelLoader assemblyLoader, ResourceLoader artifactLoader) {
+        this(assemblyFactory, assemblyLoader, artifactLoader, SDOUtil.createTypeHelper());
     }
     
-    public AssemblyModelContextImpl(AssemblyFactory assemblyFactory, AssemblyModelLoader assemblyLoader, ResourceLoader resourceLoader, ResourceLoader artifactLoader, TypeHelper typeHelper) {
+    public AssemblyModelContextImpl(AssemblyFactory assemblyFactory, AssemblyModelLoader assemblyLoader, ResourceLoader artifactLoader, TypeHelper typeHelper) {
         this.assemblyFactory = assemblyFactory;
         this.assemblyLoader = assemblyLoader;
-        this.systemResourceLoader = resourceLoader;
         this.applicationResourceLoader = artifactLoader;
         this.typeHelper=typeHelper;
     }
@@ -59,13 +53,6 @@ public class AssemblyModelContextImpl implements AssemblyModelContext {
      */
     public AssemblyFactory getAssemblyFactory() {
         return assemblyFactory;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelContext#getSystemResourceLoader()
-     */
-    public ResourceLoader getSystemResourceLoader() {
-        return systemResourceLoader;
     }
 
     public ResourceLoader getApplicationResourceLoader() {
