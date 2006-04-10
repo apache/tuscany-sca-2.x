@@ -16,12 +16,12 @@
  */
 package org.apache.tuscany.model.util;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import org.eclipse.emf.common.util.URI;
 
 /**
  * A utility class that converts between XML names and Java names.
@@ -45,10 +45,15 @@ public final class XMLNameUtil {
      */
     public static String getPackageNameFromNamespace(String namespace) {
 
-        URI uri = URI.createURI(namespace);
+        URI uri;
+        try {
+            uri = new URI(namespace);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
         List<String> parsedName;
-        if (uri.isHierarchical()) {
-            String host = uri.host();
+        if (uri.isAbsolute()) {
+            String host = uri.getHost();
             if (host != null && host.startsWith("www.")) {
                 host = host.substring(4);
             }
@@ -58,12 +63,12 @@ public final class XMLNameUtil {
                 parsedName.set(0, parsedName.get(0).toLowerCase());
             }
 
-            parsedName.addAll(parseName(uri.trimFileExtension().path(), '/'));
+            parsedName.addAll(parseName(trimFileExtension(uri.getPath()), '/'));
 
         } else {
-            String opaquePart = uri.opaquePart();
+            String opaquePart = uri.getAuthority();
             int index = opaquePart.indexOf(":");
-            if (index != -1 && "urn".equalsIgnoreCase(uri.scheme())) {
+            if (index != -1 && "urn".equalsIgnoreCase(uri.getScheme())) {
                 parsedName = parseName(opaquePart.substring(0, index), '-');
                 if (parsedName.size() > 0 && DOMAINS.contains(parsedName.get(parsedName.size() - 1))) {
                     Collections.reverse(parsedName);
@@ -87,6 +92,21 @@ public final class XMLNameUtil {
         }
         return qualifiedPackageName.toString();
 
+    }
+
+    /**
+     * Trim the file extension from a path.
+     * @param path
+     * @return
+     */
+    private static String trimFileExtension(String path) {
+        int s=path.lastIndexOf('/');
+        int d=path.lastIndexOf('.');
+        if (d>s) {
+            return path.substring(0,d);
+        } else {
+            return path;
+        }
     }
 
     /**
