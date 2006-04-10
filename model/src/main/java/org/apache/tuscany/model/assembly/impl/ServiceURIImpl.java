@@ -16,8 +16,6 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
-import org.eclipse.emf.common.util.URI;
-
 import org.apache.tuscany.model.assembly.ConfiguredPort;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
@@ -85,7 +83,7 @@ public class ServiceURIImpl implements ServiceURI {
      * Constructor
      *
      * @param moduleComponent
-     * @param service
+     * @param targetServiceName
      */
     protected ServiceURIImpl(ModuleComponent moduleComponent, String targetServiceName) {
         if (moduleComponent != null)
@@ -108,7 +106,6 @@ public class ServiceURIImpl implements ServiceURI {
     /**
      * Returns true if the address scheme is sca:
      *
-     * @return
      */
     public boolean isSCAScheme() {
         if (isSCAScheme == null) {
@@ -119,15 +116,6 @@ public class ServiceURIImpl implements ServiceURI {
             }
         }
         return isSCAScheme.booleanValue();
-    }
-
-    /**
-     * Returns a URI for this address
-     *
-     * @return
-     */
-    public URI getURI() {
-        return URI.createURI(address);
     }
 
     /**
@@ -163,32 +151,18 @@ public class ServiceURIImpl implements ServiceURI {
         }
     }
 
-    /**
-     * Returns the module component name
-     *
-     * @return
-     */
     public String getModuleComponentName() {
         if (!isParsed)
             parse();
         return moduleComponentName;
     }
 
-    /**
-     * Returns the part name
-     *
-     * @return
-     */
     public String getPartName() {
         if (!isParsed)
             parse();
         return partName;
     }
 
-    /**
-     * Returns the service name
-     * @return
-     */
     public String getServiceName() {
         if (!isParsed)
             parse();
