@@ -82,6 +82,7 @@ public class TuscanyHost extends StandardHost {
         // Load and start the system configuration
         try {
             SystemCompositeContext systemContext = runtime.getSystemContext();
+            BootstrapHelper.bootstrapStaxLoader(systemContext, modelContext);
             ModuleComponentConfigurationLoader loader = BootstrapHelper.getConfigurationLoader(systemContext, modelContext);
             ModuleComponent systemModuleComponent = loader.loadSystemModuleComponent(SYSTEM_MODULE_COMPONENT, SYSTEM_MODULE_COMPONENT);
             CompositeContext context = BootstrapHelper.registerModule(systemContext, systemModuleComponent);

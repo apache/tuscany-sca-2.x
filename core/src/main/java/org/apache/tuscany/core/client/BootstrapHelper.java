@@ -16,9 +16,13 @@
  */
 package org.apache.tuscany.core.client;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.stream.XMLInputFactory;
+
+import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
-import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
@@ -38,10 +42,6 @@ import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
-
-import javax.xml.stream.XMLInputFactory;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @version $Rev$ $Date$
@@ -73,8 +73,8 @@ public final class BootstrapHelper {
     /**
      * Returns a default list of configuration builders.
      *
-     * @return a default list of configuration builders
      * @param monitorFactory
+     * @return a default list of configuration builders
      */
     public static List<ContextFactoryBuilder> getBuilders(MonitorFactory monitorFactory) {
         List<ContextFactoryBuilder> configBuilders = new ArrayList<ContextFactoryBuilder>();
@@ -84,7 +84,7 @@ public final class BootstrapHelper {
         return configBuilders;
     }
 
-    private static final String SYSTEM_LOADER_COMPONENT = "tuscany.loader";
+    public static final String SYSTEM_LOADER_COMPONENT = "tuscany.loader";
 
     /**
      * Returns the default module configuration loader.
@@ -94,18 +94,21 @@ public final class BootstrapHelper {
      * @return the default module configuration loader
      */
     public static ModuleComponentConfigurationLoader getConfigurationLoader(SystemCompositeContext systemContext, AssemblyModelContext modelContext) throws ConfigurationException {
-        // Bootstrap the StAX loader module
-        bootstrapStaxLoader(systemContext, modelContext);
         return new StAXModuleComponentConfigurationLoaderImpl(modelContext, XMLInputFactory.newInstance(), systemContext.resolveInstance(StAXLoaderRegistry.class));
     }
 
-    private static CompositeContext bootstrapStaxLoader(SystemCompositeContext systemContext, AssemblyModelContext modelContext) throws ConfigurationException {
-        CompositeContext loaderContext = (CompositeContext) systemContext.getContext(SYSTEM_LOADER_COMPONENT);
-        if (loaderContext == null) {
-            ModuleComponent loaderComponent = StAXUtil.bootstrapLoader(SYSTEM_LOADER_COMPONENT, modelContext);
-            loaderContext = registerModule(systemContext, loaderComponent);
-            loaderContext.fireEvent(EventContext.MODULE_START, null);
-        }
+    /**
+     * Bootstrap the StAX-based loader.
+     *
+     * @param parentContext the parent system context
+     * @param modelContext
+     * @return the system context for the loader
+     * @throws ConfigurationException
+     */
+    public static CompositeContext bootstrapStaxLoader(SystemCompositeContext parentContext, AssemblyModelContext modelContext) throws ConfigurationException {
+        ModuleComponent loaderComponent = StAXUtil.bootstrapLoader(SYSTEM_LOADER_COMPONENT, modelContext);
+        CompositeContext loaderContext = registerModule(parentContext, loaderComponent);
+        loaderContext.fireEvent(EventContext.MODULE_START, null);
         return loaderContext;
     }
 

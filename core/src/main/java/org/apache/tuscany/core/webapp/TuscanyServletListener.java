@@ -112,6 +112,7 @@ public class TuscanyServletListener implements ServletContextListener, HttpSessi
 
         // Load and start the system configuration
         SystemCompositeContext systemContext = runtime.getSystemContext();
+        BootstrapHelper.bootstrapStaxLoader(systemContext, modelContext);
         ModuleComponentConfigurationLoader loader = BootstrapHelper.getConfigurationLoader(systemContext, modelContext);
         ModuleComponent systemModuleComponent = loader.loadSystemModuleComponent(SYSTEM_MODULE_COMPONENT, SYSTEM_MODULE_COMPONENT);
         CompositeContext context = BootstrapHelper.registerModule(systemContext, systemModuleComponent);
