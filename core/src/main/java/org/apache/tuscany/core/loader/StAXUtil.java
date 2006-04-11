@@ -105,25 +105,21 @@ public final class StAXUtil {
 
         List<Component> components = module.getComponents();
 
-        components.add(bootstrapLoader(factory, introspector, ComponentLoader.class));
-        components.add(bootstrapLoader(factory, introspector, ComponentTypeLoader.class));
-        components.add(bootstrapLoader(factory, introspector, EntryPointLoader.class));
-        components.add(bootstrapLoader(factory, introspector, ExternalServiceLoader.class));
-        components.add(bootstrapLoader(factory, introspector, InterfaceJavaLoader.class));
-        components.add(bootstrapLoader(factory, introspector, InterfaceWSDLLoader.class));
-        components.add(bootstrapLoader(factory, introspector, ModuleFragmentLoader.class));
+        // bootstrap the minimal set of loaders needed to read the system module files
+        // all others should be defined in the system.module file
         components.add(bootstrapLoader(factory, introspector, ModuleLoader.class));
-        components.add(bootstrapLoader(factory, introspector, PropertyLoader.class));
-        components.add(bootstrapLoader(factory, introspector, ReferenceLoader.class));
-        components.add(bootstrapLoader(factory, introspector, ServiceLoader.class));
-
+        components.add(bootstrapLoader(factory, introspector, ModuleFragmentLoader.class));
+        components.add(bootstrapLoader(factory, introspector, ComponentLoader.class));
+        components.add(bootstrapLoader(factory, introspector, EntryPointLoader.class));
+        components.add(bootstrapLoader(factory, introspector, InterfaceJavaLoader.class));
         components.add(bootstrapLoader(factory, introspector, SystemImplementationLoader.class));
         components.add(bootstrapLoader(factory, introspector, SystemBindingLoader.class));
+        // do not add additional loaders above - they should be in the system.module file
 
+        // bootstrap the registries needed by the bootstrap loaders above
         bootstrapService(factory, module, StAXLoaderRegistry.class, StAXLoaderRegistryImpl.class);
         bootstrapService(factory, module, SystemAssemblyFactory.class, SystemAssemblyFactoryImpl.class);
         bootstrapService(factory, module, ComponentTypeIntrospector.class, Java5ComponentTypeIntrospector.class);
-
 
         ModuleComponent mc = factory.createModuleComponent();
         mc.setName(name);
