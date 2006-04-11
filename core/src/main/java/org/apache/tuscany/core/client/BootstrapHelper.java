@@ -93,7 +93,7 @@ public final class BootstrapHelper {
      * @param modelContext  the model context the loader will use
      * @return the default module configuration loader
      */
-    public static ModuleComponentConfigurationLoader getConfigurationLoader(SystemCompositeContext systemContext, AssemblyModelContext modelContext) throws ConfigurationException {
+    public static ModuleComponentConfigurationLoader getConfigurationLoader(SystemCompositeContext systemContext, AssemblyModelContext modelContext) {
         return new StAXModuleComponentConfigurationLoaderImpl(modelContext, XMLInputFactory.newInstance(), systemContext.resolveInstance(StAXLoaderRegistry.class));
     }
 
