@@ -34,6 +34,6 @@ public class SystemCompositeContextRegisterTestCase extends CompositeContextRegi
     protected CompositeContext createContext() {
         List<ContextFactoryBuilder> builders = MockFactory.createSystemBuilders();
         return new SystemCompositeContextImpl("test.context", null,
-                null, new DefaultScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory(), null, null);
+                null, new DefaultScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
     }
 }

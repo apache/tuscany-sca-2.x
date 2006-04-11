@@ -98,7 +98,7 @@ public class SystemCompositeComponentContextTestCase extends TestCase {
         List<ContextFactoryBuilder> builders = MockFactory.createSystemBuilders();
 
         system = new SystemCompositeContextImpl("system", null, null, new SystemScopeStrategy(),
-                new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory(), null, null);
+                new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
     }
 
     protected void tearDown() throws Exception {

@@ -16,6 +16,16 @@
  */
 package org.apache.tuscany.core.system.context;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.tuscany.common.TuscanyRuntimeException;
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
@@ -32,31 +42,33 @@ import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.DuplicateNameException;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.EventContext;
-import static org.apache.tuscany.core.context.EventContext.*;
+import static org.apache.tuscany.core.context.EventContext.HTTP_SESSION;
+import static org.apache.tuscany.core.context.EventContext.REQUEST_END;
+import static org.apache.tuscany.core.context.EventContext.SESSION_NOTIFY;
 import org.apache.tuscany.core.context.EventException;
+import org.apache.tuscany.core.context.MissingContextFactoryException;
+import org.apache.tuscany.core.context.MissingScopeException;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.RuntimeEventListener;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.ScopeStrategy;
 import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.MissingContextFactoryException;
-import org.apache.tuscany.core.context.MissingScopeException;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
-import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
-import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemObjectContextFactory;
 import org.apache.tuscany.model.assembly.Aggregate;
+import org.apache.tuscany.model.assembly.AggregatePart;
 import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Extensible;
@@ -65,19 +77,7 @@ import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.AggregatePart;
-import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Implements an composite context for system components. By default a system context uses the scopes specified by
@@ -141,10 +141,6 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
     @Autowire(required = false)
     private AutowireContext autowireContext;
 
-    private final StAXLoaderRegistry loaderRegistry;
-
-    private final SystemAssemblyFactory assemblyFactory;
-
     // ----------------------------------
     // Constructors
     // ----------------------------------
@@ -156,13 +152,16 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
         module = new AssemblyFactoryImpl().createModule();
         eventContext = new EventContextImpl();
         scopeStrategy = new SystemScopeStrategy();
-        this.loaderRegistry = null;
-        this.assemblyFactory = null;
     }
 
-    public SystemCompositeContextImpl(String name, CompositeContext parent, AutowireContext autowire, ScopeStrategy strategy,
-                                      EventContext ctx, ConfigurationContext configCtx, MonitorFactory factory, StAXLoaderRegistry loaderRegistry,
-                                      SystemAssemblyFactory assemblyFactory) {
+    public SystemCompositeContextImpl(String name,
+                                      CompositeContext parent,
+                                      AutowireContext autowire,
+                                      ScopeStrategy strategy,
+                                      EventContext ctx,
+                                      ConfigurationContext configCtx,
+                                      MonitorFactory factory
+    ) {
         super(name);
         this.parentContext = parent;
         this.autowireContext = autowire;
@@ -173,8 +172,6 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
         scopeIndex = new ConcurrentHashMap<String, ScopeContext>();
         // FIXME the assembly factory should be injected here
         module = new AssemblyFactoryImpl().createModule();
-        this.loaderRegistry = loaderRegistry;
-        this.assemblyFactory = assemblyFactory;
     }
 
     // ----------------------------------

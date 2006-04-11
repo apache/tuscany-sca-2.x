@@ -37,8 +37,6 @@ import org.apache.tuscany.core.context.AutowireResolutionException;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.core.loader.impl.StAXLoaderRegistryImpl;
-import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
 import org.apache.tuscany.model.assembly.Aggregate;
@@ -91,7 +89,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         rootContext = new CompositeContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this,
                 monitorFactory);
         systemContext = new SystemCompositeContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(),
-                this, monitorFactory, new StAXLoaderRegistryImpl(), new SystemAssemblyFactoryImpl());
+                this, monitorFactory);
     }
 
     /**

@@ -37,7 +37,7 @@ public class SystemCompositeHierarchyTestCase extends AbstractCompositeHierarchy
     protected CompositeContext createContextHierachy() throws Exception {
         List<ContextFactoryBuilder> mockBuilders = MockFactory.createSystemBuilders();
         CompositeContext parent = new SystemCompositeContextImpl("test.parent", null, null, new DefaultScopeStrategy(),
-                new EventContextImpl(), new MockConfigContext(mockBuilders), new NullMonitorFactory(), null, null);
+                new EventContextImpl(), new MockConfigContext(mockBuilders), new NullMonitorFactory());
         parent.registerModelObject(MockFactory.createCompositeComponent("test.child"));
         parent.start();
         CompositeContext child = (CompositeContext) parent.getContext("test.child");
