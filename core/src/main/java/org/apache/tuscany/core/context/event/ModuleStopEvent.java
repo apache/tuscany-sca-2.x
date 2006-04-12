@@ -1,7 +1,7 @@
 package org.apache.tuscany.core.context.event;
 
 /**
- * Represents the a module end event
+ * Propagated when a module stops
  *
  * @version $$Rev$$ $$Date$$
  */

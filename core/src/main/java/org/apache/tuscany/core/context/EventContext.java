@@ -24,18 +24,23 @@ package org.apache.tuscany.core.context;
 public interface EventContext {
 
     /**
-     * Returns the unique key for the given identifier, e.g a session
+     * Returns the unique key for the given identifier associated with the current request
      */
     public Object getIdentifier(Object type);
 
     /**
-     * Sets the unique key for the given identifier, e.g a session
+     * Sets the unique key for the given identifier associated with the current request
      */
     public void setIdentifier(Object type, Object identifier);
 
     /**
-     * Clears the unique key for the given identifier, e.g a session
+     * Clears the unique key for the given identifier associated with the current request
      */
     public void clearIdentifier(Object type);
+
+    /**
+     * Clears all identifiers associated with the current request
+     */
+    public void clearIdentifiers();
 
 }

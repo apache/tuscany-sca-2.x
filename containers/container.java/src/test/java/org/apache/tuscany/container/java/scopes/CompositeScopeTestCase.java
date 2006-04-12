@@ -41,7 +41,7 @@ import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 
 /**
- * Tests component nesting. This test need to be in the container.java progject since it relies on Java POJOs for scope
+ * Tests component nesting. This test needs to be in the container.java progject since it relies on Java POJOs for scope
  * testing.
  * 
  * @version $Rev$ $Date$
@@ -55,6 +55,7 @@ public class CompositeScopeTestCase extends TestCase {
         EventContext ctx = new EventContextImpl();
         CompositeContext moduleComponentCtx = new CompositeContextImpl();
         moduleComponentCtx.setName("testMC");
+        moduleComponentCtx.start();
         CompositeScopeContext scopeContainer = new CompositeScopeContext(ctx);
         scopeContainer.registerFactory(MockFactory.createCompositeConfiguration("CompositeComponent"));
         scopeContainer.start();

@@ -27,6 +27,8 @@ import org.apache.tuscany.core.context.event.HttpSessionBoundEvent;
 import org.apache.tuscany.core.context.event.RequestEndEvent;
 import org.apache.tuscany.core.context.event.Event;
 import org.apache.tuscany.core.context.event.HttpSessionEvent;
+import org.apache.tuscany.core.context.event.SessionBoundEvent;
+import org.apache.tuscany.core.context.event.SessionEvent;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
@@ -441,12 +443,13 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
 
     public void publish(Event event){
         checkInit();
-        if (event instanceof HttpSessionBoundEvent) {
+        if (event instanceof SessionBoundEvent) {
+            SessionEvent sessionEvent = ((SessionBoundEvent) event);
             // update context
-            eventContext.setIdentifier(HttpSessionEvent.HTTP_IDENTIFIER,((HttpSessionBoundEvent) event).getId());
+            eventContext.setIdentifier(sessionEvent.getSessionTypeIdentifier() ,sessionEvent.getId());
         } else if (event instanceof RequestEndEvent) {
             // be very careful with pooled threads, ensuring threadlocals are cleaned up
-            eventContext.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
+            eventContext.clearIdentifiers();
         }
         super.publish(event);
     }

@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * An implementation of an {@link org.apache.tuscany.core.context.EventContext} that handles event-to-thread associations using an
  * <code>InheritableThreadLocal</code>
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class EventContextImpl implements EventContext {
@@ -68,6 +68,10 @@ public class EventContextImpl implements EventContext {
         if (map != null) {
             map.remove(type);
         }
+    }
+
+    public void clearIdentifiers() {
+        eventContext.remove();
     }
 
     public EventContextImpl() {

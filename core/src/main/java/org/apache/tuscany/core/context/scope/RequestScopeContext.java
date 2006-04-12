@@ -81,7 +81,7 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
         /* clean up current context for pooled threads */
         if (event instanceof RequestEndEvent){
                 checkInit();
-                getEventContext().clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
+                getEventContext().clearIdentifiers();
                 notifyInstanceShutdown(Thread.currentThread());
                 destroyContext();
         }else if (event instanceof ContextCreatedEvent){

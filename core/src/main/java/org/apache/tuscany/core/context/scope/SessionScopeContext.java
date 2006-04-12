@@ -23,10 +23,10 @@ import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.RuntimeEventListener;
 import org.apache.tuscany.core.context.ScopeRuntimeException;
-import org.apache.tuscany.core.context.event.HttpSessionEndEvent;
 import org.apache.tuscany.core.context.event.ContextCreatedEvent;
 import org.apache.tuscany.core.context.event.Event;
 import org.apache.tuscany.core.context.event.HttpSessionEvent;
+import org.apache.tuscany.core.context.event.SessionEndEvent;
 
 import java.util.Map;
 import java.util.Queue;
@@ -34,7 +34,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * An implementation of an session-scoped component container where each HTTP session is mapped to a context in the scope
+ * An implementation of an session-scoped component container
+ * TODO this implementation needs to be made generic so that it supports a range of session types, i.e. not tied to HTTP
+ * session scope 
  * 
  * @version $Rev$ $Date$
  */
@@ -71,27 +73,27 @@ public class SessionScopeContext extends AbstractScopeContext implements Runtime
     }
 
     public void onEvent(Event event) {
-        if (event instanceof HttpSessionEndEvent){
-                checkInit();
-                Object key = ((HttpSessionEndEvent)event).getId();
-                notifyInstanceShutdown(key);
-                destroyComponentContext(key);
+        if (event instanceof SessionEndEvent){
+            checkInit();
+            Object key = ((SessionEndEvent)event).getId();
+            notifyInstanceShutdown(key);
+            destroyComponentContext(key);
         }else if(event instanceof ContextCreatedEvent){
-                checkInit();
-                if (event.getSource() instanceof AtomicContext) {
-                     AtomicContext simpleCtx = (AtomicContext)event.getSource();
-                     // if destroyable, queue the context to have its component implementation instance released
-                     if (simpleCtx.isDestroyable()) {
-                         Object sessionKey = getEventContext().getIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
-                         Queue<AtomicContext> comps = destroyableContexts.get(sessionKey);
-                         if (comps == null) {
-                             ScopeRuntimeException e = new ScopeRuntimeException("Shutdown queue not found for key");
-                             e.setIdentifier(sessionKey.toString());
-                             throw e;
-                         }
-                         comps.add(simpleCtx);
+            checkInit();
+            if (event.getSource() instanceof AtomicContext) {
+                 AtomicContext simpleCtx = (AtomicContext)event.getSource();
+                 // if destroyable, queue the context to have its component implementation instance released
+                 if (simpleCtx.isDestroyable()) {
+                     Object sessionKey = getEventContext().getIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
+                     Queue<AtomicContext> comps = destroyableContexts.get(sessionKey);
+                     if (comps == null) {
+                         ScopeRuntimeException e = new ScopeRuntimeException("Shutdown queue not found for key");
+                         e.setIdentifier(sessionKey.toString());
+                         throw e;
                      }
-                }
+                     comps.add(simpleCtx);
+                 }
+            }
         }
     }
 

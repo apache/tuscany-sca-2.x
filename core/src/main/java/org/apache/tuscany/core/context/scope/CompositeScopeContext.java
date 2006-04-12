@@ -143,6 +143,7 @@ public class CompositeScopeContext extends AbstractContext implements ScopeConte
         }
         // propagate events to child contexts
         for (CompositeContext context : contexts.values()) {
+            System.out.println("context"+context);
             context.publish(event);
         }
     }

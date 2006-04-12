@@ -14,7 +14,7 @@
 package org.apache.tuscany.core.context.event;
 
 /**
- * Represents the a module start event
+ * Propagated when a module starts
  * 
  * @version $$Rev$$ $$Date$$
  */
