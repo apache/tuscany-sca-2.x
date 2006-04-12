@@ -62,6 +62,8 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
 
         monitor.readingWSDL(namespace, location);
         WSDLReader reader = wsdlFactory.newWSDLReader();
+        reader.setFeature("javax.wsdl.verbose", false);
+
         definition = reader.readWSDL(location.toString());
         String definitionNamespace = definition.getTargetNamespace();
         if (namespace != null && !namespace.equals(definitionNamespace)) {
