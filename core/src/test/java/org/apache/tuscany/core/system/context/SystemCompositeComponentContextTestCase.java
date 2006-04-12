@@ -15,7 +15,6 @@ package org.apache.tuscany.core.system.context;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
@@ -97,8 +96,7 @@ public class SystemCompositeComponentContextTestCase extends TestCase {
         factory = new SystemAssemblyFactoryImpl();
         List<ContextFactoryBuilder> builders = MockFactory.createSystemBuilders();
 
-        system = new SystemCompositeContextImpl("system", null, null, new SystemScopeStrategy(),
-                new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
+        system = new SystemCompositeContextImpl("system", null, null, new SystemScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders));
     }
 
     protected void tearDown() throws Exception {

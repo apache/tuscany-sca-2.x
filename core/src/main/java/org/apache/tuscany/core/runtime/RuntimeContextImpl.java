@@ -88,8 +88,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
         rootContext = new CompositeContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this,
                 monitorFactory);
-        systemContext = new SystemCompositeContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(),
-                this, monitorFactory);
+        systemContext = new SystemCompositeContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(), this);
     }
 
     /**

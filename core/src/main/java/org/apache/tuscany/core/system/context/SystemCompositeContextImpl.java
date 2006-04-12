@@ -101,10 +101,6 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
     @Autowire(required = false)
     protected ConfigurationContext configurationContext;
 
-    // The system monitor factory
-    @Autowire(required = false)
-    protected MonitorFactory monitorFactory;
-
     // The logical model representing the module assembly
     // protected ModuleComponent moduleComponent;
     protected Module module;
@@ -159,8 +155,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
                                       AutowireContext autowire,
                                       ScopeStrategy strategy,
                                       EventContext ctx,
-                                      ConfigurationContext configCtx,
-                                      MonitorFactory factory
+                                      ConfigurationContext configCtx
     ) {
         super(name);
         this.parentContext = parent;
@@ -168,7 +163,6 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
         this.scopeStrategy = strategy;
         this.eventContext = ctx;
         this.configurationContext = configCtx;
-        this.monitorFactory = factory;
         scopeIndex = new ConcurrentHashMap<String, ScopeContext>();
         // FIXME the assembly factory should be injected here
         module = new AssemblyFactoryImpl().createModule();
@@ -271,10 +265,6 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
 
     public void setEventContext(EventContext eventContext) {
         this.eventContext = eventContext;
-    }
-
-    public void setMonitorFactory(MonitorFactory factory) {
-        this.monitorFactory = factory;
     }
 
     public CompositeContext getParent() {
@@ -516,8 +506,6 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
     public <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException {
         if (RuntimeContext.class.equals(instanceInterface)) {
             return autowireContext.resolveInstance(instanceInterface);
-        } else if (MonitorFactory.class.equals(instanceInterface)) {
-            return instanceInterface.cast(monitorFactory);
         } else if (ConfigurationContext.class.equals(instanceInterface)) {
             return instanceInterface.cast(this);
         } else if (CompositeContext.class.equals(instanceInterface)) {

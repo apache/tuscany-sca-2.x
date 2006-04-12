@@ -13,7 +13,6 @@
  */
 package org.apache.tuscany.core.system.context;
 
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.CompositeContextRegisterTestCase;
 import org.apache.tuscany.core.context.CompositeContext;
@@ -33,7 +32,6 @@ public class SystemCompositeContextRegisterTestCase extends CompositeContextRegi
 
     protected CompositeContext createContext() {
         List<ContextFactoryBuilder> builders = MockFactory.createSystemBuilders();
-        return new SystemCompositeContextImpl("test.context", null,
-                null, new DefaultScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders), new NullMonitorFactory());
+        return new SystemCompositeContextImpl("test.context", null, null, new DefaultScopeStrategy(), new EventContextImpl(), new MockConfigContext(builders));
     }
 }
