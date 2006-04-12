@@ -40,8 +40,10 @@ public class SCDLAssemblyModelLoaderImpl implements AssemblyModelLoader {
             return definition;
 
         try {
-            if (wsdlReader==null)
+            if (wsdlReader==null) {
                 wsdlReader=WSDLFactory.newInstance().newWSDLReader();
+                wsdlReader.setFeature("javax.wsdl.verbose", false);
+            }
             definition = wsdlReader.readWSDL(uri);
         } catch (WSDLException e) {
             throw new IllegalArgumentException(e);
