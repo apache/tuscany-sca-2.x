@@ -19,8 +19,8 @@ package org.apache.tuscany.core.system.context;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.SystemCompositeContext;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 
@@ -42,7 +42,7 @@ public class SystemObjectRegistrationTestCase extends TestCase {
         runtime = new RuntimeContextImpl();
         runtime.start();
         systemContext = runtime.getSystemContext();
-        systemContext.fireEvent(EventContext.MODULE_START, null);
+        systemContext.publish(new ModuleStartEvent(this));
     }
 
     protected void tearDown() throws Exception {

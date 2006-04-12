@@ -16,8 +16,8 @@ package org.apache.tuscany.container.java.integration;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 
 import junit.framework.Assert;
@@ -41,13 +41,12 @@ public class JavaRuntimeBootstrapTestCase extends TestCase {
         CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule());
-        testCtx.fireEvent(EventContext.MODULE_START,null);
+        testCtx.publish(new ModuleStartEvent(this));
         GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(target);
         source.getGenericComponent().getString();
-        
    }
 
 }

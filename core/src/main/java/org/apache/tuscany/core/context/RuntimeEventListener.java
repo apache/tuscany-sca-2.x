@@ -16,7 +16,10 @@
  */
 package org.apache.tuscany.core.context;
 
+import org.apache.tuscany.core.context.event.Event;
+
 import java.util.EventListener;
+import java.util.EventObject;
 
 /**
  * Listeners observe events fired in the SCA runtime.
@@ -25,12 +28,5 @@ import java.util.EventListener;
  */
 public interface RuntimeEventListener extends EventListener {
 
-    /**
-     * A method called when an event for which the <tt>Listener</tt> class is registered to observe is fired in the runtime
-     * 
-     * @param type the event type identifier
-     * @param message the event message
-     * @throws EventException if an error occurs processing the event
-     */
-    public void onEvent(int type, Object message) throws EventException;
+    public void onEvent(Event event);
 }

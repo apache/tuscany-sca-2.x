@@ -28,7 +28,9 @@ import org.osoa.sca.ModuleContext;
 import org.osoa.sca.SCA;
 
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.event.HttpSessionBoundEvent;
+import org.apache.tuscany.core.context.event.RequestStartEvent;
+import org.apache.tuscany.core.context.event.RequestEndEvent;
 import org.apache.tuscany.core.webapp.LazyHTTPSessionId;
 
 /**
@@ -67,14 +69,14 @@ public class TuscanyValve extends ValveBase {
                 HttpSession session = request.getSession(false);
                 if (session != null) {
                     // A session is already active
-                    moduleComponentContext .fireEvent(EventContext.SESSION_NOTIFY, session);
+                    moduleComponentContext .publish(new HttpSessionBoundEvent(this,session));
                 } else {
                     // Create a lazy wrapper since a session is not yet active
-                    moduleComponentContext.fireEvent(EventContext.SESSION_NOTIFY, new LazyHTTPSessionId(request));
+                    moduleComponentContext.publish(new HttpSessionBoundEvent(this, new LazyHTTPSessionId(request)));
                 }
 
                 try {
-                    moduleComponentContext.fireEvent(EventContext.REQUEST_START, requestId);
+                    moduleComponentContext.publish(new RequestStartEvent(this, requestId));
                 } catch (Exception e) {
                     throw new ServletException(e.getMessage(), e);
                 }
@@ -87,7 +89,7 @@ public class TuscanyValve extends ValveBase {
                     // notify the runtime the request is ending
                     request.removeNote(REQUEST_ID);
                     try {
-                        moduleComponentContext.fireEvent(EventContext.REQUEST_END, requestId);
+                        moduleComponentContext.publish(new RequestEndEvent(this, requestId));
                     } catch (Exception e) {
                         // the application already did its work, log and ignore
                         // todo log this exception

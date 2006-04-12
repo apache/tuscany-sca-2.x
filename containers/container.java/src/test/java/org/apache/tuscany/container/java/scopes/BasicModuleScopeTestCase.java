@@ -16,28 +16,29 @@
  */
 package org.apache.tuscany.container.java.scopes;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeComponentImpl;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeInitDestroyComponent;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.ModuleStopEvent;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Unit tests for the module scope container
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class BasicModuleScopeTestCase extends TestCase {
@@ -51,14 +52,14 @@ public class BasicModuleScopeTestCase extends TestCase {
         scope.registerFactories(createConfigurations());
         scope.start();
         // first request
-        scope.onEvent(EventContext.MODULE_START, null);
+        scope.onEvent(new ModuleStartEvent(this));
         ModuleScopeComponentImpl comp1 = (ModuleScopeComponentImpl) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp1);
         // second request
         ModuleScopeComponentImpl comp2 = (ModuleScopeComponentImpl) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp2);
         Assert.assertSame(comp1, comp2);
-        scope.onEvent(EventContext.MODULE_STOP, null);
+        scope.onEvent(new ModuleStopEvent(this));
         scope.stop();
     }
 
@@ -67,8 +68,8 @@ public class BasicModuleScopeTestCase extends TestCase {
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
         scope.registerFactories(createConfigurations());
         scope.start();
-        scope.onEvent(EventContext.MODULE_START, null);
-        scope.onEvent(EventContext.MODULE_STOP, null);
+        scope.onEvent(new ModuleStartEvent(this));
+        scope.onEvent(new ModuleStopEvent(this));
         scope.stop();
     }
 
@@ -78,46 +79,41 @@ public class BasicModuleScopeTestCase extends TestCase {
         scope.registerFactories(createConfigurations());
         scope.start();
         scope.registerFactory(createConfiguration("NewTestService"));
-        scope.onEvent(EventContext.MODULE_START,null);
+        scope.onEvent(new ModuleStartEvent(this));
         ModuleScopeInitDestroyComponent comp2 = (ModuleScopeInitDestroyComponent) scope.getContext("NewTestService").getInstance(null);
         Assert.assertNotNull(comp2);
         Assert.assertTrue(comp2.isInitialized());
-        scope.onEvent(EventContext.MODULE_STOP,null);
+        scope.onEvent(new ModuleStopEvent(this));
         Assert.assertTrue(comp2.isDestroyed());
         scope.stop();
     }
-    
+
     public void testRegisterContextAfterStart() throws Exception {
         EventContext ctx = new EventContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
         scope.start();
         scope.registerFactory(createConfiguration("NewTestService"));
-        scope.onEvent(EventContext.MODULE_START,null);
+        scope.onEvent(new ModuleStartEvent(this));
         scope.registerFactories(createConfigurations());
         ModuleScopeInitDestroyComponent comp2 = (ModuleScopeInitDestroyComponent) scope.getContext("NewTestService").getInstance(null);
         Assert.assertNotNull(comp2);
         Assert.assertTrue(comp2.isInitialized());
-        scope.onEvent(EventContext.MODULE_STOP,null);
+        scope.onEvent(new ModuleStopEvent(this));
         Assert.assertTrue(comp2.isDestroyed());
         scope.stop();
     }
-    
-    // ----------------------------------
-    // Private methods
-    // ----------------------------------
 
     JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
-    private List<ContextFactory<Context>> createConfigurations() throws NoSuchMethodException, BuilderException {
+    private List<ContextFactory<Context>> createConfigurations() throws BuilderException {
         SimpleComponent component = MockFactory.createComponent("TestService1", ModuleScopeComponentImpl.class, Scope.MODULE);
         builder.build(component);
-        List<ContextFactory<Context>> configs = new ArrayList();
+        List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
         configs.add((ContextFactory<Context>) component.getComponentImplementation().getContextFactory());
         return configs;
     }
 
-    private ContextFactory<Context> createConfiguration(String name)
-            throws NoSuchMethodException, BuilderException {
+    private ContextFactory<Context> createConfiguration(String name) throws BuilderException {
         SimpleComponent component = MockFactory.createComponent(name, ModuleScopeInitDestroyComponent.class,
                 Scope.MODULE);
         builder.build(component);

@@ -27,7 +27,7 @@ import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.RuntimeEventListener;
 import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.AbstractContext;
+import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventException;
 import org.apache.tuscany.core.context.QualifiedName;
@@ -58,7 +58,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     // the top-level wire builder in the runtime
     private final HierarchicalWireBuilder wireBuilder;
 
-    private final List<RuntimeEventListener> listeners = new ArrayList<RuntimeEventListener>(1);
+    //private final List<RuntimeEventListener> listeners = new ArrayList<RuntimeEventListener>(1);
 
     private final CompositeContext rootContext;
 
@@ -177,20 +177,13 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         }
     }
 
-    public void addListener(RuntimeEventListener listener) {
-        assert (listener != null) : "Listener cannot be null";
-        listeners.add(listener);
-    }
-
-    public void fireEvent(int eventType, Object message) throws EventException {
-        checkRunning();
-        for (RuntimeEventListener listener : listeners) {
-            listener.onEvent(eventType, message);
-        }
-    }
-
     public CompositeContext getParent() {
         return null; // there is no parent
+    }
+
+    //TODO remove
+    public void fireEvent(int pEventType, Object pMessage) throws EventException {
+        throw new UnsupportedOperationException();
     }
 
     public Object locateService(QualifiedName serviceName) {

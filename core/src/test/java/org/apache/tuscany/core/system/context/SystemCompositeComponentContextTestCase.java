@@ -17,8 +17,9 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.ModuleStopEvent;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.mock.MockConfigContext;
 import org.apache.tuscany.core.mock.MockFactory;
@@ -52,9 +53,9 @@ public class SystemCompositeComponentContextTestCase extends TestCase {
         EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1", component);
         childContext.registerModelObject(component);
         childContext.registerModelObject(ep);
-        childContext.fireEvent(EventContext.MODULE_START, null);
+        childContext.publish(new ModuleStartEvent(this));
         Assert.assertNotNull(system.getContext("system.child").getInstance(new QualifiedName("./TestService1EP")));
-        childContext.fireEvent(EventContext.MODULE_STOP, null);
+        childContext.publish(new ModuleStopEvent(this));
     }
 
     public void testAutowireRegisterBeforeStart() throws Exception {
@@ -63,7 +64,7 @@ public class SystemCompositeComponentContextTestCase extends TestCase {
         system.registerModelObject(component);
         system.registerModelObject(ep);
         system.start();
-        system.fireEvent(EventContext.MODULE_START, null);
+        system.publish(new ModuleStartEvent(this));
         Assert.assertSame(system.getContext("TestService1EP").getInstance(null), system.resolveInstance(ModuleScopeSystemComponent.class));
     }
 
@@ -71,7 +72,7 @@ public class SystemCompositeComponentContextTestCase extends TestCase {
         Component component = factory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
         system.registerModelObject(component);
         system.start();
-        system.fireEvent(EventContext.MODULE_START, null);
+        system.publish(new ModuleStartEvent(this));
         EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1", component);
         system.registerModelObject(ep);
         Assert.assertSame(system.getContext("TestService1EP").getInstance(null), system.resolveInstance(ModuleScopeSystemComponent.class));
@@ -80,13 +81,13 @@ public class SystemCompositeComponentContextTestCase extends TestCase {
     public void testAutowireModuleRegisterBeforeStart() throws Exception {
         system.registerModelObject(MockFactory.createSystemModule());
         system.start();
-        system.fireEvent(EventContext.MODULE_START, null);
+        system.publish(new ModuleStartEvent(this));
         Assert.assertSame(system.getContext("TestService1EP").getInstance(null), system.resolveInstance(ModuleScopeSystemComponent.class));
     }
 
     public void testAutowireModuleRegisterAfterStart() throws Exception {
         system.start();
-        system.fireEvent(EventContext.MODULE_START, null);
+        system.publish(new ModuleStartEvent(this));
         system.registerModelObject(MockFactory.createSystemModule());
         Assert.assertSame(system.getContext("TestService1EP").getInstance(null), system.resolveInstance(ModuleScopeSystemComponent.class));
     }
@@ -100,7 +101,7 @@ public class SystemCompositeComponentContextTestCase extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        system.fireEvent(EventContext.MODULE_STOP, null);
+        system.publish(new ModuleStopEvent(this));
         system.stop();
         super.tearDown();
     }

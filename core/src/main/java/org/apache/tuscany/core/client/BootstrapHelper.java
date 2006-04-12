@@ -28,8 +28,8 @@ import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.config.impl.StAXModuleComponentConfigurationLoaderImpl;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.SystemCompositeContext;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
@@ -108,7 +108,7 @@ public final class BootstrapHelper {
     public static CompositeContext bootstrapStaxLoader(SystemCompositeContext parentContext, AssemblyModelContext modelContext) throws ConfigurationException {
         ModuleComponent loaderComponent = StAXUtil.bootstrapLoader(SYSTEM_LOADER_COMPONENT, modelContext);
         CompositeContext loaderContext = registerModule(parentContext, loaderComponent);
-        loaderContext.fireEvent(EventContext.MODULE_START, null);
+        loaderContext.publish(new ModuleStartEvent(loaderComponent));
         return loaderContext;
     }
 

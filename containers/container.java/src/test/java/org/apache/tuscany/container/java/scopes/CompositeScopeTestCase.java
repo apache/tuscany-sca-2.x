@@ -27,6 +27,12 @@ import org.apache.tuscany.container.java.mock.components.SessionScopeComponentIm
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.RequestStartEvent;
+import org.apache.tuscany.core.context.event.HttpSessionBoundEvent;
+import org.apache.tuscany.core.context.event.RequestEndEvent;
+import org.apache.tuscany.core.context.event.HttpSessionEndEvent;
+import org.apache.tuscany.core.context.event.ModuleStopEvent;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.CompositeScopeContext;
@@ -58,10 +64,12 @@ public class CompositeScopeTestCase extends TestCase {
             child.registerModelObject(model);
         }
 
-        scopeContainer.onEvent(EventContext.MODULE_START, null);
+        scopeContainer.onEvent(new ModuleStartEvent(this));
         Object session = new Object();
-        scopeContainer.onEvent(EventContext.REQUEST_START, null);
-        scopeContainer.onEvent(EventContext.SESSION_NOTIFY, session);
+        Object id = new Object();
+        //ctx.setIdentifier(EventContext.SESSION,session);
+        scopeContainer.onEvent(new RequestStartEvent(this,id));
+        scopeContainer.onEvent(new HttpSessionBoundEvent(this,session));
         CompositeContext componentCtx = (CompositeContext) scopeContainer.getContext("CompositeComponent");
         GenericComponent testService1 = (GenericComponent) componentCtx.getContext("TestService1").getInstance(null);
         GenericComponent testService2 = (GenericComponent) componentCtx.getContext("TestService2").getInstance(null);
@@ -69,9 +77,9 @@ public class CompositeScopeTestCase extends TestCase {
         Assert.assertNotNull(testService1);
         Assert.assertNotNull(testService2);
         Assert.assertNotNull(testService3);
-        scopeContainer.onEvent(EventContext.REQUEST_END, null);
-        scopeContainer.onEvent(EventContext.REQUEST_START, null);
-        scopeContainer.onEvent(EventContext.SESSION_NOTIFY, session);
+        scopeContainer.onEvent(new RequestEndEvent(this,id));
+        scopeContainer.onEvent(new RequestStartEvent(this,id));
+        scopeContainer.onEvent(new HttpSessionBoundEvent(this,session));
 
         GenericComponent testService2a = (GenericComponent) componentCtx.getContext("TestService2").getInstance(null);
         Assert.assertNotNull(testService2a);
@@ -79,18 +87,19 @@ public class CompositeScopeTestCase extends TestCase {
         Assert.assertNotNull(testService3a);
         Assert.assertEquals(testService2, testService2a);
         Assert.assertNotSame(testService3, testService3a);
-        scopeContainer.onEvent(EventContext.REQUEST_END, null);
-        scopeContainer.onEvent(EventContext.SESSION_END, session);
+        scopeContainer.onEvent(new RequestEndEvent(this,id));
+        scopeContainer.onEvent(new HttpSessionEndEvent(this,session));
 
         Object session2 = new Object();
-        scopeContainer.onEvent(EventContext.REQUEST_START, null);
-        scopeContainer.onEvent(EventContext.SESSION_NOTIFY, session2);
+        Object id2 = new Object();
+        scopeContainer.onEvent(new RequestStartEvent(this,id2));
+        scopeContainer.onEvent(new HttpSessionBoundEvent(this,session2));
         GenericComponent testService2b = (GenericComponent) componentCtx.getContext("TestService2").getInstance(null);
         Assert.assertNotNull(testService2b);
         Assert.assertNotSame(testService2, testService2b);
 
-        scopeContainer.onEvent(EventContext.REQUEST_END, null);
-        scopeContainer.onEvent(EventContext.SESSION_END, session2);
+        scopeContainer.onEvent(new RequestEndEvent(this,id2));
+        scopeContainer.onEvent(new HttpSessionEndEvent(this,session2));
 
     }
 
@@ -109,9 +118,7 @@ public class CompositeScopeTestCase extends TestCase {
         for (Extensible part : parts) {
             child.registerModelObject(part);
         }
-
-        // composite.onEvent(EventContext.SYSTEM_START, null);
-        scopeContainer.onEvent(EventContext.MODULE_START, null);
+        scopeContainer.onEvent(new ModuleStartEvent(this));
         scopeContainer.getContext("CompositeComponent");
     }
 
@@ -125,9 +132,9 @@ public class CompositeScopeTestCase extends TestCase {
         CompositeScopeContext scopeContainer = new CompositeScopeContext(ctx);
         scopeContainer.registerFactory(MockFactory.createCompositeConfiguration("CompositeComponent"));
         scopeContainer.start();
-        scopeContainer.onEvent(EventContext.MODULE_START, null);
+        scopeContainer.onEvent(new ModuleStartEvent(this));
         scopeContainer.getContext("CompositeComponent");
-        scopeContainer.onEvent(EventContext.MODULE_STOP, null);
+        scopeContainer.onEvent(new ModuleStopEvent(this));
         scopeContainer.stop();
     }
 
@@ -141,10 +148,10 @@ public class CompositeScopeTestCase extends TestCase {
         CompositeScopeContext scopeContainer = new CompositeScopeContext(ctx);
         scopeContainer.start();
 
-        scopeContainer.onEvent(EventContext.MODULE_START, null);
+        scopeContainer.onEvent(new ModuleStartEvent(this));
         scopeContainer.registerFactory(MockFactory.createCompositeConfiguration("CompositeComponent"));
         scopeContainer.getContext("CompositeComponent");
-        scopeContainer.onEvent(EventContext.MODULE_STOP, null);
+        scopeContainer.onEvent(new ModuleStopEvent(this));
         scopeContainer.stop();
     }
 
@@ -163,7 +170,7 @@ public class CompositeScopeTestCase extends TestCase {
         builder.build(component);
         builder.build(sessionComponent);
         builder.build(requestComponent);
-        List<Extensible> configs = new ArrayList();
+        List<Extensible> configs = new ArrayList<Extensible>();
         configs.add(component);
         configs.add(sessionComponent);
         configs.add(requestComponent);

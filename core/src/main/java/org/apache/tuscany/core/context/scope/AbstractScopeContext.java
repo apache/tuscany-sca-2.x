@@ -22,7 +22,7 @@ import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.AbstractContext;
+import org.apache.tuscany.core.context.impl.AbstractContext;
 
 import java.util.List;
 import java.util.Map;

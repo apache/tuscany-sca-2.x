@@ -21,6 +21,7 @@ import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.RuntimeEventListener;
 import org.apache.tuscany.core.context.CoreRuntimeException;
+import org.apache.tuscany.core.context.event.Event;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -64,7 +65,7 @@ public class StatelessScopeContext extends AbstractScopeContext implements Runti
 
     }
 
-    public void onEvent(int type, Object key) {
+    public void onEvent(Event event){
         // do nothing
     }
 

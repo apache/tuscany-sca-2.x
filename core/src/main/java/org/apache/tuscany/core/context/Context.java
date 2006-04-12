@@ -22,7 +22,7 @@ package org.apache.tuscany.core.context;
  * 
  * @version $Rev$ $Date$
  */
-public interface Context {
+public interface Context extends EventPublisher{
 
         /* A configuration error state */
         public static final int CONFIG_ERROR = -1;
@@ -83,16 +83,6 @@ public interface Context {
          * @throws CoreRuntimeException
          */
         public void stop() throws CoreRuntimeException;
-
-        /**
-         * Registers a listener to receive notifications for the context
-         */
-        public void addListener(RuntimeEventListener listener);
-
-        /**
-         * Removes a previously registered listener
-         */
-        public void removeListener(RuntimeEventListener listener);
 
 
         /**

@@ -20,7 +20,8 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.ModuleStopEvent;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
@@ -81,7 +82,7 @@ public class RuntimeContextImplTestCase extends TestCase {
         inter.setInterface(ModuleScopeSystemComponentImpl.class);
         service.setServiceContract(inter);
         system.registerModelObject(ep);
-        system.fireEvent(EventContext.MODULE_START, null);
+        system.publish(new ModuleStartEvent(this));
         Assert.assertNotNull(system.getContext("TestService1").getInstance(null));
         Assert.assertNotNull(system.getContext("TestService2EP").getInstance(null));
 
@@ -92,11 +93,11 @@ public class RuntimeContextImplTestCase extends TestCase {
         Assert.assertNotNull(moduleContext);
         ExternalService es = MockFactory.createESSystemBinding("TestService2ES", "tuscany.system/TestService2EP");
         moduleContext.registerModelObject(es);
-        moduleContext.fireEvent(EventContext.MODULE_START, null);
+        moduleContext.publish(new ModuleStartEvent(this));
         Assert.assertNotNull(moduleContext.getContext("TestService2ES").getInstance(null));
 
-        moduleContext.fireEvent(EventContext.MODULE_STOP, null);
-        system.fireEvent(EventContext.MODULE_STOP, null);
+        moduleContext.publish(new ModuleStopEvent(this));
+        system.publish(new ModuleStopEvent(this));
         runtime.stop();
     }
 
@@ -123,13 +124,13 @@ public class RuntimeContextImplTestCase extends TestCase {
         ExternalService es = MockFactory.createAutowirableExternalService("TestService2ES", ModuleScopeSystemComponent.class);
         moduleContext.registerModelObject(es);
 
-        system.fireEvent(EventContext.MODULE_START, null);
-        moduleContext.fireEvent(EventContext.MODULE_START, null);
+        system.publish(new ModuleStartEvent(this));
+        moduleContext.publish(new ModuleStartEvent(this));
         // test that the autowire was resolved
         Assert.assertNotNull(moduleContext.getContext("TestService2ES").getInstance(null));
 
-        moduleContext.fireEvent(EventContext.MODULE_STOP, null);
-        system.fireEvent(EventContext.MODULE_STOP, null);
+        moduleContext.publish(new ModuleStopEvent(this));
+        system.publish(new ModuleStopEvent(this));
         runtime.stop();
     }
 
@@ -141,14 +142,14 @@ public class RuntimeContextImplTestCase extends TestCase {
         Component moduleComponent = MockFactory.createCompositeComponent("module");
         runtime.registerModelObject(moduleComponent);
         CompositeContextImpl moduleContext = (CompositeContextImpl) runtime.getContext("module");
-        moduleContext.fireEvent(EventContext.MODULE_START, null);
+        moduleContext.publish(new ModuleStartEvent(this));
         try {
             moduleContext.locateService("TestService");
             fail("Expected " + ServiceUnavailableException.class.getName());
         } catch (ServiceUnavailableException e) {
             // expected
         }
-        moduleContext.fireEvent(EventContext.MODULE_STOP, null);
+        moduleContext.publish(new ModuleStopEvent(this));
         runtime.stop();
     }
 
@@ -165,16 +166,16 @@ public class RuntimeContextImplTestCase extends TestCase {
         moduleContext.registerModelObject(es);
 
         // start the modules and test inter-module system wires
-        system.fireEvent(EventContext.MODULE_START, null);
-        moduleContext.fireEvent(EventContext.MODULE_START, null);
+        system.publish(new ModuleStartEvent(this));
+        moduleContext.publish(new ModuleStartEvent(this));
         try {
             moduleContext.locateService("TestServiceES");
             fail("Expected " + ServiceUnavailableException.class.getName());
         } catch (ServiceUnavailableException e) {
             // expected
         }
-        moduleContext.fireEvent(EventContext.MODULE_STOP, null);
-        system.fireEvent(EventContext.MODULE_STOP, null);
+        moduleContext.publish(new ModuleStopEvent(this));
+        system.publish(new ModuleStopEvent(this));
         runtime.stop();
     }
 
@@ -193,14 +194,14 @@ public class RuntimeContextImplTestCase extends TestCase {
         EntryPoint epSystemBinding = MockFactory.createEPSystemBinding("TestServiceEP", ModuleScopeSystemComponent.class, "NoReference", component);
         moduleContext.registerModelObject(epSystemBinding);
 
-        moduleContext.fireEvent(EventContext.MODULE_START, null);
+        moduleContext.publish(new ModuleStartEvent(this));
         try {
             moduleContext.locateService("TestServiceEP");
             fail("Expected " + ServiceUnavailableException.class.getName());
         } catch (ServiceUnavailableException e) {
             // expected
         }
-        moduleContext.fireEvent(EventContext.MODULE_STOP, null);
+        moduleContext.publish(new ModuleStopEvent(this));
         runtime.stop();
     }
 
@@ -234,8 +235,8 @@ public class RuntimeContextImplTestCase extends TestCase {
         moduleContext2.registerModelObject(entryPoint2);
         moduleContext2.registerModelObject(externalService2);
 
-        moduleContext1.fireEvent(EventContext.MODULE_START, null);
-        moduleContext2.fireEvent(EventContext.MODULE_START, null);
+        moduleContext1.publish(new ModuleStartEvent(this));
+        moduleContext2.publish(new ModuleStartEvent(this));
         Assert.assertNotNull(moduleContext2.getContext("ExternalService2").getInstance(null));
         Assert.assertNotNull(moduleContext1.getContext("ExternalService1").getInstance(null));
         runtime.stop();
@@ -283,12 +284,12 @@ public class RuntimeContextImplTestCase extends TestCase {
         CompositeContext system = runtime.getSystemContext();
         Component builder = factory.createSystemComponent("TestBuilder", ContextFactoryBuilder.class, TestBuilder.class, Scope.MODULE);
         system.registerModelObject(builder);
-        system.fireEvent(EventContext.MODULE_START, null);
+        system.publish(new ModuleStartEvent(this));
         Component module1 = MockFactory.createCompositeComponent("module1");
         runtime.registerModelObject(module1);
         runtime.getContext("module1");
         Assert.assertTrue(((TestBuilder) system.getContext("TestBuilder").getInstance(null)).invoked());
-        system.fireEvent(EventContext.MODULE_STOP, null);
+        system.publish(new ModuleStopEvent(this));
         runtime.stop();
 
     }

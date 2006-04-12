@@ -19,6 +19,8 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.ModuleStopEvent;
 import org.apache.tuscany.core.mock.MockConfigContext;
 import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.GenericSystemComponent;
@@ -46,12 +48,12 @@ public class CompositeContextRegisterTestCase extends TestCase {
         Module module = MockFactory.createSystemModule();
         moduleContext.registerModelObject(module);
         moduleContext.start();
-        moduleContext.fireEvent(EventContext.MODULE_START, null);
+        moduleContext.publish(new ModuleStartEvent(this));
         GenericSystemComponent component = (GenericSystemComponent) moduleContext.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(component);
         GenericSystemComponent ep = (GenericSystemComponent) moduleContext.getContext("TestService1EP").getInstance(null);
         Assert.assertNotNull(ep);
-        moduleContext.fireEvent(EventContext.MODULE_STOP, null);
+        moduleContext.publish(new ModuleStopEvent(this));
         moduleContext.stop();
     }
 
@@ -60,12 +62,12 @@ public class CompositeContextRegisterTestCase extends TestCase {
         moduleContext.start();
         Module module = MockFactory.createSystemModule();
         moduleContext.registerModelObject(module);
-        moduleContext.fireEvent(EventContext.MODULE_START, null);
+        moduleContext.publish(new ModuleStartEvent(this));
         GenericSystemComponent component = (GenericSystemComponent) moduleContext.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(component);
         GenericSystemComponent ep = (GenericSystemComponent) moduleContext.getContext("TestService1EP").getInstance(null);
         Assert.assertNotNull(ep);
-        moduleContext.fireEvent(EventContext.MODULE_STOP, null);
+        moduleContext.publish(new ModuleStopEvent(this));
         moduleContext.stop();
     }
 
@@ -76,12 +78,12 @@ public class CompositeContextRegisterTestCase extends TestCase {
         EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1", component);
         moduleContext.registerModelObject(ep);
         moduleContext.start();
-        moduleContext.fireEvent(EventContext.MODULE_START, null);
+        moduleContext.publish(new ModuleStartEvent(this));
         GenericSystemComponent test = (GenericSystemComponent) moduleContext.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(test);
         GenericSystemComponent testEP = (GenericSystemComponent) moduleContext.getContext("TestService1EP").getInstance(null);
         Assert.assertNotNull(testEP);
-        moduleContext.fireEvent(EventContext.MODULE_STOP, null);
+        moduleContext.publish(new ModuleStopEvent(this));
         moduleContext.stop();
     }
 
@@ -92,12 +94,12 @@ public class CompositeContextRegisterTestCase extends TestCase {
         moduleContext.registerModelObject(component);
         EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1", component);
         moduleContext.registerModelObject(ep);
-        moduleContext.fireEvent(EventContext.MODULE_START, null);
+        moduleContext.publish(new ModuleStartEvent(this));
         GenericSystemComponent test = (GenericSystemComponent) moduleContext.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(test);
         GenericSystemComponent testEP = (GenericSystemComponent) moduleContext.getContext("TestService1EP").getInstance(null);
         Assert.assertNotNull(testEP);
-        moduleContext.fireEvent(EventContext.MODULE_STOP, null);
+        moduleContext.publish(new ModuleStopEvent(this));
         moduleContext.stop();
     }
 
@@ -106,14 +108,14 @@ public class CompositeContextRegisterTestCase extends TestCase {
         Component component = factory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
         moduleContext.start();
         moduleContext.registerModelObject(component);
-        moduleContext.fireEvent(EventContext.MODULE_START, null);
+        moduleContext.publish(new ModuleStartEvent(this));
         GenericSystemComponent test = (GenericSystemComponent) moduleContext.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(test);
         EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1", component);
         moduleContext.registerModelObject(ep);
         GenericSystemComponent testEP = (GenericSystemComponent) moduleContext.getContext("TestService1EP").getInstance(null);
         Assert.assertNotNull(testEP);
-        moduleContext.fireEvent(EventContext.MODULE_STOP, null);
+        moduleContext.publish(new ModuleStopEvent(this));
         moduleContext.stop();
     }
 

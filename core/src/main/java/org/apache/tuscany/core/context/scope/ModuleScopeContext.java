@@ -17,11 +17,15 @@
 package org.apache.tuscany.core.context.scope;
 
 import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.AtomicContext;
-import org.apache.tuscany.core.context.RuntimeEventListener;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.CoreRuntimeException;
+import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.RuntimeEventListener;
+import org.apache.tuscany.core.context.event.ContextCreatedEvent;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.ModuleStopEvent;
+import org.apache.tuscany.core.context.event.Event;
 
 import java.util.Map;
 import java.util.Queue;
@@ -30,7 +34,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Manages component contexts whose implementations are module scoped
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class ModuleScopeContext extends AbstractScopeContext implements RuntimeEventListener {
@@ -40,40 +44,60 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
 
     private Queue<AtomicContext> destroyableContexts;
 
-     public ModuleScopeContext(EventContext eventContext) {
+    public ModuleScopeContext(EventContext eventContext) {
         super(eventContext);
         setName("Module Scope");
     }
 
-     public void onEvent(int type, Object key) {
-         switch(type){
-             case EventContext.MODULE_START:
-                lifecycleState = RUNNING;
-                initComponentContexts();
-                break;
-            case EventContext.MODULE_STOP:
-                notifyInstanceShutdown(key);
-                break;
-            case EventContext.CONTEXT_CREATED:
-                checkInit();
-                if (key instanceof AtomicContext) {
-                    AtomicContext serviceContext = (AtomicContext) key;
-                    // Queue the context to have its implementation instance released if destroyable
-                    if (serviceContext.isDestroyable()) {
-                        destroyableContexts.add(serviceContext);
-                    }
+//    public void onEvent(int type, Object key) {
+ //       throw new UnsupportedOperationException();
+//         switch(type){
+//             case EventContext.MODULE_START:
+//                lifecycleState = RUNNING;
+//                initComponentContexts();
+//                break;
+//            case EventContext.MODULE_STOP:
+//                notifyInstanceShutdown(key);
+//                break;
+//            case EventContext.CONTEXT_CREATED:
+//                checkInit();
+//                if (key instanceof AtomicContext) {
+//                    AtomicContext serviceContext = (AtomicContext) key;
+//                    // Queue the context to have its implementation instance released if destroyable
+//                    if (serviceContext.isDestroyable()) {
+//                        destroyableContexts.add(serviceContext);
+//                    }
+//                }
+//                break;
+//        }
+//    }
+
+    public void onEvent(Event event) {
+        if (event instanceof ModuleStartEvent) {
+            lifecycleState = RUNNING;
+            initComponentContexts();
+        } else if (event instanceof ModuleStopEvent) {
+            notifyInstanceShutdown(null);
+        } else if (event instanceof ContextCreatedEvent) {
+            checkInit();
+            if (event.getSource() instanceof AtomicContext) {
+                AtomicContext serviceContext = (AtomicContext) event.getSource();
+                // Queue the context to have its implementation instance released if destroyable
+                if (serviceContext.isDestroyable()) {
+                    destroyableContexts.add(serviceContext);
                 }
-                break;
+            }
         }
     }
 
-   public synchronized void start() {
+    public synchronized void start() {
         if (lifecycleState != UNINITIALIZED) {
             throw new IllegalStateException("Scope must be in UNINITIALIZED state [" + lifecycleState + "]");
         }
     }
 
-    public synchronized void stop() {
+    public synchronized void stop
+            () {
         if (lifecycleState != RUNNING) {
             throw new IllegalStateException("Scope in wrong state [" + lifecycleState + "]");
         }
@@ -82,28 +106,37 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
         lifecycleState = STOPPED;
     }
 
-   public boolean isCacheable() {
+    public boolean isCacheable
+            () {
         return true;
     }
 
-    public void registerFactory(ContextFactory<Context> configuration) {
+    public void registerFactory
+            (ContextFactory<Context> configuration) {
         contextFactorys.put(configuration.getName(), configuration);
         if (lifecycleState == RUNNING) {
             componentContexts.put(configuration.getName(), configuration.createContext());
         }
     }
 
-    public Context getContext(String ctxName) {
+    public Context getContext
+            (String
+                    ctxName) {
         checkInit();
         return componentContexts.get(ctxName);
     }
 
-    public Context getContextByKey(String ctxName, Object key) {
+    public Context getContextByKey
+            (String
+                    ctxName, Object
+                    key) {
         checkInit();
         return componentContexts.get(ctxName);
     }
 
-    public void removeContext(String ctxName) {
+    public void removeContext
+            (String
+                    ctxName) {
         checkInit();
         Context context = componentContexts.remove(ctxName);
         if (context != null) {
@@ -111,7 +144,10 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
         }
     }
 
-    public void removeContextByKey(String ctxName, Object key) {
+    public void removeContextByKey
+            (String
+                    ctxName, Object
+                    key) {
         checkInit();
         removeContext(ctxName);
     }
@@ -119,7 +155,9 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
     /**
      * Returns an array of {@link AtomicContext}s representing components that need to be notified of scope shutdown.
      */
-    protected Context[] getShutdownContexts(Object key) {
+    protected Context[] getShutdownContexts
+            (Object
+                    key) {
         if (destroyableContexts != null) {
             // create 0-length array since Queue.size() has O(n) traversal
             return destroyableContexts.toArray(new Context[0]);
@@ -128,9 +166,10 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
         }
     }
 
-    private synchronized void initComponentContexts() throws CoreRuntimeException {
+    private synchronized void initComponentContexts
+            () throws CoreRuntimeException {
         if (componentContexts == null) {
-            componentContexts = new ConcurrentHashMap<String, Context> ();
+            componentContexts = new ConcurrentHashMap<String, Context>();
             destroyableContexts = new ConcurrentLinkedQueue<AtomicContext>();
             for (ContextFactory<Context> config : contextFactorys.values()) {
                 Context context = config.createContext();

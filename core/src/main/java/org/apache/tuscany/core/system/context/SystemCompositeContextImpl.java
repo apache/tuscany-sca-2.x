@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -30,7 +29,6 @@ import org.apache.tuscany.common.TuscanyRuntimeException;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.AutowireResolutionException;
 import org.apache.tuscany.core.context.CompositeContext;
@@ -41,18 +39,18 @@ import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.DuplicateNameException;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.EventContext;
-import static org.apache.tuscany.core.context.EventContext.HTTP_SESSION;
-import static org.apache.tuscany.core.context.EventContext.REQUEST_END;
-import static org.apache.tuscany.core.context.EventContext.SESSION_NOTIFY;
-import org.apache.tuscany.core.context.EventException;
 import org.apache.tuscany.core.context.MissingContextFactoryException;
 import org.apache.tuscany.core.context.MissingScopeException;
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.RuntimeEventListener;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.ScopeStrategy;
 import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.event.RequestEndEvent;
+import org.apache.tuscany.core.context.event.Event;
+import org.apache.tuscany.core.context.event.SessionBoundEvent;
+import org.apache.tuscany.core.context.event.HttpSessionEvent;
+import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -77,6 +75,7 @@ import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
+
 
 /**
  * Implements an composite context for system components. By default a system context uses the scopes specified by
@@ -119,9 +118,6 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
     // A component context name to scope context index
     protected Map<String, ScopeContext> scopeIndex;
 
-    // Listeners for context events
-    protected List<RuntimeEventListener> listeners = new CopyOnWriteArrayList<RuntimeEventListener>();
-
     // Blocking latch to ensure the module is initialized exactly once prior to servicing requests
     protected CountDownLatch initializeLatch = new CountDownLatch(1);
 
@@ -135,10 +131,6 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
 
     @Autowire(required = false)
     private AutowireContext autowireContext;
-
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
 
     public SystemCompositeContextImpl() {
         super();
@@ -247,7 +239,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
                 if (scope.getLifecycleState() == ScopeContext.RUNNING) {
                     scope.stop();
                 }
-        }
+            }
         }
         scopeContexts = null;
         scopeIndex.clear();
@@ -413,23 +405,17 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
 
     }
 
-    public void addListener(RuntimeEventListener listener) {
-        assert (listener != null) : "Listener cannot be null";
-        listeners.add(listener);
-    }
-
-    public void fireEvent(int eventType, Object message) throws EventException {
+    public void publish(Event event) {
         checkInit();
-        if (eventType == SESSION_NOTIFY) {
+        if (event instanceof SessionBoundEvent) {
             // update context
-            eventContext.setIdentifier(HTTP_SESSION, message);
-        } else if (eventType == REQUEST_END) {
+            SessionBoundEvent sessionEvent = ((SessionBoundEvent) event);
+            eventContext.setIdentifier(sessionEvent.getSessionTypeIdentifier(), sessionEvent.getId());
+        } else if (event instanceof RequestEndEvent) {
             // be very careful with pooled threads, ensuring threadlocals are cleaned up
-            eventContext.clearIdentifier(HTTP_SESSION);
+            eventContext.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
         }
-        for (RuntimeEventListener listener : listeners) {
-            listener.onEvent(eventType, message);
-        }
+        super.publish(event);
     }
 
     public Context getContext(String componentName) {
@@ -493,10 +479,6 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
         }
     }
 
-    // ----------------------------------
-    // AutowireContext methods
-    // ----------------------------------
-
     // FIXME These should be removed and configured
     private static final MessageFactory messageFactory = new MessageFactoryImpl();
 
@@ -553,7 +535,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
                         Class interfaze = ep.getConfiguredService().getService().getServiceContract().getInterface();
                         NameToScope nts = autowireIndex.get(interfaze);
                         if (nts == null || !nts.isEntryPoint()) { // handle special case where two entry points with
-                                                                    // same interface register: first wins
+                            // same interface register: first wins
                             ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getConfiguredReference()
                                     .getContextFactory()).getScope());
                             if (scope == null) {
@@ -578,7 +560,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
                                 ScopeContext scope = scopeContexts.get(Scope.AGGREGATE);
                                 // only register if an impl has not already been registered, ensuring it is not visible outside the containment
                                 NameToScope mapping = new NameToScope(new QualifiedName(component.getName()
-                                        + QualifiedName.NAME_SEPARATOR + ep.getName()), scope, false, false); 
+                                        + QualifiedName.NAME_SEPARATOR + ep.getName()), scope, false, false);
                                 autowireIndex.put(interfaze, mapping);
                             }
                         }
@@ -612,7 +594,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
     }
 
     public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
-            ScopeContext targetScopeContext) throws BuilderConfigException {
+                        ScopeContext targetScopeContext) throws BuilderConfigException {
         if (configurationContext != null) {
             try {
                 configurationContext.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
@@ -641,7 +623,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
 
     /**
      * Maps a context name to a scope
-     * 
+     * <p/>
      * TODO this is a duplicate of composite context
      */
     private class NameToScope {

@@ -24,8 +24,9 @@ import org.apache.tuscany.core.context.ContextRuntimeException;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeRuntimeException;
 import org.apache.tuscany.core.context.AtomicContext;
-import org.apache.tuscany.core.context.EventException;
 import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.EventFilter;
+import org.apache.tuscany.core.context.event.Event;
 import org.apache.tuscany.model.assembly.SimpleComponent;
 
 import java.util.HashMap;
@@ -46,14 +47,22 @@ public class MockScopeContext implements ScopeContext {
         components = instances;
     }
 
-    
+
     public void start() {
     }
 
     public void stop() {
     }
 
+    public void publish(Event object) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public void addListener(RuntimeEventListener listener) throws ContextRuntimeException {
+    }
+
+    public void addListener(EventFilter filter, RuntimeEventListener listener) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void removeListener(RuntimeEventListener listener) throws ContextRuntimeException {
@@ -96,16 +105,12 @@ public class MockScopeContext implements ScopeContext {
         return null;
     }
 
-    public void onEvent(int type, Object message) throws EventException {
+    public void registerFactories(List<ContextFactory<Context>> configurations) {
     }
 
-
-    public void registerFactories(List<ContextFactory<Context>> configurations) {
-    } 
-
     public void registerFactory(ContextFactory<Context> configuration) {
-    } 
-    
+    }
+
     public int getLifecycleState(){
         return RUNNING;
     }
@@ -119,5 +124,8 @@ public class MockScopeContext implements ScopeContext {
     }
 
 
+    public void onEvent(Event event) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
 

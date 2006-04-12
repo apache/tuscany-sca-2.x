@@ -137,10 +137,6 @@ public class CompositeContextImpl extends AbstractCompositeContext implements Co
         throw new UnsupportedOperationException();
     }
 
-    // ----------------------------------
-    // AutowireContext methods
-    // ----------------------------------
-
     public <T> T resolveExternalInstance(Class<T> instanceInterface) throws AutowireResolutionException {
         NameToScope nts = autowireIndex.get(instanceInterface);
         if (nts != null && nts.isVisible()) {

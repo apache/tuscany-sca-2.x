@@ -31,6 +31,8 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.event.HttpSessionEndEvent;
+import org.apache.tuscany.core.context.event.HttpSessionEvent;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.SessionScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
@@ -54,7 +56,7 @@ public class SessionScopeLifecycleTestCase extends TestCase {
         Object session = new Object();
         // first request, no need to notify scope container since sessions are
         // evaluated lazily
-        ctx.setIdentifier(EventContext.HTTP_SESSION, session);
+        ctx.setIdentifier(HttpSessionEvent.HTTP_IDENTIFIER,session);
         SessionScopeInitDestroyComponent initDestroy = (SessionScopeInitDestroyComponent) scope.getContext(
                 "TestServiceInitDestroy").getInstance(null);
         Assert.assertNotNull(initDestroy);
@@ -70,9 +72,9 @@ public class SessionScopeLifecycleTestCase extends TestCase {
         Assert.assertFalse(initDestroy.isDestroyed());
         Assert.assertFalse(destroyOnly.isDestroyed());
         // end request
-        ctx.clearIdentifier(EventContext.HTTP_SESSION);
+        ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
         // expire session
-        scope.onEvent(EventContext.SESSION_END, session);
+        scope.onEvent(new HttpSessionEndEvent(this,session));
         Assert.assertTrue(initDestroy.isDestroyed());
         Assert.assertTrue(destroyOnly.isDestroyed());
 
@@ -89,7 +91,7 @@ public class SessionScopeLifecycleTestCase extends TestCase {
         scope.start();
         Object session = new Object();
         // request start
-        ctx.setIdentifier(EventContext.HTTP_SESSION, session);
+        ctx.setIdentifier(HttpSessionEvent.HTTP_IDENTIFIER,session);
 
         OrderedInitPojo one = (OrderedInitPojo) scope.getContext("one").getInstance(null);
         Assert.assertNotNull(one);
@@ -107,10 +109,10 @@ public class SessionScopeLifecycleTestCase extends TestCase {
         Assert.assertEquals(3, three.getInitOrder());
 
         // end request
-        ctx.clearIdentifier(EventContext.HTTP_SESSION);
+        ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
 
         // expire session
-        scope.onEvent(EventContext.SESSION_END, session);
+        scope.onEvent(new HttpSessionEndEvent(this, session));
         Assert.assertEquals(0, one.getNumberInstantiated());
         scope.stop();
     }

@@ -30,6 +30,7 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.event.RequestEndEvent;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.RequestScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
@@ -54,13 +55,15 @@ public class BasicRequestScopeTestCase extends TestCase {
         // first request
         RequestScopeComponentImpl comp1 = (RequestScopeComponentImpl) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp1);
-        scope.onEvent(EventContext.REQUEST_END, null);
+        Object id = new Object();
+        scope.onEvent(new RequestEndEvent(this,id));
 
         // second request
         RequestScopeComponentImpl comp2 = (RequestScopeComponentImpl) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp2);
         Assert.assertNotSame(comp1, comp2);
-        scope.onEvent(EventContext.REQUEST_END, null);
+        Object id2 = new Object();
+        scope.onEvent(new RequestEndEvent(this,id2));
 
         scope.stop();
     }
@@ -75,7 +78,8 @@ public class BasicRequestScopeTestCase extends TestCase {
         Assert.assertNotNull(comp1);
         RequestScopeComponent comp2 = (RequestScopeComponent) scope.getContext("NewTestService").getInstance(null);
         Assert.assertNotNull(comp2);
-        scope.onEvent(EventContext.REQUEST_END, null);
+        Object id = new Object();
+        scope.onEvent(new RequestEndEvent(this,id));
         scope.stop();
     }
 
@@ -89,7 +93,8 @@ public class BasicRequestScopeTestCase extends TestCase {
         scope.registerFactory(createConfiguration("NewTestService"));
         RequestScopeComponent comp2 = (RequestScopeComponent) scope.getContext("NewTestService").getInstance(null);
         Assert.assertNotNull(comp2);
-        scope.onEvent(EventContext.REQUEST_END, null);
+        Object id = new Object();
+        scope.onEvent(new RequestEndEvent(this,id));
         scope.stop();
     }
 
@@ -112,11 +117,12 @@ public class BasicRequestScopeTestCase extends TestCase {
 
         RequestScopeComponentImpl comp1 = (RequestScopeComponentImpl) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp1);
-        scope.onEvent(EventContext.REQUEST_END, null);
+        Object id = new Object();
+        scope.onEvent(new RequestEndEvent(this,id));
 
         // second request
         // should be null since the other context (thread) expired w/ onEvent(..)
-        Assert.assertNull((RequestScopeComponentImpl) scope.getContextByKey("TestService1", Thread.currentThread()));
+        Assert.assertNull(scope.getContextByKey("TestService1", Thread.currentThread()));
         // Note should test better using concurrent threads to pull the instance
 
         scope.stop();
@@ -128,17 +134,16 @@ public class BasicRequestScopeTestCase extends TestCase {
 
     JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
-    private List<ContextFactory<Context>> createConfigurations() throws NoSuchMethodException, BuilderException {
+    private List<ContextFactory<Context>> createConfigurations() throws BuilderException {
         SimpleComponent component = MockFactory.createComponent("TestService1", RequestScopeComponentImpl.class,
                 Scope.REQUEST);
         builder.build(component);
-        List<ContextFactory<Context>> configs = new ArrayList();
+        List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
         configs.add((ContextFactory<Context>) component.getComponentImplementation().getContextFactory());
         return configs;
     }
 
-    private ContextFactory<Context> createConfiguration(String name) throws NoSuchMethodException,
-            BuilderException {
+    private ContextFactory<Context> createConfiguration(String name) throws BuilderException {
         SimpleComponent component = MockFactory.createComponent(name, RequestScopeComponentImpl.class,
                 Scope.REQUEST);
         builder.build(component);

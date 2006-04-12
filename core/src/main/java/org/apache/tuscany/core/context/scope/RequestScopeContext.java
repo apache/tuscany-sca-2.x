@@ -22,6 +22,10 @@ import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.RuntimeEventListener;
 import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
+import org.apache.tuscany.core.context.event.RequestEndEvent;
+import org.apache.tuscany.core.context.event.ContextCreatedEvent;
+import org.apache.tuscany.core.context.event.Event;
+import org.apache.tuscany.core.context.event.HttpSessionEvent;
 
 import java.util.Map;
 import java.util.Queue;
@@ -47,19 +51,43 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
         setName("Request Scope");
     }
 
-    public void onEvent(int type, Object key) {
+//    public void onEvent(int type, Object key) {
+//        throw new UnsupportedOperationException();
+//        /* clean up current context for pooled threads */
+//        switch(type){
+//            case EventContext.REQUEST_END:
+//                checkInit();
+//                getEventContext().clearIdentifier(EventContext.SESSION);
+//                notifyInstanceShutdown(Thread.currentThread());
+//                destroyContext();
+//                break;
+//            case EventContext.CONTEXT_CREATED:
+//                checkInit();
+//                assert(key instanceof Context): "Context must be passed on created event";
+//                Context context = (Context)key;
+//                if (context instanceof AtomicContext) {
+//                    AtomicContext simpleCtx = (AtomicContext)context;
+//                    // Queue the context to have its implementation instance released if destroyable
+//                    if (simpleCtx.isDestroyable()) {
+//                        Queue<AtomicContext> collection = destroyComponents.get(Thread.currentThread());
+//                        collection.add(simpleCtx);
+//                    }
+//                }
+//                break;
+//        }
+//    }
+
+    public void onEvent(Event event){
         /* clean up current context for pooled threads */
-        switch(type){
-            case EventContext.REQUEST_END:
+        if (event instanceof RequestEndEvent){
                 checkInit();
-                getEventContext().clearIdentifier(EventContext.HTTP_SESSION);
+                getEventContext().clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
                 notifyInstanceShutdown(Thread.currentThread());
                 destroyContext();
-                break;
-            case EventContext.CONTEXT_CREATED:
+        }else if (event instanceof ContextCreatedEvent){
                 checkInit();
-                assert(key instanceof Context): "Context must be passed on created event";
-                Context context = (Context)key;
+                assert(event.getSource() instanceof Context): "Context must be passed on created event";
+                Context context = (Context)event.getSource();
                 if (context instanceof AtomicContext) {
                     AtomicContext simpleCtx = (AtomicContext)context;
                     // Queue the context to have its implementation instance released if destroyable
@@ -68,10 +96,8 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
                         collection.add(simpleCtx);
                     }
                 }
-                break;
         }
     }
-
     public synchronized void start() {
         if (lifecycleState != UNINITIALIZED) {
             throw new IllegalStateException("Scope must be in UNINITIALIZED state [" + lifecycleState + "]");

@@ -36,8 +36,8 @@ import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.EventException;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
@@ -90,7 +90,7 @@ public class TuscanyContextListener implements LifecycleListener {
         }
 
         try {
-            moduleContext.fireEvent(EventContext.MODULE_START, null);
+            moduleContext.publish(new ModuleStartEvent(this));
         } catch (EventException e) {
             log.error(sm.getString("context.moduleStartError"), e);
             // todo unload module component from runtime
@@ -139,7 +139,7 @@ public class TuscanyContextListener implements LifecycleListener {
 
     private void stopContext(Context ctx) {
         if (moduleContext!=null) {
-            moduleContext.fireEvent(EventContext.MODULE_START, null);
+            moduleContext.publish(new ModuleStartEvent(this));
         }
         // todo unload module component from runtime
     }

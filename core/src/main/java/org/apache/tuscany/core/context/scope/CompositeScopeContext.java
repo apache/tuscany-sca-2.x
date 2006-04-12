@@ -22,11 +22,13 @@ import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.AbstractContext;
+import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ScopeInitializationException;
 import org.apache.tuscany.core.context.ScopeRuntimeException;
-import org.apache.tuscany.core.context.EventException;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.ModuleStopEvent;
+import org.apache.tuscany.core.context.event.Event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +94,7 @@ public class CompositeScopeContext extends AbstractContext implements ScopeConte
             CompositeContext compositeCtx = (CompositeContext) context;
             compositeCtx.start();
             if (moduleScopeStarted) {
-                compositeCtx.fireEvent(EventContext.MODULE_START, null);
+                compositeCtx.publish(new ModuleStartEvent(this));
             }
             contexts.put(compositeCtx.getName(), compositeCtx);
         }
@@ -129,21 +131,21 @@ public class CompositeScopeContext extends AbstractContext implements ScopeConte
     }
 
     public void removeContextByKey(String ctxName, Object key) throws ScopeRuntimeException {
+        throw new UnsupportedOperationException();
     }
 
-    public void onEvent(int type, Object message) throws EventException {
-        if (type == EventContext.MODULE_START) {
+    public void onEvent(Event event){
+        if (event instanceof ModuleStartEvent) {
             // track module starting so that composite contexts registered after the event are notified properly
             moduleScopeStarted = true;
-        } else if (type == EventContext.MODULE_STOP) {
+        } else if (event instanceof ModuleStopEvent) {
             moduleScopeStarted = false;
         }
         // propagate events to child contexts
         for (CompositeContext context : contexts.values()) {
-            context.fireEvent(type, message);
+            context.publish(event);
         }
     }
-
 
     private void checkInit() {
         if (lifecycleState != RUNNING) {

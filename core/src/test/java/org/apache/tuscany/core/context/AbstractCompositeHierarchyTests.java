@@ -19,6 +19,8 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.ModuleStopEvent;
 import org.apache.tuscany.core.mock.MockConfigContext;
 import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
@@ -48,8 +50,8 @@ public abstract class AbstractCompositeHierarchyTests extends TestCase {
         parent.registerModelObject(component);
         EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1", component);
         parent.registerModelObject(ep);
-        parent.fireEvent(EventContext.MODULE_START, null);
-        child.fireEvent(EventContext.MODULE_START, null);
+        parent.publish(new ModuleStartEvent(this));
+        child.publish(new ModuleStartEvent(this));
         Assert.assertNotNull(parent.getContext("TestService1EP").getInstance(null));
         try {
             ((ModuleContext) child).locateService("TestService1EP");
@@ -57,8 +59,8 @@ public abstract class AbstractCompositeHierarchyTests extends TestCase {
         } catch (ServiceNotFoundException e) {
             // expect exception to be thrown
         }
-        parent.fireEvent(EventContext.MODULE_STOP, null);
-        child.fireEvent(EventContext.MODULE_STOP, null);
+        parent.publish(new ModuleStopEvent(this));
+        child.publish(new ModuleStopEvent(this));
         parent.stop();
 
     }

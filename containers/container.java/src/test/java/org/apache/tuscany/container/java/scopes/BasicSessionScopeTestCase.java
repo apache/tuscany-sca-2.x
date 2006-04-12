@@ -31,6 +31,9 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.event.RequestEndEvent;
+import org.apache.tuscany.core.context.event.HttpSessionEndEvent;
+import org.apache.tuscany.core.context.event.HttpSessionEvent;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.SessionScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
@@ -54,28 +57,27 @@ public class BasicSessionScopeTestCase extends TestCase {
         Object session = new Object();
         Object session2 = new Object();
         // first request
-        ctx.setIdentifier(EventContext.HTTP_SESSION, session);
+        ctx.setIdentifier(HttpSessionEvent.HTTP_IDENTIFIER,session);
         SessionScopeComponent comp1 = (SessionScopeComponent) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp1);
-        ctx.clearIdentifier(EventContext.HTTP_SESSION);
+        ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
 
         // second request
-        ctx.setIdentifier(EventContext.HTTP_SESSION, session);
+        ctx.setIdentifier(HttpSessionEvent.HTTP_IDENTIFIER,session);
         SessionScopeComponent comp2 = (SessionScopeComponent) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp2);
         Assert.assertSame(comp1, comp2);
-        ctx.clearIdentifier(EventContext.HTTP_SESSION);
+        ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
 
         // third request, different session
-        ctx.setIdentifier(EventContext.HTTP_SESSION, session2);
+        ctx.setIdentifier(HttpSessionEvent.HTTP_IDENTIFIER,session2);
         SessionScopeComponent comp3 = (SessionScopeComponent) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp3);
         Assert.assertNotSame(comp1, comp3); // should be different instances
-        ctx.clearIdentifier(EventContext.HTTP_SESSION);
+        ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
 
-        scope.onEvent(EventContext.SESSION_END, session);
-        scope.onEvent(EventContext.SESSION_END, session2);
-
+        scope.onEvent(new HttpSessionEndEvent(this,session));
+        scope.onEvent(new HttpSessionEndEvent(this,session2));
         scope.stop();
     }
 
@@ -99,26 +101,27 @@ public class BasicSessionScopeTestCase extends TestCase {
         Object session2 = new Object();
 
         // first request
-        ctx.setIdentifier(EventContext.HTTP_SESSION, session);
+        ctx.setIdentifier(HttpSessionEvent.HTTP_IDENTIFIER,session);
         SessionScopeComponent comp1 = (SessionScopeComponent) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp1);
-        ctx.clearIdentifier(EventContext.HTTP_SESSION);
+        ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
 
         // second request, different session
-        ctx.setIdentifier(EventContext.HTTP_SESSION, session2);
+        ctx.setIdentifier(HttpSessionEvent.HTTP_IDENTIFIER,session2);
         SessionScopeComponent comp2 = (SessionScopeComponent) scope.getContextByKey("TestService1", session)
                 .getInstance(null);
         SessionScopeComponent comp3 = (SessionScopeComponent) scope.getContextByKey("TestService1", session)
                 .getInstance(null);
         Assert.assertNotNull(comp2);
-        scope.onEvent(EventContext.REQUEST_END, session2);
+        Object id = new Object();
+        scope.onEvent(new RequestEndEvent(this,id));
         Assert.assertSame(comp1, comp2); // should be same instances
         Assert.assertSame(comp2, comp3); // should not be same instances
-        ctx.clearIdentifier(EventContext.HTTP_SESSION);
+        ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
 
         // shutdown sessions
-        scope.onEvent(EventContext.SESSION_END, session);
-        scope.onEvent(EventContext.SESSION_END, session2);
+        scope.onEvent(new HttpSessionEndEvent(this,session));
+        scope.onEvent(new HttpSessionEndEvent(this,session2));
 
         scope.stop();
     }
@@ -132,28 +135,28 @@ public class BasicSessionScopeTestCase extends TestCase {
         scope.registerFactory(createConfiguration("NewTestService"));
 
         // first request
-        ctx.setIdentifier(EventContext.HTTP_SESSION, session);
+        ctx.setIdentifier(HttpSessionEvent.HTTP_IDENTIFIER,session);
 
         SessionScopeInitDestroyComponent comp2 = (SessionScopeInitDestroyComponent) scope.getContext("NewTestService")
                 .getInstance(null);
         Assert.assertNotNull(comp2);
         Assert.assertTrue(comp2.isInitialized());
-        ctx.clearIdentifier(EventContext.HTTP_SESSION);
+        ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
 
         // second request different session
         Object session2 = new Object();
-        ctx.setIdentifier(EventContext.HTTP_SESSION, session2);
+        ctx.setIdentifier(HttpSessionEvent.HTTP_IDENTIFIER,session2);
         SessionScopeInitDestroyComponent comp3 = (SessionScopeInitDestroyComponent) scope.getContext("NewTestService")
                 .getInstance(null);
         Assert.assertNotNull(comp3);
         Assert.assertNotSame(comp2, comp3);
         Assert.assertTrue(comp3.isInitialized());
-        ctx.clearIdentifier(EventContext.HTTP_SESSION);
+        ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
 
-        scope.onEvent(EventContext.SESSION_END, session);
+        scope.onEvent(new HttpSessionEndEvent(this,session));
         Assert.assertTrue(comp2.isDestroyed());
 
-        scope.onEvent(EventContext.SESSION_END, session2);
+        scope.onEvent(new HttpSessionEndEvent(this,session2));
         Assert.assertTrue(comp3.isDestroyed());
         scope.stop();
     }
@@ -169,53 +172,50 @@ public class BasicSessionScopeTestCase extends TestCase {
         Object session = new Object();
 
         // first request
-        ctx.setIdentifier(EventContext.HTTP_SESSION, session);
+        ctx.setIdentifier(HttpSessionEvent.HTTP_IDENTIFIER,session);
         SessionScopeComponent comp1 = (SessionScopeComponent) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp1);
-        ctx.clearIdentifier(EventContext.HTTP_SESSION);
+        ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
 
         scope.registerFactory(createConfiguration("NewTestService"));
 
         // second request
-        ctx.setIdentifier(EventContext.HTTP_SESSION, session);
+        ctx.setIdentifier(HttpSessionEvent.HTTP_IDENTIFIER,session);
         SessionScopeInitDestroyComponent comp2 = (SessionScopeInitDestroyComponent) scope.getContext("NewTestService")
                 .getInstance(null);
         Assert.assertNotNull(comp2);
         Assert.assertTrue(comp2.isInitialized());
-        ctx.clearIdentifier(EventContext.HTTP_SESSION);
+        ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
 
         // third request different session
         Object session2 = new Object();
-        ctx.setIdentifier(EventContext.HTTP_SESSION, session2);
+        ctx.setIdentifier(HttpSessionEvent.HTTP_IDENTIFIER,session2);
         SessionScopeInitDestroyComponent comp3 = (SessionScopeInitDestroyComponent) scope.getContext("NewTestService")
                 .getInstance(null);
         Assert.assertNotNull(comp3);
         Assert.assertNotSame(comp2, comp3);
         Assert.assertTrue(comp3.isInitialized());
-        ctx.clearIdentifier(EventContext.HTTP_SESSION);
+        ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
 
-        scope.onEvent(EventContext.SESSION_END, session);
+        scope.onEvent(new HttpSessionEndEvent(this,session));
         Assert.assertTrue(comp2.isDestroyed());
 
-        scope.onEvent(EventContext.SESSION_END, session2);
+        scope.onEvent(new HttpSessionEndEvent(this,session2));
         Assert.assertTrue(comp3.isDestroyed());
         scope.stop();
     }
 
-    // ----------------------------------
-    // Private methods
-    // ----------------------------------
     JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
-    private List<ContextFactory<Context>> createConfigurations() throws NoSuchMethodException, BuilderException {
+    private List<ContextFactory<Context>> createConfigurations() throws BuilderException {
         SimpleComponent component = MockFactory.createComponent("TestService1", SessionScopeComponentImpl.class, Scope.SESSION);
         builder.build(component);
-        List<ContextFactory<Context>> configs = new ArrayList();
+        List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
         configs.add((ContextFactory<Context>) component.getComponentImplementation().getContextFactory());
         return configs;
     }
 
-    private ContextFactory<Context> createConfiguration(String name) throws NoSuchMethodException, BuilderException {
+    private ContextFactory<Context> createConfiguration(String name) throws BuilderException {
         SimpleComponent component = MockFactory.createComponent(name, SessionScopeInitDestroyComponent.class, Scope.SESSION);
         builder.build(component);
         return (ContextFactory<Context>) component.getComponentImplementation().getContextFactory();

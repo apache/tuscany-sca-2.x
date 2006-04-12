@@ -16,7 +16,6 @@ package org.apache.tuscany.core.context.impl;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.EntryPointContext;
-import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.core.context.ContextInitException;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.invocation.jdk.JDKInvocationHandler;

@@ -32,6 +32,8 @@ import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.ModuleStopEvent;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
@@ -79,12 +81,13 @@ public class JSComponentContextTestCase extends TestCase {
                         Scope.AGGREGATE));
         CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockModuleFactory.createModule());
-        child.fireEvent(EventContext.MODULE_START, null);
+        child.publish(new ModuleStartEvent(this));
+
         HelloWorldService source = (HelloWorldService) child.getContext("source").getInstance(new QualifiedName("./HelloWorldService"));
         Assert.assertNotNull(source);
         Assert.assertEquals("Hello foo",source.hello("foo"));
         //Assert.assertEquals(1, mockInterceptor.getCount());
-        child.fireEvent(EventContext.MODULE_STOP, null);
+        child.publish(new ModuleStopEvent(this));
         runtime.stop();
     }
 

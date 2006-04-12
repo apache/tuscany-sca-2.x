@@ -17,7 +17,9 @@
 package org.apache.tuscany.core.webapp;
 
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.event.HttpSessionBoundEvent;
+import org.apache.tuscany.core.context.event.RequestStartEvent;
+import org.apache.tuscany.core.context.event.RequestEndEvent;
 import org.osoa.sca.CurrentModuleContext;
 import org.osoa.sca.ModuleContext;
 
@@ -65,16 +67,16 @@ public class TuscanyRequestFilter implements Filter {
                 if (((HttpServletRequest) request).getSession(false) != null) {
 
                     // A session is already active
-                    moduleContext.fireEvent(EventContext.SESSION_NOTIFY, ((HttpServletRequest) request).getSession(true));
+                    moduleContext.publish(new HttpSessionBoundEvent(this, ((HttpServletRequest) request).getSession(true)));
                 } else {
                     // Create a lazy wrapper since a session is not yet active
-                    moduleContext.fireEvent(EventContext.SESSION_NOTIFY, new LazyHTTPSessionId((HttpServletRequest) request));
+                    moduleContext.publish(new HttpSessionBoundEvent(this, new LazyHTTPSessionId((HttpServletRequest) request)));
                 }
             } else {
-                moduleContext.fireEvent(EventContext.SESSION_NOTIFY, request);
+                moduleContext.publish(new HttpSessionBoundEvent(this, request));
             }
             // Start processing the request
-            moduleContext.fireEvent(EventContext.REQUEST_START, request);
+            moduleContext.publish(new RequestStartEvent(this, request));
             // Dispatch to the next filter
             filterChain.doFilter(request, response);
         } catch (Exception e) {
@@ -83,7 +85,7 @@ public class TuscanyRequestFilter implements Filter {
         } finally {
             try {
                 // End processing the request
-                moduleContext.fireEvent(EventContext.REQUEST_END, request);
+                moduleContext.publish(new RequestEndEvent(this, request));
             } catch (Exception e) {
                 throw new ServletException(e);
             }

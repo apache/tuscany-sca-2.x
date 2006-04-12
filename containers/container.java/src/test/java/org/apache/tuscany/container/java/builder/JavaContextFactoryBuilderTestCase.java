@@ -20,6 +20,7 @@ import org.apache.tuscany.core.context.ScopeStrategy;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -48,7 +49,7 @@ public class JavaContextFactoryBuilderTestCase extends TestCase {
         EventContext eCtx = new EventContextImpl();
         ScopeContext scopeContext = new ModuleScopeContext(eCtx);
         scopeContext.start();
-        scopeContext.onEvent(EventContext.MODULE_START, null);
+        scopeContext.onEvent(new ModuleStartEvent(this));
         List<Component> components = module.getComponents();
         Map<String, Component> compMap = new HashMap<String, Component>(components.size());
 

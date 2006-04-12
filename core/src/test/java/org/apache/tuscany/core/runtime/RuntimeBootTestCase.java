@@ -18,8 +18,9 @@ import junit.framework.TestCase;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.event.ModuleStopEvent;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
 import org.apache.tuscany.core.mock.MockFactory;
 
 import java.util.List;
@@ -68,14 +69,14 @@ public class RuntimeBootTestCase extends TestCase {
         // register system components
         system.registerModelObject(MockFactory.createSystemModule());
         // start the module scope
-        system.fireEvent(EventContext.MODULE_START, null);
+        system.publish(new ModuleStartEvent(this));
         // register the first module
         
         // register the second module
 
         // start the modules
 
-        system.fireEvent(EventContext.MODULE_STOP, null);
+        system.publish(new ModuleStopEvent(this));
         runtimeContext.stop();
         Assert.assertEquals(Context.STOPPED,system.getLifecycleState());
     }

@@ -17,16 +17,15 @@
 package org.apache.tuscany.container.java.context;
 
 import org.apache.tuscany.core.builder.ObjectFactory;
+import org.apache.tuscany.core.context.AtomicContext;
+import org.apache.tuscany.core.context.ContextInitException;
+import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.event.ContextCreatedEvent;
+import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.ObjectCreationException;
-import org.apache.tuscany.core.context.AbstractContext;
-import org.apache.tuscany.core.context.AtomicContext;
-import org.apache.tuscany.core.context.ContextInitException;
-import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.RuntimeEventListener;
-import org.apache.tuscany.core.context.EventContext;
 
 /**
  * Manages Java service component implementation instances
@@ -81,7 +80,7 @@ public class JavaComponentContext extends AbstractContext implements AtomicConte
     }
 
     public void init() throws TargetException {
-        getInstance(null,false);
+        getInstance(null, false);
     }
 
     public synchronized Object getInstance(QualifiedName qName) throws TargetException {
@@ -102,9 +101,7 @@ public class JavaComponentContext extends AbstractContext implements AtomicConte
                 Object instance = objectFactory.getInstance();
                 startInstance(instance);
                 if (notify) {
-                    for (RuntimeEventListener listener : listeners) {
-                        listener.onEvent(EventContext.CONTEXT_CREATED,this);
-                    }
+                    publish(new ContextCreatedEvent(this));
                 }
                 lifecycleState = RUNNING;
                 if (stateless) {

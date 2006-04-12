@@ -10,6 +10,7 @@ import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
@@ -35,7 +36,7 @@ public class JSContextFactoryBuilderTestCase extends TestCase {
                 .getContextFactory();
         context.registerFactory(contextFactory);
         context.start();
-        context.onEvent(EventContext.MODULE_START, null);
+        context.onEvent(new ModuleStartEvent(this));
         for (ProxyFactory proxyFactory : contextFactory.getTargetProxyFactories().values()) {
             jsWireBuilder.completeTargetChain(proxyFactory, JavaScriptContextFactory.class, context);
             proxyFactory.initialize();

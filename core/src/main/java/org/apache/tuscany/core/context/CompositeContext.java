@@ -28,7 +28,7 @@ public interface CompositeContext extends Context {
      * @param pMessage the message associated with the event or null
      * @throws EventException if an error occurs while sending the event
      */
-    public void fireEvent(int pEventType, Object pMessage) throws EventException;
+    //public void fireEvent(int pEventType, Object pMessage) throws EventException;
 
     /**
      * Adds runtime artifacts represented by the set of model objects to the composite context by merging them with

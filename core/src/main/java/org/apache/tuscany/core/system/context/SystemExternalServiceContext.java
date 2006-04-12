@@ -14,7 +14,7 @@
 package org.apache.tuscany.core.system.context;
 
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.context.AbstractContext;
+import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.TargetException;

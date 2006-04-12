@@ -33,6 +33,8 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.ModuleStopEvent;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
@@ -50,7 +52,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
         scope.registerFactories(createComponents());
         scope.start();
-        scope.onEvent(EventContext.MODULE_START, null);
+        scope.onEvent(new ModuleStartEvent(this));
         ModuleScopeInitDestroyComponent initDestroy = (ModuleScopeInitDestroyComponent) scope.getContext(
                 "TestServiceInitDestroy").getInstance(null);
         Assert.assertNotNull(initDestroy);
@@ -67,7 +69,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         Assert.assertFalse(destroyOnly.isDestroyed());
 
         // expire module
-        scope.onEvent(EventContext.MODULE_STOP, null);
+        scope.onEvent(new ModuleStopEvent(this));
 
         Assert.assertTrue(initDestroy.isDestroyed());
         Assert.assertTrue(destroyOnly.isDestroyed());
@@ -80,7 +82,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
         scope.registerFactories(createEagerInitComponents());
         scope.start();
-        scope.onEvent(EventContext.MODULE_START, null);
+        scope.onEvent(new ModuleStartEvent(this));
         ModuleScopeEagerInitDestroyComponent initDestroy = (ModuleScopeEagerInitDestroyComponent) scope.getContext(
                 "TestServiceEagerInitDestroy").getInstance(null);
         Assert.assertNotNull(initDestroy);
@@ -93,7 +95,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         Assert.assertFalse(initDestroy.isDestroyed());
 
         // expire module
-        scope.onEvent(EventContext.MODULE_STOP, null);
+        scope.onEvent(new ModuleStopEvent(this));
 
         Assert.assertTrue(initDestroy.isDestroyed());
 
@@ -106,7 +108,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
         scope.registerFactories(createOrderedInitComponents());
         scope.start();
-        scope.onEvent(EventContext.MODULE_START, null);
+        scope.onEvent(new ModuleStartEvent(this));
         OrderedInitPojo one = (OrderedInitPojo) scope.getContext("one").getInstance(null);
         Assert.assertNotNull(one);
         Assert.assertEquals(1, one.getNumberInstantiated());
@@ -123,7 +125,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         Assert.assertEquals(3, three.getInitOrder());
 
         // expire module
-        scope.onEvent(EventContext.MODULE_STOP, null);
+        scope.onEvent(new ModuleStopEvent(this));
         Assert.assertEquals(0, one.getNumberInstantiated());
         scope.stop();
     }
@@ -133,7 +135,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
         scope.registerFactories(createOrderedEagerInitComponents());
         scope.start();
-        scope.onEvent(EventContext.MODULE_START, null);
+        scope.onEvent(new ModuleStartEvent(this));
         OrderedEagerInitPojo one = (OrderedEagerInitPojo) scope.getContext("one").getInstance(null);
         Assert.assertNotNull(one);
 
@@ -144,7 +146,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         Assert.assertNotNull(three);
 
         // expire module
-        scope.onEvent(EventContext.MODULE_STOP, null);
+        scope.onEvent(new ModuleStopEvent(this));
         Assert.assertEquals(0, one.getNumberInstantiated());
         scope.stop();
     }
@@ -180,10 +182,10 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
                 Scope.MODULE);
         ca[1] = MockFactory.createComponent("TestServiceEagerInit", ModuleScopeEagerInitComponent.class,
                 Scope.MODULE);
-        List<ContextFactory<Context>> configs = new ArrayList();
-        for (int i = 0; i < ca.length; i++) {
-            builder.build(ca[i]);
-            configs.add((ContextFactory<Context>) ca[i].getComponentImplementation()
+        List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
+        for (SimpleComponent aCa : ca) {
+            builder.build(aCa);
+            configs.add((ContextFactory<Context>) aCa.getComponentImplementation()
                     .getContextFactory());
 
         }
@@ -197,9 +199,9 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         ca[1] = MockFactory.createComponent("two", OrderedInitPojo.class, Scope.MODULE);
         ca[2] = MockFactory.createComponent("three", OrderedInitPojo.class, Scope.MODULE);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
-        for (int i = 0; i < ca.length; i++) {
-            builder.build(ca[i]);
-            configs.add((ContextFactory<Context>) ca[i].getComponentImplementation()
+        for (SimpleComponent aCa : ca) {
+            builder.build(aCa);
+            configs.add((ContextFactory<Context>) aCa.getComponentImplementation()
                     .getContextFactory());
 
         }
@@ -212,10 +214,10 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         ca[0] = MockFactory.createComponent("one", OrderedEagerInitPojo.class, Scope.MODULE);
         ca[1] = MockFactory.createComponent("two", OrderedEagerInitPojo.class, Scope.MODULE);
         ca[2] = MockFactory.createComponent("three", OrderedEagerInitPojo.class, Scope.MODULE);
-        List<ContextFactory<Context>> configs = new ArrayList();
-        for (int i = 0; i < ca.length; i++) {
-            builder.build(ca[i]);
-            configs.add((ContextFactory<Context>) ca[i].getComponentImplementation()
+        List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
+        for (SimpleComponent aCa : ca) {
+            builder.build(aCa);
+            configs.add((ContextFactory<Context>) aCa.getComponentImplementation()
                     .getContextFactory());
 
         }

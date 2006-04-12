@@ -24,8 +24,10 @@ import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.SystemCompositeContext;
+import org.apache.tuscany.core.context.event.ModuleStopEvent;
+import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.HttpSessionEndEvent;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
@@ -74,10 +76,10 @@ public class TuscanyServletListener implements ServletContextListener, HttpSessi
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        moduleContext.fireEvent(EventContext.MODULE_STOP, null);
+        moduleContext.publish(new ModuleStopEvent(this));
         moduleContext.stop();
         SystemCompositeContext systemContext = runtime.getSystemContext();
-        systemContext.fireEvent(EventContext.MODULE_STOP, null);
+        systemContext.publish(new ModuleStopEvent(this));
         systemContext.stop();
         runtime.stop();
         servletContextEvent.getServletContext().removeAttribute(MODULE_COMPONENT_NAME);
@@ -93,7 +95,7 @@ public class TuscanyServletListener implements ServletContextListener, HttpSessi
         ModuleContext oldContext = CurrentModuleContext.getContext();
         try {
             ContextBinder.BINDER.setContext((ModuleContext) moduleContext);
-            moduleContext.fireEvent(EventContext.SESSION_END, event.getSession());
+            moduleContext.publish(new HttpSessionEndEvent(this, event.getSession()));
         } finally{
             ContextBinder.BINDER.setContext(oldContext);
         }
@@ -116,13 +118,13 @@ public class TuscanyServletListener implements ServletContextListener, HttpSessi
         ModuleComponentConfigurationLoader loader = BootstrapHelper.getConfigurationLoader(systemContext, modelContext);
         ModuleComponent systemModuleComponent = loader.loadSystemModuleComponent(SYSTEM_MODULE_COMPONENT, SYSTEM_MODULE_COMPONENT);
         CompositeContext context = BootstrapHelper.registerModule(systemContext, systemModuleComponent);
-        context.fireEvent(EventContext.MODULE_START, null);
+        context.publish(new ModuleStartEvent(this));
 
         // Load the SCDL configuration of the application module
         CompositeContext rootContext = runtime.getRootContext();
         ModuleComponent moduleComponent = loader.loadModuleComponent(name, uri);
         moduleContext = BootstrapHelper.registerModule(rootContext, moduleComponent);
 
-        moduleContext.fireEvent(EventContext.MODULE_START, null);
+        moduleContext.publish(new ModuleStartEvent(this));
     }
 }

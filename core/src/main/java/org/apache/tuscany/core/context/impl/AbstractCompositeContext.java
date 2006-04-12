@@ -3,7 +3,6 @@ package org.apache.tuscany.core.context.impl;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
@@ -16,7 +15,6 @@ import org.apache.tuscany.core.context.EventContext;
 import static org.apache.tuscany.core.context.EventContext.*;
 import org.apache.tuscany.core.context.EventException;
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.RuntimeEventListener;
 import org.apache.tuscany.core.context.ScopeAwareContext;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.ScopeStrategy;
@@ -25,6 +23,10 @@ import org.apache.tuscany.core.context.MissingImplementationException;
 import org.apache.tuscany.core.context.MissingContextFactoryException;
 import org.apache.tuscany.core.context.ProxyConfigurationException;
 import org.apache.tuscany.core.context.MissingScopeException;
+import org.apache.tuscany.core.context.event.HttpSessionBoundEvent;
+import org.apache.tuscany.core.context.event.RequestEndEvent;
+import org.apache.tuscany.core.context.event.Event;
+import org.apache.tuscany.core.context.event.HttpSessionEvent;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.ProxyConfiguration;
@@ -202,10 +204,6 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         initializeLatch.countDown();
         lifecycleState = STOPPED;
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     public void setModule(Module module) {
         assert (module != null) : "Module cannot be null";
@@ -438,17 +436,19 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
     }
 
     public void fireEvent(int eventType, Object message) throws EventException {
+        throw new UnsupportedOperationException();
+    }
+
+    public void publish(Event event){
         checkInit();
-        if (eventType == SESSION_NOTIFY) {
+        if (event instanceof HttpSessionBoundEvent) {
             // update context
-            eventContext.setIdentifier(HTTP_SESSION, message);
-        } else if (eventType == REQUEST_END) {
+            eventContext.setIdentifier(HttpSessionEvent.HTTP_IDENTIFIER,((HttpSessionBoundEvent) event).getId());
+        } else if (event instanceof RequestEndEvent) {
             // be very careful with pooled threads, ensuring threadlocals are cleaned up
-            eventContext.clearIdentifier(HTTP_SESSION);
+            eventContext.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
         }
-        for (RuntimeEventListener listener : listeners) {
-            listener.onEvent(eventType, message);
-        }
+        super.publish(event);
     }
 
     public Context getContext(String componentName) {

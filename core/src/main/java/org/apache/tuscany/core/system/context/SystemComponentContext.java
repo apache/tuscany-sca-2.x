@@ -21,12 +21,13 @@ import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.ObjectCreationException;
 import org.apache.tuscany.core.context.AtomicContext;
-import org.apache.tuscany.core.context.AbstractContext;
+import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ContextInitException;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.RuntimeEventListener;
+import org.apache.tuscany.core.context.event.ContextCreatedEvent;
 
 /**
  * Manages system component implementation instances
@@ -49,10 +50,6 @@ public class SystemComponentContext extends AbstractContext implements AtomicCon
     // responsible for creating a new implementation instance with injected references and properties
     private ObjectFactory objectFactory;
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
     public SystemComponentContext(String name, ObjectFactory objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
                                   EventInvoker<Object> destroyInvoker, boolean stateless) {
         super(name);
@@ -67,10 +64,6 @@ public class SystemComponentContext extends AbstractContext implements AtomicCon
         this.destroyInvoker = destroyInvoker;
         this.stateless = stateless;
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     public void setName(String name) {
         super.setName(name);
@@ -107,9 +100,11 @@ public class SystemComponentContext extends AbstractContext implements AtomicCon
                 Object instance = objectFactory.getInstance();
                 startInstance(instance);
                 if (notify) {
-                    for (RuntimeEventListener listener : listeners) {
-                        listener.onEvent(EventContext.CONTEXT_CREATED,this);
-                    }
+                    publish(new ContextCreatedEvent(this));
+                    //TODO remove
+                    //for (RuntimeEventListener listener : listeners) {
+                    //    listener.onEvent(EventContext.CONTEXT_CREATED,this);
+                    //}
                 }
                 lifecycleState = RUNNING;
                 if (stateless) {
@@ -141,10 +136,6 @@ public class SystemComponentContext extends AbstractContext implements AtomicCon
         return (destroyInvoker != null);
     }
 
-    // ----------------------------------
-    // Lifecycle methods
-    // ----------------------------------
-
     public void start() throws ContextInitException {
         if (getLifecycleState() != UNINITIALIZED && getLifecycleState() != STOPPED) {
             throw new IllegalStateException("Component must be in UNINITIALIZED state [" + getLifecycleState() + "]");
@@ -171,9 +162,6 @@ public class SystemComponentContext extends AbstractContext implements AtomicCon
         lifecycleState = STOPPED;
     }
 
-    // ----------------------------------
-    // Private methods
-    // ----------------------------------
     private void startInstance(Object instance) throws TargetException {
         try {
             // handle @Init

@@ -14,7 +14,7 @@
 package org.apache.tuscany.core.system.context;
 
 import org.apache.tuscany.core.builder.ContextResolver;
-import org.apache.tuscany.core.context.AbstractContext;
+import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EntryPointContext;

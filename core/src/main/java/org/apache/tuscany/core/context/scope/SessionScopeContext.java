@@ -23,6 +23,10 @@ import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.RuntimeEventListener;
 import org.apache.tuscany.core.context.ScopeRuntimeException;
+import org.apache.tuscany.core.context.event.HttpSessionEndEvent;
+import org.apache.tuscany.core.context.event.ContextCreatedEvent;
+import org.apache.tuscany.core.context.event.Event;
+import org.apache.tuscany.core.context.event.HttpSessionEvent;
 
 import java.util.Map;
 import java.util.Queue;
@@ -66,23 +70,19 @@ public class SessionScopeContext extends AbstractScopeContext implements Runtime
         lifecycleState = STOPPED;
     }
 
-    public void onEvent(int type, Object key) {
-        if (key == null) {
-            return;
-        }
-        switch(type){
-            case EventContext.SESSION_END:
+    public void onEvent(Event event) {
+        if (event instanceof HttpSessionEndEvent){
                 checkInit();
+                Object key = ((HttpSessionEndEvent)event).getId();
                 notifyInstanceShutdown(key);
                 destroyComponentContext(key);
-                break;
-            case EventContext.CONTEXT_CREATED:
+        }else if(event instanceof ContextCreatedEvent){
                 checkInit();
-                if (key instanceof AtomicContext) {
-                     AtomicContext simpleCtx = (AtomicContext)key;
+                if (event.getSource() instanceof AtomicContext) {
+                     AtomicContext simpleCtx = (AtomicContext)event.getSource();
                      // if destroyable, queue the context to have its component implementation instance released
                      if (simpleCtx.isDestroyable()) {
-                         Object sessionKey = getEventContext().getIdentifier(EventContext.HTTP_SESSION);
+                         Object sessionKey = getEventContext().getIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
                          Queue<AtomicContext> comps = destroyableContexts.get(sessionKey);
                          if (comps == null) {
                              ScopeRuntimeException e = new ScopeRuntimeException("Shutdown queue not found for key");
@@ -92,7 +92,6 @@ public class SessionScopeContext extends AbstractScopeContext implements Runtime
                          comps.add(simpleCtx);
                      }
                 }
-                break;
         }
     }
 
@@ -142,7 +141,7 @@ public class SessionScopeContext extends AbstractScopeContext implements Runtime
 
     public void removeContext(String ctxName) {
         checkInit();
-        Object key = getEventContext().getIdentifier(EventContext.HTTP_SESSION);
+        Object key = getEventContext().getIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
         removeContextByKey(ctxName, key);
     }
 
@@ -178,20 +177,15 @@ public class SessionScopeContext extends AbstractScopeContext implements Runtime
         if (queue != null) {
             // create 0-length array since Queue.size() has O(n) traversal
             return queue.toArray(new AtomicContext[0]);
-        } else {
-            return null;
         }
+        return null;
     }
-
-    // ----------------------------------
-    // Private methods
-    // ----------------------------------
 
     /**
      * Returns and, if necessary, creates a context for the current sesion
      */
     private Map<String, Context> getSessionContext() throws CoreRuntimeException {
-        Object key = getEventContext().getIdentifier(EventContext.HTTP_SESSION);
+        Object key = getEventContext().getIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
         if (key == null) {
             throw new ScopeRuntimeException("Session key not set in request context");
         }
