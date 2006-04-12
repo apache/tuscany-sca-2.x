@@ -16,7 +16,6 @@
  */
 package org.apache.tuscany.core.context.impl;
 
-import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.config.ConfigurationException;
@@ -70,13 +69,13 @@ public class CompositeContextImpl extends AbstractCompositeContext implements Co
     }
 
     public CompositeContextImpl(String name, CompositeContext parent, ScopeStrategy strategy, EventContext ctx,
-                                ConfigurationContext configCtx, MonitorFactory factory) {
-        super(name, parent, strategy, ctx, configCtx, factory);
+                                ConfigurationContext configCtx) {
+        super(name, parent, strategy, ctx, configCtx);
     }
 
     public CompositeContextImpl(String name, CompositeContext parent, AutowireContext autowireContext, ScopeStrategy strategy,
-                                EventContext ctx, ConfigurationContext configCtx, MonitorFactory factory) {
-        super(name, parent, strategy, ctx, configCtx, factory);
+                                EventContext ctx, ConfigurationContext configCtx) {
+        super(name, parent, strategy, ctx, configCtx);
         this.autowireContext = autowireContext;
     }
 
@@ -154,9 +153,7 @@ public class CompositeContextImpl extends AbstractCompositeContext implements Co
     }
 
     public <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException {
-        if (MonitorFactory.class.equals(instanceInterface)) {
-            return instanceInterface.cast(monitorFactory);
-        } else if (ConfigurationContext.class.equals(instanceInterface)) {
+        if (ConfigurationContext.class.equals(instanceInterface)) {
             return instanceInterface.cast(this);
         } else if (AutowireContext.class.equals(instanceInterface)) {
             return instanceInterface.cast(this);

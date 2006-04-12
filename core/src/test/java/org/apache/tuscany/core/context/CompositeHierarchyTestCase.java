@@ -14,7 +14,6 @@
 package org.apache.tuscany.core.context;
 
 import junit.framework.Assert;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
@@ -84,7 +83,7 @@ public class CompositeHierarchyTestCase extends AbstractCompositeHierarchyTests 
     protected CompositeContext createContextHierachy() throws Exception {
         List<ContextFactoryBuilder> systemBuilders = MockFactory.createSystemBuilders();
         CompositeContext parent = new CompositeContextImpl("test.parent", null, new DefaultScopeStrategy(),
-                new EventContextImpl(), new MockConfigContext(systemBuilders), new NullMonitorFactory());
+                new EventContextImpl(), new MockConfigContext(systemBuilders));
         Component component = MockFactory.createCompositeComponent("test.child");
         parent.registerModelObject(component);
         parent.start();

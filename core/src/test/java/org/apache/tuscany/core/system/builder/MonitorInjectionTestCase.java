@@ -20,7 +20,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.common.monitor.MonitorFactory;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
@@ -100,6 +99,6 @@ public class MonitorInjectionTestCase extends TestCase {
     }
 
     private static CompositeContext createContext() {
-        return new CompositeContextImpl("test.parent", null, new DefaultScopeStrategy(), new EventContextImpl(), new MockConfigContext(null), new NullMonitorFactory());
+        return new CompositeContextImpl("test.parent", null, new DefaultScopeStrategy(), new EventContextImpl(), new MockConfigContext(null));
     }
 }

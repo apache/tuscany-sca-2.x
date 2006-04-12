@@ -1,6 +1,5 @@
 package org.apache.tuscany.core.context.impl;
 
-import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.config.ConfigurationException;
@@ -70,10 +69,6 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
     @Autowire(required = false)
     protected ConfigurationContext configurationContext;
 
-    // The system monitor factory
-    @Autowire(required = false)
-    protected MonitorFactory monitorFactory;
-
     // The logical model representing the module assembly
     // protected ModuleComponent moduleComponent;
     protected Module module;
@@ -109,13 +104,11 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         module = new AssemblyFactoryImpl().createModule();
     }
 
-    public AbstractCompositeContext(String name, CompositeContext parent, ScopeStrategy strategy, EventContext ctx,
-                                    ConfigurationContext configCtx, MonitorFactory factory) {
+    public AbstractCompositeContext(String name, CompositeContext parent, ScopeStrategy strategy, EventContext ctx, ConfigurationContext configCtx) {
         super(name);
         this.scopeStrategy = strategy;
         this.eventContext = ctx;
         this.configurationContext = configCtx;
-        this.monitorFactory = factory;
         scopeIndex = new ConcurrentHashMap<String, ScopeContext>();
         parentContext = parent;
         // FIXME the factory should be injected
@@ -226,10 +219,6 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
 
     public void setEventContext(EventContext eventContext) {
         this.eventContext = eventContext;
-    }
-
-    public void setMonitorFactory(MonitorFactory factory) {
-        this.monitorFactory = factory;
     }
 
     public void setConfigurationContext(ConfigurationContext context) {

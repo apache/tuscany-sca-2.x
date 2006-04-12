@@ -15,7 +15,6 @@ package org.apache.tuscany.core.context;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
@@ -121,7 +120,7 @@ public class CompositeContextRegisterTestCase extends TestCase {
     protected CompositeContext createContext() {
         List<ContextFactoryBuilder> builders = MockFactory.createSystemBuilders();
         return new CompositeContextImpl("test.context", null, new DefaultScopeStrategy(), new EventContextImpl(),
-                new MockConfigContext(builders), new NullMonitorFactory());
+                new MockConfigContext(builders));
     }
 
     protected void setUp() throws Exception {

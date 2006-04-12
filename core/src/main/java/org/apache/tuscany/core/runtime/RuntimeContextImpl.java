@@ -86,8 +86,8 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         this.builders = (builders == null) ? new ArrayList<ContextFactoryBuilder>(1) : builders;
         this.wireBuilder = (wireBuilder == null) ? new DefaultWireBuilder() : wireBuilder;
 
-        rootContext = new CompositeContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this,
-                monitorFactory);
+        rootContext = new CompositeContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this
+        );
         systemContext = new SystemCompositeContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(), this);
     }
 
