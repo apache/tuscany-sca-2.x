@@ -181,6 +181,10 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         return null; // there is no parent
     }
 
+    public void setParent(CompositeContext parent) {
+        throw new UnsupportedOperationException();
+    }
+
     //TODO remove
     public void fireEvent(int pEventType, Object pMessage) throws EventException {
         throw new UnsupportedOperationException();

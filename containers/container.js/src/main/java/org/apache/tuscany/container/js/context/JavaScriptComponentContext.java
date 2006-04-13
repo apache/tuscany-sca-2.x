@@ -65,6 +65,10 @@ public class JavaScriptComponentContext extends AbstractContext implements Atomi
         getInstance(null, false);
     }
 
+    public void destroy() throws TargetException {
+
+    }
+
     private synchronized Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
         String portName = qName.getPortName();
         ProxyFactory targetFactory;

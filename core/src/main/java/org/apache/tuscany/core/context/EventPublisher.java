@@ -15,8 +15,6 @@ package org.apache.tuscany.core.context;
 
 import org.apache.tuscany.core.context.event.Event;
 
-import java.util.EventObject;
-
 /**
  * Publishes events in the runtime
  *

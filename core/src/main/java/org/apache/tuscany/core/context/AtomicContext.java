@@ -35,6 +35,12 @@ public interface AtomicContext extends Context {
     public void init() throws TargetException;
 
     /**
+     * Notifies the context of a destroy event
+     * @throws TargetException
+     */
+    public void destroy() throws TargetException;
+
+    /**
      * Returns whether a the context should be called back when its scope ends
      */
     public boolean isDestroyable();

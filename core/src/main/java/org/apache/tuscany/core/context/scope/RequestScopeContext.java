@@ -51,32 +51,6 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
         setName("Request Scope");
     }
 
-//    public void onEvent(int type, Object key) {
-//        throw new UnsupportedOperationException();
-//        /* clean up current context for pooled threads */
-//        switch(type){
-//            case EventContext.REQUEST_END:
-//                checkInit();
-//                getEventContext().clearIdentifier(EventContext.SESSION);
-//                notifyInstanceShutdown(Thread.currentThread());
-//                destroyContext();
-//                break;
-//            case EventContext.CONTEXT_CREATED:
-//                checkInit();
-//                assert(key instanceof Context): "Context must be passed on created event";
-//                Context context = (Context)key;
-//                if (context instanceof AtomicContext) {
-//                    AtomicContext simpleCtx = (AtomicContext)context;
-//                    // Queue the context to have its implementation instance released if destroyable
-//                    if (simpleCtx.isDestroyable()) {
-//                        Queue<AtomicContext> collection = destroyComponents.get(Thread.currentThread());
-//                        collection.add(simpleCtx);
-//                    }
-//                }
-//                break;
-//        }
-//    }
-
     public void onEvent(Event event){
         /* clean up current context for pooled threads */
         if (event instanceof RequestEndEvent){
@@ -89,12 +63,12 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
                 assert(event.getSource() instanceof Context): "Context must be passed on created event";
                 Context context = (Context)event.getSource();
                 if (context instanceof AtomicContext) {
-                    AtomicContext simpleCtx = (AtomicContext)context;
+                    AtomicContext atomic = (AtomicContext)context;
                     // Queue the context to have its implementation instance released if destroyable
-                    if (simpleCtx.isDestroyable()) {
+                    //if (atomic.isDestroyable()) {
                         Queue<AtomicContext> collection = destroyComponents.get(Thread.currentThread());
-                        collection.add(simpleCtx);
-                    }
+                        collection.add(atomic);
+                    //}
                 }
         }
     }
@@ -116,10 +90,6 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
         destroyComponents = null;
         lifecycleState = STOPPED;
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     public boolean isCacheable() {
         return true;

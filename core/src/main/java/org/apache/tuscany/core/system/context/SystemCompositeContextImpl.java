@@ -90,8 +90,6 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
 
     public static final int DEFAULT_WAIT = 1000 * 60;
 
-    // The parent context, if one exists
-    @ParentContext
     protected CompositeContext parentContext;
 
     // The parent configuration context, if one exists
@@ -261,6 +259,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
         return parentContext;
     }
 
+    @ParentContext
     public void setParent(CompositeContext context) {
         parentContext = context;
     }

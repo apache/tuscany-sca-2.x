@@ -22,6 +22,7 @@ import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.context.impl.AbstractContext;
 
 import java.util.List;
@@ -88,6 +89,9 @@ public abstract class AbstractScopeContext extends AbstractContext implements Sc
                 synchronized (context) {
                     removeContextByKey(context.getName(), key);
                     try {
+                        if (context instanceof AtomicContext){
+                            ((AtomicContext)context).destroy();
+                        }
                         context.stop();
                     } catch (TargetException e) {
                         // TODO send a monitoring event

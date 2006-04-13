@@ -36,6 +36,9 @@ public interface Context extends EventPublisher{
         /* Instantiated and configured */
         public static final int INITIALIZED = 2;
 
+         /* Started */
+         public static final int STARTED = 4;
+
         /* Configured and initialized */
         public static final int RUNNING = 4;
 

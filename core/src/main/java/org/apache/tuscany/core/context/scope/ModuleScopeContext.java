@@ -49,29 +49,6 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
         setName("Module Scope");
     }
 
-//    public void onEvent(int type, Object key) {
- //       throw new UnsupportedOperationException();
-//         switch(type){
-//             case EventContext.MODULE_START:
-//                lifecycleState = RUNNING;
-//                initComponentContexts();
-//                break;
-//            case EventContext.MODULE_STOP:
-//                notifyInstanceShutdown(key);
-//                break;
-//            case EventContext.CONTEXT_CREATED:
-//                checkInit();
-//                if (key instanceof AtomicContext) {
-//                    AtomicContext serviceContext = (AtomicContext) key;
-//                    // Queue the context to have its implementation instance released if destroyable
-//                    if (serviceContext.isDestroyable()) {
-//                        destroyableContexts.add(serviceContext);
-//                    }
-//                }
-//                break;
-//        }
-//    }
-
     public void onEvent(Event event) {
         if (event instanceof ModuleStartEvent) {
             lifecycleState = RUNNING;
@@ -181,13 +158,13 @@ public class ModuleScopeContext extends AbstractScopeContext implements RuntimeE
             // contain a forward reference to a component which has not been instantiated
             for (Context context : componentContexts.values()) {
                 if (context instanceof AtomicContext) {
-                    AtomicContext simpleCtx = (AtomicContext) context;
-                    if (simpleCtx.isEagerInit()) {
+                    AtomicContext atomic = (AtomicContext) context;
+                    if (atomic.isEagerInit()) {
                         // perform silent creation and manual shutdown registration
-                        simpleCtx.init();
-                        if (simpleCtx.isDestroyable()) {
-                            destroyableContexts.add(simpleCtx);
-                        }
+                        atomic.init();
+                        //if (atomic.isDestroyable()) {
+                         destroyableContexts.add(atomic);
+                        //}
                     }
                 }
             }

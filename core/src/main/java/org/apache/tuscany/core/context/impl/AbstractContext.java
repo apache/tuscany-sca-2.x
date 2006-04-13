@@ -60,7 +60,6 @@ public abstract class AbstractContext implements Context {
     }
 
     // Listeners for context events
-    //protected List<RuntimeEventListener> listeners = new CopyOnWriteArrayList<RuntimeEventListener>();
     private Map<EventFilter, List<RuntimeEventListener>> listeners;
 
 

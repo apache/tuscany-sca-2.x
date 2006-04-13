@@ -87,6 +87,19 @@ public class SystemComponentContext extends AbstractContext implements AtomicCon
         getInstance(null);
     }
 
+    public void destroy() throws TargetException {
+         if (cachedTargetInstance != null) {
+            if (destroyInvoker != null) {
+                try {
+                    destroyInvoker.invokeEvent(cachedTargetInstance);
+                } catch (ObjectCallbackException e) {
+                    throw new TargetException(e.getCause());
+                }
+            }
+        }
+        lifecycleState = STARTED;
+    }
+
     public synchronized Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
         if (cachedTargetInstance != null) {
             return cachedTargetInstance; // already cached, just return
@@ -150,15 +163,6 @@ public class SystemComponentContext extends AbstractContext implements AtomicCon
     }
 
     public void stop() {
-        if (cachedTargetInstance != null) {
-            if (destroyInvoker != null) {
-                try {
-                    destroyInvoker.invokeEvent(cachedTargetInstance);
-                } catch (ObjectCallbackException e) {
-                    throw new TargetException(e.getCause());
-                }
-            }
-        }
         lifecycleState = STOPPED;
     }
 

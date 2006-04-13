@@ -210,12 +210,12 @@ public class SessionScopeContext extends AbstractScopeContext implements Runtime
         // contain a forward reference to a component which has not been instantiated
         for (Context context : sessionContext.values()) {
             if (context instanceof AtomicContext) {
-                AtomicContext simpleCtx = (AtomicContext) context;
-                if (simpleCtx.isEagerInit()) {
+                AtomicContext atomic = (AtomicContext) context;
+                if (atomic.isEagerInit()) {
                     context.notify();  // Notify the instance
-                    if (simpleCtx.isDestroyable()) {
-                        shutdownQueue.add(simpleCtx);
-                    }
+                    //if (atomic.isDestroyable()) {
+                    shutdownQueue.add(atomic);
+                    //}
                 }
             }
         }

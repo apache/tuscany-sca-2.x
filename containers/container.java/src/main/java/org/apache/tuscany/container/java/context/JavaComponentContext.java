@@ -83,6 +83,21 @@ public class JavaComponentContext extends AbstractContext implements AtomicConte
         getInstance(null, false);
     }
 
+    public void destroy() throws TargetException {
+        if (cachedTargetInstance != null) {
+            if (destroyInvoker != null) {
+                try {
+                    destroyInvoker.invokeEvent(cachedTargetInstance);
+                } catch (ObjectCallbackException e) {
+                    TargetException te = new TargetException(e.getCause());
+                    te.setIdentifier(getName());
+                    throw te;
+                }
+            }
+        }
+        lifecycleState = STARTED;
+    }
+
     public synchronized Object getInstance(QualifiedName qName) throws TargetException {
         return getInstance(qName, true);
     }
@@ -148,18 +163,6 @@ public class JavaComponentContext extends AbstractContext implements AtomicConte
     }
 
     public void stop() {
-        lifecycleState = STOPPING;
-        if (cachedTargetInstance != null) {
-            if (destroyInvoker != null) {
-                try {
-                    destroyInvoker.invokeEvent(cachedTargetInstance);
-                } catch (ObjectCallbackException e) {
-                    TargetException te = new TargetException(e.getCause());
-                    te.setIdentifier(getName());
-                    throw te;
-                }
-            }
-        }
         lifecycleState = STOPPED;
     }
 

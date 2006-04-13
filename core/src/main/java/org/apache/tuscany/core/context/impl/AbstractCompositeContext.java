@@ -65,8 +65,6 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
 
     public static final int DEFAULT_WAIT = 1000 * 60;
 
-    // The parent context, if one exists
-    @ParentContext
     protected CompositeContext parentContext;
 
     // The parent configuration context, if one exists
@@ -227,6 +225,11 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
 
     public CompositeContext getParent() {
         return parentContext;
+    }
+
+    @ParentContext
+    public void setParent(CompositeContext parent){
+        parentContext = parent;
     }
 
     public void registerModelObjects(List<? extends Extensible> models) throws ConfigurationException {
