@@ -16,59 +16,41 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.AssemblyVisitor;
 import org.apache.tuscany.model.assembly.Port;
 import org.apache.tuscany.model.assembly.ServiceContract;
 
 /**
  * An implementation of Port.
  */
-public abstract class PortImpl extends AssemblyModelObjectImpl implements Port {
+public abstract class PortImpl extends AssemblyObjectImpl implements Port {
     
     private ServiceContract serviceContract;
     private String name;
 
-    /**
-     * Constructor
-     */
     protected PortImpl() {
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.Port#getName()
-     */
     public String getName() {
         return name;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.Port#setName(java.lang.String)
-     */
     public void setName(String value) {
         checkNotFrozen();
         name=value;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.Port#getServiceContract()
-     */
     public ServiceContract getServiceContract() {
         return serviceContract;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.Port#setServiceContract(org.apache.tuscany.model.assembly.ServiceContract)
-     */
     public void setServiceContract(ServiceContract value) {
         checkNotFrozen();
         serviceContract=value;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
-     */
-    public void initialize(AssemblyModelContext modelContext) {
+    public void initialize(AssemblyContext modelContext) {
         if (isInitialized())
             return;
         super.initialize(modelContext);
@@ -77,9 +59,6 @@ public abstract class PortImpl extends AssemblyModelObjectImpl implements Port {
             serviceContract.initialize(modelContext);
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#freeze()
-     */
     public void freeze() {
         if (isFrozen())
             return;
@@ -89,10 +68,7 @@ public abstract class PortImpl extends AssemblyModelObjectImpl implements Port {
             serviceContract.freeze();
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
-     */
-    public boolean accept(AssemblyModelVisitor visitor) {
+    public boolean accept(AssemblyVisitor visitor) {
         if (!super.accept(visitor))
             return false;
         

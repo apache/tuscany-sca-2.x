@@ -24,7 +24,7 @@ public interface ContextFactoryHolder {
     /**
      * Sets the context factory
      */
-    void setContextFactory(Object configuration);
+    void setContextFactory(Object contextFactory);
 
     /**
      * Returns the context factory

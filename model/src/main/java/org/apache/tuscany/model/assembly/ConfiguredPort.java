@@ -20,38 +20,44 @@ package org.apache.tuscany.model.assembly;
 /**
  * Represents a configured port (e.g. a configured reference or configured service).
  */
-public interface ConfiguredPort extends AssemblyModelObject, ContextFactoryHolder {
+public interface ConfiguredPort<P extends Port> extends AssemblyObject, ProxyFactoryHolder {
+
+    /**
+     * Returns the name of the port being configured.
+     *
+     * @return the name of the port being configured
+     */
+    String getName();
+
+    /**
+     * Set the name of the port being configured.
+     *
+     * @param name the name of the port being configured
+     */
+    void setName(String name);
 
     /**
      * Returns the port that is being configured.
      * @return the port that is being configured
      */
-    Port getPort();
+    P getPort();
 
     /**
      * Sets the port that is being configured.
      * @param port the port that is being configured
      */
-    void setPort(Port port);
+    void setPort(P port);
 
     /**
      * Returns the aggregate part containing this port.
      * @return the aggregate part that contains this port
      */
-    AggregatePart getAggregatePart();
+    Part getPart();
     
     /**
-     * Returns the port's proxy factory
-     * @return the port's proxy factory
-     * todo should this be here or should it be provided in a sub-interface?
+     * Sets the configured part containing this port.
+     * @param part the configured part containing this port.
      */
-    Object getProxyFactory();
-
-    /**
-     * Sets the port's proxy factory
-     * @param proxyFactory the port's proxy factory
-     * todo should this be here or should it be provided in a sub-interface?
-     */
-    void setProxyFactory(Object proxyFactory);
-
+    void setPart(Part part);
+    
 }

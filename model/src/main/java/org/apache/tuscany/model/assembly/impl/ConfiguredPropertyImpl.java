@@ -16,8 +16,8 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.AssemblyVisitor;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.OverrideOption;
 import org.apache.tuscany.model.assembly.Property;
@@ -25,15 +25,12 @@ import org.apache.tuscany.model.assembly.Property;
 /**
  * Implementation of ConfiguredProperty
  */
-public class ConfiguredPropertyImpl extends AssemblyModelObjectImpl implements ConfiguredProperty {
+public class ConfiguredPropertyImpl extends AssemblyObjectImpl implements ConfiguredProperty {
     private String name;
     private OverrideOption overrideOption;
     private Object value;
     private Property property;
 
-    /**
-     * Constructor
-     */
     protected ConfiguredPropertyImpl() {
     }
 
@@ -45,55 +42,34 @@ public class ConfiguredPropertyImpl extends AssemblyModelObjectImpl implements C
         this.name = name;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredProperty#getProperty()
-     */
     public Property getProperty() {
         return property;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredProperty#setProperty(org.apache.tuscany.model.assembly.Property)
-     */
     public void setProperty(Property property) {
         checkNotFrozen();
         this.property = property;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredProperty#getValue()
-     */
     public Object getValue() {
         return value;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredProperty#setValue(java.lang.Object)
-     */
     public void setValue(Object value) {
         checkNotFrozen();
         this.value = value;
     }
 
-    /*
-     * @see org.apache.tuscany.model.assembly.ConfiguredProperty#getOverrideOption()
-     */
     public OverrideOption getOverrideOption() {
         return overrideOption;
     }
     
-    /*
-     * @see org.apache.tuscany.model.assembly.ConfiguredProperty#setOverrideOption(org.apache.tuscany.model.assembly.OverrideOption)
-     */
     public void setOverrideOption(OverrideOption value) {
         checkNotFrozen();
         this.overrideOption=value;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
-     */
-    public void initialize(AssemblyModelContext modelContext) {
+    public void initialize(AssemblyContext modelContext) {
         if (isInitialized())
             return;
         super.initialize(modelContext);
@@ -102,9 +78,6 @@ public class ConfiguredPropertyImpl extends AssemblyModelObjectImpl implements C
             property.initialize(modelContext);
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#freeze()
-     */
     public void freeze() {
         if (isFrozen())
             return;
@@ -114,10 +87,7 @@ public class ConfiguredPropertyImpl extends AssemblyModelObjectImpl implements C
             property.freeze();
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
-     */
-    public boolean accept(AssemblyModelVisitor visitor) {
+    public boolean accept(AssemblyVisitor visitor) {
         if (!super.accept(visitor))
             return false;
         

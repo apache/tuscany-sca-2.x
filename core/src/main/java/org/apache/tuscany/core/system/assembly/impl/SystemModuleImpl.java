@@ -16,17 +16,24 @@
  */
 package org.apache.tuscany.core.system.assembly.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.tuscany.core.system.assembly.SystemModule;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
+import org.apache.tuscany.model.assembly.AssemblyVisitor;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;
+import org.apache.tuscany.model.assembly.Implementation;
 import org.apache.tuscany.model.assembly.ModuleFragment;
 import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.OverrideOption;
@@ -35,23 +42,18 @@ import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceContract;
 import org.apache.tuscany.model.assembly.ServiceURI;
 import org.apache.tuscany.model.assembly.Wire;
-import org.apache.tuscany.model.assembly.impl.AggregateImpl;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.apache.tuscany.model.assembly.impl.CompositeImpl;
 
 /**
  * An implementation of Module.
  */
-public class SystemModuleImpl extends AggregateImpl implements SystemModule {
+public class SystemModuleImpl extends CompositeImpl implements SystemModule {
     
     private List<ModuleFragment> moduleFragments = new ArrayList<ModuleFragment>();
     private Map<String, ModuleFragment> moduleFragmentsMap;
-    private ComponentType componentType;
+    private ComponentInfo componentType;
     private Object contextFactory;
+    private Class<?> implementationClass;
 
     /**
      * Constructor
@@ -59,17 +61,26 @@ public class SystemModuleImpl extends AggregateImpl implements SystemModule {
     protected SystemModuleImpl() {
     }
     
+    public Class<?> getImplementationClass() {
+        return implementationClass;
+    }
+
+    public void setImplementationClass(Class<?> value) {
+        checkNotFrozen();
+        implementationClass = value;
+    }
+    
     /**
-     * @see org.apache.tuscany.model.assembly.ComponentImplementation#getComponentType()
+     * @see org.apache.tuscany.model.assembly.Implementation#getComponentInfo()
      */
-    public ComponentType getComponentType() {
+    public ComponentInfo getComponentInfo() {
         return componentType;
     }
     
     /**
-     * @see org.apache.tuscany.model.assembly.ComponentImplementation#setComponentType(org.apache.tuscany.model.assembly.ComponentType)
+     * @see org.apache.tuscany.model.assembly.Implementation#setComponentInfo(org.apache.tuscany.model.assembly.ComponentInfo)
      */
-    public void setComponentType(ComponentType componentType) {
+    public void setComponentInfo(ComponentInfo componentType) {
         checkNotFrozen();
         this.componentType=componentType;
     }
@@ -90,9 +101,9 @@ public class SystemModuleImpl extends AggregateImpl implements SystemModule {
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
+     * @see org.apache.tuscany.model.assembly.AssemblyObject#initialize(org.apache.tuscany.model.assembly.AssemblyContext)
      */
-    public void initialize(AssemblyModelContext modelContext) {
+    public void initialize(AssemblyContext modelContext) {
         if (isInitialized())
             return;
         
@@ -120,11 +131,11 @@ public class SystemModuleImpl extends AggregateImpl implements SystemModule {
         // Also derive properties from the overridable properties of the components in the module
         if (componentType==null) {
             AssemblyFactory factory = modelContext.getAssemblyFactory();
-            componentType = factory.createComponentType();
+            componentType = factory.createComponentInfo();
             for (EntryPoint entryPoint : getEntryPoints()) {
                 Service service = factory.createService();
                 service.setName(entryPoint.getName());
-                ServiceContract serviceContract = entryPoint.getConfiguredService().getService().getServiceContract();
+                ServiceContract serviceContract = entryPoint.getConfiguredService().getPort().getServiceContract();
                 if (serviceContract != null)
                     service.setServiceContract(serviceContract);
                 componentType.getServices().add(service);
@@ -144,19 +155,19 @@ public class SystemModuleImpl extends AggregateImpl implements SystemModule {
                     continue;
                 Reference reference = factory.createReference();
                 reference.setName(externalService.getName());
-                ServiceContract serviceContract = externalService.getConfiguredService().getService().getServiceContract();
+                ServiceContract serviceContract = externalService.getConfiguredService().getPort().getServiceContract();
                 if (serviceContract != null)
                     reference.setServiceContract(serviceContract);
                 componentType.getReferences().add(reference);
             }
-            for (Component component : getComponents()) {
+            for (Component<Implementation> component : getComponents()) {
                 for (ConfiguredProperty configuredProperty : component.getConfiguredProperties()) {
                     if (configuredProperty.getOverrideOption()==null || configuredProperty.getOverrideOption()==OverrideOption.NO)
                         continue;
                     componentType.getProperties().add(configuredProperty.getProperty());
                 }
 
-                for (ConfiguredReference configuredReference : component.getConfiguredReferences().values()) {
+                for (ConfiguredReference configuredReference : component.getConfiguredReferences()) {
                     // Create a wire
                     ServiceURI sourceURI =factory.createServiceURI(null, component, configuredReference);
                     for (String target : configuredReference.getTargets()) {
@@ -181,12 +192,12 @@ public class SystemModuleImpl extends AggregateImpl implements SystemModule {
             String partName = sourceURI.getPartName();
             String referenceName = sourceURI.getServiceName();
             if (referenceName != null) {
-                Component component = getComponent(partName);
+                Component component = (Component)getPart(partName);
                 if (component != null) {
                     configuredReference = component.getConfiguredReference(referenceName);
                 }
             } else {
-                EntryPoint entryPoint = getEntryPoint(partName);
+                EntryPoint entryPoint = (EntryPoint)getPart(partName);
                 if (entryPoint != null) {
                     configuredReference = entryPoint.getConfiguredReference();
                 }
@@ -201,7 +212,7 @@ public class SystemModuleImpl extends AggregateImpl implements SystemModule {
                 if (configuredService != null) {
 
                     // Wire the reference to the target
-                    Multiplicity multiplicity=configuredReference.getReference().getMultiplicity();
+                    Multiplicity multiplicity=configuredReference.getPort().getMultiplicity();
                     if (multiplicity==Multiplicity.ZERO_N || multiplicity==Multiplicity.ONE_N) {
                         configuredReference.getTargetConfiguredServices().add(configuredService);
                     } else {
@@ -216,7 +227,7 @@ public class SystemModuleImpl extends AggregateImpl implements SystemModule {
     }
         
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#freeze()
+     * @see org.apache.tuscany.model.assembly.AssemblyObject#freeze()
      */
     public void freeze() {
         if (isFrozen())
@@ -246,9 +257,9 @@ public class SystemModuleImpl extends AggregateImpl implements SystemModule {
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.impl.AggregateImpl#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
+     * @see org.apache.tuscany.model.assembly.impl.CompositeImpl#accept(org.apache.tuscany.model.assembly.AssemblyVisitor)
      */
-    public boolean accept(AssemblyModelVisitor visitor) {
+    public boolean accept(AssemblyVisitor visitor) {
         if (!super.accept(visitor))
             return false;
         

@@ -62,7 +62,7 @@ public class MonitorInjectionTestCase extends TestCase {
 
     public void testMonitorInjection() {
         builder.build(component);
-        ContextFactory<?> contextFactory = (ContextFactory<?>) component.getComponentImplementation().getContextFactory();
+        ContextFactory<?> contextFactory = (ContextFactory<?>) component.getContextFactory();
         Assert.assertNotNull(contextFactory);
         contextFactory.prepare(createContext());
         Context ctx = contextFactory.createContext();

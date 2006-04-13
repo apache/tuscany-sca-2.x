@@ -33,7 +33,7 @@ import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.StatelessScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.SimpleComponent;
+import org.apache.tuscany.model.assembly.AtomicComponent;
 
 /**
  * Unit tests for the module scope container
@@ -106,20 +106,20 @@ public class BasicStatelessScopeTestCase extends TestCase {
 
     private List<ContextFactory<Context>> createConfigurations()
             throws NoSuchMethodException, BuilderException {
-        SimpleComponent component = MockFactory.createComponent("TestService1", StatelessComponentImpl.class,
+        AtomicComponent component = MockFactory.createComponent("TestService1", StatelessComponentImpl.class,
                 Scope.INSTANCE);
         builder.build(component);
         List<ContextFactory<Context>> configs = new ArrayList();
-        configs.add((ContextFactory<Context>) component.getComponentImplementation().getContextFactory());
+        configs.add((ContextFactory<Context>) component.getContextFactory());
         return configs;
     }
 
     private ContextFactory<Context> createConfiguration(String name)
             throws NoSuchMethodException, BuilderException {
-        SimpleComponent component = MockFactory.createComponent(name, StatelessComponentImpl.class,
+        AtomicComponent component = MockFactory.createComponent(name, StatelessComponentImpl.class,
                 Scope.INSTANCE);
         builder.build(component);
-        return (ContextFactory<Context>) component.getComponentImplementation().getContextFactory();
+        return (ContextFactory<Context>) component.getContextFactory();
     }
 
 }

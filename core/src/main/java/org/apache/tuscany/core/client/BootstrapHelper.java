@@ -37,9 +37,9 @@ import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 
@@ -56,7 +56,7 @@ public final class BootstrapHelper {
      * @param classLoader the classloader to use for application artifacts
      * @return a default AssemblyModelContext
      */
-    public static AssemblyModelContext getModelContext(ClassLoader classLoader) {
+    public static AssemblyContext getModelContext(ClassLoader classLoader) {
         // Create an assembly model factory
         AssemblyFactory modelFactory = new SystemAssemblyFactoryImpl();
 
@@ -67,7 +67,7 @@ public final class BootstrapHelper {
         ResourceLoader resourceLoader = new ResourceLoaderImpl(classLoader);
 
         // Create an assembly model context
-        return new AssemblyModelContextImpl(modelFactory, modelLoader, resourceLoader);
+        return new AssemblyContextImpl(modelFactory, modelLoader, resourceLoader);
     }
 
     /**
@@ -93,7 +93,7 @@ public final class BootstrapHelper {
      * @param modelContext  the model context the loader will use
      * @return the default module configuration loader
      */
-    public static ModuleComponentConfigurationLoader getConfigurationLoader(SystemCompositeContext systemContext, AssemblyModelContext modelContext) {
+    public static ModuleComponentConfigurationLoader getConfigurationLoader(SystemCompositeContext systemContext, AssemblyContext modelContext) {
         return new StAXModuleComponentConfigurationLoaderImpl(modelContext, XMLInputFactory.newInstance(), systemContext.resolveInstance(StAXLoaderRegistry.class));
     }
 
@@ -105,7 +105,7 @@ public final class BootstrapHelper {
      * @return the system context for the loader
      * @throws ConfigurationException
      */
-    public static CompositeContext bootstrapStaxLoader(SystemCompositeContext parentContext, AssemblyModelContext modelContext) throws ConfigurationException {
+    public static CompositeContext bootstrapStaxLoader(SystemCompositeContext parentContext, AssemblyContext modelContext) throws ConfigurationException {
         ModuleComponent loaderComponent = StAXUtil.bootstrapLoader(SYSTEM_LOADER_COMPONENT, modelContext);
         CompositeContext loaderContext = registerModule(parentContext, loaderComponent);
         loaderContext.publish(new ModuleStartEvent(loaderComponent));

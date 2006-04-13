@@ -17,11 +17,10 @@
 package org.apache.tuscany.model.assembly.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.AssemblyVisitor;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
@@ -30,70 +29,49 @@ import org.apache.tuscany.model.assembly.EntryPoint;
 /**
  * An implementation of EntryPoint.
  */
-public class EntryPointImpl extends AggregatePartImpl implements EntryPoint {
+public class EntryPointImpl extends PartImpl implements EntryPoint {
     
     private ConfiguredService configuredService;
     private ConfiguredReference configuredReference;
     private List<Binding> bindings=new ArrayList<Binding>();
-
-    /**
-     * Constructor
-     */
+    
     protected EntryPointImpl() {
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.EntryPoint#getConfiguredReference()
-     */
     public ConfiguredReference getConfiguredReference() {
         return configuredReference;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.EntryPoint#setConfiguredReference(org.apache.tuscany.model.assembly.ConfiguredReference)
-     */
     public void setConfiguredReference(ConfiguredReference configuredReference) {
         checkNotFrozen();
+        configuredReference.setPart(this);
         this.configuredReference=configuredReference;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.EntryPoint#getConfiguredService()
-     */
     public ConfiguredService getConfiguredService() {
         return configuredService;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.EntryPoint#setConfiguredService(org.apache.tuscany.model.assembly.ConfiguredService)
-     */
     public void setConfiguredService(ConfiguredService configuredService) {
         checkNotFrozen();
+        configuredService.setPart(this);
         this.configuredService=configuredService;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.EntryPoint#getBindings()
-     */
     public List<Binding> getBindings() {
         return bindings;
     }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
-     */
-    public void initialize(AssemblyModelContext modelContext) {
+    
+    public void initialize(AssemblyContext modelContext) {
         if (isInitialized())
             return;
         super.initialize(modelContext);
 
         // Initialize the service contract and reference to the published service
         if (configuredReference != null) {
-            ((ConfiguredPortImpl)configuredReference).setAggregatePart(this);
             configuredReference.initialize(modelContext);
         }
         if (configuredService != null) {
-            ((ConfiguredPortImpl)configuredService).setAggregatePart(this);
             configuredService.initialize(modelContext);
         }
 
@@ -101,9 +79,6 @@ public class EntryPointImpl extends AggregatePartImpl implements EntryPoint {
         initialize(bindings, modelContext);
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#freeze()
-     */
     public void freeze() {
         if (isFrozen())
             return;
@@ -116,14 +91,10 @@ public class EntryPointImpl extends AggregatePartImpl implements EntryPoint {
             configuredService.freeze();
 
         // Freeze the bindings
-        bindings=Collections.unmodifiableList(bindings);
-        freeze(bindings);
+        bindings=freeze(bindings);
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
-     */
-    public boolean accept(AssemblyModelVisitor visitor) {
+    public boolean accept(AssemblyVisitor visitor) {
         if (!super.accept(visitor))
             return false;
         

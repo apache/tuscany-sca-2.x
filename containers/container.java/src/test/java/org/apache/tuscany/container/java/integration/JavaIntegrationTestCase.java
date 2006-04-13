@@ -38,7 +38,7 @@ public class JavaIntegrationTestCase extends TestCase {
     public void testModuleWithOneComponent() throws Exception {
         Module module = factory.createModule();
         ModuleComponent moduleComponent = factory.createModuleComponent();
-        moduleComponent.setModuleImplementation(module);
+        moduleComponent.setImplementation(module);
 
 //        runtime.registerModelObject(moduleComponent);
     }

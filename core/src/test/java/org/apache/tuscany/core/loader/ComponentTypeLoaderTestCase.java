@@ -24,7 +24,7 @@ import org.apache.tuscany.core.loader.assembly.ComponentTypeLoader;
 import org.apache.tuscany.core.loader.assembly.ServiceLoader;
 import org.apache.tuscany.core.loader.impl.StAXLoaderRegistryImpl;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.Service;
 
 import javax.xml.stream.XMLInputFactory;
@@ -45,7 +45,7 @@ public class ComponentTypeLoaderTestCase extends TestCase {
     public void testMinimal() throws XMLStreamException, ConfigurationLoadException {
         XMLStreamReader is = xmlFactory.createXMLStreamReader(getClass().getResourceAsStream("minimal.componentType"));
         is.next();
-        ComponentType type = (ComponentType) registry.load(is, resourceLoader);
+        ComponentInfo type = (ComponentInfo) registry.load(is, resourceLoader);
         type.initialize(null);
         assertNotNull(type);
         assertEquals(1, type.getServices().size());

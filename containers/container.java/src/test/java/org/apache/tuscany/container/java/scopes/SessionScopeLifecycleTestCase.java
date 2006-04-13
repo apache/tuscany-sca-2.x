@@ -36,7 +36,7 @@ import org.apache.tuscany.core.context.event.HttpSessionEvent;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.SessionScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.SimpleComponent;
+import org.apache.tuscany.model.assembly.AtomicComponent;
 
 /**
  * Lifecycle unit tests for the Http session scope container
@@ -124,16 +124,16 @@ public class SessionScopeLifecycleTestCase extends TestCase {
     JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
     private List<ContextFactory<Context>> createComponents() throws BuilderException {
-        SimpleComponent[] ca = new SimpleComponent[3];
+        AtomicComponent[] ca = new AtomicComponent[3];
         ca[0] = MockFactory.createComponent("TestServiceInitDestroy", SessionScopeInitDestroyComponent.class,
                 Scope.SESSION);
         ca[1] = MockFactory.createComponent("TestServiceInitOnly", SessionScopeInitOnlyComponent.class, Scope.SESSION);
         ca[2] = MockFactory.createComponent("TestServiceDestroyOnly", SessionScopeDestroyOnlyComponent.class,
                 Scope.SESSION);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
-        for (SimpleComponent aCa : ca) {
+        for (AtomicComponent aCa : ca) {
             builder.build(aCa);
-            configs.add((ContextFactory<Context>) aCa.getComponentImplementation().getContextFactory());
+            configs.add((ContextFactory<Context>) aCa.getContextFactory());
 
         }
         return configs;
@@ -141,14 +141,14 @@ public class SessionScopeLifecycleTestCase extends TestCase {
 
     private List<ContextFactory<Context>> createOrderedInitComponents() throws
             BuilderException {
-        SimpleComponent[] ca = new SimpleComponent[3];
+        AtomicComponent[] ca = new AtomicComponent[3];
         ca[0] = MockFactory.createComponent("one", OrderedInitPojo.class, Scope.SESSION);
         ca[1] = MockFactory.createComponent("two", OrderedInitPojo.class, Scope.SESSION);
         ca[2] = MockFactory.createComponent("three", OrderedInitPojo.class, Scope.SESSION);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
-        for (SimpleComponent aCa : ca) {
+        for (AtomicComponent aCa : ca) {
             builder.build(aCa);
-            configs.add((ContextFactory<Context>) aCa.getComponentImplementation().getContextFactory());
+            configs.add((ContextFactory<Context>) aCa.getContextFactory());
 
         }
         return configs;

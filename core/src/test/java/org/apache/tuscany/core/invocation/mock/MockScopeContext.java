@@ -26,7 +26,7 @@ import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.EventFilter;
 import org.apache.tuscany.core.context.event.Event;
-import org.apache.tuscany.model.assembly.SimpleComponent;
+import org.apache.tuscany.model.assembly.AtomicComponent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -91,7 +91,7 @@ public class MockScopeContext implements ScopeContext {
         return null;
     }
 
-    public void setComponent(SimpleComponent component) throws ScopeRuntimeException {
+    public void setComponent(AtomicComponent component) throws ScopeRuntimeException {
     }
 
     public void removeContext(String name) throws ScopeRuntimeException {
@@ -100,7 +100,7 @@ public class MockScopeContext implements ScopeContext {
     public void removeContextByKey(String name, Object key) throws ScopeRuntimeException {
     }
 
-    public SimpleComponent[] getComponents() {
+    public AtomicComponent[] getComponents() {
         return null;
     }
 

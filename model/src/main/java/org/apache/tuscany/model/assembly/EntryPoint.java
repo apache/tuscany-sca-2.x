@@ -20,10 +20,10 @@ import java.util.List;
 
 
 /**
- * An entry point exposed by its containing {@link Aggregate}.
- * References from outside the Aggregate can only be connected to its entry points.
+ * An entry point exposed by its containing {@link Composite}.
+ * References from outside the composite can only be connected to its entry points.
  */
-public interface EntryPoint extends AggregatePart, Extensible {
+public interface EntryPoint extends Part {
 
     /**
      * Returns the bindings supported by this entry point.

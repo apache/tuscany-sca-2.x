@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.container.java.assembly;
 
-import org.apache.tuscany.model.assembly.ComponentImplementation;
+import org.apache.tuscany.model.assembly.AtomicImplementation;
 
 
 /**
@@ -24,7 +24,7 @@ import org.apache.tuscany.model.assembly.ComponentImplementation;
  * 
  * @version $Rev$ $Date$
  */
-public interface JavaImplementation extends ComponentImplementation {
+public interface JavaImplementation extends AtomicImplementation {
 
     /**
      * Returns the implementation class.

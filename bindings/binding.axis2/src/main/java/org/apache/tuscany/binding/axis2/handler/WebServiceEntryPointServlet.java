@@ -97,7 +97,7 @@ public class WebServiceEntryPointServlet extends AxisServlet {
         ServletContext servletContext = config.getServletContext();
         
         CompositeContext moduleContext = (CompositeContext) servletContext.getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
-        Module module = (Module) moduleContext.getAggregate();
+        Module module = (Module) moduleContext.getComposite();
        
 
         for (Iterator<EntryPoint> i = module.getEntryPoints().iterator(); i.hasNext();) {
@@ -169,7 +169,7 @@ public class WebServiceEntryPointServlet extends AxisServlet {
             return; // do nothing if there.
         
         CompositeContext moduleContext = (CompositeContext) config.getServletContext().getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
-        Module module = (Module) moduleContext.getAggregate();
+        Module module = (Module) moduleContext.getComposite();
 
 
         ResourceLoader resourceLoader = new ResourceLoaderImpl(module.getClass().getClassLoader());

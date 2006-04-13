@@ -33,7 +33,7 @@ import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Property;
 import org.apache.tuscany.model.assembly.Reference;
@@ -63,8 +63,8 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         this.factory = factory;
     }
 
-    public ComponentType introspect(Class<?> implClass) throws ConfigurationLoadException {
-        ComponentType compType = factory.createComponentType();
+    public ComponentInfo introspect(Class<?> implClass) throws ConfigurationLoadException {
+        ComponentInfo compType = factory.createComponentInfo();
         introspectServices(compType, implClass);
         introspectAnnotatedMembers(compType, implClass);
 
@@ -121,7 +121,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
      * @param compType  the component type being generated
      * @param implClass the component implementation type class
      */
-    protected void introspectServices(ComponentType compType, Class<?> implClass) {
+    protected void introspectServices(ComponentInfo compType, Class<?> implClass) {
         List<Service> services = compType.getServices();
         assert services.isEmpty() : "componentType already has services defined";
 
@@ -183,7 +183,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
      *
      * @throws ConfigurationLoadException
      */
-    protected void introspectAnnotatedMembers(ComponentType compType, Class<?> implClass) throws ConfigurationLoadException {
+    protected void introspectAnnotatedMembers(ComponentInfo compType, Class<?> implClass) throws ConfigurationLoadException {
 
         introspectPublicFields(compType, implClass);
         introspectPrivateFields(compType, implClass);
@@ -196,7 +196,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
      * Introspects metdata for all public fields and methods for a class hierarchy
      *
      */
-    protected void introspectMembers(ComponentType compType, Class<?> implClass) {
+    protected void introspectMembers(ComponentInfo compType, Class<?> implClass) {
         List<Property> properties = compType.getProperties();
         List<Reference> references = compType.getReferences();
 
@@ -233,7 +233,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         }
     }
 
-    private void introspectPublicFields(ComponentType compType, Class<?> implClass) {
+    private void introspectPublicFields(ComponentInfo compType, Class<?> implClass) {
         List<Property> properties = compType.getProperties();
         List<Reference> references = compType.getReferences();
 
@@ -252,7 +252,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         }
     }
 
-    private void introspectPrivateFields(ComponentType compType, Class<?> implClass) {
+    private void introspectPrivateFields(ComponentInfo compType, Class<?> implClass) {
         List<Property> properties = compType.getProperties();
         List<Reference> references = compType.getReferences();
 
@@ -271,7 +271,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         }
     }
 
-    private void introspectPublicMethods(ComponentType compType, Class<?> implClass) throws ConfigurationLoadException {
+    private void introspectPublicMethods(ComponentInfo compType, Class<?> implClass) throws ConfigurationLoadException {
         List<Property> properties = compType.getProperties();
         List<Reference> references = compType.getReferences();
 
@@ -287,7 +287,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         }
     }
 
-    private void introspectPrivateMethods(ComponentType compType, Class<?> implClass) throws ConfigurationLoadException {
+    private void introspectPrivateMethods(ComponentInfo compType, Class<?> implClass) throws ConfigurationLoadException {
         List<Property> properties = compType.getProperties();
         List<Reference> references = compType.getReferences();
 

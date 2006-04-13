@@ -80,9 +80,9 @@ public class CompositeNestingTestCase extends TestCase {
     private ModuleComponent createHierarchy(){
         ModuleComponent child3 = MockFactory.createSystemModuleComponentWithWiredComponents("child3", Scope.MODULE, Scope.MODULE);
         ModuleComponent child2 = MockFactory.createSystemModuleComponentWithWiredComponents("child2", Scope.MODULE, Scope.MODULE);
-        child2.getModuleImplementation().getComponents().add(child3);
+        child2.getImplementation().getComponents().add(child3);
         ModuleComponent child1 = MockFactory.createSystemModuleComponentWithWiredComponents("child1", Scope.MODULE, Scope.MODULE);
-        child1.getModuleImplementation().getComponents().add(child2);
+        child1.getImplementation().getComponents().add(child2);
         return child1;
     }
     

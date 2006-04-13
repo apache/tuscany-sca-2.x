@@ -27,7 +27,7 @@ import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 import org.osoa.sca.ModuleContext;
 import org.osoa.sca.ServiceUnavailableException;
 
@@ -49,7 +49,7 @@ public class CompositeHierarchyTestCase extends AbstractCompositeHierarchyTests 
         CompositeContext parent = createContextHierachy();
         CompositeContext child = (CompositeContext) parent.getContext("test.child");
         Component component = factory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
-        component.initialize(new AssemblyModelContextImpl(factory, null, null));
+        component.initialize(new AssemblyContextImpl(factory, null, null));
         child.registerModelObject(component);
         parent.publish(new ModuleStartEvent(this));
         child.publish(new ModuleStartEvent(this));

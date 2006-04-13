@@ -13,8 +13,11 @@
  */
 package org.apache.tuscany.core.runtime;
 
+import java.util.List;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.AutowireContext;
@@ -34,8 +37,6 @@ import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
-
-import java.util.List;
 
 /**
  * Tests bootstrapping a system module
@@ -98,7 +99,7 @@ public class SystemBootstrapTestCase extends TestCase {
         JavaServiceContract inter = factory.createJavaServiceContract();
         inter.setInterface(ModuleScopeSystemComponentImpl.class);
         service.setServiceContract(inter);
-        ep.getConfiguredReference().getTargetConfiguredServices().get(0).setService(service);
+        ep.getConfiguredReference().getTargetConfiguredServices().get(0).setPort(service);
         system.registerModelObject(ep);
         system.publish(new ModuleStartEvent(this));
         Assert.assertNotNull(system.getContext("TestService1").getInstance(null));

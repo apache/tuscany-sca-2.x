@@ -22,41 +22,17 @@ import org.apache.tuscany.model.assembly.ModuleComponent;
 /**
  * An implementation of ModuleComponent.
  */
-public class ModuleComponentImpl extends ComponentImpl implements ModuleComponent {
+public class ModuleComponentImpl extends ComponentImpl<Module> implements ModuleComponent {
     
     private String uri;
 
-    /**
-     * Constructor
-     */
     protected ModuleComponentImpl() {
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ModuleComponent#setModuleImplementation(org.apache.tuscany.model.assembly.Module)
-     */
-    public void setModuleImplementation(Module module) {
-        checkNotFrozen();
-        super.setComponentImplementation(module);
-    }
-    
-    /**
-     * @see org.apache.tuscany.model.assembly.ModuleComponent#getModuleImplementation()
-     */
-    public Module getModuleImplementation() {
-        return (Module)super.getComponentImplementation();
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ModuleComponent#getURI()
-     */
     public String getURI() {
         return uri;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ModuleComponent#setURI(java.lang.String)
-     */
     public void setURI(String value) {
         checkNotFrozen();
         uri=value;

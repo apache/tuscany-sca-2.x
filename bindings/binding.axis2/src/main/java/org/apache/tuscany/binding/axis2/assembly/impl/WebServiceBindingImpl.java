@@ -24,7 +24,7 @@ import javax.wsdl.Port;
 import javax.wsdl.Service;
 
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.impl.BindingImpl;
 
 /**
@@ -80,9 +80,9 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
     }
     
     /**
-     * @see org.apache.tuscany.model.assembly.impl.BindingImpl#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
+     * @see org.apache.tuscany.model.assembly.impl.BindingImpl#initialize(org.apache.tuscany.model.assembly.AssemblyContext)
      */
-    public void initialize(AssemblyModelContext modelContext) {
+    public void initialize(AssemblyContext modelContext) {
         if (isInitialized())
             return;
         super.initialize(modelContext);

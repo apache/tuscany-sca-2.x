@@ -40,7 +40,7 @@ import org.apache.tuscany.core.context.event.HttpSessionBoundEvent;
 import org.apache.tuscany.core.context.event.HttpSessionEndEvent;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 
 /**
@@ -84,7 +84,7 @@ public class TuscanyRuntime extends SCA {
 
         // Create an assembly model context
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        AssemblyModelContext modelContext = BootstrapHelper.getModelContext(classLoader);
+        AssemblyContext modelContext = BootstrapHelper.getModelContext(classLoader);
 
         // Create a runtime context and start it
         List<ContextFactoryBuilder> configBuilders = BootstrapHelper.getBuilders(monitorFactory);

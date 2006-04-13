@@ -31,14 +31,14 @@ public interface AssemblyFactory {
      *
      * @return a new SimpleComponent
      */
-    SimpleComponent createSimpleComponent();
+    AtomicComponent createSimpleComponent();
 
     /**
-     * Returns a new ComponentType.
+     * Returns a new ComponentInfo.
      *
-     * @return a new ComponentType
+     * @return a new ComponentInfo
      */
-    ComponentType createComponentType();
+    ComponentInfo createComponentInfo();
 
     /**
      * Returns a new EntryPoint.
@@ -163,7 +163,7 @@ public interface AssemblyFactory {
      * @param configuredPort  the port on the aggregatePart
      * @return a new serviceURI for the exposed service
      */
-    ServiceURI createServiceURI(ModuleComponent moduleComponent, AggregatePart aggregatePart, ConfiguredPort configuredPort);
+    ServiceURI createServiceURI(ModuleComponent moduleComponent, Part aggregatePart, ConfiguredPort configuredPort);
 
     /**
      * Create a qname from a URI

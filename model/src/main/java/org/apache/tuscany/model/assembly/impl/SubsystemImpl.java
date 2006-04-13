@@ -16,34 +16,34 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
+import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.Subsystem;
 
 /**
  * An implementation of Subsystem.
  */
-public class SubsystemImpl extends AggregateImpl implements Subsystem {
+public class SubsystemImpl extends CompositeImpl implements Subsystem {
     
     private String uri;
 
-    /**
-     * Constructor
-     */
     protected SubsystemImpl() {
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.Subsystem#getURI()
-     */
     public String getURI() {
         return uri;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.Subsystem#setURI(java.lang.String)
-     */
     public void setURI(String value) {
         checkNotFrozen();
         uri=value;
+    }
+    
+    public ComponentInfo getComponentInfo() {
+        //TODO implement
+        return null;
+    }
+    
+    public void setComponentInfo(ComponentInfo componentInfo) {
     }
 
 }

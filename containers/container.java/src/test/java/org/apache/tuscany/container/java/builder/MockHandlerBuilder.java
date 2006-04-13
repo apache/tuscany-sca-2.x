@@ -18,7 +18,7 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.MessageHandler;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 
@@ -49,7 +49,7 @@ public class MockHandlerBuilder implements ContextFactoryBuilder {
         this.request = request;
     }
 
-    public void build(AssemblyModelObject modelObject) throws BuilderException {
+    public void build(AssemblyObject modelObject) throws BuilderException {
         if (source) {
             if (!(modelObject instanceof ConfiguredReference)) {
                 return;

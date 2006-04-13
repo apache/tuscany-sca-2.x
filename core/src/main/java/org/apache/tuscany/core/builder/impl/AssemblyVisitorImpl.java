@@ -14,17 +14,17 @@
 package org.apache.tuscany.core.builder.impl;
 
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
+import org.apache.tuscany.model.assembly.AssemblyObject;
+import org.apache.tuscany.model.assembly.AssemblyVisitor;
 
 import java.util.List;
 
 /**
  * Decorates an assembly object graph with runtime configurations using a set of builders
  * 
- * @version $Rev$ $Date$
+ * @version $Rev: 392146 $ $Date: 2006-04-06 18:11:28 -0700 (Thu, 06 Apr 2006) $
  */
-public class AssemblyVisitor implements AssemblyModelVisitor {
+public class AssemblyVisitorImpl implements AssemblyVisitor {
 
     List<ContextFactoryBuilder> builders;
 
@@ -33,21 +33,21 @@ public class AssemblyVisitor implements AssemblyModelVisitor {
      * 
      * @param builders the collection of builders for creating context factories
      */
-    public AssemblyVisitor(List<ContextFactoryBuilder> builders) {
+    public AssemblyVisitorImpl(List<ContextFactoryBuilder> builders) {
         this.builders = builders;
     }
 
     /**
      * Initiate walking the object graph
      */
-    public boolean start(AssemblyModelObject modelObject) {
+    public boolean start(AssemblyObject modelObject) {
         return modelObject.accept(this);
     }
 
     /**
      * Callback when walking the graph
      */
-    public boolean visit(AssemblyModelObject modelObject) {
+    public boolean visit(AssemblyObject modelObject) {
         for (ContextFactoryBuilder builder : builders) {
             builder.build(modelObject);
         }

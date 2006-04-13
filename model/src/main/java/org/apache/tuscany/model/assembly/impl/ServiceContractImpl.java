@@ -28,52 +28,31 @@ public class ServiceContractImpl extends ExtensibleImpl implements ServiceContra
     private Class callbackInterface;
     private Scope scope;
     
-    /**
-     * Constructor
-     */
     protected ServiceContractImpl() {
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ServiceContract#getCallbackInterface()
-     */
     public Class getCallbackInterface() {
         return callbackInterface;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ServiceContract#getInterface()
-     */
     public Class getInterface() {
         return interface_;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ServiceContract#getScope()
-     */
     public Scope getScope() {
         return scope;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ServiceContract#setCallbackInterface(java.lang.Class)
-     */
     public void setCallbackInterface(Class value) {
         checkNotFrozen();
         callbackInterface=value;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ServiceContract#setInterface(java.lang.Class)
-     */
     public void setInterface(Class value) {
         checkNotFrozen();
         interface_=value;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ServiceContract#setScope(org.apache.tuscany.model.assembly.Scope)
-     */
     public void setScope(Scope scope) {
         checkNotFrozen();
         this.scope=scope;

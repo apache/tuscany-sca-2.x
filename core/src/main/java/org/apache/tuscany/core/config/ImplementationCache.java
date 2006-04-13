@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.core.config;
 
-import org.apache.tuscany.model.assembly.ComponentImplementation;
+import org.apache.tuscany.model.assembly.Implementation;
 
 import javax.xml.namespace.QName;
 
@@ -33,7 +33,7 @@ public interface ImplementationCache {
      * @param name the name of an implementation in that namespace
      * @return the implementation or null if it is not present in the cache
      */
-    ComponentImplementation get(QName type, String name);
+    Implementation get(QName type, String name);
 
     /**
      * Add an implementation to the cache
@@ -42,5 +42,5 @@ public interface ImplementationCache {
      * @param name           the name of an implementation in that namespace
      * @param implementation the introspected implementation
      */
-    void put(QName type, String name, ComponentImplementation implementation);
+    void put(QName type, String name, Implementation implementation);
 }

@@ -36,9 +36,9 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyInitializationException;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
-import org.apache.tuscany.model.assembly.Aggregate;
+import org.apache.tuscany.model.assembly.Composite;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentImplementation;
+import org.apache.tuscany.model.assembly.Implementation;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.assembly.ExternalService;
@@ -258,14 +258,14 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
             Module newModule = (Module) model;
             module = newModule;
             for (Component component : newModule.getComponents()) {
-                ComponentImplementation componentImplementation = component.getComponentImplementation();
+                Implementation componentImplementation = component.getImplementation();
                 if (componentImplementation == null) {
                     ConfigurationException e = new MissingImplementationException("Component implementation not set");
                     e.addContextName(component.getName());
                     e.addContextName(getName());
                     throw e;
                 }
-                configuration = (ContextFactory) componentImplementation.getContextFactory();
+                configuration = (ContextFactory) component.getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new MissingContextFactoryException("Context factory not set");
                     e.addContextName(component.getName());
@@ -276,7 +276,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                 registerAutowire(component);
             }
             for (EntryPoint ep : newModule.getEntryPoints()) {
-                configuration = (ContextFactory) ep.getConfiguredReference().getContextFactory();
+                configuration = (ContextFactory) ep.getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new MissingContextFactoryException("Context factory not set");
                     e.setIdentifier(ep.getName());
@@ -287,7 +287,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                 registerAutowire(ep);
             }
             for (ExternalService service : newModule.getExternalServices()) {
-                configuration = (ContextFactory) service.getConfiguredService().getContextFactory();
+                configuration = (ContextFactory) service.getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new MissingContextFactoryException("Context factory not set");
                     e.setIdentifier(service.getName());
@@ -299,8 +299,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
             }
             if (lifecycleState == RUNNING) {
                 for (Component component : newModule.getComponents()) {
-                    ContextFactory<Context> contextFactory = (ContextFactory<Context>) component
-                            .getComponentImplementation().getContextFactory();
+                    ContextFactory<Context> contextFactory = (ContextFactory<Context>) component.getContextFactory();
                     wireSource(contextFactory);
                     buildTarget(contextFactory);
                     contextFactory.prepare(this);
@@ -324,8 +323,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
 
                 }
                 for (EntryPoint ep : newModule.getEntryPoints()) {
-                    ContextFactory<Context> contextFactory = (ContextFactory<Context>) ep
-                            .getConfiguredReference().getContextFactory();
+                    ContextFactory<Context> contextFactory = (ContextFactory<Context>) ep.getContextFactory();
                     wireSource(contextFactory);
                     buildTarget(contextFactory);
                     contextFactory.prepare(this);
@@ -349,8 +347,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
 
                 }
                 for (ExternalService es : newModule.getExternalServices()) {
-                    ContextFactory<Context> contextFactory = (ContextFactory<Context>) es
-                            .getConfiguredService().getContextFactory();
+                    ContextFactory<Context> contextFactory = (ContextFactory<Context>) es.getContextFactory();
                     buildTarget(contextFactory);
                     contextFactory.prepare(this);
                     try {
@@ -382,16 +379,15 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
             if (model instanceof Component) {
                 Component component = (Component) model;
                 module.getComponents().add(component);
-                configuration = (ContextFactory<Context>) component.getComponentImplementation()
-                        .getContextFactory();
+                configuration = (ContextFactory<Context>) component.getContextFactory();
             } else if (model instanceof EntryPoint) {
                 EntryPoint ep = (EntryPoint) model;
                 module.getEntryPoints().add(ep);
-                configuration = (ContextFactory<Context>) ep.getConfiguredReference().getContextFactory();
+                configuration = (ContextFactory<Context>) ep.getContextFactory();
             } else if (model instanceof ExternalService) {
                 ExternalService service = (ExternalService) model;
                 module.getExternalServices().add(service);
-                configuration = (ContextFactory<Context>) service.getConfiguredService().getContextFactory();
+                configuration = (ContextFactory<Context>) service.getContextFactory();
             } else {
                 BuilderConfigException e = new BuilderConfigException("Unknown model type");
                 e.setIdentifier(model.getClass().getName());
@@ -608,7 +604,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         }
     }
 
-    public Aggregate getAggregate() {
+    public Composite getComposite() {
         return module;
     }
 }

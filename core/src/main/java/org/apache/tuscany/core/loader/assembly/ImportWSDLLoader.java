@@ -36,7 +36,7 @@ import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.IMPORT_WSDL;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.ImportWSDL;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.sdo.util.SDOUtil;
 
 import commonj.sdo.helper.XSDHelper;
@@ -98,7 +98,7 @@ public class ImportWSDLLoader extends AbstractLoader {
         try {
             InputStream xsdInputStream = wsdlURL.openStream();
             try {
-                AssemblyModelContext context = registry.getContext();
+                AssemblyContext context = registry.getContext();
                 XSDHelper xsdHelper = SDOUtil.createXSDHelper(context.getTypeHelper());
                 xsdHelper.define(xsdInputStream, null);
             } finally {

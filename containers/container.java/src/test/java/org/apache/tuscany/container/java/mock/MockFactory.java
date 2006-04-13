@@ -51,8 +51,8 @@ import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.context.event.ModuleStartEvent;
 import org.apache.tuscany.core.injection.EventInvoker;
@@ -70,9 +70,10 @@ import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.AtomicComponent;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
@@ -82,8 +83,7 @@ import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.SimpleComponent;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 import org.osoa.sca.annotations.ComponentName;
 import org.osoa.sca.annotations.Destroy;
@@ -110,7 +110,7 @@ public class MockFactory {
 
     private static SystemAssemblyFactory systemFactory = new SystemAssemblyFactoryImpl();
 
-    private static AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(null, null);
+    private static AssemblyContext assemblyContext = new AssemblyContextImpl(null, null);
 
     /**
      * Creates an initialized simple component
@@ -119,20 +119,20 @@ public class MockFactory {
      * @param type  the implementation type
      * @param scope the component scope
      */
-    public static SimpleComponent createComponent(String name, Class type, Scope scope) {
-        SimpleComponent sc = factory.createSimpleComponent();
+    public static AtomicComponent createComponent(String name, Class type, Scope scope) {
+        AtomicComponent sc = factory.createSimpleComponent();
         JavaImplementation impl = factory.createJavaImplementation();
-        impl.setComponentType(factory.createComponentType());
+        impl.setComponentInfo(factory.createComponentInfo());
         impl.setImplementationClass(type);
-        sc.setComponentImplementation(impl);
+        sc.setImplementation(impl);
         Service s = factory.createService();
         JavaServiceContract ji = factory.createJavaServiceContract();
         ji.setInterface(type);
         s.setServiceContract(ji);
         ji.setScope(scope);
-        impl.getComponentType().getServices().add(s);
+        impl.getComponentInfo().getServices().add(s);
         sc.setName(name);
-        sc.setComponentImplementation(impl);
+        sc.setImplementation(impl);
         return sc;
     }
 
@@ -144,15 +144,15 @@ public class MockFactory {
         Module impl = systemFactory.createModule();
         impl.setName(name);
         //impl.setImplementationClass(CompositeContextImpl.class);
-        sc.setComponentImplementation(impl);
+        sc.setImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(Scope.AGGREGATE);
-        impl.setComponentType(systemFactory.createComponentType());
-        impl.getComponentType().getServices().add(s);
+        impl.setComponentInfo(systemFactory.createComponentInfo());
+        impl.getComponentInfo().getServices().add(s);
         sc.setName(name);
-        sc.setComponentImplementation(impl);
+        sc.setImplementation(impl);
         return sc;
     }
 
@@ -164,15 +164,15 @@ public class MockFactory {
         Module impl = systemFactory.createSystemModule();
         impl.setName(name);
         //impl.setImplementationClass(SystemCompositeContextImpl.class);
-        sc.setComponentImplementation(impl);
+        sc.setImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(Scope.AGGREGATE);
-        impl.setComponentType(systemFactory.createComponentType());
-        impl.getComponentType().getServices().add(s);
+        impl.setComponentInfo(systemFactory.createComponentInfo());
+        impl.getComponentInfo().getServices().add(s);
         sc.setName(name);
-        sc.setComponentImplementation(impl);
+        sc.setImplementation(impl);
         return sc;
     }
 
@@ -207,7 +207,7 @@ public class MockFactory {
         ji.setInterface(interfaz);
         s.setServiceContract(ji);
         ConfiguredService configuredService = factory.createConfiguredService();
-        configuredService.setService(s);
+        configuredService.setPort(s);
         ep.setConfiguredService(configuredService);
         FooBinding binding = new FooBinding();
         ep.getBindings().add(binding);
@@ -249,7 +249,7 @@ public class MockFactory {
         targetService.setServiceContract(targetContract);
         targetService.setName("GenericComponent");
         ConfiguredService cTargetService = factory.createConfiguredService();
-        cTargetService.setService(targetService);
+        cTargetService.setPort(targetService);
         cTargetService.initialize(assemblyContext);
         targetComponent.getConfiguredServices().add(cTargetService);
         targetComponent.initialize(assemblyContext);
@@ -259,11 +259,11 @@ public class MockFactory {
         JavaServiceContract inter = factory.createJavaServiceContract();
         inter.setInterface(GenericComponent.class);
         ref.setServiceContract(inter);
-        sourceComponent.getComponentImplementation().getComponentType().getReferences().add(ref);
+        sourceComponent.getImplementation().getComponentInfo().getReferences().add(ref);
 
         ConfiguredReference cref = factory.createConfiguredReference("setGenericComponent", "target");
         cref.initialize(assemblyContext);
-        sourceComponent.getConfiguredReferences().put(cref.getName(), cref);
+        sourceComponent.getConfiguredReferences().add(cref);
         sourceComponent.initialize(assemblyContext);
 
         Module module = factory.createModule();
@@ -288,7 +288,7 @@ public class MockFactory {
         targetService.setServiceContract(targetContract);
         targetService.setName("HelloWorld");
         ConfiguredService cTargetService = factory.createConfiguredService();
-        cTargetService.setService(targetService);
+        cTargetService.setPort(targetService);
         targetES.setConfiguredService(cTargetService);
         targetES.initialize(assemblyContext);
 
@@ -297,11 +297,11 @@ public class MockFactory {
         JavaServiceContract inter = factory.createJavaServiceContract();
         inter.setInterface(HelloWorldService.class);
         ref.setServiceContract(inter);
-        sourceComponent.getComponentImplementation().getComponentType().getReferences().add(ref);
+        sourceComponent.getImplementation().getComponentInfo().getReferences().add(ref);
 
         ConfiguredReference cref = factory.createConfiguredReference(ref.getName(), "target");
         cref.initialize(assemblyContext);
-        sourceComponent.getConfiguredReferences().put(cref.getName(), cref);
+        sourceComponent.getConfiguredReferences().add(cref);
         sourceComponent.initialize(assemblyContext);
 
         Module module = factory.createModule();
@@ -327,7 +327,7 @@ public class MockFactory {
         targetService.setServiceContract(targetContract);
         targetService.setName("HelloWorldService");
         ConfiguredService cTargetService = factory.createConfiguredService();
-        cTargetService.setService(targetService);
+        cTargetService.setPort(targetService);
         targetComponent.getConfiguredServices().add(cTargetService);
         targetComponent.initialize(assemblyContext);
 
@@ -337,13 +337,13 @@ public class MockFactory {
         JavaServiceContract inter = factory.createJavaServiceContract();
         inter.setInterface(HelloWorldService.class);
         ref.setServiceContract(inter);
-        cref.setReference(ref);
+        cref.setPort(ref);
         cref.getTargetConfiguredServices().add(cTargetService);
         cref.initialize(assemblyContext);
 
         EntryPoint sourceEP = createFooBindingEntryPoint("source", HelloWorldService.class);
         sourceEP.setConfiguredReference(cref);
-        sourceEP.getConfiguredService().getService().setName("HelloWorldService");
+        sourceEP.getConfiguredService().getPort().setName("HelloWorldService");
         sourceEP.initialize(assemblyContext);
 
         Module module = factory.createModule();
@@ -366,40 +366,40 @@ public class MockFactory {
     public static Module createModuleWithWiredComponents(Scope sourceScope, Scope targetScope) {
 
         // create the target component
-        SimpleComponent target = factory.createSimpleComponent();
+        AtomicComponent target = factory.createSimpleComponent();
         target.setName("target");
         JavaImplementation targetImpl = factory.createJavaImplementation();
-        targetImpl.setComponentType(factory.createComponentType());
+        targetImpl.setComponentInfo(factory.createComponentInfo());
         targetImpl.setImplementationClass(TargetImpl.class);
-        target.setComponentImplementation(targetImpl);
+        target.setImplementation(targetImpl);
         Service targetService = factory.createService();
         JavaServiceContract targetContract = factory.createJavaServiceContract();
         targetContract.setInterface(Target.class);
         targetService.setServiceContract(targetContract);
         targetService.setName("Target");
-        targetImpl.getComponentType().getServices().add(targetService);
+        targetImpl.getComponentInfo().getServices().add(targetService);
         targetContract.setScope(targetScope);
         ConfiguredService cTargetService = factory.createConfiguredService();
-        cTargetService.setService(targetService);
+        cTargetService.setPort(targetService);
         cTargetService.initialize(assemblyContext);
         target.getConfiguredServices().add(cTargetService);
         target.initialize(assemblyContext);
 
         // create the source component
-        SimpleComponent source = factory.createSimpleComponent();
-        ComponentType componentType = factory.createComponentType();
+        AtomicComponent source = factory.createSimpleComponent();
+        ComponentInfo componentType = factory.createComponentInfo();
         source.setName("source");
         JavaImplementation impl = factory.createJavaImplementation();
-        impl.setComponentType(componentType);
+        impl.setComponentInfo(componentType);
         impl.setImplementationClass(SourceImpl.class);
-        source.setComponentImplementation(impl);
+        source.setImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract contract = systemFactory.createJavaServiceContract();
         contract.setInterface(Source.class);
         s.setServiceContract(contract);
         contract.setScope(sourceScope);
-        impl.getComponentType().getServices().add(s);
-        source.setComponentImplementation(impl);
+        impl.getComponentInfo().getServices().add(s);
+        source.setImplementation(impl);
 
         // wire source to target
         JavaServiceContract refContract = systemFactory.createJavaServiceContract();
@@ -410,7 +410,7 @@ public class MockFactory {
         componentType.getReferences().add(reference);
         ConfiguredReference cReference = systemFactory.createConfiguredReference(reference.getName(), "target");
         cReference.initialize(assemblyContext);
-        source.getConfiguredReferences().put(cReference.getName(), cReference);
+        source.getConfiguredReferences().add(cReference);
 
         // wire multiplicity using a setter
         JavaServiceContract refContract2 = systemFactory.createJavaServiceContract();
@@ -422,7 +422,7 @@ public class MockFactory {
         componentType.getReferences().add(reference2);
         ConfiguredReference cReference2 = systemFactory.createConfiguredReference(reference2.getName(), "target");
         cReference2.initialize(assemblyContext);
-        source.getConfiguredReferences().put(cReference2.getName(), cReference2);
+        source.getConfiguredReferences().add(cReference2);
 
 
         // wire multiplicity using a field
@@ -435,7 +435,7 @@ public class MockFactory {
         componentType.getReferences().add(reference3);
         ConfiguredReference cReference3 = systemFactory.createConfiguredReference(reference3.getName(), "target");
         cReference3.initialize(assemblyContext);
-        source.getConfiguredReferences().put(cReference3.getName(), cReference3);
+        source.getConfiguredReferences().add(cReference3);
 
         // wire multiplicity using a array
         JavaServiceContract refContract4 = systemFactory.createJavaServiceContract();
@@ -447,7 +447,7 @@ public class MockFactory {
         componentType.getReferences().add(reference4);
         ConfiguredReference cReference4 = systemFactory.createConfiguredReference(reference4.getName(), "target");
         cReference4.initialize(assemblyContext);
-        source.getConfiguredReferences().put(cReference4.getName(), cReference4);
+        source.getConfiguredReferences().add(cReference4);
         
         source.initialize(assemblyContext);
 
@@ -471,40 +471,40 @@ public class MockFactory {
     public static Module createModuleWithWiredComponentsOfDifferentInterface(Scope sourceScope, Scope targetScope) {
 
         // create the target component
-        SimpleComponent target = factory.createSimpleComponent();
+        AtomicComponent target = factory.createSimpleComponent();
         target.setName("target");
         JavaImplementation targetImpl = factory.createJavaImplementation();
-        targetImpl.setComponentType(factory.createComponentType());
+        targetImpl.setComponentInfo(factory.createComponentInfo());
         targetImpl.setImplementationClass(OtherTargetImpl.class);
-        target.setComponentImplementation(targetImpl);
+        target.setImplementation(targetImpl);
         Service targetService = factory.createService();
         JavaServiceContract targetContract = factory.createJavaServiceContract();
         targetContract.setInterface(OtherTarget.class);
         targetService.setServiceContract(targetContract);
         targetService.setName("Target");
-        targetImpl.getComponentType().getServices().add(targetService);
+        targetImpl.getComponentInfo().getServices().add(targetService);
         targetContract.setScope(targetScope);
         ConfiguredService cTargetService = factory.createConfiguredService();
-        cTargetService.setService(targetService);
+        cTargetService.setPort(targetService);
         cTargetService.initialize(assemblyContext);
         target.getConfiguredServices().add(cTargetService);
         target.initialize(assemblyContext);
 
         // create the source component
-        SimpleComponent source = factory.createSimpleComponent();
-        ComponentType componentType = factory.createComponentType();
+        AtomicComponent source = factory.createSimpleComponent();
+        ComponentInfo componentType = factory.createComponentInfo();
         source.setName("source");
         JavaImplementation impl = factory.createJavaImplementation();
-        impl.setComponentType(componentType);
+        impl.setComponentInfo(componentType);
         impl.setImplementationClass(SourceImpl.class);
-        source.setComponentImplementation(impl);
+        source.setImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract contract = systemFactory.createJavaServiceContract();
         contract.setInterface(Source.class);
         s.setServiceContract(contract);
         contract.setScope(sourceScope);
-        impl.getComponentType().getServices().add(s);
-        source.setComponentImplementation(impl);
+        impl.getComponentInfo().getServices().add(s);
+        source.setImplementation(impl);
 
         // wire source to target
         JavaServiceContract refContract = systemFactory.createJavaServiceContract();
@@ -515,7 +515,7 @@ public class MockFactory {
         componentType.getReferences().add(reference);
         ConfiguredReference cReference = systemFactory.createConfiguredReference(reference.getName(), "target");
         cReference.initialize(assemblyContext);
-        source.getConfiguredReferences().put(cReference.getName(), cReference);
+        source.getConfiguredReferences().add(cReference);
 
         // wire multiplicity using a setter
         JavaServiceContract refContract2 = systemFactory.createJavaServiceContract();
@@ -527,7 +527,7 @@ public class MockFactory {
         componentType.getReferences().add(reference2);
         ConfiguredReference cReference2 = systemFactory.createConfiguredReference(reference2.getName(), "target");
         cReference2.initialize(assemblyContext);
-        source.getConfiguredReferences().put(cReference2.getName(), cReference2);
+        source.getConfiguredReferences().add(cReference2);
 
 
         // wire multiplicity using a field
@@ -540,7 +540,7 @@ public class MockFactory {
         componentType.getReferences().add(reference3);
         ConfiguredReference cReference3 = systemFactory.createConfiguredReference(reference3.getName(), "target");
         cReference3.initialize(assemblyContext);
-        source.getConfiguredReferences().put(cReference3.getName(), cReference3);
+        source.getConfiguredReferences().add(cReference3);
 
         // wire multiplicity using a array
         JavaServiceContract refContract4 = systemFactory.createJavaServiceContract();
@@ -552,7 +552,7 @@ public class MockFactory {
         componentType.getReferences().add(reference4);
         ConfiguredReference cReference4 = systemFactory.createConfiguredReference(reference4.getName(), "target");
         cReference4.initialize(assemblyContext);
-        source.getConfiguredReferences().put(cReference4.getName(), cReference4);
+        source.getConfiguredReferences().add(cReference4);
         
         source.initialize(assemblyContext);
 
@@ -591,7 +591,7 @@ public class MockFactory {
         Component sc = createCompositeComponent(name);
         SystemContextFactoryBuilder builder = new SystemContextFactoryBuilder(null);
         builder.build(sc);
-        return (ContextFactory<Context>) sc.getComponentImplementation().getContextFactory();
+        return (ContextFactory<Context>) sc.getContextFactory();
     }
 
     /**
@@ -605,7 +605,7 @@ public class MockFactory {
      */
     public static JavaComponentContext createPojoContext(String name, Class implType, Scope scope,
                                                          CompositeContext moduleComponentContext) throws NoSuchMethodException {
-        SimpleComponent component = createComponent(name, implType, scope);
+        AtomicComponent component = createComponent(name, implType, scope);
 
         Set<Field> fields = JavaIntrospectionHelper.getAllFields(implType);
         Set<Method> methods = JavaIntrospectionHelper.getAllUniqueMethods(implType);

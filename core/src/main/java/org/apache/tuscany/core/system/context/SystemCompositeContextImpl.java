@@ -61,16 +61,16 @@ import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemObjectContextFactory;
-import org.apache.tuscany.model.assembly.Aggregate;
-import org.apache.tuscany.model.assembly.AggregatePart;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.Composite;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
+import org.apache.tuscany.model.assembly.Part;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
@@ -302,7 +302,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
             Module newModule = (Module) model;
             module = newModule;
             for (Component component : newModule.getComponents()) {
-                configuration = (ContextFactory<Context>) component.getComponentImplementation().getContextFactory();
+                configuration = (ContextFactory<Context>) component.getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new MissingContextFactoryException("Context factory not set");
                     e.addContextName(component.getName());
@@ -313,7 +313,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
                 registerAutowire(component);
             }
             for (EntryPoint ep : newModule.getEntryPoints()) {
-                configuration = (ContextFactory<Context>) ep.getConfiguredReference().getContextFactory();
+                configuration = (ContextFactory<Context>) ep.getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new MissingContextFactoryException("Context factory not set");
                     e.setIdentifier(ep.getName());
@@ -324,7 +324,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
                 registerAutowire(ep);
             }
             for (ExternalService service : newModule.getExternalServices()) {
-                configuration = (ContextFactory<Context>) service.getConfiguredService().getContextFactory();
+                configuration = (ContextFactory<Context>) service.getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new MissingContextFactoryException("Context factory not set");
                     e.setIdentifier(service.getName());
@@ -342,15 +342,15 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
             if (model instanceof Component) {
                 Component component = (Component) model;
                 module.getComponents().add(component);
-                configuration = (ContextFactory<Context>) component.getComponentImplementation().getContextFactory();
+                configuration = (ContextFactory<Context>) component.getContextFactory();
             } else if (model instanceof EntryPoint) {
                 EntryPoint ep = (EntryPoint) model;
                 module.getEntryPoints().add(ep);
-                configuration = (ContextFactory<Context>) ep.getConfiguredReference().getContextFactory();
+                configuration = (ContextFactory<Context>) ep.getContextFactory();
             } else if (model instanceof ExternalService) {
                 ExternalService service = (ExternalService) model;
                 module.getExternalServices().add(service);
-                configuration = (ContextFactory<Context>) service.getConfiguredService().getContextFactory();
+                configuration = (ContextFactory<Context>) service.getContextFactory();
             } else {
                 BuilderConfigException e = new BuilderConfigException("Unknown model type");
                 e.setIdentifier(model.getClass().getName());
@@ -359,8 +359,8 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
             }
             if (configuration == null) {
                 ConfigurationException e = new MissingContextFactoryException("Context factory not set");
-                if (model instanceof AggregatePart) {
-                    e.setIdentifier(((AggregatePart) model).getName());
+                if (model instanceof Part) {
+                    e.setIdentifier(((Part) model).getName());
                 }
                 e.addContextName(getName());
                 throw e;
@@ -428,7 +428,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
 
     }
 
-    public Aggregate getAggregate() {
+    public Composite getComposite() {
         return module;
     }
 
@@ -531,12 +531,11 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
                 EntryPoint ep = (EntryPoint) model;
                 for (Binding binding : ep.getBindings()) {
                     if (binding instanceof SystemBinding) {
-                        Class interfaze = ep.getConfiguredService().getService().getServiceContract().getInterface();
+                        Class interfaze = ep.getConfiguredService().getPort().getServiceContract().getInterface();
                         NameToScope nts = autowireIndex.get(interfaze);
                         if (nts == null || !nts.isEntryPoint()) { // handle special case where two entry points with
                             // same interface register: first wins
-                            ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getConfiguredReference()
-                                    .getContextFactory()).getScope());
+                            ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getContextFactory()).getScope());
                             if (scope == null) {
                                 ConfigurationException ce = new MissingScopeException("Scope not found for entry point");
                                 ce.setIdentifier(ep.getName());
@@ -551,10 +550,10 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
                 }
             } else if (model instanceof ModuleComponent) {
                 ModuleComponent component = (ModuleComponent) model;
-                for (EntryPoint ep : component.getModuleImplementation().getEntryPoints()) {
+                for (EntryPoint ep : component.getImplementation().getEntryPoints()) {
                     for (Binding binding : ep.getBindings()) {
                         if (binding instanceof SystemBinding) {
-                            Class interfaze = ep.getConfiguredService().getService().getServiceContract().getInterface();
+                            Class interfaze = ep.getConfiguredService().getPort().getServiceContract().getInterface();
                             if (autowireIndex.get(interfaze) == null) {
                                 ScopeContext scope = scopeContexts.get(Scope.AGGREGATE);
                                 // only register if an impl has not already been registered, ensuring it is not visible outside the containment
@@ -567,7 +566,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
                 }
             } else if (model instanceof Component) {
                 Component component = (Component) model;
-                for (Service service : component.getComponentImplementation().getComponentType().getServices()) {
+                for (Service service : component.getImplementation().getComponentInfo().getServices()) {
                     Class interfaze = service.getServiceContract().getInterface();
                     if (autowireIndex.get(interfaze) == null) {
                         // only register if an impl has not already been registered
@@ -586,7 +585,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
         }
     }
 
-    public void build(AssemblyModelObject model) throws BuilderConfigException {
+    public void build(AssemblyObject model) throws BuilderConfigException {
         if (configurationContext != null) {
             configurationContext.build(model);
         }

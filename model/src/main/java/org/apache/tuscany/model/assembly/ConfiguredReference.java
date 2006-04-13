@@ -25,21 +25,7 @@ import java.util.List;
  * has a multiplicity greater than 1 (0..n or 1..n) then the configured
  * reference many have multiple targets.
  */
-public interface ConfiguredReference extends ConfiguredPort {
-
-    /**
-     * Returns the name of the reference being configured.
-     *
-     * @return the name of the reference being configured
-     */
-    String getName();
-
-    /**
-     * Set the name of the reference being configured.
-     *
-     * @param name the name of the reference being configured
-     */
-    void setName(String name);
+public interface ConfiguredReference extends ConfiguredPort<Reference> {
 
     /**
      * List of URIs for the targets of this reference.
@@ -47,20 +33,6 @@ public interface ConfiguredReference extends ConfiguredPort {
      * @return the list of URIs for the targets of this reference
      */
     List<String> getTargets();
-
-    /**
-     * Returns the {@link Reference} that is being configured.
-     *
-     * @return the {@link Reference} that is being configured
-     */
-    Reference getReference();
-
-    /**
-     * Sets the {@link Reference} that is being configured.
-     *
-     * @param reference the {@link Reference} that is being configured
-     */
-    void setReference(Reference reference);
 
     /**
      * Returns the list of configured services that are wired to this configured reference.

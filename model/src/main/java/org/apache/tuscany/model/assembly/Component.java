@@ -17,25 +17,24 @@
 package org.apache.tuscany.model.assembly;
 
 import java.util.List;
-import java.util.Map;
 
 
 /**
- * A component is a configured instance of a generic {@link ComponentImplementation}.
+ * A component is a configured instance of a generic {@link Implementation}.
  */
-public interface Component extends Extensible, AggregatePart {
+public interface Component<I extends Implementation> extends Part {
 
     /**
-     * Returns the ComponentImplementation for this configured instance.
-     * @return the ComponentImplementation for this configured instance
+     * Returns the Implementation for this configured instance.
+     * @return the Implementation for this configured instance
      */
-    ComponentImplementation getComponentImplementation();
+    I getImplementation();
 
     /**
-     * Sets the ComponentImplementation for this configured instance
-     * @param value the ComponentImplementation for this configured instance
+     * Sets the Implementation for this configured instance
+     * @param value the Implementation for this configured instance
      */
-    void setComponentImplementation(ComponentImplementation value);
+    void setImplementation(I value);
 
     /**
      * Returns a list of configured property values for this configured instance.
@@ -53,11 +52,11 @@ public interface Component extends Extensible, AggregatePart {
     ConfiguredProperty getConfiguredProperty(String name);
 
     /**
-     * Returns a live map of this components configured references, keyed by reference name.
+     * Returns the configured references for the configured instance.
      *
-     * @return a live map of configured references
+     * @return the configured references for the configured instance
      */
-    Map<String, ConfiguredReference> getConfiguredReferences();
+    List<ConfiguredReference> getConfiguredReferences();
 
     /**
      * Returns the ConfiguredReference value for the specified reference.

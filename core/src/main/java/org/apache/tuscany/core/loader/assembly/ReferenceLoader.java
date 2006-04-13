@@ -20,7 +20,7 @@ import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXUtil;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.REFERENCE;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.ServiceContract;
@@ -54,7 +54,7 @@ public class ReferenceLoader extends AbstractLoader {
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
-                AssemblyModelObject o = registry.load(reader, resourceLoader);
+                AssemblyObject o = registry.load(reader, resourceLoader);
                 if (o instanceof ServiceContract) {
                     reference.setServiceContract((ServiceContract) o);
                 }

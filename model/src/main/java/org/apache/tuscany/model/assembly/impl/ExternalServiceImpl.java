@@ -17,11 +17,10 @@
 package org.apache.tuscany.model.assembly.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.AssemblyVisitor;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.ExternalService;
@@ -30,66 +29,55 @@ import org.apache.tuscany.model.assembly.OverrideOption;
 /**
  * An implementation ExternalService.
  */
-public class ExternalServiceImpl extends AggregatePartImpl implements ExternalService {
+public class ExternalServiceImpl extends PartImpl implements ExternalService {
 
     private ConfiguredService configuredService;
     private OverrideOption overrideOption;
     private List<Binding> bindings=new ArrayList<Binding>();
+    
+    private Object contextFactory;
 
-    /**
-     * Constructor
-     */
     protected ExternalServiceImpl() {
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.sdo.impl.ExternalServiceImpl#getOverrideOption()
-     */
     public OverrideOption getOverrideOption() {
         return overrideOption;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ExternalService#setOverrideOption(org.apache.tuscany.model.assembly.OverrideOption)
-     */
     public void setOverrideOption(OverrideOption newOverridable) {
         checkNotFrozen();
         overrideOption=newOverridable;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ExternalService#getBindings()
-     */
     public List<Binding> getBindings() {
         return bindings;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ExternalService#getConfiguredService()
-     */
     public ConfiguredService getConfiguredService() {
         return configuredService;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.ExternalService#setConfiguredService(org.apache.tuscany.model.assembly.ConfiguredService)
-     */
     public void setConfiguredService(ConfiguredService configuredService) {
         checkNotFrozen();
+        configuredService.setPart(this);
         this.configuredService=configuredService;
     }
+    
+    public Object getContextFactory() {
+        return contextFactory;
+    }
+    
+    public void setContextFactory(Object contextFactory) {
+        this.contextFactory=contextFactory;
+    }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
-     */
-    public void initialize(AssemblyModelContext modelContext) {
+    public void initialize(AssemblyContext modelContext) {
         if (isInitialized())
             return;
         super.initialize(modelContext);
 
         // Initialize the configured service 
         if (configuredService != null) {
-            ((ConfiguredPortImpl)configuredService).setAggregatePart(this);
             configuredService.initialize(modelContext);
         }
         
@@ -97,9 +85,6 @@ public class ExternalServiceImpl extends AggregatePartImpl implements ExternalSe
         initialize(bindings, modelContext);
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#freeze()
-     */
     public void freeze() {
         if (isFrozen())
             return;
@@ -110,14 +95,10 @@ public class ExternalServiceImpl extends AggregatePartImpl implements ExternalSe
             configuredService.freeze();
 
         // Freeze the bindings
-        bindings=Collections.unmodifiableList(bindings);
-        freeze(bindings);
+        bindings=freeze(bindings);
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.impl.ExtensibleImpl#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
-     */
-    public boolean accept(AssemblyModelVisitor visitor) {
+    public boolean accept(AssemblyVisitor visitor) {
         if (!super.accept(visitor))
             return false;
         

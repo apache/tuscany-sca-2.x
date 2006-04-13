@@ -16,17 +16,15 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
-import org.apache.tuscany.model.assembly.SimpleComponent;
+import org.apache.tuscany.model.assembly.AtomicComponent;
+import org.apache.tuscany.model.assembly.AtomicImplementation;
 
 /**
- * An implementation of SimpleComponent.
+ * An implementation of AtomicComponent.
  */
-public class SimpleComponentImpl extends ComponentImpl implements SimpleComponent {
+public class AtomicComponentImpl extends ComponentImpl<AtomicImplementation> implements AtomicComponent {
 
-    /**
-     * Constructor
-     */
-    protected SimpleComponentImpl() {
+    protected AtomicComponentImpl() {
     }
 
 }

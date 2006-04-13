@@ -21,7 +21,7 @@ import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.SystemModule;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
@@ -53,16 +53,16 @@ public class SystemAssemblyFactoryImpl extends AssemblyFactoryImpl implements Sy
         Service s = createService();
         s.setServiceContract(jsc);
 
-        ComponentType componentType = createComponentType();
+        ComponentInfo componentType = createComponentInfo();
         componentType.getServices().add(s);
 
         SystemImplementation sysImpl = createSystemImplementation();
         sysImpl.setImplementationClass(impl);
-        sysImpl.setComponentType(componentType);
+        sysImpl.setComponentInfo(componentType);
 
         Component sc = createSimpleComponent();
         sc.setName(name);
-        sc.setComponentImplementation(sysImpl);
+        sc.setImplementation(sysImpl);
         return sc;
     }
 

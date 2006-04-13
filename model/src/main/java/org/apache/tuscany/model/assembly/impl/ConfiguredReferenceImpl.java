@@ -17,7 +17,6 @@
 package org.apache.tuscany.model.assembly.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.tuscany.model.assembly.ConfiguredReference;
@@ -27,59 +26,28 @@ import org.apache.tuscany.model.assembly.Reference;
 /**
  * An implementation of ConfiguredReference.
  */
-public class ConfiguredReferenceImpl extends ConfiguredPortImpl implements ConfiguredReference {
+public class ConfiguredReferenceImpl extends ConfiguredPortImpl<Reference> implements ConfiguredReference {
 
-    private String name;
     private List<String> targets = new ArrayList<String>();
 
     private List<ConfiguredService> targetConfiguredServices = new ArrayList<ConfiguredService>();
 
     protected ConfiguredReferenceImpl() {
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    
     public List<String> getTargets() {
         return targets;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredReference#getReference()
-     */
-    public Reference getReference() {
-        return (Reference) super.getPort();
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredReference#setReference(org.apache.tuscany.model.assembly.Reference)
-     */
-    public void setReference(Reference reference) {
-        checkNotFrozen();
-        super.setPort(reference);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredReference#getTargetConfiguredServices()
-     */
     public List<ConfiguredService> getTargetConfiguredServices() {
         return targetConfiguredServices;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.impl.ConfiguredPortImpl#freeze()
-     */
     public void freeze() {
         super.freeze();
 
-        // Freeze list of configured services
-        targetConfiguredServices = Collections.unmodifiableList(targetConfiguredServices);
-        targets = Collections.unmodifiableList(targets);
+        targetConfiguredServices = freeze(targetConfiguredServices);
+        targets = freeze(targets);
     }
 
 }

@@ -19,10 +19,11 @@ package org.apache.tuscany.model.assembly;
 import java.util.List;
 
 /**
- * A specialized {@link ComponentImplementation} that defines a modular unit of assembly.
+ * A specialized {@link Implementation} that defines a modular unit of assembly.
  * A Module denotes the extent of assembly in which pass-by-reference semantics are supported.
  */
-public interface Module extends Aggregate, ComponentImplementation {
+public interface Module extends Composite {
+    
     /**
      * Returns a list of assembly fragments that combine to form a single module.
      * @return a list of assembly fragments that combine to form a single module

@@ -13,7 +13,12 @@
  */
 package org.apache.tuscany.core.system.builder;
 
-import commonj.sdo.DataObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
@@ -41,19 +46,19 @@ import org.apache.tuscany.core.injection.SDOObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.annotation.Monitor;
+import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.SystemModule;
 import org.apache.tuscany.core.system.config.SystemContextFactory;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentImplementation;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
+import org.apache.tuscany.model.assembly.Implementation;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Scope;
@@ -63,12 +68,7 @@ import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import commonj.sdo.DataObject;
 
 /**
  * Decorates components whose implementation type is a
@@ -87,7 +87,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
         this.monitorFactory = monitorFactory;
     }
 
-    public void build(AssemblyModelObject modelObject) throws BuilderException {
+    public void build(AssemblyObject modelObject) throws BuilderException {
         if (!(modelObject instanceof Component)) {
             return;
         }
@@ -96,13 +96,13 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
         Class implClass;
         Scope scope;
         // Get the component implementation
-        ComponentImplementation componentImplementation = component.getComponentImplementation();
-        if (componentImplementation instanceof SystemImplementation && componentImplementation.getContextFactory() == null) {
+        Implementation componentImplementation = component.getImplementation();
+        if (componentImplementation instanceof SystemImplementation && component.getContextFactory() == null) {
 
             // The component is a system component, implemented by a Java class
             SystemImplementation javaImpl = (SystemImplementation) componentImplementation;
-            if (componentImplementation.getComponentType().getServices() == null
-                    || componentImplementation.getComponentType().getServices().size() < 1) {
+            if (componentImplementation.getComponentInfo().getServices() == null
+                    || componentImplementation.getComponentInfo().getServices().size() < 1) {
                 BuilderConfigException e = new BuilderConfigException("No service configured on component type");
                 e.setIdentifier(component.getName());
                 throw e;
@@ -110,7 +110,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
             implClass = javaImpl.getImplementationClass();
             Scope previous = null;
             scope = Scope.INSTANCE;
-            List<Service> services = component.getComponentImplementation().getComponentType().getServices();
+            List<Service> services = component.getImplementation().getComponentInfo().getServices();
             for (Service service : services) {
                 // calculate and validate the scope of the component; ensure that all service scopes are the same unless
                 // a scope is stateless
@@ -177,9 +177,9 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
             // FIXME do not inject references on an application module yet
             if (implClass != CompositeContextImpl.class) {
                 // handle references
-                Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
+                List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
                 if (configuredReferences != null) {
-                    for (ConfiguredReference reference : configuredReferences.values()) {
+                    for (ConfiguredReference reference : configuredReferences) {
                         Injector injector = createReferenceInjector(reference, fields, methods, contextFactory);
                         injectors.add(injector);
                     }
@@ -307,7 +307,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
             contextFactory.setInitInvoker(initInvoker);
             contextFactory.setDestroyInvoker(destroyInvoker);
             // decorate the logical model
-            componentImplementation.setContextFactory(contextFactory);
+            component.setContextFactory(contextFactory);
         } catch (BuilderConfigException e) {
             e.addContextName(component.getName());
             throw e;
@@ -378,13 +378,13 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
             ContextResolver resolver) {
 
         List<ObjectFactory> objectFactories = new ArrayList<ObjectFactory>();
-        String refName = reference.getReference().getName();
-        Class refClass = reference.getReference().getServiceContract().getInterface();
+        String refName = reference.getPort().getName();
+        Class refClass = reference.getPort().getServiceContract().getInterface();
         for (ConfiguredService configuredService : reference.getTargetConfiguredServices()) {
             objectFactories.add(new NonProxiedTargetFactory(configuredService, resolver));
         }
-        boolean multiplicity = reference.getReference().getMultiplicity() == Multiplicity.ONE_N
-                || reference.getReference().getMultiplicity() == Multiplicity.ZERO_N;
+        boolean multiplicity = reference.getPort().getMultiplicity() == Multiplicity.ONE_N
+                || reference.getPort().getMultiplicity() == Multiplicity.ZERO_N;
         return createInjector(refName, refClass, multiplicity, objectFactories, fields, methods);
 
     }

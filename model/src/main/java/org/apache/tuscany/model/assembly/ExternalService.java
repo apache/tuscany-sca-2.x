@@ -20,10 +20,10 @@ import java.util.List;
 
 
 /**
- * An external service consumed by its containing {@link Aggregate}.
- * All references used by the aggregate are specified as external services.
+ * An external service consumed by its containing {@link Composite}.
+ * All references used by the composite are specified as external services.
  */
-public interface ExternalService extends AggregatePart, Extensible {
+public interface ExternalService extends Part {
 
     /**
      * Returns the bindings that can be used by operations on this external service.

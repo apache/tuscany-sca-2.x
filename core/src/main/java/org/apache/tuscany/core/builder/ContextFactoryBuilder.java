@@ -1,6 +1,6 @@
 package org.apache.tuscany.core.builder;
 
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 
 /**
  * Implementations perform the first phase of converting a logical model representing an assembly into a series of
@@ -39,6 +39,6 @@ public interface ContextFactoryBuilder{
      * @param object the logical configuration model node
      * @throws BuilderException
      */
-    public void build(AssemblyModelObject object) throws BuilderException;
+    public void build(AssemblyObject object) throws BuilderException;
 
 }

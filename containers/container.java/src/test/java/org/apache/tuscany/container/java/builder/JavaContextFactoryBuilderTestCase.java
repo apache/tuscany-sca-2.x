@@ -56,19 +56,18 @@ public class JavaContextFactoryBuilderTestCase extends TestCase {
         for (Component component : components) {
             compMap.put(component.getName(), component);
             builder.build(component);
-            ContextFactory contextFactory = (ContextFactory) component.getComponentImplementation().getContextFactory();
+            ContextFactory contextFactory = (ContextFactory) component.getContextFactory();
             Assert.assertNotNull(contextFactory);
         }
         for (Component component : components) {
-            ContextFactory<Context> source = (ContextFactory<Context>) component.getComponentImplementation().getContextFactory();
+            ContextFactory<Context> source = (ContextFactory<Context>) component.getContextFactory();
             Assert.assertNotNull(source);
             for (ProxyFactory pFactory : source.getSourceProxyFactories()) {
                 ProxyConfiguration pConfig = pFactory.getProxyConfiguration();
                 Component target = compMap.get(pConfig.getTargetName().getPartName());
 
                 if (target != null) {
-                    ContextFactory targetConfig = (ContextFactory) target.getComponentImplementation()
-                            .getContextFactory();
+                    ContextFactory targetConfig = (ContextFactory) target.getContextFactory();
                     boolean downScope = strategy.downScopeReference(source.getScope(), targetConfig.getScope());
                     wireBuilder.connect(pFactory, targetConfig.getTargetProxyFactory(pFactory.getProxyConfiguration().getTargetName()
                             .getPortName()), targetConfig.getClass(), downScope, scopeContext);
@@ -79,7 +78,7 @@ public class JavaContextFactoryBuilderTestCase extends TestCase {
             scopeContext.registerFactory(source);
         }
         for (Component component : components) {
-            ContextFactory config = (ContextFactory) component.getComponentImplementation().getContextFactory();
+            ContextFactory config = (ContextFactory) component.getContextFactory();
             Context context = config.createContext();
             if ("source".equals(component.getName())) {
                 ModuleScopeComponent source = (ModuleScopeComponent) context.getInstance(null);

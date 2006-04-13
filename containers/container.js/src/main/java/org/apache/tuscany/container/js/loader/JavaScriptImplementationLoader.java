@@ -40,7 +40,7 @@ import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.core.loader.assembly.AssemblyConstants;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.ComponentInfo;
 
 /**
  * @version $Rev$ $Date$
@@ -87,10 +87,10 @@ public class JavaScriptImplementationLoader implements StAXElementLoader<JavaScr
         String scriptFile = reader.getAttributeValue(null, "scriptFile");
         String style = reader.getAttributeValue(null, "style");
         String script = loadScript(scriptFile, resourceLoader);
-        ComponentType componentType = loadComponentType(scriptFile, resourceLoader);
+        ComponentInfo componentType = loadComponentType(scriptFile, resourceLoader);
 
         JavaScriptImplementation jsImpl = factory.createJavaScriptImplementation();
-        jsImpl.setComponentType(componentType);
+        jsImpl.setComponentInfo(componentType);
         jsImpl.setScriptFile(scriptFile);
         jsImpl.setStyle(style);
         jsImpl.setScript(script);
@@ -127,7 +127,7 @@ public class JavaScriptImplementationLoader implements StAXElementLoader<JavaScr
         }
     }
 
-    protected ComponentType loadComponentType(String scriptFile, ResourceLoader resourceLoader) throws SidefileLoadException, MissingResourceException{
+    protected ComponentInfo loadComponentType(String scriptFile, ResourceLoader resourceLoader) throws SidefileLoadException, MissingResourceException{
         String sidefile = scriptFile.substring(0, scriptFile.lastIndexOf('.')) + ".componentType";
         URL componentTypeFile = resourceLoader.getResource(sidefile);
         if (componentTypeFile == null) {
@@ -147,7 +147,7 @@ public class JavaScriptImplementationLoader implements StAXElementLoader<JavaScr
                         e.setResourceURI(componentTypeFile.toString());
                         throw e;
                     }
-                    return (ComponentType) registry.load(reader, resourceLoader);
+                    return (ComponentInfo) registry.load(reader, resourceLoader);
                 } finally {
                     try {
                         reader.close();

@@ -21,7 +21,7 @@ package org.apache.tuscany.model.assembly;
 /**
  * Represents a subsystem.
  */
-public interface Subsystem extends Aggregate {
+public interface Subsystem extends Composite {
 
     /**
      * Returns the subsystem uri.

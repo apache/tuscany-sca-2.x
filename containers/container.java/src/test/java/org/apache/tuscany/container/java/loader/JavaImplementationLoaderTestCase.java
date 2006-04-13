@@ -35,9 +35,9 @@ import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.core.loader.assembly.AssemblyConstants;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
-import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.AssemblyObject;
+import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.Property;
 import org.apache.tuscany.model.assembly.Service;
 
@@ -46,10 +46,10 @@ import org.apache.tuscany.model.assembly.Service;
  */
 public class JavaImplementationLoaderTestCase extends TestCase {
     private JavaImplementationLoader loader;
-    private ComponentType mockType;
+    private ComponentInfo mockType;
 
     public void testNakedHelloWorld() throws ConfigurationLoadException {
-        ComponentType type = loader.loadComponentTypeByIntrospection(NakedHelloWorld.class);
+        ComponentInfo type = loader.loadComponentTypeByIntrospection(NakedHelloWorld.class);
         Assert.assertNotNull(type);
         Assert.assertTrue(type.getProperties().isEmpty());
         Assert.assertTrue(type.getReferences().isEmpty());
@@ -62,12 +62,12 @@ public class JavaImplementationLoaderTestCase extends TestCase {
         StAXLoaderRegistry mockRegistry = new MockRegistry(mockType);
         loader.setRegistry(mockRegistry);
         URL sidefile = HelloWorldImpl.class.getResource("HelloWorldImpl.componentType");
-        ComponentType type = loader.loadComponentTypeFromSidefile(sidefile, null);
+        ComponentInfo type = loader.loadComponentTypeFromSidefile(sidefile, null);
         assertSame(mockType, type);
     }
 
     public void testHelloWorldWithFieldProperties() throws ConfigurationLoadException {
-        ComponentType type = loader.loadComponentTypeByIntrospection(HelloWorldWithFieldProperties.class);
+        ComponentInfo type = loader.loadComponentTypeByIntrospection(HelloWorldWithFieldProperties.class);
         type.initialize(null);
         Assert.assertNotNull(type);
         List<Property> props = type.getProperties();
@@ -95,39 +95,39 @@ public class JavaImplementationLoaderTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         JavaAssemblyFactory factory = new JavaAssemblyFactoryImpl();
-        mockType = factory.createComponentType();
+        mockType = factory.createComponentInfo();
 
         loader = new JavaImplementationLoader();
         loader.setFactory(factory);
     }
 
     private static class MockRegistry implements StAXLoaderRegistry {
-        private final ComponentType mockType;
+        private final ComponentInfo mockType;
 
-        public MockRegistry(ComponentType mockType) {
+        public MockRegistry(ComponentInfo mockType) {
             this.mockType = mockType;
         }
 
-        public AssemblyModelObject load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+        public AssemblyObject load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
             assertEquals(AssemblyConstants.COMPONENT_TYPE, reader.getName());
             return mockType;
         }
 
-        public <T extends AssemblyModelObject> void registerLoader(StAXElementLoader<T> loader) {
+        public <T extends AssemblyObject> void registerLoader(StAXElementLoader<T> loader) {
             throw new UnsupportedOperationException();
         }
 
-        public <T extends AssemblyModelObject> void unregisterLoader(StAXElementLoader<T> loader) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Deprecated
-        public AssemblyModelContext getContext() {
+        public <T extends AssemblyObject> void unregisterLoader(StAXElementLoader<T> loader) {
             throw new UnsupportedOperationException();
         }
 
         @Deprecated
-        public void setContext(AssemblyModelContext context) {
+        public AssemblyContext getContext() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Deprecated
+        public void setContext(AssemblyContext context) {
             throw new UnsupportedOperationException();
         }
     }

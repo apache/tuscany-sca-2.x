@@ -23,8 +23,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.model.assembly.Aggregate;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.Composite;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;
@@ -35,12 +35,12 @@ import org.apache.tuscany.model.assembly.Wire;
  * @version $Rev$ $Date$
  */
 public abstract class AggregateLoader extends AbstractLoader {
-    public void loadAggregate(XMLStreamReader reader, Aggregate aggregate, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public void loadAggregate(XMLStreamReader reader, Composite aggregate, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         aggregate.setName(reader.getAttributeValue(null, "name"));
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
-                AssemblyModelObject o = registry.load(reader, resourceLoader);
+                AssemblyObject o = registry.load(reader, resourceLoader);
                 if (o instanceof EntryPoint) {
                     aggregate.getEntryPoints().add((EntryPoint) o);
                 } else if (o instanceof ExternalService) {

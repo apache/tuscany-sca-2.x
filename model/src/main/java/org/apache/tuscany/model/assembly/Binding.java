@@ -19,21 +19,21 @@ package org.apache.tuscany.model.assembly;
 
 /**
  * The binding of an entry point or external service to a transport.
- * This model object will typically by extended by binding implementations to allow
+ * This model object will typically be extended by binding implementations to allow
  * specification of binding/transport specific information.
  */
-public interface Binding extends AssemblyModelObject, ContextFactoryHolder {
+public interface Binding extends AssemblyObject {
     /**
      * Returns the binding URI.
      * @return the binding uri
-     * todo do we need this?
+     * TODO do we need this?
      */
     String getURI();
 
     /**
      * Sets binding URI.
      * @param value the binding uri
-     * todo do we need this?
+     * TODO do we need this?
      */
     void setURI(String value);
 

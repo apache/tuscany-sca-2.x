@@ -20,7 +20,7 @@ import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.ModuleFragment;
@@ -43,11 +43,11 @@ public abstract class AbstractModuleComponentConfigurationLoader implements Modu
     //FIXME can fragments have a variable prefix name?
     private static final String SYSTEM_FRAGMENT_FILE_NAME = "system.fragment";
 
-    protected final AssemblyModelContext modelContext;
+    protected final AssemblyContext modelContext;
     protected final ResourceLoader resourceLoader;
     protected final AssemblyFactory assemblyFactory;
 
-    protected AbstractModuleComponentConfigurationLoader(AssemblyModelContext modelContext) {
+    protected AbstractModuleComponentConfigurationLoader(AssemblyContext modelContext) {
         this.modelContext = modelContext;
         resourceLoader = modelContext.getApplicationResourceLoader();
         assemblyFactory = modelContext.getAssemblyFactory();
@@ -109,7 +109,7 @@ public abstract class AbstractModuleComponentConfigurationLoader implements Modu
         ModuleComponent moduleComponent=assemblyFactory.createModuleComponent();
         moduleComponent.setName(name);
         moduleComponent.setURI(uri);
-        moduleComponent.setComponentImplementation(module);
+        moduleComponent.setImplementation(module);
         moduleComponent.initialize(modelContext);
 
         return moduleComponent;

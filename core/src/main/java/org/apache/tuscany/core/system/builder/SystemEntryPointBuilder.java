@@ -19,7 +19,7 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.injection.FactoryInitException;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemEntryPointContextFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
 
@@ -41,31 +41,31 @@ public class SystemEntryPointBuilder implements ContextFactoryBuilder {
     // Methods
     // ----------------------------------
 
-    public void build(AssemblyModelObject modelObject) throws BuilderException {
+    public void build(AssemblyObject modelObject) throws BuilderException {
         if (!(modelObject instanceof EntryPoint)) {
             return;
         }
         EntryPoint entryPoint = (EntryPoint) modelObject;
         if (!(entryPoint.getBindings().get(0) instanceof SystemBinding)
-                || entryPoint.getConfiguredReference().getContextFactory() != null) {
+                || entryPoint.getContextFactory() != null) {
             return;
         }
         try {
             String targetName;
             ConfiguredService targetService = entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0);
-            if (targetService.getAggregatePart() == null) {
+            if (targetService.getPart() == null) {
                 // FIXME not correct
-                if (targetService.getService() == null) {
+                if (targetService.getPort() == null) {
                     BuilderInitException e = new BuilderInitException("No target service specified on ");
                     e.setIdentifier(entryPoint.getName());
                 }
-                targetName = targetService.getService().getName();
+                targetName = targetService.getPort().getName();
             } else {
-                targetName = targetService.getAggregatePart().getName();
+                targetName = targetService.getPart().getName();
             }
             SystemEntryPointContextFactory contextFactory = new SystemEntryPointContextFactory(entryPoint.getName(),
                     targetName);
-            entryPoint.getConfiguredReference().setContextFactory(contextFactory);
+            entryPoint.setContextFactory(contextFactory);
         } catch (FactoryInitException e) {
             e.addContextName(entryPoint.getName());
             throw e;

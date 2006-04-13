@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.core.config;
 
-import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.ComponentInfo;
 
 /**
  * Interface for implementations that are able create SCA definitions
@@ -32,6 +32,6 @@ public interface ComponentTypeIntrospector {
      * @return a componentType definition
      * @throws ConfigurationLoadException if the Class does not define a valid component type
      */
-    ComponentType introspect(Class<?> implClass) throws ConfigurationLoadException;
+    ComponentInfo introspect(Class<?> implClass) throws ConfigurationLoadException;
 
 }

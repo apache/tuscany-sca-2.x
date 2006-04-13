@@ -21,11 +21,8 @@ import org.apache.tuscany.model.assembly.ModuleFragment;
 /**
  * An implementation of ModuleFragment.
  */
-public class ModuleFragmentImpl extends AggregateImpl implements ModuleFragment {
+public class ModuleFragmentImpl extends CompositeImpl implements ModuleFragment {
 
-    /**
-     * Constructor
-     */
     protected ModuleFragmentImpl() {
     }
 

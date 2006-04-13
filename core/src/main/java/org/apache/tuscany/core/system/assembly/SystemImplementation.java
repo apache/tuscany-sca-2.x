@@ -16,14 +16,14 @@
  */
 package org.apache.tuscany.core.system.assembly;
 
-import org.apache.tuscany.model.assembly.ComponentImplementation;
+import org.apache.tuscany.model.assembly.AtomicImplementation;
 
 /**
  * Represents a system component implementation
  * 
  * @version $Rev$ $Date$
  */
-public interface SystemImplementation extends ComponentImplementation {
+public interface SystemImplementation extends AtomicImplementation {
 
     /**
      * Returns the implementation class of the system component

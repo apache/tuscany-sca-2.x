@@ -1,6 +1,13 @@
 package org.apache.tuscany.container.java.builder;
 
-import commonj.sdo.DataObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
 import org.apache.tuscany.container.java.config.JavaContextFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
@@ -31,7 +38,8 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
+import org.apache.tuscany.model.assembly.AtomicComponent;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
@@ -39,19 +47,12 @@ import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceContract;
-import org.apache.tuscany.model.assembly.SimpleComponent;
 import org.osoa.sca.annotations.ComponentName;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import commonj.sdo.DataObject;
 
 /**
  * Builds context factories for component implementations that map to
@@ -130,14 +131,14 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
     // Methods
     // ----------------------------------
 
-    public void build(AssemblyModelObject modelObject) throws BuilderException {
-        if (!(modelObject instanceof SimpleComponent)) {
+    public void build(AssemblyObject modelObject) throws BuilderException {
+        if (!(modelObject instanceof AtomicComponent)) {
             return;
         }
-        SimpleComponent component = (SimpleComponent) modelObject;
-        if (component.getComponentImplementation() instanceof JavaImplementation) {
-            JavaImplementation javaImpl = (JavaImplementation) component.getComponentImplementation();
-            List<Service> services = component.getComponentImplementation().getComponentType().getServices();
+        AtomicComponent component = (AtomicComponent) modelObject;
+        if (component.getImplementation() instanceof JavaImplementation) {
+            JavaImplementation javaImpl = (JavaImplementation) component.getImplementation();
+            List<Service> services = component.getImplementation().getComponentInfo().getServices();
             Scope previous = null;
             Scope scope = Scope.INSTANCE;
             for (Service service : services) {
@@ -216,11 +217,11 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                         injectors.add(injector);
                     }
                 }
-                component.getComponentImplementation().setContextFactory(contextFactory);
+                component.setContextFactory(contextFactory);
 
                 // create target-side invocation chains for each service offered by the implementation
                 for (ConfiguredService configuredService : component.getConfiguredServices()) {
-                    Service service = configuredService.getService();
+                    Service service = configuredService.getPort();
                     ServiceContract serviceContract = service.getServiceContract();
                     Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
                     ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
@@ -249,9 +250,9 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                 }
 
                 // create injectors for references
-                Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
+                List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
                 if (configuredReferences != null) {
-                    for (ConfiguredReference reference : configuredReferences.values()) {
+                    for (ConfiguredReference reference : configuredReferences) {
                         Injector injector = createReferenceInjector(contextFactory, reference, fields, methods);
                         injectors.add(injector);
                     }
@@ -322,15 +323,15 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
 
         // iterate through the targets
         List<ObjectFactory> objectFactories = new ArrayList<ObjectFactory>();
-        String refName = reference.getReference().getName();
-        Class refClass = reference.getReference().getServiceContract().getInterface();
+        String refName = reference.getPort().getName();
+        Class refClass = reference.getPort().getServiceContract().getInterface();
         for (ConfiguredService configuredService : reference.getTargetConfiguredServices()) {
-            String targetCompName = configuredService.getAggregatePart().getName();
-            String targetSerivceName = configuredService.getService().getName();
+            String targetCompName = configuredService.getPart().getName();
+            String targetSerivceName = configuredService.getPort().getName();
             QualifiedName qName = new QualifiedName(targetCompName + QualifiedName.NAME_SEPARATOR + targetSerivceName);
 
             ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
-            Class interfaze = reference.getReference().getServiceContract().getInterface();
+            Class interfaze = reference.getPort().getServiceContract().getInterface();
             Map<Method, InvocationConfiguration> iConfigMap = new HashMap<Method, InvocationConfiguration>();
             Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(interfaze);
             for (Method method : javaMethods) {
@@ -342,7 +343,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                     messageFactory);
             proxyFactory.setBusinessInterface(interfaze);
             proxyFactory.setProxyConfiguration(pConfiguration);
-            config.addSourceProxyFactory(reference.getReference().getName(), proxyFactory);
+            config.addSourceProxyFactory(reference.getPort().getName(), proxyFactory);
             configuredService.setProxyFactory(proxyFactory);
             if (policyBuilder != null) {
                 // invoke the reference builder to handle metadata associated with the reference
@@ -350,8 +351,8 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
             }
             objectFactories.add(new ProxyObjectFactory(proxyFactory));
         }
-        boolean multiplicity = reference.getReference().getMultiplicity() == Multiplicity.ONE_N
-                || reference.getReference().getMultiplicity() == Multiplicity.ZERO_N;
+        boolean multiplicity = reference.getPort().getMultiplicity() == Multiplicity.ONE_N
+                || reference.getPort().getMultiplicity() == Multiplicity.ZERO_N;
         return createInjector(refName, refClass, multiplicity, objectFactories, fields, methods);
 
     }

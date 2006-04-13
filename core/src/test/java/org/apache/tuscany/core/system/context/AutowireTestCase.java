@@ -27,14 +27,14 @@ import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 
 /**
  * Tests autowiring for serveral scenarios according to the following runtime scheme:
@@ -181,26 +181,26 @@ public class AutowireTestCase extends TestCase {
         SystemCompositeContext system = runtime.getSystemContext();
         ModuleComponent system1Component = MockFactory.createSystemCompositeComponent("system1");
         ModuleComponent system1aComponent = MockFactory.createSystemCompositeComponent("system1a");
-        system1Component.getModuleImplementation().getComponents().add(system1aComponent);
+        system1Component.getImplementation().getComponents().add(system1aComponent);
         Component target = MockFactory.createSystemComponent("target", Target.class, TargetImpl.class, Scope.MODULE);
-        system1Component.getModuleImplementation().getComponents().add(target);
+        system1Component.getImplementation().getComponents().add(target);
 
         EntryPoint ep = MockFactory.createEPSystemBinding("target.ep", Target.class, "target", target);
-        system1Component.getModuleImplementation().getEntryPoints().add(ep);
+        system1Component.getImplementation().getEntryPoints().add(ep);
         system.registerModelObject(system1Component);
         EntryPoint systemEp = MockFactory.createEPSystemBinding("target.system.ep", Target.class, "ref");
 
         systemEp.getBindings().add(systemFactory.createSystemBinding());
         Service service = systemFactory.createService();
         service.setName("system1/target.ep");
-        (systemEp.getConfiguredReference().getTargetConfiguredServices().get(0)).setService(service);
+        (systemEp.getConfiguredReference().getTargetConfiguredServices().get(0)).setPort(service);
 
         system.registerModelObject(systemEp);
         ModuleComponent app1Component = createAppModuleComponent("app1");
         ModuleComponent app1aComponent = createAppModuleComponent("app1a");
         Component source = MockFactory.createSystemComponent("source", Source.class, AutowireSourceImpl.class, Scope.MODULE);
-        app1aComponent.getModuleImplementation().getComponents().add(source);
-        app1Component.getModuleImplementation().getComponents().add(app1aComponent);
+        app1aComponent.getImplementation().getComponents().add(source);
+        app1Component.getImplementation().getComponents().add(app1aComponent);
         CompositeContext root = runtime.getRootContext();
         root.registerModelObject(app1Component);
         system.publish(new ModuleStartEvent(this));
@@ -215,19 +215,19 @@ public class AutowireTestCase extends TestCase {
         ModuleComponent app1aComponent = createAppModuleComponent("app1a");
         ModuleComponent app1bComponent = createAppModuleComponent("app1b");
         Component source = MockFactory.createSystemComponent("source", Source.class, AutowireSourceImpl.class, Scope.MODULE);
-        app1aComponent.getModuleImplementation().getComponents().add(source);
-        app1Component.getModuleImplementation().getComponents().add(app1aComponent);
-        app1Component.getModuleImplementation().getComponents().add(app1bComponent);
+        app1aComponent.getImplementation().getComponents().add(source);
+        app1Component.getImplementation().getComponents().add(app1aComponent);
+        app1Component.getImplementation().getComponents().add(app1bComponent);
 
         Component target = MockFactory.createSystemComponent("target", Target.class, TargetImpl.class, Scope.MODULE);
-        app1bComponent.getModuleImplementation().getComponents().add(target);
+        app1bComponent.getImplementation().getComponents().add(target);
 
         EntryPoint ep = MockFactory.createEPSystemBinding("target.ep", Target.class, "target", target);
         ep.getBindings().add(systemFactory.createSystemBinding());
         Service service = systemFactory.createService();
         service.setName("target.ep");
-        ep.getConfiguredReference().getTargetConfiguredServices().get(0).setService(service);
-        app1bComponent.getModuleImplementation().getEntryPoints().add(ep);
+        ep.getConfiguredReference().getTargetConfiguredServices().get(0).setPort(service);
+        app1bComponent.getImplementation().getEntryPoints().add(ep);
 
         CompositeContext root = runtime.getRootContext();
         root.registerModelObject(app1Component);
@@ -241,16 +241,16 @@ public class AutowireTestCase extends TestCase {
         ModuleComponent system1Component = MockFactory.createSystemCompositeComponent("system1");
         ModuleComponent system2Component = MockFactory.createSystemCompositeComponent("system2");
         ModuleComponent system1aComponent = MockFactory.createSystemCompositeComponent("system1a");
-        system1Component.getModuleImplementation().getComponents().add(system1aComponent);
+        system1Component.getImplementation().getComponents().add(system1aComponent);
 
         Component target = MockFactory.createSystemComponent("target", Target.class, TargetImpl.class, Scope.MODULE);
-        system2Component.getModuleImplementation().getComponents().add(target);
+        system2Component.getImplementation().getComponents().add(target);
         EntryPoint ep = MockFactory.createEPSystemBinding("target.ep", Target.class, "target", target);
-        system2Component.getModuleImplementation().getEntryPoints().add(ep);
+        system2Component.getImplementation().getEntryPoints().add(ep);
         system.registerModelObject(system2Component);
 
         Component source = MockFactory.createSystemComponent("source", Source.class, AutowireSourceImpl.class, Scope.MODULE);
-        system1aComponent.getModuleImplementation().getComponents().add(source);
+        system1aComponent.getImplementation().getComponents().add(source);
         system.registerModelObject(system1Component);
         system.publish(new ModuleStartEvent(this));
         return runtime;
@@ -262,13 +262,13 @@ public class AutowireTestCase extends TestCase {
         SystemCompositeContext system = runtime.getSystemContext();
         ModuleComponent system1Component = MockFactory.createSystemCompositeComponent("system1");
         ModuleComponent system1aComponent = MockFactory.createSystemCompositeComponent("system1a");
-        system1Component.getModuleImplementation().getComponents().add(system1aComponent);
+        system1Component.getImplementation().getComponents().add(system1aComponent);
 
         Component target = MockFactory.createSystemComponent("target", Target.class, TargetImpl.class, Scope.MODULE);
-        system1Component.getModuleImplementation().getComponents().add(target);
+        system1Component.getImplementation().getComponents().add(target);
 
         Component source = MockFactory.createSystemComponent("source", Source.class, AutowireSourceImpl.class, Scope.MODULE);
-        system1aComponent.getModuleImplementation().getComponents().add(source);
+        system1aComponent.getImplementation().getComponents().add(source);
         system.registerModelObject(system1Component);
         system.publish(new ModuleStartEvent(this));
         return runtime;
@@ -280,26 +280,26 @@ public class AutowireTestCase extends TestCase {
         SystemCompositeContext system = runtime.getSystemContext();
         ModuleComponent system1Component = MockFactory.createSystemCompositeComponent("system1");
         ModuleComponent system1aComponent = MockFactory.createSystemCompositeComponent("system1a");
-        system1Component.getModuleImplementation().getComponents().add(system1aComponent);
+        system1Component.getImplementation().getComponents().add(system1aComponent);
 
         Component target = MockFactory.createSystemComponent("target", Target.class, TargetImpl.class, Scope.MODULE);
         system.registerModelObject(target);
 
         Component source = MockFactory.createSystemComponent("source", Source.class, AutowireSourceImpl.class, Scope.MODULE);
-        system1aComponent.getModuleImplementation().getComponents().add(source);
+        system1aComponent.getImplementation().getComponents().add(source);
         system.registerModelObject(system1Component);
         system.publish(new ModuleStartEvent(this));
         return runtime;
     }
 
     private ModuleComponent createAppModuleComponent(String name) {
-        AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(systemFactory, null, null);
+        AssemblyContext assemblyContext = new AssemblyContextImpl(systemFactory, null, null);
         ModuleComponent mc = systemFactory.createModuleComponent();
         mc.setName(name);
         Module module = systemFactory.createModule();
         module.setName(name);
         module.initialize(assemblyContext);
-        mc.setComponentImplementation(module);
+        mc.setImplementation(module);
         return mc;
     }
 

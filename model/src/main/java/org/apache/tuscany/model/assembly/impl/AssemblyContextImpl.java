@@ -18,7 +18,7 @@ package org.apache.tuscany.model.assembly.impl;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 import org.apache.tuscany.sdo.util.SDOUtil;
 
@@ -26,22 +26,22 @@ import commonj.sdo.helper.TypeHelper;
 
 /**
  */
-public class AssemblyModelContextImpl implements AssemblyModelContext {
+public class AssemblyContextImpl implements AssemblyContext {
 
     private final AssemblyFactory assemblyFactory;
     private final AssemblyModelLoader assemblyLoader;
     private final ResourceLoader applicationResourceLoader;
     private final TypeHelper typeHelper;
 
-    public AssemblyModelContextImpl(AssemblyModelLoader assemblyLoader, ResourceLoader resourceLoader) {
+    public AssemblyContextImpl(AssemblyModelLoader assemblyLoader, ResourceLoader resourceLoader) {
         this(new AssemblyFactoryImpl(), assemblyLoader, resourceLoader);
     }
 
-    public AssemblyModelContextImpl(AssemblyFactory assemblyFactory, AssemblyModelLoader assemblyLoader, ResourceLoader artifactLoader) {
+    public AssemblyContextImpl(AssemblyFactory assemblyFactory, AssemblyModelLoader assemblyLoader, ResourceLoader artifactLoader) {
         this(assemblyFactory, assemblyLoader, artifactLoader, SDOUtil.createTypeHelper());
     }
     
-    public AssemblyModelContextImpl(AssemblyFactory assemblyFactory, AssemblyModelLoader assemblyLoader, ResourceLoader artifactLoader, TypeHelper typeHelper) {
+    public AssemblyContextImpl(AssemblyFactory assemblyFactory, AssemblyModelLoader assemblyLoader, ResourceLoader artifactLoader, TypeHelper typeHelper) {
         this.assemblyFactory = assemblyFactory;
         this.assemblyLoader = assemblyLoader;
         this.applicationResourceLoader = artifactLoader;
@@ -49,7 +49,7 @@ public class AssemblyModelContextImpl implements AssemblyModelContext {
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelContext#getAssemblyFactory()
+     * @see org.apache.tuscany.model.assembly.AssemblyContext#getAssemblyFactory()
      */
     public AssemblyFactory getAssemblyFactory() {
         return assemblyFactory;
@@ -60,14 +60,14 @@ public class AssemblyModelContextImpl implements AssemblyModelContext {
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelContext#getAssemblyLoader()
+     * @see org.apache.tuscany.model.assembly.AssemblyContext#getAssemblyLoader()
      */
     public AssemblyModelLoader getAssemblyLoader() {
         return assemblyLoader;
     }
     
     /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelContext#getTypeHelper()
+     * @see org.apache.tuscany.model.assembly.AssemblyContext#getTypeHelper()
      */
     public TypeHelper getTypeHelper() {
         return typeHelper;

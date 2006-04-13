@@ -20,7 +20,7 @@ import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXUtil;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.ENTRY_POINT;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
@@ -59,13 +59,13 @@ public class EntryPointLoader extends AbstractLoader {
         Service service = factory.createService();
         service.setName(name);
         ConfiguredService configuredService = factory.createConfiguredService();
-        configuredService.setService(service);
+        configuredService.setPort(service);
         entryPoint.setConfiguredService(configuredService);
 
         Reference reference = factory.createReference();
         reference.setMultiplicity(StAXUtil.multiplicity(reader.getAttributeValue(null, "multiplicity"), Multiplicity.ONE_ONE));
         ConfiguredReference configuredReference = factory.createConfiguredReference();
-        configuredReference.setReference(reference);
+        configuredReference.setPort(reference);
         entryPoint.setConfiguredReference(configuredReference);
 
         while (true) {
@@ -76,7 +76,7 @@ public class EntryPointLoader extends AbstractLoader {
                     String uri = reader.getElementText();
                     configuredReference.getTargets().add(uri);
                 } else {
-                    AssemblyModelObject o = registry.load(reader, resourceLoader);
+                    AssemblyObject o = registry.load(reader, resourceLoader);
                     if (o instanceof Binding) {
                         entryPoint.getBindings().add((Binding) o);
                     } else if (o instanceof ServiceContract) {

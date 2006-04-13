@@ -16,8 +16,8 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.AssemblyVisitor;
 import org.apache.tuscany.model.assembly.Binding;
 
 /**
@@ -26,41 +26,25 @@ import org.apache.tuscany.model.assembly.Binding;
 public class BindingImpl extends ExtensibleImpl implements Binding {
     
     private String uri;
-    private Object contextFactory;
 
-    /**
-     * Constructor
-     */
     protected BindingImpl() {
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.Binding#getURI()
-     */
     public String getURI() {
         return uri;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.Binding#setURI(java.lang.String)
-     */
     public void setURI(String value) {
         checkNotFrozen();
         uri=value;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
-     */
-    public void initialize(AssemblyModelContext modelContext) {
+    public void initialize(AssemblyContext modelContext) {
         if (isInitialized())
             return;
         super.initialize(modelContext);
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#freeze()
-     */
     public void freeze() {
         if (isFrozen())
             return;
@@ -68,25 +52,7 @@ public class BindingImpl extends ExtensibleImpl implements Binding {
         
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ContextFactoryHolder#getContextFactory()
-     */
-    public Object getContextFactory() {
-        return contextFactory;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ContextFactoryHolder#setContextFactory(java.lang.Object)
-     */
-    public void setContextFactory(Object configuration) {
-        checkNotFrozen();
-        this.contextFactory = configuration;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.impl.AggregateImpl#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
-     */
-    public boolean accept(AssemblyModelVisitor visitor) {
+    public boolean accept(AssemblyVisitor visitor) {
         if (!super.accept(visitor))
             return false;
         

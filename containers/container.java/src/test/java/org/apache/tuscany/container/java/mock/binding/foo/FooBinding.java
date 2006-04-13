@@ -13,10 +13,9 @@
  */
 package org.apache.tuscany.container.java.mock.binding.foo;
 
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.AssemblyVisitor;
 import org.apache.tuscany.model.assembly.Binding;
-import org.apache.tuscany.model.assembly.ModelInitException;
 
 /**
  * Represents a mock binding that echoes back a single parameter
@@ -35,14 +34,14 @@ public class FooBinding implements Binding {
     public void setURI(String value) {
     }
 
-    public void initialize(AssemblyModelContext modelContext) throws ModelInitException {
+    public void initialize(AssemblyContext modelContext) {
     }
 
     public void freeze() {
     }
 
-    public boolean accept(AssemblyModelVisitor visitor) {
-        return false;
+    public boolean accept(AssemblyVisitor visitor) {
+        return true;
     }
 
     private Object contextFactory;

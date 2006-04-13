@@ -29,11 +29,11 @@ import org.apache.tuscany.core.loader.StAXPropertyFactory;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.Property;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -48,7 +48,7 @@ public class ComponentLoaderTestCase extends TestCase {
     private XMLInputFactory xmlFactory;
     private SystemAssemblyFactory assemblyFactory;
     private ResourceLoader resourceLoader;
-    private AssemblyModelContext modelContext;
+    private AssemblyContext modelContext;
     private ComponentTypeIntrospector introspector;
 
     public void testStringProperty() throws XMLStreamException, ConfigurationLoadException {
@@ -95,13 +95,13 @@ public class ComponentLoaderTestCase extends TestCase {
         SystemImplementation impl = assemblyFactory.createSystemImplementation();
         impl.setImplementationClass(ServiceImpl.class);
         try {
-            impl.setComponentType(introspector.introspect(ServiceImpl.class));
+            impl.setComponentInfo(introspector.introspect(ServiceImpl.class));
         } catch (ConfigurationException e) {
             throw new AssertionError();
         }
         impl.initialize(null);
         Component component = assemblyFactory.createSimpleComponent();
-        component.setComponentImplementation(impl);
+        component.setImplementation(impl);
         return component;
     }
 
@@ -112,7 +112,7 @@ public class ComponentLoaderTestCase extends TestCase {
         resourceLoader = new ResourceLoaderImpl(getClass().getClassLoader());
         loader = new ComponentLoader();
         loader.setFactory(assemblyFactory);
-        modelContext = new AssemblyModelContextImpl(assemblyFactory, null, resourceLoader);
+        modelContext = new AssemblyContextImpl(assemblyFactory, null, resourceLoader);
         introspector = new Java5ComponentTypeIntrospector(assemblyFactory);
     }
 

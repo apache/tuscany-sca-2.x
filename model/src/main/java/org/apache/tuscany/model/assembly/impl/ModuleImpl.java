@@ -16,41 +16,35 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
-import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentType;
-import org.apache.tuscany.model.assembly.ConfiguredProperty;
-import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.ExternalService;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.AssemblyVisitor;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleFragment;
-import org.apache.tuscany.model.assembly.Multiplicity;
-import org.apache.tuscany.model.assembly.OverrideOption;
-import org.apache.tuscany.model.assembly.Reference;
-import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.ServiceContract;
-import org.apache.tuscany.model.assembly.ServiceURI;
-import org.apache.tuscany.model.assembly.Wire;
+import org.apache.tuscany.model.util.NotifyingList;
 
 /**
  * An implementation of Module.
  */
-public class ModuleImpl extends AggregateImpl implements Module {
+public class ModuleImpl extends CompositeImpl implements Module {
     
-    private List<ModuleFragment> moduleFragments = new ArrayList<ModuleFragment>();
-    private Map<String, ModuleFragment> moduleFragmentsMap;
-    private ComponentType componentType;
-    private Object contextFactory;
+    /**
+     * A list of module fragments synchronized with a map
+     */
+    private class ModuleFragmentList<E extends ModuleFragment> extends NotifyingList<E>{
+        protected void added(E element) {
+            moduleFragmentsMap.put(element.getName(), element);
+        }
+        protected void removed(E element) {
+            moduleFragmentsMap.remove(element.getName());
+        }
+    }
+    
+    private List<ModuleFragment> moduleFragments = new ModuleFragmentList<ModuleFragment>();
+    private Map<String, ModuleFragment> moduleFragmentsMap=new HashMap<String, ModuleFragment>();
 
     /**
      * Constructor
@@ -58,47 +52,21 @@ public class ModuleImpl extends AggregateImpl implements Module {
     protected ModuleImpl() {
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.ComponentImplementation#getComponentType()
-     */
-    public ComponentType getComponentType() {
-        return componentType;
-    }
-    
-    /**
-     * @see org.apache.tuscany.model.assembly.ComponentImplementation#setComponentType(org.apache.tuscany.model.assembly.ComponentType)
-     */
-    public void setComponentType(ComponentType componentType) {
-        checkNotFrozen();
-        this.componentType=componentType;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.Module#getModuleFragments()
-     */
     public List<ModuleFragment> getModuleFragments() {
         return moduleFragments;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.Module#getModuleFragment(java.lang.String)
-     */
     public ModuleFragment getModuleFragment(String name) {
         checkInitialized();
         return moduleFragmentsMap.get(name);
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
-     */
-    public void initialize(AssemblyModelContext modelContext) {
+    public void initialize(AssemblyContext modelContext) {
         if (isInitialized())
             return;
         
-        // Populate map of module fragments
-        moduleFragmentsMap = new HashMap<String, ModuleFragment>();
+        // Initialize module fragments
         for (ModuleFragment moduleFragment : moduleFragments) {
-            moduleFragmentsMap.put(moduleFragment.getName(), moduleFragment);
             
             // Add all WSDL imports, components, entry points and external services from the module fragments
             getWSDLImports().addAll(moduleFragment.getWSDLImports());
@@ -112,149 +80,21 @@ public class ModuleImpl extends AggregateImpl implements Module {
             moduleFragment.initialize(modelContext);
         }
         
-        // Initialize the aggregate
+        // Initialize the composite
         super.initialize(modelContext);
-
-        // Derive the component type from the entry points and external services in the module
-        // Also derive properties from the overridable properties of the components in the module
-        if (componentType==null) {
-            AssemblyFactory factory = modelContext.getAssemblyFactory();
-            componentType = factory.createComponentType();
-            for (EntryPoint entryPoint : getEntryPoints()) {
-                Service service = factory.createService();
-                service.setName(entryPoint.getName());
-                ServiceContract serviceContract = entryPoint.getConfiguredService().getService().getServiceContract();
-                if (serviceContract != null)
-                    service.setServiceContract(serviceContract);
-                componentType.getServices().add(service);
-
-                ConfiguredReference configuredReference = entryPoint.getConfiguredReference();
-                ServiceURI sourceURI = factory.createServiceURI(null, entryPoint, configuredReference);
-                for (String target : configuredReference.getTargets()) {
-                    ServiceURI targetURI =factory.createServiceURI(null, target);
-                    Wire wire=factory.createWire();
-                    wire.setSource(sourceURI);
-                    wire.setTarget(targetURI);
-                    getWires().add(wire);
-                }
-            }
-            for (ExternalService externalService : getExternalServices()) {
-                if (externalService.getOverrideOption()==null || externalService.getOverrideOption()==OverrideOption.NO)
-                    continue;
-                Reference reference = factory.createReference();
-                reference.setName(externalService.getName());
-                ServiceContract serviceContract = externalService.getConfiguredService().getService().getServiceContract();
-                if (serviceContract != null)
-                    reference.setServiceContract(serviceContract);
-                componentType.getReferences().add(reference);
-            }
-            for (Component component : getComponents()) {
-                for (ConfiguredProperty configuredProperty : component.getConfiguredProperties()) {
-                    if (configuredProperty.getOverrideOption()==null || configuredProperty.getOverrideOption()==OverrideOption.NO)
-                        continue;
-                    componentType.getProperties().add(configuredProperty.getProperty());
-                }
-
-                for (ConfiguredReference configuredReference : component.getConfiguredReferences().values()) {
-                    // Create a wire
-                    ServiceURI sourceURI =factory.createServiceURI(null, component, configuredReference);
-                    for (String target : configuredReference.getTargets()) {
-                        ServiceURI targetURI =factory.createServiceURI(null, target);
-                        Wire wire=factory.createWire();
-                        wire.setSource(sourceURI);
-                        wire.setTarget(targetURI);
-                        getWires().add(wire);
-                    }
-                }
-            }
-        }
-        componentType.initialize(modelContext);
-
-
-        // Wire the module parts
-        for (Wire wire : getWires()) {
-
-            // Get the source reference
-            ServiceURI sourceURI=wire.getSource();
-            ConfiguredReference configuredReference = null;
-            String partName = sourceURI.getPartName();
-            String referenceName = sourceURI.getServiceName();
-            if (referenceName != null) {
-                Component component = getComponent(partName);
-                if (component != null) {
-                    configuredReference = component.getConfiguredReference(referenceName);
-                }
-            } else {
-                EntryPoint entryPoint = getEntryPoint(partName);
-                if (entryPoint != null) {
-                    configuredReference = entryPoint.getConfiguredReference();
-                }
-            }
-            if (configuredReference == null) {
-                throw new IllegalArgumentException("Cannot find wire source " + sourceURI.getAddress());
-            } else {
-
-                // Resolve the target service endpoint
-                ServiceURI targetURI = wire.getTarget();
-                ConfiguredService configuredService = getConfiguredService(targetURI);
-                if (configuredService != null) {
-
-                    // Wire the reference to the target
-                    Multiplicity multiplicity=configuredReference.getReference().getMultiplicity();
-                    if (multiplicity==Multiplicity.ZERO_N || multiplicity==Multiplicity.ONE_N) {
-                        configuredReference.getTargetConfiguredServices().add(configuredService);
-                    } else {
-                        configuredReference.getTargetConfiguredServices().clear();
-                        configuredReference.getTargetConfiguredServices().add(configuredService);
-                    }
-                } else {
-                    throw new IllegalArgumentException("Cannot find service for " + targetURI.getAddress());
-                }
-            }
-        }
     }
         
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#freeze()
-     */
     public void freeze() {
         if (isFrozen())
             return;
         super.freeze();
         
-        // Freeze component type and module fragments
-        if (componentType!=null)
-            componentType.freeze();
-        moduleFragments=Collections.unmodifiableList(moduleFragments);
-        freeze(moduleFragments);
+        moduleFragments=freeze(moduleFragments);
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ContextFactoryHolder#getContextFactory()
-     */
-    public Object getContextFactory() {
-        return contextFactory;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ContextFactoryHolder#setContextFactory(java.lang.Object)
-     */
-    public void setContextFactory(Object configuration) {
-        checkNotFrozen();
-        this.contextFactory = configuration;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.impl.AggregateImpl#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
-     */
-    public boolean accept(AssemblyModelVisitor visitor) {
+    public boolean accept(AssemblyVisitor visitor) {
         if (!super.accept(visitor))
             return false;
-        
-        if (componentType!=null) {
-            if (!componentType.accept(visitor))
-                return false;
-        }
         
         if (!accept(moduleFragments, visitor))
             return false;

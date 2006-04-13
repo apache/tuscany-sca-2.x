@@ -37,7 +37,7 @@ import org.apache.tuscany.core.context.event.HttpSessionEvent;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.SessionScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.SimpleComponent;
+import org.apache.tuscany.model.assembly.AtomicComponent;
 
 /**
  * Unit tests for the Http session scope container
@@ -208,16 +208,16 @@ public class BasicSessionScopeTestCase extends TestCase {
     JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
     private List<ContextFactory<Context>> createConfigurations() throws BuilderException {
-        SimpleComponent component = MockFactory.createComponent("TestService1", SessionScopeComponentImpl.class, Scope.SESSION);
+        AtomicComponent component = MockFactory.createComponent("TestService1", SessionScopeComponentImpl.class, Scope.SESSION);
         builder.build(component);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
-        configs.add((ContextFactory<Context>) component.getComponentImplementation().getContextFactory());
+        configs.add((ContextFactory<Context>) component.getContextFactory());
         return configs;
     }
 
     private ContextFactory<Context> createConfiguration(String name) throws BuilderException {
-        SimpleComponent component = MockFactory.createComponent(name, SessionScopeInitDestroyComponent.class, Scope.SESSION);
+        AtomicComponent component = MockFactory.createComponent(name, SessionScopeInitDestroyComponent.class, Scope.SESSION);
         builder.build(component);
-        return (ContextFactory<Context>) component.getComponentImplementation().getContextFactory();
+        return (ContextFactory<Context>) component.getContextFactory();
     }
 }

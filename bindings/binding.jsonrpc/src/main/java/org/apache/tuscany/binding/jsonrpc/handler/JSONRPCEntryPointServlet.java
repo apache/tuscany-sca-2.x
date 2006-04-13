@@ -98,7 +98,7 @@ public class JSONRPCEntryPointServlet extends JSONRPCServlet {
 
         ServletContext servletContext = config.getServletContext();
         CompositeContext moduleContext = (CompositeContext) servletContext.getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
-        Module module = (Module) moduleContext.getAggregate();
+        Module module = (Module) moduleContext.getComposite();
 
         Map<String, Object> entryPoints = new HashMap<String, Object>();
         for (EntryPoint entryPoint : module.getEntryPoints()) {

@@ -19,7 +19,7 @@ package org.apache.tuscany.core.loader.assembly;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.SERVICE;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceContract;
 import org.osoa.sca.annotations.Scope;
@@ -51,7 +51,7 @@ public class ServiceLoader extends AbstractLoader {
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
-                AssemblyModelObject o = registry.load(reader, resourceLoader);
+                AssemblyObject o = registry.load(reader, resourceLoader);
                 if (o instanceof ServiceContract) {
                     service.setServiceContract((ServiceContract) o);
                 }

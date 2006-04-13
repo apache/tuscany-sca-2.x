@@ -19,8 +19,9 @@ package org.apache.tuscany.model.assembly;
 /**
  * The configured value of a {@link Property}.
  */
-public interface ConfiguredProperty extends AssemblyModelObject {
+public interface ConfiguredProperty extends AssemblyObject {
 
+    //FIXME remove the name attribute?
     /**
      * Returns the name of the property being configured.
      * @return the name of the property being configured

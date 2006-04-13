@@ -18,7 +18,7 @@ package org.apache.tuscany.core.loader;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -29,7 +29,7 @@ import javax.xml.stream.XMLStreamReader;
  *
  * @version $Rev$ $Date$
  */
-public interface StAXElementLoader<T extends AssemblyModelObject> {
+public interface StAXElementLoader<T extends AssemblyObject> {
     /**
      * Returns the XML element that this loader can handle.
      *

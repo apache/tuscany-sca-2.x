@@ -44,7 +44,7 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Service;
@@ -115,7 +115,7 @@ public class ExternalWebServiceBuilder implements ContextFactoryBuilder {
         policyBuilder = builder;
     }
 
-    public void build(AssemblyModelObject object) throws BuilderException {
+    public void build(AssemblyObject object) throws BuilderException {
         if (!(object instanceof ExternalService)) {
             return;
         }
@@ -129,7 +129,7 @@ public class ExternalWebServiceBuilder implements ContextFactoryBuilder {
         ExternalWebServiceContextFactory config = new ExternalWebServiceContextFactory(externalService.getName(), new SingletonObjectFactory<ExternalWebServiceClient>(externalWebServiceClient));
 
         ConfiguredService configuredService = externalService.getConfiguredService();
-        Service service = configuredService.getService();
+        Service service = configuredService.getPort();
         ServiceContract serviceContract = service.getServiceContract();
         Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
         ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
@@ -153,7 +153,7 @@ public class ExternalWebServiceBuilder implements ContextFactoryBuilder {
             iConfig.addTargetInterceptor(new InvokerInterceptor());
         }
 
-        externalService.getConfiguredService().setContextFactory(config);
+        externalService.setContextFactory(config);
     }
 
     /**
@@ -180,7 +180,7 @@ public class ExternalWebServiceBuilder implements ContextFactoryBuilder {
             throw bce;
         }
 
-        TypeHelper typeHelper = externalService.getAggregate().getAssemblyModelContext().getTypeHelper();
+        TypeHelper typeHelper = externalService.getComposite().getAssemblyContext().getTypeHelper();
 
         ExternalWebServiceClient externalWebServiceClient = new ExternalWebServiceClient(configurationContext, axisService, wsPortMetaData,
                 typeHelper);

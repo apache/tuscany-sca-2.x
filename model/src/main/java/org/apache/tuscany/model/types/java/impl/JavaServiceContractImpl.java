@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.model.types.java.impl;
 
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.impl.ServiceContractImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 
@@ -49,9 +49,9 @@ public class JavaServiceContractImpl extends ServiceContractImpl implements Java
     }
     
     /**
-     * @see org.apache.tuscany.model.assembly.impl.ExtensibleImpl#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
+     * @see org.apache.tuscany.model.assembly.impl.ExtensibleImpl#initialize(org.apache.tuscany.model.assembly.AssemblyContext)
      */
-    public void initialize(AssemblyModelContext modelContext) {
+    public void initialize(AssemblyContext modelContext) {
         if (isInitialized())
             return;
         

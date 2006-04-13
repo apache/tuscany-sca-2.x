@@ -28,7 +28,7 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ServiceContract;
@@ -103,7 +103,7 @@ public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuil
         policyBuilder = builder;
     }
 
-	public void build(AssemblyModelObject object) throws BuilderException {
+	public void build(AssemblyObject object) throws BuilderException {
         if (!(object instanceof EntryPoint)) {
             return;
         }
@@ -113,10 +113,10 @@ public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuil
         }
 
         EntryPointContextFactory config = new JSONRPCEntryPointRuntimeConfiguration(entryPoint.getName(), entryPoint.getConfiguredService()
-                .getService().getName(), messageFactory);
+                .getPort().getName(), messageFactory);
 
         ConfiguredService configuredService = entryPoint.getConfiguredService();
-        Service service = configuredService.getService();
+        Service service = configuredService.getPort();
         ServiceContract serviceContract = service.getServiceContract();
         Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
         ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
@@ -125,7 +125,7 @@ public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuil
             InvocationConfiguration iConfig = new InvocationConfiguration(method);
             iConfigMap.put(method, iConfig);
         }
-        QualifiedName qName = new QualifiedName(entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0).getAggregatePart().getName()
+        QualifiedName qName = new QualifiedName(entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0).getPart().getName()
                 + "/" + service.getName());
         ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
@@ -140,7 +140,7 @@ public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuil
         for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
             iConfig.addTargetInterceptor(new InvokerInterceptor());
         }
-        entryPoint.getConfiguredReference().setContextFactory(config);
+        entryPoint.setContextFactory(config);
     }
 
 }

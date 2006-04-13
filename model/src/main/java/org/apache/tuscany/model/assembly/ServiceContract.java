@@ -48,14 +48,12 @@ public interface ServiceContract extends Extensible {
     /**
      * Returns the scope of this service contract.
      * @return
-     * todo missing javadoc
      */
     Scope getScope();
 
     /**
      * Sets the scope.
      * @param scope of this service contract.
-     * todo missing javadoc
      */
     void setScope(Scope scope);
 

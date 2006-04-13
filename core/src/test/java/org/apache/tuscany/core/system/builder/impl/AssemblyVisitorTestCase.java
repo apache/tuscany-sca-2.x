@@ -13,20 +13,24 @@
  */
 package org.apache.tuscany.core.system.builder.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
+import org.apache.tuscany.core.builder.impl.AssemblyVisitorImpl;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.ConfiguredPort;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
@@ -35,11 +39,8 @@ import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Tests decorating a logical configuration model
@@ -51,10 +52,10 @@ public class AssemblyVisitorTestCase extends TestCase {
     private static final Object MARKER = new Object();
 
     private SystemAssemblyFactory factory = new SystemAssemblyFactoryImpl();
-    private AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(factory, null, null);
+    private AssemblyContext assemblyContext = new AssemblyContextImpl(factory, null, null);
      
     public void testModelVisit() throws Exception {
-        ComponentType componentType;
+        ComponentInfo componentType;
         Service service;
         SystemImplementation impl;
         Component component;
@@ -62,30 +63,30 @@ public class AssemblyVisitorTestCase extends TestCase {
         Module module = factory.createModule();
 
         // create target component
-        componentType = factory.createComponentType();
+        componentType = factory.createComponentInfo();
         service = factory.createService();
         service.setName("target");
         componentType.getServices().add(service);
         impl = factory.createSystemImplementation();
-        impl.setComponentType(componentType);
+        impl.setComponentInfo(componentType);
         component = factory.createSimpleComponent();
         component.setName("target");
-        component.setComponentImplementation(impl);
+        component.setImplementation(impl);
         component.initialize(assemblyContext);
         module.getComponents().add(component);
 
         // create source component
-        componentType = factory.createComponentType();
+        componentType = factory.createComponentInfo();
         Reference ref = factory.createReference();
         ref.setName("ref");
         componentType.getReferences().add(ref);
         impl = factory.createSystemImplementation();
-        impl.setComponentType(componentType);
+        impl.setComponentInfo(componentType);
         component = factory.createSimpleComponent();
         component.setName("source");
-        component.setComponentImplementation(impl);
+        component.setImplementation(impl);
         ConfiguredReference cRef = factory.createConfiguredReference("ref", "target");
-        component.getConfiguredReferences().put(cRef.getName(), cRef);
+        component.getConfiguredReferences().add(cRef);
         component.initialize(assemblyContext);
         module.getComponents().add(component);
 
@@ -95,36 +96,33 @@ public class AssemblyVisitorTestCase extends TestCase {
         service = factory.createService();
         service.setServiceContract(contract);
         ConfiguredService cService = factory.createConfiguredService();
-        cService.setService(service);
+        cService.setPort(service);
         cService.initialize(assemblyContext);
         ep.setConfiguredService(cService);
         SystemBinding binding = factory.createSystemBinding();
         ep.getBindings().add(binding);
         ConfiguredReference cEpRef = factory.createConfiguredReference();
         Reference epRef = factory.createReference();
-        cEpRef.setReference(epRef);
+        cEpRef.setPort(epRef);
         ep.setConfiguredReference(cEpRef);
         ep.initialize(assemblyContext);
         module.getEntryPoints().add(ep);
 
         List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
         builders.add(new TestBuilder());
-        AssemblyVisitor visitor = new AssemblyVisitor(builders);
+        AssemblyVisitorImpl visitor = new AssemblyVisitorImpl(builders);
         module.initialize(assemblyContext);
         visitor.start(module);
 
-        Assert.assertSame(MARKER, impl.getContextFactory());
-        Assert.assertSame(MARKER, cRef.getContextFactory());
+        Assert.assertSame(MARKER, component.getContextFactory());
         Assert.assertSame(MARKER, cRef.getProxyFactory());
-        Assert.assertSame(MARKER, binding.getContextFactory());
-        Assert.assertSame(MARKER, cEpRef.getContextFactory());
+        Assert.assertSame(MARKER, ep.getContextFactory());
         Assert.assertSame(MARKER, cEpRef.getProxyFactory());
-        Assert.assertSame(MARKER, module.getContextFactory());
 
     }
 
     private static class TestBuilder implements ContextFactoryBuilder {
-        public void build(AssemblyModelObject model) throws BuilderException {
+        public void build(AssemblyObject model) throws BuilderException {
             if (model instanceof ConfiguredPort) {
                 ((ConfiguredPort) model).setProxyFactory(MARKER);
             }

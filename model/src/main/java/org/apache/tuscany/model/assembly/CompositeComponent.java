@@ -17,24 +17,19 @@
 package org.apache.tuscany.model.assembly;
 
 /**
- * A configured object that is contained inside an {@link Aggregate}.
+ * Specialization of Component that represents a configured {@link Module}.
  */
-public interface AggregatePart extends AssemblyModelObject {
-    /**
-     * Returns the name that uniquely identifies this part within its containing aggregate.
-     * @return the name that uniquely identifies this part within its containing aggregate
-     */
-    String getName();
+public interface CompositeComponent<I extends Composite> extends Component<I> {
 
     /**
-     * Sets the name that uniquely identifies this part within its containing aggregate.
-     * @param value the name that uniquely identifies this part within its containing aggregate
+     * Returns the uri that uniquely identifies this module component.
+     * @return the uri that uniquely identifies this module component
      */
-    void setName(String value);
+    String getURI();
 
     /**
-     * Returns the aggregate that contains this part.
-     * @return the aggregate that contains this part
+     * Sets the uri that uniquely identifies this module component.
+     * @param uri the uri that uniquely identifies this module component
      */
-    Aggregate getAggregate();
+    void setURI(String uri);
 }

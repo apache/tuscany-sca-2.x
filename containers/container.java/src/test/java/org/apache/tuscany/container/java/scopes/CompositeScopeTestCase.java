@@ -38,7 +38,7 @@ import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.CompositeScopeContext;
 import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.SimpleComponent;
+import org.apache.tuscany.model.assembly.AtomicComponent;
 
 /**
  * Tests component nesting. This test needs to be in the container.java progject since it relies on Java POJOs for scope
@@ -163,10 +163,10 @@ public class CompositeScopeTestCase extends TestCase {
      */
     private List<Extensible> createAssembly() throws BuilderException {
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
-        SimpleComponent component = MockFactory.createComponent("TestService1", ModuleScopeComponentImpl.class, Scope.MODULE);
-        SimpleComponent sessionComponent = MockFactory.createComponent("TestService2", SessionScopeComponentImpl.class,
+        AtomicComponent component = MockFactory.createComponent("TestService1", ModuleScopeComponentImpl.class, Scope.MODULE);
+        AtomicComponent sessionComponent = MockFactory.createComponent("TestService2", SessionScopeComponentImpl.class,
                 Scope.SESSION);
-        SimpleComponent requestComponent = MockFactory.createComponent("TestService3", SessionScopeComponentImpl.class,
+        AtomicComponent requestComponent = MockFactory.createComponent("TestService3", SessionScopeComponentImpl.class,
                 Scope.REQUEST);
         builder.build(component);
         builder.build(sessionComponent);

@@ -77,7 +77,7 @@ public class RuntimeContextImplTestCase extends TestCase {
         ep.getBindings().add(systemFactory.createSystemBinding());
         Service service = systemFactory.createService();
         service.setName("system.child/TestService2EP");
-        ep.getConfiguredReference().getTargetConfiguredServices().get(0).setService(service);
+        ep.getConfiguredReference().getTargetConfiguredServices().get(0).setPort(service);
         JavaServiceContract inter = systemFactory.createJavaServiceContract();
         inter.setInterface(ModuleScopeSystemComponentImpl.class);
         service.setServiceContract(inter);

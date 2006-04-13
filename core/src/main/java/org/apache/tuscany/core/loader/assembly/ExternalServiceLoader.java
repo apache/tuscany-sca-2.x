@@ -20,7 +20,7 @@ import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXUtil;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.EXTERNAL_SERVICE;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.ExternalService;
@@ -58,13 +58,13 @@ public class ExternalServiceLoader extends AbstractLoader {
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
-                AssemblyModelObject o = registry.load(reader, resourceLoader);
+                AssemblyObject o = registry.load(reader, resourceLoader);
                 if (o instanceof ServiceContract) {
                     Service service = factory.createService();
                     service.setName(name);
                     service.setServiceContract((ServiceContract) o);
                     ConfiguredService configuredService = factory.createConfiguredService();
-                    configuredService.setService(service);
+                    configuredService.setPort(service);
                     externalService.setConfiguredService(configuredService);
                 } else if (o instanceof Binding) {
                     externalService.getBindings().add((Binding) o);

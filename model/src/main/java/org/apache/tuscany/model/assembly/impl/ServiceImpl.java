@@ -23,9 +23,6 @@ import org.apache.tuscany.model.assembly.Service;
  */
 public class ServiceImpl extends PortImpl implements Service {
     
-    /**
-     * Constructor
-     */
     protected ServiceImpl() {
     }
 

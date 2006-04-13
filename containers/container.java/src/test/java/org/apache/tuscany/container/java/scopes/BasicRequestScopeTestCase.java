@@ -34,7 +34,7 @@ import org.apache.tuscany.core.context.event.RequestEndEvent;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.RequestScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.SimpleComponent;
+import org.apache.tuscany.model.assembly.AtomicComponent;
 
 /**
  * Unit tests for the request scope container
@@ -135,19 +135,19 @@ public class BasicRequestScopeTestCase extends TestCase {
     JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
     private List<ContextFactory<Context>> createConfigurations() throws BuilderException {
-        SimpleComponent component = MockFactory.createComponent("TestService1", RequestScopeComponentImpl.class,
+        AtomicComponent component = MockFactory.createComponent("TestService1", RequestScopeComponentImpl.class,
                 Scope.REQUEST);
         builder.build(component);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
-        configs.add((ContextFactory<Context>) component.getComponentImplementation().getContextFactory());
+        configs.add((ContextFactory<Context>) component.getContextFactory());
         return configs;
     }
 
     private ContextFactory<Context> createConfiguration(String name) throws BuilderException {
-        SimpleComponent component = MockFactory.createComponent(name, RequestScopeComponentImpl.class,
+        AtomicComponent component = MockFactory.createComponent(name, RequestScopeComponentImpl.class,
                 Scope.REQUEST);
         builder.build(component);
-        return (ContextFactory<Context>) component.getComponentImplementation().getContextFactory();
+        return (ContextFactory<Context>) component.getContextFactory();
     }
 
 }

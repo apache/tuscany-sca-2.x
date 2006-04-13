@@ -16,7 +16,11 @@
  */
 package org.apache.tuscany.container.js.builder;
 
-import commonj.sdo.helper.TypeHelper;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
 import org.apache.tuscany.container.js.config.JavaScriptContextFactory;
 import org.apache.tuscany.container.js.rhino.RhinoE4XScript;
@@ -33,21 +37,18 @@ import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
-import org.apache.tuscany.model.assembly.ComponentImplementation;
+import org.apache.tuscany.model.assembly.AssemblyObject;
+import org.apache.tuscany.model.assembly.AtomicComponent;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
+import org.apache.tuscany.model.assembly.Implementation;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceContract;
-import org.apache.tuscany.model.assembly.SimpleComponent;
 import org.osoa.sca.annotations.Init;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import commonj.sdo.helper.TypeHelper;
 
 /**
  * Builds {@link org.apache.tuscany.container.js.config.JavaScriptContextFactory}s from a JavaScript
@@ -109,27 +110,27 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
         this.referenceBuilder = builder;
     }
 
-    public void build(AssemblyModelObject modelObject) throws BuilderException {
-        if (modelObject instanceof SimpleComponent) {
-            SimpleComponent component = (SimpleComponent) modelObject;
-            ComponentImplementation impl = component.getComponentImplementation();
+    public void build(AssemblyObject modelObject) throws BuilderException {
+        if (modelObject instanceof AtomicComponent) {
+            AtomicComponent component = (AtomicComponent) modelObject;
+            Implementation impl = component.getImplementation();
             if (impl instanceof JavaScriptImplementation) {
                 buildJavaScriptComponent(component, (JavaScriptImplementation) impl);
             }
         }
     }
 
-	private void buildJavaScriptComponent(SimpleComponent component, JavaScriptImplementation impl) {
+	private void buildJavaScriptComponent(AtomicComponent component, JavaScriptImplementation impl) {
 
-        Scope scope = impl.getComponentType().getServices().get(0).getServiceContract().getScope();
+        Scope scope = impl.getComponentInfo().getServices().get(0).getServiceContract().getScope();
 
         Map<String, Class> services = new HashMap<String, Class>();
-		for (Service service : impl.getComponentType().getServices()) {
+		for (Service service : impl.getComponentInfo().getServices()) {
 		    services.put(service.getName(), service.getServiceContract().getInterface());
 		}
 
         Map<String, Object> defaultProperties = new HashMap<String, Object>();
-        for (org.apache.tuscany.model.assembly.Property property: impl.getComponentType().getProperties()) {
+        for (org.apache.tuscany.model.assembly.Property property: impl.getComponentInfo().getProperties()) {
             defaultProperties.put(property.getName(), property.getDefaultValue());
         }
 
@@ -138,7 +139,7 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
         
         RhinoScript invoker;
         if ("e4x".equalsIgnoreCase(impl.getStyle())) {  // TODO is constant "e4x" somewhere?
-            TypeHelper typeHelper = component.getAggregate().getAssemblyModelContext().getTypeHelper();
+            TypeHelper typeHelper = component.getComposite().getAssemblyContext().getTypeHelper();
             invoker = new RhinoE4XScript(component.getName(), script, defaultProperties, cl, typeHelper);
         } else {
             invoker = new RhinoScript(component.getName(), script, defaultProperties, cl);
@@ -157,15 +158,15 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
 
 		addTargetInvocationChains(component, contextFactory);
 		addComponentReferences(component, contextFactory);
-		component.getComponentImplementation().setContextFactory(contextFactory);
+		component.setContextFactory(contextFactory);
 	}
 
     /**
      * Add target-side invocation chains for each service offered by the implementation
      */
-	private void addTargetInvocationChains(SimpleComponent component, JavaScriptContextFactory config) {
+	private void addTargetInvocationChains(AtomicComponent component, JavaScriptContextFactory config) {
 		for (ConfiguredService configuredService : component.getConfiguredServices()) {
-		    Service service = configuredService.getService();
+		    Service service = configuredService.getPort();
 		    ServiceContract contract = service.getServiceContract();
 		    Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
 		    ProxyFactory proxyFactory = factory.createProxyFactory();
@@ -192,22 +193,22 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
 		}
 	}
 
-	private void addComponentReferences(SimpleComponent component, JavaScriptContextFactory config) {
-		Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
+	private void addComponentReferences(AtomicComponent component, JavaScriptContextFactory config) {
+		List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
 		if (configuredReferences != null) {
-		    for (ConfiguredReference reference : configuredReferences.values()) {
+		    for (ConfiguredReference reference : configuredReferences) {
 		        ProxyFactory proxyFactory = factory.createProxyFactory();
-		        ServiceContract interfaze = reference.getReference().getServiceContract();
+		        ServiceContract interfaze = reference.getPort().getServiceContract();
 		        Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
 		        for (Method method : interfaze.getInterface().getMethods()) {
 		            InvocationConfiguration iConfig = new InvocationConfiguration(method);
 		            iConfigMap.put(method, iConfig);
 		        }
-		        String targetCompName = reference.getTargetConfiguredServices().get(0).getAggregatePart().getName();
-		        String targetSerivceName = reference.getTargetConfiguredServices().get(0).getService().getName();
+		        String targetCompName = reference.getTargetConfiguredServices().get(0).getPart().getName();
+		        String targetSerivceName = reference.getTargetConfiguredServices().get(0).getPort().getName();
 
 		        QualifiedName qName = new QualifiedName(targetCompName + '/' + targetSerivceName);
-                ProxyConfiguration pConfiguration = new ProxyConfiguration(reference.getReference().getName(), qName,
+                ProxyConfiguration pConfiguration = new ProxyConfiguration(reference.getPort().getName(), qName,
                         iConfigMap, interfaze.getInterface().getClassLoader(), msgFactory);
 		        proxyFactory.setBusinessInterface(interfaze.getInterface());
 		        proxyFactory.setProxyConfiguration(pConfiguration);
@@ -217,7 +218,7 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
 		            // invoke the reference builder to handle metadata associated with the reference
 		            referenceBuilder.build(reference);
 		        }
-		        config.addSourceProxyFactory(reference.getReference().getName(), proxyFactory);
+		        config.addSourceProxyFactory(reference.getPort().getName(), proxyFactory);
 		    }
 		}
 	}

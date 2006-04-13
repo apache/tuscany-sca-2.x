@@ -20,8 +20,8 @@ import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -33,7 +33,7 @@ import java.util.Map;
  * @version $Rev$ $Date$
  */
 public class StAXLoaderRegistryImpl implements StAXLoaderRegistry {
-    private final Map<QName, StAXElementLoader<? extends AssemblyModelObject>> loaders = new HashMap<QName, StAXElementLoader<? extends AssemblyModelObject>>();
+    private final Map<QName, StAXElementLoader<? extends AssemblyObject>> loaders = new HashMap<QName, StAXElementLoader<? extends AssemblyObject>>();
 
     private Monitor monitor;
 
@@ -42,22 +42,22 @@ public class StAXLoaderRegistryImpl implements StAXLoaderRegistry {
         this.monitor = monitor;
     }
 
-    public <T extends AssemblyModelObject> void registerLoader(StAXElementLoader<T> loader) {
+    public <T extends AssemblyObject> void registerLoader(StAXElementLoader<T> loader) {
         QName xmlType = loader.getXMLType();
         monitor.registeringLoader(xmlType);
         loaders.put(xmlType, loader);
     }
 
-    public <T extends AssemblyModelObject> void unregisterLoader(StAXElementLoader<T> loader) {
+    public <T extends AssemblyObject> void unregisterLoader(StAXElementLoader<T> loader) {
         QName xmlType = loader.getXMLType();
         monitor.unregisteringLoader(xmlType);
         loaders.remove(xmlType);
     }
 
-    public AssemblyModelObject load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public AssemblyObject load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         QName name = reader.getName();
         monitor.elementLoad(name);
-        StAXElementLoader<? extends AssemblyModelObject> loader = loaders.get(name);
+        StAXElementLoader<? extends AssemblyObject> loader = loaders.get(name);
         if (loader == null) {
             throw new ConfigurationLoadException("Unrecognized element: " + name);
         } else {
@@ -66,15 +66,15 @@ public class StAXLoaderRegistryImpl implements StAXLoaderRegistry {
     }
 
 
-    private final ThreadLocal<AssemblyModelContext> modelContext = new ThreadLocal<AssemblyModelContext>();
+    private final ThreadLocal<AssemblyContext> modelContext = new ThreadLocal<AssemblyContext>();
 
     @Deprecated
-    public AssemblyModelContext getContext() {
+    public AssemblyContext getContext() {
         return modelContext.get();
     }
 
     @Deprecated
-    public void setContext(AssemblyModelContext context) {
+    public void setContext(AssemblyContext context) {
         modelContext.set(context);
     }
 

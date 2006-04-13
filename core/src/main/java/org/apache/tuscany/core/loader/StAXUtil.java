@@ -19,6 +19,7 @@ package org.apache.tuscany.core.loader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -27,23 +28,17 @@ import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
 import org.apache.tuscany.core.loader.assembly.ComponentLoader;
-import org.apache.tuscany.core.loader.assembly.ComponentTypeLoader;
 import org.apache.tuscany.core.loader.assembly.EntryPointLoader;
-import org.apache.tuscany.core.loader.assembly.ExternalServiceLoader;
 import org.apache.tuscany.core.loader.assembly.InterfaceJavaLoader;
-import org.apache.tuscany.core.loader.assembly.InterfaceWSDLLoader;
 import org.apache.tuscany.core.loader.assembly.ModuleFragmentLoader;
 import org.apache.tuscany.core.loader.assembly.ModuleLoader;
-import org.apache.tuscany.core.loader.assembly.PropertyLoader;
-import org.apache.tuscany.core.loader.assembly.ReferenceLoader;
-import org.apache.tuscany.core.loader.assembly.ServiceLoader;
 import org.apache.tuscany.core.loader.impl.StAXLoaderRegistryImpl;
 import org.apache.tuscany.core.loader.system.SystemBindingLoader;
 import org.apache.tuscany.core.loader.system.SystemImplementationLoader;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
@@ -96,7 +91,7 @@ public final class StAXUtil {
         return overrideOption == null ? def : OVERRIDE_OPTIONS.get(overrideOption);
     }
 
-    public static ModuleComponent bootstrapLoader(String name, AssemblyModelContext context) {
+    public static ModuleComponent bootstrapLoader(String name, AssemblyContext context) {
         SystemAssemblyFactory factory = new SystemAssemblyFactoryImpl();
         ComponentTypeIntrospector introspector = new Java5ComponentTypeIntrospector(factory);
 
@@ -123,7 +118,7 @@ public final class StAXUtil {
 
         ModuleComponent mc = factory.createModuleComponent();
         mc.setName(name);
-        mc.setModuleImplementation(module);
+        mc.setImplementation(module);
         mc.initialize(context);
         return mc;
     }
@@ -132,13 +127,13 @@ public final class StAXUtil {
         SystemImplementation implementation = factory.createSystemImplementation();
         implementation.setImplementationClass(loaderClass);
         try {
-            implementation.setComponentType(introspector.introspect(loaderClass));
+            implementation.setComponentInfo(introspector.introspect(loaderClass));
         } catch (ConfigurationException e) {
             throw (AssertionError) new AssertionError("Invalid bootstrap loader").initCause(e);
         }
         Component component = factory.createSimpleComponent();
         component.setName(loaderClass.getName());
-        component.setComponentImplementation(implementation);
+        component.setImplementation(implementation);
         return component;
     }
 

@@ -37,7 +37,7 @@ import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Service;
@@ -106,7 +106,7 @@ public class WebServiceEntryPointBuilder implements ContextFactoryBuilder {
         policyBuilder = builder;
     }
 
-    public void build(AssemblyModelObject object) throws BuilderException {
+    public void build(AssemblyObject object) throws BuilderException {
         if (!(object instanceof EntryPoint)) {
             return;
         }
@@ -115,10 +115,10 @@ public class WebServiceEntryPointBuilder implements ContextFactoryBuilder {
             return;
         }
 
-        EntryPointContextFactory config = new WebServiceEntryPointContextFactory(entryPoint.getName(), entryPoint.getConfiguredService().getService().getName(), messageFactory);
+        EntryPointContextFactory config = new WebServiceEntryPointContextFactory(entryPoint.getName(), entryPoint.getConfiguredService().getPort().getName(), messageFactory);
 
         ConfiguredService configuredService = entryPoint.getConfiguredService();
-        Service service = configuredService.getService();
+        Service service = configuredService.getPort();
         ServiceContract serviceContract = service.getServiceContract();
         Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
         ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
@@ -127,7 +127,7 @@ public class WebServiceEntryPointBuilder implements ContextFactoryBuilder {
             InvocationConfiguration iConfig = new InvocationConfiguration(method);
             iConfigMap.put(method, iConfig);
         }
-        QualifiedName qName = new QualifiedName(entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0).getAggregatePart().getName() + "/" + service.getName());
+        QualifiedName qName = new QualifiedName(entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0).getPart().getName() + "/" + service.getName());
         ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
         proxyFactory.setProxyConfiguration(pConfiguration);
@@ -141,7 +141,7 @@ public class WebServiceEntryPointBuilder implements ContextFactoryBuilder {
         for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
             iConfig.addTargetInterceptor(new EntryPointInvokerInterceptor());
         }
-        entryPoint.getConfiguredReference().setContextFactory(config);
+        entryPoint.setContextFactory(config);
     }
     
     //FIXME same as the InvokerInterceptor except that it doesn't throw an exception in setNext

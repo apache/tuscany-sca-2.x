@@ -16,7 +16,7 @@ package org.apache.tuscany.container.js.mock;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.container.js.assembly.mock.HelloWorldService;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
@@ -25,7 +25,7 @@ import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 
@@ -38,7 +38,7 @@ public class MockModuleFactory {
 
     private static AssemblyFactory factory = new AssemblyFactoryImpl();
 
-    private static AssemblyModelContext assemblyContext = new AssemblyModelContextImpl(new AssemblyFactoryImpl(),
+    private static AssemblyContext assemblyContext = new AssemblyContextImpl(new AssemblyFactoryImpl(),
             new SCDLAssemblyModelLoaderImpl(), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader()));
 
     private MockModuleFactory() {
@@ -56,7 +56,7 @@ public class MockModuleFactory {
         targetService.setServiceContract(targetContract);
         targetService.setName("GenericComponent");
         ConfiguredService cTargetService = factory.createConfiguredService();
-        cTargetService.setService(targetService);
+        cTargetService.setPort(targetService);
         cTargetService.initialize(assemblyContext);
         targetComponent.getConfiguredServices().add(cTargetService);
         targetComponent.initialize(assemblyContext);
@@ -66,10 +66,10 @@ public class MockModuleFactory {
         JavaServiceContract inter = factory.createJavaServiceContract();
         inter.setInterface(HelloWorldService.class);
         ref.setServiceContract(inter);
-        sourceComponent.getComponentImplementation().getComponentType().getReferences().add(ref);
+        sourceComponent.getImplementation().getComponentInfo().getReferences().add(ref);
         ConfiguredReference cref = factory.createConfiguredReference(ref.getName(), "target");
         cref.initialize(assemblyContext);
-        sourceComponent.getConfiguredReferences().put(cref.getName(), cref);
+        sourceComponent.getConfiguredReferences().add(cref);
         sourceComponent.initialize(assemblyContext);
 
         Module module = factory.createModule();

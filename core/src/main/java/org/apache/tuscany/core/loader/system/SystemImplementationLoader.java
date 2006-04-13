@@ -64,7 +64,7 @@ public class SystemImplementationLoader extends AbstractLoader {
         }
 
         // todo we should allow componentType sidefiles for system implementations
-        implementation.setComponentType(introspector.introspect(implementationClass));
+        implementation.setComponentInfo(introspector.introspect(implementationClass));
 
         StAXUtil.skipToEndElement(reader);
         return implementation;

@@ -17,19 +17,19 @@
 package org.apache.tuscany.core.system.assembly.impl;
 
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.impl.ComponentImplementationImpl;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.impl.AtomicImplementationImpl;
 
 /**
  * The default implementation of the system implementation assembly artifact
  * 
  * @version $Rev$ $Date$
  */
-public class SystemImplementationImpl extends ComponentImplementationImpl implements SystemImplementation {
+public class SystemImplementationImpl extends AtomicImplementationImpl implements SystemImplementation {
 
     private Class<?> implementationClass;
 
-    private AssemblyModelContext modelContext;
+    private AssemblyContext modelContext;
 
     protected SystemImplementationImpl() {
     }

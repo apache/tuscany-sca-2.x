@@ -16,8 +16,12 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
+import java.net.URL;
+
 import javax.wsdl.Definition;
 
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.ImportWSDL;
 
 /**
@@ -25,14 +29,11 @@ import org.apache.tuscany.model.assembly.ImportWSDL;
  *
  * @version $Rev$ $Date$
  */
-public class ImportWSDLImpl extends AssemblyModelObjectImpl implements ImportWSDL {
+public class ImportWSDLImpl extends AssemblyObjectImpl implements ImportWSDL {
     private String location;
     private String namespace;
     private Definition definition;
 
-    /**
-     * Hide default constructor.
-     */
     protected ImportWSDLImpl() {
     }
 
@@ -59,6 +60,23 @@ public class ImportWSDLImpl extends AssemblyModelObjectImpl implements ImportWSD
     }
 
     public void setDefinition(Definition definition) {
+        checkNotFrozen();
         this.definition = definition;
     }
+    
+    public void initialize(AssemblyContext modelContext) {
+        if (isInitialized())
+            return;
+        super.initialize(modelContext);
+        
+        // Load the WSDL definition if necessary
+        ResourceLoader resourceLoader = modelContext.getApplicationResourceLoader();
+        if (definition == null) {
+            URL url = resourceLoader.getResource(location);
+            if (url == null)
+                throw new IllegalArgumentException("Cannot find " + location);
+            definition = modelContext.getAssemblyLoader().loadDefinition(url.toString());
+        }
+    }
+    
 }

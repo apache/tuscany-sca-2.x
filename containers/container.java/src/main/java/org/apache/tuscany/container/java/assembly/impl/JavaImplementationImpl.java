@@ -17,14 +17,14 @@
 package org.apache.tuscany.container.java.assembly.impl;
 
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
-import org.apache.tuscany.model.assembly.impl.ComponentImplementationImpl;
+import org.apache.tuscany.model.assembly.impl.AtomicImplementationImpl;
 
 /**
  * An implementation of JavaImplementation.
  *
  * @version $Rev$ $Date$
  */
-public class JavaImplementationImpl extends ComponentImplementationImpl implements JavaImplementation {
+public class JavaImplementationImpl extends AtomicImplementationImpl implements JavaImplementation {
     private Class<?> implementationClass;
 
     /**

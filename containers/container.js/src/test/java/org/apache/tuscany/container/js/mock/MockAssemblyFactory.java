@@ -31,8 +31,8 @@ import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.SimpleComponent;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.assembly.AtomicComponent;
+import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 
@@ -47,14 +47,14 @@ public class MockAssemblyFactory {
 
     private static SystemAssemblyFactory systemFactory = new SystemAssemblyFactoryImpl();
 
-    public static SimpleComponent createComponent(String name, String scriptFile, Class type, Scope scope) {
-        SimpleComponent sc = factory.createSimpleComponent();
+    public static AtomicComponent createComponent(String name, String scriptFile, Class type, Scope scope) {
+        AtomicComponent sc = factory.createSimpleComponent();
         JavaScriptImplementation impl = factory.createJavaScriptImplementation();
-        impl.setComponentType(factory.createComponentType());
+        impl.setComponentInfo(factory.createComponentInfo());
         impl.setScriptFile(scriptFile);
         impl.setScript(readScript(type.getClassLoader().getResourceAsStream(scriptFile)));
         impl.setResourceLoader(new ResourceLoaderImpl(type.getClassLoader()));
-        sc.setComponentImplementation(impl);
+        sc.setImplementation(impl);
         Service s = factory.createService();
         String serviceName = type.getName().substring(type.getName().lastIndexOf('.')+1);
         s.setName(serviceName);
@@ -62,13 +62,13 @@ public class MockAssemblyFactory {
         s.setServiceContract(contract);
         contract.setScope(scope);
         contract.setInterface(type);
-        impl.getComponentType().getServices().add(s);
+        impl.getComponentInfo().getServices().add(s);
         ConfiguredService cService = factory.createConfiguredService();
-        cService.setService(s);
-        cService.initialize(new AssemblyModelContextImpl(null,null));
+        cService.setPort(s);
+        cService.initialize(new AssemblyContextImpl(null,null));
         sc.getConfiguredServices().add(cService);
         sc.setName(name);
-        sc.setComponentImplementation(impl);
+        sc.setImplementation(impl);
         return sc;
     }
 
@@ -83,15 +83,15 @@ public class MockAssemblyFactory {
         }
         Module impl = systemFactory.createModule();
         impl.setName(name);
-        sc.setComponentImplementation(impl);
+        sc.setImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(scope);
-        impl.setComponentType(systemFactory.createComponentType());
-        impl.getComponentType().getServices().add(s);
+        impl.setComponentInfo(systemFactory.createComponentInfo());
+        impl.getComponentInfo().getServices().add(s);
         sc.setName(name);
-        sc.setComponentImplementation(impl);
+        sc.setImplementation(impl);
         return sc;
     }
 

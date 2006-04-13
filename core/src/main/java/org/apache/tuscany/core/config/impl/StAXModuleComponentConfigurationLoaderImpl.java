@@ -18,7 +18,7 @@ package org.apache.tuscany.core.config.impl;
 
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleFragment;
 
@@ -36,7 +36,7 @@ public class StAXModuleComponentConfigurationLoaderImpl extends AbstractModuleCo
     private final XMLInputFactory xmlFactory;
     private final StAXLoaderRegistry registry;
 
-    public StAXModuleComponentConfigurationLoaderImpl(AssemblyModelContext modelContext, XMLInputFactory xmlFactory, StAXLoaderRegistry registry) {
+    public StAXModuleComponentConfigurationLoaderImpl(AssemblyContext modelContext, XMLInputFactory xmlFactory, StAXLoaderRegistry registry) {
         super(modelContext);
         this.xmlFactory = xmlFactory;
         this.registry = registry;

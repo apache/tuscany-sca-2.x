@@ -20,7 +20,7 @@ import org.apache.tuscany.core.injection.InterCompositeReferenceFactory;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemExternalServiceContextFactory;
 import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.ExternalService;
 
 /**
@@ -33,13 +33,13 @@ public class SystemExternalServiceBuilder implements ContextFactoryBuilder {
     public SystemExternalServiceBuilder() {
     }
 
-    public void build(AssemblyModelObject modelObject) throws BuilderException {
+    public void build(AssemblyObject modelObject) throws BuilderException {
         if (!(modelObject instanceof ExternalService)) {
             return;
         }
         ExternalService externalService = (ExternalService) modelObject;
         if (externalService.getConfiguredService() != null
-                && externalService.getConfiguredService().getContextFactory() != null) {
+                && externalService.getContextFactory() != null) {
             return;
         } else if (externalService.getBindings() == null || externalService.getBindings().size() < 1
                 || !(externalService.getBindings().get(0) instanceof SystemBinding)) {
@@ -49,10 +49,10 @@ public class SystemExternalServiceBuilder implements ContextFactoryBuilder {
         if (binding.getTargetName() != null) {
             SystemExternalServiceContextFactory contextFactory = new SystemExternalServiceContextFactory(externalService
                     .getName(), new InterCompositeReferenceFactory(binding.getTargetName()));
-            externalService.getConfiguredService().setContextFactory(contextFactory);
-        } else if (externalService.getConfiguredService().getService().getServiceContract().getInterface() != null) {
+            externalService.setContextFactory(contextFactory);
+        } else if (externalService.getConfiguredService().getPort().getServiceContract().getInterface() != null) {
             // autowire
-            Class<Object> claz = externalService.getConfiguredService().getService().getServiceContract().getInterface();
+            Class<Object> claz = externalService.getConfiguredService().getPort().getServiceContract().getInterface();
             if (claz == null) {
                 BuilderException e = new BuilderConfigException("Interface type not specified");
                 e.setIdentifier(externalService.getName());
@@ -61,7 +61,7 @@ public class SystemExternalServiceBuilder implements ContextFactoryBuilder {
             }
             SystemExternalServiceContextFactory config = new SystemExternalServiceContextFactory(externalService
                     .getName(), new AutowireObjectFactory<Object>(claz));
-            externalService.getConfiguredService().setContextFactory(config);
+            externalService.setContextFactory(config);
         }
     }
 }

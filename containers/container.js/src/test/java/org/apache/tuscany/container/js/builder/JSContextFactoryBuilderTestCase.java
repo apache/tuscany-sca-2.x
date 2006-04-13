@@ -16,9 +16,9 @@ import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.SimpleComponent;
+import org.apache.tuscany.model.assembly.AtomicComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 import org.apache.tuscany.model.scdl.loader.impl.SCDLAssemblyModelLoaderImpl;
 
 public class JSContextFactoryBuilderTestCase extends TestCase {
@@ -27,13 +27,12 @@ public class JSContextFactoryBuilderTestCase extends TestCase {
         JavaScriptContextFactoryBuilder jsBuilder = new JavaScriptContextFactoryBuilder();
         jsBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
         JavaScriptTargetWireBuilder jsWireBuilder = new JavaScriptTargetWireBuilder();
-        SimpleComponent component = MockAssemblyFactory.createComponent("foo",
+        AtomicComponent component = MockAssemblyFactory.createComponent("foo",
                 "org/apache/tuscany/container/js/assembly/mock/HelloWorldImpl.js", HelloWorldService.class, Scope.MODULE);
-        component.initialize(new AssemblyModelContextImpl(new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader())));
+        component.initialize(new AssemblyContextImpl(new AssemblyFactoryImpl(), new SCDLAssemblyModelLoaderImpl(), new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader())));
         jsBuilder.build(component);
         ModuleScopeContext context = new ModuleScopeContext(new EventContextImpl());
-        ContextFactory<Context> contextFactory = (ContextFactory) component.getComponentImplementation()
-                .getContextFactory();
+        ContextFactory<Context> contextFactory = (ContextFactory) component.getContextFactory();
         context.registerFactory(contextFactory);
         context.start();
         context.onEvent(new ModuleStartEvent(this));

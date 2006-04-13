@@ -21,5 +21,5 @@ package org.apache.tuscany.model.assembly;
  * To support flexibility and reuse, modules can be defined in multiple fragments that are
  * then combined by the runtime to form the complete module definition.
  */
-public interface ModuleFragment extends Aggregate {
+public interface ModuleFragment extends Composite {
 }

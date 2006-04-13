@@ -16,105 +16,72 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
-import org.apache.tuscany.model.assembly.AggregatePart;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
+import org.apache.tuscany.model.assembly.Part;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.AssemblyVisitor;
 import org.apache.tuscany.model.assembly.ConfiguredPort;
 import org.apache.tuscany.model.assembly.Port;
 
 /**
  * Implementation of ConfiguredPort.
  */
-public abstract class ConfiguredPortImpl extends AssemblyModelObjectImpl implements ConfiguredPort {
-    private AggregatePart aggregatePart;
-    private Port port;
+public abstract class ConfiguredPortImpl<P extends Port> extends AssemblyObjectImpl implements ConfiguredPort<P> {
+    private String name;
+    private Part part;
+    private P port;
 
-    private Object contextFactory;
     private Object proxyFactory;
 
-    /**
-     * Constructor
-     */
     protected ConfiguredPortImpl() {
     }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        checkNotFrozen();
+        this.name=name;
+    }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredPort#getPort()
-     */
-    public Port getPort() {
+    public P getPort() {
         return port;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredPort#setPort(org.apache.tuscany.model.assembly.Port)
-     */
-    public void setPort(Port port) {
+    public void setPort(P port) {
         checkNotFrozen();
         this.port = port;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredPort#getAggregatePart()
-     */
-    public AggregatePart getAggregatePart() {
-        checkInitialized();
-        return aggregatePart;
-    }
-    
-    /**
-     * Sets the aggregate part containing this configured port.
-     * @param aggregatePart
-     */
-    protected void setAggregatePart(AggregatePart aggregatePart) {
-        checkNotFrozen();
-        this.aggregatePart=aggregatePart;
+    public Part getPart() {
+        return part;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredPort#getProxyFactory()
-     */
+    public void setPart(Part part) {
+        checkNotFrozen();
+        this.part=part;
+    }
+
     public Object getProxyFactory() {
         return proxyFactory;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredPort#setProxyFactory(java.lang.Object)
-     */
     public void setProxyFactory(Object proxyFactory) {
         checkNotFrozen();
         this.proxyFactory = proxyFactory;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.ContextFactoryHolder#getContextFactory()
-     */
-    public Object getContextFactory() {
-        return contextFactory;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ContextFactoryHolder#setContextFactory(java.lang.Object)
-     */
-    public void setContextFactory(Object configuration) {
-        checkNotFrozen();
-        contextFactory = configuration;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
-     */
-    public void initialize(AssemblyModelContext modelContext) {
+    public void initialize(AssemblyContext modelContext) {
         if (isInitialized())
             return;
         super.initialize(modelContext);
         
-        if (port!=null)
+        if (port!=null) {
+            name=port.getName();
             port.initialize(modelContext);
+        }
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#freeze()
-     */
     public void freeze() {
         if (isFrozen())
             return;
@@ -124,10 +91,7 @@ public abstract class ConfiguredPortImpl extends AssemblyModelObjectImpl impleme
             port.freeze();
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
-     */
-    public boolean accept(AssemblyModelVisitor visitor) {
+    public boolean accept(AssemblyVisitor visitor) {
         if (!super.accept(visitor))
             return false;
         

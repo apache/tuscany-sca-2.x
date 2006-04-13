@@ -16,31 +16,34 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.COMPONENT;
+import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.PROPERTIES;
+import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.REFERENCES;
+
+import java.util.List;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.InvalidPropertyFactoryException;
 import org.apache.tuscany.core.loader.StAXPropertyFactory;
 import org.apache.tuscany.core.loader.StAXUtil;
-import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.*;
 import org.apache.tuscany.core.loader.impl.StringParserPropertyFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentImplementation;
-import org.apache.tuscany.model.assembly.ComponentType;
+import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
+import org.apache.tuscany.model.assembly.Implementation;
 import org.apache.tuscany.model.assembly.OverrideOption;
 import org.apache.tuscany.model.assembly.Property;
 import org.osoa.sca.annotations.Scope;
-
-import javax.xml.namespace.QName;
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @version $Rev$ $Date$
@@ -72,11 +75,11 @@ public class ComponentLoader extends AbstractLoader {
                 } else if (REFERENCES.equals(name)) {
                     loadReferences(reader, component);
                 } else {
-                    AssemblyModelObject o = registry.load(reader, resourceLoader);
-                    if (o instanceof ComponentImplementation) {
-                        ComponentImplementation impl = (ComponentImplementation) o;
+                    AssemblyObject o = registry.load(reader, resourceLoader);
+                    if (o instanceof Implementation) {
+                        Implementation impl = (Implementation) o;
                         impl.initialize(registry.getContext());
-                        component.setComponentImplementation(impl);
+                        component.setImplementation(impl);
                     }
                 }
                 reader.next();
@@ -88,7 +91,7 @@ public class ComponentLoader extends AbstractLoader {
     }
 
     protected void loadProperties(XMLStreamReader reader, ResourceLoader resourceLoader, Component component) throws XMLStreamException, ConfigurationLoadException {
-        ComponentType componentType = component.getComponentImplementation().getComponentType();
+        ComponentInfo componentType = component.getImplementation().getComponentInfo();
         List<ConfiguredProperty> configuredProperties = component.getConfiguredProperties();
 
         while (true) {
@@ -154,18 +157,18 @@ public class ComponentLoader extends AbstractLoader {
     }
 
     protected void loadReferences(XMLStreamReader reader, Component component) throws XMLStreamException {
-        Map<String, ConfiguredReference> configuredReferences = component.getConfiguredReferences();
+        List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
                 String name = reader.getLocalName();
                 String uri = reader.getElementText();
 
-                ConfiguredReference configuredReference = configuredReferences.get(name);
+                ConfiguredReference configuredReference = component.getConfiguredReference(name);
                 if (configuredReference == null) {
                     configuredReference = factory.createConfiguredReference();
                     configuredReference.setName(name);
-                    configuredReferences.put(name, configuredReference);
+                    configuredReferences.add(configuredReference);
                 }
 
                 configuredReference.getTargets().add(uri);

@@ -40,9 +40,9 @@ import org.apache.tuscany.core.context.EventException;
 import org.apache.tuscany.core.context.event.ModuleStartEvent;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
+import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 
 /**
@@ -121,7 +121,7 @@ public class TuscanyContextListener implements LifecycleListener {
         ClassLoader oldCl  = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         try {
-            AssemblyModelContext modelContext = new AssemblyModelContextImpl(modelFactory, modelLoader, resourceLoader);
+            AssemblyContext modelContext = new AssemblyContextImpl(modelFactory, modelLoader, resourceLoader);
 
             ModuleComponentConfigurationLoader loader = BootstrapHelper.getConfigurationLoader(runtime.getSystemContext(), modelContext);
 

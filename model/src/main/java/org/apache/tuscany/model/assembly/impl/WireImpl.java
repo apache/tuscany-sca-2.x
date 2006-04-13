@@ -27,37 +27,22 @@ public class WireImpl extends ExtensibleImpl implements Wire {
     private ServiceURI source;
     private ServiceURI target;
 
-    /**
-     * Constructor
-     */
     protected WireImpl() {
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.Wire#getSource()
-     */
     public ServiceURI getSource() {
         return source;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.Wire#setSource(org.apache.tuscany.model.assembly.ServiceURI)
-     */
     public void setSource(ServiceURI uri) {
         checkNotFrozen();
         source=uri;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.Wire#getTarget()
-     */
     public ServiceURI getTarget() {
         return target;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.Wire#setTarget(org.apache.tuscany.model.assembly.ServiceURI)
-     */
     public void setTarget(ServiceURI uri) {
         checkNotFrozen();
         target=uri;

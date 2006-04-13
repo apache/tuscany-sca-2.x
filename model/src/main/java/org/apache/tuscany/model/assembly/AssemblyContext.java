@@ -24,7 +24,7 @@ import commonj.sdo.helper.TypeHelper;
 /**
  * Context object supplied by visitors that are processing the model.
  */
-public interface AssemblyModelContext {
+public interface AssemblyContext {
 
     /**
      * Returns a factory that can be used to create other model objects

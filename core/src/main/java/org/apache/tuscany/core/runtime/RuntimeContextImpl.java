@@ -19,7 +19,7 @@ import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.HierarchicalWireBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
-import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
+import org.apache.tuscany.core.builder.impl.AssemblyVisitorImpl;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
@@ -39,8 +39,8 @@ import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
-import org.apache.tuscany.model.assembly.Aggregate;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.Composite;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Extensible;
 
 import java.util.ArrayList;
@@ -198,8 +198,8 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         return getSystemContext().getInstance(qName);
     }
 
-    public synchronized void build(AssemblyModelObject model) throws BuilderConfigException {
-        AssemblyVisitor visitor = new AssemblyVisitor(builders);
+    public synchronized void build(AssemblyObject model) throws BuilderConfigException {
+        AssemblyVisitorImpl visitor = new AssemblyVisitorImpl(builders);
         visitor.start(model);
     }
 
@@ -235,8 +235,8 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         return systemContext.resolveExternalInstance(instanceInterface);
     }
 
-    public Aggregate getAggregate() {
-        return systemContext.getAggregate();
+    public Composite getComposite() {
+        return systemContext.getComposite();
     }
 
     private void checkRunning() {

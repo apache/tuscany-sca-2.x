@@ -16,52 +16,46 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
-import org.apache.tuscany.model.assembly.Aggregate;
-import org.apache.tuscany.model.assembly.AggregatePart;
+import org.apache.tuscany.model.assembly.Composite;
+import org.apache.tuscany.model.assembly.Part;
 
 /**
- * Implementation of AggregatePart.
+ * Implementation of Part.
  */
-public abstract class AggregatePartImpl extends ExtensibleImpl implements AggregatePart {
-    private Aggregate aggregate;
+public abstract class PartImpl extends ExtensibleImpl implements Part {
+    private Composite composite;
     private String name;
 
-    /**
-     * Constructor
-     */
-    protected AggregatePartImpl() {
+    private Object contextFactory;
+
+    protected PartImpl() {
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.AggregatePart#getName()
-     */
     public String getName() {
         return name;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.AggregatePart#setName(java.lang.String)
-     */
     public void setName(String value) {
         checkNotFrozen();
         name=value;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.AggregatePart#getAggregate()
-     */
-    public Aggregate getAggregate() {
-        checkInitialized();
-        return aggregate;
+    public Composite getComposite() {
+        return composite;
     }
 
-    /**
-     * Sets the aggregate containing this aggregate part.
-     * @param aggregate
-     */
-    protected void setAggregate(Aggregate aggregate) {
+    public void setComposite(Composite composite) {
         checkNotFrozen();
-        this.aggregate=aggregate;
+        this.composite=composite;
+    }
+
+    public Object getContextFactory() {
+        return contextFactory;
+    }
+    
+    public void setContextFactory(Object contextFactory) {
+        checkNotFrozen();
+        this.contextFactory=contextFactory;
     }
 
 }

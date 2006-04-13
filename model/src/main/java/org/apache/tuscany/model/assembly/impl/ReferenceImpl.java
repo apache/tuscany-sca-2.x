@@ -26,22 +26,13 @@ public class ReferenceImpl extends PortImpl implements Reference {
     
     private Multiplicity multiplicity;
     
-    /**
-     * Constructor
-     */
     protected ReferenceImpl() {
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.Reference#getMultiplicity()
-     */
     public Multiplicity getMultiplicity() {
         return multiplicity;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.Reference#setMultiplicity(org.apache.tuscany.model.assembly.Multiplicity)
-     */
     public void setMultiplicity(Multiplicity multiplicity) {
         checkNotFrozen();
         this.multiplicity=multiplicity;

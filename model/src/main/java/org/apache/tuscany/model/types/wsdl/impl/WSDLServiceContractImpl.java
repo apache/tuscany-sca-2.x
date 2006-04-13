@@ -30,7 +30,7 @@ import static org.objectweb.asm.Opcodes.V1_5;
 import org.objectweb.asm.Type;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.impl.ServiceContractImpl;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
@@ -90,9 +90,9 @@ public class WSDLServiceContractImpl extends ServiceContractImpl implements WSDL
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.impl.ExtensibleImpl#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
+     * @see org.apache.tuscany.model.assembly.impl.ExtensibleImpl#initialize(org.apache.tuscany.model.assembly.AssemblyContext)
      */
-    public void initialize(AssemblyModelContext modelContext) {
+    public void initialize(AssemblyContext modelContext) {
         if (isInitialized())
             return;
         super.initialize(modelContext);

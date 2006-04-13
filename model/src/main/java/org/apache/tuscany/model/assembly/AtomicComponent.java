@@ -16,31 +16,10 @@
  */
 package org.apache.tuscany.model.assembly;
 
-import org.apache.tuscany.model.ModelRuntimeException;
 
 /**
- * Denotes an exception initializing an assembly model artifact.
- * 
- * @version $Rev$ $Date$
+ * An atomic component, specifically not an {@link Composite}.
  */
-public class ModelInitException extends ModelRuntimeException {
-    private static final long serialVersionUID = 747289653378365323L;
-
-    public ModelInitException() {
-        super();
-    }
-
-    public ModelInitException(String message) {
-        super(message);
-    }
-
-    public ModelInitException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ModelInitException(Throwable cause) {
-        super(cause);
-    }
-
+public interface AtomicComponent extends Component<AtomicImplementation> {
 }
-
+ 

@@ -17,29 +17,25 @@
 package org.apache.tuscany.model.assembly.impl;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.AssemblyObject;
+import org.apache.tuscany.model.assembly.AssemblyVisitor;
 
 /**
  * A base class for assembly model objects.
  */
-public abstract class AssemblyModelObjectImpl implements AssemblyModelObject {
+public abstract class AssemblyObjectImpl implements AssemblyObject {
 
     private boolean frozen;
     private boolean initialized;
     
-    /**
-     * Constructor
-     */
-    protected AssemblyModelObjectImpl() {
+    protected AssemblyObjectImpl() {
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
-     */
-    public boolean accept(AssemblyModelVisitor visitor) {
+    public boolean accept(AssemblyVisitor visitor) {
         return visitor.visit(this);
     }
 
@@ -49,19 +45,16 @@ public abstract class AssemblyModelObjectImpl implements AssemblyModelObject {
      * @param visitor
      * @return
      */
-    protected boolean accept(Collection collection, AssemblyModelVisitor visitor) {
+    protected boolean accept(Collection collection, AssemblyVisitor visitor) {
         for (Object member : collection) {
-            if (member instanceof AssemblyModelObject) {
-                if (!((AssemblyModelObject)member).accept(visitor))
+            if (member instanceof AssemblyObject) {
+                if (!((AssemblyObject)member).accept(visitor))
                     return false;
             }
         }
         return true;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#freeze()
-     */
     public void freeze() {
         if (!frozen)
             frozen=true;
@@ -75,14 +68,16 @@ public abstract class AssemblyModelObjectImpl implements AssemblyModelObject {
     }
     
     /**
-     * Freeze members of a collection
+     * Freeze a list and its members
      */
-    protected void freeze(Collection collection) {
-        for (Object member : collection) {
-            if (member instanceof AssemblyModelObject) {
-                ((AssemblyModelObject)member).freeze();
+    protected <T> List<T> freeze(List<T> list) {
+        list=Collections.unmodifiableList(list);
+        for (Object member : list) {
+            if (member instanceof AssemblyObject) {
+                ((AssemblyObject)member).freeze();
             }
         }
+        return list;
     }
     
     /**
@@ -94,10 +89,7 @@ public abstract class AssemblyModelObjectImpl implements AssemblyModelObject {
             throw new IllegalStateException("Attempt to modify a frozen assembly model");
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
-     */
-    public void initialize(AssemblyModelContext modelContext) {
+    public void initialize(AssemblyContext modelContext) {
         if (!initialized)
             initialized=true;
     }
@@ -112,10 +104,10 @@ public abstract class AssemblyModelObjectImpl implements AssemblyModelObject {
     /**
      * Initialize members of a collection
      */
-    protected void initialize(Collection collection, AssemblyModelContext modelContext) {
+    protected void initialize(Collection collection, AssemblyContext modelContext) {
         for (Object member : collection) {
-            if (member instanceof AssemblyModelObject) {
-                ((AssemblyModelObject)member).initialize(modelContext);
+            if (member instanceof AssemblyObject) {
+                ((AssemblyObject)member).initialize(modelContext);
             }
         }
     }

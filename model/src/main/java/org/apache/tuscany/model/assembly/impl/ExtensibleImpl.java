@@ -19,42 +19,30 @@ package org.apache.tuscany.model.assembly.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.AssemblyVisitor;
 import org.apache.tuscany.model.assembly.Extensible;
 
 /**
  * An implementation of Extensible.
  */
-public abstract class ExtensibleImpl extends AssemblyModelObjectImpl implements Extensible {
+public abstract class ExtensibleImpl extends AssemblyObjectImpl implements Extensible {
     
     private List<Object> extensibilityElements=new ArrayList<Object>();
     private List<Object> extensibilityAttributes=new ArrayList<Object>();
 
-    /**
-     * Constructor
-     */
     protected ExtensibleImpl() {
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.Extensible#getExtensibilityElements()
-     */
     public List getExtensibilityElements() {
         return extensibilityElements;
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.Extensible#getExtensibilityAttributes()
-     */
     public List getExtensibilityAttributes() {
         return extensibilityAttributes;
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
-     */
-    public void initialize(AssemblyModelContext modelContext) {
+    public void initialize(AssemblyContext modelContext) {
         if (isInitialized())
             return;
         super.initialize(modelContext);
@@ -74,10 +62,7 @@ public abstract class ExtensibleImpl extends AssemblyModelObjectImpl implements 
         freeze(extensibilityAttributes);
     }
     
-    /**
-     * @see org.apache.tuscany.model.assembly.impl.AssemblyModelObjectImpl#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
-     */
-    public boolean accept(AssemblyModelVisitor visitor) {
+    public boolean accept(AssemblyVisitor visitor) {
         if (!super.accept(visitor))
             return false;
         

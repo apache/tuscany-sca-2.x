@@ -20,5 +20,15 @@ import org.apache.tuscany.model.assembly.Module;
 
 public interface SystemModule extends Module {
     
+    /**
+     * Returns the implementation class of the system component
+     */
+    Class<?> getImplementationClass();
+
+    /**
+     * Sets the implementation class of the system component
+     */
+    void setImplementationClass(Class<?> value);
+
 }
 

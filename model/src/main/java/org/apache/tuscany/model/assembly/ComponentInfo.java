@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * A logical definition of a type of component separate from any specific implementation.
  */
-public interface ComponentType extends Extensible {
+public interface ComponentInfo extends Extensible {
 
     /**
      * Returns a list of services exposed by this component type.

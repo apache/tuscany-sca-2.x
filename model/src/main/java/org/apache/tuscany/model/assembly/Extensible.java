@@ -20,10 +20,9 @@ import java.util.List;
 
 /**
  * An extensible model object.
- * TODO do we actually need this given we have the ability to load specializations of individual model objects
- * TODO is this the bext interface for this?
+ * We actually need this even though we have the ability to load specializations of individual model objects
  */
-public interface Extensible extends AssemblyModelObject {
+public interface Extensible extends AssemblyObject {
 
     /**
      * Returns the extensibility elements.

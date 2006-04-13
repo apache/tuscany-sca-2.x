@@ -19,7 +19,7 @@ package org.apache.tuscany.model.assembly;
 /**
  * Abstraction for the association of a service contract with a requestor or provider.
  */
-public interface Port extends AssemblyModelObject {
+public interface Port extends AssemblyObject {
     /**
      * Returns the contract for invocations of a service using this port.
      * @return the oontract for invocations of a service using this port

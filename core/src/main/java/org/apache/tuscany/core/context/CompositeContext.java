@@ -1,8 +1,8 @@
 package org.apache.tuscany.core.context;
 
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.model.assembly.Aggregate;
-import org.apache.tuscany.model.assembly.AggregatePart;
+import org.apache.tuscany.model.assembly.Composite;
+import org.apache.tuscany.model.assembly.Part;
 import org.apache.tuscany.model.assembly.Extensible;
 
 import java.util.List;
@@ -32,11 +32,11 @@ public interface CompositeContext extends Context {
 
     /**
      * Adds runtime artifacts represented by the set of model objects to the composite context by merging them with
-     * existing artifacts. Implementing classes may support only a subset of {@link AggregatePart} types.
+     * existing artifacts. Implementing classes may support only a subset of {@link Part} types.
      * 
      * @see org.apache.tuscany.model.assembly.Component
      * @see org.apache.tuscany.model.assembly.ModuleComponent
-     * @see org.apache.tuscany.model.assembly.SimpleComponent
+     * @see org.apache.tuscany.model.assembly.AtomicComponent
      * @see org.apache.tuscany.model.assembly.EntryPoint
      * @see org.apache.tuscany.model.assembly.ExternalService
      */
@@ -44,11 +44,11 @@ public interface CompositeContext extends Context {
 
     /**
      * Adds a runtime artifact represented by the model object to the composite context by merging it with existing
-     * artifacts. Implementing classes may support only a subset of {@link AggregatePart} types.
+     * artifacts. Implementing classes may support only a subset of {@link Part} types.
      * 
      * @see org.apache.tuscany.model.assembly.Component
      * @see org.apache.tuscany.model.assembly.ModuleComponent
-     * @see org.apache.tuscany.model.assembly.SimpleComponent
+     * @see org.apache.tuscany.model.assembly.AtomicComponent
      * @see org.apache.tuscany.model.assembly.EntryPoint
      * @see org.apache.tuscany.model.assembly.ExternalService
      */
@@ -72,6 +72,6 @@ public interface CompositeContext extends Context {
      * Returns the composite managed by this composite context
      */
     @Deprecated
-    public Aggregate getAggregate();
+    public Composite getComposite();
     
 }

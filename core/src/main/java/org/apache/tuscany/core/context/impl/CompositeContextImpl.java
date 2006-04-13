@@ -34,7 +34,7 @@ import org.apache.tuscany.core.context.MissingScopeException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
@@ -178,12 +178,11 @@ public class CompositeContextImpl extends AbstractCompositeContext implements Co
                 EntryPoint ep = (EntryPoint) model;
                 for (Binding binding : ep.getBindings()) {
                     if (binding instanceof SystemBinding) {
-                        Class interfaze = ep.getConfiguredService().getService().getServiceContract().getInterface();
+                        Class interfaze = ep.getConfiguredService().getPort().getServiceContract().getInterface();
                         NameToScope nts = autowireIndex.get(interfaze);
                         if (nts == null || !nts.isEntryPoint()) { // handle special case where two entry points with
                             // same interface register: first wins
-                            ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getConfiguredReference()
-                                    .getContextFactory()).getScope());
+                            ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getContextFactory()).getScope());
                             if (scope == null) {
                                 ConfigurationException ce = new MissingScopeException("Scope not found for entry point");
                                 ce.setIdentifier(ep.getName());
@@ -198,10 +197,10 @@ public class CompositeContextImpl extends AbstractCompositeContext implements Co
                 }
             } else if (model instanceof ModuleComponent) {
                 ModuleComponent component = (ModuleComponent) model;
-                for (EntryPoint ep : component.getModuleImplementation().getEntryPoints()) {
+                for (EntryPoint ep : component.getImplementation().getEntryPoints()) {
                     for (Binding binding : ep.getBindings()) {
                         if (binding instanceof SystemBinding) {
-                            Class interfaze = ep.getConfiguredService().getService().getServiceContract().getInterface();
+                            Class interfaze = ep.getConfiguredService().getPort().getServiceContract().getInterface();
                             if (autowireIndex.get(interfaze) == null) {
                                 ScopeContext scope = scopeContexts.get(Scope.AGGREGATE);
                                 // only register if an impl has not already been registered, ensuring it is not visible outside the containment
@@ -214,7 +213,7 @@ public class CompositeContextImpl extends AbstractCompositeContext implements Co
                 }
             } else if (model instanceof Component) {
                 Component component = (Component) model;
-                for (Service service : component.getComponentImplementation().getComponentType().getServices()) {
+                for (Service service : component.getImplementation().getComponentInfo().getServices()) {
                     Class interfaze = service.getServiceContract().getInterface();
                     if (autowireIndex.get(interfaze) == null) {
                         // only register if an impl has not already been registered
@@ -238,7 +237,7 @@ public class CompositeContextImpl extends AbstractCompositeContext implements Co
         }
     }
 
-    public void build(AssemblyModelObject model) throws BuilderConfigException {
+    public void build(AssemblyObject model) throws BuilderConfigException {
         if (configurationContext != null) {
             try {
                 configurationContext.build(model);

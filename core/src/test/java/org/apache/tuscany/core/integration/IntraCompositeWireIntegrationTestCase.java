@@ -15,9 +15,10 @@ package org.apache.tuscany.core.integration;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.AtomicContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.event.ModuleStopEvent;
 import org.apache.tuscany.core.context.event.ModuleStartEvent;
 import org.apache.tuscany.core.mock.MockFactory;
@@ -25,7 +26,7 @@ import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
-import org.apache.tuscany.core.system.assembly.SystemImplementation;
+import org.apache.tuscany.core.system.assembly.SystemModule;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.model.assembly.Module;
@@ -46,7 +47,7 @@ public class IntraCompositeWireIntegrationTestCase extends TestCase {
         RuntimeContext runtime = MockFactory.createCoreRuntime();
         ModuleComponent moduleComponent = createSystemCompositeComponent("test.system");
         Module module = MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE, Scope.MODULE);
-        moduleComponent.setModuleImplementation(module);
+        moduleComponent.setImplementation(module);
         runtime.getSystemContext().registerModelObject(moduleComponent);
         CompositeContext context = (CompositeContext) runtime.getSystemContext().getContext("test.system");
         context.publish(new ModuleStartEvent(this));
@@ -70,17 +71,17 @@ public class IntraCompositeWireIntegrationTestCase extends TestCase {
      */
     public static ModuleComponent createSystemCompositeComponent(String name) {
         ModuleComponent sc = systemFactory.createModuleComponent();
-        SystemImplementation impl = systemFactory.createSystemImplementation();
+        SystemModule impl = systemFactory.createSystemModule();
         impl.setImplementationClass(SystemCompositeContextImpl.class);
-        sc.setComponentImplementation(impl);
+        sc.setImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(Scope.AGGREGATE);
-        impl.setComponentType(systemFactory.createComponentType());
-        impl.getComponentType().getServices().add(s);
+        impl.setComponentInfo(systemFactory.createComponentInfo());
+        impl.getComponentInfo().getServices().add(s);
         sc.setName(name);
-        sc.setComponentImplementation(impl);
+        sc.setImplementation(impl);
         return sc;
     }
     

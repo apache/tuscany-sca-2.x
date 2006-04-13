@@ -18,8 +18,8 @@ package org.apache.tuscany.core.loader;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -45,13 +45,13 @@ public interface StAXLoaderRegistry {
      *
      * @param loader a loader that is being contributed to the system
      */
-    <T extends AssemblyModelObject> void registerLoader(StAXElementLoader<T> loader);
+    <T extends AssemblyObject> void registerLoader(StAXElementLoader<T> loader);
 
     /**
      * Unregister a loader. This will typically be called by a loader as it is being destroyed.
      * @param loader a loader that should no longer be used
      */
-    <T extends AssemblyModelObject> void unregisterLoader(StAXElementLoader<T> loader);
+    <T extends AssemblyObject> void unregisterLoader(StAXElementLoader<T> loader);
 
     /**
      * Parse the supplied XML stream dispatching to the appropriate registered loader
@@ -66,7 +66,7 @@ public interface StAXLoaderRegistry {
      * @return the model object obtained by parsing the current element on the stream
      * @throws XMLStreamException if there was a problem reading the stream
      */
-    AssemblyModelObject load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException;
+    AssemblyObject load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException;
 
     /**
      * Hack to allow loaders to initialize model objects on the fly.
@@ -75,7 +75,7 @@ public interface StAXLoaderRegistry {
      * @return the model context for this load operation
      */
     @Deprecated
-    AssemblyModelContext getContext();
+    AssemblyContext getContext();
 
     /**
      * Hack to allow loaders to initialize model objects on the fly.
@@ -84,5 +84,5 @@ public interface StAXLoaderRegistry {
      * @param context the model context for this load operation
      */
     @Deprecated
-    void setContext(AssemblyModelContext context);
+    void setContext(AssemblyContext context);
 }

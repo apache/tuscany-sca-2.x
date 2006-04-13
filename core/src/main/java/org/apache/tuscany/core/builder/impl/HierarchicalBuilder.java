@@ -15,7 +15,7 @@ package org.apache.tuscany.core.builder.impl;
 
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +46,7 @@ public class HierarchicalBuilder implements ContextFactoryBuilder {
         return readOnlyBuilders;
     }
     
-    public void build(AssemblyModelObject object) throws BuilderException {
+    public void build(AssemblyObject object) throws BuilderException {
         for (ContextFactoryBuilder builder : builders) {
             builder.build(object);
         }

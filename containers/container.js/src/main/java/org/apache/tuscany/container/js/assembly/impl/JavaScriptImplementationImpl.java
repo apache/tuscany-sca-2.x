@@ -18,14 +18,14 @@ package org.apache.tuscany.container.js.assembly.impl;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
-import org.apache.tuscany.model.assembly.impl.ComponentImplementationImpl;
+import org.apache.tuscany.model.assembly.impl.AtomicImplementationImpl;
 
 /**
  * Default implementation of a JavScript component implementation type
  *
  * @version $Rev$ $Date$
  */
-public class JavaScriptImplementationImpl extends ComponentImplementationImpl implements JavaScriptImplementation {
+public class JavaScriptImplementationImpl extends AtomicImplementationImpl implements JavaScriptImplementation {
 
     private String scriptFile;
 

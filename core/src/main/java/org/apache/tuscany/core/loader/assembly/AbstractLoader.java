@@ -20,14 +20,14 @@ import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 
 /**
  * @version $Rev$ $Date$
  */
-public abstract class AbstractLoader<T extends AssemblyModelObject> implements StAXElementLoader<T> {
+public abstract class AbstractLoader<T extends AssemblyObject> implements StAXElementLoader<T> {
     protected SystemAssemblyFactory factory;
     protected StAXLoaderRegistry registry;
 

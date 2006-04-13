@@ -15,12 +15,12 @@ package org.apache.tuscany.core.mock;
 
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.builder.impl.AssemblyVisitor;
+import org.apache.tuscany.core.builder.impl.AssemblyVisitorImpl;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelObject;
+import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Extensible;
 
 import java.util.ArrayList;
@@ -42,8 +42,8 @@ public class MockConfigContext implements ConfigurationContext {
     public void configure(Extensible model) throws ConfigurationException {
     }
 
-    public void build(AssemblyModelObject model) throws BuilderConfigException {
-        AssemblyVisitor visitor = new AssemblyVisitor(builders);
+    public void build(AssemblyObject model) throws BuilderConfigException {
+        AssemblyVisitorImpl visitor = new AssemblyVisitorImpl(builders);
         visitor.start(model);
     }
 

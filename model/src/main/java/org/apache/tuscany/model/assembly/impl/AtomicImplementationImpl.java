@@ -14,19 +14,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.model.assembly;
+package org.apache.tuscany.model.assembly.impl;
+
+import org.apache.tuscany.model.assembly.AtomicImplementation;
 
 /**
- * A visitor that traverses the model performing some operation.
+ * An implementation of AtomicImplementation.
  */
-public interface AssemblyModelVisitor {
-
-    /**
-     * Visit the given model object.
-     *
-     * @param modelObject the assembly model object to visit
-     * @return true if processing is complete
-     */
-    boolean visit(AssemblyModelObject modelObject);
-
+public abstract class AtomicImplementationImpl extends ImplementationImpl implements AtomicImplementation {
+    
+    protected AtomicImplementationImpl() {
+    }
+    
 }

@@ -23,7 +23,7 @@ import javax.wsdl.Definition;
  *
  * @version $Rev$ $Date$
  */
-public interface ImportWSDL extends AssemblyModelObject {
+public interface ImportWSDL extends AssemblyObject {
     /**
      * Returns the location where the WSDL definition can be found.
      * @return the location where the WSDL definition can be found

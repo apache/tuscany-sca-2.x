@@ -36,7 +36,7 @@ import org.apache.tuscany.core.context.event.ModuleStartEvent;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 
@@ -69,7 +69,7 @@ public class TuscanyHost extends StandardHost {
 
     private void startRuntime() {
         // Create an assembly model context
-        AssemblyModelContext modelContext = BootstrapHelper.getModelContext(getClass().getClassLoader());
+        AssemblyContext modelContext = BootstrapHelper.getModelContext(getClass().getClassLoader());
         modelFactory = modelContext.getAssemblyFactory();
         modelLoader = modelContext.getAssemblyLoader();
 

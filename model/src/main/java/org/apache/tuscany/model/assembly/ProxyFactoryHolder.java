@@ -16,10 +16,19 @@
  */
 package org.apache.tuscany.model.assembly;
 
-
 /**
- * A simple component, specifically not an {@link Aggregate}.
+ * A model object that can hold a runtime proxy factory object.
  */
-public interface SimpleComponent extends Component {
+public interface ProxyFactoryHolder {
+
+    /**
+     * Sets the proxy factory
+     */
+    void setProxyFactory(Object proxyFactory);
+
+    /**
+     * Returns the proxy factory
+     */
+    Object getProxyFactory();
+
 }
- 
