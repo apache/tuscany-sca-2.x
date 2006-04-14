@@ -43,12 +43,8 @@ import java.io.StringReader;
 /**
  * @version $Rev$ $Date$
  */
-public class ComponentLoaderTestCase extends TestCase {
+public class ComponentLoaderTestCase extends LoaderTestSupport {
     private ComponentLoader loader;
-    private XMLInputFactory xmlFactory;
-    private SystemAssemblyFactory assemblyFactory;
-    private ResourceLoader resourceLoader;
-    private AssemblyContext modelContext;
     private ComponentTypeIntrospector introspector;
 
     public void testStringProperty() throws XMLStreamException, ConfigurationLoadException {
@@ -85,8 +81,7 @@ public class ComponentLoaderTestCase extends TestCase {
     }
 
     private void loadProperties(String xml, Component component) throws XMLStreamException, ConfigurationLoadException {
-        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(xml));
-        reader.next();
+        XMLStreamReader reader = getReader(xml);
         loader.loadProperties(reader, resourceLoader, component);
         component.initialize(modelContext);
     }
@@ -107,12 +102,8 @@ public class ComponentLoaderTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        xmlFactory = XMLInputFactory.newInstance();
-        assemblyFactory = new SystemAssemblyFactoryImpl();
-        resourceLoader = new ResourceLoaderImpl(getClass().getClassLoader());
         loader = new ComponentLoader();
         loader.setFactory(assemblyFactory);
-        modelContext = new AssemblyContextImpl(assemblyFactory, null, resourceLoader);
         introspector = new Java5ComponentTypeIntrospector(assemblyFactory);
     }
 
