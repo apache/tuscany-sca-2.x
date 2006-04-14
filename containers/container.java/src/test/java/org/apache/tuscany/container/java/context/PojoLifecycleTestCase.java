@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeInitOnlyComponent;
+import org.apache.tuscany.container.java.mock.components.ModuleScopeInitDestroyComponent;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.model.assembly.Scope;
@@ -68,4 +69,17 @@ public class PojoLifecycleTestCase extends TestCase {
         context.stop();
     }
 
+
+    public void testDestroy() throws Exception {
+        CompositeContext mc = new CompositeContextImpl();
+        mc.setName("mc");
+        JavaComponentContext context = MockFactory.createPojoContext("TestServiceInit",
+                ModuleScopeInitDestroyComponent.class, Scope.MODULE, mc);
+        context.start();
+        ModuleScopeInitDestroyComponent instance = (ModuleScopeInitDestroyComponent) context.getInstance(null);
+        Assert.assertNotNull(instance);
+        context.destroy();
+        Assert.assertTrue(instance.isDestroyed());
+        context.stop();
+    }
 }

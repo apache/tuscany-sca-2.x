@@ -23,8 +23,8 @@ package org.apache.tuscany.core.context;
 public interface AutowireContext extends CompositeContext {
 
     /**
-     * Used by child contexts to return an an autowire target. Resolved targets may be entry points or components in the parent
-     * or its ancestors, or entry points in a sibling context
+     * Invoked by child contexts to return an an autowire target. Resolved targets may be entry points or
+     * components in the parent or its ancestors, or entry points in a sibling context
      *
      * @param instanceInterface the type of service being requested
      * @return a reference to the requested service or null if none can be found
@@ -33,10 +33,14 @@ public interface AutowireContext extends CompositeContext {
     <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException;
 
     /**
-     * Used by 
-     * @param instanceInterface
-     * @return
-     * @throws AutowireResolutionException
+     * Invoked by a parent context to return an autowire target in a child. Resolved targets must be entry points.
+     * For example, given a parent P and two siblings, A and B, A would request an autowire by invoking
+     * {@link #resolveInstance(Class<T>)} on P, which in turn could invoke the present method on B in order to resolve
+     * a target.
+     *
+     * @param instanceInterface the type of service being requested
+     * @return a reference to the requested service or null if none can be found
+     * @throws AutowireResolutionException if an error occurs attempting to resolve an autowire
      */
     <T> T resolveExternalInstance(Class<T> instanceInterface) throws AutowireResolutionException;
 

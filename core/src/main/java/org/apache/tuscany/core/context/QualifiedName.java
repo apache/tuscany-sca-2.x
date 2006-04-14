@@ -33,7 +33,8 @@ public class QualifiedName {
     public static final String NAME_SEPARATOR = "/";
 
     /**
-     * Constructs a new qualified name
+     * Constructs a new qualified name in the form of part/port where part is the parent context and port represents a
+     * child, which is either a service in the case of an atomic context or a contained context in the case of a composite.  
      * 
      * @throws InvalidNameException if the name is in an invalid format
      */

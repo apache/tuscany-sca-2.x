@@ -28,6 +28,9 @@ public class ModuleScopeInitDestroyComponent extends ModuleScopeInitOnlyComponen
 
     @Destroy
     public void destroy() {
+        if (destroyed){
+            throw new AssertionError("Destroy called more than once");
+        }
         destroyed = true;
     }
 
