@@ -163,8 +163,10 @@ public class WebServiceEntryPointServlet extends AxisServlet {
         tuscanyGetDefaultAxis2xmlChecked = true;
         ServletContext context = config.getServletContext();
         String repoDir = context.getRealPath("/WEB-INF");
-        String axis2config = repoDir + "/" + DeploymentConstants.AXIS2_CONFIGURATION_XML;
+        String axis2config = repoDir + "/" + DeploymentConstants.DIRECTORY_CONF+ "/" + DeploymentConstants.AXIS2_CONFIGURATION_XML;
+        
         File axis2xmlFile = new File(axis2config);
+        constructSubDirectories(axis2xmlFile.getParentFile());
         if (axis2xmlFile.exists())
             return; // do nothing if there.
         
@@ -192,6 +194,12 @@ public class WebServiceEntryPointServlet extends AxisServlet {
             throw new ServletException(e1);
         }
 
+    }
+    protected void constructSubDirectories(File in){
+        if(in.exists())return;
+        constructSubDirectories(in.getParentFile());
+        in.mkdir();
+        
     }
     @Override
     protected void doGet(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
