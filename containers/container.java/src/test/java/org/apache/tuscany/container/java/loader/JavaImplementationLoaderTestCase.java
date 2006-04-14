@@ -20,7 +20,7 @@ import java.net.URL;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLInputFactory;
+import javax.xml.namespace.QName;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -113,11 +113,11 @@ public class JavaImplementationLoaderTestCase extends TestCase {
             return mockType;
         }
 
-        public <T extends AssemblyObject> void registerLoader(StAXElementLoader<T> loader) {
+        public <T extends AssemblyObject> void registerLoader(QName element, StAXElementLoader<T> loader) {
             throw new UnsupportedOperationException();
         }
 
-        public <T extends AssemblyObject> void unregisterLoader(StAXElementLoader<T> loader) {
+        public <T extends AssemblyObject> void unregisterLoader(QName element, StAXElementLoader<T> loader) {
             throw new UnsupportedOperationException();
         }
 

@@ -51,20 +51,12 @@ public class WebServiceBindingLoader implements StAXElementLoader<WebServiceBind
 
     @Init(eager = true)
     public void start() {
-        registry.registerLoader(this);
+        registry.registerLoader(BINDING_WS, this);
     }
 
     @Destroy
     public void stop() {
-        registry.unregisterLoader(this);
-    }
-
-    public QName getXMLType() {
-        return BINDING_WS;
-    }
-
-    public Class<WebServiceBinding> getModelType() {
-        return WebServiceBinding.class;
+        registry.unregisterLoader(BINDING_WS, this);
     }
 
     public WebServiceBinding load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {

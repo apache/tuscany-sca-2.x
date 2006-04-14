@@ -16,13 +16,12 @@
  */
 package org.apache.tuscany.core.loader;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.model.assembly.AssemblyObject;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 /**
  * A loader that creates a model object from a StAX input stream.
@@ -30,20 +29,6 @@ import javax.xml.stream.XMLStreamReader;
  * @version $Rev$ $Date$
  */
 public interface StAXElementLoader<T extends AssemblyObject> {
-    /**
-     * Returns the XML element that this loader can handle.
-     *
-     * @return the XML element that this loader can handle
-     */
-    QName getXMLType();
-
-    /**
-     * Returns the type of model object that this loader will produce.
-     *
-     * @return the type of model object that this loader will produce
-     */
-    Class<T> getModelType();
-
     /**
      * Build the model object for an element in an XML stream.
      * When this method returns the stream will be positioned on the corresponding END_ELEMENT.

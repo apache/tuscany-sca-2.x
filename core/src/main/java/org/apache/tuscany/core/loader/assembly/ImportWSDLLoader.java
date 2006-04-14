@@ -59,10 +59,6 @@ public class ImportWSDLLoader extends AbstractLoader {
         return IMPORT_WSDL;
     }
 
-    public Class<ImportWSDL> getModelType() {
-        return ImportWSDL.class;
-    }
-
     public ImportWSDL load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         assert AssemblyConstants.IMPORT_WSDL.equals(reader.getName());
         String namespace = reader.getAttributeValue(null, "namespace");

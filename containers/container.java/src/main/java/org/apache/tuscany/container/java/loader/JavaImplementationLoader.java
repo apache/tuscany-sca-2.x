@@ -74,20 +74,12 @@ public class JavaImplementationLoader implements StAXElementLoader<JavaImplement
 
     @Init(eager = true)
     public void start() {
-        registry.registerLoader(this);
+        registry.registerLoader(IMPLEMENTATION_JAVA, this);
     }
 
     @Destroy
     public void stop() {
-        registry.unregisterLoader(this);
-    }
-
-    public QName getXMLType() {
-        return IMPLEMENTATION_JAVA;
-    }
-
-    public Class<JavaImplementation> getModelType() {
-        return JavaImplementation.class;
+        registry.unregisterLoader(IMPLEMENTATION_JAVA, this);
     }
 
     public JavaImplementation load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {

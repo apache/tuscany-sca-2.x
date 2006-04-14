@@ -34,10 +34,6 @@ public class InterfaceJavaLoader extends AbstractLoader {
         return AssemblyConstants.INTERFACE_JAVA;
     }
 
-    public Class<JavaServiceContract> getModelType() {
-        return JavaServiceContract.class;
-    }
-
     public JavaServiceContract load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         assert AssemblyConstants.INTERFACE_JAVA.equals(reader.getName());
         JavaServiceContract serviceContract = factory.createJavaServiceContract();

@@ -67,20 +67,12 @@ public class JavaScriptImplementationLoader implements StAXElementLoader<JavaScr
 
     @Init(eager = true)
     public void start() {
-        registry.registerLoader(this);
+        registry.registerLoader(IMPLEMENTATION_JS, this);
     }
 
     @Destroy
     public void stop() {
-        registry.unregisterLoader(this);
-    }
-
-    public QName getXMLType() {
-        return IMPLEMENTATION_JS;
-    }
-
-    public Class<JavaScriptImplementation> getModelType() {
-        return JavaScriptImplementation.class;
+        registry.unregisterLoader(IMPLEMENTATION_JS, this);
     }
 
     public JavaScriptImplementation load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {

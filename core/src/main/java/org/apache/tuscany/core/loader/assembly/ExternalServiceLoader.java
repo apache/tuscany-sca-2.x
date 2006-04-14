@@ -44,10 +44,6 @@ public class ExternalServiceLoader extends AbstractLoader {
         return EXTERNAL_SERVICE;
     }
 
-    public Class<ExternalService> getModelType() {
-        return ExternalService.class;
-    }
-
     public ExternalService load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         assert EXTERNAL_SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");

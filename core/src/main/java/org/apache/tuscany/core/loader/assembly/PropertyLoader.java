@@ -47,10 +47,6 @@ public class PropertyLoader extends AbstractLoader {
         return PROPERTY;
     }
 
-    public Class<Property> getModelType() {
-        return Property.class;
-    }
-
     public Property load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         assert PROPERTY.equals(reader.getName());
         Property property = factory.createProperty();

@@ -41,10 +41,6 @@ public class ReferenceLoader extends AbstractLoader {
         return REFERENCE;
     }
 
-    public Class<Reference> getModelType() {
-        return Reference.class;
-    }
-
     public Reference load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         assert REFERENCE.equals(reader.getName());
         Reference reference = factory.createReference();

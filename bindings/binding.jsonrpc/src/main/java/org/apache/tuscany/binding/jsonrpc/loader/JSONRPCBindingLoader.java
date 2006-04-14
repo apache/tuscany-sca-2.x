@@ -51,20 +51,12 @@ public class JSONRPCBindingLoader implements StAXElementLoader<JSONRPCBinding> {
 
     @Init(eager = true)
     public void start() {
-        registry.registerLoader(this);
+        registry.registerLoader(BINDING_ISONRPC, this);
     }
 
     @Destroy
     public void stop() {
-        registry.unregisterLoader(this);
-    }
-
-    public QName getXMLType() {
-        return BINDING_ISONRPC;
-    }
-
-    public Class<JSONRPCBinding> getModelType() {
-        return JSONRPCBinding.class;
+        registry.unregisterLoader(BINDING_ISONRPC, this);
     }
 
     public JSONRPCBinding load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {

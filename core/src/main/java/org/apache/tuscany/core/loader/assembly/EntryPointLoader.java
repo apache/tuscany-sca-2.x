@@ -46,10 +46,6 @@ public class EntryPointLoader extends AbstractLoader {
         return ENTRY_POINT;
     }
 
-    public Class<EntryPoint> getModelType() {
-        return EntryPoint.class;
-    }
-
     public EntryPoint load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         assert ENTRY_POINT.equals(reader.getName());
         EntryPoint entryPoint = factory.createEntryPoint();

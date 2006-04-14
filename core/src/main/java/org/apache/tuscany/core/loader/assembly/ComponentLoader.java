@@ -56,10 +56,6 @@ public class ComponentLoader extends AbstractLoader {
         return COMPONENT;
     }
 
-    public Class<Component> getModelType() {
-        return Component.class;
-    }
-
     public Component load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         assert COMPONENT.equals(reader.getName());
 

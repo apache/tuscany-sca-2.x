@@ -42,16 +42,14 @@ public class StAXLoaderRegistryImpl implements StAXLoaderRegistry {
         this.monitor = monitor;
     }
 
-    public <T extends AssemblyObject> void registerLoader(StAXElementLoader<T> loader) {
-        QName xmlType = loader.getXMLType();
-        monitor.registeringLoader(xmlType);
-        loaders.put(xmlType, loader);
+    public <T extends AssemblyObject> void registerLoader(QName element, StAXElementLoader<T> loader) {
+        monitor.registeringLoader(element);
+        loaders.put(element, loader);
     }
 
-    public <T extends AssemblyObject> void unregisterLoader(StAXElementLoader<T> loader) {
-        QName xmlType = loader.getXMLType();
-        monitor.unregisteringLoader(xmlType);
-        loaders.remove(xmlType);
+    public <T extends AssemblyObject> void unregisterLoader(QName element, StAXElementLoader<T> loader) {
+        monitor.unregisteringLoader(element);
+        loaders.remove(element);
     }
 
     public AssemblyObject load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {

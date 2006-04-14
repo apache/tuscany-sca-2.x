@@ -23,6 +23,7 @@ import org.apache.tuscany.model.assembly.AssemblyObject;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.namespace.QName;
 
 /**
  * Registry for XML loaders that can parse a StAX input stream and return model objects.
@@ -43,15 +44,18 @@ public interface StAXLoaderRegistry {
      * Register a loader. This operation will typically be called by a loader
      * during its initialization.
      *
+     * @param element the element that should be delegated to the contibuted loader
      * @param loader a loader that is being contributed to the system
+
      */
-    <T extends AssemblyObject> void registerLoader(StAXElementLoader<T> loader);
+    <T extends AssemblyObject> void registerLoader(QName element, StAXElementLoader<T> loader);
 
     /**
      * Unregister a loader. This will typically be called by a loader as it is being destroyed.
+     * @param element the element that was being delegated to the contibuted loader
      * @param loader a loader that should no longer be used
      */
-    <T extends AssemblyObject> void unregisterLoader(StAXElementLoader<T> loader);
+    <T extends AssemblyObject> void unregisterLoader(QName element, StAXElementLoader<T> loader);
 
     /**
      * Parse the supplied XML stream dispatching to the appropriate registered loader

@@ -34,10 +34,6 @@ public class InterfaceWSDLLoader extends AbstractLoader {
         return AssemblyConstants.INTERFACE_WSDL;
     }
 
-    public Class<WSDLServiceContract> getModelType() {
-        return WSDLServiceContract.class;
-    }
-
     public WSDLServiceContract load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         assert AssemblyConstants.INTERFACE_WSDL.equals(reader.getName());
         WSDLServiceContract serviceContract = factory.createWSDLServiceContract();

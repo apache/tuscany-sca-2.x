@@ -39,10 +39,6 @@ public class ServiceLoader extends AbstractLoader {
         return SERVICE;
     }
 
-    public Class<Service> getModelType() {
-        return Service.class;
-    }
-
     public Service load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         assert SERVICE.equals(reader.getName());
         Service service = factory.createService();

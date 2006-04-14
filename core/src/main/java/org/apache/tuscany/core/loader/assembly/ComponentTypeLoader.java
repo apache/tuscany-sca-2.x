@@ -41,10 +41,6 @@ public class ComponentTypeLoader extends AbstractLoader {
         return COMPONENT_TYPE;
     }
 
-    public Class<ComponentInfo> getModelType() {
-        return ComponentInfo.class;
-    }
-
     public ComponentInfo load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         assert COMPONENT_TYPE.equals(reader.getName());
         ComponentInfo componentType = factory.createComponentInfo();

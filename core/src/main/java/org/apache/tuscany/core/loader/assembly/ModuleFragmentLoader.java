@@ -34,10 +34,6 @@ public class ModuleFragmentLoader extends AggregateLoader {
         return AssemblyConstants.MODULE_FRAGMENT;
     }
 
-    public Class<ModuleFragment> getModelType() {
-        return ModuleFragment.class;
-    }
-
     public ModuleFragment load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
         ModuleFragment fragment = factory.createModuleFragment();
         loadAggregate(reader, fragment, resourceLoader);

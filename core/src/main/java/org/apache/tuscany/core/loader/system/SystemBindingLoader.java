@@ -19,6 +19,7 @@ package org.apache.tuscany.core.loader.system;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXUtil;
+import org.apache.tuscany.core.loader.assembly.AbstractLoader;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.osoa.sca.annotations.Scope;
 
@@ -33,12 +34,8 @@ import javax.xml.stream.XMLStreamReader;
 public class SystemBindingLoader extends AbstractLoader {
     public static final QName SYSTEM_BINDING = new QName("http://org.apache.tuscany/xmlns/system/0.9", "binding.system");
 
-    public QName getXMLType() {
-        return SystemBindingLoader.SYSTEM_BINDING;
-    }
-
-    public Class<SystemBinding> getModelType() {
-        return SystemBinding.class;
+    protected QName getXMLType() {
+        return SYSTEM_BINDING;
     }
 
     public SystemBinding load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {

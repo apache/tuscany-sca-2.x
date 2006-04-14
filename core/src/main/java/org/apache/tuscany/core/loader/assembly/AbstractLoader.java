@@ -16,6 +16,8 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.core.system.annotation.Autowire;
@@ -43,11 +45,17 @@ public abstract class AbstractLoader<T extends AssemblyObject> implements StAXEl
 
     @Init(eager = true)
     public void start() {
-        registry.registerLoader(this);
+        registry.registerLoader(getXMLType(), this);
     }
 
     @Destroy
     public void stop() {
-        registry.unregisterLoader(this);
+        registry.unregisterLoader(getXMLType(), this);
     }
+
+    /**
+     * Returns the QName of the element that this implementation handles.
+     * @return the QName of the element that this implementation handles
+     */
+    protected abstract QName getXMLType();
 }

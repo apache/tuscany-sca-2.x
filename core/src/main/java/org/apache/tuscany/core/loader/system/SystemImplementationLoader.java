@@ -18,9 +18,9 @@ package org.apache.tuscany.core.loader.system;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
-import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXUtil;
+import org.apache.tuscany.core.loader.assembly.AbstractLoader;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.osoa.sca.annotations.Scope;
@@ -43,12 +43,8 @@ public class SystemImplementationLoader extends AbstractLoader {
         this.introspector = introspector;
     }
 
-    public QName getXMLType() {
+    protected QName getXMLType() {
         return SYSTEM_IMPLEMENTATION;
-    }
-
-    public Class<SystemImplementation> getModelType() {
-        return SystemImplementation.class;
     }
 
     public SystemImplementation load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
