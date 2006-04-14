@@ -13,38 +13,38 @@
  */
 package org.apache.tuscany.core.runtime;
 
+import java.util.List;
+
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.HierarchicalWireBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitorImpl;
+import org.apache.tuscany.core.builder.impl.ContextFactoryBuilderRegistryImpl;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.context.impl.CompositeContextImpl;
-import org.apache.tuscany.core.context.impl.EventContextImpl;
-import org.apache.tuscany.core.context.RuntimeEventListener;
-import org.apache.tuscany.core.context.SystemCompositeContext;
+import org.apache.tuscany.core.context.AutowireContext;
+import org.apache.tuscany.core.context.AutowireResolutionException;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.impl.AbstractContext;
+import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventException;
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.context.AutowireResolutionException;
-import org.apache.tuscany.core.context.ConfigurationContext;
-import org.apache.tuscany.core.context.AutowireContext;
+import org.apache.tuscany.core.context.SystemCompositeContext;
+import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.impl.AbstractContext;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
+import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
-import org.apache.tuscany.model.assembly.Composite;
 import org.apache.tuscany.model.assembly.AssemblyObject;
+import org.apache.tuscany.model.assembly.Composite;
 import org.apache.tuscany.model.assembly.Extensible;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Implementation of a RuntimeContext that forms the foundation for a Tuscany environment.
@@ -52,8 +52,6 @@ import java.util.List;
  * @version $Rev$ $Date$
  */
 public class RuntimeContextImpl extends AbstractContext implements RuntimeContext {
-
-    private final List<ContextFactoryBuilder> builders;
 
     // the top-level wire builder in the runtime
     private final HierarchicalWireBuilder wireBuilder;
@@ -65,6 +63,8 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     private final SystemCompositeContext systemContext;
 
     private final MonitorFactory monitorFactory;
+
+    private final ContextFactoryBuilderRegistryImpl builderRegistry;
 
     /**
      * Default constructor that creates a runtime with a NullMonitorFactory and no builders.
@@ -83,12 +83,18 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     public RuntimeContextImpl(MonitorFactory monitorFactory, List<ContextFactoryBuilder> builders, HierarchicalWireBuilder wireBuilder) {
         super(RUNTIME);
         this.monitorFactory = monitorFactory;
-        this.builders = (builders == null) ? new ArrayList<ContextFactoryBuilder>(1) : builders;
         this.wireBuilder = (wireBuilder == null) ? new DefaultWireBuilder() : wireBuilder;
 
-        rootContext = new CompositeContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this
-        );
+        rootContext = new CompositeContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this);
         systemContext = new SystemCompositeContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(), this);
+
+        // bootstrap the builder regsitry
+        builderRegistry = new ContextFactoryBuilderRegistryImpl();
+        if (builders != null) {
+            for (ContextFactoryBuilder builder: builders) {
+                builderRegistry.register(builder);
+            }
+        }
     }
 
     /**
@@ -97,20 +103,18 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
      * @param monitorFactory the default {@link org.apache.tuscany.common.monitor.MonitorFactory} for this runtime
      * @param rootContext the context to use for the root of the user context tree
      * @param systemContext the context to use for the root of the system context tree
-     * @param builders a list of builders automatically made available; may be null
      * @param wireBuilder the top-level hierarchical wire builder for the runtime; if not specified, a default
      */
     public RuntimeContextImpl(MonitorFactory monitorFactory,
                               CompositeContext rootContext,
                               SystemCompositeContext systemContext,
-                              List<ContextFactoryBuilder> builders,
                               HierarchicalWireBuilder wireBuilder) {
         super(RUNTIME);
         this.rootContext = rootContext;
         this.systemContext = systemContext;
         this.monitorFactory = monitorFactory;
-        this.builders = (builders == null) ? new ArrayList<ContextFactoryBuilder>(1) : builders;
         this.wireBuilder = (wireBuilder == null) ? new DefaultWireBuilder() : wireBuilder;
+        builderRegistry = null;
     }
 
     public void start() throws CoreRuntimeException {
@@ -118,6 +122,12 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
             return;
         }
         systemContext.start();
+        try {
+            systemContext.registerJavaObject(ContextFactoryBuilderRegistry.class.getName(), ContextFactoryBuilderRegistry.class, builderRegistry);
+        } catch (ConfigurationException e) {
+            throw new AssertionError();
+        }
+
         rootContext.start();
         lifecycleState = RUNNING;
     }
@@ -133,7 +143,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
     public void addBuilder(ContextFactoryBuilder builder) {
         assert (builder != null) : "Builder was null";
-        builders.add(builder);
+        builderRegistry.register(builder);
     }
 
     public void addBuilder(WireBuilder builder) {
@@ -203,7 +213,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     }
 
     public synchronized void build(AssemblyObject model) throws BuilderConfigException {
-        AssemblyVisitorImpl visitor = new AssemblyVisitorImpl(builders);
+        AssemblyVisitorImpl visitor = new AssemblyVisitorImpl(builderRegistry.getBuilders());
         visitor.start(model);
     }
 

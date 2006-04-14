@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class AssemblyVisitorImpl implements AssemblyVisitor {
 
-    List<ContextFactoryBuilder> builders;
+    private List<ContextFactoryBuilder> builders;
 
     /**
      * Constructs a visitor
