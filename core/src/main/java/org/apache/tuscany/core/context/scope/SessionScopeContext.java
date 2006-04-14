@@ -82,22 +82,10 @@ public class SessionScopeContext extends AbstractScopeContext {
         }else if(event instanceof ContextCreatedEvent){
             checkInit();
             Object sessionKey = getEventContext().getIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
-            List<Context> contexts = destroyQueues.get(sessionKey);
+            List<Context> shutdownQueue = destroyQueues.get(sessionKey);
             Context context = (Context)event.getSource();
-            assert(contexts != null): "Shutdown queue not found for key";
-
-//            if (context instanceof AtomicContext) {
-//                 AtomicContext atomic = (AtomicContext)event.getSource();
-//                 // if destroyable, queue the context to have its component implementation instance released
-//                 if (atomic.isDestroyable()) {
-//                     if (contexts == null) {
-//                         ScopeRuntimeException e = new ScopeRuntimeException("Shutdown queue not found for key");
-//                         e.setIdentifier(sessionKey.toString());
-//                         throw e;
-//                     }
-//                 }
-//            }
-            contexts.add(context);
+            assert(shutdownQueue != null): "Shutdown queue not found for key";
+            shutdownQueue.add(context);
         }
     }
 
@@ -230,13 +218,11 @@ public class SessionScopeContext extends AbstractScopeContext {
                 //removeContextByKey(context.getName(), key);
                 try {
                     if (context instanceof AtomicContext){
-                        System.out.println(":"+context.getName());
                         ((AtomicContext)context).destroy();
                     }
                     context.stop();
                 } catch (TargetException e) {
                     // TODO send a monitoring event
-                    // log.error("Error releasing instance [" + context.getName() + "]",e);
                 }
             }
         }

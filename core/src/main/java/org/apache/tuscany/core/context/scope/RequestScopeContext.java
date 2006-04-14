@@ -136,11 +136,6 @@ public class RequestScopeContext extends AbstractScopeContext {
             return;
         }
         components.remove(ctxName);
-        //Map<String, Context> contexts = contexts.get(key);
-        // no synchronization for the following two operations since the request
-        // context will not be shutdown before the second call is processed
-        //Context context = contexts.get(ctxName);
-        //destroyQueues.get(key).remove(context);
     }
 
 

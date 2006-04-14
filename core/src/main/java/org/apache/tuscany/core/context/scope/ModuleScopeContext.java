@@ -55,7 +55,7 @@ public class ModuleScopeContext extends AbstractScopeContext {
             lifecycleState = RUNNING;
             initComponentContexts();
         } else if (event instanceof ModuleStopEvent) {
-            notifyInstanceShutdown();
+            shutdownContexts();
         } else if (event instanceof ContextCreatedEvent) {
             checkInit();
             if (event.getSource() instanceof AtomicContext) {
@@ -124,10 +124,9 @@ public class ModuleScopeContext extends AbstractScopeContext {
 
 
     /**
-     * Notfies instances that are associated with a context and configured to receive callbacks that the context is
-     * being destroyed in reverse order
+     * Notifies contexts of a shutdown in reverse order to which they were started
      */
-    private synchronized void notifyInstanceShutdown() {
+    private synchronized void shutdownContexts() {
         if (destroyableContexts == null || destroyableContexts.size() == 0) {
             return;
         }
@@ -137,7 +136,6 @@ public class ModuleScopeContext extends AbstractScopeContext {
             Context context = iter.previous();
             if (context.getLifecycleState() == RUNNING) {
                 synchronized (context) {
-                    //removeContextByKey(context.getName(), key);
                     try {
                         if (context instanceof AtomicContext){
                             ((AtomicContext)context).destroy();
@@ -145,7 +143,6 @@ public class ModuleScopeContext extends AbstractScopeContext {
                         context.stop();
                     } catch (TargetException e) {
                         // TODO send a monitoring event
-                        // log.error("Error releasing instance [" + context.getName() + "]",e);
                     }
                 }
             }
@@ -171,8 +168,6 @@ public class ModuleScopeContext extends AbstractScopeContext {
                     if (atomic.isEagerInit()) {
                         // perform silent creation and manual shutdown registration
                         atomic.init();
-                        //if (atomic.isDestroyable()) {
-                        //}
                     }
                 }
                 context.addListener(this);
