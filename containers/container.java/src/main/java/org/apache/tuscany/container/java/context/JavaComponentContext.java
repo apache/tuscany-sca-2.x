@@ -21,7 +21,7 @@ import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.context.ContextInitException;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.event.ContextCreatedEvent;
+import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
@@ -80,7 +80,7 @@ public class JavaComponentContext extends AbstractContext implements AtomicConte
     }
 
     public void init() throws TargetException {
-        getInstance(null, false);
+        getInstance(null);
     }
 
     public void destroy() throws TargetException {
@@ -99,10 +99,6 @@ public class JavaComponentContext extends AbstractContext implements AtomicConte
     }
 
     public synchronized Object getInstance(QualifiedName qName) throws TargetException {
-        return getInstance(qName, true);
-    }
-
-    private synchronized Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
         //TODO implement returning of proxy and invocation chain for service
         if (cachedTargetInstance != null) {
             return cachedTargetInstance; // already cached, just return
@@ -114,21 +110,21 @@ public class JavaComponentContext extends AbstractContext implements AtomicConte
         synchronized (this) {
             try {
                 Object instance = objectFactory.getInstance();
-                startInstance(instance);
-                if (notify) {
-                    publish(new ContextCreatedEvent(this));
+                // handle @Init
+                if (initInvoker != null) {
+                    initInvoker.invokeEvent(instance);
                 }
+                publish(new InstanceCreated(this));
                 lifecycleState = RUNNING;
                 if (stateless) {
                     return instance;
                 } else {
-                    // cache the actual instance
-                    cachedTargetInstance = instance;
+                    cachedTargetInstance = instance;  // cache the instance
                     return cachedTargetInstance;
                 }
             } catch (ObjectCreationException e) {
                 lifecycleState = ERROR;
-                TargetException te = new TargetException("Error creating instance for component", e);
+                TargetException te = new TargetException("Error creating component instance", e);
                 te.setIdentifier(getName());
                 throw te;
             }
@@ -164,19 +160,6 @@ public class JavaComponentContext extends AbstractContext implements AtomicConte
 
     public void stop() {
         lifecycleState = STOPPED;
-    }
-
-    private void startInstance(Object instance) throws TargetException {
-        try {
-            // handle @Init
-            if (initInvoker != null) {
-                initInvoker.invokeEvent(instance);
-            }
-        } catch (ObjectCallbackException e) {
-            TargetException te = new TargetException("Error initializing instance", e);
-            te.setIdentifier(getName());
-            throw te;
-        }
     }
 
 }

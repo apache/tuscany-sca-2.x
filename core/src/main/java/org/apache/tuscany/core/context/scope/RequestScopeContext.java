@@ -22,9 +22,9 @@ import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.event.ContextCreatedEvent;
+import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.core.context.event.Event;
-import org.apache.tuscany.core.context.event.RequestEndEvent;
+import org.apache.tuscany.core.context.event.RequestEnd;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,12 +53,12 @@ public class RequestScopeContext extends AbstractScopeContext {
 
     public void onEvent(Event event){
         /* clean up current context for pooled threads */
-        if (event instanceof RequestEndEvent){
+        if (event instanceof RequestEnd){
             checkInit();
             getEventContext().clearIdentifiers();
             shutdownContexts();
             cleanupRequestContexts();
-        }else if (event instanceof ContextCreatedEvent){
+        }else if (event instanceof InstanceCreated){
             checkInit();
             assert(event.getSource() instanceof Context): "Context must be passed on created event";
             Context context = (Context)event.getSource();

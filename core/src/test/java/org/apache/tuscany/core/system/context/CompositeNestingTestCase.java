@@ -16,7 +16,7 @@ package org.apache.tuscany.core.system.context;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.Target;
@@ -40,15 +40,15 @@ public class CompositeNestingTestCase extends TestCase {
         runtime.getSystemContext().registerModelObject(child1);
         CompositeContext child1Ctx = (CompositeContext) runtime.getSystemContext().getContext("child1");
         Assert.assertNotNull(child1Ctx);
-        child1Ctx.publish(new ModuleStartEvent(this));
+        child1Ctx.publish(new ModuleStart(this));
         analyzeLeafComponents(child1Ctx);
         CompositeContext child2Ctx = (CompositeContext) child1Ctx.getContext("child2");
         Assert.assertNotNull(child2Ctx);
-        child2Ctx.publish(new ModuleStartEvent(this));
+        child2Ctx.publish(new ModuleStart(this));
         analyzeLeafComponents(child2Ctx);
         CompositeContext child3Ctx = (CompositeContext) child2Ctx.getContext("child3");
         Assert.assertNotNull(child3Ctx);
-        child3Ctx.publish(new ModuleStartEvent(this));
+        child3Ctx.publish(new ModuleStart(this));
         analyzeLeafComponents(child3Ctx);
         
         Assert.assertNull(child1Ctx.getContext("child3")); // sanity check
@@ -63,15 +63,15 @@ public class CompositeNestingTestCase extends TestCase {
         runtime.getRootContext().registerModelObject(child1);
         CompositeContext child1Ctx = (CompositeContext) runtime.getRootContext().getContext("child1");
         Assert.assertNotNull(child1Ctx);
-        child1Ctx.publish(new ModuleStartEvent(this));
+        child1Ctx.publish(new ModuleStart(this));
         analyzeLeafComponents(child1Ctx);
         CompositeContext child2Ctx = (CompositeContext) child1Ctx.getContext("child2");
         Assert.assertNotNull(child2Ctx);
-        child2Ctx.publish(new ModuleStartEvent(this));
+        child2Ctx.publish(new ModuleStart(this));
         analyzeLeafComponents(child2Ctx);
         CompositeContext child3Ctx = (CompositeContext) child2Ctx.getContext("child3");
         Assert.assertNotNull(child3Ctx);
-        child3Ctx.publish(new ModuleStartEvent(this));
+        child3Ctx.publish(new ModuleStart(this));
         analyzeLeafComponents(child3Ctx);
         
         Assert.assertNull(child1Ctx.getContext("child3")); // sanity check

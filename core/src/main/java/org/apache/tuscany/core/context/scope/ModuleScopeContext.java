@@ -22,10 +22,10 @@ import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.event.ContextCreatedEvent;
+import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.core.context.event.Event;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
-import org.apache.tuscany.core.context.event.ModuleStopEvent;
+import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.event.ModuleStop;
 
 import java.util.Map;
 import java.util.List;
@@ -51,19 +51,17 @@ public class ModuleScopeContext extends AbstractScopeContext {
     }
 
     public void onEvent(Event event) {
-        if (event instanceof ModuleStartEvent) {
+        if (event instanceof ModuleStart) {
             lifecycleState = RUNNING;
             initComponentContexts();
-        } else if (event instanceof ModuleStopEvent) {
+        } else if (event instanceof ModuleStop) {
             shutdownContexts();
-        } else if (event instanceof ContextCreatedEvent) {
+        } else if (event instanceof InstanceCreated) {
             checkInit();
             if (event.getSource() instanceof AtomicContext) {
-                AtomicContext serviceContext = (AtomicContext) event.getSource();
+                Context context = (Context) event.getSource();
                 // Queue the context to have its implementation instance released if destroyable
-                if (serviceContext.isDestroyable()) {
-                    destroyableContexts.add(serviceContext);
-                }
+                destroyableContexts.add(context);
             }
         }
     }

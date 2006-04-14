@@ -12,7 +12,6 @@ import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.DuplicateNameException;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.EventContext;
-import static org.apache.tuscany.core.context.EventContext.*;
 import org.apache.tuscany.core.context.EventException;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeAwareContext;
@@ -23,11 +22,9 @@ import org.apache.tuscany.core.context.MissingImplementationException;
 import org.apache.tuscany.core.context.MissingContextFactoryException;
 import org.apache.tuscany.core.context.ProxyConfigurationException;
 import org.apache.tuscany.core.context.MissingScopeException;
-import org.apache.tuscany.core.context.event.HttpSessionBoundEvent;
-import org.apache.tuscany.core.context.event.RequestEndEvent;
+import org.apache.tuscany.core.context.event.RequestEnd;
 import org.apache.tuscany.core.context.event.Event;
-import org.apache.tuscany.core.context.event.HttpSessionEvent;
-import org.apache.tuscany.core.context.event.SessionBoundEvent;
+import org.apache.tuscany.core.context.event.SessionBound;
 import org.apache.tuscany.core.context.event.SessionEvent;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
@@ -442,11 +439,11 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
 
     public void publish(Event event){
         checkInit();
-        if (event instanceof SessionBoundEvent) {
-            SessionEvent sessionEvent = ((SessionBoundEvent) event);
+        if (event instanceof SessionBound) {
+            SessionEvent sessionEvent = ((SessionBound) event);
             // update context
             eventContext.setIdentifier(sessionEvent.getSessionTypeIdentifier() ,sessionEvent.getId());
-        } else if (event instanceof RequestEndEvent) {
+        } else if (event instanceof RequestEnd) {
             // be very careful with pooled threads, ensuring threadlocals are cleaned up
             eventContext.clearIdentifiers();
         }

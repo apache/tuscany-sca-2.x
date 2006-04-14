@@ -23,10 +23,10 @@ import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.ScopeRuntimeException;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.event.ContextCreatedEvent;
+import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.core.context.event.Event;
 import org.apache.tuscany.core.context.event.HttpSessionEvent;
-import org.apache.tuscany.core.context.event.SessionEndEvent;
+import org.apache.tuscany.core.context.event.SessionEnd;
 
 import java.util.Map;
 import java.util.List;
@@ -74,12 +74,12 @@ public class SessionScopeContext extends AbstractScopeContext {
     }
 
     public void onEvent(Event event) {
-        if (event instanceof SessionEndEvent){
+        if (event instanceof SessionEnd){
             checkInit();
-            Object key = ((SessionEndEvent)event).getId();
+            Object key = ((SessionEnd)event).getId();
             shutdownContexts(key);
             destroyComponentContext(key);
-        }else if(event instanceof ContextCreatedEvent){
+        }else if(event instanceof InstanceCreated){
             checkInit();
             Object sessionKey = getEventContext().getIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
             List<Context> shutdownQueue = destroyQueues.get(sessionKey);

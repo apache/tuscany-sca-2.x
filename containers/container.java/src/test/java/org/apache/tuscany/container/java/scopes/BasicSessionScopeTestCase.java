@@ -31,8 +31,8 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.event.RequestEndEvent;
-import org.apache.tuscany.core.context.event.HttpSessionEndEvent;
+import org.apache.tuscany.core.context.event.RequestEnd;
+import org.apache.tuscany.core.context.event.HttpSessionEnd;
 import org.apache.tuscany.core.context.event.HttpSessionEvent;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.SessionScopeContext;
@@ -76,8 +76,8 @@ public class BasicSessionScopeTestCase extends TestCase {
         Assert.assertNotSame(comp1, comp3); // should be different instances
         ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
 
-        scope.onEvent(new HttpSessionEndEvent(this,session));
-        scope.onEvent(new HttpSessionEndEvent(this,session2));
+        scope.onEvent(new HttpSessionEnd(this,session));
+        scope.onEvent(new HttpSessionEnd(this,session2));
         scope.stop();
     }
 
@@ -114,14 +114,14 @@ public class BasicSessionScopeTestCase extends TestCase {
                 .getInstance(null);
         Assert.assertNotNull(comp2);
         Object id = new Object();
-        scope.onEvent(new RequestEndEvent(this,id));
+        scope.onEvent(new RequestEnd(this,id));
         Assert.assertSame(comp1, comp2); // should be same instances
         Assert.assertSame(comp2, comp3); // should not be same instances
         ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
 
         // shutdown sessions
-        scope.onEvent(new HttpSessionEndEvent(this,session));
-        scope.onEvent(new HttpSessionEndEvent(this,session2));
+        scope.onEvent(new HttpSessionEnd(this,session));
+        scope.onEvent(new HttpSessionEnd(this,session2));
 
         scope.stop();
     }
@@ -153,10 +153,10 @@ public class BasicSessionScopeTestCase extends TestCase {
         Assert.assertTrue(comp3.isInitialized());
         ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
 
-        scope.onEvent(new HttpSessionEndEvent(this,session));
+        scope.onEvent(new HttpSessionEnd(this,session));
         Assert.assertTrue(comp2.isDestroyed());
 
-        scope.onEvent(new HttpSessionEndEvent(this,session2));
+        scope.onEvent(new HttpSessionEnd(this,session2));
         Assert.assertTrue(comp3.isDestroyed());
         scope.stop();
     }
@@ -197,10 +197,10 @@ public class BasicSessionScopeTestCase extends TestCase {
         Assert.assertTrue(comp3.isInitialized());
         ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
 
-        scope.onEvent(new HttpSessionEndEvent(this,session));
+        scope.onEvent(new HttpSessionEnd(this,session));
         Assert.assertTrue(comp2.isDestroyed());
 
-        scope.onEvent(new HttpSessionEndEvent(this,session2));
+        scope.onEvent(new HttpSessionEnd(this,session2));
         Assert.assertTrue(comp3.isDestroyed());
         scope.stop();
     }

@@ -5,9 +5,9 @@ package org.apache.tuscany.core.context.event;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class ModuleStopEvent extends AbstractEvent implements ModuleEvent{
+public class ModuleStop extends AbstractEvent implements ModuleEvent{
 
-    public ModuleStopEvent(Object source) {
+    public ModuleStop(Object source) {
         super(source);
     }
 }

@@ -14,13 +14,19 @@
 package org.apache.tuscany.core.context.event;
 
 /**
- * Propagated when a module starts
- * 
+ * Propagated when an HTTP-based session is expired
+ *
  * @version $$Rev$$ $$Date$$
  */
-public class ModuleStartEvent extends AbstractEvent implements ModuleEvent {
+public class HttpSessionEnd extends HttpSessionEvent implements SessionEnd {
 
-    public ModuleStartEvent(Object source) {
-        super(source);
+    /**
+     * Creates a new event
+     * @param source the source of the event
+     * @param id the id of the HTTP session being ended
+     */
+    public HttpSessionEnd(Object source, Object id) {
+        super(source,id);
     }
-}
+
+ }

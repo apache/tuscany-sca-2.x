@@ -17,8 +17,8 @@ package org.apache.tuscany.core.system.context;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.SystemCompositeContext;
-import org.apache.tuscany.core.context.event.ModuleStopEvent;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.ModuleStop;
+import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.AutowireSourceImpl;
 import org.apache.tuscany.core.mock.component.Source;
@@ -75,15 +75,15 @@ public class AutowireTestCase extends TestCase {
         CompositeContext root = runtime.getRootContext();
         SystemCompositeContext system = runtime.getSystemContext();
         CompositeContext system1 = (CompositeContext) system.getContext("system1");
-        system1.publish(new ModuleStartEvent(this));
+        system1.publish(new ModuleStart(this));
         Target target = (Target) system.getContext("target.system.ep").getInstance(null);
         assertNotNull(target);
         CompositeContext app1 = (CompositeContext) root.getContext("app1");
-        app1.publish(new ModuleStartEvent(this));
+        app1.publish(new ModuleStart(this));
         CompositeContext app1a = (CompositeContext) app1.getContext("app1a");
-        app1a.publish(new ModuleStartEvent(this));
-        app1a.publish(new ModuleStopEvent(this));
-        app1.publish(new ModuleStopEvent(this));
+        app1a.publish(new ModuleStart(this));
+        app1a.publish(new ModuleStop(this));
+        app1.publish(new ModuleStop(this));
         Source source = (Source) app1a.getContext("source").getInstance(null);
         assertEquals(target, source.getTarget());
         source.getTarget().getString();
@@ -98,11 +98,11 @@ public class AutowireTestCase extends TestCase {
         RuntimeContext runtime = createScenario2Runtime();
         CompositeContext root = runtime.getRootContext();
         CompositeContext app1 = (CompositeContext) root.getContext("app1");
-        app1.publish(new ModuleStartEvent(this));
+        app1.publish(new ModuleStart(this));
         CompositeContext app1b = (CompositeContext) app1.getContext("app1b");
-        app1b.publish(new ModuleStartEvent(this));
+        app1b.publish(new ModuleStart(this));
         CompositeContext app1a = (CompositeContext) app1.getContext("app1a");
-        app1a.publish(new ModuleStartEvent(this));
+        app1a.publish(new ModuleStart(this));
         Target target = (Target) app1b.getContext("target.ep").getInstance(null);
         assertNotNull(target);
         Source source = (Source) app1a.getContext("source").getInstance(null);
@@ -120,14 +120,14 @@ public class AutowireTestCase extends TestCase {
         SystemCompositeContext system = runtime.getSystemContext();
 
         CompositeContext system2 = (CompositeContext) system.getContext("system2");
-        system2.publish(new ModuleStartEvent(this));
+        system2.publish(new ModuleStart(this));
         Target target = (Target) system2.getContext("target.ep").getInstance(null);
         assertNotNull(target);
 
         CompositeContext system1 = (CompositeContext) system.getContext("system1");
-        system1.publish(new ModuleStartEvent(this));
+        system1.publish(new ModuleStart(this));
         CompositeContext system1a = (CompositeContext) system1.getContext("system1a");
-        system1a.publish(new ModuleStartEvent(this));
+        system1a.publish(new ModuleStart(this));
 
         Source source = (Source) system1a.getContext("source").getInstance(null);
         assertEquals(target, source.getTarget());
@@ -143,11 +143,11 @@ public class AutowireTestCase extends TestCase {
         RuntimeContext runtime = createScenario4Runtime();
         SystemCompositeContext system = runtime.getSystemContext();
         CompositeContext system1 = (CompositeContext) system.getContext("system1");
-        system1.publish(new ModuleStartEvent(this));
+        system1.publish(new ModuleStart(this));
         Target target = (Target) system1.getContext("target").getInstance(null);
         assertNotNull(target);
         CompositeContext system1a = (CompositeContext) system1.getContext("system1a");
-        system1a.publish(new ModuleStartEvent(this));
+        system1a.publish(new ModuleStart(this));
 
         Source source = (Source) system1a.getContext("source").getInstance(null);
         assertEquals(target, source.getTarget());
@@ -163,11 +163,11 @@ public class AutowireTestCase extends TestCase {
         RuntimeContext runtime = createScenario5Runtime();
         SystemCompositeContext system = runtime.getSystemContext();
         CompositeContext system1 = (CompositeContext) system.getContext("system1");
-        system1.publish(new ModuleStartEvent(this));
+        system1.publish(new ModuleStart(this));
         Target target = (Target) system.getContext("target").getInstance(null);
         assertNotNull(target);
         CompositeContext system1a = (CompositeContext) system1.getContext("system1a");
-        system1a.publish(new ModuleStartEvent(this));
+        system1a.publish(new ModuleStart(this));
 
         Source source = (Source) system1a.getContext("source").getInstance(null);
         assertEquals(target, source.getTarget());
@@ -203,7 +203,7 @@ public class AutowireTestCase extends TestCase {
         app1Component.getImplementation().getComponents().add(app1aComponent);
         CompositeContext root = runtime.getRootContext();
         root.registerModelObject(app1Component);
-        system.publish(new ModuleStartEvent(this));
+        system.publish(new ModuleStart(this));
         return runtime;
     }
 
@@ -252,7 +252,7 @@ public class AutowireTestCase extends TestCase {
         Component source = MockFactory.createSystemComponent("source", Source.class, AutowireSourceImpl.class, Scope.MODULE);
         system1aComponent.getImplementation().getComponents().add(source);
         system.registerModelObject(system1Component);
-        system.publish(new ModuleStartEvent(this));
+        system.publish(new ModuleStart(this));
         return runtime;
     }
 
@@ -270,7 +270,7 @@ public class AutowireTestCase extends TestCase {
         Component source = MockFactory.createSystemComponent("source", Source.class, AutowireSourceImpl.class, Scope.MODULE);
         system1aComponent.getImplementation().getComponents().add(source);
         system.registerModelObject(system1Component);
-        system.publish(new ModuleStartEvent(this));
+        system.publish(new ModuleStart(this));
         return runtime;
     }
 
@@ -288,7 +288,7 @@ public class AutowireTestCase extends TestCase {
         Component source = MockFactory.createSystemComponent("source", Source.class, AutowireSourceImpl.class, Scope.MODULE);
         system1aComponent.getImplementation().getComponents().add(source);
         system.registerModelObject(system1Component);
-        system.publish(new ModuleStartEvent(this));
+        system.publish(new ModuleStart(this));
         return runtime;
     }
 

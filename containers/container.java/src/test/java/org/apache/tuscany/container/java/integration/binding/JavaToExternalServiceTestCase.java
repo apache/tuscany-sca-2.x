@@ -22,8 +22,8 @@ import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBindingBuilder;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
-import org.apache.tuscany.core.context.event.ModuleStopEvent;
+import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 
 /**
@@ -49,13 +49,13 @@ public class JavaToExternalServiceTestCase extends TestCase {
         runtime.getRootContext().registerModelObject(MockFactory.createCompositeComponent("test.module"));
         CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockFactory.createModuleWithExternalService());
-        child.publish(new ModuleStartEvent(this));
+        child.publish(new ModuleStart(this));
         HelloWorldService source = (HelloWorldService) child.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         Assert.assertEquals(0, mockInterceptor.getCount());
         Assert.assertEquals("foo", source.hello("foo"));
         Assert.assertEquals(1, mockInterceptor.getCount());
-        child.publish(new ModuleStopEvent(this));
+        child.publish(new ModuleStop(this));
          runtime.stop();
     }
 

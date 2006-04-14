@@ -52,9 +52,8 @@ import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.SystemCompositeContext;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
@@ -668,7 +667,7 @@ public class MockFactory {
         SystemCompositeContext ctx = (SystemCompositeContext) runtime.getSystemContext().getContext(SYSTEM_CHILD);
         ctx.registerModelObject(systemFactory.createSystemComponent(JAVA_BUILDER, ContextFactoryBuilder.class, JavaContextFactoryBuilder.class, Scope.MODULE));
         ctx.registerModelObject(systemFactory.createSystemComponent(JAVA_WIRE_BUILDER, WireBuilder.class, JavaTargetWireBuilder.class, Scope.MODULE));
-        ctx.publish(new ModuleStartEvent(new Object()));
+        ctx.publish(new ModuleStart(new Object()));
         return runtime;
     }
 

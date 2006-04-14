@@ -26,8 +26,8 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
-import org.apache.tuscany.core.context.event.ModuleStopEvent;
+import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
@@ -52,14 +52,14 @@ public class BasicModuleScopeTestCase extends TestCase {
         scope.registerFactories(createConfigurations());
         scope.start();
         // first request
-        scope.onEvent(new ModuleStartEvent(this));
+        scope.onEvent(new ModuleStart(this));
         ModuleScopeComponentImpl comp1 = (ModuleScopeComponentImpl) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp1);
         // second request
         ModuleScopeComponentImpl comp2 = (ModuleScopeComponentImpl) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp2);
         Assert.assertSame(comp1, comp2);
-        scope.onEvent(new ModuleStopEvent(this));
+        scope.onEvent(new ModuleStop(this));
         scope.stop();
     }
 
@@ -68,8 +68,8 @@ public class BasicModuleScopeTestCase extends TestCase {
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
         scope.registerFactories(createConfigurations());
         scope.start();
-        scope.onEvent(new ModuleStartEvent(this));
-        scope.onEvent(new ModuleStopEvent(this));
+        scope.onEvent(new ModuleStart(this));
+        scope.onEvent(new ModuleStop(this));
         scope.stop();
     }
 
@@ -79,11 +79,11 @@ public class BasicModuleScopeTestCase extends TestCase {
         scope.registerFactories(createConfigurations());
         scope.start();
         scope.registerFactory(createConfiguration("NewTestService"));
-        scope.onEvent(new ModuleStartEvent(this));
+        scope.onEvent(new ModuleStart(this));
         ModuleScopeInitDestroyComponent comp2 = (ModuleScopeInitDestroyComponent) scope.getContext("NewTestService").getInstance(null);
         Assert.assertNotNull(comp2);
         Assert.assertTrue(comp2.isInitialized());
-        scope.onEvent(new ModuleStopEvent(this));
+        scope.onEvent(new ModuleStop(this));
         Assert.assertTrue(comp2.isDestroyed());
         scope.stop();
     }
@@ -93,12 +93,12 @@ public class BasicModuleScopeTestCase extends TestCase {
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
         scope.start();
         scope.registerFactory(createConfiguration("NewTestService"));
-        scope.onEvent(new ModuleStartEvent(this));
+        scope.onEvent(new ModuleStart(this));
         scope.registerFactories(createConfigurations());
         ModuleScopeInitDestroyComponent comp2 = (ModuleScopeInitDestroyComponent) scope.getContext("NewTestService").getInstance(null);
         Assert.assertNotNull(comp2);
         Assert.assertTrue(comp2.isInitialized());
-        scope.onEvent(new ModuleStopEvent(this));
+        scope.onEvent(new ModuleStop(this));
         Assert.assertTrue(comp2.isDestroyed());
         scope.stop();
     }

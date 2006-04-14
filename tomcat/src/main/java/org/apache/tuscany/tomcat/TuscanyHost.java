@@ -32,7 +32,7 @@ import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.SystemCompositeContext;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
@@ -86,7 +86,7 @@ public class TuscanyHost extends StandardHost {
             ModuleComponentConfigurationLoader loader = BootstrapHelper.getConfigurationLoader(systemContext, modelContext);
             ModuleComponent systemModuleComponent = loader.loadSystemModuleComponent(SYSTEM_MODULE_COMPONENT, SYSTEM_MODULE_COMPONENT);
             CompositeContext context = BootstrapHelper.registerModule(systemContext, systemModuleComponent);
-            context.publish(new ModuleStartEvent(this));
+            context.publish(new ModuleStart(this));
         } catch (ConfigurationLoadException e) {
             getLogger().warn(sm.getString("runtime.loadSystemFailed", e.getResourceURI()), e);
             return;

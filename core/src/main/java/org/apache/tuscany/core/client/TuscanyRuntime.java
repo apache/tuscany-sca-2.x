@@ -32,12 +32,12 @@ import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.SystemCompositeContext;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
-import org.apache.tuscany.core.context.event.RequestStartEvent;
-import org.apache.tuscany.core.context.event.RequestEndEvent;
-import org.apache.tuscany.core.context.event.ModuleStopEvent;
-import org.apache.tuscany.core.context.event.HttpSessionBoundEvent;
-import org.apache.tuscany.core.context.event.HttpSessionEndEvent;
+import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.event.RequestStart;
+import org.apache.tuscany.core.context.event.RequestEnd;
+import org.apache.tuscany.core.context.event.ModuleStop;
+import org.apache.tuscany.core.context.event.HttpSessionBound;
+import org.apache.tuscany.core.context.event.HttpSessionEnd;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.model.assembly.AssemblyContext;
@@ -97,7 +97,7 @@ public class TuscanyRuntime extends SCA {
         ModuleComponentConfigurationLoader loader = BootstrapHelper.getConfigurationLoader(systemContext, modelContext);
         ModuleComponent systemModuleComponent = loader.loadSystemModuleComponent(SYSTEM_MODULE_COMPONENT, SYSTEM_MODULE_COMPONENT);
         CompositeContext context = BootstrapHelper.registerModule(systemContext, systemModuleComponent);
-        context.publish(new ModuleStartEvent(this));
+        context.publish(new ModuleStart(this));
 
 
         // Load the SCDL configuration of the application module
@@ -114,9 +114,9 @@ public class TuscanyRuntime extends SCA {
         setModuleContext((ModuleContext) moduleContext);
         try {
             //moduleContext.start();
-            moduleContext.publish(new ModuleStartEvent(this));
-            moduleContext.publish(new RequestStartEvent(this, new Object()));
-            moduleContext.publish(new HttpSessionBoundEvent(this, sessionKey));
+            moduleContext.publish(new ModuleStart(this));
+            moduleContext.publish(new RequestStart(this, new Object()));
+            moduleContext.publish(new HttpSessionBound(this, sessionKey));
             monitor.moduleStarted(moduleContext.getName());
         } catch (CoreRuntimeException e) {
             setModuleContext(null);
@@ -132,9 +132,9 @@ public class TuscanyRuntime extends SCA {
     @Override
     public void stop() {
         setModuleContext(null);
-        moduleContext.publish(new RequestEndEvent(this, new Object()));
-        moduleContext.publish(new HttpSessionEndEvent(this, sessionKey));
-        moduleContext.publish(new ModuleStopEvent(this));
+        moduleContext.publish(new RequestEnd(this, new Object()));
+        moduleContext.publish(new HttpSessionEnd(this, sessionKey));
+        moduleContext.publish(new ModuleStop(this));
         moduleContext.stop();
         monitor.moduleStopped(moduleContext.getName());
     }

@@ -28,9 +28,9 @@ import org.osoa.sca.ModuleContext;
 import org.osoa.sca.SCA;
 
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.event.HttpSessionBoundEvent;
-import org.apache.tuscany.core.context.event.RequestStartEvent;
-import org.apache.tuscany.core.context.event.RequestEndEvent;
+import org.apache.tuscany.core.context.event.HttpSessionBound;
+import org.apache.tuscany.core.context.event.RequestStart;
+import org.apache.tuscany.core.context.event.RequestEnd;
 import org.apache.tuscany.core.webapp.LazyHTTPSessionId;
 
 /**
@@ -69,14 +69,14 @@ public class TuscanyValve extends ValveBase {
                 HttpSession session = request.getSession(false);
                 if (session != null) {
                     // A session is already active
-                    moduleComponentContext .publish(new HttpSessionBoundEvent(this,session));
+                    moduleComponentContext .publish(new HttpSessionBound(this,session));
                 } else {
                     // Create a lazy wrapper since a session is not yet active
-                    moduleComponentContext.publish(new HttpSessionBoundEvent(this, new LazyHTTPSessionId(request)));
+                    moduleComponentContext.publish(new HttpSessionBound(this, new LazyHTTPSessionId(request)));
                 }
 
                 try {
-                    moduleComponentContext.publish(new RequestStartEvent(this, requestId));
+                    moduleComponentContext.publish(new RequestStart(this, requestId));
                 } catch (Exception e) {
                     throw new ServletException(e.getMessage(), e);
                 }
@@ -89,7 +89,7 @@ public class TuscanyValve extends ValveBase {
                     // notify the runtime the request is ending
                     request.removeNote(REQUEST_ID);
                     try {
-                        moduleComponentContext.publish(new RequestEndEvent(this, requestId));
+                        moduleComponentContext.publish(new RequestEnd(this, requestId));
                     } catch (Exception e) {
                         // the application already did its work, log and ignore
                         // todo log this exception

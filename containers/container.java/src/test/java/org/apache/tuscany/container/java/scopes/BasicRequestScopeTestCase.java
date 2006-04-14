@@ -30,7 +30,7 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.event.RequestEndEvent;
+import org.apache.tuscany.core.context.event.RequestEnd;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.RequestScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
@@ -56,14 +56,14 @@ public class BasicRequestScopeTestCase extends TestCase {
         RequestScopeComponentImpl comp1 = (RequestScopeComponentImpl) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp1);
         Object id = new Object();
-        scope.onEvent(new RequestEndEvent(this,id));
+        scope.onEvent(new RequestEnd(this,id));
 
         // second request
         RequestScopeComponentImpl comp2 = (RequestScopeComponentImpl) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp2);
         Assert.assertNotSame(comp1, comp2);
         Object id2 = new Object();
-        scope.onEvent(new RequestEndEvent(this,id2));
+        scope.onEvent(new RequestEnd(this,id2));
 
         scope.stop();
     }
@@ -79,7 +79,7 @@ public class BasicRequestScopeTestCase extends TestCase {
         RequestScopeComponent comp2 = (RequestScopeComponent) scope.getContext("NewTestService").getInstance(null);
         Assert.assertNotNull(comp2);
         Object id = new Object();
-        scope.onEvent(new RequestEndEvent(this,id));
+        scope.onEvent(new RequestEnd(this,id));
         scope.stop();
     }
 
@@ -94,7 +94,7 @@ public class BasicRequestScopeTestCase extends TestCase {
         RequestScopeComponent comp2 = (RequestScopeComponent) scope.getContext("NewTestService").getInstance(null);
         Assert.assertNotNull(comp2);
         Object id = new Object();
-        scope.onEvent(new RequestEndEvent(this,id));
+        scope.onEvent(new RequestEnd(this,id));
         scope.stop();
     }
 
@@ -118,7 +118,7 @@ public class BasicRequestScopeTestCase extends TestCase {
         RequestScopeComponentImpl comp1 = (RequestScopeComponentImpl) scope.getContext("TestService1").getInstance(null);
         Assert.assertNotNull(comp1);
         Object id = new Object();
-        scope.onEvent(new RequestEndEvent(this,id));
+        scope.onEvent(new RequestEnd(this,id));
 
         // second request
         // should be null since the other context (thread) expired w/ onEvent(..)

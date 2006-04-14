@@ -19,8 +19,8 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.event.ModuleStopEvent;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.ModuleStop;
+import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.Target;
@@ -50,7 +50,7 @@ public class IntraCompositeWireIntegrationTestCase extends TestCase {
         moduleComponent.setImplementation(module);
         runtime.getSystemContext().registerModelObject(moduleComponent);
         CompositeContext context = (CompositeContext) runtime.getSystemContext().getContext("test.system");
-        context.publish(new ModuleStartEvent(this));
+        context.publish(new ModuleStart(this));
         //context.registerModelObject(module);
         Source source = (Source) ((AtomicContext)context.getContext("source")).getTargetInstance();
         Assert.assertNotNull(source);
@@ -60,7 +60,7 @@ public class IntraCompositeWireIntegrationTestCase extends TestCase {
         Assert.assertSame(target, targetRef);
         Source source2 = (Source) ((AtomicContext)context.getContext("source")).getTargetInstance();
         Assert.assertSame(target, source2.getTarget());
-        context.publish(new ModuleStopEvent(this));
+        context.publish(new ModuleStop(this));
         context.stop();
     }
 
@@ -91,7 +91,7 @@ public class IntraCompositeWireIntegrationTestCase extends TestCase {
         runtime.getSystemContext().registerModelObject(MockFactory.createSystemCompositeComponent("test.system"));
         CompositeContext context = (CompositeContext) runtime.getSystemContext().getContext("test.system");
 
-        context.publish(new ModuleStartEvent(this));
+        context.publish(new ModuleStart(this));
         context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE,Scope.MODULE));
         Source source = (Source) ((AtomicContext)context.getContext("source")).getTargetInstance();
         Assert.assertNotNull(source);
@@ -101,7 +101,7 @@ public class IntraCompositeWireIntegrationTestCase extends TestCase {
         Assert.assertSame(target, targetRef);
         Source source2 = (Source) ((AtomicContext)context.getContext("source")).getTargetInstance();
         Assert.assertSame(target, source2.getTarget());
-        context.publish(new ModuleStopEvent(this));
+        context.publish(new ModuleStop(this));
         context.stop();
     }
 }

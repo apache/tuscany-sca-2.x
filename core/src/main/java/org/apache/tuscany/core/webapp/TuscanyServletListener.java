@@ -25,9 +25,9 @@ import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.SystemCompositeContext;
-import org.apache.tuscany.core.context.event.ModuleStopEvent;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
-import org.apache.tuscany.core.context.event.HttpSessionEndEvent;
+import org.apache.tuscany.core.context.event.ModuleStop;
+import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.event.HttpSessionEnd;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.model.assembly.AssemblyContext;
@@ -76,10 +76,10 @@ public class TuscanyServletListener implements ServletContextListener, HttpSessi
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        moduleContext.publish(new ModuleStopEvent(this));
+        moduleContext.publish(new ModuleStop(this));
         moduleContext.stop();
         SystemCompositeContext systemContext = runtime.getSystemContext();
-        systemContext.publish(new ModuleStopEvent(this));
+        systemContext.publish(new ModuleStop(this));
         systemContext.stop();
         runtime.stop();
         servletContextEvent.getServletContext().removeAttribute(MODULE_COMPONENT_NAME);
@@ -95,7 +95,7 @@ public class TuscanyServletListener implements ServletContextListener, HttpSessi
         ModuleContext oldContext = CurrentModuleContext.getContext();
         try {
             ContextBinder.BINDER.setContext((ModuleContext) moduleContext);
-            moduleContext.publish(new HttpSessionEndEvent(this, event.getSession()));
+            moduleContext.publish(new HttpSessionEnd(this, event.getSession()));
         } finally{
             ContextBinder.BINDER.setContext(oldContext);
         }
@@ -118,13 +118,13 @@ public class TuscanyServletListener implements ServletContextListener, HttpSessi
         ModuleComponentConfigurationLoader loader = BootstrapHelper.getConfigurationLoader(systemContext, modelContext);
         ModuleComponent systemModuleComponent = loader.loadSystemModuleComponent(SYSTEM_MODULE_COMPONENT, SYSTEM_MODULE_COMPONENT);
         CompositeContext context = BootstrapHelper.registerModule(systemContext, systemModuleComponent);
-        context.publish(new ModuleStartEvent(this));
+        context.publish(new ModuleStart(this));
 
         // Load the SCDL configuration of the application module
         CompositeContext rootContext = runtime.getRootContext();
         ModuleComponent moduleComponent = loader.loadModuleComponent(name, uri);
         moduleContext = BootstrapHelper.registerModule(rootContext, moduleComponent);
 
-        moduleContext.publish(new ModuleStartEvent(this));
+        moduleContext.publish(new ModuleStart(this));
     }
 }

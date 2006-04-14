@@ -17,10 +17,10 @@ import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
-import org.apache.tuscany.core.context.event.RequestStartEvent;
-import org.apache.tuscany.core.context.event.HttpSessionBoundEvent;
-import org.apache.tuscany.core.context.event.RequestEndEvent;
+import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.event.RequestStart;
+import org.apache.tuscany.core.context.event.HttpSessionBound;
+import org.apache.tuscany.core.context.event.RequestEnd;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.model.assembly.Scope;
 
@@ -45,7 +45,7 @@ public class ScopeReferenceTestCase extends TestCase {
         CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule());
-        testCtx.publish(new ModuleStartEvent(this));
+        testCtx.publish(new ModuleStart(this));
         GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
@@ -64,26 +64,26 @@ public class ScopeReferenceTestCase extends TestCase {
         CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule(Scope.MODULE,Scope.SESSION));
-        testCtx.publish(new ModuleStartEvent(this));
+        testCtx.publish(new ModuleStart(this));
         
         // first session
         Object session = new Object();
         Object id = new Object();
-        testCtx.publish(new RequestStartEvent(this,id));
-        testCtx.publish(new HttpSessionBoundEvent(this,session));
+        testCtx.publish(new RequestStart(this,id));
+        testCtx.publish(new HttpSessionBound(this,session));
         GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(target);
         source.getGenericComponent().setString("foo");
         Assert.assertEquals("foo",target.getString());
-        testCtx.publish(new RequestEndEvent(this,id));
+        testCtx.publish(new RequestEnd(this,id));
         
         //second session
         Object session2 = new Object();
         Object id2 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id2));
-        testCtx.publish(new HttpSessionBoundEvent(this,session2));
+        testCtx.publish(new RequestStart(this,id2));
+        testCtx.publish(new HttpSessionBound(this,session2));
         GenericComponent target2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(target2);
         Assert.assertTrue(!"foo".equals(target2.getString()));
@@ -107,22 +107,22 @@ public class ScopeReferenceTestCase extends TestCase {
         CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule(Scope.MODULE,Scope.REQUEST));
-        testCtx.publish(new ModuleStartEvent(this));
+        testCtx.publish(new ModuleStart(this));
         
         // first request
         Object id = new Object();
-        testCtx.publish(new RequestStartEvent(this,id));
+        testCtx.publish(new RequestStart(this,id));
         GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(target);
         source.getGenericComponent().setString("foo");
         Assert.assertEquals("foo",target.getString());
-        testCtx.publish(new RequestEndEvent(this,id));
+        testCtx.publish(new RequestEnd(this,id));
         
         //second request
         Object id2 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id2));
+        testCtx.publish(new RequestStart(this,id2));
         GenericComponent target2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(target2);
         Assert.assertTrue(!"foo".equals(target2.getString()));
@@ -145,22 +145,22 @@ public class ScopeReferenceTestCase extends TestCase {
         CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule(Scope.MODULE,Scope.INSTANCE));
-        testCtx.publish(new ModuleStartEvent(this));
+        testCtx.publish(new ModuleStart(this));
         
         // first request
         Object id = new Object();
-        testCtx.publish(new RequestStartEvent(this,id));
+        testCtx.publish(new RequestStart(this,id));
         GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(target);
         source.getGenericComponent().setString("foo");
         Assert.assertTrue(!"foo".equals(target.getString()));
-        testCtx.publish(new RequestEndEvent(this,id));
+        testCtx.publish(new RequestEnd(this,id));
 
         //second request
         Object id2 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id2));
+        testCtx.publish(new RequestStart(this,id2));
         GenericComponent target2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(target2);
         Assert.assertTrue(!"foo".equals(target2.getString()));
@@ -181,13 +181,13 @@ public class ScopeReferenceTestCase extends TestCase {
         CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule(Scope.SESSION,Scope.SESSION));
-        testCtx.publish(new ModuleStartEvent(this));
+        testCtx.publish(new ModuleStart(this));
         
         // first session
         Object session = new Object();
         Object id = new Object();
-        testCtx.publish(new RequestStartEvent(this,id));
-        testCtx.publish(new HttpSessionBoundEvent(this,session));
+        testCtx.publish(new RequestStart(this,id));
+        testCtx.publish(new HttpSessionBound(this,session));
         GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
@@ -195,13 +195,13 @@ public class ScopeReferenceTestCase extends TestCase {
         source.getGenericComponent().setString("foo");
         source.getGenericComponent().setString("foo");
         Assert.assertEquals("foo",target.getString());
-        testCtx.publish(new RequestEndEvent(this,id));
+        testCtx.publish(new RequestEnd(this,id));
 
         //second session
         Object session2 = new Object();
         Object id2 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id2));
-        testCtx.publish(new HttpSessionBoundEvent(this,session2));
+        testCtx.publish(new RequestStart(this,id2));
+        testCtx.publish(new HttpSessionBound(this,session2));
         GenericComponent source2 = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source2);
         GenericComponent target2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
@@ -213,7 +213,7 @@ public class ScopeReferenceTestCase extends TestCase {
         Assert.assertEquals("baz",source2.getGenericComponent().getString());
         Assert.assertEquals("baz",target2.getString());
         
-        testCtx.publish(new RequestEndEvent(this,id2));
+        testCtx.publish(new RequestEnd(this,id2));
 
     }
 
@@ -229,13 +229,13 @@ public class ScopeReferenceTestCase extends TestCase {
         CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule(Scope.SESSION,Scope.MODULE));
-        testCtx.publish(new ModuleStartEvent(this));
+        testCtx.publish(new ModuleStart(this));
         
         // first session
         Object session = new Object();
         Object id = new Object();
-        testCtx.publish(new RequestStartEvent(this,id));
-        testCtx.publish(new HttpSessionBoundEvent(this,session));
+        testCtx.publish(new RequestStart(this,id));
+        testCtx.publish(new HttpSessionBound(this,session));
         GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
@@ -243,13 +243,13 @@ public class ScopeReferenceTestCase extends TestCase {
         source.getGenericComponent().setString("foo");
         source.getGenericComponent().setString("foo");
         Assert.assertEquals("foo",target.getString());
-        testCtx.publish(new RequestEndEvent(this,id));
+        testCtx.publish(new RequestEnd(this,id));
 
         //second session
         Object session2 = new Object();
         Object id2 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id2));
-        testCtx.publish(new HttpSessionBoundEvent(this,session2));
+        testCtx.publish(new RequestStart(this,id2));
+        testCtx.publish(new HttpSessionBound(this,session2));
         GenericComponent source2 = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source2);
         GenericComponent target2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
@@ -262,7 +262,7 @@ public class ScopeReferenceTestCase extends TestCase {
         Assert.assertEquals("baz",target2.getString());
         Assert.assertEquals("baz",target.getString());
         
-        testCtx.publish(new RequestEndEvent(this,session2));
+        testCtx.publish(new RequestEnd(this,session2));
        
     }
 
@@ -277,26 +277,26 @@ public class ScopeReferenceTestCase extends TestCase {
         CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule(Scope.SESSION,Scope.REQUEST));
-        testCtx.publish(new ModuleStartEvent(this));
+        testCtx.publish(new ModuleStart(this));
         
         // first session
         Object session = new Object();
         Object id = new Object();
-        testCtx.publish(new RequestStartEvent(this,id));
-        testCtx.publish(new HttpSessionBoundEvent(this,session));
+        testCtx.publish(new RequestStart(this,id));
+        testCtx.publish(new HttpSessionBound(this,session));
         GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(target);
         source.getGenericComponent().setString("foo");
         Assert.assertEquals("foo",target.getString());
-        testCtx.publish(new RequestEndEvent(this,session));
+        testCtx.publish(new RequestEnd(this,session));
 
         //second session
         Object session2 = new Object();
         Object id2 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id2));
-        testCtx.publish(new HttpSessionBoundEvent(this,session2));
+        testCtx.publish(new RequestStart(this,id2));
+        testCtx.publish(new HttpSessionBound(this,session2));
         GenericComponent source2 = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
@@ -308,7 +308,7 @@ public class ScopeReferenceTestCase extends TestCase {
         Assert.assertEquals("baz",source2.getGenericComponent().getString());
         
         Assert.assertEquals("foo",target.getString());
-        testCtx.publish(new RequestEndEvent(this,session));
+        testCtx.publish(new RequestEnd(this,session));
 
     }
     
@@ -324,26 +324,26 @@ public class ScopeReferenceTestCase extends TestCase {
         CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule(Scope.SESSION,Scope.INSTANCE));
-        testCtx.publish(new ModuleStartEvent(this));
+        testCtx.publish(new ModuleStart(this));
         
         // first session
         Object session = new Object();
         Object id = new Object();
-        testCtx.publish(new RequestStartEvent(this,id));
-        testCtx.publish(new HttpSessionBoundEvent(this,session));
+        testCtx.publish(new RequestStart(this,id));
+        testCtx.publish(new HttpSessionBound(this,session));
         GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(target);
         source.getGenericComponent().setString("foo");
         Assert.assertEquals(null,target.getString());
-        testCtx.publish(new RequestEndEvent(this,session));
+        testCtx.publish(new RequestEnd(this,session));
 
         //second session
         Object session2 = new Object();
         Object id2 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id2));
-        testCtx.publish(new HttpSessionBoundEvent(this,session2));
+        testCtx.publish(new RequestStart(this,id2));
+        testCtx.publish(new HttpSessionBound(this,session2));
         GenericComponent source2 = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
@@ -355,7 +355,7 @@ public class ScopeReferenceTestCase extends TestCase {
         Assert.assertEquals(null,source2.getGenericComponent().getString());
         
         Assert.assertEquals(null,target.getString()); //Note assumes no pooling
-        testCtx.publish(new RequestEndEvent(this,session));
+        testCtx.publish(new RequestEnd(this,session));
 
     }
 
@@ -370,22 +370,22 @@ public class ScopeReferenceTestCase extends TestCase {
         CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule(Scope.REQUEST,Scope.REQUEST));
-        testCtx.publish(new ModuleStartEvent(this));
+        testCtx.publish(new ModuleStart(this));
         
         // first request
         Object id = new Object();
-        testCtx.publish(new RequestStartEvent(this,id));
+        testCtx.publish(new RequestStart(this,id));
         GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(target);
         source.getGenericComponent().setString("foo");
         Assert.assertEquals("foo",target.getString());
-        testCtx.publish(new RequestEndEvent(this,new Object()));
+        testCtx.publish(new RequestEnd(this,new Object()));
 
         //second request
         Object id2 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id2));
+        testCtx.publish(new RequestStart(this,id2));
         GenericComponent source2 = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source2);
         GenericComponent target2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
@@ -397,7 +397,7 @@ public class ScopeReferenceTestCase extends TestCase {
         Assert.assertEquals("baz",source2.getGenericComponent().getString());
         Assert.assertEquals("baz",target2.getString());
         
-        testCtx.publish(new RequestEndEvent(this,new Object()));
+        testCtx.publish(new RequestEnd(this,new Object()));
     }
 
     /**
@@ -411,22 +411,22 @@ public class ScopeReferenceTestCase extends TestCase {
         CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule(Scope.REQUEST,Scope.MODULE));
-        testCtx.publish(new ModuleStartEvent(this));
+        testCtx.publish(new ModuleStart(this));
         
         // first request
         Object id = new Object();
-        testCtx.publish(new RequestStartEvent(this,id));
+        testCtx.publish(new RequestStart(this,id));
         GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(target);
         source.getGenericComponent().setString("foo");
         Assert.assertEquals("foo",target.getString());
-        testCtx.publish(new RequestEndEvent(this,new Object()));
+        testCtx.publish(new RequestEnd(this,new Object()));
 
         //second request
         Object id2 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id2));
+        testCtx.publish(new RequestStart(this,id2));
         GenericComponent source2 = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source2);
         GenericComponent target2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
@@ -439,7 +439,7 @@ public class ScopeReferenceTestCase extends TestCase {
         Assert.assertEquals("baz",target2.getString());
         Assert.assertEquals("baz",target.getString());
         
-        testCtx.publish(new RequestEndEvent(this,new Object()));
+        testCtx.publish(new RequestEnd(this,new Object()));
     }
 
     /**
@@ -453,38 +453,38 @@ public class ScopeReferenceTestCase extends TestCase {
         CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule(Scope.REQUEST,Scope.SESSION));
-        testCtx.publish(new ModuleStartEvent(this));
+        testCtx.publish(new ModuleStart(this));
         
         // first session
         Object session = new Object();
         Object id = new Object();
-        testCtx.publish(new RequestStartEvent(this,id));
-        testCtx.publish(new HttpSessionBoundEvent(this,session));
+        testCtx.publish(new RequestStart(this,id));
+        testCtx.publish(new HttpSessionBound(this,session));
         GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(target);
         source.getGenericComponent().setString("foo");
         Assert.assertEquals("foo",target.getString());
-        testCtx.publish(new RequestEndEvent(this,new Object()));
+        testCtx.publish(new RequestEnd(this,new Object()));
 
         //second request for session
         Object id2 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id2));
-        testCtx.publish(new HttpSessionBoundEvent(this,session));
+        testCtx.publish(new RequestStart(this,id2));
+        testCtx.publish(new HttpSessionBound(this,session));
         GenericComponent targetR2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertEquals("foo",targetR2.getString());
         GenericComponent sourceR2 = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(sourceR2);
         Assert.assertEquals("foo",sourceR2.getGenericComponent().getString());
         
-        testCtx.publish(new RequestEndEvent(this,new Object()));
+        testCtx.publish(new RequestEnd(this,new Object()));
 
         //second session
         Object session2 = new Object();
         Object id3 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id3));
-        testCtx.publish(new HttpSessionBoundEvent(this,session2));
+        testCtx.publish(new RequestStart(this,id3));
+        testCtx.publish(new HttpSessionBound(this,session2));
         GenericComponent source2 = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source2);
         GenericComponent target2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
@@ -496,11 +496,11 @@ public class ScopeReferenceTestCase extends TestCase {
         Assert.assertEquals("baz",source2.getGenericComponent().getString());
         Assert.assertEquals("baz",target2.getString());
         
-        testCtx.publish(new RequestEndEvent(this,session2));
+        testCtx.publish(new RequestEnd(this,session2));
         Object id4 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id4));
-        testCtx.publish(new HttpSessionBoundEvent(this,session));
-        testCtx.publish(new RequestEndEvent(this,session));
+        testCtx.publish(new RequestStart(this,id4));
+        testCtx.publish(new HttpSessionBound(this,session));
+        testCtx.publish(new RequestEnd(this,session));
 
     }
 
@@ -516,22 +516,22 @@ public class ScopeReferenceTestCase extends TestCase {
         CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule(Scope.REQUEST,Scope.INSTANCE));
-        testCtx.publish(new ModuleStartEvent(this));
+        testCtx.publish(new ModuleStart(this));
         
         // first request
         Object id = new Object();
-        testCtx.publish(new RequestStartEvent(this,id));
+        testCtx.publish(new RequestStart(this,id));
         GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(target);
         source.getGenericComponent().setString("foo");
         Assert.assertEquals(null,target.getString());
-        testCtx.publish(new RequestEndEvent(this,new Object()));
+        testCtx.publish(new RequestEnd(this,new Object()));
 
         //second request
         Object id2 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id2));
+        testCtx.publish(new RequestStart(this,id2));
         GenericComponent source2 = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source2);
         GenericComponent target2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
@@ -543,7 +543,7 @@ public class ScopeReferenceTestCase extends TestCase {
         Assert.assertEquals(null,source2.getGenericComponent().getString());
         Assert.assertEquals(null,target2.getString());
         
-        testCtx.publish(new RequestEndEvent(this,new Object()));
+        testCtx.publish(new RequestEnd(this,new Object()));
     }
 
     
@@ -558,22 +558,22 @@ public class ScopeReferenceTestCase extends TestCase {
         CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule(Scope.INSTANCE,Scope.INSTANCE));
-        testCtx.publish(new ModuleStartEvent(this));
+        testCtx.publish(new ModuleStart(this));
         
         // first request
         Object id = new Object();
-        testCtx.publish(new RequestStartEvent(this,id));
+        testCtx.publish(new RequestStart(this,id));
         GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(target);
         source.getGenericComponent().setString("foo");
         Assert.assertEquals(null,target.getString());
-        testCtx.publish(new RequestEndEvent(this,new Object()));
+        testCtx.publish(new RequestEnd(this,new Object()));
 
         //second request
         Object id2 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id2));
+        testCtx.publish(new RequestStart(this,id2));
         GenericComponent source2 = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source2);
         GenericComponent target2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
@@ -585,7 +585,7 @@ public class ScopeReferenceTestCase extends TestCase {
         Assert.assertEquals(null,source2.getGenericComponent().getString());
         Assert.assertEquals(null,target2.getString());
         
-        testCtx.publish(new RequestEndEvent(this,new Object()));
+        testCtx.publish(new RequestEnd(this,new Object()));
     }
     
     /**
@@ -599,18 +599,18 @@ public class ScopeReferenceTestCase extends TestCase {
         CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule(Scope.INSTANCE,Scope.REQUEST));
-        testCtx.publish(new ModuleStartEvent(this));
+        testCtx.publish(new ModuleStart(this));
         
         // first request
         Object id = new Object();
-        testCtx.publish(new RequestStartEvent(this,id));
+        testCtx.publish(new RequestStart(this,id));
         GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(target);
         source.getGenericComponent().setString("foo");
         Assert.assertEquals("foo",target.getString());
-        testCtx.publish(new RequestEndEvent(this,new Object()));
+        testCtx.publish(new RequestEnd(this,new Object()));
 
         GenericComponent targetR1 = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(targetR1);
@@ -618,7 +618,7 @@ public class ScopeReferenceTestCase extends TestCase {
 
         //second request
         Object id2 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id2));
+        testCtx.publish(new RequestStart(this,id2));
         GenericComponent source2 = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source2);
         GenericComponent target2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
@@ -630,7 +630,7 @@ public class ScopeReferenceTestCase extends TestCase {
         Assert.assertEquals("baz",source2.getGenericComponent().getString());
         Assert.assertEquals("baz",target2.getString());
         
-        testCtx.publish(new RequestEndEvent(this,new Object()));
+        testCtx.publish(new RequestEnd(this,new Object()));
       }
 
     /**
@@ -644,38 +644,38 @@ public class ScopeReferenceTestCase extends TestCase {
         CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule(Scope.INSTANCE,Scope.SESSION));
-        testCtx.publish(new ModuleStartEvent(this));
+        testCtx.publish(new ModuleStart(this));
         
         // first session
         Object session = new Object();
         Object id = new Object();
-        testCtx.publish(new RequestStartEvent(this,id));
-        testCtx.publish(new HttpSessionBoundEvent(this,session));
+        testCtx.publish(new RequestStart(this,id));
+        testCtx.publish(new HttpSessionBound(this,session));
         GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(target);
         source.getGenericComponent().setString("foo");
         Assert.assertEquals("foo",target.getString());
-        testCtx.publish(new RequestEndEvent(this,new Object()));
+        testCtx.publish(new RequestEnd(this,new Object()));
 
         //second request for session
         Object id2 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id2));
-        testCtx.publish(new HttpSessionBoundEvent(this,session));
+        testCtx.publish(new RequestStart(this,id2));
+        testCtx.publish(new HttpSessionBound(this,session));
         GenericComponent targetR2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertEquals("foo",targetR2.getString());
         GenericComponent sourceR2 = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(sourceR2);
         Assert.assertEquals("foo",sourceR2.getGenericComponent().getString());
         
-        testCtx.publish(new RequestEndEvent(this,new Object()));
+        testCtx.publish(new RequestEnd(this,new Object()));
 
         //second session
         Object session2 = new Object();
         Object id3 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id3));
-        testCtx.publish(new HttpSessionBoundEvent(this,session2));
+        testCtx.publish(new RequestStart(this,id3));
+        testCtx.publish(new HttpSessionBound(this,session2));
         GenericComponent source2 = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source2);
         GenericComponent target2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
@@ -687,11 +687,11 @@ public class ScopeReferenceTestCase extends TestCase {
         Assert.assertEquals("baz",source2.getGenericComponent().getString());
         Assert.assertEquals("baz",target2.getString());
         
-        testCtx.publish(new RequestEndEvent(this,session2));
+        testCtx.publish(new RequestEnd(this,session2));
          Object id4 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id4));
-        testCtx.publish(new HttpSessionBoundEvent(this,session));
-        testCtx.publish(new RequestEndEvent(this,session));
+        testCtx.publish(new RequestStart(this,id4));
+        testCtx.publish(new HttpSessionBound(this,session));
+        testCtx.publish(new RequestEnd(this,session));
 
     }
 
@@ -707,21 +707,21 @@ public class ScopeReferenceTestCase extends TestCase {
         CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
         Assert.assertNotNull(testCtx);
         testCtx.registerModelObject(MockFactory.createModule(Scope.INSTANCE,Scope.MODULE));
-        testCtx.publish(new ModuleStartEvent(this));
+        testCtx.publish(new ModuleStart(this));
         
         Object id = new Object();
-        testCtx.publish(new RequestStartEvent(this,id));
+        testCtx.publish(new RequestStart(this,id));
         GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source);
         GenericComponent target = (GenericComponent)testCtx.getContext("target").getInstance(null);
         Assert.assertNotNull(target);
         source.getGenericComponent().setString("foo");
         Assert.assertEquals("foo",target.getString());
-        testCtx.publish(new RequestEndEvent(this,new Object()));
+        testCtx.publish(new RequestEnd(this,new Object()));
 
         //second session
         Object id2 = new Object();
-        testCtx.publish(new RequestStartEvent(this,id2));
+        testCtx.publish(new RequestStart(this,id2));
         GenericComponent source2 = (GenericComponent)testCtx.getContext("source").getInstance(null);
         Assert.assertNotNull(source2);
         GenericComponent target2 = (GenericComponent)testCtx.getContext("target").getInstance(null);
@@ -733,7 +733,7 @@ public class ScopeReferenceTestCase extends TestCase {
         Assert.assertEquals("baz",source2.getGenericComponent().getString());
         Assert.assertEquals("baz",target2.getString());
         
-        testCtx.publish(new RequestEndEvent(this,new Object()));
+        testCtx.publish(new RequestEnd(this,new Object()));
 
     }
 

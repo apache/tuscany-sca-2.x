@@ -7,10 +7,9 @@ import org.apache.tuscany.container.js.assembly.mock.HelloWorldService;
 import org.apache.tuscany.container.js.config.JavaScriptContextFactory;
 import org.apache.tuscany.container.js.mock.MockAssemblyFactory;
 import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
@@ -35,7 +34,7 @@ public class JSContextFactoryBuilderTestCase extends TestCase {
         ContextFactory<Context> contextFactory = (ContextFactory) component.getContextFactory();
         context.registerFactory(contextFactory);
         context.start();
-        context.onEvent(new ModuleStartEvent(this));
+        context.onEvent(new ModuleStart(this));
         for (ProxyFactory proxyFactory : contextFactory.getTargetProxyFactories().values()) {
             jsWireBuilder.completeTargetChain(proxyFactory, JavaScriptContextFactory.class, context);
             proxyFactory.initialize();

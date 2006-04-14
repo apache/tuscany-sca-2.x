@@ -14,10 +14,10 @@
 package org.apache.tuscany.core.context.event;
 
 /**
- * Propagated when a session ended or expired
+ * Propagated when a generic session is associated with the current request.
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface SessionEndEvent extends SessionEvent{
-    
+public interface SessionBound extends SessionEvent {
+
 }

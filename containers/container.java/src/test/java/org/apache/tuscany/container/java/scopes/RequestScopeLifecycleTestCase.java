@@ -31,7 +31,7 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.event.RequestEndEvent;
+import org.apache.tuscany.core.context.event.RequestEnd;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.RequestScopeContext;
 import org.apache.tuscany.model.assembly.Scope;
@@ -68,7 +68,7 @@ public class RequestScopeLifecycleTestCase extends TestCase {
         Assert.assertFalse(destroyOnly.isDestroyed());
 
         // end request
-        scope.onEvent(new RequestEndEvent(this,new Object()));
+        scope.onEvent(new RequestEnd(this,new Object()));
         Assert.assertTrue(initDestroy.isDestroyed());
         Assert.assertTrue(destroyOnly.isDestroyed());
 
@@ -100,7 +100,7 @@ public class RequestScopeLifecycleTestCase extends TestCase {
         Assert.assertEquals(3, three.getInitOrder());
 
         // end request
-        scope.onEvent(new RequestEndEvent(this,new Object()));
+        scope.onEvent(new RequestEnd(this,new Object()));
 
         Assert.assertEquals(0, one.getNumberInstantiated());
         scope.stop();

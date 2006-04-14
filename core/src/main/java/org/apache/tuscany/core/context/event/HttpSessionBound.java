@@ -13,15 +13,21 @@
  */
 package org.apache.tuscany.core.context.event;
 
+
 /**
- * An event propagated upon the creation of a {@link org.apache.tuscany.core.context.Context} in the runtime
+ * An event propagated when an HTTP session is bound to the current request
  *
  * @version $$Rev$$ $$Date$$
  */
-public class ContextCreatedEvent extends AbstractEvent {
+public class HttpSessionBound extends HttpSessionEvent implements SessionBound {
 
-    public ContextCreatedEvent(Object source) {
-        super(source);
+    /**
+     * Creates a new event
+     * @param source the source of the event
+     * @param id the id of the HTTP session associated with the event or possibly a lazy wrapper
+     */
+    public HttpSessionBound(Object source, Object id) {
+        super(source,id);
     }
 
 }

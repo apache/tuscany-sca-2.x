@@ -25,9 +25,7 @@ import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ContextInitException;
-import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.RuntimeEventListener;
-import org.apache.tuscany.core.context.event.ContextCreatedEvent;
+import org.apache.tuscany.core.context.event.InstanceCreated;
 
 /**
  * Manages system component implementation instances
@@ -58,7 +56,6 @@ public class SystemComponentContext extends AbstractContext implements AtomicCon
             throw new AssertionError("No intialization method found for eager init implementation");
         }
         this.objectFactory = objectFactory;
-
         this.eagerInit = eagerInit;
         this.initInvoker = initInvoker;
         this.destroyInvoker = destroyInvoker;
@@ -79,10 +76,6 @@ public class SystemComponentContext extends AbstractContext implements AtomicCon
         this.type = type;
     }
 
-    public synchronized Object getInstance(QualifiedName qName) throws TargetException {
-        return getInstance(qName, true);
-    }
-
     public void init() throws TargetException{
         getInstance(null);
     }
@@ -100,7 +93,7 @@ public class SystemComponentContext extends AbstractContext implements AtomicCon
         lifecycleState = STARTED;
     }
 
-    public synchronized Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
+    public synchronized Object getInstance(QualifiedName qName) throws TargetException {
         if (cachedTargetInstance != null) {
             return cachedTargetInstance; // already cached, just return
         }
@@ -111,14 +104,11 @@ public class SystemComponentContext extends AbstractContext implements AtomicCon
         synchronized (this) {
             try {
                 Object instance = objectFactory.getInstance();
-                startInstance(instance);
-                if (notify) {
-                    publish(new ContextCreatedEvent(this));
-                    //TODO remove
-                    //for (RuntimeEventListener listener : listeners) {
-                    //    listener.onEvent(EventContext.CONTEXT_CREATED,this);
-                    //}
+                // handle @Init
+                if (initInvoker != null) {
+                    initInvoker.invokeEvent(instance);
                 }
+                publish(new InstanceCreated(this));
                 lifecycleState = RUNNING;
                 if (stateless) {
                     return instance;
@@ -129,7 +119,7 @@ public class SystemComponentContext extends AbstractContext implements AtomicCon
                 }
             } catch (ObjectCreationException e) {
                 lifecycleState = ERROR;
-                TargetException te = new TargetException("Error creating instance for component", e);
+                TargetException te = new TargetException("Error creating component instance", e);
                 te.setIdentifier(getName());
                 throw te;
             }
@@ -164,19 +154,6 @@ public class SystemComponentContext extends AbstractContext implements AtomicCon
 
     public void stop() {
         lifecycleState = STOPPED;
-    }
-
-    private void startInstance(Object instance) throws TargetException {
-        try {
-            // handle @Init
-            if (initInvoker != null) {
-                initInvoker.invokeEvent(instance);
-            }
-        } catch (ObjectCallbackException e) {
-            TargetException te = new TargetException("Error initializing instance", e);
-            te.setIdentifier(getName());
-            throw te;
-        }
     }
 
 }

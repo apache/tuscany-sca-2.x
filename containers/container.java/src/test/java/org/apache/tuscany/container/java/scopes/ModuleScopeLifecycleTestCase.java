@@ -33,8 +33,8 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
-import org.apache.tuscany.core.context.event.ModuleStopEvent;
+import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.model.assembly.AtomicComponent;
@@ -52,7 +52,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
         scope.registerFactories(createComponents());
         scope.start();
-        scope.onEvent(new ModuleStartEvent(this));
+        scope.onEvent(new ModuleStart(this));
         ModuleScopeInitDestroyComponent initDestroy = (ModuleScopeInitDestroyComponent) scope.getContext(
                 "TestServiceInitDestroy").getInstance(null);
         Assert.assertNotNull(initDestroy);
@@ -69,7 +69,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         Assert.assertFalse(destroyOnly.isDestroyed());
 
         // expire module
-        scope.onEvent(new ModuleStopEvent(this));
+        scope.onEvent(new ModuleStop(this));
 
         Assert.assertTrue(initDestroy.isDestroyed());
         Assert.assertTrue(destroyOnly.isDestroyed());
@@ -82,7 +82,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
         scope.registerFactories(createEagerInitComponents());
         scope.start();
-        scope.onEvent(new ModuleStartEvent(this));
+        scope.onEvent(new ModuleStart(this));
         ModuleScopeEagerInitDestroyComponent initDestroy = (ModuleScopeEagerInitDestroyComponent) scope.getContext(
                 "TestServiceEagerInitDestroy").getInstance(null);
         Assert.assertNotNull(initDestroy);
@@ -95,7 +95,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         Assert.assertFalse(initDestroy.isDestroyed());
 
         // expire module
-        scope.onEvent(new ModuleStopEvent(this));
+        scope.onEvent(new ModuleStop(this));
 
         Assert.assertTrue(initDestroy.isDestroyed());
 
@@ -108,7 +108,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
         scope.registerFactories(createOrderedInitComponents());
         scope.start();
-        scope.onEvent(new ModuleStartEvent(this));
+        scope.onEvent(new ModuleStart(this));
         OrderedInitPojo one = (OrderedInitPojo) scope.getContext("one").getInstance(null);
         Assert.assertNotNull(one);
         Assert.assertEquals(1, one.getNumberInstantiated());
@@ -125,7 +125,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         Assert.assertEquals(3, three.getInitOrder());
 
         // expire module
-        scope.onEvent(new ModuleStopEvent(this));
+        scope.onEvent(new ModuleStop(this));
         Assert.assertEquals(0, one.getNumberInstantiated());
         scope.stop();
     }
@@ -135,7 +135,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
         scope.registerFactories(createOrderedEagerInitComponents());
         scope.start();
-        scope.onEvent(new ModuleStartEvent(this));
+        scope.onEvent(new ModuleStart(this));
         OrderedEagerInitPojo one = (OrderedEagerInitPojo) scope.getContext("one").getInstance(null);
         Assert.assertNotNull(one);
 
@@ -146,7 +146,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         Assert.assertNotNull(three);
 
         // expire module
-        scope.onEvent(new ModuleStopEvent(this));
+        scope.onEvent(new ModuleStop(this));
         Assert.assertEquals(0, one.getNumberInstantiated());
         scope.stop();
     }

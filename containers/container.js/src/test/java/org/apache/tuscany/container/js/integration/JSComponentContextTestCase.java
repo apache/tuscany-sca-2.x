@@ -30,10 +30,9 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
-import org.apache.tuscany.core.context.event.ModuleStopEvent;
+import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
@@ -81,13 +80,13 @@ public class JSComponentContextTestCase extends TestCase {
                         Scope.AGGREGATE));
         CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockModuleFactory.createModule());
-        child.publish(new ModuleStartEvent(this));
+        child.publish(new ModuleStart(this));
 
         HelloWorldService source = (HelloWorldService) child.getContext("source").getInstance(new QualifiedName("./HelloWorldService"));
         Assert.assertNotNull(source);
         Assert.assertEquals("Hello foo",source.hello("foo"));
         //Assert.assertEquals(1, mockInterceptor.getCount());
-        child.publish(new ModuleStopEvent(this));
+        child.publish(new ModuleStop(this));
         runtime.stop();
     }
 

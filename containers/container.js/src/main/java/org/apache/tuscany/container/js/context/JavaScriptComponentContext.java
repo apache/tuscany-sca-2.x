@@ -21,7 +21,7 @@ import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.event.ContextCreatedEvent;
+import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -89,7 +89,7 @@ public class JavaScriptComponentContext extends AbstractContext implements Atomi
         try {
             Object proxy = targetFactory.createProxy(); //createProxy(new Class[] { iface });
             if (notify) {
-                publish(new ContextCreatedEvent(this));
+                publish(new InstanceCreated(this));
             }
             return proxy;
         } catch (ProxyCreationException e) {

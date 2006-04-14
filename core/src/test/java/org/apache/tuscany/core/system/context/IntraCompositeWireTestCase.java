@@ -17,8 +17,8 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.context.SystemCompositeContext;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
-import org.apache.tuscany.core.context.event.ModuleStopEvent;
+import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.mock.MockConfigContext;
 import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.Source;
@@ -38,7 +38,7 @@ public class IntraCompositeWireTestCase extends TestCase {
         SystemCompositeContext context = createContext();
         context.start();
         context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE, Scope.MODULE));
-        context.publish(new ModuleStartEvent(this));
+        context.publish(new ModuleStart(this));
         Source source = (Source) ((AtomicContext) context.getContext("source")).getTargetInstance();
         Assert.assertNotNull(source);
         Target targetRef = source.getTarget();
@@ -46,7 +46,7 @@ public class IntraCompositeWireTestCase extends TestCase {
         Target target = (Target) ((AtomicContext) context.getContext("target")).getTargetInstance();
         Assert.assertSame(target, targetRef);
         Assert.assertSame(target, source.getTarget());
-        context.publish(new ModuleStopEvent(this));
+        context.publish(new ModuleStop(this));
         context.stop();
     }
 
@@ -54,7 +54,7 @@ public class IntraCompositeWireTestCase extends TestCase {
         SystemCompositeContext context = createContext();
         context.start();
         context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.INSTANCE, Scope.MODULE));
-        context.publish(new ModuleStartEvent(this));
+        context.publish(new ModuleStart(this));
         Source source = (Source) ((AtomicContext) context.getContext("source")).getTargetInstance();
         Assert.assertNotNull(source);
         Target targetRef = source.getTarget();
@@ -63,7 +63,7 @@ public class IntraCompositeWireTestCase extends TestCase {
         Target target = (Target) ((AtomicContext) context.getContext("target")).getTargetInstance();
         Assert.assertSame(target, targetRef);
         Assert.assertSame(target, source.getTarget());
-        context.publish(new ModuleStopEvent(this));
+        context.publish(new ModuleStop(this));
         context.stop();
     }
 
@@ -71,7 +71,7 @@ public class IntraCompositeWireTestCase extends TestCase {
         SystemCompositeContext context = createContext();
         context.start();
         context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE, Scope.INSTANCE));
-        context.publish(new ModuleStartEvent(this));
+        context.publish(new ModuleStart(this));
         Source source = (Source) ((AtomicContext) context.getContext("source")).getTargetInstance();
         Assert.assertNotNull(source);
         Target targetRef = source.getTarget();
@@ -82,7 +82,7 @@ public class IntraCompositeWireTestCase extends TestCase {
         // should be the same since the module scope component was alreadyy created and the stateless
         // component will be "attached" to it
         Assert.assertSame(source.getTarget(), source2.getTarget());
-        context.publish(new ModuleStopEvent(this));
+        context.publish(new ModuleStop(this));
         context.stop();
     }
 
@@ -90,7 +90,7 @@ public class IntraCompositeWireTestCase extends TestCase {
         SystemCompositeContext context = createContext();
         context.start();
         context.registerModelObject(MockFactory.createSystemModuleWithWiredComponents("system.module",Scope.MODULE, Scope.MODULE));
-        context.publish(new ModuleStartEvent(this));
+        context.publish(new ModuleStart(this));
         Source source = (Source) ((AtomicContext) context.getContext("source")).getTargetInstance();
         Assert.assertNotNull(source);
         Target target = (Target) ((AtomicContext) context.getContext("target")).getTargetInstance();

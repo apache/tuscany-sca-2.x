@@ -31,7 +31,7 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.event.HttpSessionEndEvent;
+import org.apache.tuscany.core.context.event.HttpSessionEnd;
 import org.apache.tuscany.core.context.event.HttpSessionEvent;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.SessionScopeContext;
@@ -74,7 +74,7 @@ public class SessionScopeLifecycleTestCase extends TestCase {
         // end request
         ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
         // expire session
-        scope.onEvent(new HttpSessionEndEvent(this,session));
+        scope.onEvent(new HttpSessionEnd(this,session));
         Assert.assertTrue(initDestroy.isDestroyed());
         Assert.assertTrue(destroyOnly.isDestroyed());
 
@@ -112,7 +112,7 @@ public class SessionScopeLifecycleTestCase extends TestCase {
         ctx.clearIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
 
         // expire session
-        scope.onEvent(new HttpSessionEndEvent(this, session));
+        scope.onEvent(new HttpSessionEnd(this, session));
         Assert.assertEquals(0, one.getNumberInstantiated());
         scope.stop();
     }

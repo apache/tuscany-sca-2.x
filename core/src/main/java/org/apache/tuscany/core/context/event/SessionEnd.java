@@ -13,21 +13,11 @@
  */
 package org.apache.tuscany.core.context.event;
 
-
 /**
- * An event propagated when an HTTP session is bound to the current request
+ * Propagated when a session ended or expired
  *
  * @version $$Rev$$ $$Date$$
  */
-public class HttpSessionBoundEvent extends HttpSessionEvent implements SessionBoundEvent {
-
-    /**
-     * Creates a new event
-     * @param source the source of the event
-     * @param id the id of the HTTP session associated with the event or possibly a lazy wrapper
-     */
-    public HttpSessionBoundEvent(Object source, Object id) {
-        super(source,id);
-    }
-
+public interface SessionEnd extends SessionEvent{
+    
 }

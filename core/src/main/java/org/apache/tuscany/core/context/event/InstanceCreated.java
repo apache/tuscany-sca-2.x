@@ -14,10 +14,14 @@
 package org.apache.tuscany.core.context.event;
 
 /**
- * Propagated when a generic session is associated with the current request.
+ * An event propagated upon the creation of an instance belonging to a {@link org.apache.tuscany.core.context.Context}
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface SessionBoundEvent extends SessionEvent {
+public class InstanceCreated extends AbstractEvent {
+
+    public InstanceCreated(Object source) {
+        super(source);
+    }
 
 }

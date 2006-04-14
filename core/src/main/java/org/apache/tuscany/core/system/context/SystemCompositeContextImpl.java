@@ -46,9 +46,9 @@ import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.ScopeStrategy;
 import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.event.RequestEndEvent;
+import org.apache.tuscany.core.context.event.RequestEnd;
 import org.apache.tuscany.core.context.event.Event;
-import org.apache.tuscany.core.context.event.SessionBoundEvent;
+import org.apache.tuscany.core.context.event.SessionBound;
 import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
@@ -405,11 +405,11 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
 
     public void publish(Event event) {
         checkInit();
-        if (event instanceof SessionBoundEvent) {
+        if (event instanceof SessionBound) {
             // update context
-            SessionBoundEvent sessionEvent = ((SessionBoundEvent) event);
+            SessionBound sessionEvent = ((SessionBound) event);
             eventContext.setIdentifier(sessionEvent.getSessionTypeIdentifier(), sessionEvent.getId());
-        } else if (event instanceof RequestEndEvent) {
+        } else if (event instanceof RequestEnd) {
             // be very careful with pooled threads, ensuring threadlocals are cleaned up
             eventContext.clearIdentifiers();
         }

@@ -26,8 +26,8 @@ import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ScopeInitializationException;
 import org.apache.tuscany.core.context.ScopeRuntimeException;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
-import org.apache.tuscany.core.context.event.ModuleStopEvent;
+import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.event.Event;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Manages the lifecycle of composite component contexts, i.e. contexts which contain child contexts
- * 
+ *
  * @see org.apache.tuscany.core.context.CompositeContext
  * @version $Rev$ $Date$
  */
@@ -94,7 +94,7 @@ public class CompositeScopeContext extends AbstractContext implements ScopeConte
             CompositeContext compositeCtx = (CompositeContext) context;
             compositeCtx.start();
             if (moduleScopeStarted) {
-                compositeCtx.publish(new ModuleStartEvent(this));
+                compositeCtx.publish(new ModuleStart(this));
             }
             contexts.put(compositeCtx.getName(), compositeCtx);
         }
@@ -135,10 +135,10 @@ public class CompositeScopeContext extends AbstractContext implements ScopeConte
     }
 
     public void onEvent(Event event){
-        if (event instanceof ModuleStartEvent) {
+        if (event instanceof ModuleStart) {
             // track module starting so that composite contexts registered after the event are notified properly
             moduleScopeStarted = true;
-        } else if (event instanceof ModuleStopEvent) {
+        } else if (event instanceof ModuleStop) {
             moduleScopeStarted = false;
         }
         // propagate events to child contexts

@@ -22,8 +22,8 @@ import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
-import org.apache.tuscany.core.context.event.ModuleStopEvent;
+import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.GenericSystemComponent;
@@ -70,8 +70,8 @@ public class SystemBootstrapTestCase extends TestCase {
         moduleContext.registerModelObject(es);
 
         // start the modules and test inter-module system wires
-        systemContext.publish(new ModuleStartEvent(this));
-        moduleContext.publish(new ModuleStartEvent(this));
+        systemContext.publish(new ModuleStart(this));
+        moduleContext.publish(new ModuleStart(this));
 
         Assert.assertNotNull(systemContext.getContext("TestService1EP").getInstance(null));
         GenericSystemComponent testService = (GenericSystemComponent) systemContext.getContext("TestService1").getInstance(null);
@@ -101,7 +101,7 @@ public class SystemBootstrapTestCase extends TestCase {
         service.setServiceContract(inter);
         ep.getConfiguredReference().getTargetConfiguredServices().get(0).setPort(service);
         system.registerModelObject(ep);
-        system.publish(new ModuleStartEvent(this));
+        system.publish(new ModuleStart(this));
         Assert.assertNotNull(system.getContext("TestService1").getInstance(null));
         Assert.assertNotNull(system.getContext("TestService2EP").getInstance(null));
 
@@ -113,11 +113,11 @@ public class SystemBootstrapTestCase extends TestCase {
         Assert.assertNotNull(moduleContext);
         ExternalService es = MockFactory.createESSystemBinding("TestService2ES", "tuscany.system/TestService2EP");
         moduleContext.registerModelObject(es);
-        moduleContext.publish(new ModuleStartEvent(this));
+        moduleContext.publish(new ModuleStart(this));
         Assert.assertNotNull(moduleContext.getContext("TestService2ES").getInstance(null));
 
-        moduleContext.publish(new ModuleStopEvent(this));
-        system.publish(new ModuleStopEvent(this));
+        moduleContext.publish(new ModuleStop(this));
+        system.publish(new ModuleStop(this));
         runtime.stop();
     }
 

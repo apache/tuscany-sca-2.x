@@ -30,7 +30,7 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.AtomicContext;
-import org.apache.tuscany.core.context.event.ModuleStartEvent;
+import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
@@ -48,7 +48,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         CompositeContext context = createContext();
         context.start();
         context.registerModelObject(MockFactory.createModuleWithWiredComponentsOfDifferentInterface(Scope.MODULE, Scope.MODULE));
-        context.publish(new ModuleStartEvent(this));
+        context.publish(new ModuleStart(this));
         Source source = (Source) ((AtomicContext) context.getContext("source")).getTargetInstance();
         Assert.assertNotNull(source);
         OtherTarget target = (OtherTarget) ((AtomicContext)context.getContext("target")).getTargetInstance();

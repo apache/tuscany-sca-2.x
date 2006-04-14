@@ -18,14 +18,14 @@ package org.apache.tuscany.core.context.event;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class RequestEndEvent extends AbstractRequestEvent{
+public class RequestEnd extends AbstractRequestEvent{
 
     /**
      * Creates a new event
      * @param source the source of the event
      * @param id the id of the completed/ended request 
      */
-     public RequestEndEvent(Object source, Object id) {
+     public RequestEnd(Object source, Object id) {
          super(source,id);
      }
 

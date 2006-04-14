@@ -18,14 +18,14 @@ package org.apache.tuscany.core.context.event;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class RequestStartEvent extends AbstractRequestEvent {
+public class RequestStart extends AbstractRequestEvent {
 
     /**
      * Creates a new event
      * @param source the source of the event
      * @param id the id of the request being started 
      */
-     public RequestStartEvent(Object source, Object id) {
+     public RequestStart(Object source, Object id) {
          super(source,id);
      }
 
