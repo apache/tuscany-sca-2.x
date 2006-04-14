@@ -34,7 +34,10 @@ import java.util.ListIterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * An implementation of a request-scoped component container.
+ * An implementation of a request-scoped component container.  This scope contexts eagerly starts contexts when
+ * a {@link org.apache.tuscany.core.context.event.RequestStart} event is received. If a contained context has an implementation marked to eagerly initialized,
+ * the an instance will be created at that time as well. Contained contexts are shutdown when a {@link org.apache.tuscany.core.context.event.RequestEnd}
+ * event is received in reverse order to which their implementation instances were created.
  * 
  * @version $Rev$ $Date$
  */

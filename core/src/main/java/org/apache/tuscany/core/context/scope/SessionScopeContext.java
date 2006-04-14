@@ -23,22 +23,27 @@ import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.ScopeRuntimeException;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.core.context.event.Event;
 import org.apache.tuscany.core.context.event.HttpSessionEvent;
+import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.core.context.event.SessionEnd;
+import org.apache.tuscany.core.context.event.SessionStart;
 
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * An implementation of an session-scoped component container
+ * An implementation of an session-scoped component container.  This scope contexts eagerly starts contexts when a
+ * {@link org.apache.tuscany.core.context.event.SessionStart} event is received. If a contained context has an implementation
+ * marked to eagerly initialized, the an instance will be created at that time as well. Contained contexts are shutdown when a
+ * {@link org.apache.tuscany.core.context.event.SessionEnd} event is received in reverse order to which their implementation
+ * instances were created.
  * TODO this implementation needs to be made generic so that it supports a range of session types, i.e. not tied to HTTP
- * session scope 
- * 
+ * session scope
+ *
  * @version $Rev$ $Date$
  */
 public class SessionScopeContext extends AbstractScopeContext {
@@ -74,16 +79,20 @@ public class SessionScopeContext extends AbstractScopeContext {
     }
 
     public void onEvent(Event event) {
-        if (event instanceof SessionEnd){
+        if (event instanceof SessionStart) {
             checkInit();
-            Object key = ((SessionEnd)event).getId();
+            Object key = ((SessionEnd) event).getId();
+            getSessionContexts(key);
+       }else if (event instanceof SessionEnd) {
+            checkInit();
+            Object key = ((SessionEnd) event).getId();
             shutdownContexts(key);
             destroyComponentContext(key);
-        }else if(event instanceof InstanceCreated){
+        } else if (event instanceof InstanceCreated) {
             checkInit();
             Object sessionKey = getEventContext().getIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
             List<Context> shutdownQueue = destroyQueues.get(sessionKey);
-            Context context = (Context)event.getSource();
+            Context context = (Context) event.getSource();
             assert(shutdownQueue != null): "Shutdown queue not found for key";
             shutdownQueue.add(context);
         }
@@ -108,13 +117,13 @@ public class SessionScopeContext extends AbstractScopeContext {
             if (configuration != null) {
                 context = configuration.createContext();
                 context.start();
-                if (context instanceof AtomicContext){
-                    ((AtomicContext)context).init();
+                if (context instanceof AtomicContext) {
+                    ((AtomicContext) context).init();
                 }
 
                 ctxs.put(context.getName(), context);
                 List<Context> shutdownQueue = destroyQueues.get(getEventContext().getIdentifier(HttpSessionEvent.HTTP_IDENTIFIER));
-                synchronized(shutdownQueue){
+                synchronized (shutdownQueue) {
                     shutdownQueue.add(context);
                 }
                 context.addListener(this);
@@ -151,7 +160,7 @@ public class SessionScopeContext extends AbstractScopeContext {
         components.remove(ctxName);
         Map<String, Context> definitions = contexts.get(key);
         Context ctx = definitions.get(ctxName);
-        if (ctx != null){
+        if (ctx != null) {
             destroyQueues.get(key).remove(ctx);
         }
         definitions.remove(ctxName);
@@ -161,7 +170,14 @@ public class SessionScopeContext extends AbstractScopeContext {
      * Returns and, if necessary, creates a context for the current sesion
      */
     private Map<String, Context> getSessionContexts() throws CoreRuntimeException {
-        Object key = getEventContext().getIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
+       Object key = getEventContext().getIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
+        return getSessionContexts(key);
+    }
+
+    /**
+     * Returns and, if necessary, creates a context for the given session key
+     */
+    private Map<String, Context> getSessionContexts(Object key) throws CoreRuntimeException {
         if (key == null) {
             throw new ScopeRuntimeException("Session key not set in request context");
         }
@@ -186,7 +202,7 @@ public class SessionScopeContext extends AbstractScopeContext {
                 AtomicContext atomic = (AtomicContext) context;
                 if (atomic.isEagerInit()) {
                     atomic.init();  // Notify the instance
-                    synchronized(shutdownQueue){
+                    synchronized (shutdownQueue) {
                         shutdownQueue.add(context);
                     }
                 }
@@ -208,17 +224,17 @@ public class SessionScopeContext extends AbstractScopeContext {
     private synchronized void shutdownContexts(Object key) {
         List<Context> destroyQueue = destroyQueues.remove(key);
         if (destroyQueue == null || destroyQueue.size() == 0) {
-             return;
+            return;
         }
         // shutdown destroyable instances in reverse instantiation order
         ListIterator<Context> iter = destroyQueue.listIterator(destroyQueue.size());
-        synchronized(destroyQueue){
-            while(iter.hasPrevious()){
+        synchronized (destroyQueue) {
+            while (iter.hasPrevious()) {
                 Context context = iter.previous();
                 if (context.getLifecycleState() == RUNNING) {
                     try {
-                        if (context instanceof AtomicContext){
-                            ((AtomicContext)context).destroy();
+                        if (context instanceof AtomicContext) {
+                            ((AtomicContext) context).destroy();
                         }
                     } catch (TargetException e) {
                         // TODO send a monitoring event
@@ -227,11 +243,11 @@ public class SessionScopeContext extends AbstractScopeContext {
             }
         }
         // shutdown contexts
-        Map<String,Context> currentContexts = contexts.remove(Thread.currentThread());
-        if (currentContexts == null){
+        Map<String, Context> currentContexts = contexts.remove(Thread.currentThread());
+        if (currentContexts == null) {
             return;
         }
-        for (Context context: currentContexts.values()){
+        for (Context context : currentContexts.values()) {
             if (context.getLifecycleState() == RUNNING) {
                 context.stop();
             }
