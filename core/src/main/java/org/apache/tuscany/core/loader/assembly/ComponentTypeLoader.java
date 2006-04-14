@@ -56,7 +56,6 @@ public class ComponentTypeLoader extends AbstractLoader {
                 } else if (o instanceof Property) {
                     componentType.getProperties().add((Property) o);
                 }
-                reader.next();
                 break;
             case END_ELEMENT:
                 return componentType;
