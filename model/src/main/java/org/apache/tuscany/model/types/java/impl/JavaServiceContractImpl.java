@@ -47,7 +47,15 @@ public class JavaServiceContractImpl extends ServiceContractImpl implements Java
     public void setCallbackInterfaceName(String callbackInterfaceName) {
         this.callbackInterfaceName = callbackInterfaceName;
     }
-    
+
+    public String getInterfaceName() {
+        return interfaceName;
+    }
+
+    public String getCallbackInterfaceName() {
+        return callbackInterfaceName;
+    }
+
     /**
      * @see org.apache.tuscany.model.assembly.impl.ExtensibleImpl#initialize(org.apache.tuscany.model.assembly.AssemblyContext)
      */

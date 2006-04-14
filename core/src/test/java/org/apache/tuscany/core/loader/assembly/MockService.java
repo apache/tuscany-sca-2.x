@@ -1,6 +1,6 @@
 /**
  *
- *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ * Copyright 2006 The Apache Software Foundation
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,21 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.model.types.java;
-
-import org.apache.tuscany.model.assembly.ServiceContract;
-
+package org.apache.tuscany.core.loader.assembly;
 
 /**
- * Represents a Java service contract.
+ * @version $Rev$ $Date$
  */
-public interface JavaServiceContract extends ServiceContract {
-
-    String getInterfaceName();
-
-    void setInterfaceName(String interfaceName);
-
-    String getCallbackInterfaceName();
-
-    void setCallbackInterfaceName(String callbackInterfaceName);
+public interface MockService {
 }
