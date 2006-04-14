@@ -147,9 +147,10 @@ public class WebServiceEntryPointServlet extends AxisServlet {
                     axisService.addOperation(axisOp);
                     axisOp.setMessageExchangePattern(WebServiceEntryPointInOutSyncMessageReceiver.MEP_URL);
 
-                    axisConfig.addService(axisService);
+                    
 
                 }
+                axisConfig.addService(axisService);
                 axisConfig.addServiceGroup(serviceGroup);
             }
         }
