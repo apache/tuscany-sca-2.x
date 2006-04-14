@@ -21,17 +21,18 @@ import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.RuntimeEventListener;
 import org.apache.tuscany.core.context.ScopeRuntimeException;
+import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.event.ContextCreatedEvent;
 import org.apache.tuscany.core.context.event.Event;
 import org.apache.tuscany.core.context.event.HttpSessionEvent;
 import org.apache.tuscany.core.context.event.SessionEndEvent;
 
 import java.util.Map;
-import java.util.Queue;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.ListIterator;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * An implementation of an session-scoped component container
@@ -40,13 +41,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * 
  * @version $Rev$ $Date$
  */
-public class SessionScopeContext extends AbstractScopeContext implements RuntimeEventListener {
+public class SessionScopeContext extends AbstractScopeContext {
 
     // The collection of service component contexts keyed by session
     private Map<Object, Map<String, Context>> contexts;
 
     // Stores ordered lists of contexts to shutdown keyed by session
-    private Map<Object, Queue<AtomicContext>> destroyableContexts;
+    private Map<Object, List<Context>> destroyQueues;
 
     public SessionScopeContext(EventContext eventContext) {
         super(eventContext);
@@ -58,7 +59,7 @@ public class SessionScopeContext extends AbstractScopeContext implements Runtime
             throw new IllegalStateException("Scope container must be in UNINITIALIZED state");
         }
         contexts = new ConcurrentHashMap<Object, Map<String, Context>>();
-        destroyableContexts = new ConcurrentHashMap<Object, Queue<AtomicContext>>();
+        destroyQueues = new ConcurrentHashMap<Object, List<Context>>();
         lifecycleState = RUNNING;
     }
 
@@ -68,7 +69,7 @@ public class SessionScopeContext extends AbstractScopeContext implements Runtime
         }
         contexts = null;
         contexts = null;
-        destroyableContexts = null;
+        destroyQueues = null;
         lifecycleState = STOPPED;
     }
 
@@ -76,24 +77,27 @@ public class SessionScopeContext extends AbstractScopeContext implements Runtime
         if (event instanceof SessionEndEvent){
             checkInit();
             Object key = ((SessionEndEvent)event).getId();
-            notifyInstanceShutdown(key);
+            shutdownContexts(key);
             destroyComponentContext(key);
         }else if(event instanceof ContextCreatedEvent){
             checkInit();
-            if (event.getSource() instanceof AtomicContext) {
-                 AtomicContext simpleCtx = (AtomicContext)event.getSource();
-                 // if destroyable, queue the context to have its component implementation instance released
-                 if (simpleCtx.isDestroyable()) {
-                     Object sessionKey = getEventContext().getIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
-                     Queue<AtomicContext> comps = destroyableContexts.get(sessionKey);
-                     if (comps == null) {
-                         ScopeRuntimeException e = new ScopeRuntimeException("Shutdown queue not found for key");
-                         e.setIdentifier(sessionKey.toString());
-                         throw e;
-                     }
-                     comps.add(simpleCtx);
-                 }
-            }
+            Object sessionKey = getEventContext().getIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
+            List<Context> contexts = destroyQueues.get(sessionKey);
+            Context context = (Context)event.getSource();
+            assert(contexts != null): "Shutdown queue not found for key";
+
+//            if (context instanceof AtomicContext) {
+//                 AtomicContext atomic = (AtomicContext)event.getSource();
+//                 // if destroyable, queue the context to have its component implementation instance released
+//                 if (atomic.isDestroyable()) {
+//                     if (contexts == null) {
+//                         ScopeRuntimeException e = new ScopeRuntimeException("Shutdown queue not found for key");
+//                         e.setIdentifier(sessionKey.toString());
+//                         throw e;
+//                     }
+//                 }
+//            }
+            contexts.add(context);
         }
     }
 
@@ -102,43 +106,44 @@ public class SessionScopeContext extends AbstractScopeContext implements Runtime
     }
 
     public void registerFactory(ContextFactory<Context> configuration) {
-        contextFactorys.put(configuration.getName(), configuration);
+        contextFactories.put(configuration.getName(), configuration);
     }
 
     public Context getContext(String ctxName) {
+        assert(ctxName != null): "No context name specified";
         checkInit();
-        if (ctxName == null) {
-            return null;
-        }
-        // try{
-        Map<String, Context> ctxs = getSessionContext();
-        if (ctxs == null) {
-            return null;
-        }
-        Context ctx = ctxs.get(ctxName);
-        if (ctx == null) {
+        Map<String, Context> ctxs = getSessionContexts();
+        Context context = ctxs.get(ctxName);
+        if (context == null) {
             // the configuration was added after the session had started, so create a context now and start it
-            ContextFactory<Context> configuration = contextFactorys.get(ctxName);
+            ContextFactory<Context> configuration = contextFactories.get(ctxName);
             if (configuration != null) {
-                ctx = configuration.createContext();
-                ctx.addListener(this);
-                ctx.start();
-                ctxs.put(ctx.getName(), ctx);
+                context = configuration.createContext();
+                context.start();
+                if (context instanceof AtomicContext){
+                    ((AtomicContext)context).init();
+                }
+
+                ctxs.put(context.getName(), context);
+                List<Context> shutdownQueue = destroyQueues.get(getEventContext().getIdentifier(HttpSessionEvent.HTTP_IDENTIFIER));
+                synchronized(shutdownQueue){
+                    shutdownQueue.add(context);
+                }
+                context.addListener(this);
             }
         }
-        return ctx;
+        return context;
     }
 
     public Context getContextByKey(String ctxName, Object key) {
         checkInit();
-        if (key == null && ctxName == null) {
+        assert(ctxName != null): "No context name specified";
+        assert(key != null): "No key specified";
+        Map ctxs = contexts.get(key);
+        if (ctxs == null) {
             return null;
         }
-        Map components = contexts.get(key);
-        if (components == null) {
-            return null;
-        }
-        return (Context) components.get(ctxName);
+        return (Context) ctxs.get(ctxName);
     }
 
     public void removeContext(String ctxName) {
@@ -149,9 +154,8 @@ public class SessionScopeContext extends AbstractScopeContext implements Runtime
 
     public void removeContextByKey(String ctxName, Object key) {
         checkInit();
-        if (key == null || ctxName == null) {
-            return;
-        }
+        assert(ctxName != null): "No context name specified";
+        assert(key != null): "No key specified";
         Map components = contexts.get(key);
         if (components == null) {
             return;
@@ -160,33 +164,15 @@ public class SessionScopeContext extends AbstractScopeContext implements Runtime
         Map<String, Context> definitions = contexts.get(key);
         Context ctx = definitions.get(ctxName);
         if (ctx != null){
-            destroyableContexts.get(key).remove(ctx);
+            destroyQueues.get(key).remove(ctx);
         }
         definitions.remove(ctxName);
-    }
-
-
-    /**
-     * Returns an array of {@link AtomicContext}s representing components that need to be notified of scope shutdown or
-     * null if none found.
-     */
-    protected Context[] getShutdownContexts(Object key) {
-        /*
-         * This method will be called from the Listener which is associated with a different thread than the request. So, just
-         * grab the key directly
-         */
-        Queue<AtomicContext> queue = destroyableContexts.get(key);
-        if (queue != null) {
-            // create 0-length array since Queue.size() has O(n) traversal
-            return queue.toArray(new AtomicContext[0]);
-        }
-        return null;
     }
 
     /**
      * Returns and, if necessary, creates a context for the current sesion
      */
-    private Map<String, Context> getSessionContext() throws CoreRuntimeException {
+    private Map<String, Context> getSessionContexts() throws CoreRuntimeException {
         Object key = getEventContext().getIdentifier(HttpSessionEvent.HTTP_IDENTIFIER);
         if (key == null) {
             throw new ScopeRuntimeException("Session key not set in request context");
@@ -195,29 +181,29 @@ public class SessionScopeContext extends AbstractScopeContext implements Runtime
         if (m != null) {
             return m; // already created, return
         }
-        Map<String, Context> sessionContext = new ConcurrentHashMap<String, Context>(contextFactorys.size());
-        for (ContextFactory<Context> config : contextFactorys.values()) {
+        Map<String, Context> sessionContext = new ConcurrentHashMap<String, Context>(contextFactories.size());
+        for (ContextFactory<Context> config : contextFactories.values()) {
             Context context = config.createContext();
-            context.addListener(this);
             context.start();
             sessionContext.put(context.getName(), context);
         }
 
-        Queue<AtomicContext> shutdownQueue = new ConcurrentLinkedQueue<AtomicContext>();
+        List<Context> shutdownQueue = new ArrayList<Context>();
         contexts.put(key, sessionContext);
-        destroyableContexts.put(key, shutdownQueue);
+        destroyQueues.put(key, shutdownQueue);
         // initialize eager components. Note this cannot be done when we initially create each context since a component may
         // contain a forward reference to a component which has not been instantiated
         for (Context context : sessionContext.values()) {
             if (context instanceof AtomicContext) {
                 AtomicContext atomic = (AtomicContext) context;
                 if (atomic.isEagerInit()) {
-                    context.notify();  // Notify the instance
-                    //if (atomic.isDestroyable()) {
-                    shutdownQueue.add(atomic);
-                    //}
+                    atomic.init();  // Notify the instance
+                    synchronized(shutdownQueue){
+                        shutdownQueue.add(context);
+                    }
                 }
             }
+            context.addListener(this);
         }
         return sessionContext;
     }
@@ -227,7 +213,33 @@ public class SessionScopeContext extends AbstractScopeContext implements Runtime
      */
     private void destroyComponentContext(Object key) {
         contexts.remove(key);
-        destroyableContexts.remove(key);
+        destroyQueues.remove(key);
+    }
+
+
+    private synchronized void shutdownContexts(Object key) {
+        List<Context> contexts = destroyQueues.get(key);
+        if (contexts == null || contexts.size() == 0) {
+             return;
+        }
+        // shutdown destroyable instances in reverse instantiation order
+        ListIterator<Context> iter = contexts.listIterator(contexts.size());
+        while(iter.hasPrevious()){
+            Context context = iter.previous();
+            if (context.getLifecycleState() == RUNNING) {
+                //removeContextByKey(context.getName(), key);
+                try {
+                    if (context instanceof AtomicContext){
+                        System.out.println(":"+context.getName());
+                        ((AtomicContext)context).destroy();
+                    }
+                    context.stop();
+                } catch (TargetException e) {
+                    // TODO send a monitoring event
+                    // log.error("Error releasing instance [" + context.getName() + "]",e);
+                }
+            }
+        }
     }
 
 }

@@ -18,33 +18,33 @@ package org.apache.tuscany.core.context.scope;
 
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.RuntimeEventListener;
-import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
-import org.apache.tuscany.core.context.event.RequestEndEvent;
+import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.AtomicContext;
+import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.event.ContextCreatedEvent;
 import org.apache.tuscany.core.context.event.Event;
-import org.apache.tuscany.core.context.event.HttpSessionEvent;
+import org.apache.tuscany.core.context.event.RequestEndEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Queue;
+import java.util.ListIterator;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * An implementation of a request-scoped component container.
  * 
  * @version $Rev$ $Date$
  */
-public class RequestScopeContext extends AbstractScopeContext implements RuntimeEventListener {
+public class RequestScopeContext extends AbstractScopeContext {
 
     // A collection of service component contexts keyed by thread. Note this could have been implemented with a ThreadLocal but
     // using a Map allows finer-grained concurrency.
-    private Map<Object, Map<String, Context>> contextMap;
+    private Map<Object, Map<String, Context>> contexts;
 
     // stores ordered lists of contexts to shutdown for each thread.
-    private Map<Object, Queue<AtomicContext>> destroyComponents;
+    private Map<Object, List<Context>> destroyQueues;
 
     public RequestScopeContext(EventContext eventContext) {
         super(eventContext);
@@ -54,40 +54,34 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
     public void onEvent(Event event){
         /* clean up current context for pooled threads */
         if (event instanceof RequestEndEvent){
-                checkInit();
-                getEventContext().clearIdentifiers();
-                notifyInstanceShutdown(Thread.currentThread());
-                destroyContext();
+            checkInit();
+            getEventContext().clearIdentifiers();
+            shutdownContexts();
+            cleanupRequestContexts();
         }else if (event instanceof ContextCreatedEvent){
-                checkInit();
-                assert(event.getSource() instanceof Context): "Context must be passed on created event";
-                Context context = (Context)event.getSource();
-                if (context instanceof AtomicContext) {
-                    AtomicContext atomic = (AtomicContext)context;
-                    // Queue the context to have its implementation instance released if destroyable
-                    //if (atomic.isDestroyable()) {
-                        Queue<AtomicContext> collection = destroyComponents.get(Thread.currentThread());
-                        collection.add(atomic);
-                    //}
-                }
+            checkInit();
+            assert(event.getSource() instanceof Context): "Context must be passed on created event";
+            Context context = (Context)event.getSource();
+            List<Context> collection = destroyQueues.get(Thread.currentThread());
+            collection.add(context);
         }
     }
+
     public synchronized void start() {
         if (lifecycleState != UNINITIALIZED) {
             throw new IllegalStateException("Scope must be in UNINITIALIZED state [" + lifecycleState + "]");
         }
-        contextMap = new ConcurrentHashMap<Object, Map<String, Context>>();
-        destroyComponents = new ConcurrentHashMap<Object, Queue<AtomicContext>>();
+        contexts = new ConcurrentHashMap<Object, Map<String, Context>>();
+        destroyQueues = new ConcurrentHashMap<Object, List<Context>>();
         lifecycleState = RUNNING;
-
     }
 
     public synchronized void stop() {
         if (lifecycleState != RUNNING) {
             throw new IllegalStateException("Scope in wrong state [" + lifecycleState + "]");
         }
-        contextMap = null;
-        destroyComponents = null;
+        contexts = null;
+        destroyQueues = null;
         lifecycleState = STOPPED;
     }
 
@@ -96,19 +90,19 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
     }
 
     public void registerFactory(ContextFactory<Context> configuration) {
-        contextFactorys.put(configuration.getName(), configuration);
+        contextFactories.put(configuration.getName(), configuration);
     }
 
     public Context getContext(String ctxName) {
         checkInit();
-        Map<String, Context> contexts = getComponentContexts();
+        Map<String, Context> contexts = getContexts();
         Context ctx = contexts.get(ctxName);
         if (ctx == null){
             // check to see if the configuration was added after the request was started
-            ContextFactory<Context> configuration = contextFactorys.get(ctxName);
+            ContextFactory<Context> configuration = contextFactories.get(ctxName);
             if (configuration != null) {
                 ctx = configuration.createContext();
-                ctx.addListener(this);
+                //ctx.addListener(this);
                 ctx.start();
                 contexts.put(ctx.getName(), ctx);
             }
@@ -121,7 +115,7 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
         if (key == null) {
             return null;
         }
-        Map<String, Context> components = contextMap.get(key);
+        Map<String, Context> components = contexts.get(key);
         if (components == null) {
             return null;
         }
@@ -129,7 +123,6 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
     }
 
     public void removeContext(String ctxName) {
-        checkInit();
         removeContextByKey(ctxName, Thread.currentThread());
     }
 
@@ -138,37 +131,24 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
         if (key == null || ctxName == null) {
             return;
         }
-        Map components = contextMap.get(key);
+        Map components = contexts.get(key);
         if (components == null) {
             return;
         }
         components.remove(ctxName);
-        Map<String, Context> contexts = contextMap.get(key);
+        //Map<String, Context> contexts = contexts.get(key);
         // no synchronization for the following two operations since the request
         // context will not be shutdown before the second call is processed
-        Context context = contexts.get(ctxName);
-        destroyComponents.get(key).remove(context);
+        //Context context = contexts.get(ctxName);
+        //destroyQueues.get(key).remove(context);
     }
 
 
-    /**
-     * Returns an array of {@link AtomicContext}s representing components that need to be notified of scope shutdown.
-     */
-    protected Context[] getShutdownContexts(Object key) {
-        checkInit();
-        Queue<AtomicContext> queue = destroyComponents.get(Thread.currentThread());
-        if (queue != null) {
-            // create 0-length array since Queue.size() has O(n) traversal
-            return queue.toArray(new Context[0]);
-        } else {
-            return null;
-        }
-    }
 
-    private void destroyContext() {
+    private void cleanupRequestContexts() {
         // TODO uninitialize all request-scoped components
-        contextMap.remove(Thread.currentThread());
-        destroyComponents.remove(Thread.currentThread());
+        contexts.remove(Thread.currentThread());
+        destroyQueues.remove(Thread.currentThread());
     }
 
     /**
@@ -180,21 +160,47 @@ public class RequestScopeContext extends AbstractScopeContext implements Runtime
      * TODO Eager initialization is not performed for request-scoped components
      */
 
-    private Map<String, Context> getComponentContexts() throws CoreRuntimeException {
-        Map<String, Context>  contexts = contextMap.get(Thread.currentThread());
+    private Map<String, Context> getContexts() throws CoreRuntimeException {
+        Map<String, Context>  contexts = this.contexts.get(Thread.currentThread());
         if (contexts == null) {
             contexts = new ConcurrentHashMap<String, Context>();
-            Queue<AtomicContext> shutdownQueue = new ConcurrentLinkedQueue<AtomicContext>();
-            for (ContextFactory<Context> config : contextFactorys.values()) {
+            List<Context> shutdownQueue = new ArrayList<Context>();
+            for (ContextFactory<Context> config : contextFactories.values()) {
                 Context context = config.createContext();
-                context.addListener(this);
                 context.start();
                 contexts.put(context.getName(), context);
+                context.addListener(this);
             }
-            contextMap.put(Thread.currentThread(), contexts);
-            destroyComponents.put(Thread.currentThread(), shutdownQueue);
+            this.contexts.put(Thread.currentThread(), contexts);
+            destroyQueues.put(Thread.currentThread(), shutdownQueue);
         }
         return contexts;
     }
+
+    private synchronized void shutdownContexts() {
+          List<Context> contexts = destroyQueues.get(Thread.currentThread());
+          if (contexts == null || contexts.size() == 0) {
+             return;
+          }
+          // shutdown destroyable instances in reverse instantiation order
+          ListIterator<Context> iter = contexts.listIterator(contexts.size());
+          while(iter.hasPrevious()){
+              Context context = iter.previous();
+              if (context.getLifecycleState() == RUNNING) {
+                  synchronized (context) {
+                      //removeContextByKey(context.getName(), key);
+                      try {
+                          if (context instanceof AtomicContext){
+                              ((AtomicContext)context).destroy();
+                          }
+                          context.stop();
+                      } catch (TargetException e) {
+                          // TODO send a monitoring event
+                          // log.error("Error releasing instance [" + context.getName() + "]",e);
+                      }
+                  }
+              }
+          }
+      }
 
 }

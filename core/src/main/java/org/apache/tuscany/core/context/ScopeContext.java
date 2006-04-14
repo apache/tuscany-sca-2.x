@@ -64,7 +64,7 @@ public interface ScopeContext extends Context, RuntimeEventListener {
 
     /**
      * Removes a context bound to the given name and scope key
-     * 
+     *
      * @throws ScopeRuntimeException
      */
     public void removeContextByKey(String name, Object key) throws ScopeRuntimeException;

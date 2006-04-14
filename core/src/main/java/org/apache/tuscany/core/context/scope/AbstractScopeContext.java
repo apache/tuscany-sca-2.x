@@ -22,7 +22,6 @@ import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.context.impl.AbstractContext;
 
 import java.util.List;
@@ -31,16 +30,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implements functionality common to scope contexts.
- * <p>
- * <b>NB: </b>Minimal synchronization is performed, particularly for initializing and destroying scopes, and it is
- * assumed the scope container will block requests until these operations have completed.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public abstract class AbstractScopeContext extends AbstractContext implements ScopeContext {
 
     // The collection of runtime configurations for the scope
-    protected Map<String, ContextFactory<Context>> contextFactorys = new ConcurrentHashMap<String, ContextFactory<Context>>();
+    protected Map<String, ContextFactory<Context>> contextFactories = new ConcurrentHashMap<String, ContextFactory<Context>>();
 
     // The event context the scope container is associated with
     protected EventContext eventContext;
@@ -52,7 +48,7 @@ public abstract class AbstractScopeContext extends AbstractContext implements Sc
 
     public void registerFactories(List<ContextFactory<Context>> configurations) {
         for (ContextFactory<Context> configuration : configurations) {
-            contextFactorys.put(configuration.getName(), configuration);
+            contextFactories.put(configuration.getName(), configuration);
         }
     }
 
@@ -66,52 +62,13 @@ public abstract class AbstractScopeContext extends AbstractContext implements Sc
         return context.getInstance(qName);
     }
 
-    protected EventContext getEventContext() {
-        return eventContext;
-    }
-
-    /**
-     * Notfies instances that are associated with a context and configured to receive callbacks that the context is
-     * being destroyed in reverse order
-     * 
-     * @param key the context key
-     */
-    protected void notifyInstanceShutdown(Object key) {
-        Context[] contexts = getShutdownContexts(key);
-        if ((contexts == null) || (contexts.length < 1)) {
-            return;
-        }
-        // shutdown destroyable instances in reverse instantiation order
-        for (int i = contexts.length - 1; i >= 0; i--) {
-            Context context = contexts[i];
-
-            if (context.getLifecycleState() == RUNNING) {
-                synchronized (context) {
-                    removeContextByKey(context.getName(), key);
-                    try {
-                        if (context instanceof AtomicContext){
-                            ((AtomicContext)context).destroy();
-                        }
-                        context.stop();
-                    } catch (TargetException e) {
-                        // TODO send a monitoring event
-                        // log.error("Error releasing instance [" + context.getName() + "]",e);
-                    }
-                }
-            }
-        }
-    }
-
     protected void checkInit() {
         if (lifecycleState != RUNNING) {
             throw new IllegalStateException("Scope not running [" + lifecycleState + "]");
         }
     }
 
-    /**
-     * Returns an array of contexts that need to be notified of scope shutdown. The array must be in the order in which
-     * component contexts were created
-     */
-    protected abstract Context[] getShutdownContexts(Object key);
-
+    protected EventContext getEventContext() {
+        return eventContext;
+    }
 }
