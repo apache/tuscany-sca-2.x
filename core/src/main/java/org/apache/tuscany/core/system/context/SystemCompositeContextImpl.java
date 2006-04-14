@@ -17,13 +17,10 @@
 package org.apache.tuscany.core.system.context;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.tuscany.common.TuscanyRuntimeException;
 import org.apache.tuscany.core.builder.BuilderConfigException;
@@ -37,7 +34,6 @@ import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.ContextInitException;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.DuplicateNameException;
-import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.MissingContextFactoryException;
 import org.apache.tuscany.core.context.MissingScopeException;
@@ -46,10 +42,7 @@ import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.ScopeStrategy;
 import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.event.RequestEnd;
-import org.apache.tuscany.core.context.event.Event;
-import org.apache.tuscany.core.context.event.SessionBound;
-import org.apache.tuscany.core.context.impl.AbstractContext;
+import org.apache.tuscany.core.context.impl.AbstractCompositeContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
@@ -58,7 +51,6 @@ import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemObjectContextFactory;
 import org.apache.tuscany.model.assembly.AssemblyObject;
@@ -86,42 +78,9 @@ import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
  *
  * @version $Rev$ $Date$
  */
-public class SystemCompositeContextImpl extends AbstractContext implements SystemCompositeContext {
-
-    public static final int DEFAULT_WAIT = 1000 * 60;
-
-    protected CompositeContext parentContext;
-
-    // The parent configuration context, if one exists
-    @Autowire(required = false)
-    protected ConfigurationContext configurationContext;
-
-    // The logical model representing the module assembly
-    // protected ModuleComponent moduleComponent;
-    protected Module module;
+public class SystemCompositeContextImpl extends AbstractCompositeContext implements SystemCompositeContext {
 
     protected List<ContextFactory<Context>> configurations = new ArrayList<ContextFactory<Context>>();
-
-    protected ScopeStrategy scopeStrategy;
-
-    // The event context for associating context events to threads
-    protected EventContext eventContext;
-
-    // The scopes for this context
-    protected Map<Scope, ScopeContext> scopeContexts;
-
-    protected Map<Scope, ScopeContext> immutableScopeContexts;
-
-    // A component context name to scope context index
-    protected Map<String, ScopeContext> scopeIndex;
-
-    // Blocking latch to ensure the module is initialized exactly once prior to servicing requests
-    protected CountDownLatch initializeLatch = new CountDownLatch(1);
-
-    protected final Object lock = new Object();
-
-    // Indicates whether the module context has been initialized
-    protected boolean initialized;
 
     // a mapping of service type to component name
     private Map<Class, NameToScope> autowireIndex = new ConcurrentHashMap<Class, NameToScope>();
@@ -145,12 +104,8 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
                                       EventContext ctx,
                                       ConfigurationContext configCtx
     ) {
-        super(name);
-        this.parentContext = parent;
+        super(name, parent, strategy, ctx, configCtx);
         this.autowireContext = autowire;
-        this.scopeStrategy = strategy;
-        this.eventContext = ctx;
-        this.configurationContext = configCtx;
         scopeIndex = new ConcurrentHashMap<String, ScopeContext>();
         // FIXME the assembly factory should be injected here
         module = new AssemblyFactoryImpl().createModule();
@@ -172,20 +127,20 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
 
                 Map<Scope, List<ContextFactory<Context>>> configurationsByScope = new HashMap<Scope, List<ContextFactory<Context>>>();
                 if (configurations != null) {
-                    for (ContextFactory<Context> config : configurations) {
+                    for (ContextFactory<Context> contextFactory : configurations) {
                         // FIXME scopes are defined at the interface level
-                        Scope scope = config.getScope();
+                        Scope scope = contextFactory.getScope();
                         // ensure duplicate names were not added before the context was started
-                        if (scopeIndex.get(config.getName()) != null) {
-                            throw new DuplicateNameException(config.getName());
+                        if (scopeIndex.get(contextFactory.getName()) != null) {
+                            throw new DuplicateNameException(contextFactory.getName());
                         }
-                        scopeIndex.put(config.getName(), scopeContexts.get(scope));
+                        scopeIndex.put(contextFactory.getName(), scopeContexts.get(scope));
                         List<ContextFactory<Context>> list = configurationsByScope.get(scope);
                         if (list == null) {
                             list = new ArrayList<ContextFactory<Context>>();
                             configurationsByScope.put(scope, list);
                         }
-                        list.add(config);
+                        list.add(contextFactory);
                     }
                 }
                 for (EntryPoint ep : module.getEntryPoints()) {
@@ -223,60 +178,9 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
         }
     }
 
-    public void stop() {
-        if (lifecycleState == STOPPED) {
-            return;
-        }
-        // need to block a start until reset is complete
-        initializeLatch = new CountDownLatch(2);
-        lifecycleState = STOPPING;
-        initialized = false;
-        if (scopeContexts != null) {
-            for (ScopeContext scope : scopeContexts.values()) {
-                if (scope.getLifecycleState() == ScopeContext.RUNNING) {
-                    scope.stop();
-                }
-            }
-        }
-        scopeContexts = null;
-        scopeIndex.clear();
-        // allow initialized to be called
-        initializeLatch.countDown();
-        lifecycleState = STOPPED;
-    }
-
-    public void setModule(Module module) {
-        assert (module != null) : "Module cannot be null";
-        name = module.getName();
-        this.module = module;
-    }
-
-    public void setEventContext(EventContext eventContext) {
-        this.eventContext = eventContext;
-    }
-
-    public CompositeContext getParent() {
-        return parentContext;
-    }
-
-    @ParentContext
-    public void setParent(CompositeContext context) {
-        parentContext = context;
-    }
-
-    public void setConfigurationContext(ConfigurationContext context) {
-        configurationContext = context;
-    }
 
     public void setAutowireContext(AutowireContext context) {
         autowireContext = context;
-    }
-
-    public void registerModelObjects(List<? extends Extensible> models) throws ConfigurationException {
-        assert (models != null) : "Model object collection was null";
-        for (Extensible model : models) {
-            registerModelObject(model);
-        }
     }
 
     public void registerModelObject(Extensible model) throws ConfigurationException {
@@ -403,78 +307,8 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
 
     }
 
-    public void publish(Event event) {
-        checkInit();
-        if (event instanceof SessionBound) {
-            // update context
-            SessionBound sessionEvent = ((SessionBound) event);
-            eventContext.setIdentifier(sessionEvent.getSessionTypeIdentifier(), sessionEvent.getId());
-        } else if (event instanceof RequestEnd) {
-            // be very careful with pooled threads, ensuring threadlocals are cleaned up
-            eventContext.clearIdentifiers();
-        }
-        super.publish(event);
-    }
-
-    public Context getContext(String componentName) {
-        checkInit();
-        assert (componentName != null) : "Name was null";
-        ScopeContext scope = scopeIndex.get(componentName);
-        if (scope == null) {
-            return null;
-        }
-        return scope.getContext(componentName);
-
-    }
-
     public Composite getComposite() {
         return module;
-    }
-
-    public Object getInstance(QualifiedName qName) throws TargetException {
-        assert (qName != null) : "Name was null ";
-        // use the port name to get the context since entry points ports
-        ScopeContext scope = scopeIndex.get(qName.getPortName());
-        if (scope == null) {
-            return null;
-        }
-        Context ctx = scope.getContext(qName.getPortName());
-        if (!(ctx instanceof EntryPointContext)) {
-            TargetException e = new TargetException("Target not an entry point");
-            e.setIdentifier(qName.getQualifiedName());
-            e.addContextName(name);
-            throw e;
-        }
-        return ctx.getInstance(null);
-    }
-
-    public Map<Scope, ScopeContext> getScopeContexts() {
-        initializeScopes();
-        return immutableScopeContexts;
-    }
-
-    /**
-     * Blocks until the module context has been initialized
-     */
-    protected void checkInit() {
-        if (!initialized) {
-            try {
-                /* block until the module has initialized */
-                boolean success = initializeLatch.await(DEFAULT_WAIT, TimeUnit.MILLISECONDS);
-                if (!success) {
-                    throw new ContextInitException("Timeout waiting for module context to initialize");
-                }
-            } catch (InterruptedException e) { // should not happen
-            }
-        }
-
-    }
-
-    protected void initializeScopes() {
-        if (scopeContexts == null) {
-            scopeContexts = scopeStrategy.getScopeContexts(eventContext);
-            immutableScopeContexts = Collections.unmodifiableMap(scopeContexts);
-        }
     }
 
     // FIXME These should be removed and configured
@@ -524,7 +358,7 @@ public class SystemCompositeContextImpl extends AbstractContext implements Syste
     }
 
     @SuppressWarnings("unchecked")
-    private void registerAutowire(Extensible model) throws ConfigurationException {
+    protected void registerAutowire(Extensible model) throws ConfigurationException {
         if (lifecycleState == INITIALIZING || lifecycleState == INITIALIZED || lifecycleState == RUNNING) {
             if (model instanceof EntryPoint) {
                 EntryPoint ep = (EntryPoint) model;

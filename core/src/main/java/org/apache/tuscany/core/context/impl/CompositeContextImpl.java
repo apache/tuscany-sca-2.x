@@ -63,6 +63,13 @@ public class CompositeContextImpl extends AbstractCompositeContext implements Co
     @Autowire(required = false)
     private AutowireContext autowireContext;
 
+    @Autowire(required = false)
+    public void setScopeStrategy(ScopeStrategy scopeStrategy) {
+        if (scopeStrategy != null) {
+            this.scopeStrategy = scopeStrategy;
+        }
+    }
+
     public CompositeContextImpl() {
         super();
         eventContext = new EventContextImpl();

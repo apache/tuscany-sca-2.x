@@ -42,6 +42,7 @@ import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
+import org.apache.tuscany.common.TuscanyRuntimeException;
 
 import javax.wsdl.Part;
 import java.util.ArrayList;
@@ -75,7 +76,6 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
     protected Map<String, ContextFactory<Context>> configurations = new HashMap<String, ContextFactory<Context>>();
 
     // Factory for scope contexts
-    @Autowire(required = false)
     protected ScopeStrategy scopeStrategy;
 
     // The event context for associating context events to threads
@@ -101,10 +101,14 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         scopeIndex = new ConcurrentHashMap<String, ScopeContext>();
         // FIXME the factory should be injected
         module = new AssemblyFactoryImpl().createModule();
+        scopeStrategy = new DefaultScopeStrategy();
     }
 
     public AbstractCompositeContext(String name, CompositeContext parent, ScopeStrategy strategy, EventContext ctx, ConfigurationContext configCtx) {
         super(name);
+        if (strategy == null) {
+            strategy = new DefaultScopeStrategy();
+        }
         this.scopeStrategy = strategy;
         this.eventContext = ctx;
         this.configurationContext = configCtx;
@@ -125,18 +129,18 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
 
                 Map<Scope, List<ContextFactory<Context>>> configurationsByScope = new HashMap<Scope, List<ContextFactory<Context>>>();
                 if (configurations != null) {
-                    for (ContextFactory<Context> source : configurations.values()) {
+                    for (ContextFactory<Context> contextFactory : configurations.values()) {
                         // FIXME scopes are defined at the interface level
-                        Scope sourceScope = source.getScope();
-                        wireSource(source);
-                        buildTarget(source);
-                        scopeIndex.put(source.getName(), scopeContexts.get(sourceScope));
+                        Scope sourceScope = contextFactory.getScope();
+                        wireSource(contextFactory);
+                        buildTarget(contextFactory);
+                        scopeIndex.put(contextFactory.getName(), scopeContexts.get(sourceScope));
                         List<ContextFactory<Context>> list = configurationsByScope.get(sourceScope);
                         if (list == null) {
                             list = new ArrayList<ContextFactory<Context>>();
                             configurationsByScope.put(sourceScope, list);
                         }
-                        list.add(source);
+                        list.add(contextFactory);
                     }
                 }
                 for (EntryPoint ep : module.getEntryPoints()) {
@@ -206,10 +210,6 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         assert (module != null) : "Module cannot be null";
         name = module.getName();
         this.module = module;
-    }
-
-    public void setScopeStrategy(ScopeStrategy scopeStrategy) {
-        this.scopeStrategy = scopeStrategy;
     }
 
     public void setEventContext(EventContext eventContext) {
@@ -407,28 +407,32 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         }
     }
 
-    protected void registerConfiguration(ContextFactory<Context> configuration) throws ConfigurationException {
-        configuration.prepare(this);
+    protected void registerConfiguration(ContextFactory<Context> factory) throws ConfigurationException {
+        factory.prepare(this);
         if (lifecycleState == RUNNING) {
-            if (scopeIndex.get(configuration.getName()) != null) {
-                throw new DuplicateNameException(configuration.getName());
+            if (scopeIndex.get(factory.getName()) != null) {
+                throw new DuplicateNameException(factory.getName());
             }
-            // configuration.prepare(this);
-            ScopeContext scope = scopeContexts.get(configuration.getScope());
-            if (scope == null) {
-                ConfigurationException e = new MissingScopeException("Component has an unknown scope");
-                e.addContextName(configuration.getName());
+            try {
+                ScopeContext scope = scopeContexts.get(factory.getScope());
+                if (scope == null) {
+                    ConfigurationException e = new MissingScopeException("Component has an unknown scope");
+                    e.addContextName(factory.getName());
+                    e.addContextName(getName());
+                    throw e;
+                }
+                scope.registerFactory(factory);
+                scopeIndex.put(factory.getName(), scope);
+            } catch (TuscanyRuntimeException e) {
                 e.addContextName(getName());
                 throw e;
             }
-            scope.registerFactory(configuration);
-            scopeIndex.put(configuration.getName(), scope);
-            configurations.put(configuration.getName(), configuration); // xcv
+            configurations.put(factory.getName(), factory); // xcv
         } else {
-            if (configurations.get(configuration.getName()) != null) {
-                throw new DuplicateNameException(configuration.getName());
+            if (configurations.get(factory.getName()) != null) {
+                throw new DuplicateNameException(factory.getName());
             }
-            configurations.put(configuration.getName(), configuration);
+            configurations.put(factory.getName(), factory);
         }
 
     }
@@ -509,9 +513,6 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
 
     protected void initializeScopes() {
         if (scopeContexts == null) {
-            if (scopeStrategy == null) {
-                scopeStrategy = new DefaultScopeStrategy();
-            }
             scopeContexts = scopeStrategy.getScopeContexts(eventContext);
             immutableScopeContexts = Collections.unmodifiableMap(scopeContexts);
         }
