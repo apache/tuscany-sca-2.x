@@ -44,10 +44,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ModuleScopeContext extends AbstractScopeContext {
 
     // Component contexts in this scope keyed by name
-    private Map<String, Context> componentContexts;
+    private Map<String, Context> contexts;
 
     // the queue of contexts to destroy, in the order that their instances were created
-    private List<Context> destroyableContexts;
+    private List<Context> destroyQueue;
 
     public ModuleScopeContext(EventContext eventContext) {
         super(eventContext);
@@ -62,10 +62,10 @@ public class ModuleScopeContext extends AbstractScopeContext {
             shutdownContexts();
         } else if (event instanceof InstanceCreated) {
             checkInit();
-            if (event.getSource() instanceof AtomicContext) {
+            if (event.getSource() instanceof Context) {
                 Context context = (Context) event.getSource();
                 // Queue the context to have its implementation instance released if destroyable
-                destroyableContexts.add(context);
+                destroyQueue.add(context);
             }
         }
     }
@@ -80,8 +80,8 @@ public class ModuleScopeContext extends AbstractScopeContext {
         if (lifecycleState != RUNNING) {
             throw new IllegalStateException("Scope in wrong state [" + lifecycleState + "]");
         }
-        componentContexts = null;
-        destroyableContexts = null;
+        contexts = null;
+        destroyQueue = null;
         lifecycleState = STOPPED;
     }
 
@@ -92,30 +92,30 @@ public class ModuleScopeContext extends AbstractScopeContext {
     public void registerFactory(ContextFactory<Context> configuration) {
         contextFactories.put(configuration.getName(), configuration);
         if (lifecycleState == RUNNING) {
-            componentContexts.put(configuration.getName(), configuration.createContext());
+            contexts.put(configuration.getName(), configuration.createContext());
         }
     }
 
     public Context getContext(String ctxName) {
         checkInit();
         initComponentContexts();
-        return componentContexts.get(ctxName);
+        return contexts.get(ctxName);
     }
 
     public Context getContextByKey(String ctxName, Object key) {
         checkInit();
         initComponentContexts();
-        return componentContexts.get(ctxName);
+        return contexts.get(ctxName);
     }
 
     public void removeContext(String ctxName) {
         checkInit();
-        if (componentContexts == null){
+        if (contexts == null){
             return;
         }
-        Context context = componentContexts.remove(ctxName);
+        Context context = contexts.remove(ctxName);
         if (context != null) {
-            destroyableContexts.remove(context);
+            destroyQueue.remove(context);
         }
     }
 
@@ -127,28 +127,37 @@ public class ModuleScopeContext extends AbstractScopeContext {
      * Notifies contexts of a shutdown in reverse order to which they were started
      */
     private synchronized void shutdownContexts() {
-        if (destroyableContexts == null || destroyableContexts.size() == 0) {
+        if (destroyQueue == null || destroyQueue.size() == 0) {
             return;
         }
         // shutdown destroyable instances in reverse instantiation order
-        ListIterator<Context> iter = destroyableContexts.listIterator(destroyableContexts.size());
+        ListIterator<Context> iter = destroyQueue.listIterator(destroyQueue.size());
         while(iter.hasPrevious()){
             Context context = iter.previous();
             if (context.getLifecycleState() == RUNNING) {
-                synchronized (context) {
-                    try {
-                        if (context instanceof AtomicContext){
-                            ((AtomicContext)context).destroy();
-                        }
-                        context.stop();
-                    } catch (TargetException e) {
-                        // TODO send a monitoring event
+                try {
+                    if (context instanceof AtomicContext){
+                        ((AtomicContext)context).destroy();
                     }
+                } catch (TargetException e) {
+                    // TODO send a monitoring event
                 }
             }
         }
-        componentContexts = null;
-        destroyableContexts = null;
+        if (contexts == null){
+            return;
+        }
+        for(Context context: contexts.values()) {
+            try {
+                if (context.getLifecycleState() == RUNNING) {
+                    context.stop();
+                }
+            } catch (CoreRuntimeException e){
+                // TODO send monitoring event
+            }
+        }
+        contexts = null;
+        destroyQueue = null;
      }
 
     /**
@@ -158,23 +167,23 @@ public class ModuleScopeContext extends AbstractScopeContext {
      * @throws CoreRuntimeException
      */
     private synchronized void initComponentContexts() throws CoreRuntimeException {
-        if (componentContexts == null) {
-            componentContexts = new ConcurrentHashMap<String, Context>();
-            destroyableContexts = new ArrayList<Context>();
+        if (contexts == null) {
+            contexts = new ConcurrentHashMap<String, Context>();
+            destroyQueue = new ArrayList<Context>();
             for (ContextFactory<Context> config : contextFactories.values()) {
                 Context context = config.createContext();
                 context.start();
-                componentContexts.put(context.getName(), context);
+                contexts.put(context.getName(), context);
             }
             // Initialize eager contexts. Note this cannot be done when we initially create each context since a component may
             // contain a forward reference to a component which has not been instantiated
-            for (Context context : componentContexts.values()) {
+            for (Context context : contexts.values()) {
                 if (context instanceof AtomicContext) {
                     AtomicContext atomic = (AtomicContext) context;
                     if (atomic.isEagerInit()) {
                         // perform silent creation and manual shutdown registration
                         atomic.init();
-                        destroyableContexts.add(context);
+                        destroyQueue.add(context);
                     }
                 }
                 context.addListener(this);

@@ -172,18 +172,17 @@ public class RequestScopeContext extends AbstractScopeContext {
         return contexts;
     }
 
-    private synchronized void shutdownContexts() {
-          List<Context> contexts = destroyQueues.get(Thread.currentThread());
-          if (contexts == null || contexts.size() == 0) {
+    private void shutdownContexts() {
+          List<Context> destroyQueue = destroyQueues.remove(Thread.currentThread());
+          if (destroyQueue == null || destroyQueue.size() == 0) {
              return;
           }
-          // shutdown destroyable instances in reverse instantiation order
-          ListIterator<Context> iter = contexts.listIterator(contexts.size());
-          while(iter.hasPrevious()){
-              Context context = iter.previous();
-              if (context.getLifecycleState() == RUNNING) {
-                  synchronized (context) {
-                      //removeContextByKey(context.getName(), key);
+          synchronized(destroyQueue){
+              // shutdown destroyable instances in reverse instantiation order
+              ListIterator<Context> iter = destroyQueue.listIterator(destroyQueue.size());
+              while(iter.hasPrevious()){
+                  Context context = iter.previous();
+                  if (context.getLifecycleState() == RUNNING) {
                       try {
                           if (context instanceof AtomicContext){
                               ((AtomicContext)context).destroy();
@@ -191,11 +190,21 @@ public class RequestScopeContext extends AbstractScopeContext {
                           context.stop();
                       } catch (TargetException e) {
                           // TODO send a monitoring event
-                          // log.error("Error releasing instance [" + context.getName() + "]",e);
                       }
                   }
               }
           }
+          // shutdown contexts
+          Map<String,Context> currentContexts = contexts.remove(Thread.currentThread());
+          if (currentContexts == null){
+             return;
+          }
+          for (Context context: currentContexts.values()){
+              if (context.getLifecycleState() == RUNNING) {
+                  context.stop();
+              }
+          }
+
       }
 
 }

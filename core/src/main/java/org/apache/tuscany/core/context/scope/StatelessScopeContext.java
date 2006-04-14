@@ -21,6 +21,7 @@ import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.event.Event;
+import org.apache.tuscany.core.context.event.ModuleStop;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -63,7 +64,9 @@ public class StatelessScopeContext extends AbstractScopeContext {
     }
 
     public void onEvent(Event event){
-        // do nothing
+        if (event instanceof ModuleStop) {
+            shutdownContexts();
+        }
     }
 
     public boolean isCacheable() {
@@ -106,5 +109,23 @@ public class StatelessScopeContext extends AbstractScopeContext {
             }
         }
     }
+
+    private void shutdownContexts(){
+        if (contexts == null){
+            return;
+        }
+        for(Context context: contexts.values()) {
+            try {
+                if (context.getLifecycleState() == RUNNING) {
+                    context.stop();
+                }
+            } catch (CoreRuntimeException e){
+                // TODO send monitoring event
+            }
+
+        }
+        contexts = null;
+    }
+
 
 }

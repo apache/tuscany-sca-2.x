@@ -206,24 +206,34 @@ public class SessionScopeContext extends AbstractScopeContext {
 
 
     private synchronized void shutdownContexts(Object key) {
-        List<Context> contexts = destroyQueues.get(key);
-        if (contexts == null || contexts.size() == 0) {
+        List<Context> destroyQueue = destroyQueues.remove(key);
+        if (destroyQueue == null || destroyQueue.size() == 0) {
              return;
         }
         // shutdown destroyable instances in reverse instantiation order
-        ListIterator<Context> iter = contexts.listIterator(contexts.size());
-        while(iter.hasPrevious()){
-            Context context = iter.previous();
-            if (context.getLifecycleState() == RUNNING) {
-                //removeContextByKey(context.getName(), key);
-                try {
-                    if (context instanceof AtomicContext){
-                        ((AtomicContext)context).destroy();
+        ListIterator<Context> iter = destroyQueue.listIterator(destroyQueue.size());
+        synchronized(destroyQueue){
+            while(iter.hasPrevious()){
+                Context context = iter.previous();
+                if (context.getLifecycleState() == RUNNING) {
+                    try {
+                        if (context instanceof AtomicContext){
+                            ((AtomicContext)context).destroy();
+                        }
+                    } catch (TargetException e) {
+                        // TODO send a monitoring event
                     }
-                    context.stop();
-                } catch (TargetException e) {
-                    // TODO send a monitoring event
                 }
+            }
+        }
+        // shutdown contexts
+        Map<String,Context> currentContexts = contexts.remove(Thread.currentThread());
+        if (currentContexts == null){
+            return;
+        }
+        for (Context context: currentContexts.values()){
+            if (context.getLifecycleState() == RUNNING) {
+                context.stop();
             }
         }
     }
