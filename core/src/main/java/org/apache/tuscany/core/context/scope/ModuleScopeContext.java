@@ -34,7 +34,10 @@ import java.util.ListIterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Manages component contexts whose implementations are module scoped
+ * Manages contexts whose implementations are module scoped. This scope contexts eagerly starts contexts when
+ * a {@link ModuleStart} event is received. If a contained context has an implementation marked to eagerly initialized,
+ * the an instance will be created at that time as well. Contained contexts are shutdown when a {@link ModuleStop}
+ * event is received in reverse order to which their implementation instances were created.
  *
  * @version $Rev$ $Date$
  */
@@ -43,6 +46,7 @@ public class ModuleScopeContext extends AbstractScopeContext {
     // Component contexts in this scope keyed by name
     private Map<String, Context> componentContexts;
 
+    // the queue of contexts to destroy, in the order that their instances were created
     private List<Context> destroyableContexts;
 
     public ModuleScopeContext(EventContext eventContext) {
@@ -85,8 +89,7 @@ public class ModuleScopeContext extends AbstractScopeContext {
         return true;
     }
 
-    public void registerFactory
-            (ContextFactory<Context> configuration) {
+    public void registerFactory(ContextFactory<Context> configuration) {
         contextFactories.put(configuration.getName(), configuration);
         if (lifecycleState == RUNNING) {
             componentContexts.put(configuration.getName(), configuration.createContext());
@@ -120,7 +123,6 @@ public class ModuleScopeContext extends AbstractScopeContext {
         removeContext(ctxName);
     }
 
-
     /**
      * Notifies contexts of a shutdown in reverse order to which they were started
      */
@@ -149,6 +151,12 @@ public class ModuleScopeContext extends AbstractScopeContext {
         destroyableContexts = null;
      }
 
+    /**
+     * Creates and starts components contexts in the module scope. Implementations marked to eagerly initialize will
+     * also be notified to do so.
+     *
+     * @throws CoreRuntimeException
+     */
     private synchronized void initComponentContexts() throws CoreRuntimeException {
         if (componentContexts == null) {
             componentContexts = new ConcurrentHashMap<String, Context>();
@@ -166,10 +174,10 @@ public class ModuleScopeContext extends AbstractScopeContext {
                     if (atomic.isEagerInit()) {
                         // perform silent creation and manual shutdown registration
                         atomic.init();
+                        destroyableContexts.add(context);
                     }
                 }
                 context.addListener(this);
-                destroyableContexts.add(context);
             }
         }
     }
