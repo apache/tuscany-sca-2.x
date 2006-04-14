@@ -25,6 +25,7 @@ import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.core.context.event.Event;
 import org.apache.tuscany.core.context.event.RequestEnd;
+import org.apache.tuscany.core.context.event.RequestStart;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,10 +53,11 @@ public class RequestScopeContext extends AbstractScopeContext {
     }
 
     public void onEvent(Event event){
-        /* clean up current context for pooled threads */
-        if (event instanceof RequestEnd){
+        if (event instanceof RequestStart){
+            getContexts(); // eager load
+        }else if (event instanceof RequestEnd){
             checkInit();
-            getEventContext().clearIdentifiers();
+            getEventContext().clearIdentifiers(); // clean up current context for pooled threads
             shutdownContexts();
             cleanupRequestContexts();
         }else if (event instanceof InstanceCreated){
@@ -156,20 +158,33 @@ public class RequestScopeContext extends AbstractScopeContext {
      */
 
     private Map<String, Context> getContexts() throws CoreRuntimeException {
-        Map<String, Context>  contexts = this.contexts.get(Thread.currentThread());
-        if (contexts == null) {
-            contexts = new ConcurrentHashMap<String, Context>();
+        Map<String, Context>  requestContexts = this.contexts.get(Thread.currentThread());
+        if (requestContexts == null) {
+            requestContexts = new ConcurrentHashMap<String, Context>();
             List<Context> shutdownQueue = new ArrayList<Context>();
             for (ContextFactory<Context> config : contextFactories.values()) {
                 Context context = config.createContext();
                 context.start();
-                contexts.put(context.getName(), context);
+                requestContexts.put(context.getName(), context);
+            }
+            // initialize eager components. Note this cannot be done when we initially create each context since a component may
+            // contain a forward reference to a component which has not been instantiated
+            for (Context context : requestContexts.values()) {
+                if (context instanceof AtomicContext) {
+                    AtomicContext atomic = (AtomicContext) context;
+                    if (atomic.isEagerInit()) {
+                        atomic.init();  // Notify the instance
+                        synchronized(shutdownQueue){
+                            shutdownQueue.add(context);
+                        }
+                    }
+                }
                 context.addListener(this);
             }
-            this.contexts.put(Thread.currentThread(), contexts);
+            contexts.put(Thread.currentThread(), requestContexts);
             destroyQueues.put(Thread.currentThread(), shutdownQueue);
         }
-        return contexts;
+        return requestContexts;
     }
 
     private void shutdownContexts() {
@@ -187,7 +202,6 @@ public class RequestScopeContext extends AbstractScopeContext {
                           if (context instanceof AtomicContext){
                               ((AtomicContext)context).destroy();
                           }
-                          context.stop();
                       } catch (TargetException e) {
                           // TODO send a monitoring event
                       }
