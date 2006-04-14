@@ -16,48 +16,49 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import javax.xml.stream.XMLStreamConstants;
+import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.EXTERNAL_SERVICE;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamConstants;
 
 import org.apache.tuscany.core.config.ConfigurationLoadException;
-import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.ENTRY_POINT;
 import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.EntryPoint;
+import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
  * @version $Rev$ $Date$
  */
-public class EntryPointLoaderTestCase extends LoaderTestSupport {
+public class ExternalServiceLoaderTestCase extends LoaderTestSupport {
 
     public void testMinimal() throws XMLStreamException, ConfigurationLoadException {
-        String xml = "<entryPoint xmlns='http://www.osoa.org/xmlns/sca/0.9' name='test'></entryPoint>";
+        String xml = "<externalService xmlns='http://www.osoa.org/xmlns/sca/0.9' name='test'></externalService>";
         XMLStreamReader reader = getReader(xml);
-        EntryPoint ep = (EntryPoint) registry.load(reader, resourceLoader);
-        reader.require(XMLStreamConstants.END_ELEMENT, ENTRY_POINT.getNamespaceURI(), ENTRY_POINT.getLocalPart());
+        ExternalService es = (ExternalService) registry.load(reader, resourceLoader);
+        assertNotNull(es);
+        assertEquals("test", es.getName());
+        reader.require(XMLStreamConstants.END_ELEMENT, EXTERNAL_SERVICE.getNamespaceURI(), EXTERNAL_SERVICE.getLocalPart());
         assertEquals(XMLStreamConstants.END_DOCUMENT, reader.next());
-        assertNotNull(ep);
-        assertEquals("test", ep.getName());
     }
 
     public void testInterface() throws XMLStreamException, ConfigurationLoadException {
         String interfaceName = MockService.class.getName();
-        String xml = "<entryPoint xmlns='http://www.osoa.org/xmlns/sca/0.9' name='test'><interface.java interface='" + interfaceName + "'/></entryPoint>";
+        String xml = "<externalService xmlns='http://www.osoa.org/xmlns/sca/0.9' name='test'><interface.java interface='" + interfaceName + "'/></externalService>";
         XMLStreamReader reader = getReader(xml);
-        EntryPoint ep = (EntryPoint) registry.load(reader, resourceLoader);
-        reader.require(XMLStreamConstants.END_ELEMENT, ENTRY_POINT.getNamespaceURI(), ENTRY_POINT.getLocalPart());
+        ExternalService es = (ExternalService) registry.load(reader, resourceLoader);
+        reader.require(XMLStreamConstants.END_ELEMENT, EXTERNAL_SERVICE.getNamespaceURI(), EXTERNAL_SERVICE.getLocalPart());
         assertEquals(XMLStreamConstants.END_DOCUMENT, reader.next());
-        assertNotNull(ep);
-        assertEquals("test", ep.getName());
-        ConfiguredService configuredService = ep.getConfiguredService();
+        assertNotNull(es);
+        assertEquals("test", es.getName());
+        ConfiguredService configuredService = es.getConfiguredService();
         JavaServiceContract serviceContract = (JavaServiceContract) configuredService.getPort().getServiceContract();
         assertEquals(interfaceName, serviceContract.getInterfaceName());
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        registerLoader(new EntryPointLoader());
+        registerLoader(new ExternalServiceLoader());
         registerLoader(new InterfaceJavaLoader());
     }
 }
