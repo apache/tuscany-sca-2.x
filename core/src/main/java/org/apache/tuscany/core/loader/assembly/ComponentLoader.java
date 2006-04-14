@@ -35,6 +35,7 @@ import org.apache.tuscany.core.loader.InvalidPropertyFactoryException;
 import org.apache.tuscany.core.loader.StAXPropertyFactory;
 import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.loader.impl.StringParserPropertyFactory;
+import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ComponentInfo;
@@ -50,7 +51,12 @@ import org.osoa.sca.annotations.Scope;
  */
 @Scope("MODULE")
 public class ComponentLoader extends AbstractLoader {
-    private static final StAXPropertyFactory<?> defaultPropertyFactory = new StringParserPropertyFactory();
+    private StAXPropertyFactory<?> defaultPropertyFactory;
+
+    @Autowire
+    public void setDefaultPropertyFactory(StAXPropertyFactory<?> defaultPropertyFactory) {
+        this.defaultPropertyFactory = defaultPropertyFactory;
+    }
 
     public QName getXMLType() {
         return COMPONENT;

@@ -33,6 +33,7 @@ import org.apache.tuscany.core.loader.assembly.InterfaceJavaLoader;
 import org.apache.tuscany.core.loader.assembly.ModuleFragmentLoader;
 import org.apache.tuscany.core.loader.assembly.ModuleLoader;
 import org.apache.tuscany.core.loader.impl.StAXLoaderRegistryImpl;
+import org.apache.tuscany.core.loader.impl.StringParserPropertyFactory;
 import org.apache.tuscany.core.loader.system.SystemBindingLoader;
 import org.apache.tuscany.core.loader.system.SystemImplementationLoader;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
@@ -104,6 +105,7 @@ public final class StAXUtil {
         // all others should be defined in the system.module file
         components.add(bootstrapLoader(factory, introspector, ModuleLoader.class));
         components.add(bootstrapLoader(factory, introspector, ModuleFragmentLoader.class));
+        components.add(factory.createSystemComponent("org.apache.tuscany.core.system.loader.DefaultPropertyFactory", StAXPropertyFactory.class, StringParserPropertyFactory.class, Scope.MODULE));
         components.add(bootstrapLoader(factory, introspector, ComponentLoader.class));
         components.add(bootstrapLoader(factory, introspector, EntryPointLoader.class));
         components.add(bootstrapLoader(factory, introspector, InterfaceJavaLoader.class));

@@ -31,9 +31,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Service;
+
 /**
  * @version $Rev$ $Date$
  */
+@Scope("MODULE")
+@Service(interfaces = {StAXPropertyFactory.class})
 public class StringParserPropertyFactory implements StAXPropertyFactory {
     public ObjectFactory<?> createObjectFactory(XMLStreamReader reader, Property property) throws XMLStreamException, ConfigurationLoadException {
         Class<?> type = property.getType();

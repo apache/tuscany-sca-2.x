@@ -26,6 +26,7 @@ import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.loader.StAXPropertyFactory;
+import org.apache.tuscany.core.loader.impl.StringParserPropertyFactory;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
@@ -104,6 +105,7 @@ public class ComponentLoaderTestCase extends LoaderTestSupport {
         super.setUp();
         loader = new ComponentLoader();
         loader.setFactory(assemblyFactory);
+        loader.setDefaultPropertyFactory(new StringParserPropertyFactory());
         introspector = new Java5ComponentTypeIntrospector(assemblyFactory);
     }
 
