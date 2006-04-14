@@ -31,7 +31,7 @@ import org.apache.tuscany.container.java.assembly.mock.HelloWorldImpl;
 import org.apache.tuscany.container.java.assembly.mock.HelloWorldService;
 import org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder;
 import org.apache.tuscany.container.java.builder.JavaTargetWireBuilder;
-import org.apache.tuscany.container.java.context.JavaComponentContext;
+import org.apache.tuscany.container.java.context.JavaAtomicContext;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBinding;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBindingBuilder;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBindingWireBuilder;
@@ -602,7 +602,7 @@ public class MockFactory {
      * @param moduleComponentContext the containing composite context
      * @throws NoSuchMethodException if the POJO does not have a default noi-args constructor
      */
-    public static JavaComponentContext createPojoContext(String name, Class implType, Scope scope,
+    public static JavaAtomicContext createPojoContext(String name, Class implType, Scope scope,
                                                          CompositeContext moduleComponentContext) throws NoSuchMethodException {
         AtomicComponent component = createComponent(name, implType, scope);
 
@@ -650,7 +650,7 @@ public class MockFactory {
             }
         }
         boolean stateless = (scope == Scope.INSTANCE);
-        JavaComponentContext context = new JavaComponentContext("foo", new PojoObjectFactory(JavaIntrospectionHelper
+        JavaAtomicContext context = new JavaAtomicContext("foo", new PojoObjectFactory(JavaIntrospectionHelper
                 .getDefaultConstructor(implType), null, injectors), eagerInit, initInvoker, destroyInvoker, stateless);
         return context;
     }

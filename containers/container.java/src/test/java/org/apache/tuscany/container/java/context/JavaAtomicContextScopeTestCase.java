@@ -32,16 +32,18 @@ import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 
 /**
+ * Tests {@link JavaAtomicContext} to ensure it handles component scopes properly
+ * 
  * @version $Rev$ $Date$
  */
-public class PojoTestCase extends TestCase {
+public class JavaAtomicContextScopeTestCase extends TestCase {
 
     JavaAssemblyFactory factory = new JavaAssemblyFactoryImpl();
 
     public void testGetModuleInstance() throws Exception {
         CompositeContext mc = new CompositeContextImpl();
         mc.setName("mc");
-        JavaComponentContext c = new JavaComponentContext("foo", new PojoObjectFactory<ModuleScopeComponentImpl>(JavaIntrospectionHelper
+        JavaAtomicContext c = new JavaAtomicContext("foo", new PojoObjectFactory<ModuleScopeComponentImpl>(JavaIntrospectionHelper
                 .getDefaultConstructor(ModuleScopeComponentImpl.class), null, null), false, null, null, false);
         GenericComponent service = (GenericComponent) c.getInstance(null);
         Assert.assertNotNull(service);
@@ -54,7 +56,7 @@ public class PojoTestCase extends TestCase {
     public void testGetSessionInstance() throws Exception {
         CompositeContext mc = new CompositeContextImpl();
         mc.setName("mc");
-        JavaComponentContext c = new JavaComponentContext("foo", new PojoObjectFactory<SessionScopeComponentImpl>(JavaIntrospectionHelper
+        JavaAtomicContext c = new JavaAtomicContext("foo", new PojoObjectFactory<SessionScopeComponentImpl>(JavaIntrospectionHelper
                 .getDefaultConstructor(SessionScopeComponentImpl.class), null, null), false, null, null, false);
         GenericComponent service = (GenericComponent) c.getInstance(null);
         Assert.assertNotNull(service);
@@ -67,7 +69,7 @@ public class PojoTestCase extends TestCase {
     public void testGetRequestInstance() throws Exception {
         CompositeContext mc = new CompositeContextImpl();
         mc.setName("mc");
-        JavaComponentContext c = new JavaComponentContext("foo", new PojoObjectFactory<RequestScopeComponentImpl>(JavaIntrospectionHelper
+        JavaAtomicContext c = new JavaAtomicContext("foo", new PojoObjectFactory<RequestScopeComponentImpl>(JavaIntrospectionHelper
                 .getDefaultConstructor(RequestScopeComponentImpl.class), null, null), false, null, null, false);
         GenericComponent service = (GenericComponent) c.getInstance(null);
         Assert.assertNotNull(service);
@@ -80,7 +82,7 @@ public class PojoTestCase extends TestCase {
     public void testGetStatelessInstance() throws Exception { 
         CompositeContext mc = new CompositeContextImpl();
         mc.setName("fooContext");
-        JavaComponentContext c = new JavaComponentContext("foo", new PojoObjectFactory<StatelessComponentImpl>(JavaIntrospectionHelper
+        JavaAtomicContext c = new JavaAtomicContext("foo", new PojoObjectFactory<StatelessComponentImpl>(JavaIntrospectionHelper
                 .getDefaultConstructor(StatelessComponentImpl.class), null, null), false, null, null, true);
         GenericComponent service = (GenericComponent) c.getInstance(null);
         Assert.assertNotNull(service);

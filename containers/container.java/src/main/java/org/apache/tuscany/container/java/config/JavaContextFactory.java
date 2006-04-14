@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.container.java.context.JavaComponentContext;
+import org.apache.tuscany.container.java.context.JavaAtomicContext;
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ContextFactory;
@@ -99,7 +99,7 @@ public class JavaContextFactory implements ContextFactory<AtomicContext>, Contex
 
     public AtomicContext createContext() throws ContextCreationException {
         PojoObjectFactory<?> objectFactory = new PojoObjectFactory<Object>(ctr, null, setters);
-        return new JavaComponentContext(name, objectFactory, eagerInit, init, destroy, stateless);
+        return new JavaAtomicContext(name, objectFactory, eagerInit, init, destroy, stateless);
     }
 
     private Map<String, ProxyFactory> targetProxyFactories = new HashMap<String, ProxyFactory>();

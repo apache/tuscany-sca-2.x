@@ -27,16 +27,16 @@ import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
- * Tests <code>@Init</code> method called, <code>@Context</code> set for ModuleContext, <code>@ComponentName</code> set
+ * Tests init and destroy lifecycle callbacks are handled properly
  *
  * @version $Rev$ $Date$
  */
-public class PojoLifecycleTestCase extends TestCase {
+public class JavaAtomicContextLifecycleTestCase extends TestCase {
 
     public void testComponentNameSet() throws Exception {
         CompositeContext mc = new CompositeContextImpl();
         mc.setName("mc");
-        JavaComponentContext context = MockFactory.createPojoContext("TestServiceInit",
+        JavaAtomicContext context = MockFactory.createPojoContext("TestServiceInit",
                 ModuleScopeInitOnlyComponent.class, Scope.MODULE, mc);
         context.start();
         ModuleScopeInitOnlyComponent instance = (ModuleScopeInitOnlyComponent) context.getInstance(null);
@@ -48,38 +48,12 @@ public class PojoLifecycleTestCase extends TestCase {
     public void testModuleContextSet() throws Exception {
         CompositeContext mc = new CompositeContextImpl();
         mc.setName("mc");
-        JavaComponentContext context = MockFactory.createPojoContext("TestServiceInit",
+        JavaAtomicContext context = MockFactory.createPojoContext("TestServiceInit",
                 ModuleScopeInitOnlyComponent.class, Scope.MODULE, mc);
         context.start();
         ModuleScopeInitOnlyComponent instance = (ModuleScopeInitOnlyComponent) context.getInstance(null);
         Assert.assertNotNull(instance);
         Assert.assertEquals(mc, instance.getModuleContext());
-        context.stop();
-    }
-
-    public void testInit() throws Exception {
-        CompositeContext mc = new CompositeContextImpl();
-        mc.setName("mc");
-        JavaComponentContext context = MockFactory.createPojoContext("TestServiceInit",
-                ModuleScopeInitOnlyComponent.class, Scope.MODULE, mc);
-        context.start();
-        ModuleScopeInitOnlyComponent instance = (ModuleScopeInitOnlyComponent) context.getInstance(null);
-        Assert.assertNotNull(instance);
-        Assert.assertTrue(instance.isInitialized());
-        context.stop();
-    }
-
-
-    public void testDestroy() throws Exception {
-        CompositeContext mc = new CompositeContextImpl();
-        mc.setName("mc");
-        JavaComponentContext context = MockFactory.createPojoContext("TestServiceInit",
-                ModuleScopeInitDestroyComponent.class, Scope.MODULE, mc);
-        context.start();
-        ModuleScopeInitDestroyComponent instance = (ModuleScopeInitDestroyComponent) context.getInstance(null);
-        Assert.assertNotNull(instance);
-        context.destroy();
-        Assert.assertTrue(instance.isDestroyed());
         context.stop();
     }
 }

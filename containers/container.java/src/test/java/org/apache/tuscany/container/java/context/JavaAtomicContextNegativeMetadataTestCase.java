@@ -25,7 +25,12 @@ import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.model.assembly.Scope;
 
-public class BadPojoTestCase extends TestCase {
+/**
+ * Performs rudimentary negative testing by using malformed metadata on a POJO
+ *
+ * @version $Rev $Date
+ */
+public class JavaAtomicContextNegativeMetadataTestCase extends TestCase {
 
     /**
      * Tests that a pojo with <code>@ComponentName</code> specified on a non-String type generates an error.
@@ -37,8 +42,7 @@ public class BadPojoTestCase extends TestCase {
         CompositeContext mc = new CompositeContextImpl();
         mc.setName("mc");
         try {
-            JavaComponentContext context = MockFactory.createPojoContext("BadNamePojo", BadNamePojo.class,
-                    Scope.MODULE, mc);
+            MockFactory.createPojoContext("BadNamePojo", BadNamePojo.class, Scope.MODULE, mc);
         } catch (NoSuchMethodException e) {
             if (e.getMessage().indexOf("@ComponentName") < 0) {
                 throw e;
@@ -57,8 +61,7 @@ public class BadPojoTestCase extends TestCase {
         CompositeContext mc = new CompositeContextImpl();
         mc.setName("mc");
         try {
-            JavaComponentContext context = MockFactory.createPojoContext("BadContextPojo", BadContextPojo.class,
-                    Scope.MODULE, mc);
+            MockFactory.createPojoContext("BadContextPojo", BadContextPojo.class, Scope.MODULE, mc);
         } catch (NoSuchMethodException e) {
             if (e.getMessage().indexOf("@Context") < 0) {
                 throw e;

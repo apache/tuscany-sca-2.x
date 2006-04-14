@@ -28,11 +28,11 @@ import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.ObjectCreationException;
 
 /**
- * Manages Java service component implementation instances
+ * Manages Java component implementation instances
  *
  * @version $Rev$ $Date$
  */
-public class JavaComponentContext extends AbstractContext implements AtomicContext {
+public class JavaAtomicContext extends AbstractContext implements AtomicContext {
 
     private boolean eagerInit;
 
@@ -48,8 +48,8 @@ public class JavaComponentContext extends AbstractContext implements AtomicConte
     // creates a new implementation instance with injected references and properties
     private ObjectFactory objectFactory;
 
-    public JavaComponentContext(String name, ObjectFactory objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
-                                EventInvoker<Object> destroyInvoker, boolean stateless) {
+    public JavaAtomicContext(String name, ObjectFactory objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
+                             EventInvoker<Object> destroyInvoker, boolean stateless) {
         super(name);
         assert (objectFactory != null) : "Object factory was null";
         if (eagerInit && initInvoker == null) {
