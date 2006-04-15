@@ -16,9 +16,6 @@
  */
 package org.apache.tuscany.core.system.context;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,12 +26,7 @@ import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.AutowireResolutionException;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
-import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.ContextInitException;
-import org.apache.tuscany.core.context.CoreRuntimeException;
-import org.apache.tuscany.core.context.DuplicateNameException;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.MissingContextFactoryException;
 import org.apache.tuscany.core.context.MissingScopeException;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
@@ -43,28 +35,23 @@ import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.impl.AbstractCompositeContext;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
-import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
-import org.apache.tuscany.core.wire.ProxyFactory;
-import org.apache.tuscany.core.wire.ProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.core.system.config.SystemObjectContextFactory;
+import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.ProxyFactoryFactory;
+import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.Composite;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Extensible;
-import org.apache.tuscany.model.assembly.ExternalService;
-import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
-import org.apache.tuscany.model.assembly.Part;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 
 
 /**
@@ -86,9 +73,6 @@ public class SystemCompositeContextImpl extends AbstractCompositeContext impleme
 
     public SystemCompositeContextImpl() {
         super();
-        scopeIndex = new ConcurrentHashMap<String, ScopeContext>();
-        // FIXME the assembly factory should be injected here
-        module = new AssemblyFactoryImpl().createModule();
         eventContext = new EventContextImpl();
         scopeStrategy = new SystemScopeStrategy();
     }
@@ -103,170 +87,10 @@ public class SystemCompositeContextImpl extends AbstractCompositeContext impleme
         super(name, parent, strategy, ctx, configCtx);
         this.autowireContext = autowire;
         scopeIndex = new ConcurrentHashMap<String, ScopeContext>();
-        // FIXME the assembly factory should be injected here
-        module = new AssemblyFactoryImpl().createModule();
     }
-
-    // ----------------------------------
-    // Lifecycle methods
-    // ----------------------------------
-
-    public void start() {
-        synchronized (lock) {
-            try {
-                if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
-                    throw new IllegalStateException("Context not in UNINITIALIZED state");
-                }
-
-                lifecycleState = INITIALIZING;
-                initializeScopes();
-
-                Map<Scope, List<ContextFactory<Context>>> configurationsByScope = new HashMap<Scope, List<ContextFactory<Context>>>();
-                if (configurations != null) {
-                    for (ContextFactory<Context> contextFactory : configurations.values()) {
-                        // FIXME scopes are defined at the interface level
-                        Scope scope = contextFactory.getScope();
-                        // ensure duplicate names were not added before the context was started
-                        if (scopeIndex.get(contextFactory.getName()) != null) {
-                            throw new DuplicateNameException(contextFactory.getName());
-                        }
-                        scopeIndex.put(contextFactory.getName(), scopeContexts.get(scope));
-                        List<ContextFactory<Context>> list = configurationsByScope.get(scope);
-                        if (list == null) {
-                            list = new ArrayList<ContextFactory<Context>>();
-                            configurationsByScope.put(scope, list);
-                        }
-                        list.add(contextFactory);
-                    }
-                }
-                for (EntryPoint ep : module.getEntryPoints()) {
-                    registerAutowire(ep);
-                }
-                for (Component component : module.getComponents()) {
-                    registerAutowire(component);
-                }
-                for (ExternalService es : module.getExternalServices()) {
-                    registerAutowire(es);
-                }
-                for (Map.Entry<Scope, List<ContextFactory<Context>>> entries : configurationsByScope.entrySet()) {
-                    // register configurations with scope contexts
-                    ScopeContext scope = scopeContexts.get(entries.getKey());
-                    scope.registerFactories(entries.getValue());
-                }
-                for (ScopeContext scope : scopeContexts.values()) {
-                    // register scope contexts as a listeners for events in the composite context
-                    addListener(scope);
-                    scope.start();
-                }
-                lifecycleState = RUNNING;
-            } catch (ConfigurationException e) {
-                lifecycleState = ERROR;
-                throw new ContextInitException(e);
-            } catch (CoreRuntimeException e) {
-                lifecycleState = ERROR;
-                e.addContextName(getName());
-                throw e;
-            } finally {
-                initialized = true;
-                // release the latch and allow requests to be processed
-                initializeLatch.countDown();
-            }
-        }
-    }
-
 
     public void setAutowireContext(AutowireContext context) {
         autowireContext = context;
-    }
-
-    public void registerModelObject(Extensible model) throws ConfigurationException {
-        assert (model != null) : "Model object was null";
-        initializeScopes();
-        if (configurationContext != null) {
-            try {
-                configurationContext.configure(model);
-                configurationContext.build(model);
-            } catch (ConfigurationException e) {
-                e.addContextName(getName());
-                throw e;
-            } catch (BuilderConfigException e) {
-                e.addContextName(getName());
-                throw e;
-            }
-        }
-        ContextFactory<Context> configuration;
-        if (model instanceof Module) {
-            // merge new module definition with the existing one
-            Module oldModule = module;
-            Module newModule = (Module) model;
-            module = newModule;
-            for (Component component : newModule.getComponents()) {
-                configuration = (ContextFactory<Context>) component.getContextFactory();
-                if (configuration == null) {
-                    ConfigurationException e = new MissingContextFactoryException("Context factory not set");
-                    e.addContextName(component.getName());
-                    e.addContextName(getName());
-                    throw e;
-                }
-                registerConfiguration(configuration);
-                registerAutowire(component);
-            }
-            for (EntryPoint ep : newModule.getEntryPoints()) {
-                configuration = (ContextFactory<Context>) ep.getContextFactory();
-                if (configuration == null) {
-                    ConfigurationException e = new MissingContextFactoryException("Context factory not set");
-                    e.setIdentifier(ep.getName());
-                    e.addContextName(getName());
-                    throw e;
-                }
-                registerConfiguration(configuration);
-                registerAutowire(ep);
-            }
-            for (ExternalService service : newModule.getExternalServices()) {
-                configuration = (ContextFactory<Context>) service.getContextFactory();
-                if (configuration == null) {
-                    ConfigurationException e = new MissingContextFactoryException("Context factory not set");
-                    e.setIdentifier(service.getName());
-                    e.addContextName(getName());
-                    throw e;
-                }
-                registerConfiguration(configuration);
-                registerAutowire(service);
-            }
-            // merge existing module component assets
-            module.getComponents().addAll(oldModule.getComponents());
-            module.getEntryPoints().addAll(oldModule.getEntryPoints());
-            module.getExternalServices().addAll(oldModule.getExternalServices());
-        } else {
-            if (model instanceof Component) {
-                Component component = (Component) model;
-                module.getComponents().add(component);
-                configuration = (ContextFactory<Context>) component.getContextFactory();
-            } else if (model instanceof EntryPoint) {
-                EntryPoint ep = (EntryPoint) model;
-                module.getEntryPoints().add(ep);
-                configuration = (ContextFactory<Context>) ep.getContextFactory();
-            } else if (model instanceof ExternalService) {
-                ExternalService service = (ExternalService) model;
-                module.getExternalServices().add(service);
-                configuration = (ContextFactory<Context>) service.getContextFactory();
-            } else {
-                BuilderConfigException e = new BuilderConfigException("Unknown model type");
-                e.setIdentifier(model.getClass().getName());
-                e.addContextName(getName());
-                throw e;
-            }
-            if (configuration == null) {
-                ConfigurationException e = new MissingContextFactoryException("Context factory not set");
-                if (model instanceof Part) {
-                    e.setIdentifier(((Part) model).getName());
-                }
-                e.addContextName(getName());
-                throw e;
-            }
-            registerConfiguration(configuration);
-            registerAutowire(model);
-        }
     }
 
     public void registerJavaObject(String componentName, Class<?> service, Object instance) throws ConfigurationException {
@@ -275,10 +99,6 @@ public class SystemCompositeContextImpl extends AbstractCompositeContext impleme
         ScopeContext scope = scopeContexts.get(configuration.getScope());
         NameToScope mapping = new NameToScope(new QualifiedName(componentName), scope, false, false);
         autowireIndex.put(service, mapping);
-    }
-
-    public Composite getComposite() {
-        return module;
     }
 
     // FIXME These should be removed and configured
