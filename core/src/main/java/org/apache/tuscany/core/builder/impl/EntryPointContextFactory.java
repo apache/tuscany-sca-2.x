@@ -18,7 +18,7 @@ import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.impl.EntryPointContextImpl;
-import org.apache.tuscany.core.invocation.ProxyFactory;
+import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.model.assembly.Scope;
 

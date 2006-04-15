@@ -22,9 +22,9 @@ import java.util.Set;
 
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.invocation.Interceptor;
-import org.apache.tuscany.core.invocation.InvocationRuntimeException;
-import org.apache.tuscany.core.invocation.TargetInvoker;
+import org.apache.tuscany.core.wire.Interceptor;
+import org.apache.tuscany.core.wire.InvocationRuntimeException;
+import org.apache.tuscany.core.wire.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
 
 /**

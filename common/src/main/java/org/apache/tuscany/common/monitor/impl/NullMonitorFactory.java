@@ -38,7 +38,7 @@ public class NullMonitorFactory implements MonitorFactory {
     }
 
     /**
-     * Singleton invocation hander that does nothing.
+     * Singleton wire hander that does nothing.
      */
     private static final InvocationHandler NULL_MONITOR = new InvocationHandler() {
         public Object invoke(Object proxy, Method method, Object[] args) {

@@ -47,7 +47,7 @@ public interface AtomicContext extends Context {
 
     /**
      * Returns the target instance associated with the context. A target instance is the actual
-     * object a request is dispatched to sans proxy invocation chain.
+     * object a request is dispatched to sans proxy wire chain.
      * @throws TargetException
      */
     public Object getTargetInstance() throws TargetException;

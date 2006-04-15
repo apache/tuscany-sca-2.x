@@ -1,7 +1,7 @@
 package org.apache.tuscany.core.injection;
 
 /**
- * Performs an invocation on an instance
+ * Performs an wire on an instance
  *
  * @version $Rev$ $Date$
  * @see MethodEventInvoker
@@ -9,7 +9,7 @@ package org.apache.tuscany.core.injection;
 public interface EventInvoker<T> {
 
     /**
-     * Performs the invocation on a given instance
+     * Performs the wire on a given instance
      *
      * @throws ObjectCallbackException
      */

@@ -18,16 +18,16 @@ import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.ContextInitException;
 import org.apache.tuscany.core.context.CoreRuntimeException;
-import org.apache.tuscany.core.invocation.jdk.JDKInvocationHandler;
-import org.apache.tuscany.core.invocation.ProxyCreationException;
-import org.apache.tuscany.core.invocation.ProxyFactory;
+import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
+import org.apache.tuscany.core.wire.ProxyCreationException;
+import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 
 import java.lang.reflect.InvocationHandler;
 
 /**
  * The default implementation of an entry point context
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class EntryPointContextImpl extends AbstractContext implements EntryPointContext {
@@ -41,7 +41,7 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
 
     /**
      * Creates a new entry point
-     * 
+     *
      * @param name the entry point name
      * @param proxyFactory the proxy factory containing the invocation chains for the entry point
      * @param messageFactory a factory for generating invocation messages

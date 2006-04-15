@@ -93,7 +93,7 @@ public class ExternalWebServiceClient {
     }
 
     /**
-     * Set all the Axis2 options needed for the invocation TODO: review whats needed here once createClientSideAxisService is added to the Axis2 build
+     * Set all the Axis2 options needed for the wire TODO: review whats needed here once createClientSideAxisService is added to the Axis2 build
      */
     private void setServiceOptions(ServiceClient serviceClient, String operationName) {
         Options options = new Options();

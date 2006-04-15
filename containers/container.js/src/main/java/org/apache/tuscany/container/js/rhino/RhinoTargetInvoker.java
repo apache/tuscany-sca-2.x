@@ -21,8 +21,8 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.AtomicContext;
-import org.apache.tuscany.core.invocation.Interceptor;
-import org.apache.tuscany.core.invocation.TargetInvoker;
+import org.apache.tuscany.core.wire.Interceptor;
+import org.apache.tuscany.core.wire.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
 
 public class RhinoTargetInvoker implements TargetInvoker {

@@ -92,7 +92,7 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
             SOAPEnvelope soapenv = fac.getDefaultEnvelope();
             SOAPBody soapbody = soapenv.getBody();
 
-            // serialize the invocation respose into the message
+            // serialize the wire respose into the message
             QName responseTypeQN = responseTypeMap.get(axisOperationName);
             OMElement responseOM = AxiomHelper.toOMElement(typeHelper, new Object[]{response}, responseTypeQN);
             soapbody.addChild(responseOM);

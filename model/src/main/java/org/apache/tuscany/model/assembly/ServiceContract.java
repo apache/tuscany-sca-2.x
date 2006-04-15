@@ -34,14 +34,14 @@ public interface ServiceContract extends Extensible {
     void setInterface(Class value);
     
     /**
-     * Returns the callback interface for invocation from the provider back to its requestor.
-     * @return the callback interface for invocation from the provider back to its requestor
+     * Returns the callback interface for wire from the provider back to its requestor.
+     * @return the callback interface for wire from the provider back to its requestor
      */
     Class getCallbackInterface();
 
     /**
-     * Sets the callback interface for invocation from the provider back to its requestor.
-     * @param value the callback interface for invocation from the provider back to its requestor
+     * Sets the callback interface for wire from the provider back to its requestor.
+     * @param value the callback interface for wire from the provider back to its requestor
      */
     void setCallbackInterface(Class value);
     

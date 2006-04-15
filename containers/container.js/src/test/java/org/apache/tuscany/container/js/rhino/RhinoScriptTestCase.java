@@ -108,7 +108,7 @@ public class RhinoScriptTestCase extends TestCase {
     }
 
     /**
-     * Tests shared scope is accessable when using contexts (ie an invocation scope)
+     * Tests shared scope is accessable when using contexts (ie an wire scope)
      */
     public void testScopes3() {
         RhinoScript ri = new RhinoScript(scriptName, script);

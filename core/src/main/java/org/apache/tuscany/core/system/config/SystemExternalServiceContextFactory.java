@@ -20,7 +20,7 @@ import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.injection.InterCompositeReferenceFactory;
-import org.apache.tuscany.core.invocation.ProxyFactory;
+import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemExternalServiceContext;
 import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
 import org.apache.tuscany.model.assembly.Scope;
@@ -30,10 +30,10 @@ import java.util.Map;
 
 /**
  * Creates system type external service contexts
- * 
+ *
  * @see org.apache.tuscany.core.context.ExternalServiceContext
  * @see org.apache.tuscany.core.system.context.SystemExternalServiceContext
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class SystemExternalServiceContextFactory implements ContextFactory<ExternalServiceContext>, ContextResolver {

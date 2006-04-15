@@ -109,7 +109,7 @@ public class RhinoScript {
      * 
      * @param functionName the name of the function to invoke.
      * @param arg arguments to the function, may be a single object or an array of objects.
-     * @param contexts a Map of name-value pairs which are added to the invocation Scope to enable the script to access
+     * @param contexts a Map of name-value pairs which are added to the wire Scope to enable the script to access
      *        the values by using the variable in name.
      * @return the function return value.
      */
@@ -123,7 +123,7 @@ public class RhinoScript {
      * @param functionName the name of the function to invoke.
      * @param arg arguments to the function, may be a single object or an array of objects.
      * @param responseClass the desired class of the response object.
-     * @param contexts a Map of name-value pairs which are added to the invocation Scope to enable the script to access
+     * @param contexts a Map of name-value pairs which are added to the wire Scope to enable the script to access
      *        the values by using the variable in name.
      * @return the function return value.
      */
@@ -214,9 +214,9 @@ public class RhinoScript {
     }
 
     /**
-     * Get a Rhino scope for the function invocation. If the invocation has no context objects then this will use the
+     * Get a Rhino scope for the function wire. If the wire has no context objects then this will use the
      * shared scope otherwise a new scope is created to hold the context objects. Any new variables the executing script
-     * might define will go in the sharedScope. This new scope is just to hold the invocation specific context objects.
+     * might define will go in the sharedScope. This new scope is just to hold the wire specific context objects.
      */
     protected Scriptable getInvocationScope(Context cx, Map contexts) {
 

@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.container.js.invocation.mock;
 
-import org.apache.tuscany.core.invocation.Interceptor;
+import org.apache.tuscany.core.wire.Interceptor;
 import org.apache.tuscany.core.message.Message;
 
 /**

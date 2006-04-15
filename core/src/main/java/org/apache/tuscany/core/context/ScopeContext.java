@@ -30,7 +30,7 @@ import java.util.List;
 public interface ScopeContext extends Context, RuntimeEventListener {
 
     /**
-     * Returns whether implementation instances may be held for the duration of an invocation
+     * Returns whether implementation instances may be held for the duration of an wire
      */
     public boolean isCacheable();
 

@@ -14,21 +14,21 @@
 package org.apache.tuscany.core.builder;
 
 import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.invocation.ProxyFactory;
+import org.apache.tuscany.core.wire.ProxyFactory;
 
 /**
  * Implementations perform the second phase of converting a logical model representing an assembly into a series of
  * runtime or executable artifacts. Specifically, they are responsible for finalizing target-side proxy factories and
- * bridging {@link org.apache.tuscany.core.invocation.InvocationConfiguration}s held by source- and target-side proxy
+ * bridging {@link org.apache.tuscany.core.wire.InvocationConfiguration}s held by source- and target-side proxy
  * factories. <code>WireBuilder</code>s generally operate by target implementation type. In other words, for a wire
  * from a Java source to a JavaScript target, the Javascript <code>WireBuilder</code> will complete the wire. This is
- * necessary as a <code>WireBuilder</code> must set a {@link org.apache.tuscany.core.invocation.TargetInvoker} that is
+ * necessary as a <code>WireBuilder</code> must set a {@link org.apache.tuscany.core.wire.TargetInvoker} that is
  * responsible for dispatching to an implementation on the source side of the wire.
  * <p>
  * Runtimes are generally configured with a {@link org.apache.tuscany.core.builder.impl.DefaultWireBuilder} as a
  * top-most wire builder, which delegates to other builders wired to it as part of a system configuration.
  * <p>
- * Wire builders may optimize the invocation chains based on certain characteristics of th wire, such as source and
+ * Wire builders may optimize the wire chains based on certain characteristics of th wire, such as source and
  * target scopes.
  * 
  * @see org.apache.tuscany.core.builder.ContextFactoryBuilder
@@ -38,11 +38,11 @@ import org.apache.tuscany.core.invocation.ProxyFactory;
 public interface WireBuilder {
 
     /**
-     * Connects invocation configurations of the source proxy factory to corresponding ones in the target proxy to
+     * Connects wire configurations of the source proxy factory to corresponding ones in the target proxy to
      * factory
      * 
-     * @param sourceFactory the proxy factory used in constructing the source side of the invocation chain
-     * @param targetFactory the proxy factory used in constructing the target side of the invocation chain
+     * @param sourceFactory the proxy factory used in constructing the source side of the wire chain
+     * @param targetFactory the proxy factory used in constructing the target side of the wire chain
      * @param targetType the context type of the target. Used to determine if a paricular wire builder should construct
      *        the wire
      * @param downScope true if the component containing the reference (source side) is of a lesser scope than the
@@ -55,8 +55,8 @@ public interface WireBuilder {
                         ScopeContext targetScopeContext) throws BuilderConfigException;
 
     /**
-     * Finishes processing the target side invocation chain. For example, a
-     * {@link org.apache.tuscany.core.invocation.TargetInvoker} used by target-side proxies is usually set during this
+     * Finishes processing the target side wire chain. For example, a
+     * {@link org.apache.tuscany.core.wire.TargetInvoker} used by target-side proxies is usually set during this
      * phase.
      * 
      * @param targetFactory the target-side proxy factory

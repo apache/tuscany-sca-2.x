@@ -15,8 +15,8 @@ package org.apache.tuscany.container.java.mock.binding.foo;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.tuscany.core.invocation.Interceptor;
-import org.apache.tuscany.core.invocation.TargetInvoker;
+import org.apache.tuscany.core.wire.Interceptor;
+import org.apache.tuscany.core.wire.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.context.ScopeContext;

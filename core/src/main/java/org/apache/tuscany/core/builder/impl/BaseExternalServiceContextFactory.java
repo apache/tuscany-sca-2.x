@@ -19,7 +19,7 @@ import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.context.impl.ExternalServiceContextImpl;
-import org.apache.tuscany.core.invocation.ProxyFactory;
+import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.model.assembly.Scope;
 
 import java.util.Collections;
@@ -29,13 +29,13 @@ import java.util.Map;
 
 /**
  * A template implementation that creates instances of {@link org.apache.tuscany.core.context.ExternalServiceContext}
- * configured with the appropriate invocation chains and bindings. This class is intended to be subclassed when
+ * configured with the appropriate wire chains and bindings. This class is intended to be subclassed when
  * contributing new bindings to the runtime. The subclass serves as a marker so the binding {@link org.apache.tuscany.core.builder.WireBuilder
  *
  *
  *
  * }
- * responsible for setting the proper {@link org.apache.tuscany.core.invocation.TargetInvoker} on the invocation chains
+ * responsible for setting the proper {@link org.apache.tuscany.core.wire.TargetInvoker} on the wire chains
  * can be notified.
  * 
  * @version $Rev$ $Date$

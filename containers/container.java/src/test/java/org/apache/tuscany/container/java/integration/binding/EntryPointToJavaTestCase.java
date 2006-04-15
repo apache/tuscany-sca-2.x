@@ -49,7 +49,7 @@ public class EntryPointToJavaTestCase extends TestCase {
     }
 
     /**
-     * Tests creation and invocation of an entry point wired to a module-scoped service offered by a Java component
+     * Tests creation and wire of an entry point wired to a module-scoped service offered by a Java component
      */
     public void testEPtoJavaModuleScopeInvoke() throws Throwable {
         RuntimeContext runtime = MockFactory.registerFooBinding(MockFactory.createJavaRuntime());
@@ -93,7 +93,7 @@ public class EntryPointToJavaTestCase extends TestCase {
     }
 
     /**
-     * Tests creation and invocation of an entry point wired to a session-scoped service offered by a Java component
+     * Tests creation and wire of an entry point wired to a session-scoped service offered by a Java component
      */
     public void testEPtoJavaSessionScopeInvoke() throws Throwable {
         RuntimeContext runtime = MockFactory.registerFooBinding(MockFactory.createJavaRuntime());
@@ -169,7 +169,7 @@ public class EntryPointToJavaTestCase extends TestCase {
     
     
     /**
-     * Tests creation and invocation of an entry point wired to a module-scoped service offered by a Java component
+     * Tests creation and wire of an entry point wired to a module-scoped service offered by a Java component
      */
     public void testEPtoJavaStatelessInvoke() throws Throwable {
         RuntimeContext runtime = MockFactory.registerFooBinding(MockFactory.createJavaRuntime());

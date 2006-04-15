@@ -34,7 +34,7 @@ import org.apache.tuscany.core.runtime.RuntimeContext;
 public class JavaToExternalServiceTestCase extends TestCase {
 
     /**
-     * Tests an invocation of an external service configured with the
+     * Tests an wire of an external service configured with the
      * {@link org.apache.tuscany.container.java.mock.binding.foo.FooBinding} from a Java component
      * 
      * @throws Exception

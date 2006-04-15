@@ -17,16 +17,16 @@
 package org.apache.tuscany.core.context;
 
 /**
- * The runtime artifact representing an entry point, <code>EntryPointContext</code> manages invocation handler
- * instances that expose service operations offered by a component in the parent composite. The invocation handler
- * instance is responsible for dispatching the request down an invocation chain to the target instance. The invocation
- * chain may contain {@link org.apache.tuscany.core.invocation.Interceptor}s and
- * {@link org.apache.tuscany.core.invocation.MessageHandler}s that implement policies or perform mediations on the
- * invocation.
+ * The runtime artifact representing an entry point, <code>EntryPointContext</code> manages wire handler
+ * instances that expose service operations offered by a component in the parent composite. The wire handler
+ * instance is responsible for dispatching the request down an wire chain to the target instance. The wire
+ * chain may contain {@link org.apache.tuscany.core.wire.Interceptor}s and
+ * {@link org.apache.tuscany.core.wire.MessageHandler}s that implement policies or perform mediations on the
+ * wire.
  * <p>
  * Entry point contexts are used by transport binding artifacts to invoke an operation on a service. The transport
  * binding uses an {@link java.lang.reflect.InvocationHandler} instance obtained from the <code>EntryPointContext</code>
- * to perform the invocation as in:
+ * to perform the wire as in:
  * 
  * <pre>
  *              CompositeContext compositeContext = ...
@@ -48,7 +48,7 @@ package org.apache.tuscany.core.context;
  *              HelloWorld proxy = (Helloworld) ctx.getInstance(null); // service name not necessary
  * </pre>
  * 
- * The proxy returned will be backed by the entry point invocation chain.
+ * The proxy returned will be backed by the entry point wire chain.
  * 
  * @version $Rev$ $Date$
  */

@@ -15,9 +15,9 @@ package org.apache.tuscany.container.java.builder;
 
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.invocation.Interceptor;
-import org.apache.tuscany.core.invocation.InvocationConfiguration;
-import org.apache.tuscany.core.invocation.ProxyFactory;
+import org.apache.tuscany.core.wire.Interceptor;
+import org.apache.tuscany.core.wire.InvocationConfiguration;
+import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;

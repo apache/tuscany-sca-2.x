@@ -13,8 +13,8 @@
  */
 package org.apache.tuscany.binding.axis2.handler;
 
-import org.apache.tuscany.core.invocation.Interceptor;
-import org.apache.tuscany.core.invocation.TargetInvoker;
+import org.apache.tuscany.core.wire.Interceptor;
+import org.apache.tuscany.core.wire.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ExternalServiceContext;

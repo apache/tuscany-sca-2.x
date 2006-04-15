@@ -3,12 +3,12 @@ package org.apache.tuscany.core.builder.impl;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.invocation.InvocationConfiguration;
-import org.apache.tuscany.core.invocation.MethodHashMap;
-import org.apache.tuscany.core.invocation.WireConfiguration;
-import org.apache.tuscany.core.invocation.ProxyFactory;
-import org.apache.tuscany.core.invocation.jdk.JDKProxyFactory;
-import org.apache.tuscany.core.invocation.mock.SimpleTarget;
+import org.apache.tuscany.core.wire.InvocationConfiguration;
+import org.apache.tuscany.core.wire.MethodHashMap;
+import org.apache.tuscany.core.wire.WireConfiguration;
+import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.jdk.JDKProxyFactory;
+import org.apache.tuscany.core.wire.mock.SimpleTarget;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 

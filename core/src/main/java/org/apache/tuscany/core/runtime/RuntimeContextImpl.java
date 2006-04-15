@@ -39,7 +39,7 @@ import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
-import org.apache.tuscany.core.invocation.ProxyFactory;
+import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
 import org.apache.tuscany.model.assembly.AssemblyObject;
@@ -48,7 +48,7 @@ import org.apache.tuscany.model.assembly.Extensible;
 
 /**
  * Implementation of a RuntimeContext that forms the foundation for a Tuscany environment.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class RuntimeContextImpl extends AbstractContext implements RuntimeContext {

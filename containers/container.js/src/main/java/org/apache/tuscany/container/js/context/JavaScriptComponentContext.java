@@ -23,8 +23,8 @@ import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.core.context.impl.AbstractContext;
-import org.apache.tuscany.core.invocation.ProxyCreationException;
-import org.apache.tuscany.core.invocation.ProxyFactory;
+import org.apache.tuscany.core.wire.ProxyCreationException;
+import org.apache.tuscany.core.wire.ProxyFactory;
 import org.osoa.sca.ServiceRuntimeException;
 
 import java.util.HashMap;

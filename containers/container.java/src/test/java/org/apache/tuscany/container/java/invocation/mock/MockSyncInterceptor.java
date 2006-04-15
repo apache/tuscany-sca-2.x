@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.container.java.invocation.mock;
 
-import org.apache.tuscany.core.invocation.Interceptor;
+import org.apache.tuscany.core.wire.Interceptor;
 import org.apache.tuscany.core.message.Message;
 
 public class MockSyncInterceptor implements Interceptor {

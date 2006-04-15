@@ -17,10 +17,10 @@ import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.HierarchicalWireBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.invocation.InvocationConfiguration;
-import org.apache.tuscany.core.invocation.ProxyFactory;
-import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
-import org.apache.tuscany.core.invocation.impl.MessageChannelImpl;
+import org.apache.tuscany.core.wire.InvocationConfiguration;
+import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
+import org.apache.tuscany.core.wire.impl.MessageChannelImpl;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class DefaultWireBuilder implements HierarchicalWireBuilder {
                     .getInvocationConfigurations();
             for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration()
                     .getInvocationConfigurations().values()) {
-                // match invocation chains
+                // match wire chains
                 InvocationConfiguration targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig.getMethod());
                 if (targetInvocationConfig == null){
                     BuilderConfigException e= new BuilderConfigException("Incompatible source and target interface types for reference");

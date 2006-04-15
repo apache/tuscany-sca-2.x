@@ -16,12 +16,12 @@
  */
 package org.apache.tuscany.core.message.impl;
 
-import org.apache.tuscany.core.invocation.MessageChannel;
-import org.apache.tuscany.core.invocation.TargetInvoker;
+import org.apache.tuscany.core.wire.MessageChannel;
+import org.apache.tuscany.core.wire.TargetInvoker;
 import org.apache.tuscany.core.message.Message;
 
 /**
- * The default implementation of an invocation message
+ * The default implementation of an wire message
  *
  * @version $Rev $Date
  */
@@ -58,7 +58,7 @@ public class MessageImpl implements Message, MessageChannel {
     }
 
     /**
-     * @see org.apache.tuscany.core.invocation.MessageChannel#send(org.apache.tuscany.core.message.Message)
+     * @see org.apache.tuscany.core.wire.MessageChannel#send(org.apache.tuscany.core.message.Message)
      */
     public void send(Message message) {
         relatedCallbackMessage = message;
@@ -72,7 +72,7 @@ public class MessageImpl implements Message, MessageChannel {
     }
 
     /**
-     * @see org.apache.tuscany.core.message.Message#setTargetInvoker(org.apache.tuscany.core.invocation.TargetInvoker)
+     * @see org.apache.tuscany.core.message.Message#setTargetInvoker(org.apache.tuscany.core.wire.TargetInvoker)
      */
     public void setTargetInvoker(TargetInvoker invoker){
         this.invoker = invoker;

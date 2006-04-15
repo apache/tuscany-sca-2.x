@@ -18,7 +18,7 @@ import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EntryPointContext;
-import org.apache.tuscany.core.invocation.ProxyFactory;
+import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemEntryPointContext;
 import org.apache.tuscany.model.assembly.Scope;
 
@@ -27,7 +27,7 @@ import java.util.Map;
 
 /**
  * Creates {@link SystemEntryPointContext} instances based on an entry point configuration in an assembly model
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class SystemEntryPointContextFactory implements ContextFactory<EntryPointContext>, ContextResolver {

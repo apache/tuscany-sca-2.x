@@ -3,7 +3,7 @@
  */
 package org.apache.tuscany.container.js.invocation.mock;
 
-import org.apache.tuscany.core.invocation.MessageHandler;
+import org.apache.tuscany.core.wire.MessageHandler;
 import org.apache.tuscany.core.message.Message;
 
 /**

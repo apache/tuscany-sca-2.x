@@ -19,7 +19,7 @@ import org.apache.tuscany.core.builder.impl.AssemblyVisitorImpl;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.invocation.ProxyFactory;
+import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Extensible;
 
@@ -28,7 +28,7 @@ import java.util.List;
 
 /**
  * A mock configuration context
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class MockConfigContext implements ConfigurationContext {

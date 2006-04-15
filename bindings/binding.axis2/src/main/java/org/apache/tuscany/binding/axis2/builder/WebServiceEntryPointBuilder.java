@@ -26,13 +26,13 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.invocation.Interceptor;
-import org.apache.tuscany.core.invocation.InvocationConfiguration;
-import org.apache.tuscany.core.invocation.InvocationRuntimeException;
-import org.apache.tuscany.core.invocation.WireConfiguration;
-import org.apache.tuscany.core.invocation.TargetInvoker;
-import org.apache.tuscany.core.invocation.ProxyFactory;
-import org.apache.tuscany.core.invocation.ProxyFactoryFactory;
+import org.apache.tuscany.core.wire.Interceptor;
+import org.apache.tuscany.core.wire.InvocationConfiguration;
+import org.apache.tuscany.core.wire.InvocationRuntimeException;
+import org.apache.tuscany.core.wire.WireConfiguration;
+import org.apache.tuscany.core.wire.TargetInvoker;
+import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.ProxyFactoryFactory;
 import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
@@ -86,7 +86,7 @@ public class WebServiceEntryPointBuilder implements ContextFactoryBuilder {
     }
 
     /**
-     * Sets the factory used to construct invocation messages
+     * Sets the factory used to construct wire messages
      * 
      * @param msgFactory
      */
@@ -96,9 +96,9 @@ public class WebServiceEntryPointBuilder implements ContextFactoryBuilder {
     }
 
     /**
-     * Sets a builder responsible for creating source-side and target-side invocation chains for a reference. The
+     * Sets a builder responsible for creating source-side and target-side wire chains for a reference. The
      * reference builder may be hierarchical, containing other child reference builders that operate on specific
-     * metadata used to construct and invocation chain.
+     * metadata used to construct and wire chain.
      * 
      * @see org.apache.tuscany.core.builder.impl.HierarchicalBuilder
      */

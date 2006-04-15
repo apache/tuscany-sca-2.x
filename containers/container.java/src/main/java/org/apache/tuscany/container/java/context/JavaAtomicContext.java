@@ -99,7 +99,7 @@ public class JavaAtomicContext extends AbstractContext implements AtomicContext 
     }
 
     public synchronized Object getInstance(QualifiedName qName) throws TargetException {
-        //TODO implement returning of proxy and invocation chain for service
+        //TODO implement returning of proxy and wire chain for service
         if (cachedTargetInstance != null) {
             return cachedTargetInstance; // already cached, just return
         }

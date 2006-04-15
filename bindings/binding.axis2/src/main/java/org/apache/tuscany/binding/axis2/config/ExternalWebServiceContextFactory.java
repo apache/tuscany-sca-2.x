@@ -18,7 +18,7 @@ import org.apache.tuscany.core.builder.impl.BaseExternalServiceContextFactory;
 
 /**
  * Creates instances of {@link org.apache.tuscany.core.context.ExternalServiceContext} configured with the appropriate
- * invocation chains and bindings. This implementation serves as a marker for
+ * wire chains and bindings. This implementation serves as a marker for
  * {@link org.apache.tuscany.binding.axis2.builder.ExternalWebServiceWireBuilder}
  * 
  * @version $Rev$ $Date$
