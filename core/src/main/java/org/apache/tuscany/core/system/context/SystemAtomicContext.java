@@ -32,7 +32,7 @@ import org.apache.tuscany.core.context.event.InstanceCreated;
  * 
  * @version $Rev$ $Date$
  */
-public class SystemComponentContext extends AbstractContext implements AtomicContext {
+public class SystemAtomicContext extends AbstractContext implements AtomicContext {
 
     private boolean eagerInit;
 
@@ -48,8 +48,8 @@ public class SystemComponentContext extends AbstractContext implements AtomicCon
     // responsible for creating a new implementation instance with injected references and properties
     private ObjectFactory objectFactory;
 
-    public SystemComponentContext(String name, ObjectFactory objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
-                                  EventInvoker<Object> destroyInvoker, boolean stateless) {
+    public SystemAtomicContext(String name, ObjectFactory objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
+                               EventInvoker<Object> destroyInvoker, boolean stateless) {
         super(name);
         assert (objectFactory != null) : "Object factory was null";
         if (eagerInit && initInvoker == null) {

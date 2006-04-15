@@ -11,7 +11,7 @@ import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.core.system.context.SystemComponentContext;
+import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Scope;
 
@@ -140,7 +140,7 @@ public class SystemContextFactory implements ContextFactory<Context>, ContextRes
             }
         } else {
             PojoObjectFactory objectFactory = new PojoObjectFactory(ctr, null, setters);
-            return new SystemComponentContext(name, objectFactory, eagerInit, init, destroy, stateless);
+            return new SystemAtomicContext(name, objectFactory, eagerInit, init, destroy, stateless);
         }
     }
 
