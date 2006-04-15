@@ -49,19 +49,22 @@ public class JavaInterfaceGenerator {
     private List codegenExtensions = new ArrayList();
     private CodeGenConfiguration codegenConfiguration;
 
-    public JavaInterfaceGenerator(String uri, String outputLocation, String packageName, Map<QName, String> typeMapping) throws CodeGenerationException {
+    public JavaInterfaceGenerator(String uri, String outputLocation, String packageName,
+                                  Map<QName, String> typeMapping) throws CodeGenerationException {
         WSDLDescription wom;
         try {
-            wom = WOMBuilderFactory.getBuilder(org.apache.wsdl.WSDLConstants.WSDL_1_1).build(uri).getDescription();
+            wom = WOMBuilderFactory.getBuilder(org.apache.wsdl.WSDLConstants.WSDL_1_1)
+                .build(uri).getDescription();
         } catch (WSDLException e) {
             throw new CodeGenerationException(CodegenMessages.getMessage("engine.wsdlParsingException"), e);
         }
-        
-        if (packageName==null)
-            packageName=XMLNameUtil.getPackageNameFromNamespace(wom.getTargetNameSpace());
-        
-        JavaTypeMapper typeMapper=new JavaTypeMapper();
-        for (Map.Entry<QName, String> e : typeMapping.entrySet() ) {
+
+        if (packageName == null) {
+            packageName = XMLNameUtil.getPackageNameFromNamespace(wom.getTargetNameSpace());
+        }
+
+        JavaTypeMapper typeMapper = new JavaTypeMapper();
+        for (Map.Entry<QName, String> e : typeMapping.entrySet()) {
             typeMapper.addTypeMappingName(e.getKey(), e.getValue());
         }
 
@@ -84,23 +87,23 @@ public class JavaInterfaceGenerator {
         codegenConfiguration.setTypeMapper(typeMapper);
         codegenConfiguration.setWriteMessageReceiver(false);
         codegenConfiguration.setWriteTestCase(false);
-        
+
         addExtension(new WSDLValidatorExtension());
         addExtension(new PackageFinder());
         addExtension(new SDODataBindingCodegenExtension(typeMapper));
         addExtension(new DefaultDatabindingExtension());
     }
 
+    @SuppressWarnings("unchecked")
     private void addExtension(CodeGenExtension ext) {
         ext.init(codegenConfiguration);
         codegenExtensions.add(ext);
     }
 
-
     public void generate() throws CodeGenerationException {
         try {
             for (int i = 0; i < codegenExtensions.size(); i++) {
-                ((CodeGenExtension) codegenExtensions.get(i)).engage();
+                ((CodeGenExtension)codegenExtensions.get(i)).engage();
             }
 
             class JavaInterfaceEmitter extends JavaEmitter {
@@ -110,24 +113,25 @@ public class JavaInterfaceGenerator {
                     if (!configuration.getOutputLocation().exists()) {
                         configuration.getOutputLocation().mkdirs();
                     }
-                    InterfaceWriter interfaceWriter =
-                            new InterfaceWriter(this.configuration.getOutputLocation(),
-                                    this.configuration.getOutputLanguage());
+                    InterfaceWriter interfaceWriter = new InterfaceWriter(this.configuration
+                        .getOutputLocation(), this.configuration.getOutputLanguage());
 
                     String packageName = interfaceModel.getDocumentElement().getAttribute("package");
                     String className = interfaceModel.getDocumentElement().getAttribute("name");
 
-                    System.out.println(">>  Generating Java class "+packageName+"."+className);
-                    File outputFile = FileWriter.createClassFile(this.configuration.getOutputLocation(), packageName, className, ".java");
-                    if (outputFile.exists())
+                    System.out.println(">>  Generating Java class " + packageName + "." + className);
+                    File outputFile = FileWriter.createClassFile(this.configuration.getOutputLocation(),
+                                                                 packageName, className, ".java");
+                    if (outputFile.exists()) {
                         outputFile.delete();
-                    
-                    writeClass(interfaceModel, interfaceWriter);
-                };
+                    }
 
-            };
-            
-            JavaInterfaceEmitter emitter=new JavaInterfaceEmitter();
+                    writeClass(interfaceModel, interfaceWriter);
+                }
+
+            }
+
+            JavaInterfaceEmitter emitter = new JavaInterfaceEmitter();
             emitter.setCodeGenConfiguration(codegenConfiguration);
             emitter.setMapper(codegenConfiguration.getTypeMapper());
 
@@ -137,6 +141,5 @@ public class JavaInterfaceGenerator {
             throw new CodeGenerationException(e);
         }
     }
-
 
 }
