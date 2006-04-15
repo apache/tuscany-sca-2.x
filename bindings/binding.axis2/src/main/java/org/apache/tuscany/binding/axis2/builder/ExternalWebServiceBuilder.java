@@ -37,7 +37,7 @@ import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.MethodHashMap;
-import org.apache.tuscany.core.invocation.ProxyConfiguration;
+import org.apache.tuscany.core.invocation.WireConfiguration;
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
@@ -139,7 +139,7 @@ public class ExternalWebServiceBuilder implements ContextFactoryBuilder {
             iConfigMap.put(method, iConfig);
         }
         QualifiedName qName = new QualifiedName(externalService.getName() + "/" + service.getName());
-        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
+        WireConfiguration pConfiguration = new WireConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
         proxyFactory.setProxyConfiguration(pConfiguration);
         config.addTargetProxyFactory(service.getName(), proxyFactory);

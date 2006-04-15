@@ -28,7 +28,7 @@ import org.apache.tuscany.core.context.event.SessionBound;
 import org.apache.tuscany.core.context.event.SessionEvent;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
-import org.apache.tuscany.core.invocation.ProxyConfiguration;
+import org.apache.tuscany.core.invocation.WireConfiguration;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyInitializationException;
 import org.apache.tuscany.core.system.annotation.Autowire;
@@ -265,7 +265,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                     e.addContextName(getName());
                     throw e;
                 }
-                configuration = (ContextFactory) component.getContextFactory();
+                configuration = (ContextFactory<Context>) component.getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new MissingContextFactoryException("Context factory not set");
                     e.addContextName(component.getName());
@@ -276,7 +276,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                 registerAutowire(component);
             }
             for (EntryPoint ep : newModule.getEntryPoints()) {
-                configuration = (ContextFactory) ep.getContextFactory();
+                configuration = (ContextFactory<Context>) ep.getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new MissingContextFactoryException("Context factory not set");
                     e.setIdentifier(ep.getName());
@@ -287,7 +287,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                 registerAutowire(ep);
             }
             for (ExternalService service : newModule.getExternalServices()) {
-                configuration = (ContextFactory) service.getContextFactory();
+                configuration = (ContextFactory<Context>) service.getContextFactory();
                 if (configuration == null) {
                     ConfigurationException e = new MissingContextFactoryException("Context factory not set");
                     e.setIdentifier(service.getName());
@@ -525,8 +525,8 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         Scope sourceScope = source.getScope();
         if (source.getSourceProxyFactories() != null) {
             for (ProxyFactory<?> sourceFactory : source.getSourceProxyFactories()) {
-                ProxyConfiguration proxyConfiguration = sourceFactory.getProxyConfiguration();
-                QualifiedName targetName = proxyConfiguration.getTargetName();
+                WireConfiguration wireConfiguration = sourceFactory.getProxyConfiguration();
+                QualifiedName targetName = wireConfiguration.getTargetName();
                 ContextFactory<?> target = configurations.get(targetName.getPartName());
                 if (target == null) {
                     ContextInitException e = new ContextInitException("Target not found");
@@ -536,11 +536,11 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                     throw e;
                 }
                 // get the proxy chain for the target
-                ProxyFactory targetFactory = target.getTargetProxyFactory(proxyConfiguration.getTargetName()
+                ProxyFactory targetFactory = target.getTargetProxyFactory(wireConfiguration.getTargetName()
                         .getPortName());
                 if (targetFactory == null) {
                     ContextInitException e = new ContextInitException("No proxy factory found for service");
-                    e.setIdentifier(proxyConfiguration.getTargetName().getPortName());
+                    e.setIdentifier(wireConfiguration.getTargetName().getPortName());
                     e.addContextName(target.getName());
                     e.addContextName(source.getName());
                     e.addContextName(name);

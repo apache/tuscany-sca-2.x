@@ -1,7 +1,7 @@
 package org.apache.tuscany.core.invocation.impl;
 
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.invocation.ProxyConfiguration;
+import org.apache.tuscany.core.invocation.WireConfiguration;
 import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyInitializationException;
@@ -23,7 +23,7 @@ public class NullProxyFactory implements ProxyFactory {
         this.parentContext = parentContext;
     }
 
-    public void initialize(Class businessInterface, ProxyConfiguration config) throws ProxyInitializationException {
+    public void initialize(Class businessInterface, WireConfiguration config) throws ProxyInitializationException {
     }
 
     public Object createProxy() throws ProxyCreationException {
@@ -33,11 +33,11 @@ public class NullProxyFactory implements ProxyFactory {
     public void initialize() throws ProxyInitializationException {
     }
 
-    public ProxyConfiguration getProxyConfiguration() {
+    public WireConfiguration getProxyConfiguration() {
         return null;
     }
 
-    public void setProxyConfiguration(ProxyConfiguration config) {
+    public void setProxyConfiguration(WireConfiguration config) {
     }
 
     public void setBusinessInterface(Class interfaze) {

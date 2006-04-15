@@ -29,7 +29,7 @@ import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.invocation.Interceptor;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.InvocationRuntimeException;
-import org.apache.tuscany.core.invocation.ProxyConfiguration;
+import org.apache.tuscany.core.invocation.WireConfiguration;
 import org.apache.tuscany.core.invocation.TargetInvoker;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
@@ -128,7 +128,7 @@ public class WebServiceEntryPointBuilder implements ContextFactoryBuilder {
             iConfigMap.put(method, iConfig);
         }
         QualifiedName qName = new QualifiedName(entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0).getPart().getName() + "/" + service.getName());
-        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
+        WireConfiguration pConfiguration = new WireConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
         proxyFactory.setProxyConfiguration(pConfiguration);
         config.addSourceProxyFactory(service.getName(), proxyFactory);

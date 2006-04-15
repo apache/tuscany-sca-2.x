@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.MethodHashMap;
-import org.apache.tuscany.core.invocation.ProxyConfiguration;
+import org.apache.tuscany.core.invocation.WireConfiguration;
 import org.apache.tuscany.core.invocation.mock.SimpleTarget;
 import org.apache.tuscany.core.invocation.mock.MockHandler;
 import org.apache.tuscany.core.invocation.mock.MockSyncInterceptor;
@@ -51,7 +51,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         ProxyFactory sourceFactory = new JDKProxyFactory();
         Map<Method, InvocationConfiguration> sourceInvocationConfigs = new MethodHashMap();
         sourceInvocationConfigs.put(hello, source);
-        ProxyConfiguration sourceConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+        WireConfiguration sourceConfig = new WireConfiguration(new QualifiedName("target/SimpleTarget"),
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
         sourceFactory.setProxyConfiguration(sourceConfig);
         sourceFactory.setBusinessInterface(SimpleTarget.class);
@@ -68,7 +68,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         ProxyFactory targetFactory = new JDKProxyFactory();
         Map<Method, InvocationConfiguration> targetInvocationConfigs = new MethodHashMap();
         targetInvocationConfigs.put(hello, target);
-        ProxyConfiguration targetConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+        WireConfiguration targetConfig = new WireConfiguration(new QualifiedName("target/SimpleTarget"),
                 targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
         targetFactory.setProxyConfiguration(targetConfig);
         targetFactory.setBusinessInterface(SimpleTarget.class);
@@ -106,7 +106,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         ProxyFactory sourceFactory = new JDKProxyFactory();
         Map<Method, InvocationConfiguration> sourceInvocationConfigs = new MethodHashMap();
         sourceInvocationConfigs.put(hello, source);
-        ProxyConfiguration sourceConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+        WireConfiguration sourceConfig = new WireConfiguration(new QualifiedName("target/SimpleTarget"),
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
         sourceFactory.setProxyConfiguration(sourceConfig);
         sourceFactory.setBusinessInterface(SimpleTarget.class);
@@ -123,7 +123,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         ProxyFactory targetFactory = new JDKProxyFactory();
         Map<Method, InvocationConfiguration> targetInvocationConfigs = new MethodHashMap();
         targetInvocationConfigs.put(hello, target);
-        ProxyConfiguration targetConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+        WireConfiguration targetConfig = new WireConfiguration(new QualifiedName("target/SimpleTarget"),
                 targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
         targetFactory.setProxyConfiguration(targetConfig);
         targetFactory.setBusinessInterface(SimpleTarget.class);
@@ -161,7 +161,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         ProxyFactory sourceFactory = new JDKProxyFactory();
         Map<Method, InvocationConfiguration> sourceInvocationConfigs = new MethodHashMap();
         sourceInvocationConfigs.put(hello, source);
-        ProxyConfiguration sourceConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+        WireConfiguration sourceConfig = new WireConfiguration(new QualifiedName("target/SimpleTarget"),
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
         sourceFactory.setProxyConfiguration(sourceConfig);
         sourceFactory.setBusinessInterface(SimpleTarget.class);
@@ -176,7 +176,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         ProxyFactory targetFactory = new JDKProxyFactory();
         Map<Method, InvocationConfiguration> targetInvocationConfigs = new MethodHashMap();
         targetInvocationConfigs.put(hello, target);
-        ProxyConfiguration targetConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+        WireConfiguration targetConfig = new WireConfiguration(new QualifiedName("target/SimpleTarget"),
                 targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
         targetFactory.setProxyConfiguration(targetConfig);
         targetFactory.setBusinessInterface(SimpleTarget.class);
@@ -212,7 +212,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         ProxyFactory sourceFactory = new JDKProxyFactory();
         Map<Method, InvocationConfiguration> sourceInvocationConfigs = new MethodHashMap();
         sourceInvocationConfigs.put(hello, source);
-        ProxyConfiguration sourceConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+        WireConfiguration sourceConfig = new WireConfiguration(new QualifiedName("target/SimpleTarget"),
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
         sourceFactory.setProxyConfiguration(sourceConfig);
         sourceFactory.setBusinessInterface(SimpleTarget.class);
@@ -225,7 +225,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         ProxyFactory targetFactory = new JDKProxyFactory();
         Map<Method, InvocationConfiguration> targetInvocationConfigs = new MethodHashMap();
         targetInvocationConfigs.put(hello, target);
-        ProxyConfiguration targetConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+        WireConfiguration targetConfig = new WireConfiguration(new QualifiedName("target/SimpleTarget"),
                 targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
         targetFactory.setProxyConfiguration(targetConfig);
         targetFactory.setBusinessInterface(SimpleTarget.class);
@@ -263,7 +263,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         ProxyFactory sourceFactory = new JDKProxyFactory();
         Map<Method, InvocationConfiguration> sourceInvocationConfigs = new MethodHashMap();
         sourceInvocationConfigs.put(hello, source);
-        ProxyConfiguration sourceConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+        WireConfiguration sourceConfig = new WireConfiguration(new QualifiedName("target/SimpleTarget"),
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
         sourceFactory.setProxyConfiguration(sourceConfig);
         sourceFactory.setBusinessInterface(SimpleTarget.class);
@@ -276,7 +276,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         ProxyFactory targetFactory = new JDKProxyFactory();
         Map<Method, InvocationConfiguration> targetInvocationConfigs = new MethodHashMap();
         targetInvocationConfigs.put(hello, target);
-        ProxyConfiguration targetConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+        WireConfiguration targetConfig = new WireConfiguration(new QualifiedName("target/SimpleTarget"),
                 targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
         targetFactory.setProxyConfiguration(targetConfig);
         targetFactory.setBusinessInterface(SimpleTarget.class);
@@ -310,7 +310,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         ProxyFactory sourceFactory = new JDKProxyFactory();
         Map<Method, InvocationConfiguration> sourceInvocationConfigs = new MethodHashMap();
         sourceInvocationConfigs.put(hello, source);
-        ProxyConfiguration sourceConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+        WireConfiguration sourceConfig = new WireConfiguration(new QualifiedName("target/SimpleTarget"),
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
         sourceFactory.setProxyConfiguration(sourceConfig);
         sourceFactory.setBusinessInterface(SimpleTarget.class);
@@ -327,7 +327,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         ProxyFactory targetFactory = new JDKProxyFactory();
         Map<Method, InvocationConfiguration> targetInvocationConfigs = new MethodHashMap();
         targetInvocationConfigs.put(hello, target);
-        ProxyConfiguration targetConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+        WireConfiguration targetConfig = new WireConfiguration(new QualifiedName("target/SimpleTarget"),
                 targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
         targetFactory.setProxyConfiguration(targetConfig);
         targetFactory.setBusinessInterface(SimpleTarget.class);
@@ -360,7 +360,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         ProxyFactory sourceFactory = new JDKProxyFactory();
         Map<Method, InvocationConfiguration> sourceInvocationConfigs = new MethodHashMap();
         sourceInvocationConfigs.put(hello, source);
-        ProxyConfiguration sourceConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+        WireConfiguration sourceConfig = new WireConfiguration(new QualifiedName("target/SimpleTarget"),
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
         sourceFactory.setProxyConfiguration(sourceConfig);
         sourceFactory.setBusinessInterface(SimpleTarget.class);
@@ -373,7 +373,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         ProxyFactory targetFactory = new JDKProxyFactory();
         Map<Method, InvocationConfiguration> targetInvocationConfigs = new MethodHashMap();
         targetInvocationConfigs.put(hello, target);
-        ProxyConfiguration targetConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+        WireConfiguration targetConfig = new WireConfiguration(new QualifiedName("target/SimpleTarget"),
                 targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
         targetFactory.setProxyConfiguration(targetConfig);
         targetFactory.setBusinessInterface(SimpleTarget.class);
@@ -408,7 +408,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         ProxyFactory sourceFactory = new JDKProxyFactory();
         Map<Method, InvocationConfiguration> sourceInvocationConfigs = new MethodHashMap();
         sourceInvocationConfigs.put(hello, source);
-        ProxyConfiguration sourceConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+        WireConfiguration sourceConfig = new WireConfiguration(new QualifiedName("target/SimpleTarget"),
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
         sourceFactory.setProxyConfiguration(sourceConfig);
         sourceFactory.setBusinessInterface(SimpleTarget.class);
@@ -419,7 +419,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         ProxyFactory targetFactory = new JDKProxyFactory();
         Map<Method, InvocationConfiguration> targetInvocationConfigs = new MethodHashMap();
         targetInvocationConfigs.put(hello, target);
-        ProxyConfiguration targetConfig = new ProxyConfiguration(new QualifiedName("target/SimpleTarget"),
+        WireConfiguration targetConfig = new WireConfiguration(new QualifiedName("target/SimpleTarget"),
                 targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
         targetFactory.setProxyConfiguration(targetConfig);
         targetFactory.setBusinessInterface(SimpleTarget.class);

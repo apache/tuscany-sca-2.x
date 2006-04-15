@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.core.invocation.spi;
 
-import org.apache.tuscany.core.invocation.ProxyConfiguration;
+import org.apache.tuscany.core.invocation.WireConfiguration;
 
 /**
  * Implementations are responsible for creating service proxies using a particular proxy strategy. Service proxies may
@@ -49,12 +49,12 @@ public interface ProxyFactory<T> {
     /**
      * Returns the configuration information used to create a proxy
      */
-    public ProxyConfiguration getProxyConfiguration();
+    public WireConfiguration getProxyConfiguration();
 
     /**
      * Sets the configuration information used to create a proxy
      */
-    public void setProxyConfiguration(ProxyConfiguration config);
+    public void setProxyConfiguration(WireConfiguration config);
 
     /**
      * Sets the primary interface type generated proxies should implement

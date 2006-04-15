@@ -23,14 +23,14 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * Represents configuration information for creating a service proxy. When a client component implementation is injected
+ * Represents configuration information for creating a wire. When a client component implementation is injected
  * with a service proxy representing a wire, source- and target-side proxy configurations are "bridged" together. This
  * concatenated configuration may then be used to generate a proxy implemented a particular business interface required
  * by the client.
  * 
  * @version $Rev$ $Date$
  */
-public class ProxyConfiguration {
+public class WireConfiguration {
 
     private Map<Method, InvocationConfiguration> configurations;
 
@@ -42,12 +42,8 @@ public class ProxyConfiguration {
 
     private String referenceName;
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
-    public ProxyConfiguration(QualifiedName serviceName, Map<Method, InvocationConfiguration> invocationConfigs,
-            ClassLoader proxyClassLoader, MessageFactory messageFactory) {
+    public WireConfiguration(QualifiedName serviceName, Map<Method, InvocationConfiguration> invocationConfigs,
+                             ClassLoader proxyClassLoader, MessageFactory messageFactory) {
         this(null, serviceName, invocationConfigs, proxyClassLoader, messageFactory);
     }
 
@@ -59,8 +55,8 @@ public class ProxyConfiguration {
      * @param proxyClassLoader the classloader to use when creating a proxy
      * @param messageFactory the factory used to create invocation messages
      */
-    public ProxyConfiguration(String referenceName, QualifiedName serviceName,
-            Map<Method, InvocationConfiguration> invocationConfigs, ClassLoader proxyClassLoader, MessageFactory messageFactory) {
+    public WireConfiguration(String referenceName, QualifiedName serviceName,
+                             Map<Method, InvocationConfiguration> invocationConfigs, ClassLoader proxyClassLoader, MessageFactory messageFactory) {
         assert (invocationConfigs != null) : "No invocation configuration map specified";
         this.referenceName = referenceName;
         this.serviceName = serviceName;
@@ -72,10 +68,6 @@ public class ProxyConfiguration {
             this.proxyClassLoader = proxyClassLoader;
         }
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     /**
      * Returns the qualified service name the configuration is associated with

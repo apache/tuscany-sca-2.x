@@ -18,7 +18,7 @@ package org.apache.tuscany.core.invocation.jdk;
 
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.MethodHashMap;
-import org.apache.tuscany.core.invocation.ProxyConfiguration;
+import org.apache.tuscany.core.invocation.WireConfiguration;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyInitializationException;
 
@@ -44,7 +44,7 @@ public class JDKProxyFactory implements ProxyFactory {
 
     private Map<Method, InvocationConfiguration> methodToInvocationConfig;
 
-    private ProxyConfiguration configuration;
+    private WireConfiguration configuration;
 
     public void initialize() throws ProxyInitializationException {
         if (state != UNINITIALIZED) {
@@ -67,11 +67,11 @@ public class JDKProxyFactory implements ProxyFactory {
         return Proxy.newProxyInstance(configuration.getProxyClassLoader(), businessInterfaceArray, handler);
     }
 
-    public ProxyConfiguration getProxyConfiguration() {
+    public WireConfiguration getProxyConfiguration() {
         return configuration;
     }
 
-    public void setProxyConfiguration(ProxyConfiguration config) {
+    public void setProxyConfiguration(WireConfiguration config) {
         configuration = config;
     }
 

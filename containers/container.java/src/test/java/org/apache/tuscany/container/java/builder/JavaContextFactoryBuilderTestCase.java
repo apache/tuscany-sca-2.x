@@ -21,7 +21,7 @@ import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.event.ModuleStart;
-import org.apache.tuscany.core.invocation.ProxyConfiguration;
+import org.apache.tuscany.core.invocation.WireConfiguration;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
@@ -63,7 +63,7 @@ public class JavaContextFactoryBuilderTestCase extends TestCase {
             ContextFactory<Context> source = (ContextFactory<Context>) component.getContextFactory();
             Assert.assertNotNull(source);
             for (ProxyFactory pFactory : source.getSourceProxyFactories()) {
-                ProxyConfiguration pConfig = pFactory.getProxyConfiguration();
+                WireConfiguration pConfig = pFactory.getProxyConfiguration();
                 Component target = compMap.get(pConfig.getTargetName().getPartName());
 
                 if (target != null) {

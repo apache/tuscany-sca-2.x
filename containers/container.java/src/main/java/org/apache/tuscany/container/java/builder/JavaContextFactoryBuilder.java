@@ -31,7 +31,7 @@ import org.apache.tuscany.core.injection.SDOObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.MethodHashMap;
-import org.apache.tuscany.core.invocation.ProxyConfiguration;
+import org.apache.tuscany.core.invocation.WireConfiguration;
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
@@ -75,6 +75,15 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
     /* the top-level builder responsible for evaluating policies */
     private HierarchicalBuilder policyBuilder = new HierarchicalBuilder();
 
+
+    public JavaContextFactoryBuilder(ProxyFactoryFactory proxyFactoryFactory, MessageFactory messageFactory) {
+        this.proxyFactoryFactory = proxyFactoryFactory;
+        this.messageFactory = messageFactory;
+    }
+
+    public JavaContextFactoryBuilder() {
+    }
+
     @Init(eager = true)
     public void init() {
         runtimeContext.addBuilder(this);
@@ -114,22 +123,6 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
     public void addPolicyBuilder(ContextFactoryBuilder builder) {
         policyBuilder.addBuilder(builder);
     }
-
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
-    public JavaContextFactoryBuilder() {
-    }
-
-    public JavaContextFactoryBuilder(ProxyFactoryFactory proxyFactoryFactory, MessageFactory messageFactory) {
-        this.proxyFactoryFactory = proxyFactoryFactory;
-        this.messageFactory = messageFactory;
-    }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     public void build(AssemblyObject modelObject) throws BuilderException {
         if (!(modelObject instanceof AtomicComponent)) {
@@ -232,7 +225,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                     }
                     QualifiedName qName = new QualifiedName(component.getName() + QualifiedName.NAME_SEPARATOR
                             + service.getName());
-                    ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface()
+                    WireConfiguration pConfiguration = new WireConfiguration(qName, iConfigMap, serviceContract.getInterface()
                             .getClassLoader(), messageFactory);
                     proxyFactory.setBusinessInterface(serviceContract.getInterface());
                     proxyFactory.setProxyConfiguration(pConfiguration);
@@ -273,10 +266,6 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
             }
         }
     }
-
-    // ----------------------------------
-    // Private methods
-    // ----------------------------------
 
     /**
      * Creates an <code>Injector</code> for component properties
@@ -339,7 +328,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                 iConfigMap.put(method, iConfig);
             }
 
-            ProxyConfiguration pConfiguration = new ProxyConfiguration(refName, qName, iConfigMap, interfaze.getClassLoader(),
+            WireConfiguration pConfiguration = new WireConfiguration(refName, qName, iConfigMap, interfaze.getClassLoader(),
                     messageFactory);
             proxyFactory.setBusinessInterface(interfaze);
             proxyFactory.setProxyConfiguration(pConfiguration);

@@ -30,7 +30,7 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.MethodHashMap;
-import org.apache.tuscany.core.invocation.ProxyConfiguration;
+import org.apache.tuscany.core.invocation.WireConfiguration;
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
@@ -176,7 +176,7 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
 		    }
             QualifiedName qName = new QualifiedName(component.getName() + QualifiedName.NAME_SEPARATOR
                     + service.getName());
-            ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, contract.getInterface()
+            WireConfiguration pConfiguration = new WireConfiguration(qName, iConfigMap, contract.getInterface()
                     .getClassLoader(), msgFactory);
 		    proxyFactory.setBusinessInterface(contract.getInterface());
 		    proxyFactory.setProxyConfiguration(pConfiguration);
@@ -208,7 +208,7 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
 		        String targetSerivceName = reference.getTargetConfiguredServices().get(0).getPort().getName();
 
 		        QualifiedName qName = new QualifiedName(targetCompName + '/' + targetSerivceName);
-                ProxyConfiguration pConfiguration = new ProxyConfiguration(reference.getPort().getName(), qName,
+                WireConfiguration pConfiguration = new WireConfiguration(reference.getPort().getName(), qName,
                         iConfigMap, interfaze.getInterface().getClassLoader(), msgFactory);
 		        proxyFactory.setBusinessInterface(interfaze.getInterface());
 		        proxyFactory.setProxyConfiguration(pConfiguration);
