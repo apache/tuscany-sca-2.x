@@ -41,7 +41,7 @@ import org.apache.tuscany.model.assembly.AtomicComponent;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
- * Lifecycle unit tests for the Http session scope container
+ * Lifecycle unit tests for the module scope container
  * 
  * @version $Rev$ $Date$
  */
@@ -185,7 +185,6 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         for (AtomicComponent aCa : ca) {
             builder.build(aCa);
             configs.add((ContextFactory<Context>) aCa.getContextFactory());
-
         }
         return configs;
     }
@@ -200,7 +199,6 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         for (AtomicComponent aCa : ca) {
             builder.build(aCa);
             configs.add((ContextFactory<Context>) aCa.getContextFactory());
-
         }
         return configs;
     }

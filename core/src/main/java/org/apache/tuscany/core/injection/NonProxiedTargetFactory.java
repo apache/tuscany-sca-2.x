@@ -28,9 +28,10 @@ public class NonProxiedTargetFactory<T> implements ObjectFactory<T> {
 
     private ContextResolver resolver;
 
-    // the SCDL name of the target component/service for this reference
+    // the name of the target component/service for this reference
     private QualifiedName targetName;
     private QualifiedName qualifiedServiceName;
+
     /**
      * Constructs a reference object factory from a configured reference on a type
      * 

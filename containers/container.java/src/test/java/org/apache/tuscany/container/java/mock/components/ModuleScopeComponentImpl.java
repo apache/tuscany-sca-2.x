@@ -23,18 +23,6 @@ package org.apache.tuscany.container.java.mock.components;
 public class ModuleScopeComponentImpl extends AbstractGenericComponent implements
         ModuleScopeComponent {
 
-//	private boolean init;
-//	
-//	@Init(eager=false)
-//	public void init(){
-//		init= true;
-//	}
-//
-//	public boolean isInit(){
-//		return init;
-//	}
-
-
     private String foo;
 
     public void setFoo(String foo) {
