@@ -95,6 +95,14 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
                 builderRegistry.register(builder);
             }
         }
+
+/*
+        try {
+            systemContext.registerJavaObject(ContextFactoryBuilderRegistry.class.getName(), ContextFactoryBuilderRegistry.class, builderRegistry);
+        } catch (ConfigurationException e) {
+            throw new AssertionError();
+        }
+*/
     }
 
     /**
@@ -122,11 +130,6 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
             return;
         }
         systemContext.start();
-        try {
-            systemContext.registerJavaObject(ContextFactoryBuilderRegistry.class.getName(), ContextFactoryBuilderRegistry.class, builderRegistry);
-        } catch (ConfigurationException e) {
-            throw new AssertionError();
-        }
 
         rootContext.start();
         lifecycleState = RUNNING;

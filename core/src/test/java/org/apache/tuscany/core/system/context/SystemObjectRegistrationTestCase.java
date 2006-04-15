@@ -20,6 +20,7 @@ package org.apache.tuscany.core.system.context;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.SystemCompositeContext;
+import org.apache.tuscany.core.context.DuplicateNameException;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
@@ -35,6 +36,17 @@ public class SystemObjectRegistrationTestCase extends TestCase {
         MockComponent instance = new MockComponent();
         systemContext.registerJavaObject("foo", MockComponent.class, instance);
         assertSame(instance, systemContext.getContext("foo").getInstance(null));
+    }
+
+    public void testDuplicateRegistration() throws ConfigurationException {
+        MockComponent instance = new MockComponent();
+        systemContext.registerJavaObject("foo", MockComponent.class, instance);
+        try {
+            systemContext.registerJavaObject("foo", MockComponent.class, instance);
+            fail();
+        } catch (DuplicateNameException e) {
+            // ok
+        }
     }
 
     protected void setUp() throws Exception {

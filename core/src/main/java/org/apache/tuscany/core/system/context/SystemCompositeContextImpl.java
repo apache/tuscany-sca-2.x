@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.common.TuscanyRuntimeException;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.config.ConfigurationException;
@@ -79,9 +78,6 @@ import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
  * @version $Rev$ $Date$
  */
 public class SystemCompositeContextImpl extends AbstractCompositeContext implements SystemCompositeContext {
-
-    protected List<ContextFactory<Context>> configurations = new ArrayList<ContextFactory<Context>>();
-
     // a mapping of service type to component name
     private Map<Class, NameToScope> autowireIndex = new ConcurrentHashMap<Class, NameToScope>();
 
@@ -127,7 +123,7 @@ public class SystemCompositeContextImpl extends AbstractCompositeContext impleme
 
                 Map<Scope, List<ContextFactory<Context>>> configurationsByScope = new HashMap<Scope, List<ContextFactory<Context>>>();
                 if (configurations != null) {
-                    for (ContextFactory<Context> contextFactory : configurations) {
+                    for (ContextFactory<Context> contextFactory : configurations.values()) {
                         // FIXME scopes are defined at the interface level
                         Scope scope = contextFactory.getScope();
                         // ensure duplicate names were not added before the context was started
@@ -279,32 +275,6 @@ public class SystemCompositeContextImpl extends AbstractCompositeContext impleme
         ScopeContext scope = scopeContexts.get(configuration.getScope());
         NameToScope mapping = new NameToScope(new QualifiedName(componentName), scope, false, false);
         autowireIndex.put(service, mapping);
-    }
-
-    protected void registerConfiguration(ContextFactory<Context> factory) throws ConfigurationException {
-        factory.prepare(this);
-        if (lifecycleState == RUNNING) {
-            if (scopeIndex.get(factory.getName()) != null) {
-                throw new DuplicateNameException(factory.getName());
-            }
-            try {
-                ScopeContext scope = scopeContexts.get(factory.getScope());
-                if (scope == null) {
-                    ConfigurationException e = new MissingScopeException("Component has an unknown scope");
-                    e.addContextName(factory.getName());
-                    e.addContextName(getName());
-                    throw e;
-                }
-                scope.registerFactory(factory);
-                scopeIndex.put(factory.getName(), scope);
-            } catch (TuscanyRuntimeException e) {
-                e.addContextName(getName());
-                throw e;
-            }
-        } else {
-            configurations.add(factory);
-        }
-
     }
 
     public Composite getComposite() {
