@@ -2,7 +2,7 @@ package org.apache.tuscany.core.builder;
 
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.apache.tuscany.core.invocation.ProxyFactory;
 import org.apache.tuscany.model.assembly.Scope;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Implementations serve the dual purpose of creating instances of {@link org.apache.tuscany.core.context.Context} based
  * on a compiled configuration such as a logical assembly model and holding a
- * {@link org.apache.tuscany.core.invocation.spi.ProxyFactory} for the instance type associated with the context.
+ * {@link org.apache.tuscany.core.invocation.ProxyFactory} for the instance type associated with the context.
  * <p>
  * Context factories are created or "built" in two phases. {@link org.apache.tuscany.core.builder.ContextFactoryBuilder}s
  * are responsible for analyzing a logical model assembly and producing the appropriate <code>ContextFactory</code>

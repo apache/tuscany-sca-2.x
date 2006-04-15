@@ -19,8 +19,8 @@ package org.apache.tuscany.core.invocation.jdk;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.MethodHashMap;
 import org.apache.tuscany.core.invocation.WireConfiguration;
-import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.core.invocation.spi.ProxyInitializationException;
+import org.apache.tuscany.core.invocation.ProxyFactory;
+import org.apache.tuscany.core.invocation.ProxyInitializationException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -29,7 +29,7 @@ import java.util.Map;
 
 /**
  * Creates proxies for handling invocations using JDK dynamic proxies
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class JDKProxyFactory implements ProxyFactory {

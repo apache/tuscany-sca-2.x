@@ -6,9 +6,9 @@ import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
 import org.apache.tuscany.core.invocation.MethodHashMap;
 import org.apache.tuscany.core.invocation.WireConfiguration;
+import org.apache.tuscany.core.invocation.ProxyFactory;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactory;
 import org.apache.tuscany.core.invocation.mock.SimpleTarget;
-import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 

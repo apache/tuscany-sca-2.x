@@ -39,7 +39,7 @@ import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
-import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.apache.tuscany.core.invocation.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
 import org.apache.tuscany.model.assembly.AssemblyObject;

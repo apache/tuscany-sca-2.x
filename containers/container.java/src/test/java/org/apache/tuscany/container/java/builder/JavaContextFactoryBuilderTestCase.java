@@ -23,7 +23,7 @@ import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.invocation.WireConfiguration;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
-import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.apache.tuscany.core.invocation.ProxyFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.Module;

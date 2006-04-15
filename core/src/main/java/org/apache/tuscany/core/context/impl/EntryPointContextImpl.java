@@ -19,8 +19,8 @@ import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.ContextInitException;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.invocation.jdk.JDKInvocationHandler;
-import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
-import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.apache.tuscany.core.invocation.ProxyCreationException;
+import org.apache.tuscany.core.invocation.ProxyFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 
 import java.lang.reflect.InvocationHandler;

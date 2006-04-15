@@ -18,8 +18,8 @@ import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.ExternalServiceContext;
-import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
-import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.apache.tuscany.core.invocation.ProxyCreationException;
+import org.apache.tuscany.core.invocation.ProxyFactory;
 
 /**
  * The default implementation of an external service context

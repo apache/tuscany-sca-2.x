@@ -31,7 +31,7 @@ import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.AutowireResolutionException;
 import org.apache.tuscany.core.context.MissingScopeException;
-import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.apache.tuscany.core.invocation.ProxyFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.model.assembly.AssemblyObject;

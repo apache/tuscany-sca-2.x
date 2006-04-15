@@ -19,7 +19,7 @@ import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.context.impl.ExternalServiceContextImpl;
-import org.apache.tuscany.core.invocation.spi.ProxyFactory;
+import org.apache.tuscany.core.invocation.ProxyFactory;
 import org.apache.tuscany.model.assembly.Scope;
 
 import java.util.Collections;
@@ -91,7 +91,7 @@ public abstract class BaseExternalServiceContextFactory implements ContextFactor
 
     public Map<String,ProxyFactory> getTargetProxyFactories() {
         if (targetProxyFactories == null) {
-            targetProxyFactories = new HashMap<String,ProxyFactory> (1);
+            targetProxyFactories = new HashMap<String, ProxyFactory> (1);
             targetProxyFactories.put(targetServiceName, proxyFactory);
         }
         return targetProxyFactories;

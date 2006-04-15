@@ -13,8 +13,8 @@
  */
 package org.apache.tuscany.core.invocation.jdk;
 
-import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
+import org.apache.tuscany.core.invocation.ProxyFactory;
+import org.apache.tuscany.core.invocation.ProxyFactoryFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;

@@ -2,9 +2,9 @@ package org.apache.tuscany.core.invocation.impl;
 
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.invocation.WireConfiguration;
-import org.apache.tuscany.core.invocation.spi.ProxyCreationException;
-import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.core.invocation.spi.ProxyInitializationException;
+import org.apache.tuscany.core.invocation.ProxyCreationException;
+import org.apache.tuscany.core.invocation.ProxyFactory;
+import org.apache.tuscany.core.invocation.ProxyInitializationException;
 
 /**
  * Returns an actual implementation instance as opposed to a proxy. Used in cases where proxying may be optimized away.

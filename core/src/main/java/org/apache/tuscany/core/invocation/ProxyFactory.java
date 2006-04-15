@@ -14,9 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.invocation.spi;
-
-import org.apache.tuscany.core.invocation.WireConfiguration;
+package org.apache.tuscany.core.invocation;
 
 /**
  * Implementations are responsible for creating service proxies using a particular proxy strategy. Service proxies may
@@ -28,7 +26,7 @@ import org.apache.tuscany.core.invocation.WireConfiguration;
  * <p>
  * The second type of proxy will be generated when non-component client code (such as a JSP) locates a service. In this
  * case, the proxy will implement the requested service interface but will only contain a target-side invocation chain.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public interface ProxyFactory<T> {

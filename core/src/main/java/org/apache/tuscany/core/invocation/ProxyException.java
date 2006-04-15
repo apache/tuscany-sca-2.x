@@ -14,28 +14,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.invocation.spi;
+package org.apache.tuscany.core.invocation;
 
-/**
- * Denotes an error creating a proxy instance
- * 
- * @version $Rev$ $Date$
- */
-public class ProxyCreationException extends ProxyException {
+import org.apache.tuscany.core.invocation.InvocationException;
 
-    public ProxyCreationException() {
+public class ProxyException extends InvocationException {
+
+    public ProxyException() {
         super();
     }
 
-    public ProxyCreationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ProxyCreationException(String message) {
+    public ProxyException(String message) {
         super(message);
     }
 
-    public ProxyCreationException(Throwable cause) {
+    public ProxyException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ProxyException(Throwable cause) {
         super(cause);
     }
 

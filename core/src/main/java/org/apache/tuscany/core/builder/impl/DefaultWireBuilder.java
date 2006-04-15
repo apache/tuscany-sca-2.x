@@ -18,9 +18,9 @@ import org.apache.tuscany.core.builder.HierarchicalWireBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.invocation.InvocationConfiguration;
+import org.apache.tuscany.core.invocation.ProxyFactory;
 import org.apache.tuscany.core.invocation.impl.InvokerInterceptor;
 import org.apache.tuscany.core.invocation.impl.MessageChannelImpl;
-import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

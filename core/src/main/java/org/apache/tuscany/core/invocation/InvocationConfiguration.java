@@ -28,7 +28,7 @@ import java.util.List;
  * Contains a source- or target-side invocation pipeline for a service operation. Source and target invocation pipelines
  * are "bridged" together by a set of wire builders with the source-side holding references to the target.
  * <p>
- * A set of invocation configurations are used by a {@link org.apache.tuscany.core.invocation.spi.ProxyFactory} to
+ * A set of invocation configurations are used by a {@link org.apache.tuscany.core.invocation.ProxyFactory} to
  * create service proxies.
  * <p>
  * Invocation configurations must contain at least one interceptor and may have 0 to N handlers. Handlers process an
@@ -68,7 +68,7 @@ import java.util.List;
  * chains and the target invoker will be held by the target-side and passed down the pipeline.
  * 
  * @see org.apache.tuscany.core.builder.WireBuilder
- * @see org.apache.tuscany.core.invocation.spi.ProxyFactory
+ * @see org.apache.tuscany.core.invocation.ProxyFactory
  * @see org.apache.tuscany.core.invocation.TargetInvoker
  * @see org.apache.tuscany.core.invocation.impl.MessageDispatcher
  * 

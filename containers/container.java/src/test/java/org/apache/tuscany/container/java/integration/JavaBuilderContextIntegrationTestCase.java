@@ -33,7 +33,7 @@ import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.invocation.jdk.JDKProxyFactoryFactory;
-import org.apache.tuscany.core.invocation.spi.ProxyFactoryFactory;
+import org.apache.tuscany.core.invocation.ProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
