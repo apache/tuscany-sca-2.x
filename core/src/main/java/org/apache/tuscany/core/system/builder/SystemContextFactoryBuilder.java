@@ -109,7 +109,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
             }
             implClass = javaImpl.getImplementationClass();
             Scope previous = null;
-            scope = Scope.INSTANCE;
+            scope = Scope.MODULE;
             List<Service> services = component.getImplementation().getComponentInfo().getServices();
             for (Service service : services) {
                 // calculate and validate the scope of the component; ensure that all service scopes are the same unless
@@ -121,7 +121,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
                     e.setIdentifier(component.getName());
                     throw e;
                 }
-                if (scope != null && current != Scope.INSTANCE) {
+                if (current != null && current != Scope.MODULE) {
                     scope = current;
                 }
             }
@@ -219,14 +219,14 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
                         e.setIdentifier(field.getType().getName());
                         throw e;
                     }
-                    Injector injector = new FieldInjector(field, new AutowireObjectFactory(field.getType(), autowire.required(),
+                    Injector<?> injector = new FieldInjector(field, new AutowireObjectFactory(field.getType(), autowire.required(),
                             contextFactory));
                     injectors.add(injector);
                 }
                 Monitor monitor = field.getAnnotation(Monitor.class);
                 if (monitor != null) {
                     Object instance = monitorFactory.getMonitor(field.getType());
-                    Injector<?> injector = new FieldInjector(field, new SingletonObjectFactory(instance));
+                    Injector<?> injector = new FieldInjector(field, new SingletonObjectFactory<Object>(instance));
                     injectors.add(injector);
                 }
             }
@@ -298,7 +298,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
                     }
                     Class<?> paramType = method.getParameterTypes()[0];
                     Object instance = monitorFactory.getMonitor(paramType);
-                    Injector<?> injector = new MethodInjector(method, new SingletonObjectFactory(instance));
+                    Injector<?> injector = new MethodInjector(method, new SingletonObjectFactory<Object>(instance));
                     injectors.add(injector);
                 }
             }
@@ -321,10 +321,6 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
             throw ce;
         }
     }
-
-    // ----------------------------------
-    // Private methods
-    // ----------------------------------
 
     /**
      * Creates an <code>Injector</code> for component properties

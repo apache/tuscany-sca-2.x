@@ -24,11 +24,15 @@ import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.mock.MockConfigContext;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
+import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.Property;
 import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
  * Tests to that system components are built properly
@@ -128,9 +132,41 @@ public class SystemContextFactoryBuilderTestCase extends TestCase {
         Assert.assertTrue(instance.destroyed());
     }
 
+
+    public void testDefaultScopeIsModuleScope() throws Exception {
+        SystemContextFactoryBuilder builder = new SystemContextFactoryBuilder(null);
+        Component component = createSystemComponentWithNoScope("test", null, SystemComponentImpl.class);
+        builder.build(component);
+        ContextFactory<AtomicContext> contextFactory = (ContextFactory<AtomicContext>) component.getContextFactory();
+        Assert.assertEquals(Scope.MODULE, contextFactory.getScope());
+    }
+
+
+
+
     private static CompositeContext createContext() {
         return new CompositeContextImpl("test.parent", null, new DefaultScopeStrategy(), new EventContextImpl(),
                 new MockConfigContext(null));
     }
+
+    private <T> Component createSystemComponentWithNoScope(String name, Class<T> service, Class<? extends T> impl) {
+        JavaServiceContract jsc = factory.createJavaServiceContract();
+        jsc.setInterface(service);
+        Service s = factory.createService();
+        s.setServiceContract(jsc);
+
+        ComponentInfo componentType = factory.createComponentInfo();
+        componentType.getServices().add(s);
+
+        SystemImplementation sysImpl = factory.createSystemImplementation();
+        sysImpl.setImplementationClass(impl);
+        sysImpl.setComponentInfo(componentType);
+
+        Component sc = factory.createSimpleComponent();
+        sc.setName(name);
+        sc.setImplementation(sysImpl);
+        return sc;
+    }
+
 
 }
