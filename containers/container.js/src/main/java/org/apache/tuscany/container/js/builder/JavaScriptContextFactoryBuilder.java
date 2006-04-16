@@ -34,6 +34,8 @@ import org.apache.tuscany.core.wire.WireConfiguration;
 import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
 import org.apache.tuscany.core.wire.ProxyFactoryFactory;
+import org.apache.tuscany.core.wire.WireSourceConfiguration;
+import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
@@ -176,10 +178,10 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
 		    }
             QualifiedName qName = new QualifiedName(component.getName() + QualifiedName.NAME_SEPARATOR
                     + service.getName());
-            WireConfiguration pConfiguration = new WireConfiguration(qName, iConfigMap, contract.getInterface()
+            WireConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, contract.getInterface()
                     .getClassLoader(), msgFactory);
 		    proxyFactory.setBusinessInterface(contract.getInterface());
-		    proxyFactory.setProxyConfiguration(pConfiguration);
+		    proxyFactory.setProxyConfiguration(wireConfiguration);
 		    configuredService.setProxyFactory(proxyFactory);
 		    if (referenceBuilder != null) {
 		        // invoke the reference builder to handle target-side metadata
@@ -208,7 +210,7 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
 		        String targetSerivceName = reference.getTargetConfiguredServices().get(0).getPort().getName();
 
 		        QualifiedName qName = new QualifiedName(targetCompName + '/' + targetSerivceName);
-                WireConfiguration pConfiguration = new WireConfiguration(reference.getPort().getName(), qName,
+                WireConfiguration pConfiguration = new WireSourceConfiguration(reference.getPort().getName(), qName,
                         iConfigMap, interfaze.getInterface().getClassLoader(), msgFactory);
 		        proxyFactory.setBusinessInterface(interfaze.getInterface());
 		        proxyFactory.setProxyConfiguration(pConfiguration);

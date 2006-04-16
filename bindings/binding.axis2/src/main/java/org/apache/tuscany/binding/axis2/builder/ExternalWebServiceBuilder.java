@@ -41,6 +41,7 @@ import org.apache.tuscany.core.wire.WireConfiguration;
 import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
 import org.apache.tuscany.core.wire.ProxyFactoryFactory;
+import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
@@ -138,10 +139,10 @@ public class ExternalWebServiceBuilder implements ContextFactoryBuilder {
             InvocationConfiguration iConfig = new InvocationConfiguration(method);
             iConfigMap.put(method, iConfig);
         }
-        QualifiedName qName = new QualifiedName(externalService.getName() + "/" + service.getName());
-        WireConfiguration pConfiguration = new WireConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
+        QualifiedName qName = new QualifiedName(externalService.getName() + QualifiedName.NAME_SEPARATOR + service.getName());
+        WireConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
-        proxyFactory.setProxyConfiguration(pConfiguration);
+        proxyFactory.setProxyConfiguration(wireConfiguration);
         config.addTargetProxyFactory(service.getName(), proxyFactory);
         configuredService.setProxyFactory(proxyFactory);
         if (policyBuilder != null) {

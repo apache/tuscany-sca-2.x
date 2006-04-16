@@ -25,6 +25,7 @@ import org.apache.tuscany.core.wire.WireConfiguration;
 import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
 import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.wire.ProxyFactoryFactory;
+import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
@@ -127,9 +128,9 @@ public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuil
         }
         QualifiedName qName = new QualifiedName(entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0).getPart().getName()
                 + "/" + service.getName());
-        WireConfiguration pConfiguration = new WireConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
+        WireConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
-        proxyFactory.setProxyConfiguration(pConfiguration);
+        proxyFactory.setProxyConfiguration(wireConfiguration);
         config.addSourceProxyFactory(service.getName(), proxyFactory);
         configuredService.setProxyFactory(proxyFactory);
         if (policyBuilder != null) {

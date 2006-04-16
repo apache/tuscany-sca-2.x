@@ -76,9 +76,6 @@ public class JDKProxyFactory implements ProxyFactory {
     }
 
     public void setBusinessInterface(Class interfaze) {
-  //      if(!interfaze.isInterface()){
-  //          throw new IllegalArgumentException("Class is not an interface ["+interfaze+"]");
-  //      }
         businessInterfaceArray = new Class[] { interfaze };
     }
 

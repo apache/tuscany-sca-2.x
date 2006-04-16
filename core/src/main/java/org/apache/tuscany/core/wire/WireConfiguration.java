@@ -23,43 +23,34 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * Represents configuration information for creating a wire. When a client component implementation is injected
- * with a service proxy representing a wire, source- and target-side proxy configurations are "bridged" together. This
- * concatenated configuration may then be used to generate a proxy implemented a particular business interface required
- * by the client.
- * 
+ * Represents configuration information for creating a wire. When a client component implementation is injected with a service
+ * proxy representing a wire, source- and target-side proxy configurations are "bridged" together. This concatenated configuration
+ * may then be used to generate a proxy implemented a particular business interface required by the client.
+ *
  * @version $Rev$ $Date$
  */
-public class WireConfiguration {
+public abstract class WireConfiguration {
 
-    private Map<Method, InvocationConfiguration> configurations;
+    protected Map<Method, InvocationConfiguration> configurations;
 
-    private ClassLoader proxyClassLoader;
+    protected ClassLoader proxyClassLoader;
 
-    private MessageFactory messageFactory;
+    protected MessageFactory messageFactory;
 
-    private QualifiedName serviceName;
-
-    private String referenceName;
-
-    public WireConfiguration(QualifiedName serviceName, Map<Method, InvocationConfiguration> invocationConfigs,
-                             ClassLoader proxyClassLoader, MessageFactory messageFactory) {
-        this(null, serviceName, invocationConfigs, proxyClassLoader, messageFactory);
-    }
+    protected QualifiedName targetName;
 
     /**
      * Creates a configuration used to generate proxies representing a service.
-     * 
-     * @param serviceName the qualified name of the service represented by this configuration
+     *
+     * @param targetName        the qualified name of the service represented by this configuration
      * @param invocationConfigs a collection of operation-to-wire configuration mappings for the service
-     * @param proxyClassLoader the classloader to use when creating a proxy
-     * @param messageFactory the factory used to create wire messages
+     * @param proxyClassLoader  the classloader to use when creating a proxy
+     * @param messageFactory    the factory used to create wire messages
      */
-    public WireConfiguration(String referenceName, QualifiedName serviceName,
+    public WireConfiguration(QualifiedName targetName,
                              Map<Method, InvocationConfiguration> invocationConfigs, ClassLoader proxyClassLoader, MessageFactory messageFactory) {
         assert (invocationConfigs != null) : "No wire configuration map specified";
-        this.referenceName = referenceName;
-        this.serviceName = serviceName;
+        this.targetName = targetName;
         configurations = invocationConfigs;
         this.messageFactory = messageFactory;
         if (proxyClassLoader == null) {
@@ -70,22 +61,15 @@ public class WireConfiguration {
     }
 
     /**
-     * Returns the qualified service name the configuration is associated with
+     * Returns the qualified context/service name the wire targets
      */
     public QualifiedName getTargetName() {
-        return serviceName;
+        return targetName;
     }
 
     /**
-     * Returns the name of the reference if a source-side configuration
-     */
-    public String getReferenceName() {
-        return referenceName;
-    }
-
-    /**
-     * Returns a collection of operation types to {@link InvocationConfiguration} mappings that represent the specific
-     * proxy configuration information for particular operations
+     * Returns a collection of {@link InvocationConfiguration}s keyed by their operation type of the service associated with
+     * either the wire's source reference or target
      */
     public Map<Method, InvocationConfiguration> getInvocationConfigurations() {
         return configurations;
@@ -99,7 +83,7 @@ public class WireConfiguration {
     }
 
     /**
-     * Returns the factory used to create wire messages
+     * Returns the factory used to create invocation messages
      */
     public MessageFactory getMessageFactory() {
         return messageFactory;

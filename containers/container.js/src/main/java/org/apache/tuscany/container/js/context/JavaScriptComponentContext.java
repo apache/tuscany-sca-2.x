@@ -25,6 +25,7 @@ import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.wire.ProxyCreationException;
 import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.osoa.sca.ServiceRuntimeException;
 
 import java.util.HashMap;
@@ -113,7 +114,7 @@ public class JavaScriptComponentContext extends AbstractContext implements Atomi
         try {
             Map<String, Object> context = new HashMap<String, Object>();
             for (ProxyFactory proxyFactory : sourceProxyFactories) {
-                context.put(proxyFactory.getProxyConfiguration().getReferenceName(), proxyFactory.createProxy());
+                context.put(((WireSourceConfiguration)proxyFactory.getProxyConfiguration()).getReferenceName(), proxyFactory.createProxy());
             }
             return context;
         } catch (ProxyCreationException e) {

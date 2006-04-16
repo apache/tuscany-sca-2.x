@@ -19,6 +19,7 @@ import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.wire.InvocationConfiguration;
 import org.apache.tuscany.core.wire.MethodHashMap;
 import org.apache.tuscany.core.wire.WireConfiguration;
+import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
 import org.apache.tuscany.core.wire.mock.MockStaticInvoker;
 import org.apache.tuscany.core.wire.mock.MockSyncInterceptor;
@@ -50,7 +51,7 @@ public class JDKProxyFactoryTestCase extends TestCase {
         source.build();
         Map<Method, InvocationConfiguration> configs = new MethodHashMap();
         configs.put(hello, source);
-        WireConfiguration config = new WireConfiguration(new QualifiedName("foo"), configs, Thread.currentThread()
+        WireConfiguration config = new WireSourceConfiguration("foo",new QualifiedName("foo"), configs, Thread.currentThread()
                 .getContextClassLoader(), new MessageFactoryImpl());
         JDKProxyFactory factory = new JDKProxyFactory();
         factory.setProxyConfiguration(config);

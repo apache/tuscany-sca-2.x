@@ -19,6 +19,7 @@ import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.wire.InvocationConfiguration;
 import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
 import org.apache.tuscany.core.wire.impl.MessageChannelImpl;
 
@@ -65,7 +66,8 @@ public class DefaultWireBuilder implements HierarchicalWireBuilder {
                 InvocationConfiguration targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig.getMethod());
                 if (targetInvocationConfig == null){
                     BuilderConfigException e= new BuilderConfigException("Incompatible source and target interface types for reference");
-                    e.setIdentifier(sourceFactory.getProxyConfiguration().getReferenceName());
+                    //FIXME xcv
+                    e.setIdentifier(((WireSourceConfiguration) sourceFactory.getProxyConfiguration()).getReferenceName());
                     throw e;
                 }
                 // if handler is configured, add that

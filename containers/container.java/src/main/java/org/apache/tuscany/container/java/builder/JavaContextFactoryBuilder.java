@@ -35,6 +35,8 @@ import org.apache.tuscany.core.wire.WireConfiguration;
 import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
 import org.apache.tuscany.core.wire.ProxyFactoryFactory;
+import org.apache.tuscany.core.wire.WireSourceConfiguration;
+import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
@@ -225,10 +227,10 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                     }
                     QualifiedName qName = new QualifiedName(component.getName() + QualifiedName.NAME_SEPARATOR
                             + service.getName());
-                    WireConfiguration pConfiguration = new WireConfiguration(qName, iConfigMap, serviceContract.getInterface()
+                    WireConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, serviceContract.getInterface()
                             .getClassLoader(), messageFactory);
                     proxyFactory.setBusinessInterface(serviceContract.getInterface());
-                    proxyFactory.setProxyConfiguration(pConfiguration);
+                    proxyFactory.setProxyConfiguration(wireConfiguration);
                     contextFactory.addTargetProxyFactory(service.getName(), proxyFactory);
                     configuredService.setProxyFactory(proxyFactory);
                     if (policyBuilder != null) {
@@ -328,7 +330,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                 iConfigMap.put(method, iConfig);
             }
 
-            WireConfiguration pConfiguration = new WireConfiguration(refName, qName, iConfigMap, interfaze.getClassLoader(),
+            WireConfiguration pConfiguration = new WireSourceConfiguration(refName, qName, iConfigMap, interfaze.getClassLoader(),
                     messageFactory);
             proxyFactory.setBusinessInterface(interfaze);
             proxyFactory.setProxyConfiguration(pConfiguration);
