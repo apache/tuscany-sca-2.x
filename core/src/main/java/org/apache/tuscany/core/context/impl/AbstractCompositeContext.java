@@ -161,7 +161,11 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                     registerAutowire(ep);
                 }
                 for (Component component : module.getComponents()) {
-                    registerAutowire(component);
+                    if (component instanceof ModuleComponent) {
+                        registerAutowire((ModuleComponent) component);
+                    } else {
+                        registerAutowire(component);
+                    }
                 }
                 for (ExternalService es : module.getExternalServices()) {
                     registerAutowire(es);
@@ -183,9 +187,6 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                 ContextInitException cie = new ContextInitException(e);
                 cie.addContextName(getName());
                 throw cie;
-            } catch (ConfigurationException e) {
-                lifecycleState = ERROR;
-                throw new ContextInitException(e);
             } catch (CoreRuntimeException e) {
                 lifecycleState = ERROR;
                 e.addContextName(getName());
@@ -287,7 +288,11 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                     throw e;
                 }
                 registerConfiguration(configuration);
-                registerAutowire(component);
+                if (component instanceof ModuleComponent) {
+                    registerAutowire((ModuleComponent) component);
+                } else {
+                    registerAutowire(component);
+                }
             }
             for (EntryPoint ep : newModule.getEntryPoints()) {
                 configuration = (ContextFactory<Context>) ep.getContextFactory();
@@ -401,7 +406,11 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                     throw e;
                 }
                 registerConfiguration(configuration);
-                registerAutowire(component);
+                if (component instanceof ModuleComponent) {
+                    registerAutowire((ModuleComponent) component);
+                } else {
+                    registerAutowire(component);
+                }
             } else if (model instanceof EntryPoint) {
                 EntryPoint ep = (EntryPoint) model;
                 module.getEntryPoints().add(ep);
@@ -678,44 +687,35 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         }
     }
 
-    @SuppressWarnings("unchecked")
-    protected void registerAutowire(Extensible model) throws ConfigurationException {
-        if (lifecycleState == INITIALIZING || lifecycleState == INITIALIZED || lifecycleState == RUNNING) {
-            if (model instanceof ModuleComponent) {
-                ModuleComponent component = (ModuleComponent) model;
-                for (EntryPoint ep : component.getImplementation().getEntryPoints()) {
-                    for (Binding binding : ep.getBindings()) {
-                        if (binding instanceof SystemBinding) {
-                            Class interfaze = ep.getConfiguredService().getPort().getServiceContract().getInterface();
-                            if (autowireInternal.get(interfaze) == null) {
-                                ScopeContext scope = scopeContexts.get(Scope.AGGREGATE);
-                                // only register if an impl has not already been registered, ensuring it is not visible outside the containment
-                                String qname = component.getName() + QualifiedName.NAME_SEPARATOR + ep.getName();
-                                registerAutowireInternal(interfaze, qname, scope);
-                            }
-                        }
-                    }
+    private void registerAutowire(ExternalService service) {
+    }
+
+    private void registerAutowire(ModuleComponent component) {
+        for (EntryPoint ep : component.getImplementation().getEntryPoints()) {
+            for (Binding binding : ep.getBindings()) {
+                if (binding instanceof SystemBinding) {
+                    Class interfaze = ep.getConfiguredService().getPort().getServiceContract().getInterface();
+                    ScopeContext scope = scopeContexts.get(Scope.AGGREGATE);
+                    String qname = component.getName() + QualifiedName.NAME_SEPARATOR + ep.getName();
+                    registerAutowireInternal(interfaze, qname, scope);
                 }
-            } else if (model instanceof Component) {
-                Component component = (Component) model;
-                for (Service service : component.getImplementation().getComponentInfo().getServices()) {
-                    Class interfaze = service.getServiceContract().getInterface();
-                    if (autowireInternal.get(interfaze) == null) {
-                        // only register if an impl has not already been registered
-                        ScopeContext scopeCtx = scopeContexts.get(service.getServiceContract().getScope());
-                        registerAutowireInternal(interfaze, component.getName(), scopeCtx);
-                    }
-                }
-            } else if (model instanceof ExternalService) {
-                // FIXME should be implement this?
-            } else {
-                throw new AssertionError("Can't register autowire for model class: " + model.getClass());
             }
         }
     }
 
+    private void registerAutowire(Component component) {
+        for (Service service : component.getImplementation().getComponentInfo().getServices()) {
+            Class interfaze = service.getServiceContract().getInterface();
+            ScopeContext scopeCtx = scopeContexts.get(service.getServiceContract().getScope());
+            registerAutowireInternal(interfaze, component.getName(), scopeCtx);
+        }
+    }
+
     private void registerAutowireInternal(Class<?> interfaze, String name, ScopeContext scopeContext) {
-        assert interfaze != null && !autowireInternal.containsKey(interfaze);
+        assert interfaze != null;
+        if (autowireInternal.containsKey(interfaze)) {
+            return;
+        }
         QualifiedName qname = new QualifiedName(name);
         NameToScope nts = new NameToScope(qname, scopeContext);
         autowireInternal.put(interfaze, nts);
