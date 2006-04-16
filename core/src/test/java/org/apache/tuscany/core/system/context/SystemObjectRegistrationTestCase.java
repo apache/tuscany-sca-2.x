@@ -49,6 +49,13 @@ public class SystemObjectRegistrationTestCase extends TestCase {
         }
     }
 
+    public void testAutowireToObject() throws ConfigurationException {
+        MockComponent instance = new MockComponent();
+        systemContext.registerJavaObject("foo", MockComponent.class, instance);
+        assertSame(instance, systemContext.resolveInstance(MockComponent.class));
+        assertNull(systemContext.resolveExternalInstance(MockComponent.class));
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         runtime = new RuntimeContextImpl();
