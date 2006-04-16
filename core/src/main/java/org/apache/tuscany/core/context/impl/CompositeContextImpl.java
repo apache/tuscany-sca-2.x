@@ -22,7 +22,6 @@ import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceUnavailableException;
 
 import org.apache.tuscany.core.context.AutowireContext;
-import org.apache.tuscany.core.context.AutowireResolutionException;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.Context;
@@ -39,7 +38,7 @@ import org.apache.tuscany.core.system.annotation.Autowire;
  *
  * @version $Rev$ $Date$
  */
-public class CompositeContextImpl extends AbstractCompositeContext implements ConfigurationContext, ModuleContext {
+public class CompositeContextImpl extends AbstractCompositeContext implements ModuleContext {
 
     @Autowire(required = false)
     public void setScopeStrategy(ScopeStrategy scopeStrategy) {
