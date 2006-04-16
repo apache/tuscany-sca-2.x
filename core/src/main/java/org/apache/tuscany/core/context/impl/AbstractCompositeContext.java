@@ -105,8 +105,8 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
     protected boolean initialized;
 
     // a mapping of service type to component name
-    protected Map<Class, NameToScope> autowireInternal = new ConcurrentHashMap<Class, NameToScope>();
-    protected Map<Class, NameToScope> autowireExternal = new ConcurrentHashMap<Class, NameToScope>();
+    private final Map<Class, NameToScope> autowireInternal = new ConcurrentHashMap<Class, NameToScope>();
+    private final Map<Class, NameToScope> autowireExternal = new ConcurrentHashMap<Class, NameToScope>();
 
     @Autowire(required = false)
     private AutowireContext autowireContext;
@@ -711,7 +711,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         }
     }
 
-    private void registerAutowireInternal(Class<?> interfaze, String name, ScopeContext scopeContext) {
+    protected void registerAutowireInternal(Class<?> interfaze, String name, ScopeContext scopeContext) {
         assert interfaze != null;
         if (autowireInternal.containsKey(interfaze)) {
             return;
@@ -731,7 +731,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         }
     }
 
-    private void registerAutowireExternal(Class<?> interfaze, String name, ScopeContext scopeContext) {
+    protected void registerAutowireExternal(Class<?> interfaze, String name, ScopeContext scopeContext) {
         assert interfaze != null;
         if (autowireExternal.containsKey(interfaze)) {
             return;

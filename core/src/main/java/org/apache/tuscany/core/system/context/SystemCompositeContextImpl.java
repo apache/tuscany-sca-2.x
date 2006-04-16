@@ -24,7 +24,6 @@ import org.apache.tuscany.core.context.AutowireResolutionException;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.ScopeStrategy;
 import org.apache.tuscany.core.context.SystemCompositeContext;
@@ -70,8 +69,7 @@ public class SystemCompositeContextImpl extends AbstractCompositeContext impleme
         SystemObjectContextFactory configuration = new SystemObjectContextFactory(componentName, instance);
         registerConfiguration(configuration);
         ScopeContext scope = scopeContexts.get(configuration.getScope());
-        NameToScope mapping = new NameToScope(new QualifiedName(componentName), scope);
-        autowireInternal.put(service, mapping);
+        registerAutowireInternal(service, componentName, scope);
     }
 
     // FIXME These should be removed and configured
