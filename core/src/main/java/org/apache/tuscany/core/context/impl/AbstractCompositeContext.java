@@ -50,7 +50,6 @@ import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.common.TuscanyRuntimeException;
 
-import javax.wsdl.Part;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -395,30 +394,44 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                 Component component = (Component) model;
                 module.getComponents().add(component);
                 configuration = (ContextFactory<Context>) component.getContextFactory();
+                if (configuration == null) {
+                    ConfigurationException e = new MissingContextFactoryException("Context factory not set");
+                    e.setIdentifier(component.getName());
+                    e.addContextName(getName());
+                    throw e;
+                }
+                registerConfiguration(configuration);
+                registerAutowire(component);
             } else if (model instanceof EntryPoint) {
                 EntryPoint ep = (EntryPoint) model;
                 module.getEntryPoints().add(ep);
                 configuration = (ContextFactory<Context>) ep.getContextFactory();
+                if (configuration == null) {
+                    ConfigurationException e = new MissingContextFactoryException("Context factory not set");
+                    e.setIdentifier(ep.getName());
+                    e.addContextName(getName());
+                    throw e;
+                }
+                registerConfiguration(configuration);
+                registerAutowire(ep);
             } else if (model instanceof ExternalService) {
                 ExternalService service = (ExternalService) model;
                 module.getExternalServices().add(service);
                 configuration = (ContextFactory<Context>) service.getContextFactory();
+                if (configuration == null) {
+                    ConfigurationException e = new MissingContextFactoryException("Context factory not set");
+                    e.setIdentifier(service.getName());
+                    e.addContextName(getName());
+                    throw e;
+                }
+                registerConfiguration(configuration);
+                registerAutowire(service);
             } else {
                 BuilderConfigException e = new BuilderConfigException("Unknown model type");
                 e.setIdentifier(model.getClass().getName());
                 e.addContextName(getName());
                 throw e;
             }
-            if (configuration == null) {
-                ConfigurationException e = new MissingContextFactoryException("Context factory not set");
-                if (model instanceof Part) {
-                    e.setIdentifier(((Part) model).getName());
-                }
-                e.addContextName(getName());
-                throw e;
-            }
-            registerConfiguration(configuration);
-            registerAutowire(model);
         }
     }
 
@@ -668,20 +681,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
     @SuppressWarnings("unchecked")
     protected void registerAutowire(Extensible model) throws ConfigurationException {
         if (lifecycleState == INITIALIZING || lifecycleState == INITIALIZED || lifecycleState == RUNNING) {
-            if (model instanceof EntryPoint) {
-                EntryPoint ep = (EntryPoint) model;
-                for (Binding binding : ep.getBindings()) {
-                    if (binding instanceof SystemBinding) {
-                        Class interfaze = ep.getConfiguredService().getPort().getServiceContract().getInterface();
-                        NameToScope nts = autowireExternal.get(interfaze);
-                        if (nts == null) { // handle special case where two entry points with
-                            // same interface register: first wins
-                            ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getContextFactory()).getScope());
-                            registerAutowireExternal(interfaze, ep.getName(), scope);
-                        }
-                    }
-                }
-            } else if (model instanceof ModuleComponent) {
+            if (model instanceof ModuleComponent) {
                 ModuleComponent component = (ModuleComponent) model;
                 for (EntryPoint ep : component.getImplementation().getEntryPoints()) {
                     for (Binding binding : ep.getBindings()) {
@@ -706,6 +706,10 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                         registerAutowireInternal(interfaze, component.getName(), scopeCtx);
                     }
                 }
+            } else if (model instanceof ExternalService) {
+                // FIXME should be implement this?
+            } else {
+                throw new AssertionError("Can't register autowire for model class: " + model.getClass());
             }
         }
     }
@@ -717,8 +721,21 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         autowireInternal.put(interfaze, nts);
     }
 
+    private void registerAutowire(EntryPoint ep) {
+        for (Binding binding : ep.getBindings()) {
+            if (binding instanceof SystemBinding) {
+                Class interfaze = ep.getConfiguredService().getPort().getServiceContract().getInterface();
+                ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getContextFactory()).getScope());
+                registerAutowireExternal(interfaze, ep.getName(), scope);
+            }
+        }
+    }
+
     private void registerAutowireExternal(Class<?> interfaze, String name, ScopeContext scopeContext) {
-        assert interfaze != null && !autowireExternal.containsKey(interfaze);
+        assert interfaze != null;
+        if (autowireExternal.containsKey(interfaze)) {
+            return;
+        }
         QualifiedName qname = new QualifiedName(name);
         NameToScope nts = new NameToScope(qname, scopeContext);
         autowireExternal.put(interfaze, nts);
