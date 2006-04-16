@@ -70,8 +70,8 @@ public class SystemCompositeContextImpl extends AbstractCompositeContext impleme
         SystemObjectContextFactory configuration = new SystemObjectContextFactory(componentName, instance);
         registerConfiguration(configuration);
         ScopeContext scope = scopeContexts.get(configuration.getScope());
-        NameToScope mapping = new NameToScope(new QualifiedName(componentName), scope, false, false);
-        autowireIndex.put(service, mapping);
+        NameToScope mapping = new NameToScope(new QualifiedName(componentName), scope);
+        autowireInternal.put(service, mapping);
     }
 
     // FIXME These should be removed and configured

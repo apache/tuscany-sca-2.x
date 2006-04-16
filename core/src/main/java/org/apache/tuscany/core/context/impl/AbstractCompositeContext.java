@@ -106,7 +106,8 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
     protected boolean initialized;
 
     // a mapping of service type to component name
-    protected Map<Class, NameToScope> autowireIndex = new ConcurrentHashMap<Class, NameToScope>();
+    protected Map<Class, NameToScope> autowireInternal = new ConcurrentHashMap<Class, NameToScope>();
+    protected Map<Class, NameToScope> autowireExternal = new ConcurrentHashMap<Class, NameToScope>();
 
     @Autowire(required = false)
     private AutowireContext autowireContext;
@@ -626,8 +627,8 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         } else if (AutowireContext.class.equals(instanceInterface)) {
             return instanceInterface.cast(this);
         }
-        
-        NameToScope nts = autowireIndex.get(instanceInterface);
+
+        NameToScope nts = autowireInternal.get(instanceInterface);
         if (nts != null) {
             try {
                 return instanceInterface.cast(nts.getScopeContext().getInstance(nts.getName()));
@@ -636,8 +637,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                 ae.addContextName(getName());
                 throw ae;
             }
-        }
-        if (autowireContext != null) {
+        } else if (autowireContext != null) {
             try {
                 // resolve to parent
                 return autowireContext.resolveInstance(instanceInterface);
@@ -651,9 +651,15 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
     }
 
     public <T> T resolveExternalInstance(Class<T> instanceInterface) throws AutowireResolutionException {
-        NameToScope nts = autowireIndex.get(instanceInterface);
-        if (nts != null && nts.isVisible()) {
-            return instanceInterface.cast(nts.getScopeContext().getInstance(nts.getName()));
+        NameToScope nts = autowireExternal.get(instanceInterface);
+        if (nts != null) {
+            try {
+                return instanceInterface.cast(nts.getScopeContext().getInstance(nts.getName()));
+            } catch (TargetException e) {
+                AutowireResolutionException ae = new AutowireResolutionException("Autowire instance not found", e);
+                ae.addContextName(getName());
+                throw ae;
+            }
         } else {
             return null;
         }
@@ -667,19 +673,11 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                 for (Binding binding : ep.getBindings()) {
                     if (binding instanceof SystemBinding) {
                         Class interfaze = ep.getConfiguredService().getPort().getServiceContract().getInterface();
-                        NameToScope nts = autowireIndex.get(interfaze);
-                        if (nts == null || !nts.isEntryPoint()) { // handle special case where two entry points with
+                        NameToScope nts = autowireExternal.get(interfaze);
+                        if (nts == null) { // handle special case where two entry points with
                             // same interface register: first wins
                             ScopeContext scope = scopeContexts.get(((ContextFactory) ep.getContextFactory()).getScope());
-                            if (scope == null) {
-                                ConfigurationException ce = new MissingScopeException("Scope not found for entry point");
-                                ce.setIdentifier(ep.getName());
-                                ce.addContextName(getName());
-                                throw ce;
-                            }
-                            // only register if an impl has not already been registered
-                            NameToScope mapping = new NameToScope(new QualifiedName(ep.getName()), scope, true, true);
-                            autowireIndex.put(interfaze, mapping);
+                            registerAutowireExternal(interfaze, ep.getName(), scope);
                         }
                     }
                 }
@@ -689,12 +687,11 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                     for (Binding binding : ep.getBindings()) {
                         if (binding instanceof SystemBinding) {
                             Class interfaze = ep.getConfiguredService().getPort().getServiceContract().getInterface();
-                            if (autowireIndex.get(interfaze) == null) {
+                            if (autowireInternal.get(interfaze) == null) {
                                 ScopeContext scope = scopeContexts.get(Scope.AGGREGATE);
                                 // only register if an impl has not already been registered, ensuring it is not visible outside the containment
-                                NameToScope mapping = new NameToScope(new QualifiedName(component.getName()
-                                        + QualifiedName.NAME_SEPARATOR + ep.getName()), scope, false, false);
-                                autowireIndex.put(interfaze, mapping);
+                                String qname = component.getName() + QualifiedName.NAME_SEPARATOR + ep.getName();
+                                registerAutowireInternal(interfaze, qname, scope);
                             }
                         }
                     }
@@ -703,15 +700,28 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                 Component component = (Component) model;
                 for (Service service : component.getImplementation().getComponentInfo().getServices()) {
                     Class interfaze = service.getServiceContract().getInterface();
-                    if (autowireIndex.get(interfaze) == null) {
+                    if (autowireInternal.get(interfaze) == null) {
                         // only register if an impl has not already been registered
                         ScopeContext scopeCtx = scopeContexts.get(service.getServiceContract().getScope());
-                        NameToScope mapping = new NameToScope(new QualifiedName(component.getName()), scopeCtx, false, false);
-                        autowireIndex.put(interfaze, mapping);
+                        registerAutowireInternal(interfaze, component.getName(), scopeCtx);
                     }
                 }
             }
         }
+    }
+
+    private void registerAutowireInternal(Class<?> interfaze, String name, ScopeContext scopeContext) {
+        assert interfaze != null && !autowireInternal.containsKey(interfaze);
+        QualifiedName qname = new QualifiedName(name);
+        NameToScope nts = new NameToScope(qname, scopeContext);
+        autowireInternal.put(interfaze, nts);
+    }
+
+    private void registerAutowireExternal(Class<?> interfaze, String name, ScopeContext scopeContext) {
+        assert interfaze != null && !autowireExternal.containsKey(interfaze);
+        QualifiedName qname = new QualifiedName(name);
+        NameToScope nts = new NameToScope(qname, scopeContext);
+        autowireExternal.put(interfaze, nts);
     }
 
     protected static class NameToScope {
@@ -720,15 +730,9 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
 
         private final ScopeContext scope;
 
-        private final boolean visible;
-
-        private final boolean entryPoint;
-
-        public NameToScope(QualifiedName name, ScopeContext scope, boolean visible, boolean entryPoint) {
+        public NameToScope(QualifiedName name, ScopeContext scope) {
             this.qName = name;
             this.scope = scope;
-            this.visible = visible;
-            this.entryPoint = entryPoint;
         }
 
         public QualifiedName getName() {
@@ -738,15 +742,6 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         public ScopeContext getScopeContext() {
             return scope;
         }
-
-        public boolean isVisible() {
-            return visible;
-        }
-
-        public boolean isEntryPoint() {
-            return entryPoint;
-        }
-
     }
 
 
