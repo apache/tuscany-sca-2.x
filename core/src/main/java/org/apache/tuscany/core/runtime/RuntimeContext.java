@@ -13,10 +13,9 @@
  */
 package org.apache.tuscany.core.runtime;
 
-import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.WireBuilder;
-import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.AutowireContext;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.SystemCompositeContext;
 
@@ -59,11 +58,5 @@ public interface RuntimeContext extends AutowireContext, ConfigurationContext {
      */
     @Deprecated
     public void addBuilder(WireBuilder builder);
-
-    /**
-     * Returns the monitor factory in use by the runtime
-     */
-    @Deprecated
-    public MonitorFactory getMonitorFactory();
 
 }

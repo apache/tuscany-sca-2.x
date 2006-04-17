@@ -169,10 +169,6 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         return systemContext;
     }
 
-    public MonitorFactory getMonitorFactory() {
-        return monitorFactory;
-    }
-
     public void registerModelObject(Extensible model) throws ConfigurationException {
         assert (model != null) : "Model was null";
         // note do not configure or build model object since the root context will perform a call back
