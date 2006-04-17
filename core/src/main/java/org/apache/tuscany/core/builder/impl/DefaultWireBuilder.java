@@ -49,12 +49,8 @@ public class DefaultWireBuilder implements HierarchicalWireBuilder {
         builders.add(builder);
     }
 
-    public void setWireBuilders(List<WireBuilder> builders) {
-        builders.addAll(builders);
-    }
-
     public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
-            ScopeContext targetScopeContext) {
+                        ScopeContext targetScopeContext) {
         // get the proxy chain for the target
         if (targetFactory != null) {
             // if null, the target side has no interceptors or handlers
