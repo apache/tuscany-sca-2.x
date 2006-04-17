@@ -22,6 +22,7 @@ import javax.wsdl.Definition;
 import javax.wsdl.PortType;
 import javax.wsdl.Service;
 import javax.wsdl.WSDLException;
+import javax.wsdl.extensions.ExtensionRegistry;
 import javax.xml.namespace.QName;
 
 /**
@@ -54,4 +55,13 @@ public interface WSDLDefinitionRegistry {
      * @return the Service for the supplied name, or null if none has been defined
      */
     Service getService(QName name);
+
+    
+    /**
+     * Returns the ExtensionRegistry that is used when parsing WSDL documents during the
+     * loadDefinition call.
+     * 
+     * @return the ExtensionRegistry that is used when parsing WSDL documents.       
+     */
+    ExtensionRegistry getExtensionRegistry();
 }

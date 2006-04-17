@@ -26,6 +26,7 @@ import javax.wsdl.Definition;
 import javax.wsdl.PortType;
 import javax.wsdl.Service;
 import javax.wsdl.WSDLException;
+import javax.wsdl.extensions.ExtensionRegistry;
 import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
@@ -38,6 +39,7 @@ import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
 @org.osoa.sca.annotations.Service(interfaces = {WSDLDefinitionRegistry.class})
 public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
     private final WSDLFactory wsdlFactory;
+    private final ExtensionRegistry registry;
 
     private final Map<URL, Definition> definitionsByLocation = new HashMap<URL, Definition>();
     private final Map<String, List<Definition>> definitionsByNamespace = new HashMap<String, List<Definition>>();
@@ -46,6 +48,7 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
 
     public WSDLDefinitionRegistryImpl() throws WSDLException {
         wsdlFactory = WSDLFactory.newInstance();
+        registry = wsdlFactory.newPopulatedExtensionRegistry();
     }
 
     @org.apache.tuscany.core.system.annotation.Monitor
@@ -53,6 +56,10 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         this.monitor = monitor;
     }
 
+    public ExtensionRegistry getExtensionRegistry() {
+        return registry;
+    }
+    
     public Definition loadDefinition(String namespace, URL location) throws IOException, WSDLException {
         Definition definition = definitionsByLocation.get(location);
         if (definition != null) {
@@ -63,6 +70,7 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         monitor.readingWSDL(namespace, location);
         WSDLReader reader = wsdlFactory.newWSDLReader();
         reader.setFeature("javax.wsdl.verbose", false);
+        reader.setExtensionRegistry(registry);
 
         definition = reader.readWSDL(location.toString());
         String definitionNamespace = definition.getTargetNamespace();
@@ -131,4 +139,5 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
          */
         void cachingDefinition(String namespace, URL location);
     }
+
 }
