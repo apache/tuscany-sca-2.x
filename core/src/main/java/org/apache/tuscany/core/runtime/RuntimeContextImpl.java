@@ -33,6 +33,7 @@ import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
@@ -97,14 +98,14 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         wireBuilder.addWireBuilder(builder);
     }
 
-    public CompositeContext getContext(String ctxName) {
+    public Context getContext(String ctxName) {
         checkRunning();
         if (ROOT.equals(ctxName)) {
             return rootContext;
         } else if (SYSTEM.equals(ctxName)) {
             return systemContext;
         }
-        return (CompositeContext) rootContext.getContext(ctxName);
+        return rootContext.getContext(ctxName);
     }
 
     public CompositeContext getRootContext() {
