@@ -15,8 +15,6 @@ package org.apache.tuscany.core.context;
 
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
-import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.model.assembly.Extensible;
 
 /**
  * Offers configuration services in the runtime. A ConfigurationContext is able to configure a model and then build the
@@ -29,13 +27,4 @@ import org.apache.tuscany.model.assembly.Extensible;
  * @version $Rev$ $Date$
  */
 public interface ConfigurationContext extends ContextFactoryBuilder, WireBuilder {
-
-    /**
-     * Adds additional configuration information to a model object.
-     * 
-     * @param model the model object to be configured
-     * @throws ConfigurationException
-     */
-    public void configure(Extensible model) throws ConfigurationException;
-
 }

@@ -211,11 +211,8 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         visitor.start(model);
     }
 
-    public void configure(Extensible model) throws ConfigurationException {
-    }
-
     public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
-            ScopeContext targetScopeContext) throws BuilderConfigException {
+                        ScopeContext targetScopeContext) throws BuilderConfigException {
         wireBuilder.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
     }
 

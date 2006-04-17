@@ -21,12 +21,10 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitorImpl;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
-import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.model.assembly.AssemblyObject;
-import org.apache.tuscany.model.assembly.Extensible;
 
 /**
  *  A mock configuration context
@@ -38,7 +36,7 @@ public class MockConfigContext implements ConfigurationContext {
     private List<ContextFactoryBuilder> builders;
 
     private DefaultWireBuilder wireBuilder = new DefaultWireBuilder();
-    
+
     public MockConfigContext(List<ContextFactoryBuilder> builders, List<WireBuilder> wireBuilders) {
         this.builders = (builders == null) ? new ArrayList(1) : builders;
         if (wireBuilders != null){
@@ -48,16 +46,13 @@ public class MockConfigContext implements ConfigurationContext {
         }
     }
 
-    public void configure(Extensible model) throws ConfigurationException {
-    }
-
     public void build(AssemblyObject model) throws BuilderConfigException {
         AssemblyVisitorImpl visitor = new AssemblyVisitorImpl(builders);
         visitor.start(model);
     }
 
     public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
-            ScopeContext targetScopeContext) throws BuilderConfigException {
+                        ScopeContext targetScopeContext) throws BuilderConfigException {
         wireBuilder.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
     }
 

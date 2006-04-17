@@ -256,11 +256,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         initializeScopes();
         if (configurationContext != null) {
             try {
-                configurationContext.configure(model);
                 configurationContext.build(model);
-            } catch (ConfigurationException e) {
-                e.addContextName(getName());
-                throw e;
             } catch (BuilderConfigException e) {
                 e.addContextName(getName());
                 throw e;
@@ -761,17 +757,6 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         }
     }
 
-
-    public void configure(Extensible model) throws ConfigurationException {
-        if (configurationContext != null) {
-            try {
-                configurationContext.configure(model);
-            } catch (ConfigurationException e) {
-                e.addContextName(getName());
-                throw e;
-            }
-        }
-    }
 
     public void build(AssemblyObject model) throws BuilderConfigException {
         if (configurationContext != null) {
