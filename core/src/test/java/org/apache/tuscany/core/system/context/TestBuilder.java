@@ -1,18 +1,17 @@
 package org.apache.tuscany.core.system.context;
 
-import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.runtime.RuntimeContext;
-import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
+import org.apache.tuscany.core.builder.BuilderException;
+import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
+import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.model.assembly.AssemblyObject;
+
 @Scope("MODULE")
 public class TestBuilder implements ContextFactoryBuilder {
-
-    @Autowire
-    private RuntimeContext runtime;
+    private ContextFactoryBuilderRegistry builderRegistry;
 
     private boolean invoked = false;
 
@@ -22,7 +21,12 @@ public class TestBuilder implements ContextFactoryBuilder {
 
     @Init(eager = true)
     public void init() {
-        runtime.addBuilder(this);
+        builderRegistry.register(this);
+    }
+
+    @Autowire
+    public void setBuilderRegistry(ContextFactoryBuilderRegistry builderRegistry) {
+        this.builderRegistry = builderRegistry;
     }
 
     public void build(AssemblyObject object) throws BuilderException {

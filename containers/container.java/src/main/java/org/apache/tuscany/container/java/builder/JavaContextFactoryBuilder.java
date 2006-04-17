@@ -15,6 +15,7 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.NoAccessorException;
 import org.apache.tuscany.core.builder.ObjectFactory;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.builder.impl.ListMultiplicityObjectFactory;
@@ -38,7 +39,6 @@ import org.apache.tuscany.core.wire.ProxyFactoryFactory;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.core.message.MessageFactory;
-import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.AtomicComponent;
@@ -67,8 +67,7 @@ import commonj.sdo.DataObject;
  */
 @org.osoa.sca.annotations.Scope("MODULE")
 public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
-
-    private RuntimeContext runtimeContext;
+    private ContextFactoryBuilderRegistry builderRegistry;
 
     private ProxyFactoryFactory proxyFactoryFactory;
 
@@ -88,15 +87,12 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
 
     @Init(eager = true)
     public void init() {
-        runtimeContext.addBuilder(this);
+        builderRegistry.register(this);
     }
 
-    /**
-     * @param runtimeContext The runtimeContext to set.
-     */
     @Autowire
-    public void setRuntimeContext(RuntimeContext runtimeContext) {
-        this.runtimeContext = runtimeContext;
+    public void setBuilderRegistry(ContextFactoryBuilderRegistry builderRegistry) {
+        this.builderRegistry = builderRegistry;
     }
 
     /**

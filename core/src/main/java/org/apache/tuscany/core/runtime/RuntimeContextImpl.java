@@ -39,9 +39,9 @@ import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
-import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
+import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Composite;
 import org.apache.tuscany.model.assembly.Extensible;
@@ -88,7 +88,7 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         rootContext = new CompositeContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this);
         systemContext = new SystemCompositeContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(), this);
 
-        // bootstrap the builder regsitry
+        // bootstrap the builder registry
         builderRegistry = new ContextFactoryBuilderRegistryImpl();
         if (builders != null) {
             for (ContextFactoryBuilder builder: builders) {
@@ -142,11 +142,6 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         rootContext.stop();
         systemContext.stop();
         lifecycleState = STOPPED;
-    }
-
-    public void addBuilder(ContextFactoryBuilder builder) {
-        assert (builder != null) : "Builder was null";
-        builderRegistry.register(builder);
     }
 
     public void addBuilder(WireBuilder builder) {
@@ -242,6 +237,8 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
             return instanceInterface.cast(this);
         } else if (RuntimeContext.class.equals(instanceInterface)) {
             return instanceInterface.cast(this);
+        } else if (ContextFactoryBuilderRegistry.class.equals(instanceInterface)) {
+            return instanceInterface.cast(builderRegistry);
         } else {
             // autowire to system components
             return instanceInterface.cast(getSystemContext().resolveExternalInstance(instanceInterface));

@@ -27,6 +27,7 @@ import org.apache.tuscany.container.js.rhino.RhinoE4XScript;
 import org.apache.tuscany.container.js.rhino.RhinoScript;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.wire.InvocationConfiguration;
 import org.apache.tuscany.core.wire.MethodHashMap;
@@ -37,7 +38,6 @@ import org.apache.tuscany.core.wire.ProxyFactoryFactory;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.core.message.MessageFactory;
-import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.AtomicComponent;
@@ -60,6 +60,7 @@ import commonj.sdo.helper.TypeHelper;
  */
 @org.osoa.sca.annotations.Scope("MODULE")
 public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
+    private ContextFactoryBuilderRegistry builderRegistry;
 
     private ProxyFactoryFactory factory;
 
@@ -67,22 +68,17 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
 
     private ContextFactoryBuilder referenceBuilder;
 
-    private RuntimeContext runtimeContext;
-
     public JavaScriptContextFactoryBuilder() {
     }
 
     @Init(eager = true)
     public void init() {
-        runtimeContext.addBuilder(this);
+        builderRegistry.register(this);
     }
 
-    /**
-     * @param runtimeContext The runtimeContext to set.
-     */
     @Autowire
-    public void setRuntimeContext(RuntimeContext runtimeContext) {
-        this.runtimeContext = runtimeContext;
+    public void setBuilderRegistry(ContextFactoryBuilderRegistry builderRegistry) {
+        this.builderRegistry = builderRegistry;
     }
 
     /**

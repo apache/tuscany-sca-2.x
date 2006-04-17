@@ -14,7 +14,6 @@
 package org.apache.tuscany.binding.axis2.builder;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,6 +31,7 @@ import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
@@ -43,7 +43,6 @@ import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
 import org.apache.tuscany.core.wire.ProxyFactoryFactory;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.core.message.MessageFactory;
-import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.ConfiguredService;
@@ -62,8 +61,7 @@ import commonj.sdo.helper.TypeHelper;
  */
 @Scope("MODULE")
 public class ExternalWebServiceBuilder implements ContextFactoryBuilder {
-
-    private RuntimeContext runtimeContext;
+    private ContextFactoryBuilderRegistry builderRegistry;
 
     private ProxyFactoryFactory proxyFactoryFactory;
 
@@ -76,15 +74,12 @@ public class ExternalWebServiceBuilder implements ContextFactoryBuilder {
 
     @Init(eager = true)
     public void init() {
-        runtimeContext.addBuilder(this);
+        builderRegistry.register(this);
     }
 
-    /**
-     * @param runtimeContext The runtimeContext to set.
-     */
     @Autowire
-    public void setRuntimeContext(RuntimeContext runtimeContext) {
-        this.runtimeContext = runtimeContext;
+    public void setBuilderRegistry(ContextFactoryBuilderRegistry builderRegistry) {
+        this.builderRegistry = builderRegistry;
     }
 
     /**
@@ -150,7 +145,7 @@ public class ExternalWebServiceBuilder implements ContextFactoryBuilder {
             policyBuilder.build(configuredService);
         }
         // add tail interceptor
-        for (InvocationConfiguration iConfig : (Collection<InvocationConfiguration>) iConfigMap.values()) {
+        for (InvocationConfiguration iConfig : iConfigMap.values()) {
             iConfig.addTargetInterceptor(new InvokerInterceptor());
         }
 
@@ -183,10 +178,7 @@ public class ExternalWebServiceBuilder implements ContextFactoryBuilder {
 
         TypeHelper typeHelper = externalService.getComposite().getAssemblyContext().getTypeHelper();
 
-        ExternalWebServiceClient externalWebServiceClient = new ExternalWebServiceClient(configurationContext, axisService, wsPortMetaData,
-                typeHelper);
-
-        return externalWebServiceClient;
+        return new ExternalWebServiceClient(configurationContext, axisService, wsPortMetaData, typeHelper);
     }
 
 }
