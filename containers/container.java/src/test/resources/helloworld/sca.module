@@ -21,5 +21,13 @@
     <component name="HelloWorld">
         <implementation.java class="org.apache.tuscany.container.java.integration.HelloWorldImpl"/>
     </component>
-    
+
+<!--
+    <import.wsdl namespace="http://www.example.org" location="example.wsdl"/>
+
+    <externalService name="external">
+        <interface.wsdl interface="http://www.example.org#HelloWorld"/>
+    </externalService>
+-->
+
 </module>

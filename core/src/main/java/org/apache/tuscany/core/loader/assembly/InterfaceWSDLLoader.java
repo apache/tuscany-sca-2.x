@@ -18,18 +18,30 @@ package org.apache.tuscany.core.loader.assembly;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.config.MissingInterfaceException;
+import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
+import org.apache.tuscany.core.loader.StAXUtil;
+import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.wsdl.PortType;
 
 /**
  * @version $Rev$ $Date$
  */
 @org.osoa.sca.annotations.Scope("MODULE")
 public class InterfaceWSDLLoader extends AbstractLoader {
+    private WSDLDefinitionRegistry wsdlRegistry;
+
+    @Autowire
+    public void setWsdlRegistry(WSDLDefinitionRegistry wsdlRegistry) {
+        this.wsdlRegistry = wsdlRegistry;
+    }
+
     public QName getXMLType() {
         return AssemblyConstants.INTERFACE_WSDL;
     }
@@ -38,8 +50,30 @@ public class InterfaceWSDLLoader extends AbstractLoader {
         assert AssemblyConstants.INTERFACE_WSDL.equals(reader.getName());
         WSDLServiceContract serviceContract = factory.createWSDLServiceContract();
         serviceContract.setScope(Scope.INSTANCE);
-        serviceContract.setPortTypeURI(reader.getAttributeValue(null, "interface"));
-        serviceContract.setCallbackPortTypeURI(reader.getAttributeValue(null, "callbackInterface"));
+
+        String portTypeURI = reader.getAttributeValue(null, "interface");
+        if (portTypeURI != null) {
+            serviceContract.setPortType(getPortType(portTypeURI));
+        }
+
+        portTypeURI = reader.getAttributeValue(null, "callbackInterface");
+        if (portTypeURI != null) {
+            serviceContract.setCallbackPortType(getPortType(portTypeURI));
+        }
+        StAXUtil.skipToEndElement(reader);
         return serviceContract;
+    }
+
+    protected PortType getPortType(String uri) throws MissingInterfaceException {
+        // fixme support WSDL 2.0 XPointer references and possible XML Schema QNames
+        int index = uri.indexOf('#');
+        String namespace = uri.substring(0, index);
+        String name = uri.substring(index + 1);
+        QName qname = new QName(namespace, name);
+        PortType portType = wsdlRegistry.getPortType(qname);
+        if (portType == null) {
+            throw new MissingInterfaceException(uri);
+        }
+        return portType;
     }
 }

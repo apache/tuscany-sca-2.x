@@ -17,7 +17,6 @@
 package org.apache.tuscany.model.types.wsdl.impl;
 
 import java.util.List;
-import javax.wsdl.Definition;
 import javax.wsdl.Operation;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
@@ -32,7 +31,6 @@ import org.objectweb.asm.Type;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.impl.ServiceContractImpl;
-import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 import org.apache.tuscany.model.util.XMLNameUtil;
 
@@ -44,10 +42,6 @@ public class WSDLServiceContractImpl extends ServiceContractImpl implements WSDL
     private PortType portType;
 
     private PortType callbackPortType;
-
-    private String portTypeURI;
-
-    private String callbackPortTypeURI;
 
     private static final String[] EMPTY_STRINGS = new String[0];
 
@@ -76,35 +70,12 @@ public class WSDLServiceContractImpl extends ServiceContractImpl implements WSDL
     }
 
     /**
-     * @param portTypeURI The portTypeURI to set.
-     */
-    public void setPortTypeURI(String portTypeURI) {
-        this.portTypeURI = portTypeURI;
-    }
-
-    /**
-     * @param callbackPortTypeURI The callbackPortTypeURI to set.
-     */
-    public void setCallbackPortTypeURI(String callbackPortTypeURI) {
-        this.callbackPortTypeURI = callbackPortTypeURI;
-    }
-
-    /**
      * @see org.apache.tuscany.model.assembly.impl.ExtensibleImpl#initialize(org.apache.tuscany.model.assembly.AssemblyContext)
      */
     public void initialize(AssemblyContext modelContext) {
         if (isInitialized())
             return;
         super.initialize(modelContext);
-
-        // Resolve the WSDL portType and callback portType
-        AssemblyModelLoader modelLoader = modelContext.getAssemblyLoader();
-        if (portTypeURI != null && portType == null) {
-            portType = getPortType(modelLoader, portTypeURI);
-        }
-        if (callbackPortTypeURI != null && callbackPortType == null) {
-            callbackPortType = getPortType(modelLoader, callbackPortTypeURI);
-        }
 
         // Load the Java interface for the portType
         if (portType != null && getInterface() == null) {
@@ -135,33 +106,6 @@ public class WSDLServiceContractImpl extends ServiceContractImpl implements WSDL
             }
             super.setCallbackInterface(interfaceClass);
         }
-    }
-
-    /**
-     * Get a portType from the given uri
-     *
-     * @param loader
-     * @param uri
-     * @return the portType
-     */
-    private static PortType getPortType(AssemblyModelLoader loader, String uri) {
-
-        // Get the WSDL port namespace and name
-        int h = uri.indexOf('#');
-        String namespace = uri.substring(0, h);
-        String name = uri.substring(h + 1);
-        QName qname = new QName(namespace, name);
-
-        // Load the WSDL definitions for the given namespace
-        List<Definition> definitions = loader.loadDefinitions(namespace);
-        if (definitions == null)
-            throw new IllegalArgumentException("Cannot find WSDL definition for " + namespace);
-        for (Definition definition : definitions) {
-
-            // Find the port with the given name
-            return definition.getPortType(qname);
-        }
-        throw new IllegalArgumentException("Cannot find WSDL portType " + uri);
     }
 
     /**

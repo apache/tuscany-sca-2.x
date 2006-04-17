@@ -19,12 +19,13 @@ package org.apache.tuscany.core.loader.assembly;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import javax.wsdl.WSDLException;
 import javax.wsdl.Definition;
+import javax.wsdl.WSDLException;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import commonj.sdo.helper.XSDHelper;
 import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
@@ -35,11 +36,9 @@ import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.IMPORT_WSDL;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.ImportWSDL;
 import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.ImportWSDL;
 import org.apache.tuscany.sdo.util.SDOUtil;
-
-import commonj.sdo.helper.XSDHelper;
 
 /**
  * Loader that handles &lt;import.wsdl&gt; elements.

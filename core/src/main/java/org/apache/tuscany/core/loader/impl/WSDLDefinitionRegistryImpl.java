@@ -31,12 +31,15 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
+import org.osoa.sca.annotations.Scope;
+
 import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
 
 /**
  * @version $Rev$ $Date$
  */
 @org.osoa.sca.annotations.Service(interfaces = {WSDLDefinitionRegistry.class})
+@Scope("MODULE")
 public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
     private final WSDLFactory wsdlFactory;
     private final ExtensionRegistry registry;
@@ -59,7 +62,7 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
     public ExtensionRegistry getExtensionRegistry() {
         return registry;
     }
-    
+
     public Definition loadDefinition(String namespace, URL location) throws IOException, WSDLException {
         Definition definition = definitionsByLocation.get(location);
         if (definition != null) {

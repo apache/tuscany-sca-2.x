@@ -27,7 +27,7 @@ public interface WSDLServiceContract extends ServiceContract {
     
     /**
      * Returns the WSDL portType.
-     * @return
+     * @return the WSDL portType
      */
     PortType getPortType();
     
@@ -39,7 +39,7 @@ public interface WSDLServiceContract extends ServiceContract {
     
     /**
      * Returns the callback WSDL portType.
-     * @return
+     * @return the callback WSDL portType
      */
     PortType getCallbackPortType();
     
@@ -48,8 +48,4 @@ public interface WSDLServiceContract extends ServiceContract {
      * @param portType
      */
     void setCallbackPortType(PortType portType);
-
-    void setPortTypeURI(String portTypeURI);
-
-    void setCallbackPortTypeURI(String callbackPortTypeURI);
 }
