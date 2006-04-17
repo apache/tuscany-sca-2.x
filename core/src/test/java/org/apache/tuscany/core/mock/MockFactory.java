@@ -32,6 +32,7 @@ import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
+import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ComponentInfo;
@@ -48,6 +49,7 @@ import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 
 /**
  * Generates test components, modules, and runtime artifacts
@@ -253,7 +255,7 @@ public class MockFactory {
     public static <T> Component createSystemComponent(String name,  Class<T> service, Class<? extends T> impl,Scope scope ){
        return systemFactory.createSystemComponent(name,service,impl,scope);
     }
-    
+
     /**
      * Creates a test system module with source and target components wired together.
      * 
@@ -309,7 +311,7 @@ public class MockFactory {
      * @see org.apache.tuscany.core.mock.component.Target
      */
     public static ModuleComponent createSystemModuleComponentWithWiredComponents(String moduleComponentName, Scope sourceScope,
-            Scope targetScope) {
+                                                                                 Scope targetScope) {
         ModuleComponent mc = systemFactory.createModuleComponent();
         mc.setName(moduleComponentName);
         mc.setImplementation(createSystemModuleWithWiredComponents(moduleComponentName+".module", sourceScope, targetScope));
@@ -351,7 +353,8 @@ public class MockFactory {
      * Creates a default {@link RuntimeContext} configured with support for Java component implementations
      */
     public static RuntimeContext createCoreRuntime() {
-        RuntimeContext runtime = new RuntimeContextImpl(null, createSystemBuilders(), null);
+        NullMonitorFactory monitorFactory = new NullMonitorFactory();
+        RuntimeContext runtime = new RuntimeContextImpl(monitorFactory, BootstrapHelper.bootstrapContextFactoryBuilders(monitorFactory), null);
         runtime.start();
         return runtime;
     }

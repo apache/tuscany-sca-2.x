@@ -15,15 +15,16 @@ package org.apache.tuscany.core.runtime;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
+import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
+import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.mock.MockFactory;
-
-import java.util.List;
 
 /**
  * Tests runtime boot scenarios
@@ -32,6 +33,9 @@ import java.util.List;
  */
 public class RuntimeBootTestCase extends TestCase {
     private RuntimeContext runtime;
+    private NullMonitorFactory monitorFactory;
+    private ContextFactoryBuilderRegistry builderRegistry;
+    private DefaultWireBuilder wireBuilder;
 
     public void testContextParents() {
         CompositeContext rootContext = runtime.getRootContext();
@@ -59,9 +63,8 @@ public class RuntimeBootTestCase extends TestCase {
 
     public void testIncrementalBoot() throws Exception{
 
-        List<ContextFactoryBuilder> builders  = MockFactory.createSystemBuilders();
         // start the runtime context
-        RuntimeContext runtimeContext = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
+        RuntimeContext runtimeContext = new RuntimeContextImpl(monitorFactory, builderRegistry, wireBuilder);
         runtimeContext.start();
 
         CompositeContext system = runtimeContext.getSystemContext();
@@ -84,7 +87,10 @@ public class RuntimeBootTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        runtime = new RuntimeContextImpl();
+        monitorFactory = new NullMonitorFactory();
+        builderRegistry = BootstrapHelper.bootstrapContextFactoryBuilders(monitorFactory);
+        wireBuilder = new DefaultWireBuilder();
+        runtime = new RuntimeContextImpl(monitorFactory, builderRegistry, wireBuilder);
         runtime.start();
     }
 

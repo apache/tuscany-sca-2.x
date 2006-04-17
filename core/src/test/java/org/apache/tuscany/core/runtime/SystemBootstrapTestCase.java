@@ -13,13 +13,12 @@
  */
 package org.apache.tuscany.core.runtime;
 
-import java.util.List;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
+import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.event.ModuleStart;
@@ -44,7 +43,7 @@ import org.apache.tuscany.model.types.java.JavaServiceContract;
  * @version $Rev: 385834 $ $Date: 2006-03-14 08:57:08 -0800 (Tue, 14 Mar 2006) $
  */
 public class SystemBootstrapTestCase extends TestCase {
-    private List<ContextFactoryBuilder> builders;
+    private ContextFactoryBuilderRegistry builderRegistry;
     
     private SystemAssemblyFactory factory = new SystemAssemblyFactoryImpl();
 
@@ -52,7 +51,7 @@ public class SystemBootstrapTestCase extends TestCase {
      * Simulates booting a runtime process
      */
     public void testBoot() throws Exception {
-        RuntimeContext runtimeContext = new RuntimeContextImpl(new NullMonitorFactory(), builders,null);
+        RuntimeContext runtimeContext = new RuntimeContextImpl(new NullMonitorFactory(), builderRegistry,null);
         runtimeContext.start();
 
         CompositeContext systemContext = runtimeContext.getSystemContext();
@@ -82,7 +81,7 @@ public class SystemBootstrapTestCase extends TestCase {
     }
 
     public void testRuntimeBoot() throws Exception {
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders,null);
+        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builderRegistry,null);
         runtime.start();
         runtime.getRootContext();
 
@@ -123,6 +122,6 @@ public class SystemBootstrapTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        builders = MockFactory.createSystemBuilders();
+        builderRegistry = BootstrapHelper.bootstrapContextFactoryBuilders(null);
     }
 }

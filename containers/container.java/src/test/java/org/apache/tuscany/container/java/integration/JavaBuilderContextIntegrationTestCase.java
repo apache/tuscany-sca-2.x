@@ -13,9 +13,6 @@
  */
 package org.apache.tuscany.container.java.integration;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -27,20 +24,19 @@ import org.apache.tuscany.container.java.invocation.mock.MockHandler;
 import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
-import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
+import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.event.ModuleStart;
-import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
-import org.apache.tuscany.core.wire.ProxyFactoryFactory;
+import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
-import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
-import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
-import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
+import org.apache.tuscany.core.wire.ProxyFactoryFactory;
+import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 
 /**
  * Verifies that the composite context implementation and java component builders construct references properly
@@ -48,6 +44,9 @@ import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
  * @version $Rev$ $Date$
  */
 public class JavaBuilderContextIntegrationTestCase extends TestCase {
+    private ContextFactoryBuilderRegistry builderRegistry;
+    private DefaultWireBuilder defaultWireBuilder;
+    private NullMonitorFactory monitorFactory;
 
     public JavaBuilderContextIntegrationTestCase(String arg0) {
         super(arg0);
@@ -55,6 +54,9 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        monitorFactory = new NullMonitorFactory();
+        builderRegistry = BootstrapHelper.bootstrapContextFactoryBuilders(monitorFactory);
+        defaultWireBuilder = new DefaultWireBuilder();
     }
 
     protected void tearDown() throws Exception {
@@ -64,13 +66,8 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     public void testRefWithSourceInterceptor() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
-        List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
-        builders.add((new SystemContextFactoryBuilder(null)));
-        builders.add(new SystemEntryPointBuilder());
-        builders.add(new SystemExternalServiceBuilder());
-
         ProxyFactoryFactory proxyFactoryFactory =new JDKProxyFactoryFactory();
-        
+
         JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder();
         javaBuilder.setMessageFactory(msgFactory);
         javaBuilder.setProxyFactoryFactory(proxyFactoryFactory);
@@ -80,11 +77,9 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         //HierarchicalBuilder refBuilder = new HierarchicalBuilder();
         //refBuilder.addBuilder(interceptorBuilder);
         javaBuilder.addPolicyBuilder(interceptorBuilder);
-        builders.add(javaBuilder);
+        builderRegistry.register(javaBuilder);
 
-        DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
-
-        RuntimeContext runtime = new RuntimeContextImpl(null, builders, defaultWireBuilder);
+        RuntimeContext runtime = new RuntimeContextImpl(monitorFactory, builderRegistry, defaultWireBuilder);
         runtime.addBuilder(new JavaTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
@@ -105,11 +100,6 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     public void testRefWithSourceInterceptorHandler() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
-        List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
-        builders.add((new SystemContextFactoryBuilder(null)));
-        builders.add(new SystemEntryPointBuilder());
-        builders.add(new SystemExternalServiceBuilder());
-
         JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder();
         javaBuilder.setMessageFactory(msgFactory);
         javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
@@ -124,11 +114,8 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         javaBuilder.addPolicyBuilder(interceptorBuilder);
         javaBuilder.addPolicyBuilder(handlerBuilder);
 
-        //javaBuilder.setPolicyBuilder(refBuilder);
-        builders.add(javaBuilder);
-
-        DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
-        RuntimeContext runtime = new RuntimeContextImpl(null, builders, defaultWireBuilder);
+        builderRegistry.register(javaBuilder);
+        RuntimeContext runtime = new RuntimeContextImpl(monitorFactory, builderRegistry, defaultWireBuilder);
         runtime.addBuilder(new JavaTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
@@ -151,11 +138,6 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     public void testRefWithTargetInterceptorHandler() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
-        List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
-        builders.add((new SystemContextFactoryBuilder(null)));
-        builders.add(new SystemEntryPointBuilder());
-        builders.add(new SystemExternalServiceBuilder());
-
         JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder();
         javaBuilder.setMessageFactory(msgFactory);
         javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
@@ -171,11 +153,9 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         javaBuilder.addPolicyBuilder(handlerBuilder);
 
        // javaBuilder.setPolicyBuilder(refBuilder);
-        builders.add(javaBuilder);
+        builderRegistry.register(javaBuilder);
 
-        DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
-
-        RuntimeContext runtime = new RuntimeContextImpl(null, builders, defaultWireBuilder);
+        RuntimeContext runtime = new RuntimeContextImpl(monitorFactory, builderRegistry, defaultWireBuilder);
         runtime.addBuilder(new JavaTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
@@ -198,11 +178,6 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     public void testRefWithTargetInterceptor() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
-        List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
-        builders.add((new SystemContextFactoryBuilder(null)));
-        builders.add(new SystemEntryPointBuilder());
-        builders.add(new SystemExternalServiceBuilder());
-
         JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder();
         javaBuilder.setMessageFactory(msgFactory);
         javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
@@ -214,13 +189,12 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
         javaBuilder.addPolicyBuilder(interceptorBuilder);
 
         //javaBuilder.setPolicyBuilder(refBuilder);
-        builders.add(javaBuilder);
 
-        DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
+        builderRegistry.register(javaBuilder);
 
-        RuntimeContext runtime = new RuntimeContextImpl(null, builders, defaultWireBuilder);
+        RuntimeContext runtime = new RuntimeContextImpl(monitorFactory, builderRegistry, defaultWireBuilder);
         runtime.addBuilder(new JavaTargetWireBuilder());
-        
+
         runtime.start();
         runtime.getRootContext().registerModelObject(
                 MockFactory.createCompositeComponent("test.module"));

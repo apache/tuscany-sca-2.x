@@ -24,6 +24,8 @@ import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
+import org.apache.tuscany.core.builder.impl.ContextFactoryBuilderRegistryImpl;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.config.impl.StAXModuleComponentConfigurationLoaderImpl;
@@ -82,6 +84,20 @@ public final class BootstrapHelper {
         configBuilders.add(new SystemEntryPointBuilder());
         configBuilders.add(new SystemExternalServiceBuilder());
         return configBuilders;
+    }
+
+    /**
+     * Returns a ContextFactoryBuilderRegistry with default builders registered for system contexts.
+     *
+     * @param monitorFactory a monitorFactory that will be used to obtain monitors for system components
+     * @return a default ContextFactoryBuilderRegistry
+     */
+    public static ContextFactoryBuilderRegistry bootstrapContextFactoryBuilders(MonitorFactory monitorFactory) {
+        ContextFactoryBuilderRegistryImpl registry = new ContextFactoryBuilderRegistryImpl();
+        registry.register(new SystemContextFactoryBuilder(monitorFactory));
+        registry.register(new SystemEntryPointBuilder());
+        registry.register(new SystemExternalServiceBuilder());
+        return registry;
     }
 
     public static final String SYSTEM_LOADER_COMPONENT = "tuscany.loader";

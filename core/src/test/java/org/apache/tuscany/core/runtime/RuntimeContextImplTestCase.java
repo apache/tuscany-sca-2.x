@@ -15,8 +15,13 @@ package org.apache.tuscany.core.runtime;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import org.osoa.sca.ServiceUnavailableException;
+
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
+import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
+import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
@@ -35,9 +40,6 @@ import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
-import org.osoa.sca.ServiceUnavailableException;
-
-import java.util.List;
 
 /**
  * Performs basic tests on the runtime context
@@ -48,17 +50,17 @@ public class RuntimeContextImplTestCase extends TestCase {
 
     private SystemAssemblyFactory systemFactory = new SystemAssemblyFactoryImpl();
 
-    private List<ContextFactoryBuilder> builders;
+    private ContextFactoryBuilderRegistry builderRegistry;
+
     private SystemAssemblyFactory factory;
+    private MonitorFactory monitorFactory;
+    private RuntimeContext runtime;
 
     /**
      * Tests explicit wiring of an external service to a system entry point that is wired to a child system module entry
      * point
      */
     public void testSystemExplicitWiring() throws Exception {
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
-        runtime.start();
-
         CompositeContext root = runtime.getRootContext();
         Assert.assertNotNull(root);
         Assert.assertTrue(root.getLifecycleState() == Context.RUNNING);
@@ -98,16 +100,12 @@ public class RuntimeContextImplTestCase extends TestCase {
 
         moduleContext.publish(new ModuleStop(this));
         system.publish(new ModuleStop(this));
-        runtime.stop();
     }
 
     /**
      * Tests autowiring an external service to a system entry point
      */
     public void testSystemAutoWiring() throws Exception {
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
-        runtime.start();
-
         CompositeContext root = runtime.getRootContext();
         Assert.assertNotNull(root);
         Assert.assertTrue(root.getLifecycleState() == Context.RUNNING);
@@ -131,13 +129,9 @@ public class RuntimeContextImplTestCase extends TestCase {
 
         moduleContext.publish(new ModuleStop(this));
         system.publish(new ModuleStop(this));
-        runtime.stop();
     }
 
     public void testServiceNotFound() throws Exception {
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
-        runtime.start();
-
         // create a test module
         Component moduleComponent = MockFactory.createCompositeComponent("module");
         runtime.registerModelObject(moduleComponent);
@@ -150,12 +144,9 @@ public class RuntimeContextImplTestCase extends TestCase {
             // expected
         }
         moduleContext.publish(new ModuleStop(this));
-        runtime.stop();
     }
 
     public void testExternalServiceReferenceNotFound() throws Exception {
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
-        runtime.start();
         CompositeContext system = runtime.getSystemContext();
 
         // create a test module
@@ -176,13 +167,9 @@ public class RuntimeContextImplTestCase extends TestCase {
         }
         moduleContext.publish(new ModuleStop(this));
         system.publish(new ModuleStop(this));
-        runtime.stop();
     }
 
     public void testEntryPointReferenceNotFound() throws Exception {
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
-        runtime.start();
-
         // create a test module
         Component moduleComponent = MockFactory.createCompositeComponent("module");
         runtime.registerModelObject(moduleComponent);
@@ -202,16 +189,12 @@ public class RuntimeContextImplTestCase extends TestCase {
             // expected
         }
         moduleContext.publish(new ModuleStop(this));
-        runtime.stop();
     }
 
     /**
      * Test two module components that have external services wired to entry points contained in each
      */
     public void testCircularWires() throws Exception {
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
-        runtime.start();
-
         // create a test modules
         Component module1 = MockFactory.createCompositeComponent("module1");
         runtime.registerModelObject(module1);
@@ -239,7 +222,6 @@ public class RuntimeContextImplTestCase extends TestCase {
         moduleContext2.publish(new ModuleStart(this));
         Assert.assertNotNull(moduleContext2.getContext("ExternalService2").getInstance(null));
         Assert.assertNotNull(moduleContext1.getContext("ExternalService1").getInstance(null));
-        runtime.stop();
     }
 
     /**
@@ -247,9 +229,6 @@ public class RuntimeContextImplTestCase extends TestCase {
      * as an error condition FIXME this must be implemented
      */
     public void testInterModuleCircularReference() throws Exception {
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
-        runtime.start();
-
         // create a test modules
         Component module1 = MockFactory.createCompositeComponent("module1");
         runtime.registerModelObject(module1);
@@ -278,8 +257,6 @@ public class RuntimeContextImplTestCase extends TestCase {
 
     public void testRuntimeBuilderAutowire() throws Exception {
 
-        RuntimeContext runtime = new RuntimeContextImpl(new NullMonitorFactory(), builders, null);
-        runtime.start();
 
         CompositeContext system = runtime.getSystemContext();
         Component builder = factory.createSystemComponent("TestBuilder", ContextFactoryBuilder.class, TestBuilder.class, Scope.MODULE);
@@ -290,13 +267,20 @@ public class RuntimeContextImplTestCase extends TestCase {
         runtime.getContext("module1");
         Assert.assertTrue(((TestBuilder) system.getContext("TestBuilder").getInstance(null)).invoked());
         system.publish(new ModuleStop(this));
-        runtime.stop();
-
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        builders = MockFactory.createSystemBuilders();
+        monitorFactory = new NullMonitorFactory();
+        builderRegistry = BootstrapHelper.bootstrapContextFactoryBuilders(monitorFactory);
         factory = new SystemAssemblyFactoryImpl();
+
+        runtime = new RuntimeContextImpl(monitorFactory, builderRegistry, null);
+        runtime.start();
+    }
+
+    protected void tearDown() throws Exception {
+        runtime.stop();
+        super.tearDown();
     }
 }

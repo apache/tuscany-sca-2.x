@@ -19,8 +19,13 @@ package org.apache.tuscany.container.java.integration;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.common.monitor.MonitorFactory;
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.container.java.assembly.impl.JavaAssemblyFactoryImpl;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
+import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
+import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.model.assembly.Module;
@@ -50,8 +55,11 @@ public class JavaIntegrationTestCase extends TestCase {
         factory = new JavaAssemblyFactoryImpl();
 
         // Create and bootstrap an empty Tuscany runtime
-        this.runtime = new RuntimeContextImpl();
-        this.runtime.start();
+        MonitorFactory monitorFactory = new NullMonitorFactory();
+        ContextFactoryBuilderRegistry builderRegistry = BootstrapHelper.bootstrapContextFactoryBuilders(monitorFactory);
+        DefaultWireBuilder wireBuilder = new DefaultWireBuilder();
+        runtime = new RuntimeContextImpl(monitorFactory, builderRegistry, wireBuilder);
+        runtime.start();
     }
 
     protected void tearDown() throws Exception {

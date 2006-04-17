@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Set;
 
 import junit.framework.Assert;
+import org.osoa.sca.annotations.ComponentName;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
 
 import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
@@ -48,6 +51,8 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
+import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.CompositeContext;
@@ -69,6 +74,7 @@ import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
+import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AtomicComponent;
 import org.apache.tuscany.model.assembly.Component;
@@ -84,9 +90,8 @@ import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
-import org.osoa.sca.annotations.ComponentName;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
+import org.apache.tuscany.common.monitor.MonitorFactory;
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 
 /**
  * Generates test components, modules, and runtime artifacts
@@ -361,7 +366,7 @@ public class MockFactory {
      * @see org.apache.tuscany.core.mock.component.Source
      * @see org.apache.tuscany.core.mock.component.Target
      */
-    
+
     public static Module createModuleWithWiredComponents(Scope sourceScope, Scope targetScope) {
 
         // create the target component
@@ -447,7 +452,7 @@ public class MockFactory {
         ConfiguredReference cReference4 = systemFactory.createConfiguredReference(reference4.getName(), "target");
         cReference4.initialize(assemblyContext);
         source.getConfiguredReferences().add(cReference4);
-        
+
         source.initialize(assemblyContext);
 
         Module module = systemFactory.createModule();
@@ -459,14 +464,14 @@ public class MockFactory {
         return module;
     }
 
-    
+
     /**
      * Creates a test system module with source and target components wired together.
      * 
      * @see org.apache.tuscany.core.mock.component.Source
      * @see org.apache.tuscany.core.mock.component.Target
      */
-    
+
     public static Module createModuleWithWiredComponentsOfDifferentInterface(Scope sourceScope, Scope targetScope) {
 
         // create the target component
@@ -552,7 +557,7 @@ public class MockFactory {
         ConfiguredReference cReference4 = systemFactory.createConfiguredReference(reference4.getName(), "target");
         cReference4.initialize(assemblyContext);
         source.getConfiguredReferences().add(cReference4);
-        
+
         source.initialize(assemblyContext);
 
         Module module = systemFactory.createModule();
@@ -564,8 +569,8 @@ public class MockFactory {
         return module;
     }
 
-    
-    
+
+
     /**
      * Returns a collection of bootstrap configuration builders
      */
@@ -603,7 +608,7 @@ public class MockFactory {
      * @throws NoSuchMethodException if the POJO does not have a default noi-args constructor
      */
     public static JavaAtomicContext createPojoContext(String name, Class implType, Scope scope,
-                                                         CompositeContext moduleComponentContext) throws NoSuchMethodException {
+                                                      CompositeContext moduleComponentContext) throws NoSuchMethodException {
         AtomicComponent component = createComponent(name, implType, scope);
 
         Set<Field> fields = JavaIntrospectionHelper.getAllFields(implType);
@@ -661,7 +666,10 @@ public class MockFactory {
      * @throws ConfigurationException
      */
     public static RuntimeContext createJavaRuntime() throws ConfigurationException {
-        RuntimeContext runtime = new RuntimeContextImpl(null, MockFactory.createSystemBuilders(), null);
+        MonitorFactory monitorFactory = new NullMonitorFactory();
+        ContextFactoryBuilderRegistry builderRegistry = BootstrapHelper.bootstrapContextFactoryBuilders(monitorFactory);
+        DefaultWireBuilder wireBuilder = new DefaultWireBuilder();
+        RuntimeContext runtime = new RuntimeContextImpl(monitorFactory, builderRegistry, wireBuilder);
         runtime.start();
         runtime.getSystemContext().registerModelObject(createSystemCompositeComponent(SYSTEM_CHILD));
         SystemCompositeContext ctx = (SystemCompositeContext) runtime.getSystemContext().getContext(SYSTEM_CHILD);

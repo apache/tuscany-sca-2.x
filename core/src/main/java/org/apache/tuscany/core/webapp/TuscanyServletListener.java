@@ -18,7 +18,7 @@ package org.apache.tuscany.core.webapp;
 
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.config.ConfigurationException;
@@ -40,7 +40,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import java.util.List;
 
 /**
  * ServletContextListener that can be added to a standard web application to boot
@@ -108,8 +107,8 @@ public class TuscanyServletListener implements ServletContextListener, HttpSessi
         AssemblyContext modelContext = BootstrapHelper.getModelContext(classLoader);
 
         // Create a runtime context and start it
-        List<ContextFactoryBuilder> configBuilders = BootstrapHelper.getBuilders(monitorFactory);
-        runtime = new RuntimeContextImpl(monitorFactory, configBuilders, new DefaultWireBuilder());
+        ContextFactoryBuilderRegistry builderRegistry = BootstrapHelper.bootstrapContextFactoryBuilders(monitorFactory);
+        runtime = new RuntimeContextImpl(monitorFactory, builderRegistry, new DefaultWireBuilder());
         runtime.start();
 
         // Load and start the system configuration

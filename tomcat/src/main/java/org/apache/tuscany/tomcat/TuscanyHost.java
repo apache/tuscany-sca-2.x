@@ -16,8 +16,6 @@
  */
 package org.apache.tuscany.tomcat;
 
-import java.util.List;
-
 import org.apache.catalina.Container;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.core.StandardContext;
@@ -25,7 +23,7 @@ import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.util.StringManager;
 
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
@@ -35,8 +33,8 @@ import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
-import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 
@@ -75,8 +73,8 @@ public class TuscanyHost extends StandardHost {
 
         // Create and start the runtime
         NullMonitorFactory monitorFactory = new NullMonitorFactory();
-        List<ContextFactoryBuilder> configBuilders = BootstrapHelper.getBuilders(monitorFactory);
-        runtime = new RuntimeContextImpl(monitorFactory, configBuilders, new DefaultWireBuilder());
+        ContextFactoryBuilderRegistry builderRegistry = BootstrapHelper.bootstrapContextFactoryBuilders(monitorFactory);
+        runtime = new RuntimeContextImpl(monitorFactory, builderRegistry, new DefaultWireBuilder());
         runtime.start();
 
         // Load and start the system configuration

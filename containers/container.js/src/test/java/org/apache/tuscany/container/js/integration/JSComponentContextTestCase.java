@@ -13,9 +13,6 @@
  */
 package org.apache.tuscany.container.js.integration;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -26,23 +23,22 @@ import org.apache.tuscany.container.js.builder.MockInterceptorBuilder;
 import org.apache.tuscany.container.js.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.container.js.mock.MockAssemblyFactory;
 import org.apache.tuscany.container.js.mock.MockModuleFactory;
-import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
+import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
-import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
-import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
-import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
-import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
+import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 
 /**
  * Integration tests for JavaScript components and aggregate contexts
@@ -54,11 +50,6 @@ public class JSComponentContextTestCase extends TestCase {
     public void testBasicInvocation() throws Exception {
         MessageFactory msgFactory = new MessageFactoryImpl();
 
-        List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
-        builders.add((new SystemContextFactoryBuilder(null)));
-        builders.add(new SystemEntryPointBuilder());
-        builders.add(new SystemExternalServiceBuilder());
-
         JavaScriptContextFactoryBuilder javaBuilder = new JavaScriptContextFactoryBuilder();
         javaBuilder.setMessageFactory(msgFactory);
         javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
@@ -68,11 +59,12 @@ public class JSComponentContextTestCase extends TestCase {
         HierarchicalBuilder refBuilder = new HierarchicalBuilder();
         refBuilder.addBuilder(interceptorBuilder);
         javaBuilder.setReferenceBuilder(refBuilder);
-        builders.add(javaBuilder);
 
+        ContextFactoryBuilderRegistry builderRegistry = BootstrapHelper.bootstrapContextFactoryBuilders(new NullMonitorFactory());
+        builderRegistry.register(javaBuilder);
         DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
 
-        RuntimeContext runtime = new RuntimeContextImpl(null, builders, defaultWireBuilder);
+        RuntimeContext runtime = new RuntimeContextImpl(null, builderRegistry, defaultWireBuilder);
         runtime.addBuilder(new JavaScriptTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(

@@ -16,28 +16,26 @@
  */
 package org.apache.tuscany.core.client;
 
-import java.util.List;
-
 import org.osoa.sca.ModuleContext;
 import org.osoa.sca.SCA;
 import org.osoa.sca.ServiceRuntimeException;
 
-import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.LogLevel;
+import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.SystemCompositeContext;
-import org.apache.tuscany.core.context.event.ModuleStart;
-import org.apache.tuscany.core.context.event.RequestStart;
-import org.apache.tuscany.core.context.event.RequestEnd;
-import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.event.HttpSessionBound;
 import org.apache.tuscany.core.context.event.HttpSessionEnd;
+import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.event.ModuleStop;
+import org.apache.tuscany.core.context.event.RequestEnd;
+import org.apache.tuscany.core.context.event.RequestStart;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.model.assembly.AssemblyContext;
@@ -87,8 +85,8 @@ public class TuscanyRuntime extends SCA {
         AssemblyContext modelContext = BootstrapHelper.getModelContext(classLoader);
 
         // Create a runtime context and start it
-        List<ContextFactoryBuilder> configBuilders = BootstrapHelper.getBuilders(monitorFactory);
-        runtime = new RuntimeContextImpl(monitorFactory, configBuilders, new DefaultWireBuilder());
+        ContextFactoryBuilderRegistry builderRegistry = BootstrapHelper.bootstrapContextFactoryBuilders(monitorFactory);
+        runtime = new RuntimeContextImpl(monitorFactory, builderRegistry, new DefaultWireBuilder());
         runtime.start();
 
         // Load and start the system configuration

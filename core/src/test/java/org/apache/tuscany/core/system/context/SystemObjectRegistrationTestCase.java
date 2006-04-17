@@ -24,6 +24,11 @@ import org.apache.tuscany.core.context.DuplicateNameException;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
+import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
+import org.apache.tuscany.core.client.BootstrapHelper;
+import org.apache.tuscany.common.monitor.MonitorFactory;
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 
 /**
  * @version $Rev$ $Date$
@@ -58,7 +63,10 @@ public class SystemObjectRegistrationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        runtime = new RuntimeContextImpl();
+        MonitorFactory monitorFactory = new NullMonitorFactory();
+        ContextFactoryBuilderRegistry builderRegistry = BootstrapHelper.bootstrapContextFactoryBuilders(monitorFactory);
+        DefaultWireBuilder wireBuilder = new DefaultWireBuilder();
+        runtime = new RuntimeContextImpl(monitorFactory, builderRegistry, wireBuilder);
         runtime.start();
         systemContext = runtime.getSystemContext();
         systemContext.publish(new ModuleStart(this));

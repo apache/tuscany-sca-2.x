@@ -16,15 +16,12 @@ package org.apache.tuscany.core.runtime;
 import java.util.List;
 
 import org.apache.tuscany.common.monitor.MonitorFactory;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
-import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.HierarchicalWireBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitorImpl;
 import org.apache.tuscany.core.builder.impl.ContextFactoryBuilderRegistryImpl;
-import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.AutowireResolutionException;
@@ -66,63 +63,14 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
     private final ContextFactoryBuilderRegistryImpl builderRegistry;
 
-    /**
-     * Default constructor that creates a runtime with a NullMonitorFactory and no builders.
-     */
-    public RuntimeContextImpl() {
-        this(new NullMonitorFactory(), null, null);
-    }
-
-    /**
-     * Constructor for creating a runtime with a specified MonitorFactory and pre-defined builders.
-     *
-     * @param monitorFactory the default {@link org.apache.tuscany.common.monitor.MonitorFactory} for this runtime
-     * @param builders a list of builders automatically made available; may be null
-     * @param wireBuilder the top-level hierarchical wire builder for the runtime; if not specified, a default
-     */
-    public RuntimeContextImpl(MonitorFactory monitorFactory, List<ContextFactoryBuilder> builders, HierarchicalWireBuilder wireBuilder) {
+    public RuntimeContextImpl(MonitorFactory monitorFactory, ContextFactoryBuilderRegistry builderRegistry, HierarchicalWireBuilder wireBuilder) {
         super(RUNTIME);
         this.monitorFactory = monitorFactory;
-        this.wireBuilder = (wireBuilder == null) ? new DefaultWireBuilder() : wireBuilder;
+        this.builderRegistry = (ContextFactoryBuilderRegistryImpl) builderRegistry;
+        this.wireBuilder = wireBuilder;
 
         rootContext = new CompositeContextImpl(ROOT, this, this, new RuntimeScopeStrategy(), new EventContextImpl(), this);
         systemContext = new SystemCompositeContextImpl(SYSTEM, this, this, new SystemScopeStrategy(), new EventContextImpl(), this);
-
-        // bootstrap the builder registry
-        builderRegistry = new ContextFactoryBuilderRegistryImpl();
-        if (builders != null) {
-            for (ContextFactoryBuilder builder: builders) {
-                builderRegistry.register(builder);
-            }
-        }
-
-/*
-        try {
-            systemContext.registerJavaObject(ContextFactoryBuilderRegistry.class.getName(), ContextFactoryBuilderRegistry.class, builderRegistry);
-        } catch (ConfigurationException e) {
-            throw new AssertionError();
-        }
-*/
-    }
-
-    /**
-     * Specialized constructor that allows the default implementations of the root and system contexts to be overridden.
-     *
-     * @param monitorFactory the default {@link org.apache.tuscany.common.monitor.MonitorFactory} for this runtime
-     * @param rootContext the context to use for the root of the user context tree
-     * @param systemContext the context to use for the root of the system context tree
-     * @param wireBuilder the top-level hierarchical wire builder for the runtime; if not specified, a default
-     */
-    public RuntimeContextImpl(MonitorFactory monitorFactory,
-                              CompositeContext rootContext,
-                              SystemCompositeContext systemContext,
-                              HierarchicalWireBuilder wireBuilder) {
-        super(RUNTIME);
-        this.rootContext = rootContext;
-        this.systemContext = systemContext;
-        this.monitorFactory = monitorFactory;
-        this.wireBuilder = (wireBuilder == null) ? new DefaultWireBuilder() : wireBuilder;
-        builderRegistry = null;
     }
 
     public void start() throws CoreRuntimeException {
