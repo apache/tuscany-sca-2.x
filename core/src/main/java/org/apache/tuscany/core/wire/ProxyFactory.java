@@ -47,12 +47,12 @@ public interface ProxyFactory<T> {
     /**
      * Returns the configuration information used to create a proxy
      */
-    public WireConfiguration getProxyConfiguration();
+    //public U getProxyConfiguration();
 
     /**
      * Sets the configuration information used to create a proxy
      */
-    public void setProxyConfiguration(WireConfiguration config);
+    //public void setProxyConfiguration(U config);
 
     /**
      * Sets the primary interface type generated proxies should implement

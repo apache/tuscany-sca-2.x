@@ -13,8 +13,6 @@
  */
 package org.apache.tuscany.core.wire;
 
-import org.apache.tuscany.core.wire.ProxyFactory;
-
 import java.lang.reflect.InvocationHandler;
 
 /**
@@ -24,10 +22,10 @@ import java.lang.reflect.InvocationHandler;
  */
 public interface ProxyFactoryFactory {
 
-    /**
-     * Returns a new proxy factory
-     */
-    public ProxyFactory createProxyFactory();
+
+    public TargetWireFactory createTargetWireFactory();
+
+    public SourceWireFactory createSourceWireFactory();
 
     /**
      * Determines whether the given object is a proxy

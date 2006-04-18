@@ -17,9 +17,10 @@ import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.HierarchicalWireBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.wire.InvocationConfiguration;
-import org.apache.tuscany.core.wire.ProxyFactory;
-import org.apache.tuscany.core.wire.WireSourceConfiguration;
+import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
+import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
 import org.apache.tuscany.core.wire.impl.MessageChannelImpl;
 
@@ -49,21 +50,20 @@ public class DefaultWireBuilder implements HierarchicalWireBuilder {
         builders.add(builder);
     }
 
-    public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+    public void connect(SourceWireFactory<?> sourceFactory, TargetWireFactory<?> targetFactory, Class targetType, boolean downScope,
                         ScopeContext targetScopeContext) {
         // get the proxy chain for the target
         if (targetFactory != null) {
             // if null, the target side has no interceptors or handlers
-            Map<Method, InvocationConfiguration> targetInvocationConfigs = targetFactory.getProxyConfiguration()
-                    .getInvocationConfigurations();
-            for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration()
+            Map<Method, TargetInvocationConfiguration> targetInvocationConfigs = targetFactory.getProxyConfiguration().getInvocationConfigurations();
+            for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration()
                     .getInvocationConfigurations().values()) {
                 // match wire chains
-                InvocationConfiguration targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig.getMethod());
+                TargetInvocationConfiguration targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig.getMethod());
                 if (targetInvocationConfig == null){
                     BuilderConfigException e= new BuilderConfigException("Incompatible source and target interface types for reference");
                     //FIXME xcv
-                    e.setIdentifier(((WireSourceConfiguration) sourceFactory.getProxyConfiguration()).getReferenceName());
+                    e.setIdentifier(sourceFactory.getProxyConfiguration().getReferenceName());
                     throw e;
                 }
                 // if handler is configured, add that
@@ -74,15 +74,16 @@ public class DefaultWireBuilder implements HierarchicalWireBuilder {
                             .getResponseHandlers()));
                 } else {
                     // no handlers, just connect interceptors
-                    if (targetInvocationConfig.getTargetInterceptor() == null) {
+                    if (targetInvocationConfig.getHeadInterceptor() == null) {
                         BuilderConfigException e = new BuilderConfigException("No target handler or interceptor for operation");
                         e.setIdentifier(targetInvocationConfig.getMethod().getName());
                         throw e;
                     }
-                    if (!(sourceInvocationConfig.getLastTargetInterceptor() instanceof InvokerInterceptor && targetInvocationConfig
-                            .getTargetInterceptor() instanceof InvokerInterceptor)) {
+                    //xcv if (!(sourceInvocationConfig.getLastTargetInterceptor() instanceof InvokerInterceptor && targetInvocationConfig
+                    if (!(sourceInvocationConfig.getTailInterceptor() instanceof InvokerInterceptor && targetInvocationConfig
+                            .getHeadInterceptor() instanceof InvokerInterceptor)) {
                         // check that we do not have the case where the only interceptors are invokers since we just need one
-                        sourceInvocationConfig.addTargetInterceptor(targetInvocationConfig.getTargetInterceptor());
+                        sourceInvocationConfig.setTargetInterceptor(targetInvocationConfig.getHeadInterceptor());
                     }
                 }
             }
@@ -92,14 +93,14 @@ public class DefaultWireBuilder implements HierarchicalWireBuilder {
             builder.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
         }
         // signal that wire build process is complete
-        for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations()
+        for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations()
                 .values()) {
             sourceInvocationConfig.build();
             // TODO optimize if no proxy needed using NullProxyFactory
         }
     }
 
-    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
+    public void completeTargetChain(TargetWireFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
             throws BuilderConfigException {
         // delegate to other wire builders
         for (WireBuilder builder : builders) {

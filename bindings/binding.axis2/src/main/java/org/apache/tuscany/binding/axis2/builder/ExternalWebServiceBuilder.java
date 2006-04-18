@@ -35,13 +35,12 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
-import org.apache.tuscany.core.wire.InvocationConfiguration;
 import org.apache.tuscany.core.wire.MethodHashMap;
-import org.apache.tuscany.core.wire.WireConfiguration;
-import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
 import org.apache.tuscany.core.wire.ProxyFactoryFactory;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
+import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyObject;
@@ -127,15 +126,15 @@ public class ExternalWebServiceBuilder implements ContextFactoryBuilder {
         ConfiguredService configuredService = externalService.getConfiguredService();
         Service service = configuredService.getPort();
         ServiceContract serviceContract = service.getServiceContract();
-        Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
-        ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
+        Map<Method, TargetInvocationConfiguration> iConfigMap = new MethodHashMap<TargetInvocationConfiguration>();
+        TargetWireFactory proxyFactory = proxyFactoryFactory.createTargetWireFactory();
         Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
         for (Method method : javaMethods) {
-            InvocationConfiguration iConfig = new InvocationConfiguration(method);
+            TargetInvocationConfiguration iConfig = new TargetInvocationConfiguration(method);
             iConfigMap.put(method, iConfig);
         }
         QualifiedName qName = new QualifiedName(externalService.getName() + QualifiedName.NAME_SEPARATOR + service.getName());
-        WireConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
+        WireTargetConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
         proxyFactory.setProxyConfiguration(wireConfiguration);
         config.addTargetProxyFactory(service.getName(), proxyFactory);
@@ -145,8 +144,8 @@ public class ExternalWebServiceBuilder implements ContextFactoryBuilder {
             policyBuilder.build(configuredService);
         }
         // add tail interceptor
-        for (InvocationConfiguration iConfig : iConfigMap.values()) {
-            iConfig.addTargetInterceptor(new InvokerInterceptor());
+        for (TargetInvocationConfiguration iConfig : iConfigMap.values()) {
+            iConfig.addInterceptor(new InvokerInterceptor());
         }
 
         externalService.setContextFactory(config);

@@ -18,10 +18,11 @@ import org.apache.tuscany.container.java.invocation.ScopedJavaComponentInvoker;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.wire.InvocationConfiguration;
-import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
@@ -48,12 +49,12 @@ public class JavaTargetWireBuilder implements WireBuilder {
         runtimeContext.addBuilder(this);
     }
 
-    public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+    public void connect(SourceWireFactory sourceFactory, TargetWireFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) throws BuilderConfigException {
         if (!(JavaContextFactory.class.isAssignableFrom(targetType))) {
             return;
         }
-        for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations()
+        for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations()
                 .values()) {
             ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(sourceFactory.getProxyConfiguration()
                     .getTargetName(), sourceInvocationConfig.getMethod(), targetScopeContext);
@@ -67,7 +68,7 @@ public class JavaTargetWireBuilder implements WireBuilder {
         }
     }
 
-    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
+    public void completeTargetChain(TargetWireFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
             throws BuilderConfigException {
         // TODO implement.
         // if (!(JavaComponentRuntimeConfiguration.class.isAssignableFrom(targetType))) {

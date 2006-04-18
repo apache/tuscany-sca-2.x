@@ -30,14 +30,15 @@ import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.SDOObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
-import org.apache.tuscany.core.wire.InvocationConfiguration;
 import org.apache.tuscany.core.wire.MethodHashMap;
-import org.apache.tuscany.core.wire.WireConfiguration;
-import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
 import org.apache.tuscany.core.wire.ProxyFactoryFactory;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
+import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
+import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyObject;
@@ -214,16 +215,16 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                 for (ConfiguredService configuredService : component.getConfiguredServices()) {
                     Service service = configuredService.getPort();
                     ServiceContract serviceContract = service.getServiceContract();
-                    Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
-                    ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
+                    Map<Method, TargetInvocationConfiguration> iConfigMap = new MethodHashMap<TargetInvocationConfiguration>();
+                    TargetWireFactory proxyFactory = proxyFactoryFactory.createTargetWireFactory();
                     Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
                     for (Method method : javaMethods) {
-                        InvocationConfiguration iConfig = new InvocationConfiguration(method);
+                        TargetInvocationConfiguration iConfig = new TargetInvocationConfiguration(method);
                         iConfigMap.put(method, iConfig);
                     }
                     QualifiedName qName = new QualifiedName(component.getName() + QualifiedName.NAME_SEPARATOR
                             + service.getName());
-                    WireConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, serviceContract.getInterface()
+                    WireTargetConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, serviceContract.getInterface()
                             .getClassLoader(), messageFactory);
                     proxyFactory.setBusinessInterface(serviceContract.getInterface());
                     proxyFactory.setProxyConfiguration(wireConfiguration);
@@ -234,8 +235,8 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                         policyBuilder.build(configuredService);
                     }
                     // add tail interceptor
-                    for (InvocationConfiguration iConfig : iConfigMap.values()) {
-                        iConfig.addTargetInterceptor(new InvokerInterceptor());
+                    for (TargetInvocationConfiguration iConfig : iConfigMap.values()) {
+                        iConfig.addInterceptor(new InvokerInterceptor());
                     }
 
                 }
@@ -317,16 +318,16 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
             String targetSerivceName = configuredService.getPort().getName();
             QualifiedName qName = new QualifiedName(targetCompName + QualifiedName.NAME_SEPARATOR + targetSerivceName);
 
-            ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
+            SourceWireFactory proxyFactory = proxyFactoryFactory.createSourceWireFactory();
             Class interfaze = reference.getPort().getServiceContract().getInterface();
-            Map<Method, InvocationConfiguration> iConfigMap = new HashMap<Method, InvocationConfiguration>();
+            Map<Method, SourceInvocationConfiguration> iConfigMap = new HashMap<Method, SourceInvocationConfiguration>();
             Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(interfaze);
             for (Method method : javaMethods) {
-                InvocationConfiguration iConfig = new InvocationConfiguration(method);
+                SourceInvocationConfiguration iConfig = new SourceInvocationConfiguration(method);
                 iConfigMap.put(method, iConfig);
             }
 
-            WireConfiguration pConfiguration = new WireSourceConfiguration(refName, qName, iConfigMap, interfaze.getClassLoader(),
+            WireSourceConfiguration pConfiguration = new WireSourceConfiguration(refName, qName, iConfigMap, interfaze.getClassLoader(),
                     messageFactory);
             proxyFactory.setBusinessInterface(interfaze);
             proxyFactory.setProxyConfiguration(pConfiguration);

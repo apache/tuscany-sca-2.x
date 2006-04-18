@@ -11,6 +11,8 @@ import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Scope;
@@ -144,23 +146,23 @@ public class SystemContextFactory implements ContextFactory<Context>, ContextRes
         }
     }
 
-    public void addTargetProxyFactory(String serviceName, ProxyFactory factory) {
+    public void addTargetProxyFactory(String serviceName, TargetWireFactory factory) {
         throw new UnsupportedOperationException();
     }
 
-    public ProxyFactory getTargetProxyFactory(String serviceName) {
+    public TargetWireFactory getTargetProxyFactory(String serviceName) {
         return null;
     }
 
-    public Map<String, ProxyFactory> getTargetProxyFactories() {
+    public Map<String, TargetWireFactory> getTargetProxyFactories() {
         return null;
     }
 
-    public void addSourceProxyFactory(String referenceName, ProxyFactory factory) {
+    public void addSourceProxyFactory(String referenceName, SourceWireFactory factory) {
         throw new UnsupportedOperationException();
     }
 
-    public List<ProxyFactory> getSourceProxyFactories() {
+    public List<SourceWireFactory> getSourceProxyFactories() {
         return null;
     }
 

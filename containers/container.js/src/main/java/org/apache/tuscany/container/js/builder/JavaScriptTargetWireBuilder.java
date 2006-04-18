@@ -16,19 +16,21 @@
  */
 package org.apache.tuscany.container.js.builder;
 
-import java.lang.reflect.Method;
-
 import org.apache.tuscany.container.js.config.JavaScriptContextFactory;
 import org.apache.tuscany.container.js.rhino.RhinoTargetInvoker;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.wire.InvocationConfiguration;
-import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
+
+import java.lang.reflect.Method;
 
 /**
  * Responsible for bridging source- and target-side invocations chains when the target type is a JavaScript
@@ -54,12 +56,12 @@ public class JavaScriptTargetWireBuilder implements WireBuilder {
         runtimeContext.addBuilder(this);
     }
 
-    public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+    public void connect(SourceWireFactory sourceFactory, TargetWireFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) throws BuilderConfigException {
         if (!(JavaScriptContextFactory.class.isAssignableFrom(targetType))) {
             return;
         }
-        for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations()
+        for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations()
                 .values()) {
             Method method = sourceInvocationConfig.getMethod();
             String serviceName = sourceFactory.getProxyConfiguration().getTargetName().getPartName();
@@ -74,12 +76,12 @@ public class JavaScriptTargetWireBuilder implements WireBuilder {
         }
     }
 
-    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
+    public void completeTargetChain(TargetWireFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
             throws BuilderConfigException {
         if (!(JavaScriptContextFactory.class.isAssignableFrom(targetType))) {
             return;
         }
-        for (InvocationConfiguration targetInvocationConfig : targetFactory.getProxyConfiguration().getInvocationConfigurations()
+        for (TargetInvocationConfiguration targetInvocationConfig : targetFactory.getProxyConfiguration().getInvocationConfigurations()
                 .values()) {
             Method method = targetInvocationConfig.getMethod();
             String serviceName = targetFactory.getProxyConfiguration().getTargetName().getPartName();

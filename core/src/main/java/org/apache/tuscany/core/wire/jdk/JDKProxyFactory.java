@@ -30,9 +30,10 @@ import java.util.Map;
 /**
  * Creates proxies for handling invocations using JDK dynamic proxies
  *
+ * @deprecated
  * @version $Rev$ $Date$
  */
-public class JDKProxyFactory implements ProxyFactory {
+public abstract class JDKProxyFactory implements ProxyFactory {
 
     private static final int UNINITIALIZED = 0;
 
@@ -51,10 +52,10 @@ public class JDKProxyFactory implements ProxyFactory {
             throw new IllegalStateException("Proxy factory in wrong state [" + state + "]");
         }
         Map<Method, InvocationConfiguration> invocationConfigs = configuration.getInvocationConfigurations();
-        methodToInvocationConfig = new MethodHashMap(invocationConfigs.size());
-        for (Map.Entry entry : invocationConfigs.entrySet()) {
-            Method method = (Method) entry.getKey();
-            methodToInvocationConfig.put(method, (InvocationConfiguration) entry.getValue());
+        methodToInvocationConfig = new MethodHashMap<InvocationConfiguration>(invocationConfigs.size());
+        for (Map.Entry<Method,InvocationConfiguration> entry : invocationConfigs.entrySet()) {
+            Method method = entry.getKey();
+            methodToInvocationConfig.put(method, entry.getValue());
         }
         state = INITIALIZED;
     }

@@ -27,7 +27,8 @@ import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.AtomicContext;
-import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
@@ -71,27 +72,27 @@ public class JavaScriptContextFactory implements ContextFactory<AtomicContext> {
         return name;
     }
 
-    private Map<String, ProxyFactory> targetProxyFactories = new HashMap<String, ProxyFactory>();
+    private Map<String, TargetWireFactory> targetProxyFactories = new HashMap<String, TargetWireFactory>();
 
-    public void addTargetProxyFactory(String serviceName, ProxyFactory factory) {
+    public void addTargetProxyFactory(String serviceName, TargetWireFactory factory) {
         targetProxyFactories.put(serviceName, factory);
     }
 
-    public ProxyFactory getTargetProxyFactory(String serviceName) {
+    public TargetWireFactory getTargetProxyFactory(String serviceName) {
         return targetProxyFactories.get(serviceName);
     }
 
-    public Map<String, ProxyFactory> getTargetProxyFactories() {
+    public Map<String, TargetWireFactory> getTargetProxyFactories() {
         return targetProxyFactories;
     }
 
-    private List<ProxyFactory> sourceProxyFactories = new ArrayList<ProxyFactory>();
+    private List<SourceWireFactory> sourceProxyFactories = new ArrayList<SourceWireFactory>();
 
-    public void addSourceProxyFactory(String referenceName, ProxyFactory factory) {
+    public void addSourceProxyFactory(String referenceName, SourceWireFactory factory) {
         sourceProxyFactories.add(factory);
     }
 
-    public List<ProxyFactory> getSourceProxyFactories() {
+    public List<SourceWireFactory> getSourceProxyFactories() {
         return sourceProxyFactories;
     }
 

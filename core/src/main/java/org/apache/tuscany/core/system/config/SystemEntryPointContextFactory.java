@@ -18,7 +18,8 @@ import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EntryPointContext;
-import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.system.context.SystemEntryPointContext;
 import org.apache.tuscany.model.assembly.Scope;
 
@@ -39,18 +40,10 @@ public class SystemEntryPointContextFactory implements ContextFactory<EntryPoint
 
     private String targetName;
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
     public SystemEntryPointContextFactory(String name, String targetName) {
         this.name = name;
         this.targetName = targetName;
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     public EntryPointContext createContext() throws ContextCreationException {
         return new SystemEntryPointContext(name, targetName, this);
@@ -64,23 +57,23 @@ public class SystemEntryPointContextFactory implements ContextFactory<EntryPoint
         return name;
     }
 
-    public void addTargetProxyFactory(String serviceName, ProxyFactory pFactory) {
+    public void addTargetProxyFactory(String serviceName, TargetWireFactory pFactory) {
         throw new UnsupportedOperationException();
     }
 
-    public ProxyFactory getTargetProxyFactory(String serviceName) {
+    public TargetWireFactory getTargetProxyFactory(String serviceName) {
         return null;
     }
 
-    public Map<String, ProxyFactory> getTargetProxyFactories() {
+    public Map<String, TargetWireFactory> getTargetProxyFactories() {
         return null;
     }
 
-    public void addSourceProxyFactory(String referenceName, ProxyFactory pFactory) {
+    public void addSourceProxyFactory(String referenceName, SourceWireFactory pFactory) {
         throw new UnsupportedOperationException();
     }
 
-    public List<ProxyFactory> getSourceProxyFactories() {
+    public List<SourceWireFactory> getSourceProxyFactories() {
         return null;
     }
 

@@ -13,7 +13,8 @@ import java.util.Map;
  *
  * @version $Rev: 394379 $ $Date: 2006-04-15 15:01:36 -0700 (Sat, 15 Apr 2006) $
  */
-public class WireSourceConfiguration extends WireConfiguration {
+public class WireSourceConfiguration extends WireConfiguration<SourceInvocationConfiguration> {
+
 
     protected String referenceName;
 
@@ -27,10 +28,11 @@ public class WireSourceConfiguration extends WireConfiguration {
      * @param messageFactory    the factory used to create wire messages
      */
     public WireSourceConfiguration(String referenceName, QualifiedName targetName,
-                                   Map<Method, InvocationConfiguration> invocationConfigs, ClassLoader proxyClassLoader, MessageFactory messageFactory) {
-        super(targetName, invocationConfigs, proxyClassLoader, messageFactory);
+                                   Map<Method, SourceInvocationConfiguration> invocationConfigs, ClassLoader proxyClassLoader, MessageFactory messageFactory) {
+        super(targetName, proxyClassLoader, messageFactory);
         assert (referenceName != null) : "No wire reference name specified";
         this.referenceName = referenceName;
+        this.configurations = invocationConfigs;
     }
 
 
@@ -40,4 +42,5 @@ public class WireSourceConfiguration extends WireConfiguration {
     public String getReferenceName() {
         return referenceName;
     }
-}
+
+ }

@@ -70,7 +70,7 @@ public class InvocationErrorTestCase extends TestCase {
     }
 
     public void testRuntimeException() throws Exception {
-        Map<Method, InvocationConfiguration> config = new MethodHashMap();
+        Map<Method, InvocationConfiguration> config = new MethodHashMap<InvocationConfiguration>();
         config.put(runtimeMethod, getConfiguration(runtimeMethod));
         InvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), config);
         try {
@@ -85,11 +85,11 @@ public class InvocationErrorTestCase extends TestCase {
 
     private InvocationConfiguration getConfiguration(Method m) {
         MockStaticInvoker invoker = new MockStaticInvoker(m, new TestBeanImpl());
-        InvocationConfiguration invocationConfiguration=new InvocationConfiguration(m);
-        invocationConfiguration.addSourceInterceptor(new MockSyncInterceptor());
+        SourceInvocationConfiguration invocationConfiguration=new SourceInvocationConfiguration(m);
+        invocationConfiguration.addInterceptor(new MockSyncInterceptor());
         invocationConfiguration.addRequestHandler(new MockHandler());
         invocationConfiguration.setTargetInvoker(invoker);
-        invocationConfiguration.addTargetInterceptor(new InvokerInterceptor());
+        invocationConfiguration.setTargetInterceptor(new InvokerInterceptor());
         invocationConfiguration.build();
         return invocationConfiguration;
     }

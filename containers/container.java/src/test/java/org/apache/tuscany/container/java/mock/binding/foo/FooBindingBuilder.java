@@ -27,13 +27,14 @@ import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.injection.ObjectCreationException;
-import org.apache.tuscany.core.wire.InvocationConfiguration;
-import org.apache.tuscany.core.wire.WireConfiguration;
 import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
-import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.wire.ProxyFactoryFactory;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
+import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
+import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyObject;
@@ -113,15 +114,15 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
             ConfiguredService configuredService = ep.getConfiguredService();
             Service service = configuredService.getPort();
             ServiceContract serviceContract = service.getServiceContract();
-            Map<Method, InvocationConfiguration> iConfigMap = new HashMap<Method, InvocationConfiguration>();
-            ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
+            Map<Method, SourceInvocationConfiguration> iConfigMap = new HashMap<Method, SourceInvocationConfiguration>();
+            SourceWireFactory proxyFactory = proxyFactoryFactory.createSourceWireFactory();
             Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
             for (Method method : javaMethods) {
-                InvocationConfiguration iConfig = new InvocationConfiguration(method);
+                SourceInvocationConfiguration iConfig = new SourceInvocationConfiguration(method);
                 iConfigMap.put(method, iConfig);
             }
             QualifiedName qName = new QualifiedName(ep.getConfiguredReference().getTargetConfiguredServices().get(0).getPart().getName() + '/' + service.getName());
-            WireConfiguration wireConfiguration = new WireSourceConfiguration("foo",qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
+            WireSourceConfiguration wireConfiguration = new WireSourceConfiguration("foo",qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
             proxyFactory.setBusinessInterface(serviceContract.getInterface());
             proxyFactory.setProxyConfiguration(wireConfiguration);
             contextFactory.addSourceProxyFactory(service.getName(), proxyFactory);
@@ -131,9 +132,9 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
                 policyBuilder.build(configuredService);
             }
             // add tail interceptor
-            for (InvocationConfiguration iConfig : iConfigMap.values()) {
-                iConfig.addTargetInterceptor(new InvokerInterceptor());
-            }
+            //for (SourceInvocationConfiguration iConfig : iConfigMap.values()) {
+            //    iConfig.addInterceptor(new InvokerInterceptor());
+            //}
             ep.setContextFactory(contextFactory);
 
         } else if (object instanceof ExternalService) {
@@ -148,15 +149,15 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
             ConfiguredService configuredService = es.getConfiguredService();
             Service service = configuredService.getPort();
             ServiceContract serviceContract = service.getServiceContract();
-            Map<Method, InvocationConfiguration> iConfigMap = new HashMap<Method, InvocationConfiguration>();
-            ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
+            Map<Method, TargetInvocationConfiguration> iConfigMap = new HashMap<Method, TargetInvocationConfiguration>();
+            TargetWireFactory proxyFactory = proxyFactoryFactory.createTargetWireFactory();
             Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
             for (Method method : javaMethods) {
-                InvocationConfiguration iConfig = new InvocationConfiguration(method);
+                TargetInvocationConfiguration iConfig = new TargetInvocationConfiguration(method);
                 iConfigMap.put(method, iConfig);
             }
             QualifiedName qName = new QualifiedName(es.getName() + QualifiedName.NAME_SEPARATOR+ service.getName());
-            WireConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
+            WireTargetConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
             proxyFactory.setBusinessInterface(serviceContract.getInterface());
             proxyFactory.setProxyConfiguration(wireConfiguration);
             contextFactory.addTargetProxyFactory(service.getName(), proxyFactory);
@@ -166,8 +167,8 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
                 policyBuilder.build(configuredService);
             }
             // add tail interceptor
-            for (InvocationConfiguration iConfig : iConfigMap.values()) {
-                iConfig.addTargetInterceptor(new InvokerInterceptor());
+            for (TargetInvocationConfiguration iConfig : iConfigMap.values()) {
+                iConfig.addInterceptor(new InvokerInterceptor());
             }
 
             es.setContextFactory(contextFactory);

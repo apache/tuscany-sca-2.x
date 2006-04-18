@@ -18,7 +18,8 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitorImpl;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 
 import java.util.ArrayList;
@@ -42,11 +43,11 @@ public class MockConfigContext implements ConfigurationContext {
         visitor.start(model);
     }
 
-    public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+    public void connect(SourceWireFactory sourceFactory, TargetWireFactory targetFactory, Class targetType, boolean downScope,
             ScopeContext targetScopeContext) throws BuilderConfigException {
     }
 
-    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
+    public void completeTargetChain(TargetWireFactory targetFactory, Class targetType, ScopeContext targetScopeContext) throws BuilderConfigException {
     }
 
 }

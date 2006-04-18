@@ -29,14 +29,15 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.wire.InvocationConfiguration;
 import org.apache.tuscany.core.wire.MethodHashMap;
-import org.apache.tuscany.core.wire.WireConfiguration;
-import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
 import org.apache.tuscany.core.wire.ProxyFactoryFactory;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
+import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyObject;
@@ -166,15 +167,15 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
 		for (ConfiguredService configuredService : component.getConfiguredServices()) {
 		    Service service = configuredService.getPort();
 		    ServiceContract contract = service.getServiceContract();
-		    Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
-		    ProxyFactory proxyFactory = factory.createProxyFactory();
+		    Map<Method, TargetInvocationConfiguration> iConfigMap = new MethodHashMap<TargetInvocationConfiguration>();
+		    TargetWireFactory proxyFactory = factory.createTargetWireFactory();
 		    for (Method method : contract.getInterface().getMethods()) {
-		        InvocationConfiguration iConfig = new InvocationConfiguration(method);
+		        TargetInvocationConfiguration iConfig = new TargetInvocationConfiguration(method);
 		        iConfigMap.put(method, iConfig);
 		    }
             QualifiedName qName = new QualifiedName(component.getName() + QualifiedName.NAME_SEPARATOR
                     + service.getName());
-            WireConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, contract.getInterface()
+            WireTargetConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, contract.getInterface()
                     .getClassLoader(), msgFactory);
 		    proxyFactory.setBusinessInterface(contract.getInterface());
 		    proxyFactory.setProxyConfiguration(wireConfiguration);
@@ -184,8 +185,8 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
 		        referenceBuilder.build(configuredService);
 		    }
 		    // add tail interceptor
-		    for (InvocationConfiguration iConfig : iConfigMap.values()) {
-		        iConfig.addTargetInterceptor(new InvokerInterceptor());
+		    for (TargetInvocationConfiguration iConfig : iConfigMap.values()) {
+		        iConfig.addInterceptor(new InvokerInterceptor());
 		    }
 		    config.addTargetProxyFactory(service.getName(), proxyFactory);
 		}
@@ -195,18 +196,18 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
 		List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
 		if (configuredReferences != null) {
 		    for (ConfiguredReference reference : configuredReferences) {
-		        ProxyFactory proxyFactory = factory.createProxyFactory();
+		        SourceWireFactory proxyFactory = factory.createSourceWireFactory();
 		        ServiceContract interfaze = reference.getPort().getServiceContract();
-		        Map<Method, InvocationConfiguration> iConfigMap = new MethodHashMap();
+		        Map<Method, SourceInvocationConfiguration> iConfigMap = new MethodHashMap<SourceInvocationConfiguration>();
 		        for (Method method : interfaze.getInterface().getMethods()) {
-		            InvocationConfiguration iConfig = new InvocationConfiguration(method);
+		            SourceInvocationConfiguration iConfig = new SourceInvocationConfiguration(method);
 		            iConfigMap.put(method, iConfig);
 		        }
 		        String targetCompName = reference.getTargetConfiguredServices().get(0).getPart().getName();
 		        String targetSerivceName = reference.getTargetConfiguredServices().get(0).getPort().getName();
 
 		        QualifiedName qName = new QualifiedName(targetCompName + '/' + targetSerivceName);
-                WireConfiguration pConfiguration = new WireSourceConfiguration(reference.getPort().getName(), qName,
+                WireSourceConfiguration pConfiguration = new WireSourceConfiguration(reference.getPort().getName(), qName,
                         iConfigMap, interfaze.getInterface().getClassLoader(), msgFactory);
 		        proxyFactory.setBusinessInterface(interfaze.getInterface());
 		        proxyFactory.setProxyConfiguration(pConfiguration);

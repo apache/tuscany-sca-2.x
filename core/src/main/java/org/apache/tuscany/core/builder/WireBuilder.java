@@ -14,7 +14,8 @@
 package org.apache.tuscany.core.builder;
 
 import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 
 /**
  * Implementations perform the second phase of converting a logical model representing an assembly into a series of
@@ -51,7 +52,7 @@ public interface WireBuilder {
      *        type
      * @throws BuilderConfigException if an error occurs during the wire build process
      */
-    public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+    public void connect(SourceWireFactory<?> sourceFactory, TargetWireFactory<?> targetFactory, Class targetType, boolean downScope,
                         ScopeContext targetScopeContext) throws BuilderConfigException;
 
     /**
@@ -64,7 +65,7 @@ public interface WireBuilder {
      * @param targetScopeContext the target scope
      * @throws BuilderConfigException if an error occurs during the wire build process
      */
-    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
+    public void completeTargetChain(TargetWireFactory<?> targetFactory, Class targetType, ScopeContext targetScopeContext)
             throws BuilderConfigException;
 
 }

@@ -21,6 +21,8 @@ import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.injection.InterCompositeReferenceFactory;
 import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.system.context.SystemExternalServiceContext;
 import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
 import org.apache.tuscany.model.assembly.Scope;
@@ -74,19 +76,19 @@ public class SystemExternalServiceContextFactory implements ContextFactory<Exter
         return new SystemExternalServiceContext(name, factory);
     }
 
-    public void addTargetProxyFactory(String serviceName, ProxyFactory pFactory) {
+    public void addTargetProxyFactory(String serviceName, TargetWireFactory pFactory) {
         throw new UnsupportedOperationException();
     }
 
-    public ProxyFactory getTargetProxyFactory(String serviceName) {
+    public TargetWireFactory getTargetProxyFactory(String serviceName) {
         return null;
     }
 
-    public Map<String, ProxyFactory> getTargetProxyFactories() {
+    public Map<String, TargetWireFactory> getTargetProxyFactories() {
         return null;
     }
 
-    public void addSourceProxyFactory(String referenceName, ProxyFactory pFactory) {
+    public void addSourceProxyFactory(String referenceName, SourceWireFactory pFactory) {
         throw new UnsupportedOperationException();
     }
 
@@ -94,7 +96,7 @@ public class SystemExternalServiceContextFactory implements ContextFactory<Exter
         return null;
     }
 
-    public List<ProxyFactory> getSourceProxyFactories() {
+    public List<SourceWireFactory> getSourceProxyFactories() {
         return null;
     }
 

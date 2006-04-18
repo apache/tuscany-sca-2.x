@@ -16,10 +16,6 @@
  */
 package org.apache.tuscany.core.wire;
 
-import org.apache.tuscany.core.wire.impl.MessageChannelImpl;
-import org.apache.tuscany.core.wire.impl.MessageDispatcher;
-import org.apache.tuscany.core.wire.impl.RequestResponseInterceptor;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,35 +70,22 @@ import java.util.List;
  * 
  * @version $Rev$ $Date$
  */
-public class InvocationConfiguration {
+public abstract class InvocationConfiguration {
 
     // the operation on the target that will utlimately be invoked
-    private Method operation;
+    protected Method operation;
 
     // responsible for invoking a target instance
-    private TargetInvoker targetInvoker;
+    protected TargetInvoker targetInvoker;
 
-    private Interceptor sourceInterceptorChainHead;
+    protected Interceptor interceptorChainHead;
 
-    private Interceptor sourceInterceptorChainTail;
+    protected Interceptor interceptorChainTail;
 
-    private Interceptor targetInterceptorChainHead;
+    protected List<MessageHandler> requestHandlers;
 
-    private Interceptor targetInterceptorChainTail;
+    protected List<MessageHandler> responseHandlers;
 
-    private List<MessageHandler> requestHandlers;
-
-    private List<MessageHandler> responseHandlers;
-
-    // a source-side pointer to target request handlers, if the exist
-    private MessageChannel targetRequestChannel;
-
-    // a source-side pointer to target response handlers, if the exist
-    private MessageChannel targetResponseChannel;
-
-    /**
-     * Creates an new wire configuration for the given target operation
-     */
     public InvocationConfiguration(Method operation) {
         assert (operation != null) : "No operation type specified";
         this.operation = operation;
@@ -113,46 +96,6 @@ public class InvocationConfiguration {
      */
     public Method getMethod() {
         return operation;
-    }
-
-    /**
-     * Used by source-side configurations, sets a pointer to the target-side request channel. This may be null when no
-     * target request handlers exist.
-     */
-    public void setTargetRequestChannel(MessageChannel channel) {
-        targetRequestChannel = channel;
-    }
-
-    /**
-     * Used by source-side configurations, sets a pointer to the target-side response channel. This may be null when no
-     * target response handlers exist.
-     */
-    public void setTargetResponseChannel(MessageChannel channel) {
-        targetResponseChannel = channel;
-    }
-
-    /**
-     * Adds an interceptor to the wire chain for source-side configurations
-     */
-    public void addSourceInterceptor(Interceptor interceptor) {
-        if (sourceInterceptorChainHead == null) {
-            sourceInterceptorChainHead = interceptor;
-        } else {
-            sourceInterceptorChainTail.setNext(interceptor);
-        }
-        sourceInterceptorChainTail = interceptor;
-    }
-
-    /**
-     * Adds an interceptor to the wire chain for target-side configurations
-     */
-    public void addTargetInterceptor(Interceptor interceptor) {
-        if (targetInterceptorChainHead == null) {
-            targetInterceptorChainHead = interceptor;
-        } else {
-            targetInterceptorChainTail.setNext(interceptor);
-        }
-        targetInterceptorChainTail = interceptor;
     }
 
     /**
@@ -190,27 +133,7 @@ public class InvocationConfiguration {
     }
 
     /**
-     * Returns the head source-side interceptor. This will be null for target-side configurations
-     */
-    public Interceptor getSourceInterceptor() {
-        return sourceInterceptorChainHead;
-    }
-
-    /**
-     * Returns the head target-side interceptor. On source-side configurations, this will be the head interceptor of the
-     * "bridged" target configuration.
-     */
-    public Interceptor getTargetInterceptor() {
-        return targetInterceptorChainHead;
-    }
-    
-   
-    public Interceptor getLastTargetInterceptor() {
-        return targetInterceptorChainTail;
-    }
-
-    /**
-     * Sets the target invoker to pass down the wire pipeline. When a service proxy represents a wire,
+     * Sets the target invoker to pass down the wire. When a service proxy represents a wire,
      * the target invoker is set on the source-side.
      */
     public void setTargetInvoker(TargetInvoker invoker) {
@@ -218,62 +141,36 @@ public class InvocationConfiguration {
     }
 
     /**
-     * Returns the target invoker that is passed down the wire pipeline. When a service proxy represents a wire,
+     * Returns the target invoker that is passed down the wire. When a service proxy represents a wire,
      * the target invoker is cached on the source-side.
      */
     public TargetInvoker getTargetInvoker() {
         return targetInvoker;
     }
 
-    /**
-     * Prepares the configuration by linking interceptors and handlers
-     */
-    public void build() {
-
-        if (requestHandlers != null && targetInterceptorChainHead != null) {
-            // on target-side, connect existing handlers and interceptors
-            MessageHandler messageDispatcher = new MessageDispatcher(targetInterceptorChainHead);
-            requestHandlers.add(messageDispatcher);
-        }
-
-        if (requestHandlers != null) {
-            MessageChannel requestChannel = new MessageChannelImpl(requestHandlers);
-            MessageChannel responseChannel = new MessageChannelImpl(responseHandlers);
-            Interceptor channelInterceptor = new RequestResponseInterceptor(requestChannel, targetRequestChannel,
-                    responseChannel, targetResponseChannel);
-
-            if (sourceInterceptorChainHead != null) {
-                sourceInterceptorChainTail.setNext(channelInterceptor);
-            } else {
-                sourceInterceptorChainHead = channelInterceptor;
-            }
-
+    public void addInterceptor(Interceptor interceptor) {
+        if (interceptorChainHead == null) {
+            interceptorChainHead = interceptor;
         } else {
-            // no request handlers
-            if (sourceInterceptorChainHead != null) {
-                if (targetInterceptorChainHead != null) {
-                    // Connect source interceptor chain directly to target interceptor chain
-                    sourceInterceptorChainTail.setNext(targetInterceptorChainHead);
-                    // sourceInterceptorChainTail = targetInterceptorChainHead;
-                } else {
-                    // Connect source interceptor chain to the target request channel
-                    Interceptor channelInterceptor = new RequestResponseInterceptor(null, targetRequestChannel, null,
-                            targetResponseChannel);
-                    sourceInterceptorChainTail.setNext(channelInterceptor);
-                }
-            } else {
-                // no source interceptor chain or source handlers, conntect to target interceptor chain or channel
-                if (targetInterceptorChainHead != null) {
-                    sourceInterceptorChainHead = targetInterceptorChainHead;
-                    sourceInterceptorChainTail = targetInterceptorChainHead;
-                } else {
-                    Interceptor channelInterceptor = new RequestResponseInterceptor(null, targetRequestChannel, null,
-                            targetResponseChannel);
-                    sourceInterceptorChainHead = channelInterceptor;
-                    sourceInterceptorChainTail = channelInterceptor;
-                }
-            }
+            interceptorChainTail.setNext(interceptor);
         }
+        interceptorChainTail = interceptor;
     }
 
+    public Interceptor getTailInterceptor() {
+        return interceptorChainTail;
+    }
+
+    public Interceptor getHeadInterceptor() {
+        return interceptorChainHead;
+    }
+
+
+    //public abstract void addInterceptor(Interceptor interceptor);
+
+    //public abstract Interceptor getHeadInterceptor();
+
+    //public abstract Interceptor getTailInterceptor();
+
+    public abstract void build();
 }

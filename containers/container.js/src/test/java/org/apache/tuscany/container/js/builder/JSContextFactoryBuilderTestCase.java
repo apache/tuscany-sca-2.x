@@ -13,7 +13,8 @@ import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
-import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.AtomicComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
@@ -24,6 +25,7 @@ public class JSContextFactoryBuilderTestCase extends TestCase {
 
     public void testBasicInvocation() throws Exception {
         JavaScriptContextFactoryBuilder jsBuilder = new JavaScriptContextFactoryBuilder();
+        jsBuilder.setMessageFactory(new MessageFactoryImpl());
         jsBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
         JavaScriptTargetWireBuilder jsWireBuilder = new JavaScriptTargetWireBuilder();
         AtomicComponent component = MockAssemblyFactory.createComponent("foo",
@@ -35,7 +37,7 @@ public class JSContextFactoryBuilderTestCase extends TestCase {
         context.registerFactory(contextFactory);
         context.start();
         context.onEvent(new ModuleStart(this));
-        for (ProxyFactory proxyFactory : contextFactory.getTargetProxyFactories().values()) {
+        for (TargetWireFactory proxyFactory : contextFactory.getTargetProxyFactories().values()) {
             jsWireBuilder.completeTargetChain(proxyFactory, JavaScriptContextFactory.class, context);
             proxyFactory.initialize();
         }

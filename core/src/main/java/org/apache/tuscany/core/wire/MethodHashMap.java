@@ -28,7 +28,7 @@ import java.util.HashMap;
  *
  * @version $Rev$ $Date$
  */
-public class MethodHashMap extends HashMap<Method, InvocationConfiguration> {
+public class MethodHashMap<T extends InvocationConfiguration> extends HashMap<Method, T> {
 
     public MethodHashMap() {
         super();
@@ -41,7 +41,7 @@ public class MethodHashMap extends HashMap<Method, InvocationConfiguration> {
     /**
      * @see java.util.HashMap#get(java.lang.Object)
      */
-    public InvocationConfiguration get(Object key) {
+    public T get(Object key) {
         if (key instanceof Method) {
             Method m = (Method) key;
             //FIXME find a more efficient way to find a matching method

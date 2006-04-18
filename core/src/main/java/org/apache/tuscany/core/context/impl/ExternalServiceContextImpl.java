@@ -19,7 +19,7 @@ import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.wire.ProxyCreationException;
-import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 
 /**
  * The default implementation of an external service context
@@ -28,7 +28,7 @@ import org.apache.tuscany.core.wire.ProxyFactory;
  */
 public class ExternalServiceContextImpl extends AbstractContext implements ExternalServiceContext {
 
-    private ProxyFactory<?> targetProxyFactory;
+    private TargetWireFactory<?> targetProxyFactory;
 
     private ObjectFactory targetInstanceFactory;
 
@@ -42,7 +42,7 @@ public class ExternalServiceContextImpl extends AbstractContext implements Exter
      * @param targetInstanceFactory the object factory that creates an artifact capabile of communicating over the
      *        binding transport configured on the external service. The object factory may implement a caching strategy.
      */
-    public ExternalServiceContextImpl(String name, ProxyFactory targetProxyFactory, ObjectFactory targetInstanceFactory) {
+    public ExternalServiceContextImpl(String name, TargetWireFactory targetProxyFactory, ObjectFactory targetInstanceFactory) {
         super(name);
         assert (targetProxyFactory != null) : "Target proxy factory was null";
         assert (targetInstanceFactory != null) : "Target instance factory was null";

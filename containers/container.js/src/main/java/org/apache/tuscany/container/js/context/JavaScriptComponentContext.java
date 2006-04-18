@@ -25,7 +25,8 @@ import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.wire.ProxyCreationException;
 import org.apache.tuscany.core.wire.ProxyFactory;
-import org.apache.tuscany.core.wire.WireSourceConfiguration;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.osoa.sca.ServiceRuntimeException;
 
 import java.util.HashMap;
@@ -40,14 +41,14 @@ public class JavaScriptComponentContext extends AbstractContext implements Atomi
 
     private Map<String, Object> properties;
 
-    private List<ProxyFactory> sourceProxyFactories;
+    private List<SourceWireFactory> sourceProxyFactories;
 
-    private Map<String, ProxyFactory> targetProxyFactories;
+    private Map<String, TargetWireFactory> targetProxyFactories;
 
     private Object instance;
 
     public JavaScriptComponentContext(String name, Map<String, Class> services, Map<String, Object> properties,
-                                      List sourceProxyFactories, Map<String, ProxyFactory> targetProxyFactories, RhinoScript invoker) {
+                                      List<SourceWireFactory> sourceProxyFactories, Map<String, TargetWireFactory> targetProxyFactories, RhinoScript invoker) {
         super(name);
         assert (services != null) : "No service interface mapping specified";
         assert (properties != null) : "No properties specified";
@@ -113,8 +114,8 @@ public class JavaScriptComponentContext extends AbstractContext implements Atomi
     private Map createServiceReferences() {
         try {
             Map<String, Object> context = new HashMap<String, Object>();
-            for (ProxyFactory proxyFactory : sourceProxyFactories) {
-                context.put(((WireSourceConfiguration)proxyFactory.getProxyConfiguration()).getReferenceName(), proxyFactory.createProxy());
+            for (SourceWireFactory proxyFactory : sourceProxyFactories) {
+                context.put(proxyFactory.getProxyConfiguration().getReferenceName(), proxyFactory.createProxy());
             }
             return context;
         } catch (ProxyCreationException e) {

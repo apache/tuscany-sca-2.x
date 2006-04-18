@@ -13,8 +13,9 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.wire.ProxyFactoryFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.core.wire.SourceWireFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -29,8 +30,12 @@ public class JDKProxyFactoryFactory implements ProxyFactoryFactory {
     public JDKProxyFactoryFactory() {
     }
 
-    public ProxyFactory createProxyFactory() {
-        return new JDKProxyFactory();
+    public TargetWireFactory createTargetWireFactory() {
+        return new JDKTargetWireFactory();
+    }
+
+    public SourceWireFactory createSourceWireFactory() {
+        return new JDKSourceWireFactory();
     }
 
     public boolean isProxy(Object object) {

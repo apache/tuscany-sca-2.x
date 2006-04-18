@@ -39,7 +39,8 @@ import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
-import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Composite;
 import org.apache.tuscany.model.assembly.Extensible;
@@ -160,12 +161,12 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         visitor.start(model);
     }
 
-    public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+    public void connect(SourceWireFactory sourceFactory, TargetWireFactory targetFactory, Class targetType, boolean downScope,
                         ScopeContext targetScopeContext) throws BuilderConfigException {
         wireBuilder.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
     }
 
-    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
+    public void completeTargetChain(TargetWireFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
             throws BuilderConfigException {
         wireBuilder.completeTargetChain(targetFactory, targetType, targetScopeContext);
     }

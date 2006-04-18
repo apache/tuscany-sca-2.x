@@ -6,7 +6,8 @@ import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.wire.InvocationConfiguration;
-import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.osoa.sca.annotations.Init;
@@ -34,7 +35,7 @@ public class ExternalWebServiceWireBuilder implements WireBuilder {
         runtimeContext.addBuilder(this);
     }
 
-    public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope, ScopeContext targetScopeContext) throws BuilderConfigException {
+    public void connect(SourceWireFactory sourceFactory, TargetWireFactory targetFactory, Class targetType, boolean downScope, ScopeContext targetScopeContext) throws BuilderConfigException {
         if (!(ExternalWebServiceContextFactory.class.isAssignableFrom(targetType))) {
             return;
         }
@@ -53,7 +54,7 @@ public class ExternalWebServiceWireBuilder implements WireBuilder {
 
     }
 
-    public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
+    public void completeTargetChain(TargetWireFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
             throws BuilderConfigException {
         //TODO implement
     }

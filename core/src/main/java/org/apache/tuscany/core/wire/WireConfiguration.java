@@ -29,9 +29,9 @@ import java.util.Map;
  *
  * @version $Rev$ $Date$
  */
-public abstract class WireConfiguration {
+public abstract class WireConfiguration <T extends InvocationConfiguration> {
 
-    protected Map<Method, InvocationConfiguration> configurations;
+    protected Map<Method, T> configurations;
 
     protected ClassLoader proxyClassLoader;
 
@@ -43,15 +43,11 @@ public abstract class WireConfiguration {
      * Creates a configuration used to generate proxies representing a service.
      *
      * @param targetName        the qualified name of the service represented by this configuration
-     * @param invocationConfigs a collection of operation-to-wire configuration mappings for the service
      * @param proxyClassLoader  the classloader to use when creating a proxy
      * @param messageFactory    the factory used to create wire messages
      */
-    public WireConfiguration(QualifiedName targetName,
-                             Map<Method, InvocationConfiguration> invocationConfigs, ClassLoader proxyClassLoader, MessageFactory messageFactory) {
-        assert (invocationConfigs != null) : "No wire configuration map specified";
+    public WireConfiguration(QualifiedName targetName, ClassLoader proxyClassLoader, MessageFactory messageFactory) {
         this.targetName = targetName;
-        configurations = invocationConfigs;
         this.messageFactory = messageFactory;
         if (proxyClassLoader == null) {
             this.proxyClassLoader = Thread.currentThread().getContextClassLoader();
@@ -68,14 +64,6 @@ public abstract class WireConfiguration {
     }
 
     /**
-     * Returns a collection of {@link InvocationConfiguration}s keyed by their operation type of the service associated with
-     * either the wire's source reference or target
-     */
-    public Map<Method, InvocationConfiguration> getInvocationConfigurations() {
-        return configurations;
-    }
-
-    /**
      * Returns the classloader to use in creating proxies
      */
     public ClassLoader getProxyClassLoader() {
@@ -88,5 +76,10 @@ public abstract class WireConfiguration {
     public MessageFactory getMessageFactory() {
         return messageFactory;
     }
+
+    public Map<Method, T> getInvocationConfigurations(){
+         return configurations;
+     }
+
 
 }

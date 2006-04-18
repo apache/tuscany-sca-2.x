@@ -16,8 +16,13 @@ package org.apache.tuscany.container.js.builder;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.wire.Interceptor;
-import org.apache.tuscany.core.wire.InvocationConfiguration;
 import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
+import org.apache.tuscany.core.wire.WireSourceConfiguration;
+import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.core.wire.WireTargetConfiguration;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
@@ -53,9 +58,9 @@ public class MockInterceptorBuilder implements ContextFactoryBuilder {
                 ConfiguredReference cref = (ConfiguredReference) modelObject;
                 // xcvProxyFactory pFactory = (ProxyFactory) cref.getProxyFactory();
                 for (ConfiguredService configuredService : cref.getTargetConfiguredServices()) {
-                    ProxyFactory pFactory = (ProxyFactory) configuredService.getProxyFactory();
-                    for (InvocationConfiguration config : pFactory.getProxyConfiguration().getInvocationConfigurations().values()) {
-                        config.addSourceInterceptor(interceptor);
+                    SourceWireFactory pFactory = (SourceWireFactory) configuredService.getProxyFactory();
+                    for (SourceInvocationConfiguration config : pFactory.getProxyConfiguration().getInvocationConfigurations().values()) {
+                        config.addInterceptor(interceptor);
                     }
                 }
             }
@@ -64,9 +69,9 @@ public class MockInterceptorBuilder implements ContextFactoryBuilder {
                 return;
             } else {
                 ConfiguredService cservice = (ConfiguredService) modelObject;
-                ProxyFactory pFactory = (ProxyFactory) cservice.getProxyFactory();
-                for (InvocationConfiguration config : pFactory.getProxyConfiguration().getInvocationConfigurations().values()) {
-                    config.addTargetInterceptor(interceptor);
+                TargetWireFactory pFactory = (TargetWireFactory) cservice.getProxyFactory();
+                for (TargetInvocationConfiguration config : pFactory.getProxyConfiguration().getInvocationConfigurations().values()) {
+                    config.addInterceptor(interceptor);
                 }
             }
 

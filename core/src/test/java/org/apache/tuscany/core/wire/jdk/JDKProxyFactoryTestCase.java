@@ -16,10 +16,11 @@ package org.apache.tuscany.core.wire.jdk;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.wire.InvocationConfiguration;
 import org.apache.tuscany.core.wire.MethodHashMap;
-import org.apache.tuscany.core.wire.WireConfiguration;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
+import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
+import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
 import org.apache.tuscany.core.wire.mock.MockStaticInvoker;
 import org.apache.tuscany.core.wire.mock.MockSyncInterceptor;
@@ -42,18 +43,37 @@ public class JDKProxyFactoryTestCase extends TestCase {
         hello = SimpleTarget.class.getMethod("hello", String.class);
     }
 
-    public void testProxyFactory() throws Exception {
-        InvocationConfiguration source = new InvocationConfiguration(hello);
+    public void testSourceWireFactory() throws Exception {
+        SourceInvocationConfiguration source = new SourceInvocationConfiguration(hello);
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
-        source.addSourceInterceptor(sourceInterceptor);
-        source.addTargetInterceptor(new InvokerInterceptor());
+        source.addInterceptor(sourceInterceptor);
+        source.setTargetInterceptor(new InvokerInterceptor());
         source.setTargetInvoker(new MockStaticInvoker(hello, new SimpleTargetImpl()));
         source.build();
-        Map<Method, InvocationConfiguration> configs = new MethodHashMap();
+        Map<Method, SourceInvocationConfiguration> configs = new MethodHashMap<SourceInvocationConfiguration>();
         configs.put(hello, source);
-        WireConfiguration config = new WireSourceConfiguration("foo",new QualifiedName("foo"), configs, Thread.currentThread()
+        WireSourceConfiguration config = new WireSourceConfiguration("foo",new QualifiedName("foo"), configs, Thread.currentThread()
                 .getContextClassLoader(), new MessageFactoryImpl());
-        JDKProxyFactory factory = new JDKProxyFactory();
+        JDKSourceWireFactory factory = new JDKSourceWireFactory();
+        factory.setProxyConfiguration(config);
+        factory.setBusinessInterface(SimpleTarget.class);
+        factory.initialize();
+        SimpleTarget instance = (SimpleTarget) factory.createProxy();
+        Assert.assertEquals("foo",instance.hello("foo"));
+    }
+
+     public void testTargetWireFactory() throws Exception {
+        TargetInvocationConfiguration source = new TargetInvocationConfiguration(hello);
+        MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
+        source.addInterceptor(sourceInterceptor);
+        source.addInterceptor(new InvokerInterceptor());
+        source.setTargetInvoker(new MockStaticInvoker(hello, new SimpleTargetImpl()));
+        source.build();
+        Map<Method, TargetInvocationConfiguration> configs = new MethodHashMap<TargetInvocationConfiguration>();
+        configs.put(hello, source);
+        WireTargetConfiguration config = new WireTargetConfiguration(new QualifiedName("foo"), configs, Thread.currentThread()
+                .getContextClassLoader(), new MessageFactoryImpl());
+        JDKTargetWireFactory factory = new JDKTargetWireFactory();
         factory.setProxyConfiguration(config);
         factory.setBusinessInterface(SimpleTarget.class);
         factory.initialize();

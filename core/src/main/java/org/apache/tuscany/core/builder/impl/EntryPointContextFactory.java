@@ -18,7 +18,8 @@ import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.impl.EntryPointContextImpl;
-import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.model.assembly.Scope;
 
@@ -36,11 +37,11 @@ public abstract class EntryPointContextFactory implements ContextFactory<EntryPo
 
     private String name;
 
-    private ProxyFactory proxyFactory;
+    private SourceWireFactory proxyFactory;
 
     private MessageFactory msgFactory;
 
-    private List<ProxyFactory> sourceProxyFactories;
+    private List<SourceWireFactory> sourceProxyFactories;
 
     public EntryPointContextFactory(String name, MessageFactory msgFactory) {
         assert (name != null) : "Entry point name was null";
@@ -64,29 +65,29 @@ public abstract class EntryPointContextFactory implements ContextFactory<EntryPo
     public void prepare() {
     }
 
-    public void addTargetProxyFactory(String serviceName, ProxyFactory factory) {
+    public void addTargetProxyFactory(String serviceName, TargetWireFactory factory) {
         // no wires to an entry point from with a composite
     }
 
-    public ProxyFactory getTargetProxyFactory(String serviceName) {
+    public TargetWireFactory getTargetProxyFactory(String serviceName) {
         // no wires to an entry point from with a composite
         return null;
     }
 
-    public Map<String, ProxyFactory> getTargetProxyFactories() {
+    public Map<String, TargetWireFactory> getTargetProxyFactories() {
         // no wires to an entry point from with a composite
         return Collections.emptyMap();
     }
 
-    public void addSourceProxyFactory(String refName, ProxyFactory factory) {
+    public void addSourceProxyFactory(String refName, SourceWireFactory factory) {
         assert (refName != null) : "No reference name specified";
         assert (factory != null) : "Proxy factory was null";
         this.proxyFactory = factory;
     }
 
-    public List<ProxyFactory> getSourceProxyFactories() {
+    public List<SourceWireFactory> getSourceProxyFactories() {
         if (sourceProxyFactories == null) {
-            sourceProxyFactories = new ArrayList<ProxyFactory>(1);
+            sourceProxyFactories = new ArrayList<SourceWireFactory>(1);
             sourceProxyFactories.add(proxyFactory);
         }
         return sourceProxyFactories;

@@ -20,7 +20,7 @@ import org.apache.tuscany.core.context.ContextInitException;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
 import org.apache.tuscany.core.wire.ProxyCreationException;
-import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 
 import java.lang.reflect.InvocationHandler;
@@ -32,7 +32,8 @@ import java.lang.reflect.InvocationHandler;
  */
 public class EntryPointContextImpl extends AbstractContext implements EntryPointContext {
 
-    private ProxyFactory<?> proxyFactory;
+    private SourceWireFactory<?> proxyFactory;
+    
 
     private InvocationHandler invocationHandler;
 
@@ -47,7 +48,7 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
      * @param messageFactory a factory for generating invocation messages
      * @throws org.apache.tuscany.core.context.ContextInitException if an error occurs creating the entry point
      */
-    public EntryPointContextImpl(String name, ProxyFactory proxyFactory, MessageFactory messageFactory)
+    public EntryPointContextImpl(String name, SourceWireFactory proxyFactory, MessageFactory messageFactory)
             throws ContextInitException {
         super(name);
         assert (proxyFactory != null) : "Proxy factory was null";

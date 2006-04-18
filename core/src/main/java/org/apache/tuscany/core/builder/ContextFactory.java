@@ -2,7 +2,8 @@ package org.apache.tuscany.core.builder;
 
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.model.assembly.Scope;
 
 import java.util.List;
@@ -50,17 +51,17 @@ public interface ContextFactory<T extends Context> {
      * contain the wire chains associated with the destination service of a wire and are responsible for
      * generating proxies
      */
-    public void addTargetProxyFactory(String serviceName, ProxyFactory factory);
+    public void addTargetProxyFactory(String serviceName, TargetWireFactory factory);
 
     /**
      * Returns the target-side proxy factory associated with the given service name
      */
-    public ProxyFactory getTargetProxyFactory(String serviceName);
+    public TargetWireFactory getTargetProxyFactory(String serviceName);
 
     /**
      * Returns a collection of target-side proxy factories for the configuration keyed by service name
      */
-    public Map<String, ProxyFactory> getTargetProxyFactories();
+    public Map<String, TargetWireFactory> getTargetProxyFactories();
 
     /**
      * Adds a source-side proxy factory for the given reference. Source-side proxy factories contain the wire
@@ -68,13 +69,13 @@ public interface ContextFactory<T extends Context> {
      * configuration. Source-side proxy factories also produce proxies that are injected on a reference in a component
      * implementation.
      */
-    public void addSourceProxyFactory(String referenceName, ProxyFactory factory);
+    public void addSourceProxyFactory(String referenceName, SourceWireFactory factory);
 
     /**
      * Returns a collection of source side-proxy factories for component references. There may 1..n proxy factories per
      * reference.
      */
-    public List<ProxyFactory> getSourceProxyFactories();
+    public List<SourceWireFactory> getSourceProxyFactories();
 
     /**
      * Called to signal to the configuration that its parent context has been activated and that it shoud perform any

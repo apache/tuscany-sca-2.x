@@ -21,12 +21,10 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.wire.InvocationConfiguration;
-import org.apache.tuscany.core.wire.WireConfiguration;
-import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
-import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.wire.ProxyFactoryFactory;
-import org.apache.tuscany.core.wire.WireTargetConfiguration;
+import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
+import org.apache.tuscany.core.wire.WireSourceConfiguration;
+import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyObject;
@@ -113,16 +111,16 @@ public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuil
         ConfiguredService configuredService = entryPoint.getConfiguredService();
         Service service = configuredService.getPort();
         ServiceContract serviceContract = service.getServiceContract();
-        Map<Method, InvocationConfiguration> iConfigMap = new HashMap();
-        ProxyFactory proxyFactory = proxyFactoryFactory.createProxyFactory();
+        Map<Method, SourceInvocationConfiguration> iConfigMap = new HashMap<Method, SourceInvocationConfiguration>();
+        SourceWireFactory proxyFactory = proxyFactoryFactory.createSourceWireFactory();
         Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
         for (Method method : javaMethods) {
-            InvocationConfiguration iConfig = new InvocationConfiguration(method);
+            SourceInvocationConfiguration iConfig = new SourceInvocationConfiguration(method);
             iConfigMap.put(method, iConfig);
         }
         QualifiedName qName = new QualifiedName(entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0).getPart().getName()
                 + '/' + service.getName());
-        WireConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
+        WireSourceConfiguration wireConfiguration = new WireSourceConfiguration("ep",qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
         proxyFactory.setProxyConfiguration(wireConfiguration);
         config.addSourceProxyFactory(service.getName(), proxyFactory);
@@ -132,9 +130,9 @@ public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuil
             policyBuilder.build(configuredService);
         }
         // add tail interceptor
-        for (InvocationConfiguration iConfig : iConfigMap.values()) {
-            iConfig.addTargetInterceptor(new InvokerInterceptor());
-        }
+        //for (InvocationConfiguration iConfig : iConfigMap.values()) {
+        //    iConfig.addInterceptor(new InvokerInterceptor());
+        //}
         entryPoint.setContextFactory(config);
     }
 

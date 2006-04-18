@@ -24,6 +24,8 @@ import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.model.assembly.Scope;
 
@@ -64,11 +66,11 @@ public class SystemObjectContextFactory implements ContextFactory {
         return name;
     }
 
-    public void addTargetProxyFactory(String serviceName, ProxyFactory factory) {
+    public void addTargetProxyFactory(String serviceName, TargetWireFactory factory) {
         throw new UnsupportedOperationException();
     }
 
-    public ProxyFactory getTargetProxyFactory(String serviceName) {
+    public TargetWireFactory getTargetProxyFactory(String serviceName) {
         throw new UnsupportedOperationException();
     }
 
@@ -76,7 +78,7 @@ public class SystemObjectContextFactory implements ContextFactory {
         throw new UnsupportedOperationException();
     }
 
-    public void addSourceProxyFactory(String referenceName, ProxyFactory factory) {
+    public void addSourceProxyFactory(String referenceName, SourceWireFactory factory) {
         throw new UnsupportedOperationException();
     }
 

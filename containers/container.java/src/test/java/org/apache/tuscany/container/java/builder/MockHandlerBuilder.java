@@ -18,6 +18,9 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.wire.InvocationConfiguration;
 import org.apache.tuscany.core.wire.MessageHandler;
 import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.WireConfiguration;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
@@ -57,7 +60,7 @@ public class MockHandlerBuilder implements ContextFactoryBuilder {
                 ConfiguredReference cref = (ConfiguredReference) modelObject;
                 // /xcv ProxyFactory pFactory = (ProxyFactory) cref.getProxyFactory();
                 for (ConfiguredService configuredService : cref.getTargetConfiguredServices()) {
-                    ProxyFactory pFactory = (ProxyFactory) configuredService.getProxyFactory();
+                    SourceWireFactory pFactory = (SourceWireFactory) configuredService.getProxyFactory();
                     for (InvocationConfiguration config : pFactory.getProxyConfiguration().getInvocationConfigurations().values()) {
                         if (request) {
                             config.addRequestHandler(handler);
@@ -72,7 +75,7 @@ public class MockHandlerBuilder implements ContextFactoryBuilder {
                 return;
             } else {
                 ConfiguredService cservice = (ConfiguredService) modelObject;
-                ProxyFactory pFactory = (ProxyFactory) cservice.getProxyFactory();
+                TargetWireFactory pFactory = (TargetWireFactory) cservice.getProxyFactory();
                 for (InvocationConfiguration config : pFactory.getProxyConfiguration().getInvocationConfigurations().values()) {
                     if (request) {
                         config.addRequestHandler(handler);

@@ -11,12 +11,14 @@ import java.util.Map;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class WireTargetConfiguration extends WireConfiguration {
+public class WireTargetConfiguration extends WireConfiguration<TargetInvocationConfiguration> {
 
-    public WireTargetConfiguration(QualifiedName targetName, Map<Method, InvocationConfiguration> invocationConfigs,
+    public WireTargetConfiguration(QualifiedName targetName, Map<Method, TargetInvocationConfiguration> invocationConfigs,
                                    ClassLoader proxyClassLoader, MessageFactory messageFactory) {
-        super(targetName, invocationConfigs, proxyClassLoader, messageFactory);
-    }
+        super(targetName, proxyClassLoader, messageFactory);
+        assert (invocationConfigs != null) : "No wire configuration map specified";
+        configurations = invocationConfigs;
 
+    }
 
 }

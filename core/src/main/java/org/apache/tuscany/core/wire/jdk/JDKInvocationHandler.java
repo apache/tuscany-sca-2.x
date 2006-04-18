@@ -47,23 +47,16 @@ public class JDKInvocationHandler implements InvocationHandler {
      */
     private Map<Method, ConfigHolder> configuration;
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
-    public JDKInvocationHandler(MessageFactory messageFactory, Map<Method, InvocationConfiguration> configuration) {
+    public JDKInvocationHandler(MessageFactory messageFactory, Map<Method, ? extends InvocationConfiguration> configuration) {
+        assert (messageFactory != null) : "Message factory was null";
         assert (configuration != null) : "Configuration not specified";
         this.configuration = new HashMap<Method, ConfigHolder>(configuration.size());
-        for (Map.Entry<Method, InvocationConfiguration> entry : configuration.entrySet()) {
+        for (Map.Entry<Method, ? extends InvocationConfiguration> entry : configuration.entrySet()) {
             this.configuration.put(entry.getKey(), new ConfigHolder(entry.getValue()));
         }
         // this.configuration = configuration;
         this.messageFactory = messageFactory;
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     /**
      * Dispatches a client request made on a proxy
@@ -78,7 +71,7 @@ public class JDKInvocationHandler implements InvocationHandler {
         }
         InvocationConfiguration config = holder.config;
         if (config != null) {
-            headInterceptor = config.getSourceInterceptor();
+           headInterceptor = config.getHeadInterceptor();
         }
 
         TargetInvoker invoker;
