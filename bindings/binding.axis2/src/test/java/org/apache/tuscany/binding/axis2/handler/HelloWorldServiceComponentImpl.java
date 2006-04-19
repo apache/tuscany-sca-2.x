@@ -16,9 +16,9 @@
  */
 package org.apache.tuscany.binding.axis2.handler;
 
+import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
-import org.osoa.sca.annotations.Reference;
 
 /**
  * This class implements the HelloWorld service component.
@@ -29,7 +29,8 @@ import org.osoa.sca.annotations.Reference;
 public class HelloWorldServiceComponentImpl implements HelloWorldService {
     
     @Reference
-    public HelloWorldService hellowWorldService = null; // Injected by the SCA container.
+    // Injected by the SCA container.
+    private HelloWorldService hellowWorldService;
 
     /**
      * @see org.apache.tuscany.samples.helloworldwsclient.HelloWorldService#getGreetings(java.lang.String)

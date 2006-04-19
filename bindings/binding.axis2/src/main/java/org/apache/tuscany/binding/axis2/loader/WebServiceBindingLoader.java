@@ -20,10 +20,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
-
 import org.apache.tuscany.binding.axis2.assembly.WebServiceAssemblyFactory;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis2.assembly.impl.WebServiceAssemblyFactoryImpl;
@@ -33,6 +29,11 @@ import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.core.system.annotation.Autowire;
 
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
+
+
 /**
  * @version $Rev$ $Date$
  */
@@ -40,7 +41,7 @@ import org.apache.tuscany.core.system.annotation.Autowire;
 public class WebServiceBindingLoader implements StAXElementLoader<WebServiceBinding> {
     public static final QName BINDING_WS = new QName("http://www.osoa.org/xmlns/sca/0.9", "binding.ws");
 
-    private static final WebServiceAssemblyFactory wsFactory = new WebServiceAssemblyFactoryImpl();
+    private static final WebServiceAssemblyFactory WS_FACTORY = new WebServiceAssemblyFactoryImpl();
 
     protected StAXLoaderRegistry registry;
 
@@ -59,8 +60,11 @@ public class WebServiceBindingLoader implements StAXElementLoader<WebServiceBind
         registry.unregisterLoader(BINDING_WS, this);
     }
 
-    public WebServiceBinding load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
-        WebServiceBinding binding = wsFactory.createWebServiceBinding();
+    public WebServiceBinding load(XMLStreamReader reader,
+                                  ResourceLoader resourceLoader)
+        throws XMLStreamException, ConfigurationLoadException {
+        
+        WebServiceBinding binding = WS_FACTORY.createWebServiceBinding();
         binding.setURI(reader.getAttributeValue(null, "uri"));
         binding.setPortURI(reader.getAttributeValue(null, "port"));
         return binding;

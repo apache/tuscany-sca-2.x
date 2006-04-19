@@ -21,5 +21,5 @@ import org.osoa.sca.annotations.Remotable;
 @Remotable
 public interface AccountService {
 
-    public AccountReport getAccountReport(String customerID);
+    AccountReport getAccountReport(String customerID);
 }

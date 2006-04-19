@@ -46,12 +46,12 @@ public class WebServiceOperationMetaData {
     private BindingOperation bindingOperation;
 
     // Fields to cache derived metadata
-    private transient Set inputHeaderParts;
-    private transient Set outputHeaderParts;
+    private transient Set<Part> inputHeaderParts;
+    private transient Set<Part> outputHeaderParts;
     private transient String style;
     private transient String use;
     private transient String soapAction;
-    private transient List signature;
+    private transient List<Object> signature;
     private String encoding;
     private transient QName rpcOperationName;
 
@@ -60,7 +60,12 @@ public class WebServiceOperationMetaData {
         this.bindingOperation = bindingOperation;
     }
 
-    public WebServiceOperationMetaData(Binding binding, BindingOperation bindingOperation, String style, String use, String encoding, String soapAction) {
+    public WebServiceOperationMetaData(Binding binding,
+                                       BindingOperation bindingOperation,
+                                       String style,
+                                       String use,
+                                       String encoding,
+                                       String soapAction) {
         this.binding = binding;
         this.bindingOperation = bindingOperation;
         this.style = style;
@@ -69,10 +74,10 @@ public class WebServiceOperationMetaData {
         this.soapAction = soapAction;
     }
 
-    public Set getInputHeaderParts() {
+    public Set<Part> getInputHeaderParts() {
         if (inputHeaderParts == null) {
             // Build a set of header parts that we need to exclude
-            inputHeaderParts = new HashSet();
+            inputHeaderParts = new HashSet<Part>();
             BindingInput bindingInput = bindingOperation.getBindingInput();
 
             if (bindingInput != null) {
@@ -91,10 +96,10 @@ public class WebServiceOperationMetaData {
         return inputHeaderParts;
     }
 
-    public Set getOutputHeaderParts() {
+    public Set<Part> getOutputHeaderParts() {
         if (outputHeaderParts == null) {
             // Build a set of header parts that we need to exclude
-            outputHeaderParts = new HashSet();
+            outputHeaderParts = new HashSet<Part>();
             BindingOutput bindingOutput = bindingOperation.getBindingOutput();
 
             if (bindingOutput != null) {
@@ -133,16 +138,23 @@ public class WebServiceOperationMetaData {
 
     public String getStyle() {
         if (style == null) {
-            SOAPOperation soapOperation = (SOAPOperation) WebServicePortMetaData.getExtensibilityElement(bindingOperation.getExtensibilityElements(), SOAPOperation.class);
-            if (soapOperation != null)
+            SOAPOperation soapOperation = (SOAPOperation)WebServicePortMetaData
+                .getExtensibilityElement(bindingOperation.getExtensibilityElements(),
+                                         SOAPOperation.class);
+            if (soapOperation != null) {
                 style = soapOperation.getStyle();
-            if (style == null) {
-                SOAPBinding soapBinding = (SOAPBinding) WebServicePortMetaData.getExtensibilityElement(binding.getExtensibilityElements(), SOAPBinding.class);
-                if (soapBinding != null)
-                    style = soapBinding.getStyle();
             }
-            if (style == null)
+            if (style == null) {
+                SOAPBinding soapBinding = WebServicePortMetaData
+                    .getExtensibilityElement(binding.getExtensibilityElements(),
+                                             SOAPBinding.class);
+                if (soapBinding != null) {
+                    style = soapBinding.getStyle();
+                }
+            }
+            if (style == null) {
                 style = "document";
+            }
         }
         return style;
     }
@@ -156,9 +168,12 @@ public class WebServiceOperationMetaData {
     public String getSOAPAction() {
         if (soapAction == null) {
             final List wsdlBindingOperationExtensions = bindingOperation.getExtensibilityElements();
-            final SOAPOperation soapOp = (SOAPOperation) WebServicePortMetaData.getExtensibilityElement(wsdlBindingOperationExtensions, SOAPOperation.class);
-            if (soapOp != null)
+            final SOAPOperation soapOp = WebServicePortMetaData
+                .getExtensibilityElement(wsdlBindingOperationExtensions,
+                                         SOAPOperation.class);
+            if (soapOp != null) {
                 soapAction = soapOp.getSoapActionURI();
+            }
         }
         return soapAction;
     }
@@ -166,49 +181,55 @@ public class WebServiceOperationMetaData {
     public QName getRPCOperationName() {
         if (rpcOperationName == null) {
             javax.wsdl.extensions.soap.SOAPBody soapBody = getSOAPBody(true);
-            String ns = (soapBody != null) ? soapBody.getNamespaceURI() : binding.getPortType().getQName().getNamespaceURI();
+            String ns = (soapBody != null) ? soapBody.getNamespaceURI()
+                    : binding.getPortType().getQName().getNamespaceURI();
             String name = bindingOperation.getOperation().getName();
             rpcOperationName = new QName(ns, name);
         }
         return rpcOperationName;
     }
 
-    private List getSOAPBodyParts(boolean input) {
+    private List<String> getSOAPBodyParts(boolean input) {
         javax.wsdl.extensions.soap.SOAPBody soapBody = getSOAPBody(input);
         if (soapBody != null) {
             List parts = soapBody.getParts();
-            if (parts!=null) {
-                List names = new ArrayList();
+            if (parts != null) {
+                List<String> names = new ArrayList<String>();
                 for (Iterator i = parts.iterator(); i.hasNext();) {
                     Object part = i.next();
-                    if (part instanceof String)
-                        names.add(part);
-                    else if (part instanceof Part) {
-                        names.add(((Part) part).getName());
+                    if (part instanceof String) {
+                        names.add((String)part);
+                    } else if (part instanceof Part) {
+                        names.add(((Part)part).getName());
                     }
                 }
                 return names;
-            } else
+            } else {
                 return null;
-        } else
+            }
+        } else {
             return null;
+        }
     }
 
     private javax.wsdl.extensions.soap.SOAPBody getSOAPBody(boolean input) {
         List elements = null;
         if (input) {
             BindingInput bindingInput = bindingOperation.getBindingInput();
-            if (bindingInput == null)
+            if (bindingInput == null) {
                 return null;
+            }
             elements = bindingInput.getExtensibilityElements();
         } else {
             BindingOutput bindingOutput = bindingOperation.getBindingOutput();
-            if (bindingOutput == null)
+            if (bindingOutput == null) {
                 return null;
+            }
             elements = bindingOutput.getExtensibilityElements();
         }
-        javax.wsdl.extensions.soap.SOAPBody soapBody = (javax.wsdl.extensions.soap.SOAPBody) WebServicePortMetaData.getExtensibilityElement(elements,
-                javax.wsdl.extensions.soap.SOAPBody.class);
+        javax.wsdl.extensions.soap.SOAPBody soapBody = WebServicePortMetaData
+            .getExtensibilityElement(elements,
+                                     javax.wsdl.extensions.soap.SOAPBody.class);
         return soapBody;
     }
 
@@ -224,40 +245,48 @@ public class WebServiceOperationMetaData {
             if (soapBody != null) {
                 use = soapBody.getUse();
             }
-            if (use == null)
+            if (use == null) {
                 use = "literal";
+            }
         }
         return use;
     }
 
+    @SuppressWarnings("unchecked")
     public String getEncoding() {
         if (encoding == null) {
             javax.wsdl.extensions.soap.SOAPBody soapBody = getSOAPBody(true);
             if (soapBody != null) {
-                List<String> styles=(List<String>)soapBody.getEncodingStyles();
-                if (styles!=null && !styles.isEmpty())
+                List<String> styles = (List<String>)soapBody.getEncodingStyles();
+                if (styles != null && !styles.isEmpty()) {
                     encoding = styles.get(0);
+                }
             }
-            if (encoding == null)
+            if (encoding == null) {
                 encoding = "";
+            }
         }
         return encoding;
     }
     
     public boolean isDocLitWrapped() {
         boolean flag = getStyle().equals("document") && getUse().equals("literal");
-        if (!flag)
+        if (!flag) {
             return false;
+        }
         Message msg = getMessage(true);
-        if (msg == null)
+        if (msg == null) {
             return false;
+        }
         List parts = msg.getOrderedParts(null);
-        if (parts.size() != 1)
+        if (parts.size() != 1) {
             return false;
+        }
         Part part = (Part) parts.get(0);
         QName element = part.getElementName();
-        if (element == null)
+        if (element == null) {
             return false;
+        }
         return element.getLocalPart().equals(bindingOperation.getOperation().getName());
     }
 
@@ -290,25 +319,26 @@ public class WebServiceOperationMetaData {
      * @param bindingOperation
      * @return
      */
-    public List getOperationSignature() {
+    public List<?> getOperationSignature() {
         if (signature == null) {
-            signature = new ArrayList();
+            signature = new ArrayList<Object>();
 
             Operation operation = bindingOperation.getOperation();
-            if (operation == null)
+            if (operation == null) {
                 return signature;
+            }
 
             final Input input = operation.getInput();
             if (input == null) {
                 return signature;
             }
 
-            String style = getStyle();
+            String sstyle = getStyle();
 
-            if (style.equals("rpc")) {
+            if ("rpc".equals(sstyle)) {
                 Collection partNames = input.getMessage().getParts().values();
                 for (Iterator i = partNames.iterator(); i.hasNext();) {
-                    Part part = (Part) i.next();
+                    Part part = (Part)i.next();
                     signature.add(part.getName());
                 }
             } else {
@@ -338,12 +368,13 @@ public class WebServiceOperationMetaData {
                      * MUST result in operation signatures that are different
                      * from one another.
                      */
-                List bodyParts = getSOAPBodyParts(true);
+                List<String> bodyParts = getSOAPBodyParts(true);
 
-                Collection parts = input.getMessage().getParts().values();
+                Collection<?> parts = input.getMessage().getParts().values();
                 // Exclude the parts to be transmitted in SOAP header
-                if (bodyParts == null)
+                if (bodyParts == null) {
                     parts.removeAll(getInputHeaderParts());
+                }
                 for (Iterator i = parts.iterator(); i.hasNext();) {
                     Part part = (Part) i.next();
                     if (bodyParts == null) {
@@ -380,8 +411,9 @@ public class WebServiceOperationMetaData {
 
     public Message getMessage(boolean isInput) {
         Operation operation = bindingOperation.getOperation();
-        if (operation == null)
+        if (operation == null) {
             return null;
+        }
 
         if (isInput) {
             final Input input = operation.getInput();
@@ -395,8 +427,9 @@ public class WebServiceOperationMetaData {
     public Part getInputPart(int index) {
         Part part = null;
         Message message = getMessage(true);
-        if (message == null)
+        if (message == null) {
             return part;
+        }
 
         List parts = message.getOrderedParts(null);
         return (Part) parts.get(index);
@@ -406,8 +439,9 @@ public class WebServiceOperationMetaData {
     public Part getOutputPart(int index) {
         Part part = null;
         Message message = getMessage(false);
-        if (message == null)
+        if (message == null) {
             return part;
+        }
 
         List parts = message.getOrderedParts(null);
         return (Part) parts.get(index);
@@ -420,30 +454,32 @@ public class WebServiceOperationMetaData {
      * @param isInput TODO
      * @return
      */
-    public List getBodyPartIndexes(boolean isInput) {
-        List indexes = new ArrayList();
+    public List<Integer> getBodyPartIndexes(boolean isInput) {
+        List<Integer> indexes = new ArrayList<Integer>();
 
         Message message = getMessage(isInput);
-        if (message == null)
+        if (message == null) {
             return indexes;
+        }
 
-        List bodyParts = getSOAPBodyParts(isInput);
+        List<String> bodyParts = getSOAPBodyParts(isInput);
         List parts = message.getOrderedParts(null);
-        Set headerParts = (isInput) ? getInputHeaderParts() : getOutputHeaderParts();
+        Set headerParts = isInput ? getInputHeaderParts() : getOutputHeaderParts();
 
         int index = 0;
         for (Iterator i = parts.iterator(); i.hasNext(); index++) {
             Part part = (Part) i.next();
-            if (headerParts.contains(part))
+            if (headerParts.contains(part)) {
                 continue;
+            }
             if (bodyParts == null) {
                 // All parts
-                indexes.add(new Integer(index));
+                indexes.add(index);
             } else {
                 // "parts" in soap:body
-                if (bodyParts.contains(part.getName()))
-                    indexes.add(new Integer(index));
-
+                if (bodyParts.contains(part.getName())) {
+                    indexes.add(index);
+                }
             }
         }
         return indexes;
@@ -460,8 +496,9 @@ public class WebServiceOperationMetaData {
     public int getHeaderPartIndex(QName elementName, boolean isInput) {
 
         Message message = getMessage(isInput);
-        if (message == null)
+        if (message == null) {
             return -1;
+        }
 
         List parts = message.getOrderedParts(null);
         Set headerParts = isInput ? getInputHeaderParts() : getOutputHeaderParts();
@@ -479,6 +516,6 @@ public class WebServiceOperationMetaData {
 
     public BindingOperation getBindingOperation() {
         return bindingOperation;
-	}
+    }
 
 }

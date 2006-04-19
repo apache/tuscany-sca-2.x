@@ -16,27 +16,39 @@
  */
 package org.apache.tuscany.binding.axis2.assembly.tests.bigbank.account.services.account;
 
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.binding.axis2.assembly.tests.bigbank.account.services.accountdata.AccountDataService;
 import org.apache.tuscany.binding.axis2.assembly.tests.bigbank.account.services.stockquote.StockQuoteService;
 
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
+
 public class AccountServiceImpl implements AccountService {
 
     @Property
-    public String currency = "USD";
-
+    private String currency = "USD";
     @Reference
-    public AccountDataService accountDataService;
+    private AccountDataService accountDataService;
     @Reference
-    public StockQuoteService stockQuoteService;
+    private StockQuoteService stockQuoteService;
 
     public AccountServiceImpl() {
     }
 
     public AccountReport getAccountReport(String customerID) {
         return null;
+    } 
+    
+    
+    //methods to access the fields
+    protected StockQuoteService getStockQuoteService() {
+        return stockQuoteService;
+    }
+    protected AccountDataService getAccountDataService() {
+        return accountDataService;
+    }
+    protected String getCurrency() {
+        return currency;
     }
 
 }

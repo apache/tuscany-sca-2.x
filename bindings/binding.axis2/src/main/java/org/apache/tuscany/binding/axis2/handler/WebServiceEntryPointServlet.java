@@ -47,8 +47,8 @@ import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
@@ -59,7 +59,7 @@ import org.apache.tuscany.model.assembly.Module;
 public class WebServiceEntryPointServlet extends AxisServlet {
 
     private static final long serialVersionUID = -2085869393709833372L;
-    private  boolean tuscanyGetDefaultAxis2xmlChecked= false;
+    private  boolean tuscanyGetDefaultAxis2xmlChecked;
 
 
   // private static final String CONFIGURATION_CONTEXT = "CONFIGURATION_CONTEXT";
@@ -90,13 +90,17 @@ public class WebServiceEntryPointServlet extends AxisServlet {
             }
         }
     }
-    private void initTuscany(final AxisConfiguration axisConfig, ServletConfig config) throws AxisFault, ServletException {
+    @SuppressWarnings("deprecation")
+    private void initTuscany(final AxisConfiguration axisConfig,
+                             ServletConfig config)
+        throws AxisFault, ServletException {
 
         // Get the current SCA module context
 
         ServletContext servletContext = config.getServletContext();
         
-        CompositeContext moduleContext = (CompositeContext) servletContext.getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
+        CompositeContext moduleContext = (CompositeContext)servletContext
+                .getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
         Module module = (Module) moduleContext.getComposite();
        
 
@@ -117,7 +121,8 @@ public class WebServiceEntryPointServlet extends AxisServlet {
                 WebServicePortMetaData wsdlPortInfo = new WebServicePortMetaData(definition, port, null,
                         false);
 
-                WebServiceEntryPointInOutSyncMessageReceiver msgrec = new WebServiceEntryPointInOutSyncMessageReceiver(
+                WebServiceEntryPointInOutSyncMessageReceiver msgrec
+                    = new WebServiceEntryPointInOutSyncMessageReceiver(
                         entryPoint,
                         (EntryPointContext) entryPointContext,
                         wsdlPortInfo);
@@ -133,13 +138,15 @@ public class WebServiceEntryPointServlet extends AxisServlet {
                 AxisService axisService = new AxisService(epName);
                 axisService.setParent(serviceGroup);
                 axisService.setWSDLDefinition(definition);
-                axisService.setServiceDescription("Tuscany configured service EntryPoint name '" + epName + '\'');
-                axisService.addMessageReceiver(WebServiceEntryPointInOutSyncMessageReceiver.MEP_URL, msgrec);
+                axisService.setServiceDescription("Tuscany configured service EntryPoint name '"
+                                                  + epName + '\'');
+                axisService.addMessageReceiver(WebServiceEntryPointInOutSyncMessageReceiver.MEP_URL,
+                                               msgrec);
 
                 // Create operation descriptions for all the operations
                 PortType wsdlPortType = wsdlPortInfo.getPortType();
-                for (Iterator<Operation> j = wsdlPortType.getOperations().iterator(); j.hasNext();) {
-                    Operation wsdlOperation = j.next();
+                for (Iterator<?> j = wsdlPortType.getOperations().iterator(); j.hasNext();) {
+                    Operation wsdlOperation = (Operation)j.next();
                     String operationName = wsdlOperation.getName();
                     QName name = new QName(qname.getNamespaceURI(), operationName);
                     AxisOperation axisOp = new InOutAxisOperation(name);
@@ -157,21 +164,29 @@ public class WebServiceEntryPointServlet extends AxisServlet {
     }
 
 
-    protected synchronized void tuscanyGetDefaultAxis2xml( ServletConfig config) throws ServletException {
+    @SuppressWarnings("deprecation")
+    protected synchronized void tuscanyGetDefaultAxis2xml(ServletConfig config)
+        throws ServletException {
 
-        if (tuscanyGetDefaultAxis2xmlChecked)
-            return; // already checked.
+        if (tuscanyGetDefaultAxis2xmlChecked) {
+            // already checked.
+            return;
+        }
         tuscanyGetDefaultAxis2xmlChecked = true;
         ServletContext context = config.getServletContext();
         String repoDir = context.getRealPath("/WEB-INF");
-        String axis2config = repoDir + "/" + DeploymentConstants.DIRECTORY_CONF+ "/" + DeploymentConstants.AXIS2_CONFIGURATION_XML;
+        String axis2config = repoDir + "/" + DeploymentConstants.DIRECTORY_CONF
+            + "/" + DeploymentConstants.AXIS2_CONFIGURATION_XML;
         
         File axis2xmlFile = new File(axis2config);
         constructSubDirectories(axis2xmlFile.getParentFile());
-        if (axis2xmlFile.exists())
-            return; // do nothing if there.
+        if (axis2xmlFile.exists()) {
+            // do nothing if there.
+            return;
+        }
         
-        CompositeContext moduleContext = (CompositeContext) config.getServletContext().getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
+        CompositeContext moduleContext = (CompositeContext)config.getServletContext()
+                    .getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
         Module module = (Module) moduleContext.getComposite();
 
 
@@ -196,14 +211,18 @@ public class WebServiceEntryPointServlet extends AxisServlet {
         }
 
     }
-    protected void constructSubDirectories(File in){
-        if(in.exists())return;
+    protected void constructSubDirectories(File in) {
+        if (in.exists()) {
+            return;
+        }
         constructSubDirectories(in.getParentFile());
         in.mkdir();
         
     }
     @Override
-    protected void doGet(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest arg0, HttpServletResponse arg1)
+        throws ServletException, IOException {
+        
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         ClassLoader mycl = getClass().getClassLoader();
         try {
@@ -223,7 +242,8 @@ public class WebServiceEntryPointServlet extends AxisServlet {
     
     }
     @Override
-    protected void doPost(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest arg0, HttpServletResponse arg1)
+        throws ServletException, IOException {
         
         
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();

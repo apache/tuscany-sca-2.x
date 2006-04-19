@@ -1,3 +1,19 @@
+/**
+ *
+ *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.apache.tuscany.binding.axis2.handler;
 
 import java.lang.reflect.InvocationHandler;
@@ -13,15 +29,17 @@ import org.apache.axis2.Constants;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.receivers.AbstractInOutSyncMessageReceiver;
+
+import org.apache.tuscany.binding.axis2.util.AxiomHelper;
+import org.apache.tuscany.core.context.EntryPointContext;
+import org.apache.tuscany.model.assembly.EntryPoint;
+
 import org.apache.ws.commons.om.OMElement;
 import org.apache.ws.commons.soap.SOAPBody;
 import org.apache.ws.commons.soap.SOAPEnvelope;
 import org.apache.ws.commons.soap.SOAPFactory;
 import org.apache.wsdl.WSDLConstants;
 
-import org.apache.tuscany.binding.axis2.util.AxiomHelper;
-import org.apache.tuscany.core.context.EntryPointContext;
-import org.apache.tuscany.model.assembly.EntryPoint;
 
 public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {
     public static final String MEP_URL = WSDLConstants.MEP_URI_IN_OUT;
@@ -39,10 +57,14 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
      * @param context
      * @param wsdlPortInfo
      */
-    public WebServiceEntryPointInOutSyncMessageReceiver(EntryPoint entryPoint, EntryPointContext context, WebServicePortMetaData wsdlPortInfo) {
+    @SuppressWarnings("unchecked")
+    public WebServiceEntryPointInOutSyncMessageReceiver(EntryPoint entryPoint,
+                                                        EntryPointContext context,
+                                                        WebServicePortMetaData wsdlPortInfo) {
         this.entryPointContext = context;
 
-        Class<?> serviceInterface = entryPoint.getConfiguredService().getPort().getServiceContract().getInterface();
+        Class<?> serviceInterface = entryPoint.getConfiguredService().getPort()
+                .getServiceContract().getInterface();
         Method[] methods = serviceInterface.getMethods();
         Map<String, Method> map = new HashMap<String, Method>(methods.length);
         for (int i = 0; i < methods.length; i++) {
@@ -60,14 +82,18 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
             responseTypeMap.put(opName, qname);
 
             Method method = map.get(opName);
-            methodMap.put(opName,method);
+            methodMap.put(opName, method);
         }
 
         typeHelper = entryPoint.getComposite().getAssemblyContext().getTypeHelper();
-        classLoader = entryPoint.getComposite().getAssemblyContext().getApplicationResourceLoader().getClassLoader();
+        classLoader = entryPoint.getComposite().getAssemblyContext()
+                .getApplicationResourceLoader().getClassLoader();
     }
 
-    public void invokeBusinessLogic(MessageContext msgContext, MessageContext outMsgContext) throws AxisFault {
+    public void invokeBusinessLogic(MessageContext msgContext,
+                                    MessageContext outMsgContext)
+        throws AxisFault {
+        
         // set application classloader onto the thread
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         try {
@@ -94,17 +120,21 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
 
             // serialize the wire respose into the message
             QName responseTypeQN = responseTypeMap.get(axisOperationName);
-            OMElement responseOM = AxiomHelper.toOMElement(typeHelper, new Object[]{response}, responseTypeQN);
+            OMElement responseOM = AxiomHelper.toOMElement(typeHelper,
+                                                           new Object[]{response},
+                                                           responseTypeQN);
             soapbody.addChild(responseOM);
 
             outMsgContext.setEnvelope(soapenv);
             outMsgContext.getOperationContext().setProperty(Constants.RESPONSE_WRITTEN, Constants.VALUE_TRUE);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new AxisFault("Error creating DataObject from Soapenvelope. " + e.getClass() + ' ' + e.getMessage(), e);
+            throw new AxisFault("Error creating DataObject from Soapenvelope. "
+                                + e.getClass() + ' ' + e.getMessage(), e);
         } catch (Throwable e) {
             e.printStackTrace();
-            throw new AxisFault("Error creating DataObject from Soapenvelope. " + e.getClass() + ' ' + e.getMessage(), e);
+            throw new AxisFault("Error creating DataObject from Soapenvelope. "
+                                + e.getClass() + ' ' + e.getMessage(), e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }

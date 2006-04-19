@@ -1,15 +1,18 @@
 /**
- * 
- * Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
+ *
+ *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package org.apache.tuscany.binding.axis2.util;
 
@@ -24,6 +27,12 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import commonj.sdo.DataObject;
+import commonj.sdo.Property;
+import commonj.sdo.helper.TypeHelper;
+import commonj.sdo.helper.XMLDocument;
+import commonj.sdo.helper.XSDHelper;
+
 import org.apache.tuscany.sdo.helper.DataFactoryImpl;
 import org.apache.tuscany.sdo.helper.XMLHelperImpl;
 import org.apache.tuscany.sdo.helper.XSDHelperImpl;
@@ -33,18 +42,17 @@ import org.apache.ws.commons.om.OMXMLParserWrapper;
 import org.apache.ws.commons.om.impl.llom.factory.OMXMLBuilderFactory;
 import org.osoa.sca.ServiceRuntimeException;
 
-import commonj.sdo.DataObject;
-import commonj.sdo.Property;
-import commonj.sdo.helper.TypeHelper;
-import commonj.sdo.helper.XMLDocument;
-import commonj.sdo.helper.XSDHelper;
 
 /**
  * Utility methods to convert between Axis2 AXIOM, SDO DataObjects and Java objects.
  * 
  * Most of these methods rely on the schemas having been registered with XSDHelper.define
  */
-public class AxiomHelper {
+public final class AxiomHelper {
+    
+    private AxiomHelper() {
+        //utility class, never contructed
+    }
 
     /**
      * Deserialize an OMElement into Java Objects
@@ -55,8 +63,7 @@ public class AxiomHelper {
      */
     public static Object[] toObjects(TypeHelper typeHelper, OMElement om) {
         DataObject dataObject = toDataObject(typeHelper, om);
-        Object[] os = toObjects(dataObject);
-        return os;
+        return toObjects(dataObject);
     }
 
     /**
@@ -84,8 +91,7 @@ public class AxiomHelper {
      */
     public static OMElement toOMElement(TypeHelper typeHelper, Object[] os, QName typeQN) {
         DataObject dataObject = toDataObject(typeHelper, os, typeQN);
-        OMElement omElement = toOMElement(typeHelper, dataObject, typeQN);
-        return omElement;
+        return toOMElement(typeHelper, dataObject, typeQN);
     }
 
     /**
@@ -103,18 +109,22 @@ public class AxiomHelper {
 
             PipedOutputStream pos = new PipedOutputStream();
             PipedInputStream pis = new PipedInputStream(pos);
-            new XMLHelperImpl(typeHelper).save(dataObject, typeQN.getNamespaceURI(), typeQN.getLocalPart(), pos);
+            new XMLHelperImpl(typeHelper).save(dataObject,
+                                               typeQN.getNamespaceURI(),
+                                               typeQN.getLocalPart(),
+                                               pos);
             pos.close();
 
             XMLStreamReader parser;
-            ClassLoader ccl=Thread.currentThread().getContextClassLoader();
+            ClassLoader ccl = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(AxiomHelper.class.getClassLoader());
                 parser = XMLInputFactory.newInstance().createXMLStreamReader(pis);
             } finally {
                 Thread.currentThread().setContextClassLoader(ccl);
             }
-            OMXMLParserWrapper builder = OMXMLBuilderFactory.createStAXOMBuilder(OMAbstractFactory.getOMFactory(), parser);
+            OMXMLParserWrapper builder = OMXMLBuilderFactory
+                    .createStAXOMBuilder(OMAbstractFactory.getOMFactory(), parser);
             OMElement root = builder.getDocumentElement();
 
             return root;
@@ -140,7 +150,7 @@ public class AxiomHelper {
             PipedOutputStream pos = new PipedOutputStream();
             PipedInputStream pis = new PipedInputStream(pos);
 
-            ClassLoader ccl=Thread.currentThread().getContextClassLoader();
+            ClassLoader ccl = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(AxiomHelper.class.getClassLoader());
                 omElement.serialize(pos);
@@ -171,12 +181,13 @@ public class AxiomHelper {
      * @return the DataObject
      */
     public static DataObject toDataObject(TypeHelper typeHelper, Object[] os, QName typeQN) {
-        XSDHelper xsdHelper=new XSDHelperImpl(typeHelper);
-        Property property=xsdHelper.getGlobalProperty(typeQN.getNamespaceURI(), typeQN.getLocalPart(), true);
+        XSDHelper xsdHelper = new XSDHelperImpl(typeHelper);
+        Property property = xsdHelper.getGlobalProperty(typeQN.getNamespaceURI(),
+                                                        typeQN.getLocalPart(),
+                                                        true);
         DataObject dataObject = new DataFactoryImpl(typeHelper).create(property.getType());
         List ips = dataObject.getInstanceProperties();
         for (int i = 0; i < ips.size(); i++) {
-            Property p = (Property) ips.get(i);
             dataObject.set(i, os[i]);
         }
         return dataObject;

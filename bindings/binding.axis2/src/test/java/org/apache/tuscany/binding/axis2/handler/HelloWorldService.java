@@ -21,6 +21,6 @@ package org.apache.tuscany.binding.axis2.handler;
  */
 public interface HelloWorldService {
 
-    public String getGreetings(String name);
+    String getGreetings(String name);
 
 }

@@ -1,17 +1,19 @@
 /**
- * 
- * Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
+ *
+ *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
-
 package org.apache.tuscany.binding.axis2.util;
 
 import java.io.IOException;
@@ -35,7 +37,7 @@ import org.osoa.sca.ServiceRuntimeException;
  */
 public class TuscanyAxisConfigurator implements AxisConfigurator {
 
-    protected AxisConfiguration axisConfiguration = null;
+    protected AxisConfiguration axisConfiguration;
 
     protected final ResourceLoader resourceLoader;
 
@@ -44,8 +46,10 @@ public class TuscanyAxisConfigurator implements AxisConfigurator {
      * @param axisConfiguration Starting axis configuration, null then use uninitialized configuration. 
      */
     public TuscanyAxisConfigurator(ResourceLoader resourceLoader, AxisConfiguration axisConfiguration) {
-        this.resourceLoader = resourceLoader != null ? resourceLoader : new ResourceLoaderImpl(getClass().getClassLoader());
-        this.axisConfiguration = axisConfiguration == null ? new AxisConfiguration() : axisConfiguration;
+        this.resourceLoader = resourceLoader != null ? resourceLoader
+            : new ResourceLoaderImpl(getClass().getClassLoader());
+        this.axisConfiguration = axisConfiguration == null ? new AxisConfiguration()
+            : axisConfiguration;
     }
 
     public AxisConfiguration getAxisConfiguration() {
@@ -61,10 +65,12 @@ public class TuscanyAxisConfigurator implements AxisConfigurator {
             URL url = resourceLoader.getResource("org/apache/tuscany/binding/axis2/engine/config/axis2.xml");
 
             InputStream serviceInputStream = url.openStream();
-            AxisConfigBuilder axisConfigBuilder = new AxisConfigBuilder(serviceInputStream, new DeploymentEngine(), axisConfiguration);
+            AxisConfigBuilder axisConfigBuilder = new AxisConfigBuilder(serviceInputStream,
+                                                                        new DeploymentEngine(),
+                                                                        axisConfiguration);
             axisConfigBuilder.populateConfig();
             serviceInputStream.close();
-            return new ConfigurationContextFactory().createConfigurationContext(this);
+            return ConfigurationContextFactory.createConfigurationContext(this);
         } catch (IOException e) {
 
             throw new ServiceRuntimeException(e);

@@ -54,7 +54,7 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
      */
     public void setWSDLPort(Port value) {
         checkNotFrozen();
-        this.port=value;
+        this.port = value;
     }
     
     /**
@@ -65,11 +65,10 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
     }
     
     /**
-     * @see org.apache.tuscany.binding.axis2.assembly.WebServiceBinding#setWSDLDefinition(javax.wsdl.Definition)
      */
-    public void setWSDLDefinition(Definition definition) {
+    public void setWSDLDefinition(Definition pdefinition) {
         checkNotFrozen();
-        this.definition=definition;
+        this.definition = pdefinition;
     }
     
     /**
@@ -80,36 +79,39 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
     }
     
     /**
-     * @see org.apache.tuscany.model.assembly.impl.BindingImpl#initialize(org.apache.tuscany.model.assembly.AssemblyContext)
      */
+    @SuppressWarnings("unchecked")
     public void initialize(AssemblyContext modelContext) {
-        if (isInitialized())
+        if (isInitialized()) {
             return;
+        }
         super.initialize(modelContext);
         
         // Get the WSDL port namespace and name
-        if (port==null && portURI!=null) {
-            int h=portURI.indexOf('#');
-            String portNamespace=portURI.substring(0,h);
-            String portName=portURI.substring(h+1);
+        if (port == null && portURI != null) {
+            int h = portURI.indexOf('#');
+            String portNamespace = portURI.substring(0, h);
+            String portName = portURI.substring(h + 1);
     
             // Load the WSDL definitions for the given namespace
-            List<Definition> definitions=modelContext.getAssemblyLoader().loadDefinitions(portNamespace);
-            if (definitions==null)
-                throw new IllegalArgumentException("Cannot find WSDL definition for "+portNamespace);
-            for (Definition definition: definitions) {
+            List<Definition> definitions = modelContext.getAssemblyLoader()
+                    .loadDefinitions(portNamespace);
+            if (definitions == null) {
+                throw new IllegalArgumentException("Cannot find WSDL definition for " + portNamespace);
+            }
+            for (Definition def : definitions) {
     
                 // Find the port with the given name
-                for (Service service : (Collection<Service>)definition.getServices().values()) {
-                    Port port=service.getPort(portName);
-                    if (port!=null) {
-                        this.definition=definition;
-                        this.port=port;
+                for (Service service : (Collection<Service>)def.getServices().values()) {
+                    Port prt = service.getPort(portName);
+                    if (prt != null) {
+                        this.definition = def;
+                        this.port = prt;
                         return;
                     }
                 }
             }
-            throw new IllegalArgumentException("Cannot find WSDL port "+portURI);
+            throw new IllegalArgumentException("Cannot find WSDL port " + portURI);
         }
     }
     

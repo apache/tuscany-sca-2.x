@@ -18,7 +18,7 @@ package org.apache.tuscany.binding.axis2.assembly.tests.bigbank.account.services
 
 public interface StockQuoteService {
 
-    public float getQuote(String symbol);
+    float getQuote(String symbol);
 }
 
  

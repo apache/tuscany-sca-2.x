@@ -42,8 +42,6 @@ import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
  */
 public class WebServicePortMetaData {
     
-    private final static String SOAP_ENCODING_URI = "http://schemas.xmlsoap.org/wsdl/soap/";
-    
     private Service wsdlService;
     private QName wsdlServiceName;
     private Port wsdlPort;
@@ -53,7 +51,7 @@ public class WebServicePortMetaData {
     private QName wsdlPortTypeName;
     private String endpoint;
     private boolean managed;
-    private List allOperationMetaData;
+    private List<WebServiceOperationMetaData> allOperationMetaData;
     private WSDLServiceContract interfaceType;
 
     /**
@@ -62,14 +60,18 @@ public class WebServicePortMetaData {
      * @param wsdlDefinition
      * @param portName
      */
-    public WebServicePortMetaData(Definition wsdlDefinition, Port wsdlPort, String endpoint, boolean managed) {
+    public WebServicePortMetaData(Definition wsdlDefinition,
+                                  Port wsdlPort,
+                                  String endpoint,
+                                  boolean managed) {
 
         // Lookup the named port
-        this.wsdlPort=wsdlPort;
+        this.wsdlPort = wsdlPort;
         wsdlPortName = new QName(wsdlDefinition.getTargetNamespace(), wsdlPort.getName());
         
-        Collection<Service> services=(Collection<Service>)wsdlDefinition.getServices().values();
-        for (Service service : services) {
+        Collection services = wsdlDefinition.getServices().values();
+        for (Object serviceObj : services) {
+            Service service = (Service)serviceObj;
             if (service.getPorts().containsValue(wsdlPort)) {
                 wsdlService = service;
                 wsdlServiceName = service.getQName();
@@ -169,8 +171,9 @@ public class WebServicePortMetaData {
     public String getEndpoint() {
 
         // Return the specified endpoint
-        if (endpoint != null)
+        if (endpoint != null) {
             return endpoint;
+        }
 
         // Find the target endpoint on the port
         if (wsdlPort != null) {
@@ -178,8 +181,7 @@ public class WebServicePortMetaData {
             for (Iterator i = wsdlPortExtensions.iterator(); i.hasNext();) {
                 final Object extension = i.next();
                 if (extension instanceof SOAPAddress) {
-                    final SOAPAddress address = (SOAPAddress) extension;
-                    return address.getLocationURI();
+                    return ((SOAPAddress)extension).getLocationURI();
                 }
             }
         }
@@ -197,9 +199,11 @@ public class WebServicePortMetaData {
         String style = null;
         if (wsdlBinding != null) {
             final List wsdlBindingExtensions = wsdlBinding.getExtensibilityElements();
-            SOAPBinding soapBinding = (SOAPBinding) getExtensibilityElement(wsdlBindingExtensions, SOAPBinding.class);
-            if (soapBinding != null)
+            SOAPBinding soapBinding = getExtensibilityElement(wsdlBindingExtensions,
+                                                              SOAPBinding.class);
+            if (soapBinding != null) {
                 style = soapBinding.getStyle();
+            }
         }
 
         // Default to document
@@ -211,9 +215,8 @@ public class WebServicePortMetaData {
      * @return
      */
     public String getUse() {
-        List list = getAllOperationMetaData();
-        WebServiceOperationMetaData operationMetaData = (WebServiceOperationMetaData) list.get(0);
-        return operationMetaData.getUse();
+        List<WebServiceOperationMetaData> list = getAllOperationMetaData();
+        return list.get(0).getUse();
     }
 
     /**
@@ -221,9 +224,8 @@ public class WebServicePortMetaData {
      * @return
      */
     public String getEncoding() {
-        List list = getAllOperationMetaData();
-        WebServiceOperationMetaData operationMetaData = (WebServiceOperationMetaData) list.get(0);
-        return operationMetaData.getEncoding();
+        List<WebServiceOperationMetaData> list = getAllOperationMetaData();
+        return list.get(0).getEncoding();
     }
 
     /**
@@ -239,11 +241,12 @@ public class WebServicePortMetaData {
      * @param type
      * @return
      */
-    public static Object getExtensibilityElement(List elements, Class type) {
+    public static <T> T getExtensibilityElement(List elements, Class<T> type) {
         for (Iterator i = elements.iterator(); i.hasNext();) {
             Object element = i.next();
-            if (type.isInstance(element))
-                return element;
+            if (type.isInstance(element)) {
+                return type.cast(element);
+            }
         }
         return null;
     }
@@ -254,12 +257,13 @@ public class WebServicePortMetaData {
      * @param type
      * @return
      */
-    public static List getExtensibilityElements(List elements, Class type) {
-        List result = new ArrayList();
+    public static <T> List<T> getExtensibilityElements(List elements, Class<T> type) {
+        List<T> result = new ArrayList<T>();
         for (Iterator i = elements.iterator(); i.hasNext();) {
             Object element = i.next();
-            if (type.isInstance(element))
-                result.add(element);
+            if (type.isInstance(element)) {
+                result.add(type.cast(element));
+            }
         }
         return result;
     }
@@ -328,13 +332,15 @@ public class WebServicePortMetaData {
 //        return null;
 //    }
 
-    public List getAllOperationMetaData() {
+    public List<WebServiceOperationMetaData> getAllOperationMetaData() {
         if (allOperationMetaData == null) {
-            allOperationMetaData = new ArrayList();
+            allOperationMetaData = new ArrayList<WebServiceOperationMetaData>();
             for (Iterator it = wsdlBinding.getBindingOperations().iterator(); it.hasNext();) {
                 final BindingOperation bindingOperation = (BindingOperation) it.next();
-                if (bindingOperation.getOperation() != null)
-                    allOperationMetaData.add(new WebServiceOperationMetaData(wsdlBinding, bindingOperation));
+                if (bindingOperation.getOperation() != null) {
+                    allOperationMetaData.add(new WebServiceOperationMetaData(wsdlBinding,
+                                                                             bindingOperation));
+                }
             }
         }
         return allOperationMetaData;
@@ -345,8 +351,9 @@ public class WebServicePortMetaData {
             WebServiceOperationMetaData descriptor = (WebServiceOperationMetaData) it.next();
             String opName = descriptor.getBindingOperation().getOperation().getName();
 
-            if (opName.equals(operationName))
+            if (opName.equals(operationName)) {
                 return descriptor;
+            }
         }
         return null;
     }
@@ -357,6 +364,6 @@ public class WebServicePortMetaData {
      */
     public WSDLServiceContract getInterfaceType() {
         return interfaceType;
-	}
+    }
 
 }
