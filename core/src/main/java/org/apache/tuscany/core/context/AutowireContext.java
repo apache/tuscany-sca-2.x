@@ -14,7 +14,7 @@
 package org.apache.tuscany.core.context;
 
 /**
- * A specialization of an CompositeContext that is able to automatically resolve references
+ * A specialization of a CompositeContext that is able to automatically resolve references
  * for its children using EntryPoint or Service interfaces exposed by it or, recursively, any
  * of it parents.
  *

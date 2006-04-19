@@ -20,15 +20,14 @@ import org.apache.tuscany.core.wire.MessageChannel;
 import org.apache.tuscany.core.wire.TargetInvoker;
 
 /**
- * Represents a request, response, or exception for an wire
+ * Represents a request, response, or exception flowing through a wire
  *
  * @version $Rev $Date
  */
 public interface Message {
 
     /**
-     * Returns the body of the message, which will be the payload or parameters
-     * associated with the wire
+     * Returns the body of the message, which will be the payload or parameters associated with the wire
      */
     Object getBody();
 
@@ -38,19 +37,22 @@ public interface Message {
     void setBody(Object body);
 
     /**
-     * Returns the callback channel
-     */
-    MessageChannel getCallbackChannel();
-
-    /**
-     * Sets the target invoker to dispatch to for the current wire the message is flowing through
+     * Sets the target invoker to dispatch to when the message passes through the request side of the invocation chain
      */
     public void setTargetInvoker(TargetInvoker invoker);
-    
-    /**
-      * Returns the target invoker to dispatch to for the current wire the message is flowing through
-      */
-     public TargetInvoker getTargetInvoker();
 
+    /**
+     * Sets the target invoker to dispatch to when the message passes through the request side of the invocation chain
+     */
+    public TargetInvoker getTargetInvoker();
+
+    /**
+     * Returns the callback channel
+     */
+    public MessageChannel getCallbackChannel();
+
+    /**
+     * 
+     */
     public Message getRelatedCallbackMessage();
 }

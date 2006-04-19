@@ -17,7 +17,7 @@
 package org.apache.tuscany.core.context;
 
 /**
- * An entity that provides an execution context for a runtime artifact or artifacts. An <code>Context</code> may
+ * An entity that provides an execution context for a runtime artifact or artifacts. A <code>Context</code> may
  * be a composite, managing child contexts or it may be an atomic, i.e. leaf, context.
  * 
  * @version $Rev$ $Date$

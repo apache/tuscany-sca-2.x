@@ -24,7 +24,7 @@ package org.apache.tuscany.core.context;
 public interface AtomicContext extends Context {
 
     /**
-     * Returns whether a the context should be eagerly initialized
+     * Returns whether the context should be eagerly initialized
      */
     public boolean isEagerInit();
 
@@ -41,7 +41,7 @@ public interface AtomicContext extends Context {
     public void destroy() throws TargetException;
 
     /**
-     * Returns whether a the context should be called back when its scope ends
+     * Returns whether the context should be called back when its scope ends
      */
     public boolean isDestroyable();
 

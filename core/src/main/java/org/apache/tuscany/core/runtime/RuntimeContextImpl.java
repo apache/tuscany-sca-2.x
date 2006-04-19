@@ -46,7 +46,7 @@ import org.apache.tuscany.model.assembly.Composite;
 import org.apache.tuscany.model.assembly.Extensible;
 
 /**
- * Implementation of a RuntimeContext that forms the foundation for a Tuscany environment.
+ * Implementation of a <code>RuntimeContext</code> that forms the foundation for a Tuscany environment.
  *
  * @version $Rev$ $Date$
  */

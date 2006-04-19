@@ -26,9 +26,6 @@ import org.apache.tuscany.core.message.MessageFactory;
  */
 public class MessageFactoryImpl implements MessageFactory {
 
-    /**
-     * Constructor
-     */
     public MessageFactoryImpl() {
         super();
     }

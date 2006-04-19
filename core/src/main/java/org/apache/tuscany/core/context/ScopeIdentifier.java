@@ -22,7 +22,7 @@ package org.apache.tuscany.core.context;
  * scope type.
  * 
  * @version $Rev$ $Date$
- * @see org.apache.tuscany.container.module.EventContext
+ * @see org.apache.tuscany.core.context.EventContext
  */
 public interface ScopeIdentifier {
 

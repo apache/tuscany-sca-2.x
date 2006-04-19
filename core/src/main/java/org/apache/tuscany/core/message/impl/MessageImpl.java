@@ -16,12 +16,12 @@
  */
 package org.apache.tuscany.core.message.impl;
 
+import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.wire.MessageChannel;
 import org.apache.tuscany.core.wire.TargetInvoker;
-import org.apache.tuscany.core.message.Message;
 
 /**
- * The default implementation of an wire message
+ * The default implementation of a message flowed through a wire during an invocation
  *
  * @version $Rev $Date
  */
@@ -35,7 +35,6 @@ public class MessageImpl implements Message, MessageChannel {
         super();
     }
 
-
     /**
      * @see org.apache.tuscany.core.message.Message#getBody()
      */
@@ -47,7 +46,7 @@ public class MessageImpl implements Message, MessageChannel {
      * @see org.apache.tuscany.core.message.Message#setBody(java.lang.Object)
      */
     public void setBody(Object body) {
-        this.body=body;
+        this.body = body;
     }
 
     /**
@@ -74,14 +73,14 @@ public class MessageImpl implements Message, MessageChannel {
     /**
      * @see org.apache.tuscany.core.message.Message#setTargetInvoker(org.apache.tuscany.core.wire.TargetInvoker)
      */
-    public void setTargetInvoker(TargetInvoker invoker){
+    public void setTargetInvoker(TargetInvoker invoker) {
         this.invoker = invoker;
     }
 
     /**
      * @see org.apache.tuscany.core.message.Message#getTargetInvoker()
      */
-    public TargetInvoker getTargetInvoker(){
+    public TargetInvoker getTargetInvoker() {
         return invoker;
     }
 }

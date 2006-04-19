@@ -17,9 +17,7 @@
 package org.apache.tuscany.core.message;
 
 /**
- * The <b>Factory</b> for messages
- * 
- * @see org.apache.tuscany.core.message.Message
+ * A factory for creating messages flowed through a wire during an invocation 
  */
 public interface MessageFactory {
 
@@ -28,4 +26,4 @@ public interface MessageFactory {
      */
     Message createMessage();
 
-} // MessageFactory
+}
