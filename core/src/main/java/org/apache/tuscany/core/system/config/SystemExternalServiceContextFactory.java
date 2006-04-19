@@ -20,7 +20,7 @@ import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.injection.InterCompositeReferenceFactory;
-import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.WireFactory;
 import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.system.context.SystemExternalServiceContext;
@@ -92,7 +92,7 @@ public class SystemExternalServiceContextFactory implements ContextFactory<Exter
         throw new UnsupportedOperationException();
     }
 
-    public ProxyFactory getSourceProxyFactory(String referenceName) {
+    public WireFactory getSourceProxyFactory(String referenceName) {
         return null;
     }
 

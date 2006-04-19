@@ -54,7 +54,7 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
         assert (proxyFactory != null) : "Proxy factory was null";
         assert (messageFactory != null) : "Message factory was null";
         this.proxyFactory = proxyFactory;
-        invocationHandler = new JDKInvocationHandler(messageFactory, proxyFactory.getProxyConfiguration()
+        invocationHandler = new JDKInvocationHandler(messageFactory, proxyFactory.getConfiguration()
                 .getInvocationConfigurations());
     }
 

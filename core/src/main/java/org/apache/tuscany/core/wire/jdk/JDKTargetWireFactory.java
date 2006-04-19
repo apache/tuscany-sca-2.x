@@ -51,11 +51,11 @@ public class JDKTargetWireFactory implements TargetWireFactory {
         return Proxy.newProxyInstance(configuration.getProxyClassLoader(), businessInterfaceArray, handler);
     }
 
-    public WireTargetConfiguration getProxyConfiguration() {
+    public WireTargetConfiguration getConfiguration() {
         return configuration;
     }
 
-    public void setProxyConfiguration(WireTargetConfiguration config) {
+    public void setConfiguration(WireTargetConfiguration config) {
         configuration = config;
     }
 

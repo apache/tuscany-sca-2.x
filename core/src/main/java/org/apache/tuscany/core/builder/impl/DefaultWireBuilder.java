@@ -55,15 +55,15 @@ public class DefaultWireBuilder implements HierarchicalWireBuilder {
         // get the proxy chain for the target
         if (targetFactory != null) {
             // if null, the target side has no interceptors or handlers
-            Map<Method, TargetInvocationConfiguration> targetInvocationConfigs = targetFactory.getProxyConfiguration().getInvocationConfigurations();
-            for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration()
+            Map<Method, TargetInvocationConfiguration> targetInvocationConfigs = targetFactory.getConfiguration().getInvocationConfigurations();
+            for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getConfiguration()
                     .getInvocationConfigurations().values()) {
                 // match wire chains
                 TargetInvocationConfiguration targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig.getMethod());
                 if (targetInvocationConfig == null){
                     BuilderConfigException e= new BuilderConfigException("Incompatible source and target interface types for reference");
                     //FIXME xcv
-                    e.setIdentifier(sourceFactory.getProxyConfiguration().getReferenceName());
+                    e.setIdentifier(sourceFactory.getConfiguration().getReferenceName());
                     throw e;
                 }
                 // if handler is configured, add that
@@ -93,10 +93,10 @@ public class DefaultWireBuilder implements HierarchicalWireBuilder {
             builder.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
         }
         // signal that wire build process is complete
-        for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations()
+        for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getConfiguration().getInvocationConfigurations()
                 .values()) {
             sourceInvocationConfig.build();
-            // TODO optimize if no proxy needed using NullProxyFactory
+            // TODO optimize if no proxy needed using NullWireFactory
         }
     }
 

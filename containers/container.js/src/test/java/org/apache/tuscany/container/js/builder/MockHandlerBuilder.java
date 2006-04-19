@@ -15,13 +15,9 @@ package org.apache.tuscany.container.js.builder;
 
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.wire.InvocationConfiguration;
 import org.apache.tuscany.core.wire.MessageHandler;
-import org.apache.tuscany.core.wire.ProxyFactory;
 import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
-import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
-import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.model.assembly.AssemblyObject;
@@ -61,10 +57,10 @@ public class MockHandlerBuilder implements ContextFactoryBuilder {
                 return;
             } else {
                 ConfiguredReference cref = (ConfiguredReference) modelObject;
-                // xcv ProxyFactory pFactory = (ProxyFactory) cref.getProxyFactory();
+                // xcv WireFactory pFactory = (WireFactory) cref.getProxyFactory();
                 for (ConfiguredService configuredService : cref.getTargetConfiguredServices()) {
                     SourceWireFactory pFactory = (SourceWireFactory) configuredService.getProxyFactory();
-                    for (SourceInvocationConfiguration config : pFactory.getProxyConfiguration().getInvocationConfigurations().values()) {
+                    for (SourceInvocationConfiguration config : pFactory.getConfiguration().getInvocationConfigurations().values()) {
                         if (request) {
                             config.addRequestHandler(handler);
                         } else {
@@ -79,7 +75,7 @@ public class MockHandlerBuilder implements ContextFactoryBuilder {
             } else {
                 ConfiguredService cservice = (ConfiguredService) modelObject;
                 TargetWireFactory pFactory = (TargetWireFactory) cservice.getProxyFactory();
-                for (TargetInvocationConfiguration config : pFactory.getProxyConfiguration().getInvocationConfigurations().values()) {
+                for (TargetInvocationConfiguration config : pFactory.getConfiguration().getInvocationConfigurations().values()) {
                     if (request) {
                         config.addRequestHandler(handler);
                     } else {

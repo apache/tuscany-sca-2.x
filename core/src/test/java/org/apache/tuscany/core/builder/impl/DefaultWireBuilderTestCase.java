@@ -59,7 +59,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
-        sourceFactory.setProxyConfiguration(sourceConfig);
+        sourceFactory.setConfiguration(sourceConfig);
         sourceFactory.setBusinessInterface(SimpleTarget.class);
 
         TargetInvocationConfiguration target = new TargetInvocationConfiguration(hello);
@@ -76,7 +76,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),
                 targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
-        targetFactory.setProxyConfiguration(targetConfig);
+        targetFactory.setConfiguration(targetConfig);
         targetFactory.setBusinessInterface(SimpleTarget.class);
 
         // connect the source to the target
@@ -114,7 +114,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
-        sourceFactory.setProxyConfiguration(sourceConfig);
+        sourceFactory.setConfiguration(sourceConfig);
         sourceFactory.setBusinessInterface(SimpleTarget.class);
 
         TargetInvocationConfiguration target = new TargetInvocationConfiguration(hello);
@@ -131,7 +131,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),
                 targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
-        targetFactory.setProxyConfiguration(targetConfig);
+        targetFactory.setConfiguration(targetConfig);
         targetFactory.setBusinessInterface(SimpleTarget.class);
 
         // connect the source to the target
@@ -169,7 +169,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
-        sourceFactory.setProxyConfiguration(sourceConfig);
+        sourceFactory.setConfiguration(sourceConfig);
         sourceFactory.setBusinessInterface(SimpleTarget.class);
 
         TargetInvocationConfiguration target = new TargetInvocationConfiguration(hello);
@@ -184,7 +184,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),
                 targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
-        targetFactory.setProxyConfiguration(targetConfig);
+        targetFactory.setConfiguration(targetConfig);
         targetFactory.setBusinessInterface(SimpleTarget.class);
 
         // connect the source to the target
@@ -220,7 +220,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
-        sourceFactory.setProxyConfiguration(sourceConfig);
+        sourceFactory.setConfiguration(sourceConfig);
         sourceFactory.setBusinessInterface(SimpleTarget.class);
 
         TargetInvocationConfiguration target = new TargetInvocationConfiguration(hello);
@@ -233,7 +233,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),
                 targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
-        targetFactory.setProxyConfiguration(targetConfig);
+        targetFactory.setConfiguration(targetConfig);
         targetFactory.setBusinessInterface(SimpleTarget.class);
 
         // connect the source to the target
@@ -271,7 +271,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
-        sourceFactory.setProxyConfiguration(sourceConfig);
+        sourceFactory.setConfiguration(sourceConfig);
         sourceFactory.setBusinessInterface(SimpleTarget.class);
 
         TargetInvocationConfiguration target = new TargetInvocationConfiguration(hello);
@@ -284,7 +284,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),
                 targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
-        targetFactory.setProxyConfiguration(targetConfig);
+        targetFactory.setConfiguration(targetConfig);
         targetFactory.setBusinessInterface(SimpleTarget.class);
 
         // connect the source to the target
@@ -318,7 +318,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
-        sourceFactory.setProxyConfiguration(sourceConfig);
+        sourceFactory.setConfiguration(sourceConfig);
         sourceFactory.setBusinessInterface(SimpleTarget.class);
 
         TargetInvocationConfiguration target = new TargetInvocationConfiguration(hello);
@@ -335,7 +335,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),
                 targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
-        targetFactory.setProxyConfiguration(targetConfig);
+        targetFactory.setConfiguration(targetConfig);
         targetFactory.setBusinessInterface(SimpleTarget.class);
 
         // connect the source to the target
@@ -368,7 +368,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
-        sourceFactory.setProxyConfiguration(sourceConfig);
+        sourceFactory.setConfiguration(sourceConfig);
         sourceFactory.setBusinessInterface(SimpleTarget.class);
 
         TargetInvocationConfiguration target = new TargetInvocationConfiguration(hello);
@@ -381,7 +381,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),
                 targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
-        targetFactory.setProxyConfiguration(targetConfig);
+        targetFactory.setConfiguration(targetConfig);
         targetFactory.setBusinessInterface(SimpleTarget.class);
 
         // connect the source to the target
@@ -416,7 +416,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
-        sourceFactory.setProxyConfiguration(sourceConfig);
+        sourceFactory.setConfiguration(sourceConfig);
         sourceFactory.setBusinessInterface(SimpleTarget.class);
 
         TargetInvocationConfiguration target = new TargetInvocationConfiguration(hello);
@@ -427,7 +427,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),
                 targetInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
-        targetFactory.setProxyConfiguration(targetConfig);
+        targetFactory.setConfiguration(targetConfig);
         targetFactory.setBusinessInterface(SimpleTarget.class);
 
         // connect the source to the target

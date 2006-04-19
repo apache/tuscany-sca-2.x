@@ -23,13 +23,17 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * Represents configuration information for creating a wire. When a client component implementation is injected with a service
- * proxy representing a wire, source- and target-side proxy configurations are "bridged" together. This concatenated configuration
- * may then be used to generate a proxy implemented a particular business interface required by the client.
- *
+ * Contains configuration for a wire, including its invocation chains. Invocation chains are accessed from the collection of
+ * {@link InvocationConfiguration}s keyed by operation on the service specified by the source reference or target service.
+ * <code>WireConfiguration</code> subtypes distinguish between source and target sides of a wire and hence return corresponding
+ * <code>InvocationChain</code> subtypes.  Operations are represented using JDK reflection, i.e. as a <code>Method</code>
+ * corresponding to the Java interface representing the service.
+ * <p/>
+ * Wire configurations are created from an assembly model by the runtime during the build phase.
+ * 
  * @version $Rev$ $Date$
  */
-public abstract class WireConfiguration <T extends InvocationConfiguration> {
+public abstract class WireConfiguration<T extends InvocationConfiguration> {
 
     protected Map<Method, T> configurations;
 
@@ -40,11 +44,11 @@ public abstract class WireConfiguration <T extends InvocationConfiguration> {
     protected QualifiedName targetName;
 
     /**
-     * Creates a configuration used to generate proxies representing a service.
+     * Creates the configuration
      *
-     * @param targetName        the qualified name of the service represented by this configuration
-     * @param proxyClassLoader  the classloader to use when creating a proxy
-     * @param messageFactory    the factory used to create wire messages
+     * @param targetName       the qualified name of the target service specified by the wire
+     * @param proxyClassLoader the classloader to use when creating a proxy
+     * @param messageFactory   the factory used to create wire messages
      */
     public WireConfiguration(QualifiedName targetName, ClassLoader proxyClassLoader, MessageFactory messageFactory) {
         this.targetName = targetName;
@@ -57,14 +61,14 @@ public abstract class WireConfiguration <T extends InvocationConfiguration> {
     }
 
     /**
-     * Returns the qualified context/service name the wire targets
+     * Returns the qualified name of the target service specified by the wire
      */
     public QualifiedName getTargetName() {
         return targetName;
     }
 
     /**
-     * Returns the classloader to use in creating proxies
+     * Returns the classloader used for creating proxies
      */
     public ClassLoader getProxyClassLoader() {
         return proxyClassLoader;
@@ -77,9 +81,12 @@ public abstract class WireConfiguration <T extends InvocationConfiguration> {
         return messageFactory;
     }
 
-    public Map<Method, T> getInvocationConfigurations(){
-         return configurations;
-     }
+    /**
+     * Returns the invocation configuration for each operation on a service specified by a reference or a target service.
+     */
+    public Map<Method, T> getInvocationConfigurations() {
+        return configurations;
+    }
 
 
 }

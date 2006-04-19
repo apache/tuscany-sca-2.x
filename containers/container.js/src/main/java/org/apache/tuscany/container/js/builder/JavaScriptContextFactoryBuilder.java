@@ -178,7 +178,7 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
             WireTargetConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, contract.getInterface()
                     .getClassLoader(), msgFactory);
 		    proxyFactory.setBusinessInterface(contract.getInterface());
-		    proxyFactory.setProxyConfiguration(wireConfiguration);
+		    proxyFactory.setConfiguration(wireConfiguration);
 		    configuredService.setProxyFactory(proxyFactory);
 		    if (referenceBuilder != null) {
 		        // invoke the reference builder to handle target-side metadata
@@ -210,7 +210,7 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
                 WireSourceConfiguration pConfiguration = new WireSourceConfiguration(reference.getPort().getName(), qName,
                         iConfigMap, interfaze.getInterface().getClassLoader(), msgFactory);
 		        proxyFactory.setBusinessInterface(interfaze.getInterface());
-		        proxyFactory.setProxyConfiguration(pConfiguration);
+		        proxyFactory.setConfiguration(pConfiguration);
                 //FIXME multiplicity support
                 reference.getTargetConfiguredServices().get(0).setProxyFactory(proxyFactory);
 		        if (referenceBuilder != null) {

@@ -24,7 +24,7 @@ import org.apache.tuscany.core.context.TargetException;
 import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.wire.ProxyCreationException;
-import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.WireFactory;
 import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.osoa.sca.ServiceRuntimeException;
@@ -73,7 +73,7 @@ public class JavaScriptComponentContext extends AbstractContext implements Atomi
 
     private synchronized Object getInstance(QualifiedName qName, boolean notify) throws TargetException {
         String portName = qName.getPortName();
-        ProxyFactory targetFactory;
+        WireFactory targetFactory;
         if (portName != null) {
             targetFactory = targetProxyFactories.get(portName);
         } else {
@@ -115,7 +115,7 @@ public class JavaScriptComponentContext extends AbstractContext implements Atomi
         try {
             Map<String, Object> context = new HashMap<String, Object>();
             for (SourceWireFactory proxyFactory : sourceProxyFactories) {
-                context.put(proxyFactory.getProxyConfiguration().getReferenceName(), proxyFactory.createProxy());
+                context.put(proxyFactory.getConfiguration().getReferenceName(), proxyFactory.createProxy());
             }
             return context;
         } catch (ProxyCreationException e) {

@@ -126,7 +126,7 @@ public class WebServiceEntryPointBuilder implements ContextFactoryBuilder {
         QualifiedName qName = new QualifiedName(entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0).getPart().getName() + '/' + service.getName());
         WireSourceConfiguration wireConfiguration = new WireSourceConfiguration("ep",qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
-        proxyFactory.setProxyConfiguration(wireConfiguration);
+        proxyFactory.setConfiguration(wireConfiguration);
         config.addSourceProxyFactory(service.getName(), proxyFactory);
         configuredService.setProxyFactory(proxyFactory);
         if (policyBuilder != null) {

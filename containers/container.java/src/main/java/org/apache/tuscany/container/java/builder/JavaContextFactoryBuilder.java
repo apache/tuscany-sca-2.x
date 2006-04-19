@@ -227,7 +227,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                     WireTargetConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, serviceContract.getInterface()
                             .getClassLoader(), messageFactory);
                     proxyFactory.setBusinessInterface(serviceContract.getInterface());
-                    proxyFactory.setProxyConfiguration(wireConfiguration);
+                    proxyFactory.setConfiguration(wireConfiguration);
                     contextFactory.addTargetProxyFactory(service.getName(), proxyFactory);
                     configuredService.setProxyFactory(proxyFactory);
                     if (policyBuilder != null) {
@@ -330,7 +330,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
             WireSourceConfiguration pConfiguration = new WireSourceConfiguration(refName, qName, iConfigMap, interfaze.getClassLoader(),
                     messageFactory);
             proxyFactory.setBusinessInterface(interfaze);
-            proxyFactory.setProxyConfiguration(pConfiguration);
+            proxyFactory.setConfiguration(pConfiguration);
             config.addSourceProxyFactory(reference.getPort().getName(), proxyFactory);
             configuredService.setProxyFactory(proxyFactory);
             if (policyBuilder != null) {

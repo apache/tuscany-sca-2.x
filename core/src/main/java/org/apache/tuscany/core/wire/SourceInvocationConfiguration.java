@@ -1,101 +1,76 @@
+/**
+ *
+ * Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
 package org.apache.tuscany.core.wire;
 
 import org.apache.tuscany.core.wire.impl.MessageChannelImpl;
-import org.apache.tuscany.core.wire.impl.RequestResponseInterceptor;
 import org.apache.tuscany.core.wire.impl.MessageDispatcher;
+import org.apache.tuscany.core.wire.impl.RequestResponseInterceptor;
 
 import java.lang.reflect.Method;
 
 /**
- * Contains a source- or target-side wire pipeline for a service operation. Source and target wire pipelines
- * are "bridged" together by a set of wire builders with the source-side holding references to the target.
- * <p>
- * A set of wire configurations are used by a {@link ProxyFactory} to
- * create service proxies.
- * <p>
- * Invocation configurations must contain at least one interceptor and may have 0 to N handlers. Handlers process an
- * wire request or response in a one-way fashion. A typical wire sequence where interceptors and handlers
- * are configured for both the source and target-side will proceed as follows:
- * <ol>
- * <li>The first source interceptor will be called with a message, which will in turn invoke the next interceptor in
- * the chain
- * <li>The last source interceptor, which must be of type
- * {@link org.apache.tuscany.core.wire.impl.RequestResponseInterceptor} if there are handlers present, will be
- * invoked. The RR interceptor will in turn pass the message to a
- * {@link MessageChannel} which will invoke all source-side request handlers.
- * <li> The RR interceptor will then invoke the target-side request <tt>MessageChannel</tt>.
- * <li> The last source-side handler, an instance of
- * {@link org.apache.tuscany.core.wire.impl.MessageDispatcher}, will invoke the first source-side
- * interceptor, which in turn will pass the message down the target-side interceptor chain.
- * <li> If the target is a component instance the last target-side interceptor, an instance of
- * {@link org.apache.tuscany.core.wire.impl.InvokerInterceptor} will retrieve the
- * {@link TargetInvoker} from the message and call it to invoke the operation on a
- * target instance. <tt>TargetInvoker</tt>s are help by the source proxy to enable optimizations such as caching of
- * target instances.
- * <li> The response is returned up the wire stack until it reaches the source-side
- * <tt>RequestResponseInterceptor</tt>, which invokes the target and source-side response channels respectively.
- * <li> The response is then passed back up the rest of the wire stack.
- * </ol>
- * <p>
- * The source-to-target bridge may be constructed in any of the following ways:
- * <ul>
- * <li>Source handler-to-target handler
- * <li>Source handler-to-target interceptor
- * <li>Source interceptor-to-target handler
- * <li>Source interceptor-to-target interceptor
- * </ul>
- * <p>
- * In some scenarios, a service proxy may only contain target-side invocaton chains, for example, when a service is
- * resolved through a locate operation by a non-component client. In this case, there will be no source-side wire
- * chains and the target invoker will be held by the target-side and passed down the pipeline.
- *
- * @see org.apache.tuscany.core.builder.WireBuilder
- * @see ProxyFactory
- * @see TargetInvoker
- * @see org.apache.tuscany.core.wire.impl.MessageDispatcher
+ * Contains a source-side invocation pipeline for a service operation.
  *
  * @version $Rev: 394379 $ $Date: 2006-04-15 15:01:36 -0700 (Sat, 15 Apr 2006) $
  */
-public class SourceInvocationConfiguration extends InvocationConfiguration{
+public class SourceInvocationConfiguration extends InvocationConfiguration {
 
+    // the pointer to the bridged target head interceptor or null if the target has no interceptors
     private Interceptor targetInterceptorChainHead;
 
-    // a source-side pointer to target request handlers, if the exist
+    // the pointer to bridged target request channel, or null if the target has an interceptor
     private MessageChannel targetRequestChannel;
 
-    // a source-side pointer to target response handlers, if the exist
+    // the pointer to bridged target response channel, or null if the target has an interceptor
     private MessageChannel targetResponseChannel;
 
     /**
-     * Creates an new wire configuration for the given target operation
+     * Creates an new wire configuration for the given service reference operation
+     *
+     * @param operation the method on the interface representing specified by the reference, where the method corresponds to the
+     *                  service operation
      */
     public SourceInvocationConfiguration(Method operation) {
         super(operation);
     }
 
+    /**
+     * Sets the head interceptor of the target-side configuration for the wire. Used when the runtime bridges source and target
+     * chains.
+     *
+     * @param interceptor
+     */
     public void setTargetInterceptor(Interceptor interceptor) {
         targetInterceptorChainHead = interceptor;
     }
 
     /**
-     * Returns the head target-side interceptor. This will be the head interceptor of the
-     * "bridged" target configuration.
+     * Returns the head target-side interceptor. This will be the head interceptor of the "bridged" target configuration.
      */
     public Interceptor getTargetInterceptor() {
         return targetInterceptorChainHead;
     }
 
     /**
-     * Used by source-side configurations, sets a pointer to the target-side request channel. This may be null when no
-     * target request handlers exist.
+     * Sets the target-side request channel. Used when the runtime bridges source and target chains.
      */
     public void setTargetRequestChannel(MessageChannel channel) {
         targetRequestChannel = channel;
     }
 
     /**
-     * Used by source-side configurations, sets a pointer to the target-side response channel. This may be null when no
-     * target response handlers exist.
+     * Sets the target-side response channel. Used when the runtime bridges source and target chains.
      */
     public void setTargetResponseChannel(MessageChannel channel) {
         targetResponseChannel = channel;
@@ -108,10 +83,10 @@ public class SourceInvocationConfiguration extends InvocationConfiguration{
     public void build() {
 
         if (requestHandlers != null && targetInterceptorChainHead != null) {
-              // on target-side, connect existing handlers and interceptors
-              MessageHandler messageDispatcher = new MessageDispatcher(targetInterceptorChainHead);
-              requestHandlers.add(messageDispatcher);
-          }
+            // on target-side, connect existing handlers and interceptors
+            MessageHandler messageDispatcher = new MessageDispatcher(targetInterceptorChainHead);
+            requestHandlers.add(messageDispatcher);
+        }
 
         if (requestHandlers != null) {
             MessageChannel requestChannel = new MessageChannelImpl(requestHandlers);

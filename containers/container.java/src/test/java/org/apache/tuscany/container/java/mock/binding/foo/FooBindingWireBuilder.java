@@ -34,9 +34,9 @@ public class FooBindingWireBuilder implements WireBuilder {
         if (!FooExternalServiceContextFactory.class.isAssignableFrom(targetType)) {
             return;
         }
-        for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations()
+        for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getConfiguration().getInvocationConfigurations()
                 .values()) {
-            FooESTargetInvoker invoker = new FooESTargetInvoker(sourceFactory.getProxyConfiguration().getTargetName()
+            FooESTargetInvoker invoker = new FooESTargetInvoker(sourceFactory.getConfiguration().getTargetName()
                     .getPartName(), targetScopeContext);
             sourceInvocationConfig.setTargetInvoker(invoker);
             // if (downScope) {

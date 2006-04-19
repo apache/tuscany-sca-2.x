@@ -61,10 +61,10 @@ public class JavaScriptTargetWireBuilder implements WireBuilder {
         if (!(JavaScriptContextFactory.class.isAssignableFrom(targetType))) {
             return;
         }
-        for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations()
+        for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getConfiguration().getInvocationConfigurations()
                 .values()) {
             Method method = sourceInvocationConfig.getMethod();
-            String serviceName = sourceFactory.getProxyConfiguration().getTargetName().getPartName();
+            String serviceName = sourceFactory.getConfiguration().getTargetName().getPartName();
             RhinoTargetInvoker invoker = new RhinoTargetInvoker(serviceName, method, targetScopeContext);
             if (downScope) {
                 // the source scope is shorter than the target, so the invoker can cache the target instance
@@ -81,10 +81,10 @@ public class JavaScriptTargetWireBuilder implements WireBuilder {
         if (!(JavaScriptContextFactory.class.isAssignableFrom(targetType))) {
             return;
         }
-        for (TargetInvocationConfiguration targetInvocationConfig : targetFactory.getProxyConfiguration().getInvocationConfigurations()
+        for (TargetInvocationConfiguration targetInvocationConfig : targetFactory.getConfiguration().getInvocationConfigurations()
                 .values()) {
             Method method = targetInvocationConfig.getMethod();
-            String serviceName = targetFactory.getProxyConfiguration().getTargetName().getPartName();
+            String serviceName = targetFactory.getConfiguration().getTargetName().getPartName();
             RhinoTargetInvoker invoker = new RhinoTargetInvoker(serviceName, method, targetScopeContext);
             targetInvocationConfig.setTargetInvoker(invoker);
         }

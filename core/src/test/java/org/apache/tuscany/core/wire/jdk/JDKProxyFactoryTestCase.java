@@ -55,7 +55,7 @@ public class JDKProxyFactoryTestCase extends TestCase {
         WireSourceConfiguration config = new WireSourceConfiguration("foo",new QualifiedName("foo"), configs, Thread.currentThread()
                 .getContextClassLoader(), new MessageFactoryImpl());
         JDKSourceWireFactory factory = new JDKSourceWireFactory();
-        factory.setProxyConfiguration(config);
+        factory.setConfiguration(config);
         factory.setBusinessInterface(SimpleTarget.class);
         factory.initialize();
         SimpleTarget instance = (SimpleTarget) factory.createProxy();
@@ -74,7 +74,7 @@ public class JDKProxyFactoryTestCase extends TestCase {
         WireTargetConfiguration config = new WireTargetConfiguration(new QualifiedName("foo"), configs, Thread.currentThread()
                 .getContextClassLoader(), new MessageFactoryImpl());
         JDKTargetWireFactory factory = new JDKTargetWireFactory();
-        factory.setProxyConfiguration(config);
+        factory.setConfiguration(config);
         factory.setBusinessInterface(SimpleTarget.class);
         factory.initialize();
         SimpleTarget instance = (SimpleTarget) factory.createProxy();

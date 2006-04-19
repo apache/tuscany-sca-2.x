@@ -30,10 +30,8 @@ import org.apache.tuscany.core.context.event.SessionEvent;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.wire.InvocationConfiguration;
 import org.apache.tuscany.core.wire.WireConfiguration;
-import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.WireFactory;
 import org.apache.tuscany.core.wire.ProxyInitializationException;
-import org.apache.tuscany.core.wire.WireSourceConfiguration;
-import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
@@ -376,7 +374,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                             }
                         }
                         if (contextFactory.getTargetProxyFactories() != null) {
-                            for (ProxyFactory targetProxyFactory : contextFactory.getTargetProxyFactories()
+                            for (WireFactory targetProxyFactory : contextFactory.getTargetProxyFactories()
                                     .values()) {
                                 targetProxyFactory.initialize();
                             }
@@ -555,7 +553,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         Scope sourceScope = source.getScope();
         if (source.getSourceProxyFactories() != null) {
             for (SourceWireFactory<?> sourceFactory : source.getSourceProxyFactories()) {
-                WireConfiguration wireConfiguration = sourceFactory.getProxyConfiguration();
+                WireConfiguration wireConfiguration = sourceFactory.getConfiguration();
                 QualifiedName targetName = wireConfiguration.getTargetName();
                 ContextFactory<?> target = configurations.get(targetName.getPartName());
                 if (target == null) {
@@ -611,7 +609,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         if (targetProxyFactories != null) {
             for (TargetWireFactory<?> targetFactory : targetProxyFactories.values()) {
                 for (InvocationConfiguration iConfig : targetFactory
-                        .getProxyConfiguration().getInvocationConfigurations().values()) {
+                        .getConfiguration().getInvocationConfigurations().values()) {
                     iConfig.build();
                 }
             }
@@ -622,7 +620,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         for (ContextFactory<?> config : configurations.values()) {
             List<SourceWireFactory> sourceProxyFactories = config.getSourceProxyFactories();
             if (sourceProxyFactories != null) {
-                for (ProxyFactory<?> sourceProxyFactory : sourceProxyFactories) {
+                for (WireFactory<?> sourceProxyFactory : sourceProxyFactories) {
                     sourceProxyFactory.initialize();
                 }
             }

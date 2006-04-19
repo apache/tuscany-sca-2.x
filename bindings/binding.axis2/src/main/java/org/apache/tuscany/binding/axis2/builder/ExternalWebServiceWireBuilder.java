@@ -39,9 +39,9 @@ public class ExternalWebServiceWireBuilder implements WireBuilder {
         if (!(ExternalWebServiceContextFactory.class.isAssignableFrom(targetType))) {
             return;
         }
-        for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations().values()) {
+        for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getConfiguration().getInvocationConfigurations().values()) {
             
-            ExternalWebServiceTargetInvoker invoker = new ExternalWebServiceTargetInvoker(sourceFactory.getProxyConfiguration().getTargetName(), sourceInvocationConfig.getMethod(), targetScopeContext);
+            ExternalWebServiceTargetInvoker invoker = new ExternalWebServiceTargetInvoker(sourceFactory.getConfiguration().getTargetName(), sourceInvocationConfig.getMethod(), targetScopeContext);
             
             // if (downScope) {
             // // the source scope is shorter than the target, so the invoker can cache the target instance

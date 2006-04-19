@@ -136,7 +136,7 @@ public class ExternalWebServiceBuilder implements ContextFactoryBuilder {
         QualifiedName qName = new QualifiedName(externalService.getName() + QualifiedName.NAME_SEPARATOR + service.getName());
         WireTargetConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
-        proxyFactory.setProxyConfiguration(wireConfiguration);
+        proxyFactory.setConfiguration(wireConfiguration);
         config.addTargetProxyFactory(service.getName(), proxyFactory);
         configuredService.setProxyFactory(proxyFactory);
         if (policyBuilder != null) {

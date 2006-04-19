@@ -124,7 +124,7 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
             QualifiedName qName = new QualifiedName(ep.getConfiguredReference().getTargetConfiguredServices().get(0).getPart().getName() + '/' + service.getName());
             WireSourceConfiguration wireConfiguration = new WireSourceConfiguration("foo",qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
             proxyFactory.setBusinessInterface(serviceContract.getInterface());
-            proxyFactory.setProxyConfiguration(wireConfiguration);
+            proxyFactory.setConfiguration(wireConfiguration);
             contextFactory.addSourceProxyFactory(service.getName(), proxyFactory);
             configuredService.setProxyFactory(proxyFactory);
             if (policyBuilder != null) {
@@ -159,7 +159,7 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
             QualifiedName qName = new QualifiedName(es.getName() + QualifiedName.NAME_SEPARATOR+ service.getName());
             WireTargetConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
             proxyFactory.setBusinessInterface(serviceContract.getInterface());
-            proxyFactory.setProxyConfiguration(wireConfiguration);
+            proxyFactory.setConfiguration(wireConfiguration);
             contextFactory.addTargetProxyFactory(service.getName(), proxyFactory);
             configuredService.setProxyFactory(proxyFactory);
             if (policyBuilder != null) {

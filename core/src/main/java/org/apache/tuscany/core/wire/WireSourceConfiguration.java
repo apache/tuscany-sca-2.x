@@ -1,3 +1,16 @@
+/**
+ *
+ * Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
 package org.apache.tuscany.core.wire;
 
 import org.apache.tuscany.core.context.QualifiedName;
@@ -7,23 +20,20 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * Represents the source side of a wire. When a client component implementation is injected with a service proxy , source- and
- * target-side proxy configurations are "bridged" together. This concatenated configuration may then be used to generate a proxy
- * implementing the particular business interface required by the client.
+ * Contains configuration for the source side of a wire
  *
  * @version $Rev: 394379 $ $Date: 2006-04-15 15:01:36 -0700 (Sat, 15 Apr 2006) $
  */
 public class WireSourceConfiguration extends WireConfiguration<SourceInvocationConfiguration> {
 
-
-    protected String referenceName;
+    private String referenceName;
 
     /**
      * Creates the source side of a wire
      *
      * @param referenceName     the name of the reference the wire is associated with
-     * @param targetName        the qualified name of the service represented by this configuration
-     * @param invocationConfigs a collection of operation-to-wire configuration mappings for the service
+     * @param targetName        the qualified name of the target service specified by the wire
+     * @param invocationConfigs a collection of service operation-to-invocation chain mappings
      * @param proxyClassLoader  the classloader to use when creating a proxy
      * @param messageFactory    the factory used to create wire messages
      */
@@ -37,7 +47,7 @@ public class WireSourceConfiguration extends WireConfiguration<SourceInvocationC
 
 
     /**
-     * Returns the name of the source reference for the wire
+     * Returns the name of the source reference
      */
     public String getReferenceName() {
         return referenceName;

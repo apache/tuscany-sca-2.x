@@ -63,13 +63,13 @@ public class JavaContextFactoryBuilderTestCase extends TestCase {
             ContextFactory<Context> source = (ContextFactory<Context>) component.getContextFactory();
             Assert.assertNotNull(source);
             for (SourceWireFactory pFactory : source.getSourceProxyFactories()) {
-                WireConfiguration pConfig = pFactory.getProxyConfiguration();
+                WireConfiguration pConfig = pFactory.getConfiguration();
                 Component target = compMap.get(pConfig.getTargetName().getPartName());
 
                 if (target != null) {
                     ContextFactory targetConfig = (ContextFactory) target.getContextFactory();
                     boolean downScope = strategy.downScopeReference(source.getScope(), targetConfig.getScope());
-                    wireBuilder.connect(pFactory, targetConfig.getTargetProxyFactory(pFactory.getProxyConfiguration().getTargetName()
+                    wireBuilder.connect(pFactory, targetConfig.getTargetProxyFactory(pFactory.getConfiguration().getTargetName()
                             .getPortName()), targetConfig.getClass(), downScope, scopeContext);
                 }
                 pFactory.initialize();

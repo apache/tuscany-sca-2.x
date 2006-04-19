@@ -12,16 +12,16 @@ import java.util.Map;
 /**
  * Implementations serve the dual purpose of creating instances of {@link org.apache.tuscany.core.context.Context} based
  * on a compiled configuration such as a logical assembly model and holding a
- * {@link org.apache.tuscany.core.wire.ProxyFactory} for the instance type associated with the context.
+ * {@link org.apache.tuscany.core.wire.WireFactory} for the instance type associated with the context.
  * <p>
  * Context factories are created or "built" in two phases. {@link org.apache.tuscany.core.builder.ContextFactoryBuilder}s
  * are responsible for analyzing a logical model assembly and producing the appropriate <code>ContextFactory</code>
  * for the runtime. {@link org.apache.tuscany.core.builder.WireBuilder}s update the proxy configuration associated with
- * the <code>ProxyFactory</code> attached to the <code>ContextFactory</code>.
+ * the <code>WireFactory</code> attached to the <code>ContextFactory</code>.
  * <p>
  * <code>ContextFactory</code> implementations also contain the source and target invocations chains associated with
  * all instances of a given <code>Context</code> type. For example, two contexts associated with separate sessions for
- * a component will refer back to the same wire chains held in the <code>ProxyFactory</code> attached to the
+ * a component will refer back to the same wire chains held in the <code>WireFactory</code> attached to the
  * <code>ContextFactory</code>.
  * 
  * @version $Rev: 385747 $ $Date: 2006-03-13 22:12:53 -0800 (Mon, 13 Mar 2006) $

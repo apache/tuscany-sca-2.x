@@ -16,7 +16,7 @@ package org.apache.tuscany.core.builder.impl;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.injection.ObjectCreationException;
 import org.apache.tuscany.core.wire.ProxyCreationException;
-import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.WireFactory;
 
 /**
  * Uses a proxy factory to return an object instance
@@ -25,9 +25,9 @@ import org.apache.tuscany.core.wire.ProxyFactory;
  */
 public class ProxyObjectFactory implements ObjectFactory {
 
-    private ProxyFactory factory;
+    private WireFactory factory;
 
-    public ProxyObjectFactory(ProxyFactory factory) {
+    public ProxyObjectFactory(WireFactory factory) {
         this.factory = factory;
     }
 

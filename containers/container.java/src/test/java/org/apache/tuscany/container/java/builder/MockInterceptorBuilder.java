@@ -16,7 +16,7 @@ package org.apache.tuscany.container.java.builder;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.wire.Interceptor;
-import org.apache.tuscany.core.wire.ProxyFactory;
+import org.apache.tuscany.core.wire.WireFactory;
 import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
 import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
 import org.apache.tuscany.core.wire.SourceWireFactory;
@@ -54,10 +54,10 @@ public class MockInterceptorBuilder implements ContextFactoryBuilder {
                 return;
             } else {
                 ConfiguredReference cref = (ConfiguredReference) modelObject;
-                // xcvProxyFactory pFactory = (ProxyFactory) cref.getProxyFactory();
+                // xcvProxyFactory pFactory = (WireFactory) cref.getProxyFactory();
                 for (ConfiguredService configuredService : cref.getTargetConfiguredServices()) {
                     SourceWireFactory pFactory = (SourceWireFactory) configuredService.getProxyFactory();
-                    for (SourceInvocationConfiguration config : pFactory.getProxyConfiguration().getInvocationConfigurations().values()) {
+                    for (SourceInvocationConfiguration config : pFactory.getConfiguration().getInvocationConfigurations().values()) {
                         config.addInterceptor(interceptor);
                     }
                 }
@@ -67,14 +67,14 @@ public class MockInterceptorBuilder implements ContextFactoryBuilder {
                 return;
             } else {
                 ConfiguredService cservice = (ConfiguredService) modelObject;
-                ProxyFactory pFactory = (ProxyFactory) cservice.getProxyFactory();
+                WireFactory pFactory = (WireFactory) cservice.getProxyFactory();
                 if (pFactory instanceof SourceWireFactory){
-                //if (pFactory.getProxyConfiguration() instanceof WireSourceConfiguration){
-                    for (SourceInvocationConfiguration config : ((SourceWireFactory)pFactory).getProxyConfiguration().getInvocationConfigurations().values()) {
+                //if (pFactory.getConfiguration() instanceof WireSourceConfiguration){
+                    for (SourceInvocationConfiguration config : ((SourceWireFactory)pFactory).getConfiguration().getInvocationConfigurations().values()) {
                         config.addInterceptor(interceptor);
                     }
                 }else if (pFactory instanceof TargetWireFactory){
-                    for (TargetInvocationConfiguration config : ((TargetWireFactory)pFactory).getProxyConfiguration().getInvocationConfigurations().values()) {
+                    for (TargetInvocationConfiguration config : ((TargetWireFactory)pFactory).getConfiguration().getInvocationConfigurations().values()) {
                         config.addInterceptor(interceptor);
                     }
 

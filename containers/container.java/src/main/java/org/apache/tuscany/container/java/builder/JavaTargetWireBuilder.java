@@ -54,9 +54,9 @@ public class JavaTargetWireBuilder implements WireBuilder {
         if (!(JavaContextFactory.class.isAssignableFrom(targetType))) {
             return;
         }
-        for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations()
+        for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getConfiguration().getInvocationConfigurations()
                 .values()) {
-            ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(sourceFactory.getProxyConfiguration()
+            ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(sourceFactory.getConfiguration()
                     .getTargetName(), sourceInvocationConfig.getMethod(), targetScopeContext);
             if (downScope) {
                 // the source scope is shorter than the target, so the invoker can cache the target instance
@@ -75,9 +75,9 @@ public class JavaTargetWireBuilder implements WireBuilder {
         // return;
         // }
         // for (InvocationConfiguration targetInvocationConfig :
-        // targetFactory.getProxyConfiguration().getInvocationConfigurations()
+        // targetFactory.getConfiguration().getInvocationConfigurations()
         // .values()) {
-        // ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(targetFactory.getProxyConfiguration()
+        // ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(targetFactory.getConfiguration()
         // .getTargetName(), ((JavaOperationType) targetInvocationConfig.getOperationType()).getJavaMethod(),
         // targetScopeContext);
         // targetInvocationConfig.setTargetInvoker(invoker);
