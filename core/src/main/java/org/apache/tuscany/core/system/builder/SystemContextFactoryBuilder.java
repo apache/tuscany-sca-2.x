@@ -219,8 +219,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
                         e.setIdentifier(field.getType().getName());
                         throw e;
                     }
-                    Injector<?> injector = new FieldInjector(field, new AutowireObjectFactory(field.getType(), autowire.required(),
-                            contextFactory));
+                    Injector<?> injector = new FieldInjector(field, new AutowireObjectFactory(field.getType(), contextFactory));
                     injectors.add(injector);
                 }
                 Monitor monitor = field.getAnnotation(Monitor.class);
@@ -284,8 +283,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
                         e.setIdentifier(paramType.getName());
                         throw e;
                     }
-                    Injector injector = new MethodInjector(method, new AutowireObjectFactory(paramType, autowire.required(),
-                            contextFactory));
+                    Injector injector = new MethodInjector(method, new AutowireObjectFactory(paramType, contextFactory));
                     injectors.add(injector);
                 }
 

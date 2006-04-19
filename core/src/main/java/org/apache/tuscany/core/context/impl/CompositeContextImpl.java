@@ -40,7 +40,7 @@ import org.apache.tuscany.core.system.annotation.Autowire;
  */
 public class CompositeContextImpl extends AbstractCompositeContext implements ModuleContext {
 
-    @Autowire(required = false)
+    @Autowire
     public void setScopeStrategy(ScopeStrategy scopeStrategy) {
         if (scopeStrategy != null) {
             this.scopeStrategy = scopeStrategy;

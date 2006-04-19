@@ -31,16 +31,13 @@ public class AutowireObjectFactory<T> implements ObjectFactory<T> {
 
     private Class<T> autowireType;
 
-    private boolean required;
-
     /**
      * 
      * @throws FactoryInitException
      */
-    public AutowireObjectFactory(Class<T> autowireType, boolean required, ContextResolver resolver) {
+    public AutowireObjectFactory(Class<T> autowireType,ContextResolver resolver) {
         assert (autowireType != null) : "Target interface was null";
         this.resolver = resolver;
-        this.required = required;
         this.autowireType = autowireType;
     }
 
@@ -50,7 +47,7 @@ public class AutowireObjectFactory<T> implements ObjectFactory<T> {
      * @throws FactoryInitException
      */
     public AutowireObjectFactory(Class<T> implementationType) {
-        this(implementationType, true, null);
+        this(implementationType, null);
     }
 
     public T getInstance() throws ObjectCreationException {

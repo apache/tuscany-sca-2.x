@@ -75,7 +75,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
     protected CompositeContext parentContext;
 
     // The parent configuration context, if one exists
-    @Autowire(required = false)
+    @Autowire
     protected ConfigurationContext configurationContext;
 
     // The logical model representing the module assembly
@@ -110,7 +110,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
     private final Map<Class, NameToScope> autowireInternal = new ConcurrentHashMap<Class, NameToScope>();
     private final Map<Class, NameToScope> autowireExternal = new ConcurrentHashMap<Class, NameToScope>();
 
-    @Autowire(required = false)
+    @Autowire
     private AutowireContext autowireContext;
 
     public AbstractCompositeContext() {

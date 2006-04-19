@@ -61,12 +61,12 @@ public class JavaImplementationLoader implements StAXElementLoader<JavaImplement
         xmlFactory = XMLInputFactory.newInstance();
     }
 
-    @Autowire(required = true)
+    @Autowire
     public void setRegistry(StAXLoaderRegistry registry) {
         this.registry = registry;
     }
 
-    @Autowire(required = true)
+    @Autowire
     public void setFactory(JavaAssemblyFactory factory) {
         this.factory = factory;
         introspector = new Java5ComponentTypeIntrospector(factory);
