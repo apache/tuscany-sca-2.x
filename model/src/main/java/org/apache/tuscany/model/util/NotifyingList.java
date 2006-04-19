@@ -85,6 +85,7 @@ public abstract class NotifyingList<E> extends ArrayList<E> {
         return element;
     }
     
+    @SuppressWarnings("unchecked")
     public boolean remove(Object element) {
         checkNotFrozen();
         boolean result=super.remove(element);
@@ -92,6 +93,7 @@ public abstract class NotifyingList<E> extends ArrayList<E> {
         return result;
     }
     
+    @SuppressWarnings("unchecked")
     public boolean removeAll(Collection<?> c) {
         checkNotFrozen();
         boolean result=super.removeAll(c);

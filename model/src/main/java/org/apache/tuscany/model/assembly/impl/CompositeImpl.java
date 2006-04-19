@@ -161,7 +161,7 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
         String serviceName = address.getServiceName();
         Part part = getPart(partName);
         if (part instanceof Component) {
-            Component<Implementation> component=(Component)part;
+            Component<?> component=(Component<?>)part;
             if (serviceName != null) {
                 return component.getConfiguredService(serviceName);
             } else {
@@ -267,7 +267,7 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
             String partName = sourceURI.getPartName();
             String referenceName = sourceURI.getServiceName();
             if (referenceName != null) {
-                Component component = (Component)getPart(partName);
+                Component<?> component = (Component<?>)getPart(partName);
                 if (component != null) {
                     configuredReference = component.getConfiguredReference(referenceName);
                 }
