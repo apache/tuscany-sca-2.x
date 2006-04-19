@@ -85,6 +85,9 @@ public class TuscanyHost extends StandardHost {
             ModuleComponent systemModuleComponent = loader.loadSystemModuleComponent(SYSTEM_MODULE_COMPONENT, SYSTEM_MODULE_COMPONENT);
             CompositeContext context = BootstrapHelper.registerModule(systemContext, systemModuleComponent);
             context.publish(new ModuleStart(this));
+
+            TomcatHost host = systemContext.resolveInstance(TomcatHost.class);
+            host.setHost(this);
         } catch (ConfigurationLoadException e) {
             getLogger().warn(sm.getString("runtime.loadSystemFailed", e.getResourceURI()), e);
             return;
