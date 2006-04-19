@@ -13,19 +13,20 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import org.apache.tuscany.core.wire.ProxyInitializationException;
 import org.apache.tuscany.core.wire.MethodHashMap;
-import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.ProxyInitializationException;
 import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
+import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
 /**
- * Creates proxies for handling invocations using JDK dynamic proxies
+ * Creates proxies that are injected on references using JDK dynamic proxy facilities and front a wire. The proxies implement the
+ * business interface associated with the service required by reference.
  *
  * @version $Rev: 394431 $ $Date: 2006-04-15 21:27:44 -0700 (Sat, 15 Apr 2006) $
  */
@@ -47,9 +48,9 @@ public class JDKSourceWireFactory implements SourceWireFactory {
         if (state != JDKSourceWireFactory.UNINITIALIZED) {
             throw new IllegalStateException("Proxy factory in wrong state [" + state + "]");
         }
-        Map<Method,SourceInvocationConfiguration> invocationConfigs = configuration.getInvocationConfigurations();
+        Map<Method, SourceInvocationConfiguration> invocationConfigs = configuration.getInvocationConfigurations();
         methodToInvocationConfig = new MethodHashMap<SourceInvocationConfiguration>(invocationConfigs.size());
-        for (Map.Entry<Method,SourceInvocationConfiguration> entry : invocationConfigs.entrySet()) {
+        for (Map.Entry<Method, SourceInvocationConfiguration> entry : invocationConfigs.entrySet()) {
             Method method = entry.getKey();
             methodToInvocationConfig.put(method, entry.getValue());
         }
@@ -73,7 +74,7 @@ public class JDKSourceWireFactory implements SourceWireFactory {
     }
 
     public void setBusinessInterface(Class interfaze) {
-        businessInterfaceArray = new Class[] { interfaze };
+        businessInterfaceArray = new Class[]{interfaze};
     }
 
     public Class getBusinessInterface() {

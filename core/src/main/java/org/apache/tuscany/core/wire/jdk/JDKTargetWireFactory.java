@@ -1,18 +1,19 @@
 package org.apache.tuscany.core.wire.jdk;
 
-import org.apache.tuscany.core.wire.ProxyInitializationException;
 import org.apache.tuscany.core.wire.MethodHashMap;
+import org.apache.tuscany.core.wire.ProxyInitializationException;
 import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
-import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.core.wire.WireTargetConfiguration;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
 /**
- * Creates proxies for handling invocations using JDK dynamic proxies
+ * Creates proxies that are returned to non-SCA clients using JDK dynamic proxy facilities and front a wire. The proxies implement
+ * the business interface associated with the target service of the wire and are typically returned by a locate operation.
  *
  * @version $Rev: 394431 $ $Date: 2006-04-15 21:27:44 -0700 (Sat, 15 Apr 2006) $
  */
@@ -36,7 +37,7 @@ public class JDKTargetWireFactory implements TargetWireFactory {
         }
         Map<Method, TargetInvocationConfiguration> invocationConfigs = configuration.getInvocationConfigurations();
         methodToInvocationConfig = new MethodHashMap<TargetInvocationConfiguration>(invocationConfigs.size());
-        for (Map.Entry<Method,TargetInvocationConfiguration> entry : invocationConfigs.entrySet()) {
+        for (Map.Entry<Method, TargetInvocationConfiguration> entry : invocationConfigs.entrySet()) {
             Method method = entry.getKey();
             methodToInvocationConfig.put(method, entry.getValue());
         }
@@ -60,7 +61,7 @@ public class JDKTargetWireFactory implements TargetWireFactory {
     }
 
     public void setBusinessInterface(Class interfaze) {
-        businessInterfaceArray = new Class[] { interfaze };
+        businessInterfaceArray = new Class[]{interfaze};
     }
 
     public Class getBusinessInterface() {

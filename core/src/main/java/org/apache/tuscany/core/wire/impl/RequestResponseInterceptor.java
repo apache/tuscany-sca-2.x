@@ -21,7 +21,7 @@ import org.apache.tuscany.core.wire.MessageChannel;
 import org.apache.tuscany.core.message.Message;
 
 /**
- * An interceptor that first sends the wire Message down its request channel then extracts the response from the
+ * An interceptor that first sends a message down its request channel then extracts the response from the
  * message and sends it down the response channel before returning it up the interceptor stack.
  * 
  * @version $Rev$ $Date$

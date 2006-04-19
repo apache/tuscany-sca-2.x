@@ -17,6 +17,8 @@ public class NullWireFactory implements WireFactory {
 
     private String targetName;
 
+    private Class businessInterface;
+
     public NullWireFactory(String componentName, CompositeContext parentContext) {
         assert (parentContext != null) : "Parent context was null";
         this.targetName = componentName;
@@ -24,6 +26,7 @@ public class NullWireFactory implements WireFactory {
     }
 
     public void initialize(Class businessInterface, WireConfiguration config) throws ProxyInitializationException {
+        this.businessInterface = businessInterface;
     }
 
     public Object createProxy() throws ProxyCreationException {
@@ -33,25 +36,20 @@ public class NullWireFactory implements WireFactory {
     public void initialize() throws ProxyInitializationException {
     }
 
-    public WireConfiguration getProxyConfiguration() {
-        return null;
-    }
-
-    public void setProxyConfiguration(WireConfiguration config) {
-    }
-
     public void setBusinessInterface(Class interfaze) {
+        businessInterface = interfaze;
     }
 
     public Class getBusinessInterface() {
-        return null;
+        return businessInterface;
     }
 
     public void addInterface(Class claz) {
+        throw new UnsupportedOperationException();
     }
 
     public Class[] getImplementatedInterfaces() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
 }
