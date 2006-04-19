@@ -40,9 +40,21 @@ public class WireSourceConfiguration extends WireConfiguration<SourceInvocationC
     public WireSourceConfiguration(String referenceName, QualifiedName targetName,
                                    Map<Method, SourceInvocationConfiguration> invocationConfigs, ClassLoader proxyClassLoader, MessageFactory messageFactory) {
         super(targetName, proxyClassLoader, messageFactory);
-        assert (referenceName != null) : "No wire reference name specified";
         this.referenceName = referenceName;
         this.configurations = invocationConfigs;
+    }
+
+    /**
+     * Creates the source side of a wire where the reference is "anonymous", i.e. on an entry point
+     *
+     * @param targetName        the qualified name of the target service specified by the wire
+     * @param invocationConfigs a collection of service operation-to-invocation chain mappings
+     * @param proxyClassLoader  the classloader to use when creating a proxy
+     * @param messageFactory    the factory used to create wire messages
+     */
+    public WireSourceConfiguration(QualifiedName targetName,
+                                   Map<Method, SourceInvocationConfiguration> invocationConfigs, ClassLoader proxyClassLoader, MessageFactory messageFactory) {
+        this(null, targetName, invocationConfigs, proxyClassLoader, messageFactory);
     }
 
 
@@ -53,4 +65,4 @@ public class WireSourceConfiguration extends WireConfiguration<SourceInvocationC
         return referenceName;
     }
 
- }
+}

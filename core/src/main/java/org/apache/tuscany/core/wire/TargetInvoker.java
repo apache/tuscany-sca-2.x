@@ -19,7 +19,7 @@ package org.apache.tuscany.core.wire;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Implementations are responsible for resolving a target and performing the actual wire on it, for example, a
+ * Implementations are responsible for resolving a target and performing the actual invocation on it, for example, a
  * service component implementation instance or an external service client.
  * 
  * @version $Rev$ $Date$
@@ -39,6 +39,9 @@ public interface TargetInvoker extends Interceptor, Cloneable{
      * Determines whether the proxy can be cached on the client/source side
      */
     public boolean isCacheable();
-    
+
+    /**
+     * Implementations must support deep cloning
+     */
     public Object clone() throws CloneNotSupportedException;
 }

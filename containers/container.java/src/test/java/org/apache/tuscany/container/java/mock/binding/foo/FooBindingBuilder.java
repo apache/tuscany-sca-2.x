@@ -122,7 +122,7 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
                 iConfigMap.put(method, iConfig);
             }
             QualifiedName qName = new QualifiedName(ep.getConfiguredReference().getTargetConfiguredServices().get(0).getPart().getName() + '/' + service.getName());
-            WireSourceConfiguration wireConfiguration = new WireSourceConfiguration("foo",qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
+            WireSourceConfiguration wireConfiguration = new WireSourceConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
             proxyFactory.setBusinessInterface(serviceContract.getInterface());
             proxyFactory.setConfiguration(wireConfiguration);
             contextFactory.addSourceProxyFactory(service.getName(), proxyFactory);
@@ -131,10 +131,6 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
                 // invoke the reference builder to handle additional policy metadata
                 policyBuilder.build(configuredService);
             }
-            // add tail interceptor
-            //for (SourceInvocationConfiguration iConfig : iConfigMap.values()) {
-            //    iConfig.addInterceptor(new InvokerInterceptor());
-            //}
             ep.setContextFactory(contextFactory);
 
         } else if (object instanceof ExternalService) {

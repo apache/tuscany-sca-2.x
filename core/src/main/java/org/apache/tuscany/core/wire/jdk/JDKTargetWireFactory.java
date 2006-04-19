@@ -23,7 +23,7 @@ public class JDKTargetWireFactory implements TargetWireFactory {
 
     private static final int INITIALIZED = 1;
 
-    private int state = JDKTargetWireFactory.UNINITIALIZED;
+    private int state = UNINITIALIZED;
 
     private Class[] businessInterfaceArray;
 
@@ -32,7 +32,7 @@ public class JDKTargetWireFactory implements TargetWireFactory {
     private WireTargetConfiguration configuration;
 
     public void initialize() throws ProxyInitializationException {
-        if (state != JDKTargetWireFactory.UNINITIALIZED) {
+        if (state != UNINITIALIZED) {
             throw new IllegalStateException("Proxy factory in wrong state [" + state + "]");
         }
         Map<Method, TargetInvocationConfiguration> invocationConfigs = configuration.getInvocationConfigurations();
@@ -41,11 +41,11 @@ public class JDKTargetWireFactory implements TargetWireFactory {
             Method method = entry.getKey();
             methodToInvocationConfig.put(method, entry.getValue());
         }
-        state = JDKTargetWireFactory.INITIALIZED;
+        state = INITIALIZED;
     }
 
     public Object createProxy() {
-        if (state != JDKTargetWireFactory.INITIALIZED) {
+        if (state != INITIALIZED) {
             throw new IllegalStateException("Proxy factory not INITIALIZED [" + state + "]");
         }
         InvocationHandler handler = new JDKInvocationHandler(configuration.getMessageFactory(), methodToInvocationConfig);

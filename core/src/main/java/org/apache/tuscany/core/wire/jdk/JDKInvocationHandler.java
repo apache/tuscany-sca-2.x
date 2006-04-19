@@ -54,7 +54,6 @@ public class JDKInvocationHandler implements InvocationHandler {
         for (Map.Entry<Method, ? extends InvocationConfiguration> entry : configuration.entrySet()) {
             this.configuration.put(entry.getKey(), new ConfigHolder(entry.getValue()));
         }
-        // this.configuration = configuration;
         this.messageFactory = messageFactory;
     }
 
@@ -107,7 +106,7 @@ public class JDKInvocationHandler implements InvocationHandler {
             }
         } else {
             Message msg = messageFactory.createMessage();
-            msg.setTargetInvoker(invoker);// config.getTargetInvoker());
+            msg.setTargetInvoker(invoker);
             msg.setBody(args);
             // dispatch the wire down the chain and get the response
             Message resp = headInterceptor.invoke(msg);

@@ -124,7 +124,7 @@ public class WebServiceEntryPointBuilder implements ContextFactoryBuilder {
             iConfigMap.put(method, iConfig);
         }
         QualifiedName qName = new QualifiedName(entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0).getPart().getName() + '/' + service.getName());
-        WireSourceConfiguration wireConfiguration = new WireSourceConfiguration("ep",qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
+        WireSourceConfiguration wireConfiguration = new WireSourceConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
         proxyFactory.setConfiguration(wireConfiguration);
         config.addSourceProxyFactory(service.getName(), proxyFactory);
