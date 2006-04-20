@@ -161,9 +161,9 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                 
                 List<Injector> injectors = new ArrayList<Injector>();
 
-                EventInvoker initInvoker = null;
+                EventInvoker<Object> initInvoker = null;
                 boolean eagerInit = false;
-                EventInvoker destroyInvoker = null;
+                EventInvoker<Object> destroyInvoker = null;
                 ContextObjectFactory contextObjectFactory = new ContextObjectFactory(contextFactory);
                 for (Field field : fields) {
                     ComponentName compName = field.getAnnotation(ComponentName.class);
@@ -180,14 +180,14 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                 for (Method method : methods) {
                     Init init = method.getAnnotation(Init.class);
                     if (init != null && initInvoker == null) {
-                        initInvoker = new MethodEventInvoker(method);
+                        initInvoker = new MethodEventInvoker<Object>(method);
                         eagerInit = init.eager();
                         continue;
                     }
                     // @spec - should we allow the same method to have @init and @destroy?
                     Destroy destroy = method.getAnnotation(Destroy.class);
                     if (destroy != null && destroyInvoker == null) {
-                        destroyInvoker = new MethodEventInvoker(method);
+                        destroyInvoker = new MethodEventInvoker<Object>(method);
                         continue;
                     }
                     ComponentName compName = method.getAnnotation(ComponentName.class);
