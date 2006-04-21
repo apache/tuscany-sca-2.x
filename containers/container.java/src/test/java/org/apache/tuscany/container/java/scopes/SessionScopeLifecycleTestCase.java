@@ -35,6 +35,10 @@ import org.apache.tuscany.core.context.event.HttpSessionEnd;
 import org.apache.tuscany.core.context.event.HttpSessionEvent;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.SessionScopeContext;
+import org.apache.tuscany.core.wire.service.WireFactoryService;
+import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
+import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
+import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.AtomicComponent;
 
@@ -117,11 +121,7 @@ public class SessionScopeLifecycleTestCase extends TestCase {
         scope.stop();
     }
 
-    // ----------------------------------
-    // Private methods
-    // ----------------------------------
-
-    JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
+    JavaContextFactoryBuilder builder;
 
     private List<ContextFactory<Context>> createComponents() throws BuilderException {
         AtomicComponent[] ca = new AtomicComponent[3];
@@ -154,4 +154,10 @@ public class SessionScopeLifecycleTestCase extends TestCase {
         return configs;
     }
 
+    protected void setUp() throws Exception {
+        super.setUp();
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        builder = new JavaContextFactoryBuilder(wireService);
+    }
+    
 }

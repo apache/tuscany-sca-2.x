@@ -1,21 +1,14 @@
 package org.apache.tuscany.container.java.builder;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import commonj.sdo.DataObject;
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
 import org.apache.tuscany.container.java.config.JavaContextFactory;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.NoAccessorException;
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.builder.impl.ListMultiplicityObjectFactory;
@@ -30,17 +23,12 @@ import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.SDOObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
-import org.apache.tuscany.core.wire.MethodHashMap;
-import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
-import org.apache.tuscany.core.wire.ProxyFactoryFactory;
-import org.apache.tuscany.core.wire.WireSourceConfiguration;
-import org.apache.tuscany.core.wire.WireTargetConfiguration;
-import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
-import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
-import org.apache.tuscany.core.wire.TargetWireFactory;
-import org.apache.tuscany.core.wire.SourceWireFactory;
-import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
+import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.AtomicComponent;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
@@ -55,32 +43,33 @@ import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 
-import commonj.sdo.DataObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
- * Builds context factories for component implementations that map to
- * {@link org.apache.tuscany.container.java.assembly.JavaImplementation}. The logical model is then decorated with the
- * runtime configuration.
- * 
- * @see org.apache.tuscany.core.builder.ContextFactory
- * 
+ * Builds context factories for component implementations that map to {@link org.apache.tuscany.container.java.assembly.JavaImplementation}.
+ * The logical model is then decorated with the runtime configuration.
+ *
  * @version $Rev: 368822 $ $Date: 2006-01-13 10:54:38 -0800 (Fri, 13 Jan 2006) $
+ * @see org.apache.tuscany.core.builder.ContextFactory
  */
 @org.osoa.sca.annotations.Scope("MODULE")
 public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
+
     private ContextFactoryBuilderRegistry builderRegistry;
 
-    private ProxyFactoryFactory proxyFactoryFactory;
-
-    private MessageFactory messageFactory;
+    private WireFactoryService wireFactoryService;
 
     /* the top-level builder responsible for evaluating policies */
     private HierarchicalBuilder policyBuilder = new HierarchicalBuilder();
 
 
-    public JavaContextFactoryBuilder(ProxyFactoryFactory proxyFactoryFactory, MessageFactory messageFactory) {
-        this.proxyFactoryFactory = proxyFactoryFactory;
-        this.messageFactory = messageFactory;
+    public JavaContextFactoryBuilder(WireFactoryService wireFactoryService) {
+        this.wireFactoryService = wireFactoryService;
     }
 
     public JavaContextFactoryBuilder() {
@@ -97,27 +86,17 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
     }
 
     /**
-     * Sets the factory used to construct proxies implmementing the business interface required by a reference
+     * Sets the factory used to construct wire factories
      */
     @Autowire
-    public void setProxyFactoryFactory(ProxyFactoryFactory factory) {
-        this.proxyFactoryFactory = factory;
+    public void setWireFactoryService(WireFactoryService wireFactoryService) {
+        this.wireFactoryService = wireFactoryService;
     }
 
     /**
-     * Sets the factory used to construct wire messages
-     * 
-     * @param msgFactory
-     */
-    @Autowire
-    public void setMessageFactory(MessageFactory msgFactory) {
-        this.messageFactory = msgFactory;
-    }
-
-    /**
-     * Adds a builder responsible for creating source-side and target-side wire chains for a reference. The
-     * reference builder may be hierarchical, containing other child reference builders that operate on specific
-     * metadata used to construct and wire chain.
+     * Adds a builder responsible for creating source-side and target-side wire chains for a reference. The reference builder may
+     * be hierarchical, containing other child reference builders that operate on specific metadata used to construct and wire
+     * chain.
      */
     public void addPolicyBuilder(ContextFactoryBuilder builder) {
         policyBuilder.addBuilder(builder);
@@ -158,7 +137,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                 String name = component.getName();
                 contextFactory = new JavaContextFactory(name, JavaIntrospectionHelper
                         .getDefaultConstructor(implClass), scope);
-                
+
                 List<Injector> injectors = new ArrayList<Injector>();
 
                 EventInvoker<Object> initInvoker = null;
@@ -215,30 +194,21 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                 for (ConfiguredService configuredService : component.getConfiguredServices()) {
                     Service service = configuredService.getPort();
                     ServiceContract serviceContract = service.getServiceContract();
-                    Map<Method, TargetInvocationConfiguration> iConfigMap = new MethodHashMap<TargetInvocationConfiguration>();
-                    TargetWireFactory proxyFactory = proxyFactoryFactory.createTargetWireFactory();
-                    Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
-                    for (Method method : javaMethods) {
-                        TargetInvocationConfiguration iConfig = new TargetInvocationConfiguration(method);
-                        iConfigMap.put(method, iConfig);
-                    }
                     QualifiedName qName = new QualifiedName(component.getName() + QualifiedName.NAME_SEPARATOR
                             + service.getName());
-                    WireTargetConfiguration wireConfiguration = new WireTargetConfiguration(qName, iConfigMap, serviceContract.getInterface()
-                            .getClassLoader(), messageFactory);
-                    proxyFactory.setBusinessInterface(serviceContract.getInterface());
-                    proxyFactory.setConfiguration(wireConfiguration);
-                    contextFactory.addTargetProxyFactory(service.getName(), proxyFactory);
-                    configuredService.setProxyFactory(proxyFactory);
+                    TargetWireFactory wireFactory = wireFactoryService.createTargetFactory(qName, serviceContract.getInterface());
+                    contextFactory.addTargetProxyFactory(service.getName(), wireFactory);
+                    configuredService.setProxyFactory(wireFactory);
                     if (policyBuilder != null) {
                         // invoke the reference builder to handle target-side metadata
                         policyBuilder.build(configuredService);
                     }
                     // add tail interceptor
-                    for (TargetInvocationConfiguration iConfig : iConfigMap.values()) {
+                    //TODO remove
+                    for (TargetInvocationConfiguration iConfig : wireFactory.getConfiguration().getInvocationConfigurations().values())
+                    {
                         iConfig.addInterceptor(new InvokerInterceptor());
                     }
-
                 }
 
                 // create injectors for references
@@ -249,7 +219,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                         injectors.add(injector);
                     }
                 }
-                
+
                 contextFactory.setSetters(injectors);
                 contextFactory.setEagerInit(eagerInit);
                 contextFactory.setInitInvoker(initInvoker);
@@ -279,7 +249,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
         Method method = null;
         Field field = JavaIntrospectionHelper.findClosestMatchingField(propName, type, fields);
         if (field == null) {
-            method = JavaIntrospectionHelper.findClosestMatchingMethod(propName, new Class[] { type }, methods);
+            method = JavaIntrospectionHelper.findClosestMatchingMethod(propName, new Class[]{type}, methods);
             if (method == null) {
                 throw new NoAccessorException(propName);
             }
@@ -303,11 +273,11 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
     }
 
     /**
-     * Creates proxy factories that represent target(s) of a reference and an <code>Injector</code> responsible for
-     * injecting them into the reference
+     * Creates proxy factories that represent target(s) of a reference and an <code>Injector</code> responsible for injecting them
+     * into the reference
      */
     private Injector createReferenceInjector(JavaContextFactory config, ConfiguredReference reference,
-            Set<Field> fields, Set<Method> methods) {
+                                             Set<Field> fields, Set<Method> methods) {
 
         // iterate through the targets
         List<ObjectFactory> objectFactories = new ArrayList<ObjectFactory>();
@@ -317,27 +287,15 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
             String targetCompName = configuredService.getPart().getName();
             String targetSerivceName = configuredService.getPort().getName();
             QualifiedName qName = new QualifiedName(targetCompName + QualifiedName.NAME_SEPARATOR + targetSerivceName);
-
-            SourceWireFactory proxyFactory = proxyFactoryFactory.createSourceWireFactory();
             Class interfaze = reference.getPort().getServiceContract().getInterface();
-            Map<Method, SourceInvocationConfiguration> iConfigMap = new HashMap<Method, SourceInvocationConfiguration>();
-            Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(interfaze);
-            for (Method method : javaMethods) {
-                SourceInvocationConfiguration iConfig = new SourceInvocationConfiguration(method);
-                iConfigMap.put(method, iConfig);
-            }
-
-            WireSourceConfiguration pConfiguration = new WireSourceConfiguration(refName, qName, iConfigMap, interfaze.getClassLoader(),
-                    messageFactory);
-            proxyFactory.setBusinessInterface(interfaze);
-            proxyFactory.setConfiguration(pConfiguration);
-            config.addSourceProxyFactory(reference.getPort().getName(), proxyFactory);
-            configuredService.setProxyFactory(proxyFactory);
+            SourceWireFactory wireFactory = wireFactoryService.createSourceFactory(refName, qName, interfaze);
+            config.addSourceProxyFactory(reference.getPort().getName(), wireFactory);
+            configuredService.setProxyFactory(wireFactory);
             if (policyBuilder != null) {
                 // invoke the reference builder to handle metadata associated with the reference
                 policyBuilder.build(reference);
             }
-            objectFactories.add(new ProxyObjectFactory(proxyFactory));
+            objectFactories.add(new ProxyObjectFactory(wireFactory));
         }
         boolean multiplicity = reference.getPort().getMultiplicity() == Multiplicity.ONE_N
                 || reference.getPort().getMultiplicity() == Multiplicity.ZERO_N;
@@ -349,7 +307,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
      * Creates an <code>Injector</code> for a set of object factories associated with a reference.
      */
     private Injector createInjector(String refName, Class refClass, boolean multiplicity, List<ObjectFactory> objectFactories,
-            Set<Field> fields, Set<Method> methods) throws NoAccessorException, BuilderConfigException {
+                                    Set<Field> fields, Set<Method> methods) throws NoAccessorException, BuilderConfigException {
         Field field;
         Method method = null;
         if (multiplicity) {
@@ -384,7 +342,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
         } else {
             field = JavaIntrospectionHelper.findClosestMatchingField(refName, refClass, fields);
             if (field == null) {
-                method = JavaIntrospectionHelper.findClosestMatchingMethod(refName, new Class[] { refClass }, methods);
+                method = JavaIntrospectionHelper.findClosestMatchingMethod(refName, new Class[]{refClass}, methods);
                 if (method == null) {
                     throw new NoAccessorException(refName);
                 }

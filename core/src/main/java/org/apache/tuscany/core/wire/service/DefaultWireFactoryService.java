@@ -25,7 +25,9 @@ import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
 import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
+import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Service;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -38,9 +40,19 @@ import java.util.Set;
  * @version $$Rev$$ $$Date$$
  */
 @Scope("MODULE")
+@Service(interfaces = {WireFactoryService.class})
 public class DefaultWireFactoryService implements WireFactoryService {
 
     private MessageFactory messageFactory;
+
+    public DefaultWireFactoryService(){
+
+    }
+
+    public DefaultWireFactoryService(MessageFactory messageFactory,ProxyFactoryFactory proxyFactory){
+        this.messageFactory = messageFactory;
+        this.proxyFactory = proxyFactory;
+    }
 
     @Autowire
     public void setMessageFactory(MessageFactory messageFactory) {
@@ -52,6 +64,10 @@ public class DefaultWireFactoryService implements WireFactoryService {
     @Autowire
     public void setProxyFactory(ProxyFactoryFactory proxyFactory) {
         this.proxyFactory = proxyFactory;
+    }
+
+    @Init(eager = true)
+    public void init() {
     }
 
     public SourceWireFactory createSourceFactory(String referenceName, QualifiedName targetName, Class interfaze) {

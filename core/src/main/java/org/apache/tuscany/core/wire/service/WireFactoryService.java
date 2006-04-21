@@ -16,6 +16,7 @@ package org.apache.tuscany.core.wire.service;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.osoa.sca.annotations.Service;
 
 /**
  * Implementations are responsible for providing a system service that creates {@link org.apache.tuscany.core.wire.SourceWireFactory}s

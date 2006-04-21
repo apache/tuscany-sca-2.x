@@ -33,6 +33,10 @@ import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.event.RequestEnd;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.RequestScopeContext;
+import org.apache.tuscany.core.wire.service.WireFactoryService;
+import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
+import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
+import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.AtomicComponent;
 
@@ -128,15 +132,12 @@ public class BasicRequestScopeTestCase extends TestCase {
         scope.stop();
     }
 
-    // ----------------------------------
-    // Private methods
-    // ----------------------------------
-
-    JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
     private List<ContextFactory<Context>> createConfigurations() throws BuilderException {
         AtomicComponent component = MockFactory.createComponent("TestService1", RequestScopeComponentImpl.class,
                 Scope.REQUEST);
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         builder.build(component);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
         configs.add((ContextFactory<Context>) component.getContextFactory());
@@ -146,6 +147,8 @@ public class BasicRequestScopeTestCase extends TestCase {
     private ContextFactory<Context> createConfiguration(String name) throws BuilderException {
         AtomicComponent component = MockFactory.createComponent(name, RequestScopeComponentImpl.class,
                 Scope.REQUEST);
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         builder.build(component);
         return (ContextFactory<Context>) component.getContextFactory();
     }

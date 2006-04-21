@@ -30,6 +30,10 @@ import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
+import org.apache.tuscany.core.wire.service.WireFactoryService;
+import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
+import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
+import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.AtomicComponent;
 
@@ -103,9 +107,10 @@ public class BasicModuleScopeTestCase extends TestCase {
         scope.stop();
     }
 
-    JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
 
     private List<ContextFactory<Context>> createConfigurations() throws BuilderException {
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         AtomicComponent component = MockFactory.createComponent("TestService1", ModuleScopeComponentImpl.class, Scope.MODULE);
         builder.build(component);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
@@ -114,6 +119,8 @@ public class BasicModuleScopeTestCase extends TestCase {
     }
 
     private ContextFactory<Context> createConfiguration(String name) throws BuilderException {
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         AtomicComponent component = MockFactory.createComponent(name, ModuleScopeInitDestroyComponent.class,
                 Scope.MODULE);
         builder.build(component);

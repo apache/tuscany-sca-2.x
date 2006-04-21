@@ -24,6 +24,8 @@ import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.wire.WireConfiguration;
 import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.service.WireFactoryService;
+import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.Module;
@@ -34,13 +36,12 @@ public class JavaContextFactoryBuilderTestCase extends TestCase {
     }
 
     public void testBuilder() throws Exception {
-        JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder();
-        builder.setMessageFactory(new MessageFactoryImpl());
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
        // HierarchicalBuilder refBuilder = new HierarchicalBuilder();
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
         builder.addPolicyBuilder(new MockInterceptorBuilder(interceptor, true));
         //builder.setPolicyBuilder(refBuilder);
-        builder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
         JavaTargetWireBuilder javaWireBuilder = new JavaTargetWireBuilder();
         ScopeStrategy strategy = new DefaultScopeStrategy();
         DefaultWireBuilder wireBuilder = new DefaultWireBuilder();

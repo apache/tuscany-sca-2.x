@@ -57,7 +57,9 @@ public class StAXLoaderRegistryImpl implements StAXLoaderRegistry {
         monitor.elementLoad(name);
         StAXElementLoader<? extends AssemblyObject> loader = loaders.get(name);
         if (loader == null) {
-            throw new ConfigurationLoadException("Unrecognized element: " + name);
+            ConfigurationLoadException e = new ConfigurationLoadException("Unrecognized element");
+            e.setIdentifier(name.toString());
+            throw e;
         } else {
             return loader.load(reader, resourceLoader);
         }

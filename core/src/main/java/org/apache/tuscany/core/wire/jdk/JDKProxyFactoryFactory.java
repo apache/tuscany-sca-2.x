@@ -16,6 +16,8 @@ package org.apache.tuscany.core.wire.jdk;
 import org.apache.tuscany.core.wire.ProxyFactoryFactory;
 import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Init;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -25,9 +27,14 @@ import java.lang.reflect.Proxy;
  * 
  * @version $Rev$ $Date$
  */
+@Scope("MODULE")
 public class JDKProxyFactoryFactory implements ProxyFactoryFactory {
 
     public JDKProxyFactoryFactory() {
+    }
+
+    @Init(eager = true)
+    public void init(){
     }
 
     public TargetWireFactory createTargetWireFactory() {

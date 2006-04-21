@@ -18,16 +18,23 @@ package org.apache.tuscany.core.message.impl;
 
 import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.MessageFactory;
+import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Init;
 
 /**
  * The default message factory
  *
  * @version $Rev$ $Date$
  */
+@Scope("MODULE")
 public class MessageFactoryImpl implements MessageFactory {
 
     public MessageFactoryImpl() {
         super();
+    }
+
+    @Init(eager = true)
+    public void init(){
     }
 
     public Message createMessage() {

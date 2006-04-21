@@ -35,6 +35,8 @@ import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.core.wire.ProxyFactoryFactory;
+import org.apache.tuscany.core.wire.service.WireFactoryService;
+import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
 import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 
@@ -64,13 +66,8 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     }
 
     public void testRefWithSourceInterceptor() throws Exception {
-        MessageFactory msgFactory = new MessageFactoryImpl();
-
-        ProxyFactoryFactory proxyFactoryFactory =new JDKProxyFactoryFactory();
-
-        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder();
-        javaBuilder.setMessageFactory(msgFactory);
-        javaBuilder.setProxyFactoryFactory(proxyFactoryFactory);
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireService);
 
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, true);
@@ -98,11 +95,8 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     }
 
     public void testRefWithSourceInterceptorHandler() throws Exception {
-        MessageFactory msgFactory = new MessageFactoryImpl();
-
-        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder();
-        javaBuilder.setMessageFactory(msgFactory);
-        javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireService);
 
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, true);
@@ -136,11 +130,8 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     }
 
     public void testRefWithTargetInterceptorHandler() throws Exception {
-        MessageFactory msgFactory = new MessageFactoryImpl();
-
-        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder();
-        javaBuilder.setMessageFactory(msgFactory);
-        javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireService);
 
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
@@ -176,11 +167,8 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     }
 
     public void testRefWithTargetInterceptor() throws Exception {
-        MessageFactory msgFactory = new MessageFactoryImpl();
-
-        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder();
-        javaBuilder.setMessageFactory(msgFactory);
-        javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireService);
 
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);

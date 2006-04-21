@@ -75,6 +75,12 @@ import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 import org.apache.tuscany.core.client.BootstrapHelper;
+import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
+import org.apache.tuscany.core.message.MessageFactory;
+import org.apache.tuscany.core.wire.ProxyFactoryFactory;
+import org.apache.tuscany.core.wire.service.WireFactoryService;
+import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
+import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AtomicComponent;
 import org.apache.tuscany.model.assembly.Component;
@@ -101,6 +107,12 @@ import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 public class MockFactory {
 
     public static final String JAVA_BUILDER = "java.runtime.builder";
+
+    public static final String MESSAGE_FACTORY = "java.runtime.messageFactory";
+
+    public static final String PROXY_FACTORY_FACTORY = "java.runtime.proxyFactoryFactory";
+
+    public static final String WIRE_FACTORY_SERVICE = "java.runtime.wireFactoryservice";
 
     public static final String JAVA_WIRE_BUILDER = "java.wire.builder";
 
@@ -655,9 +667,8 @@ public class MockFactory {
             }
         }
         boolean stateless = (scope == Scope.INSTANCE);
-        JavaAtomicContext context = new JavaAtomicContext("foo", new PojoObjectFactory(JavaIntrospectionHelper
+        return new JavaAtomicContext("foo", new PojoObjectFactory(JavaIntrospectionHelper
                 .getDefaultConstructor(implType), null, injectors), eagerInit, initInvoker, destroyInvoker, stateless);
-        return context;
     }
 
     /**
@@ -673,6 +684,9 @@ public class MockFactory {
         runtime.start();
         runtime.getSystemContext().registerModelObject(createSystemCompositeComponent(SYSTEM_CHILD));
         SystemCompositeContext ctx = (SystemCompositeContext) runtime.getSystemContext().getContext(SYSTEM_CHILD);
+        ctx.registerModelObject(systemFactory.createSystemComponent(MESSAGE_FACTORY, MessageFactory.class, MessageFactoryImpl.class, Scope.MODULE));
+        ctx.registerModelObject(systemFactory.createSystemComponent(PROXY_FACTORY_FACTORY, ProxyFactoryFactory.class, JDKProxyFactoryFactory.class, Scope.MODULE));
+        ctx.registerModelObject(systemFactory.createSystemComponent(WIRE_FACTORY_SERVICE, WireFactoryService.class, DefaultWireFactoryService.class, Scope.MODULE));
         ctx.registerModelObject(systemFactory.createSystemComponent(JAVA_BUILDER, ContextFactoryBuilder.class, JavaContextFactoryBuilder.class, Scope.MODULE));
         ctx.registerModelObject(systemFactory.createSystemComponent(JAVA_WIRE_BUILDER, WireBuilder.class, JavaTargetWireBuilder.class, Scope.MODULE));
         ctx.publish(new ModuleStart(new Object()));
