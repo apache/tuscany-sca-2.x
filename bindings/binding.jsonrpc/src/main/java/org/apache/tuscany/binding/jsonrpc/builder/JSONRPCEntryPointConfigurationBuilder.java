@@ -13,32 +13,31 @@
  */
 package org.apache.tuscany.binding.jsonrpc.builder;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.tuscany.binding.jsonrpc.assembly.JSONRPCBinding;
-import org.apache.tuscany.binding.jsonrpc.config.JSONRPCEntryPointRuntimeConfiguration;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.wire.ProxyFactoryFactory;
-import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
-import org.apache.tuscany.core.wire.WireSourceConfiguration;
-import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.core.wire.ProxyFactoryFactory;
+import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.apache.tuscany.model.assembly.AssemblyObject;
-import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.ServiceContract;
 import org.apache.tuscany.model.assembly.ConfiguredService;
+import org.apache.tuscany.model.assembly.EntryPoint;
+import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.ServiceContract;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
-
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Creates a <code>RuntimeConfigurationBuilder</code> for an entry point configured with the {@link JSONRPCBinding}
@@ -87,8 +86,8 @@ public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuil
     }
 
     /**
-     * Sets a builder responsible for creating source-side and target-side wire chains for a reference. The reference builder may be
-     * hierarchical, containing other child reference builders that operate on specific metadata used to construct and wire chain.
+     * Sets a builder responsible for creating source-side and target-side wire chains for a reference. The reference builder may be hierarchical,
+     * containing other child reference builders that operate on specific metadata used to construct and wire chain.
      * 
      * @see org.apache.tuscany.core.builder.impl.HierarchicalBuilder
      */
@@ -96,7 +95,7 @@ public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuil
         policyBuilder = builder;
     }
 
-	public void build(AssemblyObject object) throws BuilderException {
+    public void build(AssemblyObject object) throws BuilderException {
         if (!(object instanceof EntryPoint)) {
             return;
         }
@@ -105,8 +104,7 @@ public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuil
             return;
         }
 
-        EntryPointContextFactory config = new JSONRPCEntryPointRuntimeConfiguration(entryPoint.getName(), entryPoint.getConfiguredService()
-                .getPort().getName(), messageFactory);
+        EntryPointContextFactory config = new EntryPointContextFactory(entryPoint.getName(), messageFactory){};
 
         ConfiguredService configuredService = entryPoint.getConfiguredService();
         Service service = configuredService.getPort();
@@ -118,9 +116,10 @@ public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuil
             SourceInvocationConfiguration iConfig = new SourceInvocationConfiguration(method);
             iConfigMap.put(method, iConfig);
         }
-        QualifiedName qName = new QualifiedName(entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0).getPart().getName()
-                + '/' + service.getName());
-        WireSourceConfiguration wireConfiguration = new WireSourceConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
+        QualifiedName qName = new QualifiedName(entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0).getPart().getName() + '/'
+                + service.getName());
+        WireSourceConfiguration wireConfiguration = new WireSourceConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(),
+                messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
         proxyFactory.setConfiguration(wireConfiguration);
         config.addSourceProxyFactory(service.getName(), proxyFactory);
@@ -130,9 +129,9 @@ public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuil
             policyBuilder.build(configuredService);
         }
         // add tail interceptor
-        //for (InvocationConfiguration iConfig : iConfigMap.values()) {
-        //    iConfig.addInterceptor(new InvokerInterceptor());
-        //}
+        // for (InvocationConfiguration iConfig : iConfigMap.values()) {
+        // iConfig.addInterceptor(new InvokerInterceptor());
+        // }
         entryPoint.setContextFactory(config);
     }
 

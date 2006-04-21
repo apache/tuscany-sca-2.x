@@ -18,16 +18,11 @@
 package org.apache.tuscany.binding.jsonrpc.handler;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -35,6 +30,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.tuscany.binding.jsonrpc.assembly.JSONRPCBinding;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EntryPointContext;
+import org.apache.tuscany.core.webapp.TuscanyServletListener;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
@@ -43,40 +39,58 @@ import com.metaparadigm.jsonrpc.JSONRPCBridge;
 import com.metaparadigm.jsonrpc.JSONRPCServlet;
 
 /**
- * @version $Rev: 383148 $ $Date: 2006-03-04 08:07:17 -0800 (Sat, 04 Mar 2006) $
+ * 
+ * 
  */
 public class JSONRPCEntryPointServlet extends JSONRPCServlet {
-
     private static final long serialVersionUID = 1L;
 
-    private static final String ENTRYPOINT_CONFIG = JSONRPCEntryPointServlet.class.getName() + ".EntryPoints";
+    private transient Map<String, Object> entryPointProxys;
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.metaparadigm.jsonrpc.JSONRPCServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ClassCastException {
 
+        /*
+         * Create a new bridge for every request to aviod all the problems with JSON-RPC-Java storing the bridge in the session
+         */
         HttpSession session = request.getSession();
-        JSONRPCBridge json_bridge = (JSONRPCBridge) session.getAttribute("JSONRPCBridge");
-        if (json_bridge == null) {
-            json_bridge = createJSONRPCBridge(session.getServletContext());
-            session.setAttribute("JSONRPCBridge", json_bridge);
+        try {
+            session.setAttribute("JSONRPCBridge", createJSONRPCBridge());
+
+            super.service(request, response);
+
+        } finally {
+            session.removeAttribute("JSONRPCBridge");
         }
-        super.service(request, response);
     }
 
-    private JSONRPCBridge createJSONRPCBridge(ServletContext servletContext) {
+    /**
+     * Creates a JSON-RPC-Java Bridge with the objects registered for all the JSON-RPC entryPoint proxys
+     */
+    protected JSONRPCBridge createJSONRPCBridge() {
 
         JSONRPCBridge json_bridge = new JSONRPCBridge();
 
-        Map<String, Object> entryPoints = (Map<String, Object>) servletContext.getAttribute(ENTRYPOINT_CONFIG);
-        for (Iterator i = entryPoints.keySet().iterator(); i.hasNext();) {
-            String entryPointName = (String) i.next();
-            Object target = entryPoints.get(entryPointName);
-            json_bridge.registerObject(entryPointName, target);
+        for (String entryPointName : entryPointProxys.keySet()) {
+            Object entryPointProxy = entryPointProxys.get(entryPointName);
+            json_bridge.registerObject(entryPointName, entryPointProxy);
         }
 
         return json_bridge;
     }
 
-    public void init(ServletConfig config) throws ServletException {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.metaparadigm.jsonrpc.JSONRPCServlet#init(javax.servlet.ServletConfig)
+     */
+    @Override
+    public void init(ServletConfig config) {
         super.init(config);
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         ClassLoader mycl = getClass().getClassLoader();
@@ -85,7 +99,7 @@ public class JSONRPCEntryPointServlet extends JSONRPCServlet {
                 Thread.currentThread().setContextClassLoader(mycl);
             }
 
-            initTuscany(config);
+            initEntryPointProxys(config);
 
         } finally {
             if (tccl != mycl) {
@@ -94,28 +108,34 @@ public class JSONRPCEntryPointServlet extends JSONRPCServlet {
         }
     }
 
-    private void initTuscany(ServletConfig config) {
+    /**
+     * Initializes the entryPointProxys Map to contain the proxy objects for all the JSON-RPC entryPoints available in the SCA runtime
+     * 
+     * @param config
+     */
+    @SuppressWarnings("deprecation")
+    protected void initEntryPointProxys(ServletConfig config) {
 
         ServletContext servletContext = config.getServletContext();
-        CompositeContext moduleContext = (CompositeContext) servletContext.getAttribute("org.apache.tuscany.core.webapp.ModuleComponentContext");
+        CompositeContext moduleContext = (CompositeContext) servletContext.getAttribute(TuscanyServletListener.MODULE_COMPONENT_NAME);
         Module module = (Module) moduleContext.getComposite();
 
-        Map<String, Object> entryPoints = new HashMap<String, Object>();
+        this.entryPointProxys = new HashMap<String, Object>();
+
         for (EntryPoint entryPoint : module.getEntryPoints()) {
             if (hasJSONRPCBinding(entryPoint)) {
                 String entryPointName = entryPoint.getName();
-                Object proxy = createProxy(moduleContext, entryPoint, entryPointName);
-                entryPoints.put(entryPointName, proxy);
+                EntryPointContext entryPointContext = (EntryPointContext) moduleContext.getContext(entryPointName);
+                Object entryPointProxy = entryPointContext.getInstance(null);
+                entryPointProxys.put(entryPointName, entryPointProxy);
             }
         }
-
-        servletContext.setAttribute(ENTRYPOINT_CONFIG, entryPoints);
     }
 
     /**
      * Tests if the EntryPoint has a JSONRPCBinding
      */
-    private boolean hasJSONRPCBinding(EntryPoint entryPoint) {
+    protected boolean hasJSONRPCBinding(EntryPoint entryPoint) {
         for (Binding binding : entryPoint.getBindings()) {
             if (binding instanceof JSONRPCBinding) {
                 return true;
@@ -124,22 +144,11 @@ public class JSONRPCEntryPointServlet extends JSONRPCServlet {
         return false;
     }
 
-    private Object createProxy(CompositeContext moduleContext, EntryPoint entryPoint, String entryPointName) {
-        final EntryPointContext entryPointContext = (EntryPointContext) moduleContext.getContext(entryPointName);
-        InvocationHandler ih = new InvocationHandler() {
-            public Object invoke(Object o, Method method, Object[] args) throws Throwable {
-                Object target = entryPointContext.getHandler();
-                if (target instanceof InvocationHandler) {
-                    return ((InvocationHandler) target).invoke(this, method, args);
-                } else {
-                    return method.invoke(target, args);
-                }
-            }
-        };
-        Class iFace = entryPoint.getConfiguredReference().getPort().getServiceContract().getInterface();
-        ClassLoader cl = iFace.getClassLoader();
-        Object proxy = Proxy.newProxyInstance(cl, new Class[] { iFace }, ih);
-        return proxy;
+    /**
+     * Get the Map of entryPoint proxys
+     */
+    protected Map<String, Object> getEntryPointProxys() {
+        return entryPointProxys;
     }
 
 }

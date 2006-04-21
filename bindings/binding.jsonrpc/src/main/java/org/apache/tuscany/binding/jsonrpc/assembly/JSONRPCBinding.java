@@ -16,11 +16,14 @@
  */
 package org.apache.tuscany.binding.jsonrpc.assembly;
 
-import org.apache.tuscany.model.assembly.Binding;
+import org.apache.tuscany.model.assembly.impl.BindingImpl;
 
 /**
- * Represents a JSON binding.
+ * An Binding implementation for JSON-RPC.
  */
-public interface JSONRPCBinding extends Binding {
+public class JSONRPCBinding extends BindingImpl {
+
+    public JSONRPCBinding() {
+    }
 
 }

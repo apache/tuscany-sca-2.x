@@ -17,30 +17,26 @@
 package org.apache.tuscany.binding.jsonrpc.loader;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Destroy;
-
+import org.apache.tuscany.binding.jsonrpc.assembly.JSONRPCBinding;
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.binding.jsonrpc.assembly.JSONRPCBinding;
-import org.apache.tuscany.binding.jsonrpc.assembly.JSONRPCAssemblyFactory;
-import org.apache.tuscany.binding.jsonrpc.assembly.impl.JSONRPCAssemblyFactoryImpl;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
 
 /**
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
 public class JSONRPCBindingLoader implements StAXElementLoader<JSONRPCBinding> {
-    public static final QName BINDING_ISONRPC = new QName("http://org.apache.tuscany/xmlns/jsonrpc/0.9", "binding.jsonrpc");
 
-    private static final JSONRPCAssemblyFactory jsonFactory = new JSONRPCAssemblyFactoryImpl();
+    public static final QName BINDING_JSONRPC = new QName("http://org.apache.tuscany/xmlns/jsonrpc/0.9", "binding.jsonrpc");
 
     protected StAXLoaderRegistry registry;
 
@@ -51,16 +47,16 @@ public class JSONRPCBindingLoader implements StAXElementLoader<JSONRPCBinding> {
 
     @Init(eager = true)
     public void start() {
-        registry.registerLoader(BINDING_ISONRPC, this);
+        registry.registerLoader(BINDING_JSONRPC, this);
     }
 
     @Destroy
     public void stop() {
-        registry.unregisterLoader(BINDING_ISONRPC, this);
+        registry.unregisterLoader(BINDING_JSONRPC, this);
     }
 
     public JSONRPCBinding load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
-        JSONRPCBinding binding = jsonFactory.createJSONRPCBinding();
+        JSONRPCBinding binding = new JSONRPCBinding();
         binding.setURI(reader.getAttributeValue(null, "uri"));
         return binding;
     }
