@@ -28,6 +28,7 @@ import org.apache.tuscany.container.java.mock.components.StatelessComponent;
 import org.apache.tuscany.container.java.mock.components.StatelessComponentImpl;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
@@ -106,7 +107,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
             throws NoSuchMethodException, BuilderException {
         AtomicComponent component = MockFactory.createComponent("TestService1", StatelessComponentImpl.class,
                 Scope.INSTANCE);
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(), new DefaultPolicyBuilderRegistry());
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         builder.build(component);
         List<ContextFactory<Context>> configs = new ArrayList();
@@ -118,7 +119,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
             throws NoSuchMethodException, BuilderException {
         AtomicComponent component = MockFactory.createComponent(name, StatelessComponentImpl.class,
                 Scope.INSTANCE);
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(),new DefaultPolicyBuilderRegistry());
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         builder.build(component);
         return (ContextFactory<Context>) component.getContextFactory();

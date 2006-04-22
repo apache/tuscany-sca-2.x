@@ -28,6 +28,7 @@ import org.apache.tuscany.container.java.mock.components.RequestScopeComponent;
 import org.apache.tuscany.container.java.mock.components.RequestScopeComponentImpl;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.event.RequestEnd;
@@ -136,7 +137,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     private List<ContextFactory<Context>> createConfigurations() throws BuilderException {
         AtomicComponent component = MockFactory.createComponent("TestService1", RequestScopeComponentImpl.class,
                 Scope.REQUEST);
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(), new DefaultPolicyBuilderRegistry());
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         builder.build(component);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
@@ -147,7 +148,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     private ContextFactory<Context> createConfiguration(String name) throws BuilderException {
         AtomicComponent component = MockFactory.createComponent(name, RequestScopeComponentImpl.class,
                 Scope.REQUEST);
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(), new DefaultPolicyBuilderRegistry());
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         builder.build(component);
         return (ContextFactory<Context>) component.getContextFactory();

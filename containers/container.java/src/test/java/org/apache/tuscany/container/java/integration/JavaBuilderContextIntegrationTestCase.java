@@ -25,6 +25,8 @@ import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
+import org.apache.tuscany.core.builder.system.PolicyBuilderRegistry;
+import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.context.CompositeContext;
@@ -66,14 +68,16 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     }
 
     public void testRefWithSourceInterceptor() throws Exception {
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
-        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireService);
-
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, true);
+        PolicyBuilderRegistry policyRegistry = new DefaultPolicyBuilderRegistry();
+        policyRegistry.registerSourceBuilder(interceptorBuilder);
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(), policyRegistry);
+        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireService);
+
         //HierarchicalBuilder refBuilder = new HierarchicalBuilder();
         //refBuilder.addBuilder(interceptorBuilder);
-        javaBuilder.addPolicyBuilder(interceptorBuilder);
+        //javaBuilder.addPolicyBuilder(interceptorBuilder);
         builderRegistry.register(javaBuilder);
 
         RuntimeContext runtime = new RuntimeContextImpl(monitorFactory, builderRegistry, defaultWireBuilder);
@@ -95,18 +99,28 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     }
 
     public void testRefWithSourceInterceptorHandler() throws Exception {
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
-        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireService);
-
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, true);
-        //HierarchicalBuilder refBuilder = new HierarchicalBuilder();
-        //refBuilder.addBuilder(interceptorBuilder);
         MockHandler mockHandler = new MockHandler();
         MockHandlerBuilder handlerBuilder = new MockHandlerBuilder(mockHandler, true, true);
+        PolicyBuilderRegistry policyRegistry = new DefaultPolicyBuilderRegistry();
+        policyRegistry.registerSourceBuilder(interceptorBuilder);
+        policyRegistry.registerSourceBuilder(handlerBuilder);
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(), policyRegistry);
+        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireService);
+
+        //WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        //JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireService);
+
+        //MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
+        //MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, true);
+        //HierarchicalBuilder refBuilder = new HierarchicalBuilder();
+        //refBuilder.addBuilder(interceptorBuilder);
+//        MockHandler mockHandler = new MockHandler();
+//        MockHandlerBuilder handlerBuilder = new MockHandlerBuilder(mockHandler, true, true);
         //refBuilder.addBuilder(handlerBuilder);
-        javaBuilder.addPolicyBuilder(interceptorBuilder);
-        javaBuilder.addPolicyBuilder(handlerBuilder);
+//        javaBuilder.addPolicyBuilder(interceptorBuilder);
+//        javaBuilder.addPolicyBuilder(handlerBuilder);
 
         builderRegistry.register(javaBuilder);
         RuntimeContext runtime = new RuntimeContextImpl(monitorFactory, builderRegistry, defaultWireBuilder);
@@ -130,20 +144,28 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     }
 
     public void testRefWithTargetInterceptorHandler() throws Exception {
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
-        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireService);
-
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
-        //HierarchicalBuilder refBuilder = new HierarchicalBuilder();
-        //refBuilder.addBuilder(interceptorBuilder);
         MockHandler mockHandler = new MockHandler();
         MockHandlerBuilder handlerBuilder = new MockHandlerBuilder(mockHandler, false, true);
-        //refBuilder.addBuilder(handlerBuilder);
-        javaBuilder.addPolicyBuilder(interceptorBuilder);
-        javaBuilder.addPolicyBuilder(handlerBuilder);
+        PolicyBuilderRegistry policyRegistry = new DefaultPolicyBuilderRegistry();
+        policyRegistry.registerSourceBuilder(interceptorBuilder);
+        policyRegistry.registerSourceBuilder(handlerBuilder);
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(), policyRegistry);
+        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireService);
 
-       // javaBuilder.setPolicyBuilder(refBuilder);
+
+
+//        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+//        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireService);
+//
+//        MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
+//        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
+//        MockHandler mockHandler = new MockHandler();
+//        MockHandlerBuilder handlerBuilder = new MockHandlerBuilder(mockHandler, false, true);
+//        javaBuilder.addPolicyBuilder(interceptorBuilder);
+//        javaBuilder.addPolicyBuilder(handlerBuilder);
+
         builderRegistry.register(javaBuilder);
 
         RuntimeContext runtime = new RuntimeContextImpl(monitorFactory, builderRegistry, defaultWireBuilder);
@@ -167,16 +189,19 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
     }
 
     public void testRefWithTargetInterceptor() throws Exception {
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
-        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireService);
-
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
-        //HierarchicalBuilder refBuilder = new HierarchicalBuilder();
-        //refBuilder.addBuilder(interceptorBuilder);
-        javaBuilder.addPolicyBuilder(interceptorBuilder);
+        PolicyBuilderRegistry policyRegistry = new DefaultPolicyBuilderRegistry();
+        policyRegistry.registerSourceBuilder(interceptorBuilder);
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(), policyRegistry);
+        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireService);
 
-        //javaBuilder.setPolicyBuilder(refBuilder);
+//        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+//        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireService);
+//
+//        MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
+//        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
+//        javaBuilder.addPolicyBuilder(interceptorBuilder);
 
         builderRegistry.register(javaBuilder);
 

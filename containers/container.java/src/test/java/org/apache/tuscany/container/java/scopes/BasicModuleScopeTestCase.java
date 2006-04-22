@@ -24,6 +24,8 @@ import org.apache.tuscany.container.java.mock.components.ModuleScopeComponentImp
 import org.apache.tuscany.container.java.mock.components.ModuleScopeInitDestroyComponent;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.builder.system.PolicyBuilderRegistry;
+import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.event.ModuleStart;
@@ -109,7 +111,8 @@ public class BasicModuleScopeTestCase extends TestCase {
 
 
     private List<ContextFactory<Context>> createConfigurations() throws BuilderException {
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        PolicyBuilderRegistry policyRegistry = new DefaultPolicyBuilderRegistry();
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(), policyRegistry);
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         AtomicComponent component = MockFactory.createComponent("TestService1", ModuleScopeComponentImpl.class, Scope.MODULE);
         builder.build(component);
@@ -119,7 +122,8 @@ public class BasicModuleScopeTestCase extends TestCase {
     }
 
     private ContextFactory<Context> createConfiguration(String name) throws BuilderException {
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        PolicyBuilderRegistry policyRegistry = new DefaultPolicyBuilderRegistry();
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(), policyRegistry);
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         AtomicComponent component = MockFactory.createComponent(name, ModuleScopeInitDestroyComponent.class,
                 Scope.MODULE);

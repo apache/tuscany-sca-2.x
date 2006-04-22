@@ -12,6 +12,8 @@ import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeComponent;
 import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.builder.system.PolicyBuilderRegistry;
+import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
@@ -36,12 +38,13 @@ public class JavaContextFactoryBuilderTestCase extends TestCase {
     }
 
     public void testBuilder() throws Exception {
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
+        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, true);
+        PolicyBuilderRegistry policyRegistry = new DefaultPolicyBuilderRegistry();
+        policyRegistry.registerSourceBuilder(interceptorBuilder);
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(), policyRegistry);
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
-       // HierarchicalBuilder refBuilder = new HierarchicalBuilder();
-        MockSyncInterceptor interceptor = new MockSyncInterceptor();
-        builder.addPolicyBuilder(new MockInterceptorBuilder(interceptor, true));
-        //builder.setPolicyBuilder(refBuilder);
+
         JavaTargetWireBuilder javaWireBuilder = new JavaTargetWireBuilder();
         ScopeStrategy strategy = new DefaultScopeStrategy();
         DefaultWireBuilder wireBuilder = new DefaultWireBuilder();
@@ -75,7 +78,6 @@ public class JavaContextFactoryBuilderTestCase extends TestCase {
                 }
                 pFactory.initialize();
             }
-
             scopeContext.registerFactory(source);
         }
         for (Component component : components) {

@@ -29,6 +29,7 @@ import org.apache.tuscany.container.java.mock.components.SessionScopeInitDestroy
 import org.apache.tuscany.container.java.mock.components.SessionScopeInitOnlyComponent;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.event.HttpSessionEnd;
@@ -156,8 +157,8 @@ public class SessionScopeLifecycleTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(),new DefaultPolicyBuilderRegistry());
         builder = new JavaContextFactoryBuilder(wireService);
     }
-    
+
 }

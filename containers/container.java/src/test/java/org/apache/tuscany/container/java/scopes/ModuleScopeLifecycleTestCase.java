@@ -31,6 +31,7 @@ import org.apache.tuscany.container.java.mock.components.ModuleScopeInitDestroyC
 import org.apache.tuscany.container.java.mock.components.ModuleScopeInitOnlyComponent;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.event.ModuleStart;
@@ -221,7 +222,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(), new DefaultPolicyBuilderRegistry());
         builder = new JavaContextFactoryBuilder(wireService);
     }
 }

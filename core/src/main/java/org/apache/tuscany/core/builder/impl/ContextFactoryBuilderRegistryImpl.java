@@ -26,7 +26,8 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
  * @version $Rev$ $Date$
  */
 public class ContextFactoryBuilderRegistryImpl implements ContextFactoryBuilderRegistry {
-    private final List<ContextFactoryBuilder> builders = new ArrayList();
+
+    private final List<ContextFactoryBuilder> builders = new ArrayList<ContextFactoryBuilder>();
 
     public void register(ContextFactoryBuilder builder) {
         builders.add(builder);

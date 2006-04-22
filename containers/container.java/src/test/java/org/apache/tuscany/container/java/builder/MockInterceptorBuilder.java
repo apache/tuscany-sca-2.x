@@ -14,23 +14,29 @@
 package org.apache.tuscany.container.java.builder;
 
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.SourcePolicyBuilder;
+import org.apache.tuscany.core.builder.TargetPolicyBuilder;
 import org.apache.tuscany.core.wire.Interceptor;
-import org.apache.tuscany.core.wire.WireFactory;
 import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
-import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
 import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
 import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.core.wire.WireFactory;
+import org.apache.tuscany.core.wire.WireSourceConfiguration;
+import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 
+import java.util.List;
+
 /**
  * Adds an interceptor to a source or target proxy configuration
- * 
+ *
  * @version $Rev$ $Date$
  */
-public class MockInterceptorBuilder implements ContextFactoryBuilder {
+public class MockInterceptorBuilder implements SourcePolicyBuilder, TargetPolicyBuilder {
+
 
     private Interceptor interceptor;
 
@@ -38,10 +44,10 @@ public class MockInterceptorBuilder implements ContextFactoryBuilder {
 
     /**
      * Creates the builder
-     * 
+     *
      * @param interceptor the interceptor ot add
-     * @param source true if the interceptor should be added to the source side; false if the interceptor should be
-     *        added to the target side
+     * @param source      true if the interceptor should be added to the source side; false if the interceptor should be added to
+     *                    the target side
      */
     public MockInterceptorBuilder(Interceptor interceptor, boolean source) {
         this.interceptor = interceptor;
@@ -57,7 +63,8 @@ public class MockInterceptorBuilder implements ContextFactoryBuilder {
                 // xcvProxyFactory pFactory = (WireFactory) cref.getProxyFactory();
                 for (ConfiguredService configuredService : cref.getTargetConfiguredServices()) {
                     SourceWireFactory pFactory = (SourceWireFactory) configuredService.getProxyFactory();
-                    for (SourceInvocationConfiguration config : pFactory.getConfiguration().getInvocationConfigurations().values()) {
+                    for (SourceInvocationConfiguration config : pFactory.getConfiguration().getInvocationConfigurations().values())
+                    {
                         config.addInterceptor(interceptor);
                     }
                 }
@@ -68,13 +75,15 @@ public class MockInterceptorBuilder implements ContextFactoryBuilder {
             } else {
                 ConfiguredService cservice = (ConfiguredService) modelObject;
                 WireFactory pFactory = (WireFactory) cservice.getProxyFactory();
-                if (pFactory instanceof SourceWireFactory){
-                //if (pFactory.getConfiguration() instanceof WireSourceConfiguration){
-                    for (SourceInvocationConfiguration config : ((SourceWireFactory)pFactory).getConfiguration().getInvocationConfigurations().values()) {
+                if (pFactory instanceof SourceWireFactory) {
+                    //if (pFactory.getConfiguration() instanceof WireSourceConfiguration){
+                    for (SourceInvocationConfiguration config : ((SourceWireFactory) pFactory).getConfiguration().getInvocationConfigurations().values())
+                    {
                         config.addInterceptor(interceptor);
                     }
-                }else if (pFactory instanceof TargetWireFactory){
-                    for (TargetInvocationConfiguration config : ((TargetWireFactory)pFactory).getConfiguration().getInvocationConfigurations().values()) {
+                } else if (pFactory instanceof TargetWireFactory) {
+                    for (TargetInvocationConfiguration config : ((TargetWireFactory) pFactory).getConfiguration().getInvocationConfigurations().values())
+                    {
                         config.addInterceptor(interceptor);
                     }
 
@@ -84,4 +93,19 @@ public class MockInterceptorBuilder implements ContextFactoryBuilder {
         }
     }
 
+    public void build(ConfiguredReference reference, List<WireSourceConfiguration> configurations) throws BuilderException {
+        for (WireSourceConfiguration wireSourceConfiguration : configurations) {
+            for (SourceInvocationConfiguration configuration : wireSourceConfiguration.getInvocationConfigurations().values()) {
+                configuration.addInterceptor(interceptor);
+
+            }
+
+        }
+    }
+
+    public void build(ConfiguredService service, WireTargetConfiguration configuration) throws BuilderException {
+        for (TargetInvocationConfiguration config : configuration.getInvocationConfigurations().values()) {
+            config.addInterceptor(interceptor);
+        }
+    }
 }

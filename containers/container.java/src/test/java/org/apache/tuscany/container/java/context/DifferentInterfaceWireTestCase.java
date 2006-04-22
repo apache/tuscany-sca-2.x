@@ -28,6 +28,7 @@ import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
+import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.context.event.ModuleStart;
@@ -70,7 +71,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         CompositeContextImpl context = new CompositeContextImpl();
         context.setName("system.context");
         List<ContextFactoryBuilder>builders = MockFactory.createSystemBuilders();
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(), new DefaultPolicyBuilderRegistry());
         builders.add(new JavaContextFactoryBuilder(wireService));
         List<WireBuilder> wireBuilders = new ArrayList<WireBuilder>();
         wireBuilders.add(new JavaTargetWireBuilder());

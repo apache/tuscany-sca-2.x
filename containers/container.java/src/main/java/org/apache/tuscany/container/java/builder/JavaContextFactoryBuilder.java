@@ -10,11 +10,9 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.NoAccessorException;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.builder.impl.ArrayMultiplicityObjectFactory;
-import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
 import org.apache.tuscany.core.builder.impl.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.builder.impl.ProxyObjectFactory;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
-import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.injection.ContextObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
@@ -25,9 +23,7 @@ import org.apache.tuscany.core.injection.SDOObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.wire.SourceWireFactory;
-import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
 import org.apache.tuscany.core.wire.TargetWireFactory;
-import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
 import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.AtomicComponent;
@@ -37,7 +33,6 @@ import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.ServiceContract;
 import org.osoa.sca.annotations.ComponentName;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Destroy;
@@ -45,7 +40,6 @@ import org.osoa.sca.annotations.Init;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -63,10 +57,6 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
     private ContextFactoryBuilderRegistry builderRegistry;
 
     private WireFactoryService wireFactoryService;
-
-    /* the top-level builder responsible for evaluating policies */
-    private HierarchicalBuilder policyBuilder = new HierarchicalBuilder();
-
 
     public JavaContextFactoryBuilder(WireFactoryService wireFactoryService) {
         this.wireFactoryService = wireFactoryService;
@@ -91,15 +81,6 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
     @Autowire
     public void setWireFactoryService(WireFactoryService wireFactoryService) {
         this.wireFactoryService = wireFactoryService;
-    }
-
-    /**
-     * Adds a builder responsible for creating source-side and target-side wire chains for a reference. The reference builder may
-     * be hierarchical, containing other child reference builders that operate on specific metadata used to construct and wire
-     * chain.
-     */
-    public void addPolicyBuilder(ContextFactoryBuilder builder) {
-        policyBuilder.addBuilder(builder);
     }
 
     public void build(AssemblyObject modelObject) throws BuilderException {
@@ -193,22 +174,8 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                 // create target-side wire chains for each service offered by the implementation
                 for (ConfiguredService configuredService : component.getConfiguredServices()) {
                     Service service = configuredService.getPort();
-                    ServiceContract serviceContract = service.getServiceContract();
-                    QualifiedName qName = new QualifiedName(component.getName() + QualifiedName.NAME_SEPARATOR
-                            + service.getName());
-                    TargetWireFactory wireFactory = wireFactoryService.createTargetFactory(qName, serviceContract.getInterface());
+                    TargetWireFactory wireFactory = wireFactoryService.createTargetFactory(configuredService);
                     contextFactory.addTargetProxyFactory(service.getName(), wireFactory);
-                    configuredService.setProxyFactory(wireFactory);
-                    if (policyBuilder != null) {
-                        // invoke the reference builder to handle target-side metadata
-                        policyBuilder.build(configuredService);
-                    }
-                    // add tail interceptor
-                    //TODO remove
-                    for (TargetInvocationConfiguration iConfig : wireFactory.getConfiguration().getInvocationConfigurations().values())
-                    {
-                        iConfig.addInterceptor(new InvokerInterceptor());
-                    }
                 }
 
                 // create injectors for references
@@ -224,6 +191,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                 contextFactory.setEagerInit(eagerInit);
                 contextFactory.setInitInvoker(initInvoker);
                 contextFactory.setDestroyInvoker(destroyInvoker);
+
             } catch (BuilderException e) {
                 e.addContextName(component.getName());
                 throw e;
@@ -279,22 +247,13 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
     private Injector createReferenceInjector(JavaContextFactory config, ConfiguredReference reference,
                                              Set<Field> fields, Set<Method> methods) {
 
-        // iterate through the targets
-        List<ObjectFactory> objectFactories = new ArrayList<ObjectFactory>();
         String refName = reference.getPort().getName();
         Class refClass = reference.getPort().getServiceContract().getInterface();
-        for (ConfiguredService configuredService : reference.getTargetConfiguredServices()) {
-            String targetCompName = configuredService.getPart().getName();
-            String targetSerivceName = configuredService.getPort().getName();
-            QualifiedName qName = new QualifiedName(targetCompName + QualifiedName.NAME_SEPARATOR + targetSerivceName);
-            Class interfaze = reference.getPort().getServiceContract().getInterface();
-            SourceWireFactory wireFactory = wireFactoryService.createSourceFactory(refName, qName, interfaze);
-            config.addSourceProxyFactory(reference.getPort().getName(), wireFactory);
-            configuredService.setProxyFactory(wireFactory);
-            if (policyBuilder != null) {
-                // invoke the reference builder to handle metadata associated with the reference
-                policyBuilder.build(reference);
-            }
+        // iterate through the targets
+        List<ObjectFactory> objectFactories = new ArrayList<ObjectFactory>();
+        List<SourceWireFactory> wirefactories = wireFactoryService.createSourceFactory(reference);
+        for (SourceWireFactory wireFactory : wirefactories) {
+            config.addSourceProxyFactory(refName, wireFactory);
             objectFactories.add(new ProxyObjectFactory(wireFactory));
         }
         boolean multiplicity = reference.getPort().getMultiplicity() == Multiplicity.ONE_N

@@ -25,6 +25,10 @@ import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
 import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
+import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
+import org.apache.tuscany.core.builder.system.PolicyBuilderRegistry;
+import org.apache.tuscany.model.assembly.ConfiguredService;
+import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
@@ -33,6 +37,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * The default implementation of the <code>WireFactoryService</code> in the runtime
@@ -45,13 +51,14 @@ public class DefaultWireFactoryService implements WireFactoryService {
 
     private MessageFactory messageFactory;
 
-    public DefaultWireFactoryService(){
+    public DefaultWireFactoryService() {
 
     }
 
-    public DefaultWireFactoryService(MessageFactory messageFactory,ProxyFactoryFactory proxyFactory){
+    public DefaultWireFactoryService(MessageFactory messageFactory, ProxyFactoryFactory proxyFactory, PolicyBuilderRegistry registry) {
         this.messageFactory = messageFactory;
         this.proxyFactory = proxyFactory;
+        this.policyRegistry = registry;
     }
 
     @Autowire
@@ -66,11 +73,52 @@ public class DefaultWireFactoryService implements WireFactoryService {
         this.proxyFactory = proxyFactory;
     }
 
+    private PolicyBuilderRegistry policyRegistry;
+
+    @Autowire
+    public void setPolicyRegistry(PolicyBuilderRegistry policyRegistry) {
+        this.policyRegistry = policyRegistry;
+    }
+
     @Init(eager = true)
     public void init() {
     }
 
-    public SourceWireFactory createSourceFactory(String referenceName, QualifiedName targetName, Class interfaze) {
+    public List<SourceWireFactory> createSourceFactory(ConfiguredReference configuredReference){ //String referenceName, QualifiedName targetName, Class interfaze) {
+        String referenceName = configuredReference.getPort().getName();
+        Class interfaze = configuredReference.getPort().getServiceContract().getInterface();
+        List<SourceWireFactory> wireFactories = new ArrayList<SourceWireFactory>();
+        List<WireSourceConfiguration> wireConfigurations = new ArrayList<WireSourceConfiguration>();
+        for (ConfiguredService configuredService : configuredReference.getTargetConfiguredServices()) {
+            String targetCompName = configuredService.getPart().getName();
+            String targetSerivceName = configuredService.getPort().getName();
+            QualifiedName targetName = new QualifiedName(targetCompName + QualifiedName.NAME_SEPARATOR + targetSerivceName);
+            SourceWireFactory wireFactory = proxyFactory.createSourceWireFactory();
+            Map<Method, SourceInvocationConfiguration> iConfigMap = new HashMap<Method, SourceInvocationConfiguration>();
+            Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(interfaze);
+            for (Method method : javaMethods) {
+                SourceInvocationConfiguration iConfig = new SourceInvocationConfiguration(method);
+                iConfigMap.put(method, iConfig);
+            }
+            WireSourceConfiguration wireConfiguration = new WireSourceConfiguration(referenceName, targetName, iConfigMap, interfaze.getClassLoader(),
+                    messageFactory);
+            wireConfigurations.add(wireConfiguration);
+            wireFactory.setBusinessInterface(interfaze);
+            wireFactory.setConfiguration(wireConfiguration);
+            wireFactories.add(wireFactory);
+        }
+        if (policyRegistry != null) {
+            // invoke policy builders
+            policyRegistry.build(configuredReference, wireConfigurations);
+        }
+        return wireFactories;
+
+    }
+
+    //FIXME remove
+    public SourceWireFactory createSourceFactory(QualifiedName targetName,ConfiguredService configuredService) {
+        org.apache.tuscany.model.assembly.Service service = configuredService.getPort();
+        Class interfaze = service.getServiceContract().getInterface();
         SourceWireFactory wireFactory = proxyFactory.createSourceWireFactory();
         Map<Method, SourceInvocationConfiguration> iConfigMap = new HashMap<Method, SourceInvocationConfiguration>();
         Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(interfaze);
@@ -78,14 +126,24 @@ public class DefaultWireFactoryService implements WireFactoryService {
             SourceInvocationConfiguration iConfig = new SourceInvocationConfiguration(method);
             iConfigMap.put(method, iConfig);
         }
-        WireSourceConfiguration pConfiguration = new WireSourceConfiguration(referenceName, targetName, iConfigMap, interfaze.getClassLoader(),
+        WireSourceConfiguration wireConfiguration = new WireSourceConfiguration(targetName, iConfigMap, interfaze.getClassLoader(),
                 messageFactory);
         wireFactory.setBusinessInterface(interfaze);
-        wireFactory.setConfiguration(pConfiguration);
+        wireFactory.setConfiguration(wireConfiguration);
+        //TODO policy builders are not invoked since this method should be removed if possible
+//        if (policyRegistry != null) {
+//            // invoke policy builders
+//            policyRegistry.build(configuredService, wireConfiguration);
+//        }
         return wireFactory;
     }
 
-    public TargetWireFactory createTargetFactory(QualifiedName targetName, Class interfaze) {
+    public TargetWireFactory createTargetFactory(ConfiguredService configuredService) {
+        org.apache.tuscany.model.assembly.Service service = configuredService.getPort();
+        Class interfaze = service.getServiceContract().getInterface();
+        QualifiedName targetName = new QualifiedName(configuredService.getPart().getName() + QualifiedName.NAME_SEPARATOR
+                + service.getName());
+
         Map<Method, TargetInvocationConfiguration> iConfigMap = new MethodHashMap<TargetInvocationConfiguration>();
         TargetWireFactory wireFactory = proxyFactory.createTargetWireFactory();
         Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(interfaze);
@@ -96,6 +154,14 @@ public class DefaultWireFactoryService implements WireFactoryService {
         WireTargetConfiguration wireConfiguration = new WireTargetConfiguration(targetName, iConfigMap, interfaze.getClassLoader(), messageFactory);
         wireFactory.setBusinessInterface(interfaze);
         wireFactory.setConfiguration(wireConfiguration);
+        if (policyRegistry != null) {
+            // invoke policy builders
+            policyRegistry.build(configuredService, wireConfiguration);
+        }
+        // add tail interceptor
+        for (TargetInvocationConfiguration iConfig : wireFactory.getConfiguration().getInvocationConfigurations().values()) {
+            iConfig.addInterceptor(new InvokerInterceptor());
+        }
         return wireFactory;
     }
 

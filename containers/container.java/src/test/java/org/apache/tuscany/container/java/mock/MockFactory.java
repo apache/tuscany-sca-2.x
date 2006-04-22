@@ -52,6 +52,8 @@ import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
+import org.apache.tuscany.core.builder.system.PolicyBuilderRegistry;
+import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
@@ -119,6 +121,8 @@ public class MockFactory {
     public static final String FOO_BUILDER = "foo.binding.builder";
 
     public static final String FOO_WIRE_BUILDER = "foo.binding.wire.builder";
+
+    public static final String POLICY_BUILDER_REGISTRY = "foo.binding.policy.registry";
 
     public static final String SYSTEM_CHILD = "tuscany.system.child";
 
@@ -684,6 +688,7 @@ public class MockFactory {
         runtime.start();
         runtime.getSystemContext().registerModelObject(createSystemCompositeComponent(SYSTEM_CHILD));
         SystemCompositeContext ctx = (SystemCompositeContext) runtime.getSystemContext().getContext(SYSTEM_CHILD);
+        ctx.registerModelObject(systemFactory.createSystemComponent(POLICY_BUILDER_REGISTRY, PolicyBuilderRegistry.class, DefaultPolicyBuilderRegistry.class, Scope.MODULE));
         ctx.registerModelObject(systemFactory.createSystemComponent(MESSAGE_FACTORY, MessageFactory.class, MessageFactoryImpl.class, Scope.MODULE));
         ctx.registerModelObject(systemFactory.createSystemComponent(PROXY_FACTORY_FACTORY, ProxyFactoryFactory.class, JDKProxyFactoryFactory.class, Scope.MODULE));
         ctx.registerModelObject(systemFactory.createSystemComponent(WIRE_FACTORY_SERVICE, WireFactoryService.class, DefaultWireFactoryService.class, Scope.MODULE));

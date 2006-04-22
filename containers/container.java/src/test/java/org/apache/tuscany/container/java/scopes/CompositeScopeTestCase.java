@@ -25,6 +25,7 @@ import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeComponentImpl;
 import org.apache.tuscany.container.java.mock.components.SessionScopeComponentImpl;
 import org.apache.tuscany.core.builder.BuilderException;
+import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.event.ModuleStart;
@@ -166,7 +167,7 @@ public class CompositeScopeTestCase extends TestCase {
      *
      */
     private List<Extensible> createAssembly() throws BuilderException {
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(), new DefaultPolicyBuilderRegistry());
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         AtomicComponent component = MockFactory.createComponent("TestService1", ModuleScopeComponentImpl.class, Scope.MODULE);
         AtomicComponent sessionComponent = MockFactory.createComponent("TestService2", SessionScopeComponentImpl.class,

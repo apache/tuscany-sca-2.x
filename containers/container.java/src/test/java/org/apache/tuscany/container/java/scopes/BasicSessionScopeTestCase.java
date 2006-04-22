@@ -29,6 +29,7 @@ import org.apache.tuscany.container.java.mock.components.SessionScopeComponentIm
 import org.apache.tuscany.container.java.mock.components.SessionScopeInitDestroyComponent;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.event.RequestEnd;
@@ -210,7 +211,7 @@ public class BasicSessionScopeTestCase extends TestCase {
     }
 
     private List<ContextFactory<Context>> createConfigurations() throws BuilderException {
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(), new DefaultPolicyBuilderRegistry());
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         AtomicComponent component = MockFactory.createComponent("TestService1", SessionScopeComponentImpl.class, Scope.SESSION);
         builder.build(component);
@@ -220,7 +221,7 @@ public class BasicSessionScopeTestCase extends TestCase {
     }
 
     private ContextFactory<Context> createConfiguration(String name) throws BuilderException {
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory());
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(),new DefaultPolicyBuilderRegistry());
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         AtomicComponent component = MockFactory.createComponent(name, SessionScopeInitDestroyComponent.class, Scope.SESSION);
         builder.build(component);

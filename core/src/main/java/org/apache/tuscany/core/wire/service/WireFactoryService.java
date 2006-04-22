@@ -13,10 +13,13 @@
  */
 package org.apache.tuscany.core.wire.service;
 
-import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.TargetWireFactory;
-import org.osoa.sca.annotations.Service;
+import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.model.assembly.ConfiguredReference;
+import org.apache.tuscany.model.assembly.ConfiguredService;
+
+import java.util.List;
 
 /**
  * Implementations are responsible for providing a system service that creates {@link org.apache.tuscany.core.wire.SourceWireFactory}s
@@ -26,23 +29,15 @@ import org.osoa.sca.annotations.Service;
  */
 public interface WireFactoryService {
 
-    /**
-     * Creates a source-side wire factory for the given reference
-     *
-     * @param referenceName the name of the reference the wire is associated with
-     * @param targetName    the qualified name of the target service
-     * @param interfaze     the business interface used in constructing wire proxies
-     * @return the source-side wire factory
-     */
-    public SourceWireFactory createSourceFactory(String referenceName, QualifiedName targetName, Class interfaze);
+    public List<SourceWireFactory> createSourceFactory(ConfiguredReference configuredReference);
+
+    public SourceWireFactory createSourceFactory(QualifiedName qName, ConfiguredService configuredService);
 
     /**
      * Creates a target-side wire factory for a service implementing a given interface
      *
-     * @param targetName the qualified name of the wire target
-     * @param interfaze  the interface used to represent the service offered by the wire target
-     * @return the target-side wire factory
+     * @param configuredService the configured service to create the wire factory for
      */
-    public TargetWireFactory createTargetFactory(QualifiedName targetName, Class interfaze);
+    public TargetWireFactory createTargetFactory(ConfiguredService configuredService);
 
 }
