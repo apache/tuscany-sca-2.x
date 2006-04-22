@@ -16,6 +16,8 @@
  */
 package org.apache.tuscany.tomcat;
 
+import javax.servlet.Servlet;
+
 import org.apache.catalina.Container;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.core.StandardContext;
@@ -33,20 +35,25 @@ import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
+import org.apache.tuscany.core.webapp.ServletHost;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
 
 /**
- * A Tomcat listener to be attached to a Host container to add SCA runtime functionality.
- * The listener wraps a Tuscany runtime and listens for container events to detect the
- * addition and removal of Context children.
+ * A specialied Tomcat Host that extends the Standardhost implementation and adds SCA capabilities.
+ * <p/>
+ * As children are added, they are examined for the presence of SCA configuration
+ * information and if any is found then the web application is treated as an
+ * SCA Module defintion which is used to create a ModuleComponent. The name of the
+ * context is used as the name of the ModuleComponent and its context path is used
+ * as the URI.
  *
  * @version $Rev$ $Date$
  */
 @SuppressWarnings({"serial"})
-public class TuscanyHost extends StandardHost {
+public class TuscanyHost extends StandardHost implements ServletHost {
     private static final String SYSTEM_MODULE_COMPONENT = "org.apache.tuscany.core.system";
 
     private static final StringManager sm = StringManager.getManager("org.apache.tuscany.tomcat");
@@ -121,13 +128,17 @@ public class TuscanyHost extends StandardHost {
     }
 
     public String toString() {
-
-        StringBuffer sb = new StringBuffer(132);
+        StringBuilder sb = new StringBuilder(132);
         if (getParent() != null) {
             sb.append(getParent().toString()).append('.');
         }
         sb.append("TuscanyHost[").append(getName()).append(']');
         return (sb.toString());
+    }
 
+    public void registerMapping(String mapping, Servlet servlet) {
+    }
+
+    public void unregisterMapping(String mapping) {
     }
 }

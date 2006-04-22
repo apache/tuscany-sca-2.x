@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
-import org.apache.tuscany.binding.axis2.config.WebServiceEntryPointContextFactory;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
@@ -117,11 +116,7 @@ public class WebServiceEntryPointBuilder implements ContextFactoryBuilder {
             return;
         }
 
-        EntryPointContextFactory config
-            = new WebServiceEntryPointContextFactory(entryPoint.getName(),
-                                                     entryPoint.getConfiguredService()
-                                                         .getPort().getName(),
-                                                     messageFactory);
+        EntryPointContextFactory config = new EntryPointContextFactory(entryPoint.getName(), messageFactory);
 
         ConfiguredService configuredService = entryPoint.getConfiguredService();
         Service service = configuredService.getPort();

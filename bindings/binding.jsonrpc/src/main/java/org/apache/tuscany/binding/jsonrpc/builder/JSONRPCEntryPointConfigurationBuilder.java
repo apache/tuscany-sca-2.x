@@ -104,7 +104,7 @@ public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuil
             return;
         }
 
-        EntryPointContextFactory config = new EntryPointContextFactory(entryPoint.getName(), messageFactory){};
+        EntryPointContextFactory config = new EntryPointContextFactory(entryPoint.getName(), messageFactory);
 
         ConfiguredService configuredService = entryPoint.getConfiguredService();
         Service service = configuredService.getPort();

@@ -29,11 +29,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Produces entry point contexts
+ * Default factory for contexts that represent entry points.
  * 
  * @version $Rev$ $Date$
  */
-public abstract class EntryPointContextFactory implements ContextFactory<EntryPointContext> {
+public class EntryPointContextFactory implements ContextFactory<EntryPointContext> {
 
     private String name;
 
