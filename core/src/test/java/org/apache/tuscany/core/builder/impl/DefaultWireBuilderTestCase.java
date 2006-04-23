@@ -9,7 +9,7 @@ import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
 import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
 import org.apache.tuscany.core.wire.SourceWireFactory;
-import org.apache.tuscany.core.wire.ProxyFactoryFactory;
+import org.apache.tuscany.core.wire.WireFactoryFactory;
 import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.wire.mock.SimpleTarget;
 import org.apache.tuscany.core.wire.mock.MockHandler;
@@ -17,7 +17,7 @@ import org.apache.tuscany.core.wire.mock.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.mock.MockStaticInvoker;
 import org.apache.tuscany.core.wire.mock.SimpleTargetImpl;
 import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
-import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
+import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
@@ -29,7 +29,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
 
     private Method hello;
 
-    private ProxyFactoryFactory factory = new JDKProxyFactoryFactory();
+    private WireFactoryFactory wireFactoryFactory = new JDKWireFactoryFactory();
 
     public DefaultWireBuilderTestCase() {
         super();
@@ -54,7 +54,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         source.addResponseHandler(sourceResponseHandler);
         source.addInterceptor(sourceInterceptor);
 
-        SourceWireFactory sourceFactory = factory.createSourceWireFactory();
+        SourceWireFactory sourceFactory = wireFactoryFactory.createSourceWireFactory();
         Map<Method, SourceInvocationConfiguration> sourceInvocationConfigs = new MethodHashMap<SourceInvocationConfiguration>();
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
@@ -71,7 +71,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         target.addInterceptor(targetInterceptor);
         target.addInterceptor(new InvokerInterceptor());
 
-        TargetWireFactory targetFactory = factory.createTargetWireFactory();
+        TargetWireFactory targetFactory = wireFactoryFactory.createTargetWireFactory();
         Map<Method, TargetInvocationConfiguration> targetInvocationConfigs = new MethodHashMap<TargetInvocationConfiguration>();
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),
@@ -83,7 +83,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
         builder.connect(sourceFactory, targetFactory, null, true, null);
-        // source.build();
+        // source.buildSource();
         target.build();
         // set a static invoker
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
@@ -109,7 +109,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addInterceptor(sourceInterceptor);
 
-        SourceWireFactory sourceFactory = new JDKProxyFactoryFactory().createSourceWireFactory();
+        SourceWireFactory sourceFactory = new JDKWireFactoryFactory().createSourceWireFactory();
         Map<Method, SourceInvocationConfiguration> sourceInvocationConfigs = new MethodHashMap<SourceInvocationConfiguration>();
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
@@ -126,7 +126,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         target.addInterceptor(targetInterceptor);
         target.addInterceptor(new InvokerInterceptor());
 
-        TargetWireFactory targetFactory = factory.createTargetWireFactory();
+        TargetWireFactory targetFactory = wireFactoryFactory.createTargetWireFactory();
         Map<Method, TargetInvocationConfiguration> targetInvocationConfigs = new MethodHashMap<TargetInvocationConfiguration>();
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),
@@ -138,7 +138,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
         builder.connect(sourceFactory, targetFactory, null, true, null);
-        // source.build();
+        // source.buildSource();
         target.build();
         // set a static invoker
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
@@ -164,7 +164,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         source.addRequestHandler(sourceRequestHandler);
         source.addInterceptor(sourceInterceptor);
 
-        SourceWireFactory sourceFactory = new JDKProxyFactoryFactory().createSourceWireFactory();
+        SourceWireFactory sourceFactory = new JDKWireFactoryFactory().createSourceWireFactory();
         Map<Method, SourceInvocationConfiguration> sourceInvocationConfigs = new MethodHashMap<SourceInvocationConfiguration>();
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
@@ -179,7 +179,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         target.addInterceptor(targetInterceptor);
         target.addInterceptor(new InvokerInterceptor());
 
-        TargetWireFactory targetFactory = factory.createTargetWireFactory();
+        TargetWireFactory targetFactory = wireFactoryFactory.createTargetWireFactory();
         Map<Method, TargetInvocationConfiguration> targetInvocationConfigs = new MethodHashMap<TargetInvocationConfiguration>();
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),
@@ -191,7 +191,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
         builder.connect(sourceFactory, targetFactory, null, true, null);
-        // source.build();
+        // source.buildSource();
         target.build();
         // set a static invoker
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
@@ -215,7 +215,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addInterceptor(sourceInterceptor);
 
-        SourceWireFactory sourceFactory = new JDKProxyFactoryFactory().createSourceWireFactory();
+        SourceWireFactory sourceFactory = new JDKWireFactoryFactory().createSourceWireFactory();
         Map<Method, SourceInvocationConfiguration> sourceInvocationConfigs = new MethodHashMap<SourceInvocationConfiguration>();
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
@@ -228,7 +228,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         target.addInterceptor(targetInterceptor);
         target.addInterceptor(new InvokerInterceptor());
 
-        TargetWireFactory targetFactory = factory.createTargetWireFactory();
+        TargetWireFactory targetFactory = wireFactoryFactory.createTargetWireFactory();
         Map<Method, TargetInvocationConfiguration> targetInvocationConfigs = new MethodHashMap<TargetInvocationConfiguration>();
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),
@@ -240,7 +240,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
         builder.connect(sourceFactory, targetFactory, null, true, null);
-        // source.build();
+        // source.buildSource();
         target.build();
         // set a static invoker
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
@@ -266,7 +266,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         source.addResponseHandler(sourceResponseHandler);
         source.addInterceptor(sourceInterceptor);
 
-        SourceWireFactory sourceFactory = new JDKProxyFactoryFactory().createSourceWireFactory();
+        SourceWireFactory sourceFactory = new JDKWireFactoryFactory().createSourceWireFactory();
         Map<Method, SourceInvocationConfiguration> sourceInvocationConfigs = new MethodHashMap<SourceInvocationConfiguration>();
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
@@ -279,7 +279,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         target.addInterceptor(targetInterceptor);
         target.addInterceptor(new InvokerInterceptor());
 
-        TargetWireFactory targetFactory = factory.createTargetWireFactory();
+        TargetWireFactory targetFactory = wireFactoryFactory.createTargetWireFactory();
         Map<Method, TargetInvocationConfiguration> targetInvocationConfigs = new MethodHashMap<TargetInvocationConfiguration>();
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),
@@ -291,7 +291,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
         builder.connect(sourceFactory, targetFactory, null, true, null);
-        // source.build();
+        // source.buildSource();
         target.build();
         // set a static invoker
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
@@ -313,7 +313,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
 
         SourceInvocationConfiguration source = new SourceInvocationConfiguration(hello);
 
-        SourceWireFactory sourceFactory = new JDKProxyFactoryFactory().createSourceWireFactory();
+        SourceWireFactory sourceFactory = new JDKWireFactoryFactory().createSourceWireFactory();
         Map<Method, SourceInvocationConfiguration> sourceInvocationConfigs = new MethodHashMap<SourceInvocationConfiguration>();
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
@@ -330,7 +330,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         target.addInterceptor(targetInterceptor);
         target.addInterceptor(new InvokerInterceptor());
 
-        TargetWireFactory targetFactory = factory.createTargetWireFactory();
+        TargetWireFactory targetFactory = wireFactoryFactory.createTargetWireFactory();
         Map<Method, TargetInvocationConfiguration> targetInvocationConfigs = new MethodHashMap<TargetInvocationConfiguration>();
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),
@@ -342,7 +342,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         DefaultWireBuilder builder = new DefaultWireBuilder();
         // no need for scopes since we use a static invoker
         builder.connect(sourceFactory, targetFactory, null, true, null);
-        // source.build();
+        // source.buildSource();
         target.build();
         // set a static invoker
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
@@ -363,7 +363,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
 
         SourceInvocationConfiguration source = new SourceInvocationConfiguration(hello);
 
-        SourceWireFactory sourceFactory = new JDKProxyFactoryFactory().createSourceWireFactory();
+        SourceWireFactory sourceFactory = new JDKWireFactoryFactory().createSourceWireFactory();
         Map<Method, SourceInvocationConfiguration> sourceInvocationConfigs = new MethodHashMap<SourceInvocationConfiguration>();
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
@@ -376,7 +376,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         target.addInterceptor(targetInterceptor);
         target.addInterceptor(new InvokerInterceptor());
 
-        TargetWireFactory targetFactory = factory.createTargetWireFactory();
+        TargetWireFactory targetFactory = wireFactoryFactory.createTargetWireFactory();
         Map<Method, TargetInvocationConfiguration> targetInvocationConfigs = new MethodHashMap<TargetInvocationConfiguration>();
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),
@@ -411,7 +411,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         SourceInvocationConfiguration source = new SourceInvocationConfiguration(hello);
         source.setTargetInterceptor(new InvokerInterceptor());
 
-        SourceWireFactory sourceFactory = new JDKProxyFactoryFactory().createSourceWireFactory();
+        SourceWireFactory sourceFactory = new JDKWireFactoryFactory().createSourceWireFactory();
         Map<Method, SourceInvocationConfiguration> sourceInvocationConfigs = new MethodHashMap<SourceInvocationConfiguration>();
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
@@ -422,7 +422,7 @@ public class DefaultWireBuilderTestCase extends TestCase {
         TargetInvocationConfiguration target = new TargetInvocationConfiguration(hello);
         target.addInterceptor(new InvokerInterceptor());
 
-        TargetWireFactory targetFactory = factory.createTargetWireFactory();
+        TargetWireFactory targetFactory = wireFactoryFactory.createTargetWireFactory();
         Map<Method, TargetInvocationConfiguration> targetInvocationConfigs = new MethodHashMap<TargetInvocationConfiguration>();
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),

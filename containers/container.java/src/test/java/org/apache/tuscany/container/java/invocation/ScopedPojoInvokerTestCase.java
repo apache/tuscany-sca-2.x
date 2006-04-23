@@ -45,7 +45,7 @@ public class ScopedPojoInvokerTestCase extends TestCase {
 
     public void testScopedInvoke() throws Exception {
         ScopeContext container = new MockScopeContext();
-        ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(new QualifiedName("foo"), echoMethod, container);
+        ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(new QualifiedName("foo"), echoMethod, container,false);
         Object ret = invoker.invokeTarget("foo");
         Assert.assertEquals("foo", ret);
     }

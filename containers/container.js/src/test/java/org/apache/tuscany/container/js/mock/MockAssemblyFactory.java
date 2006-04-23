@@ -72,10 +72,10 @@ public class MockAssemblyFactory {
         return sc;
     }
 
-    public static Component createSystemComponent(String name, String type, Scope scope) throws NoSuchMethodException,
+    public static Component createSystemComponent(String name, String type, Scope scope) throws
             ClassNotFoundException {
         Class claz = JavaIntrospectionHelper.loadClass(type);
-        Component sc = null;
+        Component sc;
         if (CompositeContext.class.isAssignableFrom(claz)) {
             sc = systemFactory.createModuleComponent();
         } else {

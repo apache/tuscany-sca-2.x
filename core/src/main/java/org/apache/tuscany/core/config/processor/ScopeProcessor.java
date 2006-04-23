@@ -11,19 +11,25 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.builder;
+package org.apache.tuscany.core.config.processor;
 
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.core.wire.WireTargetConfiguration;
+import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.ServiceContract;
+
+import java.lang.annotation.Annotation;
 
 /**
- * Implementations contribute {@link org.apache.tuscany.core.wire.Interceptor}s or {@link
- * org.apache.tuscany.core.wire.MessageHandler}s that handle target-side policy on a wire.  
- *
  * @version $$Rev$$ $$Date$$
  */
-public interface TargetPolicyBuilder extends PolicyBuilder{
+public class ScopeProcessor extends AnnotationProcessorSupport{
 
-    public void build(ConfiguredService service, WireTargetConfiguration configuration) throws BuilderException;
+    public void visitClass(Class clazz, Annotation annotation, ComponentInfo type) {
+        if (!(annotation instanceof org.osoa.sca.annotations.Scope)){
+            return;
+        }
 
+
+    }
 }

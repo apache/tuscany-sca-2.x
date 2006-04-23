@@ -17,7 +17,7 @@ import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.wire.MethodHashMap;
 import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
-import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
+import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
@@ -58,7 +58,7 @@ public class JavaTargetWireBuilderTestCase extends TestCase {
         source.addResponseHandler(sourceResponseHandler);
         source.addInterceptor(sourceInterceptor);
 
-        SourceWireFactory sourceFactory = new JDKProxyFactoryFactory().createSourceWireFactory();
+        SourceWireFactory sourceFactory = new JDKWireFactoryFactory().createSourceWireFactory();
         Map<Method, SourceInvocationConfiguration> sourceInvocationConfigs = new MethodHashMap<SourceInvocationConfiguration>();
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
@@ -75,7 +75,7 @@ public class JavaTargetWireBuilderTestCase extends TestCase {
         target.addInterceptor(targetInterceptor);
         target.addInterceptor(new InvokerInterceptor());
 
-        TargetWireFactory targetFactory = new JDKProxyFactoryFactory().createTargetWireFactory();
+        TargetWireFactory targetFactory = new JDKWireFactoryFactory().createTargetWireFactory();
         Map<Method, TargetInvocationConfiguration> targetInvocationConfigs = new MethodHashMap<TargetInvocationConfiguration>();
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),

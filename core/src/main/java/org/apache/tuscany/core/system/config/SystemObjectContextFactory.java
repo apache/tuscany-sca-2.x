@@ -66,27 +66,23 @@ public class SystemObjectContextFactory implements ContextFactory {
         return name;
     }
 
-    public void addTargetProxyFactory(String serviceName, TargetWireFactory factory) {
+    public void addTargetWireFactory(String serviceName, TargetWireFactory factory) {
         throw new UnsupportedOperationException();
     }
 
-    public TargetWireFactory getTargetProxyFactory(String serviceName) {
+    public TargetWireFactory getTargetWireFactory(String serviceName) {
         throw new UnsupportedOperationException();
     }
 
-    public Map getTargetProxyFactories() {
+    public Map getTargetWireFactories() {
         throw new UnsupportedOperationException();
     }
 
-    public void addSourceProxyFactory(String referenceName, SourceWireFactory factory) {
+    public void addSourceWireFactory(String referenceName, SourceWireFactory factory) {
         throw new UnsupportedOperationException();
     }
 
-    public WireFactory getSourceProxyFactory(String referenceName) {
-        throw new UnsupportedOperationException();
-    }
-
-    public List<WireFactory> getSourceProxyFactories() {
+    public List<WireFactory> getSourceWireFactories() {
         throw new UnsupportedOperationException();
     }
 

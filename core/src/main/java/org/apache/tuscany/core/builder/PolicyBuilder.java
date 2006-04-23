@@ -14,6 +14,13 @@
 package org.apache.tuscany.core.builder;
 
 /**
+ * A marker for policy extensions in the runtime. Implementations evaluate wire-related policy metadata on a {@link
+ * org.apache.tuscany.model.assembly.ConfiguredReference} or {@link org.apache.tuscany.model.assembly.ConfiguredService} and
+ * contribute {@link org.apache.tuscany.core.wire.Interceptor}s or {@link org.apache.tuscany.core.wire.MessageHandler}s
+ * implementing a policy to {@link org.apache.tuscany.core.wire.InvocationConfiguration}s that are part of a {@link
+ * org.apache.tuscany.core.wire.WireConfiguration}. The contributed <code>Interceptor</code>s or <code>Handler</code>s will be
+ * called as part of an invocation over a wire.
+ *
  * @version $$Rev$$ $$Date$$
  */
 public interface PolicyBuilder {

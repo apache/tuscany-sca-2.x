@@ -17,11 +17,11 @@
 package org.apache.tuscany.core.wire;
 
 /**
- * Denotes an error creating a proxy instance
+ * Denotes an error creating a proxy representing for a wire
  * 
- * @version $Rev$ $Date$
+ * @version $Rev: 394379 $ $Date: 2006-04-15 15:01:36 -0700 (Sat, 15 Apr 2006) $
  */
-public class ProxyCreationException extends ProxyException {
+public class ProxyCreationException extends WireException {
 
     public ProxyCreationException() {
         super();

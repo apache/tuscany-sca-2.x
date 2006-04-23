@@ -16,15 +16,15 @@
  */
 package org.apache.tuscany.container.java.invocation;
 
-import java.lang.reflect.Method;
-
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.TargetException;
 
+import java.lang.reflect.Method;
+
 /**
  * Uses a scope container to resolve an implementation instance based on the current thread context
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
@@ -37,12 +37,24 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
 
     public boolean cacheable;
 
-    public ScopedJavaComponentInvoker(QualifiedName serviceName, Method operation, ScopeContext container) {
+
+    /**
+     * Creates a new invoker
+     *
+     * @param serviceName the name of the component/service pair to invoke
+     * @param operation   the operation the invoker is associated with
+     * @param scopeContext the scope context the component is resolved in
+     * @param cacheable   Sets whether the target service instance may be cached by the invoker. This is a possible optimization
+     *                    when a wire is configured for a "down-scope" reference, i.e. a reference from a source of a shorter
+     *                    lifetime to a source of greater lifetime.
+     */
+    public ScopedJavaComponentInvoker(QualifiedName serviceName, Method operation, ScopeContext scopeContext, boolean cacheable) {
         super(operation);
         assert (serviceName != null) : "No service name specified";
-        assert (container != null) : "No scope container specified";
+        assert (scopeContext != null) : "No scope scopeContext specified";
         name = serviceName;
-        this.container = container;
+        this.container = scopeContext;
+        this.cacheable = cacheable;
     }
 
     /**
@@ -50,15 +62,6 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
      */
     public boolean isCacheable() {
         return cacheable;
-    }
-
-    /**
-     * Sets whether the target service instance may be cached by the invoker. This is a possible optimization when a
-     * wire is configured for a "down-scope" reference, i.e. a reference from a source of a shorter lifetime to a source
-     * of greater lifetime.
-     */
-    public void setCacheable(boolean val) {
-        cacheable = val;
     }
 
     /**

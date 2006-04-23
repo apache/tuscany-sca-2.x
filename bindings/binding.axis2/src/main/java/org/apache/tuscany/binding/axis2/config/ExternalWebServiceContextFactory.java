@@ -17,7 +17,7 @@
 package org.apache.tuscany.binding.axis2.config;
 
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.builder.impl.BaseExternalServiceContextFactory;
+import org.apache.tuscany.core.builder.impl.ExternalServiceContextFactory;
 
 /**
  * Creates instances of {@link org.apache.tuscany.core.context.ExternalServiceContext}
@@ -27,7 +27,7 @@ import org.apache.tuscany.core.builder.impl.BaseExternalServiceContextFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class ExternalWebServiceContextFactory extends BaseExternalServiceContextFactory {
+public class ExternalWebServiceContextFactory extends ExternalServiceContextFactory {
 
     public ExternalWebServiceContextFactory(String name, ObjectFactory objectFactory) {
         super(name, objectFactory);

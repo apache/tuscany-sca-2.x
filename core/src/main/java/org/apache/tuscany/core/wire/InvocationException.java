@@ -3,7 +3,7 @@ package org.apache.tuscany.core.wire;
 import org.apache.tuscany.common.TuscanyException;
 
 /**
- * The root checked exception for the wire framework
+ * Denotes an application-level exception raised during an invocation over a wire
  * 
  * @version $Rev$ $Date$
  */

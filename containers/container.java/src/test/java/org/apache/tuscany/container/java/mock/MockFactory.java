@@ -79,10 +79,9 @@ import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.message.MessageFactory;
-import org.apache.tuscany.core.wire.ProxyFactoryFactory;
-import org.apache.tuscany.core.wire.service.WireFactoryService;
+import org.apache.tuscany.core.wire.WireFactoryFactory;
 import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
-import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
+import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AtomicComponent;
 import org.apache.tuscany.model.assembly.Component;
@@ -112,7 +111,7 @@ public class MockFactory {
 
     public static final String MESSAGE_FACTORY = "java.runtime.messageFactory";
 
-    public static final String PROXY_FACTORY_FACTORY = "java.runtime.proxyFactoryFactory";
+    public static final String PROXY_FACTORY_FACTORY = "java.runtime.wireFactoryFactory";
 
     public static final String WIRE_FACTORY_SERVICE = "java.runtime.wireFactoryservice";
 
@@ -690,8 +689,8 @@ public class MockFactory {
         SystemCompositeContext ctx = (SystemCompositeContext) runtime.getSystemContext().getContext(SYSTEM_CHILD);
         ctx.registerModelObject(systemFactory.createSystemComponent(POLICY_BUILDER_REGISTRY, PolicyBuilderRegistry.class, DefaultPolicyBuilderRegistry.class, Scope.MODULE));
         ctx.registerModelObject(systemFactory.createSystemComponent(MESSAGE_FACTORY, MessageFactory.class, MessageFactoryImpl.class, Scope.MODULE));
-        ctx.registerModelObject(systemFactory.createSystemComponent(PROXY_FACTORY_FACTORY, ProxyFactoryFactory.class, JDKProxyFactoryFactory.class, Scope.MODULE));
-        ctx.registerModelObject(systemFactory.createSystemComponent(WIRE_FACTORY_SERVICE, WireFactoryService.class, DefaultWireFactoryService.class, Scope.MODULE));
+        ctx.registerModelObject(systemFactory.createSystemComponent(PROXY_FACTORY_FACTORY, WireFactoryFactory.class, JDKWireFactoryFactory.class, Scope.MODULE));
+        ctx.registerModelObject(systemFactory.createSystemComponent(WIRE_FACTORY_SERVICE, org.apache.tuscany.core.wire.service.WireFactoryService.class, DefaultWireFactoryService.class, Scope.MODULE));
         ctx.registerModelObject(systemFactory.createSystemComponent(JAVA_BUILDER, ContextFactoryBuilder.class, JavaContextFactoryBuilder.class, Scope.MODULE));
         ctx.registerModelObject(systemFactory.createSystemComponent(JAVA_WIRE_BUILDER, WireBuilder.class, JavaTargetWireBuilder.class, Scope.MODULE));
         ctx.publish(new ModuleStart(new Object()));

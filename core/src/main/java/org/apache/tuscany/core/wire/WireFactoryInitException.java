@@ -16,28 +16,26 @@
  */
 package org.apache.tuscany.core.wire;
 
-import org.apache.tuscany.core.wire.ProxyException;
-
 /**
- * Denotes an error initializing a proxy factory
+ * Denotes an error initializing a wire factory
  * 
  * @version $Rev$ $Date$
  */
-public class ProxyInitializationException extends ProxyException {
+public class WireFactoryInitException extends WireException {
 
-    public ProxyInitializationException() {
+    public WireFactoryInitException() {
         super();
     }
 
-    public ProxyInitializationException(String message) {
+    public WireFactoryInitException(String message) {
         super(message);
     }
 
-    public ProxyInitializationException(String message, Throwable cause) {
+    public WireFactoryInitException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ProxyInitializationException(Throwable cause) {
+    public WireFactoryInitException(Throwable cause) {
         super(cause);
     }
 

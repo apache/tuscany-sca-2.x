@@ -14,7 +14,7 @@
 package org.apache.tuscany.core.wire.jdk;
 
 import org.apache.tuscany.core.wire.MethodHashMap;
-import org.apache.tuscany.core.wire.ProxyInitializationException;
+import org.apache.tuscany.core.wire.WireFactoryInitException;
 import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
 import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
@@ -44,7 +44,7 @@ public class JDKSourceWireFactory implements SourceWireFactory {
 
     private WireSourceConfiguration configuration;
 
-    public void initialize() throws ProxyInitializationException {
+    public void initialize() throws WireFactoryInitException {
         if (state != UNINITIALIZED) {
             throw new IllegalStateException("Proxy factory in wrong state [" + state + "]");
         }

@@ -18,7 +18,6 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
-import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.injection.ObjectCreationException;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
@@ -46,21 +45,12 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
 
     private WireFactoryService wireFactoryService;
 
-    /* the top-level builder responsible for evaluating policies */
-    //private HierarchicalBuilder policyBuilder = new HierarchicalBuilder();
-
     public FooBindingBuilder(WireFactoryService wireFactoryService) {
         this.wireFactoryService = wireFactoryService;
     }
 
     public FooBindingBuilder() {
     }
-
-    @Autowire
-    public void setWireFactoryService(WireFactoryService wireFactoryService) {
-        this.wireFactoryService = wireFactoryService;
-    }
-
 
     @Init(eager = true)
     public void init() {
@@ -72,6 +62,12 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
         this.builderRegistry = builderRegistry;
     }
 
+    @Autowire
+    public void setWireFactoryService(WireFactoryService wireFactoryService) {
+        this.wireFactoryService = wireFactoryService;
+    }
+
+    
     /**
      * Sets the factory used to construct wire messages
      *
@@ -82,14 +78,6 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
         this.messageFactory = msgFactory;
     }
 
-    /**
-     * Adds a builder responsible for creating source-side and target-side wire chains for a reference. The reference builder may
-     * be hierarchical, containing other child reference builders that operate on specific metadata used to construct and wire
-     * chain.
-     */
-//    public void addPolicyBuilder(ContextFactoryBuilder builder) {
-//        policyBuilder.addBuilder(builder);
-//    }
     public void build(AssemblyObject object) throws BuilderException {
         if (object instanceof EntryPoint) {
             EntryPoint ep = (EntryPoint) object;
@@ -99,24 +87,20 @@ public class FooBindingBuilder implements ContextFactoryBuilder {
             EntryPointContextFactory contextFactory = new FooEntryPointContextFactory(ep.getName(), messageFactory);
             ConfiguredService configuredService = ep.getConfiguredService();
             Service service = configuredService.getPort();
-            QualifiedName qName = new QualifiedName(ep.getConfiguredReference().getTargetConfiguredServices().get(0).getPart().getName() + '/' + service.getName());
-            SourceWireFactory wireFactory = wireFactoryService.createSourceFactory(qName, ep.getConfiguredService());
-            contextFactory.addSourceProxyFactory(service.getName(), wireFactory);
+            SourceWireFactory wireFactory = wireFactoryService.createSourceFactory(ep.getConfiguredReference()).get(0);
+            contextFactory.addSourceWireFactory(service.getName(), wireFactory);
             ep.setContextFactory(contextFactory);
-
         } else if (object instanceof ExternalService) {
             ExternalService es = (ExternalService) object;
             if (es.getBindings().size() < 1 || !(es.getBindings().get(0) instanceof FooBinding)) {
                 return;
             }
-
             FooExternalServiceContextFactory contextFactory = new FooExternalServiceContextFactory(es.getName(),
                     new FooClientFactory());
-
             ConfiguredService configuredService = es.getConfiguredService();
             Service service = configuredService.getPort();
             TargetWireFactory wireFactory = wireFactoryService.createTargetFactory(configuredService);
-            contextFactory.addTargetProxyFactory(service.getName(), wireFactory);
+            contextFactory.addTargetWireFactory(service.getName(), wireFactory);
             es.setContextFactory(contextFactory);
         }
     }

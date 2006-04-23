@@ -74,25 +74,25 @@ public class JavaScriptContextFactory implements ContextFactory<AtomicContext> {
 
     private Map<String, TargetWireFactory> targetProxyFactories = new HashMap<String, TargetWireFactory>();
 
-    public void addTargetProxyFactory(String serviceName, TargetWireFactory factory) {
+    public void addTargetWireFactory(String serviceName, TargetWireFactory factory) {
         targetProxyFactories.put(serviceName, factory);
     }
 
-    public TargetWireFactory getTargetProxyFactory(String serviceName) {
+    public TargetWireFactory getTargetWireFactory(String serviceName) {
         return targetProxyFactories.get(serviceName);
     }
 
-    public Map<String, TargetWireFactory> getTargetProxyFactories() {
+    public Map<String, TargetWireFactory> getTargetWireFactories() {
         return targetProxyFactories;
     }
 
     private List<SourceWireFactory> sourceProxyFactories = new ArrayList<SourceWireFactory>();
 
-    public void addSourceProxyFactory(String referenceName, SourceWireFactory factory) {
+    public void addSourceWireFactory(String referenceName, SourceWireFactory factory) {
         sourceProxyFactories.add(factory);
     }
 
-    public List<SourceWireFactory> getSourceProxyFactories() {
+    public List<SourceWireFactory> getSourceWireFactories() {
         return sourceProxyFactories;
     }
 

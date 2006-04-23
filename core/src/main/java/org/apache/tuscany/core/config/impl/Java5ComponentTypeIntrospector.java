@@ -20,8 +20,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
@@ -30,6 +30,7 @@ import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.InvalidSetterException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
+import org.apache.tuscany.core.config.AnnotationProcessor;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
@@ -50,6 +51,7 @@ import org.apache.tuscany.model.types.java.JavaServiceContract;
 @org.osoa.sca.annotations.Service(interfaces = {ComponentTypeIntrospector.class})
 public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector {
     private AssemblyFactory factory;
+    private List<AnnotationProcessor> processors = new ArrayList<AnnotationProcessor>();
 
     public Java5ComponentTypeIntrospector() {
     }
@@ -62,6 +64,15 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
     public void setFactory(SystemAssemblyFactory factory) {
         this.factory = factory;
     }
+
+    public void registerProcessor(AnnotationProcessor processor) {
+        processors.add(processor);
+    }
+
+    public void unregisterProcessor(AnnotationProcessor processor) {
+       processors.remove(processor);
+    }
+
 
     public ComponentInfo introspect(Class<?> implClass) throws ConfigurationLoadException {
         ComponentInfo compType = factory.createComponentInfo();
@@ -77,8 +88,8 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         // FIXME scopes should be handled at the interface level
         if (compType != null) {
             Scope scope = getScope(implClass);
-            for (Iterator<Service> i = compType.getServices().iterator(); i.hasNext();) {
-                ServiceContract intf = i.next().getServiceContract();
+            for (Service service : compType.getServices()) {
+                ServiceContract intf = service.getServiceContract();
                 if (intf != null)
                     intf.setScope(scope);
             }
@@ -96,8 +107,8 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         if (scope == null) {
             // scope was not defined on the implementation class, look for annotated interfaces
             Class<?>[] interfaces = implClass.getInterfaces();
-            for (int i = 0; i < interfaces.length; i++) {
-                scope = interfaces[i].getAnnotation(org.osoa.sca.annotations.Scope.class);
+            for (Class<?> anInterface : interfaces) {
+                scope = anInterface.getAnnotation(org.osoa.sca.annotations.Scope.class);
             }
         }
         if (scope == null) {
@@ -135,8 +146,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
                     throw new IllegalArgumentException("Both interfaces and value specified in @Service on "
                             + implClass.getName());
                 }
-                for (int i = 0; i < interfaces.length; i++) {
-                    Class<?> intf = interfaces[i];
+                for (Class<?> intf : interfaces) {
                     addService(services, intf);
                 }
                 return;
@@ -202,8 +212,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
         // inspect public fields from class and all superclasses
         Field[] fields = implClass.getFields();
-        for (int i = 0; i < fields.length; i++) {
-            Field field = fields[i];
+        for (Field field : fields) {
             if (Modifier.isStatic(field.getModifiers())) {
                 continue;
             }
@@ -216,8 +225,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
         // add public methods from class and all superclasses
         Method[] methods = implClass.getMethods();
-        for (int i = 0; i < methods.length; i++) {
-            Method method = methods[i];
+        for (Method method : methods) {
             if (Void.class.equals(method.getReturnType()) && method.getName().startsWith("set")
                     && method.getParameterTypes().length == 1
                     && !method.getParameterTypes()[0].isAnnotationPresent(Remotable.class)) {
@@ -239,8 +247,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
         // inspect public fields from class and all superclasses
         Field[] fields = implClass.getFields();
-        for (int i = 0; i < fields.length; i++) {
-            Field field = fields[i];
+        for (Field field : fields) {
             if (Modifier.isStatic(field.getModifiers())) {
                 continue;
             }
@@ -258,8 +265,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
         // inspect private fields declared in class
         Field[] fields = implClass.getDeclaredFields();
-        for (int i = 0; i < fields.length; i++) {
-            Field field = fields[i];
+        for (Field field : fields) {
             if (!Modifier.isPrivate(field.getModifiers())) {
                 continue;
             }
@@ -277,8 +283,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
         // add public methods from class and all superclasses
         Method[] methods = implClass.getMethods();
-        for (int i = 0; i < methods.length; i++) {
-            Method method = methods[i];
+        for (Method method : methods) {
             if (method.isAnnotationPresent(org.osoa.sca.annotations.Property.class)) {
                 addProperty(properties, method);
             } else if (method.isAnnotationPresent(org.osoa.sca.annotations.Reference.class)) {
@@ -293,8 +298,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
         // add private methods declared on class
         Method[] methods = implClass.getDeclaredMethods();
-        for (int i = 0; i < methods.length; i++) {
-            Method method = methods[i];
+        for (Method method : methods) {
             if (!Modifier.isPrivate(method.getModifiers())) {
                 continue;
             }

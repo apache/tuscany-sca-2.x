@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * A builder that contains nested builders. Used for synchronizing parts of the build process, such as references.
+ * A builder that contains nested builders. Used for synchronizing parts of the buildSource process, such as references.
  * 
  * @version $Rev$ $Date$
  */

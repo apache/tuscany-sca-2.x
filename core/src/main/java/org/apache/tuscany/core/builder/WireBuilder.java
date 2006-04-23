@@ -50,7 +50,7 @@ public interface WireBuilder {
      *        target service
      * @param targetScopeContext the scope context responsible for managing intance contexts of the target component
      *        type
-     * @throws BuilderConfigException if an error occurs during the wire build process
+     * @throws BuilderConfigException if an error occurs during the wire buildSource process
      */
     public void connect(SourceWireFactory<?> sourceFactory, TargetWireFactory<?> targetFactory, Class targetType, boolean downScope,
                         ScopeContext targetScopeContext) throws BuilderConfigException;
@@ -63,7 +63,7 @@ public interface WireBuilder {
      * @param targetFactory the target-side proxy factory
      * @param targetType the target context type
      * @param targetScopeContext the target scope
-     * @throws BuilderConfigException if an error occurs during the wire build process
+     * @throws BuilderConfigException if an error occurs during the wire buildSource process
      */
     public void completeTargetChain(TargetWireFactory<?> targetFactory, Class targetType, ScopeContext targetScopeContext)
             throws BuilderConfigException;

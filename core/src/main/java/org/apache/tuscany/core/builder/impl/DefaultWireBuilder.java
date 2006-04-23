@@ -92,7 +92,7 @@ public class DefaultWireBuilder implements HierarchicalWireBuilder {
         for (WireBuilder builder : builders) {
             builder.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);
         }
-        // signal that wire build process is complete
+        // signal that wire buildSource process is complete
         for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getConfiguration().getInvocationConfigurations()
                 .values()) {
             sourceInvocationConfig.build();

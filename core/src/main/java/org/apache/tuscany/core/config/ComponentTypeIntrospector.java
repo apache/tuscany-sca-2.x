@@ -34,4 +34,14 @@ public interface ComponentTypeIntrospector {
      */
     ComponentInfo introspect(Class<?> implClass) throws ConfigurationLoadException;
 
+    /**
+     * Registers an annotation processor
+     */
+    void registerProcessor(AnnotationProcessor processor);
+
+    /**
+     * De-registers an annotation processor
+     */
+    void unregisterProcessor(AnnotationProcessor processor);
+
 }

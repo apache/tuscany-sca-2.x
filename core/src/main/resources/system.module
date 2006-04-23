@@ -59,8 +59,8 @@
          <system:implementation.system class="org.apache.tuscany.core.message.impl.MessageFactoryImpl"/>
     </component>
 
-    <component name="org.apache.tuscany.core.wire.ProxyFactoryFactory">
-         <system:implementation.system class="org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory"/>
+    <component name="org.apache.tuscany.core.wire.WireFactoryFactory">
+         <system:implementation.system class="org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory"/>
      </component>
 
 </module>

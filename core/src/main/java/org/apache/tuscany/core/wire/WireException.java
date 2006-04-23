@@ -16,23 +16,24 @@
  */
 package org.apache.tuscany.core.wire;
 
-import org.apache.tuscany.core.wire.InvocationException;
+/**
+ *
+ */
+public abstract class WireException extends InvocationException {
 
-public class ProxyException extends InvocationException {
-
-    public ProxyException() {
+    public WireException() {
         super();
     }
 
-    public ProxyException(String message) {
+    public WireException(String message) {
         super(message);
     }
 
-    public ProxyException(String message, Throwable cause) {
+    public WireException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ProxyException(Throwable cause) {
+    public WireException(Throwable cause) {
         super(cause);
     }
 

@@ -13,31 +13,39 @@
  */
 package org.apache.tuscany.core.wire.service;
 
+import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.TargetWireFactory;
-import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 
 import java.util.List;
 
 /**
- * Implementations are responsible for providing a system service that creates {@link org.apache.tuscany.core.wire.SourceWireFactory}s
- * and {@link org.apache.tuscany.core.wire.TargetWireFactory}s
+ * Implementations provide a system service that creates {@link org.apache.tuscany.core.wire.SourceWireFactory}s
+ * and {@link org.apache.tuscany.core.wire.TargetWireFactory}s. This service is used by {@link
+ * org.apache.tuscany.core.builder.ContextFactoryBuilder}s to provide {@link org.apache.tuscany.core.builder.ContextFactory}s with
+ * {@link org.apache.tuscany.core.wire.WireFactory}s for their references and target services. This service is typically autowired
+ * to.
  *
  * @version $$Rev$$ $$Date$$
  */
 public interface WireFactoryService {
 
-    public List<SourceWireFactory> createSourceFactory(ConfiguredReference configuredReference);
-
-    public SourceWireFactory createSourceFactory(QualifiedName qName, ConfiguredService configuredService);
+    /**
+     * Creates the source-side wire factory for a reference
+     *
+     * @param configuredReference the configured reference to create the wire factory for
+     * @throws BuilderConfigException
+     */
+    public List<SourceWireFactory> createSourceFactory(ConfiguredReference configuredReference) throws BuilderConfigException;
 
     /**
      * Creates a target-side wire factory for a service implementing a given interface
      *
      * @param configuredService the configured service to create the wire factory for
+     * @throws BuilderConfigException
      */
-    public TargetWireFactory createTargetFactory(ConfiguredService configuredService);
+    public TargetWireFactory createTargetFactory(ConfiguredService configuredService) throws BuilderConfigException;
 
 }

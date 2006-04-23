@@ -37,10 +37,7 @@ import java.util.List;
  */
 public class MockInterceptorBuilder implements SourcePolicyBuilder, TargetPolicyBuilder {
 
-
     private Interceptor interceptor;
-
-    private boolean source;
 
     /**
      * Creates the builder
@@ -51,55 +48,13 @@ public class MockInterceptorBuilder implements SourcePolicyBuilder, TargetPolicy
      */
     public MockInterceptorBuilder(Interceptor interceptor, boolean source) {
         this.interceptor = interceptor;
-        this.source = source;
-    }
-
-    public void build(AssemblyObject modelObject) throws BuilderException {
-        if (source) {
-            if (!(modelObject instanceof ConfiguredReference)) {
-                return;
-            } else {
-                ConfiguredReference cref = (ConfiguredReference) modelObject;
-                // xcvProxyFactory pFactory = (WireFactory) cref.getProxyFactory();
-                for (ConfiguredService configuredService : cref.getTargetConfiguredServices()) {
-                    SourceWireFactory pFactory = (SourceWireFactory) configuredService.getProxyFactory();
-                    for (SourceInvocationConfiguration config : pFactory.getConfiguration().getInvocationConfigurations().values())
-                    {
-                        config.addInterceptor(interceptor);
-                    }
-                }
-            }
-        } else {
-            if (!(modelObject instanceof ConfiguredService)) {
-                return;
-            } else {
-                ConfiguredService cservice = (ConfiguredService) modelObject;
-                WireFactory pFactory = (WireFactory) cservice.getProxyFactory();
-                if (pFactory instanceof SourceWireFactory) {
-                    //if (pFactory.getConfiguration() instanceof WireSourceConfiguration){
-                    for (SourceInvocationConfiguration config : ((SourceWireFactory) pFactory).getConfiguration().getInvocationConfigurations().values())
-                    {
-                        config.addInterceptor(interceptor);
-                    }
-                } else if (pFactory instanceof TargetWireFactory) {
-                    for (TargetInvocationConfiguration config : ((TargetWireFactory) pFactory).getConfiguration().getInvocationConfigurations().values())
-                    {
-                        config.addInterceptor(interceptor);
-                    }
-
-                }
-            }
-
-        }
     }
 
     public void build(ConfiguredReference reference, List<WireSourceConfiguration> configurations) throws BuilderException {
         for (WireSourceConfiguration wireSourceConfiguration : configurations) {
             for (SourceInvocationConfiguration configuration : wireSourceConfiguration.getInvocationConfigurations().values()) {
                 configuration.addInterceptor(interceptor);
-
             }
-
         }
     }
 

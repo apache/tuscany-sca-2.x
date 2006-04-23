@@ -15,27 +15,15 @@ import java.util.List;
  */
 public class PojoObjectFactory<T> implements ObjectFactory<T> {
 
-    // ----------------------------------
-    // Constants
-    // ----------------------------------
-
     private static final ObjectFactory[] NO_INIT_PARAM = {};
 
     private static final List<Injector> NO_SETTER_PARAM = Collections.emptyList();
-
-    // ----------------------------------
-    // Fields
-    // ----------------------------------
 
     private final Constructor<T> ctr;
 
     private final ObjectFactory<?>[] initParamsArray;
 
     private final List<Injector> setters;
-
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
 
     public PojoObjectFactory(Constructor<T> ctr, List<ObjectFactory> initParams, List<Injector> setters) {
         this.ctr = ctr;
@@ -45,10 +33,7 @@ public class PojoObjectFactory<T> implements ObjectFactory<T> {
             initParamsArray = NO_INIT_PARAM;
         }
         this.setters = setters != null ? setters : NO_SETTER_PARAM;
-    } // ----------------------------------
-
-    // Methods
-    // ----------------------------------
+    }
 
     public T getInstance() throws ObjectCreationException {
         Object[] initargs = new Object[initParamsArray.length];

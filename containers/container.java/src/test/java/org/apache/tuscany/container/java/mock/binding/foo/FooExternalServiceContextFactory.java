@@ -14,7 +14,7 @@
 package org.apache.tuscany.container.java.mock.binding.foo;
 
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.builder.impl.BaseExternalServiceContextFactory;
+import org.apache.tuscany.core.builder.impl.ExternalServiceContextFactory;
 
 /**
  * Creates instances of {@link org.apache.tuscany.core.context.ExternalServiceContext} configured with the appropriate
@@ -23,7 +23,7 @@ import org.apache.tuscany.core.builder.impl.BaseExternalServiceContextFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class FooExternalServiceContextFactory extends BaseExternalServiceContextFactory {
+public class FooExternalServiceContextFactory extends ExternalServiceContextFactory {
 
     public FooExternalServiceContextFactory(String name, ObjectFactory objectFactory) {
         super(name, objectFactory);

@@ -49,7 +49,7 @@ public class E4XAXIOMUtils {
 
         // TODO: is this required anymore?
         // // TODO: remove when AXIS2 fixed (its in the gen'd stub code, JIRA?)
-        // omElement.build();
+        // omElement.buildSource();
         // OptimizeExposer.optimizeContent(omElement, new QName[0]);
 
         return omElement;
@@ -62,7 +62,7 @@ public class E4XAXIOMUtils {
 
         // TODO: is this required anymore?
         // // TODO: remove when AXIS2 fixed (its in the gen'd stub code, JIRA?)
-        // omElement.build();
+        // omElement.buildSource();
 
         // XMLStreamReader reader = omElement.getXMLStreamReaderWithoutCaching();
         XMLStreamReader reader = omElement.getXMLStreamReader(); // TODO: cache?

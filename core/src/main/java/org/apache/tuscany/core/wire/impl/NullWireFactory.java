@@ -4,7 +4,7 @@ import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.wire.WireConfiguration;
 import org.apache.tuscany.core.wire.ProxyCreationException;
 import org.apache.tuscany.core.wire.WireFactory;
-import org.apache.tuscany.core.wire.ProxyInitializationException;
+import org.apache.tuscany.core.wire.WireFactoryInitException;
 
 /**
  * Returns an actual implementation instance as opposed to a proxy. Used in cases where proxying may be optimized away.
@@ -25,7 +25,7 @@ public class NullWireFactory implements WireFactory {
         this.parentContext = parentContext;
     }
 
-    public void initialize(Class businessInterface, WireConfiguration config) throws ProxyInitializationException {
+    public void initialize(Class businessInterface, WireConfiguration config) throws WireFactoryInitException {
         this.businessInterface = businessInterface;
     }
 
@@ -33,7 +33,7 @@ public class NullWireFactory implements WireFactory {
         return parentContext.getContext(targetName);
     }
 
-    public void initialize() throws ProxyInitializationException {
+    public void initialize() throws WireFactoryInitException {
     }
 
     public void setBusinessInterface(Class interfaze) {

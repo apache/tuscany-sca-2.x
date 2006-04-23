@@ -19,6 +19,9 @@ import org.apache.tuscany.model.assembly.ConfiguredReference;
 import java.util.List;
 
 /**
+ * Implementations contribute {@link org.apache.tuscany.core.wire.Interceptor}s or {@link
+ * org.apache.tuscany.core.wire.MessageHandler}s that handle source-side policy on a wire.  
+ *
  * @version $$Rev$$ $$Date$$
  */
 public interface SourcePolicyBuilder extends PolicyBuilder {

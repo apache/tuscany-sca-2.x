@@ -20,19 +20,11 @@ public class JavaIntrospectionHelper {
 
     private static final Class[] EMPTY_CLASS_ARRY = new Class[0];
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
     /**
      * Hide the constructor
      */
     private JavaIntrospectionHelper() {
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     /**
      * Returns a collection of public, private, protected, or default fields declared by a class or one of its

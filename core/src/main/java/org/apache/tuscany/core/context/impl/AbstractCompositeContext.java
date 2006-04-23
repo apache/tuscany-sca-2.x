@@ -44,7 +44,7 @@ import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.wire.InvocationConfiguration;
 import org.apache.tuscany.core.wire.WireConfiguration;
 import org.apache.tuscany.core.wire.WireFactory;
-import org.apache.tuscany.core.wire.ProxyInitializationException;
+import org.apache.tuscany.core.wire.WireFactoryInitException;
 import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
@@ -190,14 +190,14 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                     ScopeContext scope = scopeContexts.get(entries.getKey());
                     scope.registerFactories(entries.getValue());
                 }
-                initializeProxies();
+                initializeWireFactories();
                 for (ScopeContext scope : scopeContexts.values()) {
                     // register scope contexts as a listeners for events in the composite context
                     addListener(scope);
                     scope.start();
                 }
                 lifecycleState = RUNNING;
-            } catch (ProxyInitializationException e) {
+            } catch (WireFactoryInitException e) {
                 lifecycleState = ERROR;
                 ContextInitException cie = new ContextInitException(e);
                 cie.addContextName(getName());
@@ -334,18 +334,18 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                     buildTarget(contextFactory);
                     contextFactory.prepare(this);
                     try {
-                        if (contextFactory.getSourceProxyFactories() != null) {
-                            for (SourceWireFactory sourceProxyFactory : contextFactory.getSourceProxyFactories()) {
-                                sourceProxyFactory.initialize();
+                        if (contextFactory.getSourceWireFactories() != null) {
+                            for (SourceWireFactory sourceWireFactory : contextFactory.getSourceWireFactories()) {
+                                sourceWireFactory.initialize();
                             }
                         }
-                        if (contextFactory.getTargetProxyFactories() != null) {
-                            for (TargetWireFactory targetProxyFactory : contextFactory.getTargetProxyFactories()
+                        if (contextFactory.getTargetWireFactories() != null) {
+                            for (TargetWireFactory targetWireFactory : contextFactory.getTargetWireFactories()
                                     .values()) {
-                                targetProxyFactory.initialize();
+                                targetWireFactory.initialize();
                             }
                         }
-                    } catch (ProxyInitializationException e) {
+                    } catch (WireFactoryInitException e) {
                         ProxyConfigurationException ce = new ProxyConfigurationException(e);
                         ce.addContextName(getName());
                         throw ce;
@@ -358,18 +358,18 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                     buildTarget(contextFactory);
                     contextFactory.prepare(this);
                     try {
-                        if (contextFactory.getSourceProxyFactories() != null) {
-                            for (SourceWireFactory sourceProxyFactory : contextFactory.getSourceProxyFactories()) {
-                                sourceProxyFactory.initialize();
+                        if (contextFactory.getSourceWireFactories() != null) {
+                            for (SourceWireFactory sourceWireFactory : contextFactory.getSourceWireFactories()) {
+                                sourceWireFactory.initialize();
                             }
                         }
-                        if (contextFactory.getTargetProxyFactories() != null) {
-                            for (TargetWireFactory targetProxyFactory : contextFactory.getTargetProxyFactories()
+                        if (contextFactory.getTargetWireFactories() != null) {
+                            for (TargetWireFactory targetWireFactory : contextFactory.getTargetWireFactories()
                                     .values()) {
-                                targetProxyFactory.initialize();
+                                targetWireFactory.initialize();
                             }
                         }
-                    } catch (ProxyInitializationException e) {
+                    } catch (WireFactoryInitException e) {
                         ProxyConfigurationException ce = new ProxyConfigurationException(e);
                         ce.addContextName(getName());
                         throw ce;
@@ -381,18 +381,18 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                     buildTarget(contextFactory);
                     contextFactory.prepare(this);
                     try {
-                        if (contextFactory.getSourceProxyFactories() != null) {
-                            for (SourceWireFactory sourceProxyFactory : contextFactory.getSourceProxyFactories()) {
-                                sourceProxyFactory.initialize();
+                        if (contextFactory.getSourceWireFactories() != null) {
+                            for (SourceWireFactory sourceWireFactory : contextFactory.getSourceWireFactories()) {
+                                sourceWireFactory.initialize();
                             }
                         }
-                        if (contextFactory.getTargetProxyFactories() != null) {
-                            for (WireFactory targetProxyFactory : contextFactory.getTargetProxyFactories()
+                        if (contextFactory.getTargetWireFactories() != null) {
+                            for (WireFactory targetWireFactory : contextFactory.getTargetWireFactories()
                                     .values()) {
-                                targetProxyFactory.initialize();
+                                targetWireFactory.initialize();
                             }
                         }
-                    } catch (ProxyInitializationException e) {
+                    } catch (WireFactoryInitException e) {
                         ProxyConfigurationException ce = new ProxyConfigurationException(e);
                         ce.addContextName(getName());
                         throw ce;
@@ -564,8 +564,8 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
      */
     protected void wireSource(ContextFactory<Context> source) {
         Scope sourceScope = source.getScope();
-        if (source.getSourceProxyFactories() != null) {
-            for (SourceWireFactory<?> sourceFactory : source.getSourceProxyFactories()) {
+        if (source.getSourceWireFactories() != null) {
+            for (SourceWireFactory<?> sourceFactory : source.getSourceWireFactories()) {
                 WireConfiguration wireConfiguration = sourceFactory.getConfiguration();
                 QualifiedName targetName = wireConfiguration.getTargetName();
                 ContextFactory<?> target = configurations.get(targetName.getPartName());
@@ -577,7 +577,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                     throw e;
                 }
                 // get the proxy chain for the target
-                TargetWireFactory targetFactory = target.getTargetProxyFactory(wireConfiguration.getTargetName()
+                TargetWireFactory targetFactory = target.getTargetWireFactory(wireConfiguration.getTargetName()
                         .getPortName());
                 if (targetFactory == null) {
                     ContextInitException e = new ContextInitException("No proxy factory found for service");
@@ -601,8 +601,8 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
             }
         }
         // wire invokers when the proxy only contains the target chain
-        if (source.getTargetProxyFactories() != null) {
-            for (TargetWireFactory targetFactory : source.getTargetProxyFactories().values()) {
+        if (source.getTargetWireFactories() != null) {
+            for (TargetWireFactory targetFactory : source.getTargetWireFactories().values()) {
                 try {
                     configurationContext.completeTargetChain(targetFactory, source.getClass(), scopeContexts.get(sourceScope));
                 } catch (BuilderConfigException e) {
@@ -618,7 +618,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
      * Signals to target side of reference configurations to initialize
      */
     protected void buildTarget(ContextFactory<?> target) {
-        Map<String, TargetWireFactory>  targetProxyFactories = target.getTargetProxyFactories();
+        Map<String, TargetWireFactory>  targetProxyFactories = target.getTargetWireFactories();
         if (targetProxyFactories != null) {
             for (TargetWireFactory<?> targetFactory : targetProxyFactories.values()) {
                 for (InvocationConfiguration iConfig : targetFactory
@@ -629,18 +629,18 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         }
     }
 
-    protected void initializeProxies() throws ProxyInitializationException {
+    protected void initializeWireFactories() throws WireFactoryInitException {
         for (ContextFactory<?> config : configurations.values()) {
-            List<SourceWireFactory> sourceProxyFactories = config.getSourceProxyFactories();
+            List<SourceWireFactory> sourceProxyFactories = config.getSourceWireFactories();
             if (sourceProxyFactories != null) {
-                for (WireFactory<?> sourceProxyFactory : sourceProxyFactories) {
-                    sourceProxyFactory.initialize();
+                for (WireFactory<?> sourceWireFactory : sourceProxyFactories) {
+                    sourceWireFactory.initialize();
                 }
             }
             if (sourceProxyFactories != null) {
-                Map<String, TargetWireFactory> targetProxyFactories = config.getTargetProxyFactories();
-                for (TargetWireFactory<?> targetProxyFactory : targetProxyFactories.values()) {
-                    targetProxyFactory.initialize();
+                Map<String, TargetWireFactory> targetWireFactories = config.getTargetWireFactories();
+                for (TargetWireFactory<?> targetWireFactory : targetWireFactories.values()) {
+                    targetWireFactory.initialize();
                 }
             }
         }

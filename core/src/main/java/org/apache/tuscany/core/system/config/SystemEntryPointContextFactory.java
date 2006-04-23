@@ -57,23 +57,23 @@ public class SystemEntryPointContextFactory implements ContextFactory<EntryPoint
         return name;
     }
 
-    public void addTargetProxyFactory(String serviceName, TargetWireFactory pFactory) {
+    public void addTargetWireFactory(String serviceName, TargetWireFactory pFactory) {
         throw new UnsupportedOperationException();
     }
 
-    public TargetWireFactory getTargetProxyFactory(String serviceName) {
+    public TargetWireFactory getTargetWireFactory(String serviceName) {
         return null;
     }
 
-    public Map<String, TargetWireFactory> getTargetProxyFactories() {
+    public Map<String, TargetWireFactory> getTargetWireFactories() {
         return null;
     }
 
-    public void addSourceProxyFactory(String referenceName, SourceWireFactory pFactory) {
+    public void addSourceWireFactory(String referenceName, SourceWireFactory pFactory) {
         throw new UnsupportedOperationException();
     }
 
-    public List<SourceWireFactory> getSourceProxyFactories() {
+    public List<SourceWireFactory> getSourceWireFactories() {
         return null;
     }
 

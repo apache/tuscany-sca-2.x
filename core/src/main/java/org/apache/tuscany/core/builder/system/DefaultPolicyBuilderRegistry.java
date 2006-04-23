@@ -13,29 +13,31 @@
  */
 package org.apache.tuscany.core.builder.system;
 
-import org.apache.tuscany.core.builder.TargetPolicyOrderer;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.SourcePolicyBuilder;
-import org.apache.tuscany.core.builder.TargetPolicyBuilder;
 import org.apache.tuscany.core.builder.SourcePolicyOrderer;
+import org.apache.tuscany.core.builder.TargetPolicyBuilder;
+import org.apache.tuscany.core.builder.TargetPolicyOrderer;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
-import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
+import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
+ * A system service that serves as the default implementation of a policy builder registry
+ *
  * @version $$Rev$$ $$Date$$
  */
 
 @Scope("MODULE")
 @Service(interfaces = {PolicyBuilderRegistry.class})
-public class DefaultPolicyBuilderRegistry implements PolicyBuilderRegistry{
+public class DefaultPolicyBuilderRegistry implements PolicyBuilderRegistry {
 
     private final List<SourcePolicyBuilder> sourceBuilders = new ArrayList<SourcePolicyBuilder>();
     private final List<TargetPolicyBuilder> targetBuilders = new ArrayList<TargetPolicyBuilder>();
@@ -78,23 +80,22 @@ public class DefaultPolicyBuilderRegistry implements PolicyBuilderRegistry{
         return sourceBuilders;
     }
 
-    public void build(ConfiguredReference reference, List<WireSourceConfiguration> configurations) throws BuilderException {
+    public void buildSource(ConfiguredReference reference, List<WireSourceConfiguration> configurations) throws BuilderException {
         for (SourcePolicyBuilder builder : sourceBuilders) {
-            builder.build(reference,configurations);
+            builder.build(reference, configurations);
         }
-
-        if (sourceOrderer != null){
+        if (sourceOrderer != null) {
             for (WireSourceConfiguration configuration : configurations) {
                 sourceOrderer.order(configuration);
             }
         }
     }
 
-    public void build(ConfiguredService service, WireTargetConfiguration configuration) throws BuilderException {
+    public void buildTarget(ConfiguredService service, WireTargetConfiguration configuration) throws BuilderException {
         for (TargetPolicyBuilder builder : targetBuilders) {
-            builder.build(service,configuration);
+            builder.build(service, configuration);
         }
-        if (targetOrderer != null){
+        if (targetOrderer != null) {
             targetOrderer.order(configuration);
         }
     }

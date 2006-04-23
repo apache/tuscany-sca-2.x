@@ -39,7 +39,7 @@ import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.CompositeScopeContext;
 import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
-import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
+import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.assembly.Scope;
@@ -167,7 +167,7 @@ public class CompositeScopeTestCase extends TestCase {
      *
      */
     private List<Extensible> createAssembly() throws BuilderException {
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(), new DefaultPolicyBuilderRegistry());
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryFactory(), new DefaultPolicyBuilderRegistry());
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         AtomicComponent component = MockFactory.createComponent("TestService1", ModuleScopeComponentImpl.class, Scope.MODULE);
         AtomicComponent sessionComponent = MockFactory.createComponent("TestService2", SessionScopeComponentImpl.class,

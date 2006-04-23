@@ -15,72 +15,28 @@ package org.apache.tuscany.container.java.builder;
 
 import org.apache.tuscany.container.java.config.JavaContextFactory;
 import org.apache.tuscany.container.java.invocation.ScopedJavaComponentInvoker;
-import org.apache.tuscany.core.builder.BuilderConfigException;
-import org.apache.tuscany.core.builder.WireBuilder;
+import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.runtime.RuntimeContext;
-import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
-import org.apache.tuscany.core.wire.SourceWireFactory;
-import org.apache.tuscany.core.wire.TargetWireFactory;
-import org.osoa.sca.annotations.Init;
+import org.apache.tuscany.core.extension.WireBuilderSupport;
+import org.apache.tuscany.core.wire.TargetInvoker;
 import org.osoa.sca.annotations.Scope;
+
+import java.lang.reflect.Method;
 
 /**
  * Completes a wire to a Java-based target component by adding a scoped java invoker to the source chain
- * 
+ *
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class JavaTargetWireBuilder implements WireBuilder {
+public class JavaTargetWireBuilder extends WireBuilderSupport {
 
-    private RuntimeContext runtimeContext;
-
-    @Autowire
-    public void setRuntimeContext(RuntimeContext context) {
-        runtimeContext = context;
+    protected boolean handlesTargetType(Class targetType) {
+        return JavaContextFactory.class.isAssignableFrom(targetType);
     }
 
-    public JavaTargetWireBuilder() {
-    }
-
-    @Init(eager=true)
-    public void init() {
-        runtimeContext.addBuilder(this);
-    }
-
-    public void connect(SourceWireFactory sourceFactory, TargetWireFactory targetFactory, Class targetType, boolean downScope,
-            ScopeContext targetScopeContext) throws BuilderConfigException {
-        if (!(JavaContextFactory.class.isAssignableFrom(targetType))) {
-            return;
-        }
-        for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getConfiguration().getInvocationConfigurations()
-                .values()) {
-            ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(sourceFactory.getConfiguration()
-                    .getTargetName(), sourceInvocationConfig.getMethod(), targetScopeContext);
-            if (downScope) {
-                // the source scope is shorter than the target, so the invoker can cache the target instance
-                invoker.setCacheable(false);
-            } else {
-                invoker.setCacheable(true); //TODO set to true
-            }
-            sourceInvocationConfig.setTargetInvoker(invoker);
-        }
-    }
-
-    public void completeTargetChain(TargetWireFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
-            throws BuilderConfigException {
-        // TODO implement.
-        // if (!(JavaComponentRuntimeConfiguration.class.isAssignableFrom(targetType))) {
-        // return;
-        // }
-        // for (InvocationConfiguration targetInvocationConfig :
-        // targetFactory.getConfiguration().getInvocationConfigurations()
-        // .values()) {
-        // ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(targetFactory.getConfiguration()
-        // .getTargetName(), ((JavaOperationType) targetInvocationConfig.getOperationType()).getJavaMethod(),
-        // targetScopeContext);
-        // targetInvocationConfig.setTargetInvoker(invoker);
-        // }
+    protected TargetInvoker createInvoker(QualifiedName targetName, Method operation, ScopeContext context, boolean downScope) {
+        boolean cacheable = !downScope;
+        return new ScopedJavaComponentInvoker(targetName, operation, context,cacheable);
     }
 }

@@ -18,76 +18,28 @@ package org.apache.tuscany.container.js.builder;
 
 import org.apache.tuscany.container.js.config.JavaScriptContextFactory;
 import org.apache.tuscany.container.js.rhino.RhinoTargetInvoker;
-import org.apache.tuscany.core.builder.BuilderConfigException;
-import org.apache.tuscany.core.builder.WireBuilder;
+import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.runtime.RuntimeContext;
-import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
-import org.apache.tuscany.core.wire.SourceWireFactory;
-import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
-import org.apache.tuscany.core.wire.TargetWireFactory;
-import org.osoa.sca.annotations.Init;
+import org.apache.tuscany.core.extension.WireBuilderSupport;
+import org.apache.tuscany.core.wire.TargetInvoker;
 import org.osoa.sca.annotations.Scope;
 
 import java.lang.reflect.Method;
 
 /**
- * Responsible for bridging source- and target-side invocations chains when the target type is a JavaScript
- * implementation
- * 
+ * Responsible for bridging source- and target-side invocations chains when the target type is a JavaScript implementation
+ *
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class JavaScriptTargetWireBuilder implements WireBuilder {
+public class JavaScriptTargetWireBuilder extends WireBuilderSupport {
 
-    private RuntimeContext runtimeContext;
-
-    @Autowire
-    public void setRuntimeContext(RuntimeContext context) {
-        runtimeContext = context;
+    protected boolean handlesTargetType(Class targetType) {
+        return JavaScriptContextFactory.class.isAssignableFrom(targetType);
     }
 
-    public JavaScriptTargetWireBuilder() {
+    protected TargetInvoker createInvoker(QualifiedName targetName, Method operation, ScopeContext context, boolean downScope) {
+        String serviceName = targetName.getPartName();
+        return new RhinoTargetInvoker(serviceName, operation, context);
     }
-
-    @Init(eager=true)
-    public void init() {
-        runtimeContext.addBuilder(this);
-    }
-
-    public void connect(SourceWireFactory sourceFactory, TargetWireFactory targetFactory, Class targetType, boolean downScope,
-            ScopeContext targetScopeContext) throws BuilderConfigException {
-        if (!(JavaScriptContextFactory.class.isAssignableFrom(targetType))) {
-            return;
-        }
-        for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getConfiguration().getInvocationConfigurations()
-                .values()) {
-            Method method = sourceInvocationConfig.getMethod();
-            String serviceName = sourceFactory.getConfiguration().getTargetName().getPartName();
-            RhinoTargetInvoker invoker = new RhinoTargetInvoker(serviceName, method, targetScopeContext);
-            if (downScope) {
-                // the source scope is shorter than the target, so the invoker can cache the target instance
-                // invoker.setCacheable(true);
-            } else {
-                // invoker.setCacheable(false);
-            }
-            sourceInvocationConfig.setTargetInvoker(invoker);
-        }
-    }
-
-    public void completeTargetChain(TargetWireFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
-            throws BuilderConfigException {
-        if (!(JavaScriptContextFactory.class.isAssignableFrom(targetType))) {
-            return;
-        }
-        for (TargetInvocationConfiguration targetInvocationConfig : targetFactory.getConfiguration().getInvocationConfigurations()
-                .values()) {
-            Method method = targetInvocationConfig.getMethod();
-            String serviceName = targetFactory.getConfiguration().getTargetName().getPartName();
-            RhinoTargetInvoker invoker = new RhinoTargetInvoker(serviceName, method, targetScopeContext);
-            targetInvocationConfig.setTargetInvoker(invoker);
-        }
-    }
-
 }

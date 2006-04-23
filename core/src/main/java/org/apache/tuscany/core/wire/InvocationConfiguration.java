@@ -27,7 +27,7 @@ import java.util.List;
  * org.apache.tuscany.core.builder.WireBuilder}s with the source-side holding references to the target.
  * <p/>
  * <code>InvocationChain</code>s are managed by {@link WireConfiguration}s, which are used by {@link
- * org.apache.tuscany.core.wire.WireFactory}s to build wires and proxies.
+ * org.apache.tuscany.core.wire.WireFactory}s to buildSource wires and proxies.
  * <p/>
  * Invocation configurations must contain at least one interceptor and may have 0 to N handlers. Handlers process a wire request
  * or response in a one-way fashion. A typical wire sequence where interceptors and handlers are configured for both the source

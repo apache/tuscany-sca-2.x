@@ -42,11 +42,11 @@ package org.apache.tuscany.core.wire;
 public interface WireFactory<T> {
 
     /**
-     * Prepares the factory. This will typically be called at build time, after bridging source- and target-side invocation chains.
+     * Prepares the factory. This will typically be called at buildSource time, after bridging source- and target-side invocation chains.
      *
-     * @throws ProxyInitializationException if an error is encountered during initialization
+     * @throws WireFactoryInitException if an error is encountered during initialization
      */
-    public void initialize() throws ProxyInitializationException;
+    public void initialize() throws WireFactoryInitException;
 
     /**
      * Returns a proxy for a service specified by a reference or target

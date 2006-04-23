@@ -31,11 +31,11 @@ import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-public class JDKProxyFactoryTestCase extends TestCase {
+public class JDKWireFactoryFactoryTestCase extends TestCase {
 
     private Method hello;
 
-    public JDKProxyFactoryTestCase(String arg0) {
+    public JDKWireFactoryFactoryTestCase(String arg0) {
         super(arg0);
     }
 

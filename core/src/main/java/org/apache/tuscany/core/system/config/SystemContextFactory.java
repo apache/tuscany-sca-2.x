@@ -145,23 +145,23 @@ public class SystemContextFactory implements ContextFactory<Context>, ContextRes
         }
     }
 
-    public void addTargetProxyFactory(String serviceName, TargetWireFactory factory) {
+    public void addTargetWireFactory(String serviceName, TargetWireFactory factory) {
         throw new UnsupportedOperationException();
     }
 
-    public TargetWireFactory getTargetProxyFactory(String serviceName) {
+    public TargetWireFactory getTargetWireFactory(String serviceName) {
         return null;
     }
 
-    public Map<String, TargetWireFactory> getTargetProxyFactories() {
+    public Map<String, TargetWireFactory> getTargetWireFactories() {
         return null;
     }
 
-    public void addSourceProxyFactory(String referenceName, SourceWireFactory factory) {
+    public void addSourceWireFactory(String referenceName, SourceWireFactory factory) {
         throw new UnsupportedOperationException();
     }
 
-    public List<SourceWireFactory> getSourceProxyFactories() {
+    public List<SourceWireFactory> getSourceWireFactories() {
         return null;
     }
 

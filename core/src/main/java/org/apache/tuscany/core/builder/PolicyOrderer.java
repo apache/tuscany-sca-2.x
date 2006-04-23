@@ -13,17 +13,14 @@
  */
 package org.apache.tuscany.core.builder;
 
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.core.wire.WireTargetConfiguration;
-
 /**
- * Implementations contribute {@link org.apache.tuscany.core.wire.Interceptor}s or {@link
- * org.apache.tuscany.core.wire.MessageHandler}s that handle target-side policy on a wire.  
+ * A marker for implementations that order source- or target-side policy {@link org.apache.tuscany.core.wire.Interceptor}s or
+ * {@link org.apache.tuscany.core.wire.MessageHandler}s in a {@link org.apache.tuscany.core.wire.WireConfiguration}.
  *
+ * @see SourcePolicyOrderer
+ * @see TargetPolicyOrderer
  * @version $$Rev$$ $$Date$$
  */
-public interface TargetPolicyBuilder extends PolicyBuilder{
-
-    public void build(ConfiguredService service, WireTargetConfiguration configuration) throws BuilderException;
-
+public interface PolicyOrderer {
+    
 }

@@ -22,9 +22,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 /**
- * A Map implementation that performs a lookup on a collection of methods by method name. This implementation is used to
- * map methods on one interface to compatible methods on another interface, for example, when flowing an wire from
- * a proxy injected on a source reference to a target service instance. 
+ * A <code>Map</code> implementation that performs a lookup on a collection of methods by method name. This implementation is used
+ * to map methods on one interface to compatible methods on another interface, for example, when flowing an invocation from a
+ * proxy injected on a source reference to a target service instance.
  *
  * @version $Rev$ $Date$
  */

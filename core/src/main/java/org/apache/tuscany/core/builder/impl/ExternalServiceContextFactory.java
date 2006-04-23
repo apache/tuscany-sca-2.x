@@ -41,11 +41,11 @@ import java.util.Map;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class BaseExternalServiceContextFactory implements ContextFactory<ExternalServiceContext> {
+public abstract class ExternalServiceContextFactory implements ContextFactory<ExternalServiceContext> {
 
     private String name;
 
-    private TargetWireFactory proxyFactory;
+    private TargetWireFactory targetWireFactory;
 
     private ObjectFactory objectFactory;
 
@@ -53,7 +53,7 @@ public abstract class BaseExternalServiceContextFactory implements ContextFactor
 
     private Map<String, TargetWireFactory> targetProxyFactories;
 
-    public BaseExternalServiceContextFactory(String name, ObjectFactory objectFactory) {
+    public ExternalServiceContextFactory(String name, ObjectFactory objectFactory) {
         assert (name != null) : "Name was null";
         assert (objectFactory != null) : "Object factory was null";
         this.name = name;
@@ -61,7 +61,7 @@ public abstract class BaseExternalServiceContextFactory implements ContextFactor
     }
 
     public ExternalServiceContext createContext() throws ContextCreationException {
-        return new ExternalServiceContextImpl(name, proxyFactory, objectFactory);
+        return new ExternalServiceContextImpl(name, targetWireFactory, objectFactory);
     }
 
     public Scope getScope() {
@@ -75,34 +75,34 @@ public abstract class BaseExternalServiceContextFactory implements ContextFactor
     public void prepare() {
     }
 
-    public void addTargetProxyFactory(String serviceName, TargetWireFactory factory) {
+    public void addTargetWireFactory(String serviceName, TargetWireFactory factory) {
         assert (serviceName != null) : "No service name specified";
         assert (factory != null) : "Proxy factory was null";
         this.targetServiceName = serviceName; // external services are configured with only one service
-        this.proxyFactory = factory;
+        this.targetWireFactory = factory;
     }
 
-    public TargetWireFactory getTargetProxyFactory(String serviceName) {
+    public TargetWireFactory getTargetWireFactory(String serviceName) {
         if (this.targetServiceName.equals(serviceName)) {
-            return proxyFactory;
+            return targetWireFactory;
         } else {
             return null;
         }
     }
 
-    public Map<String,TargetWireFactory> getTargetProxyFactories() {
+    public Map<String,TargetWireFactory> getTargetWireFactories() {
         if (targetProxyFactories == null) {
             targetProxyFactories = new HashMap<String, TargetWireFactory> (1);
-            targetProxyFactories.put(targetServiceName, proxyFactory);
+            targetProxyFactories.put(targetServiceName, targetWireFactory);
         }
         return targetProxyFactories;
     }
 
-    public void addSourceProxyFactory(String referenceName, SourceWireFactory factory) {
+    public void addSourceWireFactory(String referenceName, SourceWireFactory factory) {
         // no wires inside a composite from an external service
     }
 
-    public List<SourceWireFactory> getSourceProxyFactories() {
+    public List<SourceWireFactory> getSourceWireFactories() {
         return Collections.emptyList();
     }
     

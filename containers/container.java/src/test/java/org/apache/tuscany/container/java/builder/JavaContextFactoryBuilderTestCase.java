@@ -24,7 +24,7 @@ import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.wire.WireConfiguration;
-import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
+import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
@@ -42,7 +42,7 @@ public class JavaContextFactoryBuilderTestCase extends TestCase {
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, true);
         PolicyBuilderRegistry policyRegistry = new DefaultPolicyBuilderRegistry();
         policyRegistry.registerSourceBuilder(interceptorBuilder);
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKProxyFactoryFactory(), policyRegistry);
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryFactory(), policyRegistry);
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
 
         JavaTargetWireBuilder javaWireBuilder = new JavaTargetWireBuilder();
@@ -66,14 +66,14 @@ public class JavaContextFactoryBuilderTestCase extends TestCase {
         for (Component component : components) {
             ContextFactory<Context> source = (ContextFactory<Context>) component.getContextFactory();
             Assert.assertNotNull(source);
-            for (SourceWireFactory pFactory : source.getSourceProxyFactories()) {
+            for (SourceWireFactory pFactory : source.getSourceWireFactories()) {
                 WireConfiguration pConfig = pFactory.getConfiguration();
                 Component target = compMap.get(pConfig.getTargetName().getPartName());
 
                 if (target != null) {
                     ContextFactory targetConfig = (ContextFactory) target.getContextFactory();
                     boolean downScope = strategy.downScopeReference(source.getScope(), targetConfig.getScope());
-                    wireBuilder.connect(pFactory, targetConfig.getTargetProxyFactory(pFactory.getConfiguration().getTargetName()
+                    wireBuilder.connect(pFactory, targetConfig.getTargetWireFactory(pFactory.getConfiguration().getTargetName()
                             .getPortName()), targetConfig.getClass(), downScope, scopeContext);
                 }
                 pFactory.initialize();

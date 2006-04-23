@@ -69,7 +69,7 @@ public class AbstractTomcatTest extends TestCase {
         host.setAppBase(appBase.getAbsolutePath());
         engine.addChild(host);
 
-        // build a empty request/response
+        // buildSource a empty request/response
         Connector connector = new Connector("HTTP/1.1");
         request = new MockRequest();
         request.setConnector(connector);

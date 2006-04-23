@@ -19,7 +19,7 @@ package org.apache.tuscany.core.wire;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
- * Denotes an exception thrown during wire processing
+ * Denotes a runtime exception thrown during an invocation over a wire
  * 
  * @version $Rev$ $Date$
  */

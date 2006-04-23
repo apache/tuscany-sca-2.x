@@ -13,28 +13,30 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import org.apache.tuscany.core.wire.ProxyFactoryFactory;
-import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.wire.SourceWireFactory;
-import org.osoa.sca.annotations.Scope;
+import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.core.wire.WireFactoryFactory;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Service;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
 /**
- * Creates JDK Dynamic Proxy-based proxy factories
- * 
+ * A system service that creates JDK dynamic proxy-based {@link org.apache.tuscany.core.wire.WireFactory}s
+ *
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class JDKProxyFactoryFactory implements ProxyFactoryFactory {
+@Service(interfaces = {WireFactoryFactory.class})
+public class JDKWireFactoryFactory implements WireFactoryFactory {
 
-    public JDKProxyFactoryFactory() {
+    public JDKWireFactoryFactory() {
     }
 
     @Init(eager = true)
-    public void init(){
+    public void init() {
     }
 
     public TargetWireFactory createTargetWireFactory() {

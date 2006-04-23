@@ -28,7 +28,7 @@ import org.apache.tuscany.core.wire.TargetWireFactory;
  */
 public class ExternalServiceContextImpl extends AbstractContext implements ExternalServiceContext {
 
-    private TargetWireFactory<?> targetProxyFactory;
+    private TargetWireFactory<?> targetWireFactory;
 
     private ObjectFactory targetInstanceFactory;
 
@@ -36,17 +36,17 @@ public class ExternalServiceContextImpl extends AbstractContext implements Exter
      * Creates an external service context
      *
      * @param name the name of the external service
-     * @param targetProxyFactory the factory which creates proxies implementing the configured service interface for the
+     * @param targetWireFactory the factory which creates proxies implementing the configured service interface for the
      *        external service. There is always only one proxy factory as an external service is configured with one
      *        service
      * @param targetInstanceFactory the object factory that creates an artifact capabile of communicating over the
      *        binding transport configured on the external service. The object factory may implement a caching strategy.
      */
-    public ExternalServiceContextImpl(String name, TargetWireFactory targetProxyFactory, ObjectFactory targetInstanceFactory) {
+    public ExternalServiceContextImpl(String name, TargetWireFactory targetWireFactory, ObjectFactory targetInstanceFactory) {
         super(name);
-        assert (targetProxyFactory != null) : "Target proxy factory was null";
+        assert (targetWireFactory != null) : "Target proxy factory was null";
         assert (targetInstanceFactory != null) : "Target instance factory was null";
-        this.targetProxyFactory = targetProxyFactory;
+        this.targetWireFactory = targetWireFactory;
         this.targetInstanceFactory = targetInstanceFactory;
     }
 
@@ -61,7 +61,7 @@ public class ExternalServiceContextImpl extends AbstractContext implements Exter
 
     public Object getInstance(QualifiedName qName) throws TargetException {
         try {
-            return targetProxyFactory.createProxy();
+            return targetWireFactory.createProxy();
             // TODO do we cache the proxy, (assumes stateful capabilities will be provided in an interceptor)
         } catch (ProxyCreationException e) {
             TargetException te = new TargetException(e);

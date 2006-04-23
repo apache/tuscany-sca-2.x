@@ -2,35 +2,37 @@ package org.apache.tuscany.core.builder;
 
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.model.assembly.Scope;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * Implementations serve the dual purpose of creating instances of {@link org.apache.tuscany.core.context.Context} based
- * on a compiled configuration such as a logical assembly model and holding a
- * {@link org.apache.tuscany.core.wire.WireFactory} for the instance type associated with the context.
- * <p>
- * Context factories are created or "built" in two phases. {@link org.apache.tuscany.core.builder.ContextFactoryBuilder}s
- * are responsible for analyzing a logical model assembly and producing the appropriate <code>ContextFactory</code>
- * for the runtime. {@link org.apache.tuscany.core.builder.WireBuilder}s update the proxy configuration associated with
- * the <code>WireFactory</code> attached to the <code>ContextFactory</code>.
- * <p>
- * <code>ContextFactory</code> implementations also contain the source and target invocations chains associated with
- * all instances of a given <code>Context</code> type. For example, two contexts associated with separate sessions for
- * a component will refer back to the same wire chains held in the <code>WireFactory</code> attached to the
- * <code>ContextFactory</code>.
- * 
+ * Implementations create {@link org.apache.tuscany.core.context.Context}s based on an assembly configuration.
+ * <p/>
+ * Context factories are "built" in two phases. {@link ContextFactoryBuilder}s analyze an assembly, producing
+ * <code>ContextFactory</code>s for {@link org.apache.tuscany.model.assembly.Component}s, {@link
+ * org.apache.tuscany.model.assembly.EntryPoint}s, and {@link org.apache.tuscany.model.assembly.ExternalService}s. During this
+ * phase, {@link org.apache.tuscany.core.wire.WireFactory}s for source- and target-side wires are produced for the
+ * <code>ContextFactory</code>s.  Ê
+ * <p/>
+ * The second build phase connects the source- and target-side <code>WireFactories</code>, thereby completing wire configuration.
+ * <p/>
+ * At runtime, <code>ContextFactory</code>s are called to create new <code>Context</code>s when a new implementation instance is
+ * required for a component, entry point, or external service. The <code>Context</code> is then responsible for instantiating and
+ * managing the actual implementation instance. When a <code>Context</code> creates a new instance, the previously configured
+ * <code>WireFactory</code>s are used to create wires to and from the instance. A wire is a collection of stateless invocation
+ * chains that are managed by the <code>Context</code>'s <code>ContextFactory</code>.
+ *
  * @version $Rev: 385747 $ $Date: 2006-03-13 22:12:53 -0800 (Mon, 13 Mar 2006) $
  */
 public interface ContextFactory<T extends Context> {
 
     /**
      * Creates a <code>Context</code> based on configuration supplied by a logical model assembly
-     * 
+     *
      * @return a new instance context
      * @throws ContextCreationException if an error occurs creating the context
      */
@@ -42,46 +44,43 @@ public interface ContextFactory<T extends Context> {
     public Scope getScope();
 
     /**
-     * Returns the name of the contexts produced by the current factory
+     * Returns the name of the <code>Context</code> produced by the current factory
      */
     public String getName();
 
     /**
-     * Adds a target-side proxy factory for the given service name to the configuration. Target-side proxy factories
-     * contain the wire chains associated with the destination service of a wire and are responsible for
-     * generating proxies
+     * Adds a target-side wire factory for the given service name. Target-side wire factories contain the invocation chains
+     * associated with the destination service of a wire and are responsible for generating proxies
      */
-    public void addTargetProxyFactory(String serviceName, TargetWireFactory factory);
+    public void addTargetWireFactory(String serviceName, TargetWireFactory factory);
 
     /**
-     * Returns the target-side proxy factory associated with the given service name
+     * Returns the target-side wire factory associated with the given service name
      */
-    public TargetWireFactory getTargetProxyFactory(String serviceName);
+    public TargetWireFactory getTargetWireFactory(String serviceName);
 
     /**
-     * Returns a collection of target-side proxy factories for the configuration keyed by service name
+     * Returns a collection of target-side wire factories keyed by service name
      */
-    public Map<String, TargetWireFactory> getTargetProxyFactories();
+    public Map<String, TargetWireFactory> getTargetWireFactories();
 
     /**
-     * Adds a source-side proxy factory for the given reference. Source-side proxy factories contain the wire
-     * chains for a reference in the component implementation associated with the instance context created by this
-     * configuration. Source-side proxy factories also produce proxies that are injected on a reference in a component
-     * implementation.
+     * Adds a source-side wire factory for the given reference. Source-side wire factories contain the invocation chains for a
+     * reference in the implementation associated with the instance context created by this configuration. Source-side wire
+     * factories also produce proxies that are injected on a reference in a component implementation.
      */
-    public void addSourceProxyFactory(String referenceName, SourceWireFactory factory);
+    public void addSourceWireFactory(String referenceName, SourceWireFactory factory);
 
     /**
-     * Returns a collection of source side-proxy factories for component references. There may 1..n proxy factories per
-     * reference.
+     * Returns a collection of source-side wire factories for references. There may 1..n wire factories per reference.
      */
-    public List<SourceWireFactory> getSourceProxyFactories();
+    public List<SourceWireFactory> getSourceWireFactories();
 
     /**
-     * Called to signal to the configuration that its parent context has been activated and that it shoud perform any
-     * required initialization steps
-     * 
-     * @param parent the parent context's configuration
+     * Called to signal to the configuration that its parent context has been activated and that it shoud perform any required
+     * initialization steps
+     *
+     * @param parent the parent context
      */
     public void prepare(CompositeContext parent);
 

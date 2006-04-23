@@ -37,7 +37,7 @@ public class EntryPointContextFactory implements ContextFactory<EntryPointContex
 
     private String name;
 
-    private SourceWireFactory proxyFactory;
+    private SourceWireFactory sourceWireFactory;
 
     private MessageFactory msgFactory;
 
@@ -51,7 +51,7 @@ public class EntryPointContextFactory implements ContextFactory<EntryPointContex
     }
 
     public EntryPointContext createContext() throws ContextCreationException {
-        return new EntryPointContextImpl(name, proxyFactory, msgFactory);
+        return new EntryPointContextImpl(name, sourceWireFactory, msgFactory);
     }
 
     public Scope getScope() {
@@ -65,30 +65,30 @@ public class EntryPointContextFactory implements ContextFactory<EntryPointContex
     public void prepare() {
     }
 
-    public void addTargetProxyFactory(String serviceName, TargetWireFactory factory) {
-        // no wires to an entry point from with a composite
+    public void addTargetWireFactory(String serviceName, TargetWireFactory factory) {
+        // no wires to an entry point from within a composite
     }
 
-    public TargetWireFactory getTargetProxyFactory(String serviceName) {
-        // no wires to an entry point from with a composite
+    public TargetWireFactory getTargetWireFactory(String serviceName) {
+        // no wires to an entry point from within a composite
         return null;
     }
 
-    public Map<String, TargetWireFactory> getTargetProxyFactories() {
-        // no wires to an entry point from with a composite
+    public Map<String, TargetWireFactory> getTargetWireFactories() {
+        // no wires to an entry point from within a composite
         return Collections.emptyMap();
     }
 
-    public void addSourceProxyFactory(String refName, SourceWireFactory factory) {
+    public void addSourceWireFactory(String refName, SourceWireFactory factory) {
         assert (refName != null) : "No reference name specified";
         assert (factory != null) : "Proxy factory was null";
-        this.proxyFactory = factory;
+        this.sourceWireFactory = factory;
     }
 
-    public List<SourceWireFactory> getSourceProxyFactories() {
+    public List<SourceWireFactory> getSourceWireFactories() {
         if (sourceProxyFactories == null) {
             sourceProxyFactories = new ArrayList<SourceWireFactory>(1);
-            sourceProxyFactories.add(proxyFactory);
+            sourceProxyFactories.add(sourceWireFactory);
         }
         return sourceProxyFactories;
     }

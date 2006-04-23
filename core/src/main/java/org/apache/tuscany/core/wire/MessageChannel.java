@@ -19,7 +19,7 @@ package org.apache.tuscany.core.wire;
 import org.apache.tuscany.core.message.Message;
 
 /**
- * Represents a one-way pipeline through which messages are sent during an wire
+ * Represents a one-way pipeline through which messages are sent during an invocation over a wire
  * 
  * @see org.apache.tuscany.core.message.Message
  */

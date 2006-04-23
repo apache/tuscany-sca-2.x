@@ -32,7 +32,7 @@ import java.lang.reflect.InvocationHandler;
  */
 public class EntryPointContextImpl extends AbstractContext implements EntryPointContext {
 
-    private SourceWireFactory<?> proxyFactory;
+    private SourceWireFactory<?> sourceWireFactory;
     
 
     private InvocationHandler invocationHandler;
@@ -44,24 +44,24 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
      * Creates a new entry point
      *
      * @param name the entry point name
-     * @param proxyFactory the proxy factory containing the invocation chains for the entry point
+     * @param sourceWireFactory the proxy factory containing the invocation chains for the entry point
      * @param messageFactory a factory for generating invocation messages
-     * @throws org.apache.tuscany.core.context.ContextInitException if an error occurs creating the entry point
+     * @throws ContextInitException if an error occurs creating the entry point
      */
-    public EntryPointContextImpl(String name, SourceWireFactory proxyFactory, MessageFactory messageFactory)
+    public EntryPointContextImpl(String name, SourceWireFactory sourceWireFactory, MessageFactory messageFactory)
             throws ContextInitException {
         super(name);
-        assert (proxyFactory != null) : "Proxy factory was null";
+        assert (sourceWireFactory != null) : "Proxy factory was null";
         assert (messageFactory != null) : "Message factory was null";
-        this.proxyFactory = proxyFactory;
-        invocationHandler = new JDKInvocationHandler(messageFactory, proxyFactory.getConfiguration()
+        this.sourceWireFactory = sourceWireFactory;
+        invocationHandler = new JDKInvocationHandler(messageFactory, sourceWireFactory.getConfiguration()
                 .getInvocationConfigurations());
     }
 
     public Object getInstance(QualifiedName qName) throws TargetException {
         if (proxy == null) {
             try {
-                proxy = proxyFactory.createProxy();
+                proxy = sourceWireFactory.createProxy();
             } catch (ProxyCreationException e) {
                 TargetException te = new TargetException(e);
                 te.addContextName(getName());

@@ -32,8 +32,8 @@ import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.system.config.SystemObjectContextFactory;
-import org.apache.tuscany.core.wire.ProxyFactoryFactory;
-import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
+import org.apache.tuscany.core.wire.WireFactoryFactory;
+import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 
 
 /**
@@ -75,15 +75,15 @@ public class SystemCompositeContextImpl extends AbstractCompositeContext impleme
     // FIXME These should be removed and configured
     private static final MessageFactory messageFactory = new MessageFactoryImpl();
 
-    private static final ProxyFactoryFactory proxyFactoryFactory = new JDKProxyFactoryFactory();
+    private static final WireFactoryFactory WIRE_FACTORY_FACTORY = new JDKWireFactoryFactory();
 
     public <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException {
         if (CompositeContext.class.equals(instanceInterface)) {
             return instanceInterface.cast(this);
         } else if (MessageFactory.class.equals(instanceInterface)) {
             return instanceInterface.cast(messageFactory);
-        } else if (ProxyFactoryFactory.class.equals(instanceInterface)) {
-            return instanceInterface.cast(proxyFactoryFactory);
+        } else if (WireFactoryFactory.class.equals(instanceInterface)) {
+            return instanceInterface.cast(WIRE_FACTORY_FACTORY);
         } else {
             return super.resolveInstance(instanceInterface);
         }

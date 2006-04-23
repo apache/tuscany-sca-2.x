@@ -1,7 +1,7 @@
 package org.apache.tuscany.core.wire.jdk;
 
 import org.apache.tuscany.core.wire.MethodHashMap;
-import org.apache.tuscany.core.wire.ProxyInitializationException;
+import org.apache.tuscany.core.wire.WireFactoryInitException;
 import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
 import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
@@ -31,7 +31,7 @@ public class JDKTargetWireFactory implements TargetWireFactory {
 
     private WireTargetConfiguration configuration;
 
-    public void initialize() throws ProxyInitializationException {
+    public void initialize() throws WireFactoryInitException {
         if (state != UNINITIALIZED) {
             throw new IllegalStateException("Proxy factory in wrong state [" + state + "]");
         }

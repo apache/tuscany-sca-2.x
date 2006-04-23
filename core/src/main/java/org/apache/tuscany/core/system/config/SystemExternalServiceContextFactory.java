@@ -20,11 +20,10 @@ import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.injection.InterCompositeReferenceFactory;
-import org.apache.tuscany.core.wire.WireFactory;
-import org.apache.tuscany.core.wire.SourceWireFactory;
-import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.system.context.SystemExternalServiceContext;
 import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.model.assembly.Scope;
 
 import java.util.List;
@@ -33,10 +32,9 @@ import java.util.Map;
 /**
  * Creates system type external service contexts
  *
+ * @version $Rev$ $Date$
  * @see org.apache.tuscany.core.context.ExternalServiceContext
  * @see org.apache.tuscany.core.system.context.SystemExternalServiceContext
- *
- * @version $Rev$ $Date$
  */
 public class SystemExternalServiceContextFactory implements ContextFactory<ExternalServiceContext>, ContextResolver {
 
@@ -49,20 +47,12 @@ public class SystemExternalServiceContextFactory implements ContextFactory<Exter
 
     private CompositeContext parentContext;
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
     public SystemExternalServiceContextFactory(String name, ObjectFactory factory) {
         assert (name != null) : "Name was null";
         assert (factory != null) : "Object factory was null";
         this.name = name;
         this.factory = factory;
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     public Scope getScope() {
         return Scope.MODULE;
@@ -76,36 +66,32 @@ public class SystemExternalServiceContextFactory implements ContextFactory<Exter
         return new SystemExternalServiceContext(name, factory);
     }
 
-    public void addTargetProxyFactory(String serviceName, TargetWireFactory pFactory) {
+    public void addTargetWireFactory(String serviceName, TargetWireFactory pFactory) {
         throw new UnsupportedOperationException();
     }
 
-    public TargetWireFactory getTargetProxyFactory(String serviceName) {
+    public TargetWireFactory getTargetWireFactory(String serviceName) {
         return null;
     }
 
-    public Map<String, TargetWireFactory> getTargetProxyFactories() {
+    public Map<String, TargetWireFactory> getTargetWireFactories() {
         return null;
     }
 
-    public void addSourceProxyFactory(String referenceName, SourceWireFactory pFactory) {
+    public void addSourceWireFactory(String referenceName, SourceWireFactory pFactory) {
         throw new UnsupportedOperationException();
     }
 
-    public WireFactory getSourceProxyFactory(String referenceName) {
-        return null;
-    }
-
-    public List<SourceWireFactory> getSourceProxyFactories() {
+    public List<SourceWireFactory> getSourceWireFactories() {
         return null;
     }
 
     public void prepare(CompositeContext parent) {
         parentContext = parent;
-        if (factory instanceof InterCompositeReferenceFactory){
-            ((InterCompositeReferenceFactory)factory).setContextResolver(this);
-        }else if (factory instanceof AutowireObjectFactory){
-            ((AutowireObjectFactory)factory).setContextResolver(this);
+        if (factory instanceof InterCompositeReferenceFactory) {
+            ((InterCompositeReferenceFactory) factory).setContextResolver(this);
+        } else if (factory instanceof AutowireObjectFactory) {
+            ((AutowireObjectFactory) factory).setContextResolver(this);
         }
     }
 

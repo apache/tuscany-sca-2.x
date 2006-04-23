@@ -29,7 +29,7 @@ import java.util.Map;
  * <code>InvocationChain</code> subtypes.  Operations are represented using JDK reflection, i.e. as a <code>Method</code>
  * corresponding to the Java interface representing the service.
  * <p/>
- * Wire configurations are created from an assembly model by the runtime during the build phase.
+ * Wire configurations are created from an assembly model by the runtime during the buildSource phase.
  * 
  * @version $Rev$ $Date$
  */

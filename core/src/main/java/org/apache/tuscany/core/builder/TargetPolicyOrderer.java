@@ -16,12 +16,13 @@ package org.apache.tuscany.core.builder;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
 
 /**
- * Implementations order the set of builders that contribute policy to a wire
+ * Implementation order target-side policy {@link org.apache.tuscany.core.wire.Interceptor}s or
+ * {@link org.apache.tuscany.core.wire.MessageHandler}s in a {@link org.apache.tuscany.core.wire.WireConfiguration}.
+
  * @version $$Rev$$ $$Date$$
  */
 public interface TargetPolicyOrderer {
 
     public void order(WireTargetConfiguration configuration);
-
 
 }

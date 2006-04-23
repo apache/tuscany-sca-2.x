@@ -13,66 +13,49 @@
  */
 package org.apache.tuscany.container.js.builder;
 
+
 import org.apache.tuscany.core.builder.BuilderException;
-import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.builder.SourcePolicyBuilder;
+import org.apache.tuscany.core.builder.TargetPolicyBuilder;
 import org.apache.tuscany.core.wire.Interceptor;
 import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
 import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
-import org.apache.tuscany.core.wire.SourceWireFactory;
-import org.apache.tuscany.core.wire.TargetWireFactory;
-import org.apache.tuscany.model.assembly.AssemblyObject;
+import org.apache.tuscany.core.wire.WireSourceConfiguration;
+import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 
+import java.util.List;
+
 /**
  * Adds an interceptor to a source or target proxy configuration
- * 
+ *
  * @version $Rev$ $Date$
  */
-public class MockInterceptorBuilder implements ContextFactoryBuilder {
+public class MockInterceptorBuilder implements SourcePolicyBuilder, TargetPolicyBuilder {
 
     private Interceptor interceptor;
 
-    private boolean source;
-
     /**
      * Creates the builder
-     * 
-     * @param interceptor the interceptor ot add
-     * @param source true if the interceptor should be added to the source side; false if the interceptor should be
-     *        added to the target side
+     *
+     * @param interceptor the interceptor to add
      */
-    public MockInterceptorBuilder(Interceptor interceptor, boolean source) {
+    public MockInterceptorBuilder(Interceptor interceptor) {
         this.interceptor = interceptor;
-        this.source = source;
     }
 
-    public void build(AssemblyObject modelObject) throws BuilderException {
-        if (source) {
-            if (!(modelObject instanceof ConfiguredReference)) {
-                return;
-            } else {
-                ConfiguredReference cref = (ConfiguredReference) modelObject;
-                // xcvProxyFactory pFactory = (WireFactory) cref.getProxyFactory();
-                for (ConfiguredService configuredService : cref.getTargetConfiguredServices()) {
-                    SourceWireFactory pFactory = (SourceWireFactory) configuredService.getProxyFactory();
-                    for (SourceInvocationConfiguration config : pFactory.getConfiguration().getInvocationConfigurations().values()) {
-                        config.addInterceptor(interceptor);
-                    }
-                }
+    public void build(ConfiguredReference reference, List<WireSourceConfiguration> configurations) throws BuilderException {
+        for (WireSourceConfiguration wireSourceConfiguration : configurations) {
+            for (SourceInvocationConfiguration configuration : wireSourceConfiguration.getInvocationConfigurations().values()) {
+                configuration.addInterceptor(interceptor);
             }
-        } else {
-            if (!(modelObject instanceof ConfiguredService)) {
-                return;
-            } else {
-                ConfiguredService cservice = (ConfiguredService) modelObject;
-                TargetWireFactory pFactory = (TargetWireFactory) cservice.getProxyFactory();
-                for (TargetInvocationConfiguration config : pFactory.getConfiguration().getInvocationConfigurations().values()) {
-                    config.addInterceptor(interceptor);
-                }
-            }
-
         }
     }
 
+    public void build(ConfiguredService service, WireTargetConfiguration configuration) throws BuilderException {
+        for (TargetInvocationConfiguration config : configuration.getInvocationConfigurations().values()) {
+            config.addInterceptor(interceptor);
+        }
+    }
 }

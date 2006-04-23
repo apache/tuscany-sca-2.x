@@ -18,7 +18,7 @@ import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.wire.MethodHashMap;
-import org.apache.tuscany.core.wire.ProxyFactoryFactory;
+import org.apache.tuscany.core.wire.WireFactoryFactory;
 import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
 import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
@@ -27,8 +27,10 @@ import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
 import org.apache.tuscany.core.builder.system.PolicyBuilderRegistry;
+import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
+import org.apache.tuscany.model.assembly.EntryPoint;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
@@ -41,23 +43,26 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * The default implementation of the <code>WireFactoryService</code> in the runtime
+ * The default implementation of a <code>WireFactoryFactory</code>
  *
  * @version $$Rev$$ $$Date$$
  */
 @Scope("MODULE")
-@Service(interfaces = {WireFactoryService.class})
-public class DefaultWireFactoryService implements WireFactoryService {
+@Service(interfaces = {org.apache.tuscany.core.wire.service.WireFactoryService.class})
+public class DefaultWireFactoryService implements org.apache.tuscany.core.wire.service.WireFactoryService {
 
     private MessageFactory messageFactory;
+    private WireFactoryFactory wireFactoryFactory;
+    private PolicyBuilderRegistry policyRegistry;
+
 
     public DefaultWireFactoryService() {
 
     }
 
-    public DefaultWireFactoryService(MessageFactory messageFactory, ProxyFactoryFactory proxyFactory, PolicyBuilderRegistry registry) {
+    public DefaultWireFactoryService(MessageFactory messageFactory, WireFactoryFactory wireFactoryFactory, PolicyBuilderRegistry registry) {
         this.messageFactory = messageFactory;
-        this.proxyFactory = proxyFactory;
+        this.wireFactoryFactory = wireFactoryFactory;
         this.policyRegistry = registry;
     }
 
@@ -66,14 +71,10 @@ public class DefaultWireFactoryService implements WireFactoryService {
         this.messageFactory = messageFactory;
     }
 
-    private ProxyFactoryFactory proxyFactory;
-
     @Autowire
-    public void setProxyFactory(ProxyFactoryFactory proxyFactory) {
-        this.proxyFactory = proxyFactory;
+    public void setWireFactoryService(WireFactoryFactory wireFactoryFactory) {
+        this.wireFactoryFactory = wireFactoryFactory;
     }
-
-    private PolicyBuilderRegistry policyRegistry;
 
     @Autowire
     public void setPolicyRegistry(PolicyBuilderRegistry policyRegistry) {
@@ -84,16 +85,26 @@ public class DefaultWireFactoryService implements WireFactoryService {
     public void init() {
     }
 
-    public List<SourceWireFactory> createSourceFactory(ConfiguredReference configuredReference){ //String referenceName, QualifiedName targetName, Class interfaze) {
+    public List<SourceWireFactory> createSourceFactory(ConfiguredReference configuredReference) throws BuilderConfigException{
         String referenceName = configuredReference.getPort().getName();
-        Class interfaze = configuredReference.getPort().getServiceContract().getInterface();
+        Class interfaze;
+        // FIXME hack for NPE when entry points with no set service contract on their configuredReference
+        if (configuredReference.getPort().getServiceContract() != null){
+            interfaze = configuredReference.getPort().getServiceContract().getInterface();
+        }else if(configuredReference.getPart() instanceof EntryPoint){
+            interfaze = ((EntryPoint)configuredReference.getPart()).getConfiguredService().getPort().getServiceContract().getInterface();
+        }else{
+            BuilderConfigException bce = new BuilderConfigException("No interface found on configured reference");
+            bce.setIdentifier(configuredReference.getName());
+            throw bce;
+        }
         List<SourceWireFactory> wireFactories = new ArrayList<SourceWireFactory>();
         List<WireSourceConfiguration> wireConfigurations = new ArrayList<WireSourceConfiguration>();
         for (ConfiguredService configuredService : configuredReference.getTargetConfiguredServices()) {
             String targetCompName = configuredService.getPart().getName();
             String targetSerivceName = configuredService.getPort().getName();
             QualifiedName targetName = new QualifiedName(targetCompName + QualifiedName.NAME_SEPARATOR + targetSerivceName);
-            SourceWireFactory wireFactory = proxyFactory.createSourceWireFactory();
+            SourceWireFactory wireFactory = wireFactoryFactory.createSourceWireFactory();
             Map<Method, SourceInvocationConfiguration> iConfigMap = new HashMap<Method, SourceInvocationConfiguration>();
             Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(interfaze);
             for (Method method : javaMethods) {
@@ -109,33 +120,10 @@ public class DefaultWireFactoryService implements WireFactoryService {
         }
         if (policyRegistry != null) {
             // invoke policy builders
-            policyRegistry.build(configuredReference, wireConfigurations);
+            policyRegistry.buildSource(configuredReference, wireConfigurations);
         }
         return wireFactories;
 
-    }
-
-    //FIXME remove
-    public SourceWireFactory createSourceFactory(QualifiedName targetName,ConfiguredService configuredService) {
-        org.apache.tuscany.model.assembly.Service service = configuredService.getPort();
-        Class interfaze = service.getServiceContract().getInterface();
-        SourceWireFactory wireFactory = proxyFactory.createSourceWireFactory();
-        Map<Method, SourceInvocationConfiguration> iConfigMap = new HashMap<Method, SourceInvocationConfiguration>();
-        Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(interfaze);
-        for (Method method : javaMethods) {
-            SourceInvocationConfiguration iConfig = new SourceInvocationConfiguration(method);
-            iConfigMap.put(method, iConfig);
-        }
-        WireSourceConfiguration wireConfiguration = new WireSourceConfiguration(targetName, iConfigMap, interfaze.getClassLoader(),
-                messageFactory);
-        wireFactory.setBusinessInterface(interfaze);
-        wireFactory.setConfiguration(wireConfiguration);
-        //TODO policy builders are not invoked since this method should be removed if possible
-//        if (policyRegistry != null) {
-//            // invoke policy builders
-//            policyRegistry.build(configuredService, wireConfiguration);
-//        }
-        return wireFactory;
     }
 
     public TargetWireFactory createTargetFactory(ConfiguredService configuredService) {
@@ -145,7 +133,7 @@ public class DefaultWireFactoryService implements WireFactoryService {
                 + service.getName());
 
         Map<Method, TargetInvocationConfiguration> iConfigMap = new MethodHashMap<TargetInvocationConfiguration>();
-        TargetWireFactory wireFactory = proxyFactory.createTargetWireFactory();
+        TargetWireFactory wireFactory = wireFactoryFactory.createTargetWireFactory();
         Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(interfaze);
         for (Method method : javaMethods) {
             TargetInvocationConfiguration iConfig = new TargetInvocationConfiguration(method);
@@ -156,7 +144,7 @@ public class DefaultWireFactoryService implements WireFactoryService {
         wireFactory.setConfiguration(wireConfiguration);
         if (policyRegistry != null) {
             // invoke policy builders
-            policyRegistry.build(configuredService, wireConfiguration);
+            policyRegistry.buildTarget(configuredService, wireConfiguration);
         }
         // add tail interceptor
         for (TargetInvocationConfiguration iConfig : wireFactory.getConfiguration().getInvocationConfigurations().values()) {

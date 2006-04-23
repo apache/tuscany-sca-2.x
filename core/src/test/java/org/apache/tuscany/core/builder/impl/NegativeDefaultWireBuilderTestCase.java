@@ -10,8 +10,8 @@ import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
 import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
 import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.TargetWireFactory;
-import org.apache.tuscany.core.wire.ProxyFactoryFactory;
-import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
+import org.apache.tuscany.core.wire.WireFactoryFactory;
+import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 import org.apache.tuscany.core.wire.mock.SimpleTarget;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
@@ -23,7 +23,7 @@ public class NegativeDefaultWireBuilderTestCase extends TestCase {
 
     private Method hello;
 
-    private ProxyFactoryFactory factory = new JDKProxyFactoryFactory();
+    private WireFactoryFactory wireFactoryFactory = new JDKWireFactoryFactory();
 
     public NegativeDefaultWireBuilderTestCase() {
         super();
@@ -42,7 +42,7 @@ public class NegativeDefaultWireBuilderTestCase extends TestCase {
 
         SourceInvocationConfiguration source = new SourceInvocationConfiguration(hello);
 
-        SourceWireFactory sourceFactory = new JDKProxyFactoryFactory().createSourceWireFactory();
+        SourceWireFactory sourceFactory = new JDKWireFactoryFactory().createSourceWireFactory();
         Map<Method, SourceInvocationConfiguration> sourceInvocationConfigs = new MethodHashMap<SourceInvocationConfiguration>();
         sourceInvocationConfigs.put(hello, source);
         WireSourceConfiguration sourceConfig = new WireSourceConfiguration("foo",new QualifiedName("target/SimpleTarget"),
@@ -52,7 +52,7 @@ public class NegativeDefaultWireBuilderTestCase extends TestCase {
 
         TargetInvocationConfiguration target = new TargetInvocationConfiguration(hello);
 
-        TargetWireFactory targetFactory = factory.createTargetWireFactory();
+        TargetWireFactory targetFactory = wireFactoryFactory.createTargetWireFactory();
         Map<Method, TargetInvocationConfiguration> targetInvocationConfigs = new MethodHashMap<TargetInvocationConfiguration>();
         targetInvocationConfigs.put(hello, target);
         WireTargetConfiguration targetConfig = new WireTargetConfiguration(new QualifiedName("target/SimpleTarget"),

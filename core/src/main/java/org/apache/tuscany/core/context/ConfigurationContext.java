@@ -17,7 +17,7 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
 
 /**
- * Offers configuration services in the runtime. A ConfigurationContext is able to configure a model and then build the
+ * Offers configuration services in the runtime. A ConfigurationContext is able to configure a model and then buildSource the
  * runtime representation corresponding to that model in the live system.
  * <p>
  * Configuration contexts will typically be hierarchical, delegating to their parent <b>after</b> performing an

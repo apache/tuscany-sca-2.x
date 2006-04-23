@@ -16,15 +16,20 @@ package org.apache.tuscany.core.wire;
 import java.lang.reflect.InvocationHandler;
 
 /**
- * Creates proxy factories which may be subsequently configured to generate proxies
+ * Implementations provide a runtime system service that creates {@link WireFactory}s
  * 
  * @version $Rev$ $Date$
  */
-public interface ProxyFactoryFactory {
+public interface WireFactoryFactory {
 
-
+    /**
+     * Creates a target-side wire factory
+     */
     public TargetWireFactory createTargetWireFactory();
 
+    /**
+     * Creates a source-side wire factory
+     */
     public SourceWireFactory createSourceWireFactory();
 
     /**

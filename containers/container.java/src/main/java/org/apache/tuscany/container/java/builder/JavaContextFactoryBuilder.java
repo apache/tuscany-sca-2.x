@@ -58,6 +58,11 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
 
     private WireFactoryService wireFactoryService;
 
+    /**
+     * Constructs a new instance
+     *
+     * @param wireFactoryService the system service responsible for creating wire factories
+     */
     public JavaContextFactoryBuilder(WireFactoryService wireFactoryService) {
         this.wireFactoryService = wireFactoryService;
     }
@@ -76,7 +81,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
     }
 
     /**
-     * Sets the factory used to construct wire factories
+     * Sets the system service used to construct wire factories
      */
     @Autowire
     public void setWireFactoryService(WireFactoryService wireFactoryService) {
@@ -94,8 +99,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
             Scope previous = null;
             Scope scope = Scope.INSTANCE;
             for (Service service : services) {
-                // calculate and validate the scope of the component; ensure that all service scopes are the same unless
-                // a scope is stateless
+                // calculate and validate the scope of the component; ensure that all service scopes are the same unless stateless
                 Scope current = service.getServiceContract().getScope();
                 if (previous != null && current != null && current != previous
                         && (current != Scope.INSTANCE && previous != Scope.INSTANCE)) {
@@ -144,7 +148,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                         eagerInit = init.eager();
                         continue;
                     }
-                    // @spec - should we allow the same method to have @init and @destroy?
+                    // TODO spec - should we allow the same method to have @init and @destroy?
                     Destroy destroy = method.getAnnotation(Destroy.class);
                     if (destroy != null && destroyInvoker == null) {
                         destroyInvoker = new MethodEventInvoker<Object>(method);
@@ -169,13 +173,11 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                         injectors.add(injector);
                     }
                 }
-                component.setContextFactory(contextFactory);
-
                 // create target-side wire chains for each service offered by the implementation
                 for (ConfiguredService configuredService : component.getConfiguredServices()) {
                     Service service = configuredService.getPort();
                     TargetWireFactory wireFactory = wireFactoryService.createTargetFactory(configuredService);
-                    contextFactory.addTargetProxyFactory(service.getName(), wireFactory);
+                    contextFactory.addTargetWireFactory(service.getName(), wireFactory);
                 }
 
                 // create injectors for references
@@ -186,12 +188,11 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
                         injectors.add(injector);
                     }
                 }
-
                 contextFactory.setSetters(injectors);
                 contextFactory.setEagerInit(eagerInit);
                 contextFactory.setInitInvoker(initInvoker);
                 contextFactory.setDestroyInvoker(destroyInvoker);
-
+                component.setContextFactory(contextFactory);
             } catch (BuilderException e) {
                 e.addContextName(component.getName());
                 throw e;
@@ -253,7 +254,7 @@ public class JavaContextFactoryBuilder implements ContextFactoryBuilder {
         List<ObjectFactory> objectFactories = new ArrayList<ObjectFactory>();
         List<SourceWireFactory> wirefactories = wireFactoryService.createSourceFactory(reference);
         for (SourceWireFactory wireFactory : wirefactories) {
-            config.addSourceProxyFactory(refName, wireFactory);
+            config.addSourceWireFactory(refName, wireFactory);
             objectFactories.add(new ProxyObjectFactory(wireFactory));
         }
         boolean multiplicity = reference.getPort().getMultiplicity() == Multiplicity.ONE_N

@@ -27,7 +27,7 @@ import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.core.wire.ProxyFactoryFactory;
+import org.apache.tuscany.core.wire.WireFactoryFactory;
 import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
 import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
@@ -48,7 +48,7 @@ import org.osoa.sca.annotations.Scope;
 public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuilder {
     private ContextFactoryBuilderRegistry builderRegistry;
 
-    private ProxyFactoryFactory proxyFactoryFactory;
+    private WireFactoryFactory wireFactoryFactory;
 
     private MessageFactory messageFactory;
 
@@ -71,8 +71,8 @@ public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuil
      * Sets the factory used to construct proxies implmementing the business interface required by a reference
      */
     @Autowire
-    public void setProxyFactoryFactory(ProxyFactoryFactory factory) {
-        this.proxyFactoryFactory = factory;
+    public void setProxyFactoryFactory(WireFactoryFactory factory) {
+        this.wireFactoryFactory = factory;
     }
 
     /**
@@ -110,7 +110,7 @@ public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuil
         Service service = configuredService.getPort();
         ServiceContract serviceContract = service.getServiceContract();
         Map<Method, SourceInvocationConfiguration> iConfigMap = new HashMap<Method, SourceInvocationConfiguration>();
-        SourceWireFactory proxyFactory = proxyFactoryFactory.createSourceWireFactory();
+        SourceWireFactory proxyFactory = wireFactoryFactory.createSourceWireFactory();
         Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(serviceContract.getInterface());
         for (Method method : javaMethods) {
             SourceInvocationConfiguration iConfig = new SourceInvocationConfiguration(method);
@@ -122,7 +122,7 @@ public class JSONRPCEntryPointConfigurationBuilder implements ContextFactoryBuil
                 messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
         proxyFactory.setConfiguration(wireConfiguration);
-        config.addSourceProxyFactory(service.getName(), proxyFactory);
+        config.addSourceWireFactory(service.getName(), proxyFactory);
         configuredService.setProxyFactory(proxyFactory);
         if (policyBuilder != null) {
             // invoke the reference builder to handle additional policy metadata

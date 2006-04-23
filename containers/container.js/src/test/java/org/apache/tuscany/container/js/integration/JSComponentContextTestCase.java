@@ -15,7 +15,7 @@ package org.apache.tuscany.container.js.integration;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.container.js.assembly.mock.HelloWorldService;
 import org.apache.tuscany.container.js.builder.JavaScriptContextFactoryBuilder;
 import org.apache.tuscany.container.js.builder.JavaScriptTargetWireBuilder;
@@ -25,43 +25,39 @@ import org.apache.tuscany.container.js.mock.MockAssemblyFactory;
 import org.apache.tuscany.container.js.mock.MockModuleFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
-import org.apache.tuscany.core.builder.impl.HierarchicalBuilder;
+import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
+import org.apache.tuscany.core.builder.system.PolicyBuilderRegistry;
 import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
-import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
-import org.apache.tuscany.core.wire.jdk.JDKProxyFactoryFactory;
+import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
+import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
+import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 
 /**
  * Integration tests for JavaScript components and aggregate contexts
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class JSComponentContextTestCase extends TestCase {
 
     public void testBasicInvocation() throws Exception {
-        MessageFactory msgFactory = new MessageFactoryImpl();
-
-        JavaScriptContextFactoryBuilder javaBuilder = new JavaScriptContextFactoryBuilder();
-        javaBuilder.setMessageFactory(msgFactory);
-        javaBuilder.setProxyFactoryFactory(new JDKProxyFactoryFactory());
-
         MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
-        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, true);
-        HierarchicalBuilder refBuilder = new HierarchicalBuilder();
-        refBuilder.addBuilder(interceptorBuilder);
-        javaBuilder.setReferenceBuilder(refBuilder);
+        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor);
+        PolicyBuilderRegistry policyRegistry = new DefaultPolicyBuilderRegistry();
+        policyRegistry.registerSourceBuilder(interceptorBuilder);
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryFactory(), policyRegistry);
+        JavaScriptContextFactoryBuilder jsBuilder = new JavaScriptContextFactoryBuilder(wireService);
 
         ContextFactoryBuilderRegistry builderRegistry = BootstrapHelper.bootstrapContextFactoryBuilders(new NullMonitorFactory());
-        builderRegistry.register(javaBuilder);
+        builderRegistry.register(jsBuilder);
         DefaultWireBuilder defaultWireBuilder = new DefaultWireBuilder();
 
         RuntimeContext runtime = new RuntimeContextImpl(null, builderRegistry, defaultWireBuilder);
@@ -76,7 +72,7 @@ public class JSComponentContextTestCase extends TestCase {
 
         HelloWorldService source = (HelloWorldService) child.getContext("source").getInstance(new QualifiedName("./HelloWorldService"));
         Assert.assertNotNull(source);
-        Assert.assertEquals("Hello foo",source.hello("foo"));
+        Assert.assertEquals("Hello foo", source.hello("foo"));
         //Assert.assertEquals(1, mockInterceptor.getCount());
         child.publish(new ModuleStop(this));
         runtime.stop();
