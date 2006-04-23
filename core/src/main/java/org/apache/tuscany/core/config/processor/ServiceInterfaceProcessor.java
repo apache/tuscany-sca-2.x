@@ -30,7 +30,7 @@ public class ServiceInterfaceProcessor extends AnnotationProcessorSupport {
 
 
     @Override
-    public void visitClass(Class clazz, Annotation annotation, ComponentInfo type) {
+    public void visitImplementationClass(Class clazz, Annotation annotation, ComponentInfo type) {
         if (!(annotation instanceof org.osoa.sca.annotations.Service)) {
             return;
         }

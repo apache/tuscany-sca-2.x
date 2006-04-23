@@ -14,6 +14,8 @@
 package org.apache.tuscany.core.config;
 
 import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.Service;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Constructor;
@@ -26,9 +28,13 @@ import java.lang.reflect.Field;
  */
 public interface AnnotationProcessor {
 
-    public void visitClass(Class clazz, Annotation annotation, ComponentInfo type);
+    public void visitImplementationClass(Class clazz, Annotation annotation, ComponentInfo type);
 
-    public void visitMethod(Method method, Annotation annotation, ComponentInfo type);
+    public void visitServiceInterface(Class clazz, Annotation annotation, Service service);
+
+    public void visitImplementationMethod(Method method, Annotation annotation, ComponentInfo type);
+
+    public void visitServiceMethod(Method method, Annotation annotation, Service service);
 
     public void visitConstructor(Constructor constructor, Annotation annotation, ComponentInfo type);
 

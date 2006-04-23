@@ -18,6 +18,7 @@ import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.Service;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
@@ -52,11 +53,19 @@ public abstract class AnnotationProcessorSupport implements AnnotationProcessor 
         this.factory = factory;
     }
 
-    public void visitClass(Class clazz, Annotation annotation, ComponentInfo type) {
+    public void visitImplementationClass(Class clazz, Annotation annotation, ComponentInfo type) {
 
     }
 
-    public void visitMethod(Method method, Annotation annotation, ComponentInfo type) {
+    public void visitServiceInterface(Class clazz, Annotation annotation, Service service) {
+
+    }
+
+    public void visitServiceMethod(Method method, Annotation annotation, Service service){
+    
+    }
+
+    public void visitImplementationMethod(Method method, Annotation annotation, ComponentInfo type) {
 
     }
 

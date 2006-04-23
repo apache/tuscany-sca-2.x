@@ -13,23 +13,49 @@
  */
 package org.apache.tuscany.core.config.processor;
 
-import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.ServiceContract;
+import org.apache.tuscany.model.assembly.ComponentInfo;
 
 import java.lang.annotation.Annotation;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class ScopeProcessor extends AnnotationProcessorSupport{
+public class ScopeProcessor extends AnnotationProcessorSupport {
 
-    public void visitClass(Class clazz, Annotation annotation, ComponentInfo type) {
-        if (!(annotation instanceof org.osoa.sca.annotations.Scope)){
+    public void visitImplementationClass(Class clazz, Annotation annotation, ComponentInfo type) {
+        if (!(annotation instanceof org.osoa.sca.annotations.Scope)) {
             return;
         }
+        Scope scope = getScope(annotation); // hack for now - set scope to implementation scope
+        for(Service service: type.getServices()){
+            Scope serviceScope = service.getServiceContract().getScope();
+            if (serviceScope == Scope.INSTANCE || serviceScope == null){
+                service.getServiceContract().setScope(scope);
+            }
+        }
+    }
 
+    @Override
+    public void visitServiceInterface(Class clazz, Annotation annotation, Service service) {
+        if (!(annotation instanceof org.osoa.sca.annotations.Scope)) {
+            return;
+        }
+        service.getServiceContract().setScope(getScope(annotation));
+    }
+
+    private Scope getScope(Annotation annotation){
+        org.osoa.sca.annotations.Scope scopeAnnotation = (org.osoa.sca.annotations.Scope) annotation;
+        if ("MODULE".equalsIgnoreCase(scopeAnnotation.value())) {
+           return Scope.MODULE;
+        } else if ("SESSION".equalsIgnoreCase(scopeAnnotation.value())) {
+            return Scope.SESSION;
+        } else if ("REQUEST".equalsIgnoreCase(scopeAnnotation.value())) {
+            return Scope.REQUEST;
+        } else {
+            return Scope.INSTANCE;
+        }
 
     }
 }
