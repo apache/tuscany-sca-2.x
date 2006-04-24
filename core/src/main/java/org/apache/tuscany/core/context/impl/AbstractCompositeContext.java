@@ -36,6 +36,7 @@ import org.apache.tuscany.core.context.MissingContextFactoryException;
 import org.apache.tuscany.core.context.ProxyConfigurationException;
 import org.apache.tuscany.core.context.MissingScopeException;
 import org.apache.tuscany.core.context.AutowireResolutionException;
+import org.apache.tuscany.core.context.Lifecycle;
 import org.apache.tuscany.core.context.event.RequestEnd;
 import org.apache.tuscany.core.context.event.Event;
 import org.apache.tuscany.core.context.event.SessionBound;
@@ -224,7 +225,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         initialized = false;
         if (scopeContexts != null) {
             for (ScopeContext scopeContext : scopeContexts.values()) {
-                if (scopeContext.getLifecycleState() == Context.RUNNING) {
+                if (scopeContext.getLifecycleState() == Lifecycle.RUNNING) {
                     scopeContext.stop();
                 }
             }

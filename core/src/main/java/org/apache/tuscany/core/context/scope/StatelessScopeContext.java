@@ -20,6 +20,7 @@ import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.CoreRuntimeException;
+import org.apache.tuscany.core.context.Lifecycle;
 import org.apache.tuscany.core.context.event.Event;
 import org.apache.tuscany.core.context.event.ModuleStop;
 
@@ -114,7 +115,7 @@ public class StatelessScopeContext extends AbstractScopeContext {
         if (contexts == null){
             return;
         }
-        for(Context context: contexts.values()) {
+        for(Lifecycle context: contexts.values()) {
             try {
                 if (context.getLifecycleState() == RUNNING) {
                     context.stop();

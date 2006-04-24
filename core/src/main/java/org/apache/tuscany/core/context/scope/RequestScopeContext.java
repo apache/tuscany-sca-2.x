@@ -22,6 +22,7 @@ import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.Lifecycle;
 import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.core.context.event.Event;
 import org.apache.tuscany.core.context.event.RequestEnd;
@@ -199,7 +200,7 @@ public class RequestScopeContext extends AbstractScopeContext {
               // shutdown destroyable instances in reverse instantiation order
               ListIterator<Context> iter = destroyQueue.listIterator(destroyQueue.size());
               while(iter.hasPrevious()){
-                  Context context = iter.previous();
+                  Lifecycle context = iter.previous();
                   if (context.getLifecycleState() == RUNNING) {
                       try {
                           if (context instanceof AtomicContext){
@@ -216,7 +217,7 @@ public class RequestScopeContext extends AbstractScopeContext {
           if (currentContexts == null){
              return;
           }
-          for (Context context: currentContexts.values()){
+          for (Lifecycle context: currentContexts.values()){
               if (context.getLifecycleState() == RUNNING) {
                   context.stop();
               }

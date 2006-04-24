@@ -21,7 +21,7 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.Lifecycle;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.mock.MockFactory;
@@ -52,13 +52,13 @@ public class RuntimeBootTestCase extends TestCase {
     }
 
     public void testRuntimeLifecycle() {
-        assertEquals(Context.RUNNING, runtime.getLifecycleState());
+        assertEquals(Lifecycle.RUNNING, runtime.getLifecycleState());
         runtime.stop();
 
-        assertEquals(Context.STOPPED, runtime.getLifecycleState());
+        assertEquals(Lifecycle.STOPPED, runtime.getLifecycleState());
 
         runtime.start();
-        assertEquals(Context.RUNNING, runtime.getLifecycleState());
+        assertEquals(Lifecycle.RUNNING, runtime.getLifecycleState());
     }
 
     public void testIncrementalBoot() throws Exception{
@@ -81,7 +81,7 @@ public class RuntimeBootTestCase extends TestCase {
 
         system.publish(new ModuleStop(this));
         runtimeContext.stop();
-        Assert.assertEquals(Context.STOPPED,system.getLifecycleState());
+        Assert.assertEquals(Lifecycle.STOPPED,system.getLifecycleState());
     }
 
     protected void setUp() throws Exception {

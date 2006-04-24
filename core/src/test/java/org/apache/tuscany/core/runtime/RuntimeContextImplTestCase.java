@@ -24,7 +24,7 @@ import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.Lifecycle;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
@@ -63,7 +63,7 @@ public class RuntimeContextImplTestCase extends TestCase {
     public void testSystemExplicitWiring() throws Exception {
         CompositeContext root = runtime.getRootContext();
         Assert.assertNotNull(root);
-        Assert.assertTrue(root.getLifecycleState() == Context.RUNNING);
+        Assert.assertTrue(root.getLifecycleState() == Lifecycle.RUNNING);
 
         CompositeContext system = runtime.getSystemContext();
         Assert.assertNotNull(system);
@@ -108,7 +108,7 @@ public class RuntimeContextImplTestCase extends TestCase {
     public void testSystemAutoWiring() throws Exception {
         CompositeContext root = runtime.getRootContext();
         Assert.assertNotNull(root);
-        Assert.assertTrue(root.getLifecycleState() == Context.RUNNING);
+        Assert.assertTrue(root.getLifecycleState() == Lifecycle.RUNNING);
 
         CompositeContext system = runtime.getSystemContext();
         Assert.assertNotNull(system);
