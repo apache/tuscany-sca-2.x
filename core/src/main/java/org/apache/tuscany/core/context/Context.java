@@ -23,21 +23,6 @@ package org.apache.tuscany.core.context;
  * @version $Rev$ $Date$
  */
 public interface Context extends EventPublisher, Lifecycle {
-
-    /* A configuration error state */
-    public static final int CONFIG_ERROR = -1;
-
-    /**
-     * Returns the name of the context
-     */
-    public String getName();
-
-    /**
-     * Sets the name of the context
-     */
-    public void setName(String name);
-
-
     /**
      * Returns the instance associated with the requested name, which may be in a atomic or composite form. Atomic (i.e.
      * leaf) contexts will return an instance associated with the service name part of the compound name, which may be

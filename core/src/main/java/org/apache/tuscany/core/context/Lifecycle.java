@@ -20,6 +20,8 @@ package org.apache.tuscany.core.context;
  * @version $Rev$ $Date$
  */
 public interface Lifecycle {
+    /* A configuration error state */
+    int CONFIG_ERROR = -1;
     /* Has not been initialized */
     int UNINITIALIZED = 0;
     /* In the process of being configured and initialized */
@@ -50,16 +52,28 @@ public interface Lifecycle {
     int getLifecycleState();
 
     /**
-     * Starts the container
+     * Starts the Lifecycle.
      *
-     * @throws org.apache.tuscany.core.context.CoreRuntimeException
+     * @throws CoreRuntimeException
      */
     void start() throws CoreRuntimeException;
 
     /**
-     * Stops the container
+     * Stops the Lifecycle.
      *
-     * @throws org.apache.tuscany.core.context.CoreRuntimeException
+     * @throws CoreRuntimeException
      */
     void stop() throws CoreRuntimeException;
+
+    /**
+     * Returns the name of the Lifecycle.
+     * @return the name of the Lifecycle
+     */
+    String getName();
+
+    /**
+     * Sets the name of the Lifecycle.
+     * @param name the name of the Lifecycle
+     */
+    void setName(String name);
 }

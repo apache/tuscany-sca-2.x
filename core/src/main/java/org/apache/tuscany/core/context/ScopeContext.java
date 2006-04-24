@@ -27,7 +27,9 @@ import java.util.List;
  * 
  * @version $Rev$ $Date$
  */
-public interface ScopeContext extends Context, RuntimeEventListener {
+public interface ScopeContext extends Lifecycle, RuntimeEventListener {
+
+    public Object getInstance(QualifiedName qName) throws TargetException;
 
     /**
      * Returns whether implementation instances may be held for the duration of an wire

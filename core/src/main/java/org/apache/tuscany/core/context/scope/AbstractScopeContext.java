@@ -16,24 +16,24 @@
  */
 package org.apache.tuscany.core.context.scope;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.impl.AbstractContext;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import org.apache.tuscany.core.context.impl.AbstractLifecycle;
 
 /**
  * Implements functionality common to scope contexts.
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractScopeContext extends AbstractContext implements ScopeContext {
+public abstract class AbstractScopeContext extends AbstractLifecycle implements ScopeContext {
 
     // The collection of runtime configurations for the scope
     protected Map<String, ContextFactory<Context>> contextFactories = new ConcurrentHashMap<String, ContextFactory<Context>>();
@@ -63,8 +63,8 @@ public abstract class AbstractScopeContext extends AbstractContext implements Sc
     }
 
     protected void checkInit() {
-        if (lifecycleState != RUNNING) {
-            throw new IllegalStateException("Scope not running [" + lifecycleState + "]");
+        if (getLifecycleState() != RUNNING) {
+            throw new IllegalStateException("Scope not running [" + getLifecycleState() + "]");
         }
     }
 

@@ -16,24 +16,24 @@
  */
 package org.apache.tuscany.core.context.scope;
 
-import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.impl.AbstractContext;
-import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.ScopeInitializationException;
-import org.apache.tuscany.core.context.ScopeRuntimeException;
-import org.apache.tuscany.core.context.event.ModuleStart;
-import org.apache.tuscany.core.context.event.ModuleStop;
-import org.apache.tuscany.core.context.event.Event;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.core.context.CompositeContext;
+import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.core.context.ScopeContext;
+import org.apache.tuscany.core.context.ScopeInitializationException;
+import org.apache.tuscany.core.context.ScopeRuntimeException;
+import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.event.Event;
+import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.event.ModuleStop;
+import org.apache.tuscany.core.context.impl.AbstractLifecycle;
 
 /**
  * Manages the lifecycle of composite component contexts, i.e. contexts which contain child contexts
@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see org.apache.tuscany.core.context.CompositeContext
  * @version $Rev$ $Date$
  */
-public class CompositeScopeContext extends AbstractContext implements ScopeContext {
+public class CompositeScopeContext extends AbstractLifecycle implements ScopeContext {
 
     private List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
 
@@ -53,7 +53,7 @@ public class CompositeScopeContext extends AbstractContext implements ScopeConte
 
     public CompositeScopeContext(EventContext eventContext) {
         assert (eventContext != null) : "Event context was null";
-        name = "Composite Scope";
+        setName("Composite Scope");
     }
 
     public void start() throws ScopeInitializationException {
@@ -84,7 +84,7 @@ public class CompositeScopeContext extends AbstractContext implements ScopeConte
     public void registerFactory(ContextFactory<Context> configuration) {
         assert (configuration != null) : "Configuration was null";
         configs.add(configuration);
-        if (lifecycleState == RUNNING) {
+        if (getLifecycleState() == RUNNING) {
             Context context = configuration.createContext();
             if (!(context instanceof CompositeContext)) {
                 ScopeInitializationException e = new ScopeInitializationException("Context not an composite type");
@@ -148,8 +148,8 @@ public class CompositeScopeContext extends AbstractContext implements ScopeConte
     }
 
     private void checkInit() {
-        if (lifecycleState != RUNNING) {
-            throw new IllegalStateException("Scope not running [" + lifecycleState + "]");
+        if (getLifecycleState()!= RUNNING) {
+            throw new IllegalStateException("Scope not running [" + getLifecycleState() + "]");
         }
     }
 }
