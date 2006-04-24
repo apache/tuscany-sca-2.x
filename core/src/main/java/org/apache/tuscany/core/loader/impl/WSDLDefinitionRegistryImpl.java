@@ -18,6 +18,8 @@ package org.apache.tuscany.core.loader.impl;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,9 +33,9 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.Scope;
-
+import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
+import org.osoa.sca.annotations.Scope;
 
 /**
  * @version $Rev$ $Date$
@@ -61,6 +63,30 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
 
     public ExtensionRegistry getExtensionRegistry() {
         return registry;
+    }
+
+    public Definition loadDefinition(String wsdlLocation, ResourceLoader resourceLoader) throws IOException, WSDLException {
+        int index = wsdlLocation.indexOf(' ');
+        if (index == -1) {
+            throw new WSDLException(WSDLException.CONFIGURATION_ERROR, "Invalid wsdlLocation: " + wsdlLocation);
+        }
+        String namespace = wsdlLocation.substring(0, index).trim();
+        URL url;
+        URI uri;
+        try {
+            uri = new URI(wsdlLocation.substring(index + 1).trim());
+        } catch (URISyntaxException e) {
+            throw new WSDLException(WSDLException.CONFIGURATION_ERROR, "Invalid wsdlLocation: " + wsdlLocation);
+        }
+        if (uri.isAbsolute()) {
+            url = uri.toURL();
+        } else {
+            url = resourceLoader.getResource(uri.toString());
+            if (url == null) {
+                throw new WSDLException(WSDLException.CONFIGURATION_ERROR, "Resource not found: " + uri);
+            }
+        }
+        return loadDefinition(namespace, url);
     }
 
     public Definition loadDefinition(String namespace, URL location) throws IOException, WSDLException {

@@ -41,8 +41,22 @@ public class InterfaceWSDLLoaderTestCase extends LoaderTestSupport {
         assertNotNull(sc);
     }
 
-    public void testInterface() throws XMLStreamException, ConfigurationLoadException {
+    public void testInterface() throws Exception {
+        wsdlRegistry.loadDefinition("http://www.example.org", getClass().getResource("example.wsdl"));
         String xml = "<interface.wsdl xmlns='http://www.osoa.org/xmlns/sca/0.9' interface='http://www.example.org#HelloWorld'></interface.wsdl>";
+        XMLStreamReader reader = getReader(xml);
+        WSDLServiceContract sc = (WSDLServiceContract) registry.load(reader, loaderContext);
+        reader.require(XMLStreamConstants.END_ELEMENT, INTERFACE_WSDL.getNamespaceURI(), INTERFACE_WSDL.getLocalPart());
+        assertEquals(XMLStreamConstants.END_DOCUMENT, reader.next());
+        assertNotNull(sc);
+    }
+
+    public void testInterfaceWithLocation() throws Exception {
+        wsdlRegistry.loadDefinition("http://www.example.org", getClass().getResource("example.wsdl"));
+        String xml = "<interface.wsdl xmlns='http://www.osoa.org/xmlns/sca/0.9' xmlns:wsdli='http://www.w3.org/2006/01/wsdl-instance' " +
+                "wsdli:wsdlLocation='http://www.example.org " + getClass().getResource("example.wsdl") + "' "+
+                "interface='http://www.example.org#HelloWorld'"+
+                "></interface.wsdl>";
         XMLStreamReader reader = getReader(xml);
         WSDLServiceContract sc = (WSDLServiceContract) registry.load(reader, loaderContext);
         reader.require(XMLStreamConstants.END_ELEMENT, INTERFACE_WSDL.getNamespaceURI(), INTERFACE_WSDL.getLocalPart());

@@ -19,15 +19,28 @@ package org.apache.tuscany.core.loader;
 import org.apache.tuscany.common.resource.ResourceLoader;
 
 /**
+ * Context holder that can be used during the load process to store information
+ * that is not part of the logical model. This should be regarded as transient
+ * and references to this context should not be stored inside the model.
+ *
  * @version $Rev$ $Date$
  */
 public class LoaderContext {
     private final ResourceLoader resourceLoader;
 
+    /**
+     * Constructor specifying the loader for application resources.
+     *
+     * @param resourceLoader the loader for application resources
+     */
     public LoaderContext(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 
+    /**
+     * Returns a resource loader that can be used to load application resources.
+     * @return a resource loader that can be used to load application resources
+     */
     public ResourceLoader getResourceLoader() {
         return resourceLoader;
     }

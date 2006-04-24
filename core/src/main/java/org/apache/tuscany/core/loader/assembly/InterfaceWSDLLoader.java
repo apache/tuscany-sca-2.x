@@ -16,6 +16,8 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
+import java.io.IOException;
+
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.MissingInterfaceException;
 import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
@@ -29,12 +31,16 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.wsdl.PortType;
+import javax.wsdl.WSDLException;
 
 /**
  * @version $Rev$ $Date$
  */
 @org.osoa.sca.annotations.Scope("MODULE")
 public class InterfaceWSDLLoader extends AbstractLoader {
+    private static final String WSDLI = "http://www.w3.org/2006/01/wsdl-instance";
+    private static final String WSDLI_LOCATION = "wsdlLocation";
+
     private WSDLDefinitionRegistry wsdlRegistry;
 
     @Autowire
@@ -50,6 +56,17 @@ public class InterfaceWSDLLoader extends AbstractLoader {
         assert AssemblyConstants.INTERFACE_WSDL.equals(reader.getName());
         WSDLServiceContract serviceContract = factory.createWSDLServiceContract();
         serviceContract.setScope(Scope.INSTANCE);
+
+        String location = reader.getAttributeValue(WSDLI, WSDLI_LOCATION);
+        if (location != null) {
+            try {
+                wsdlRegistry.loadDefinition(location, loaderContext.getResourceLoader());
+            } catch (IOException e) {
+                throw new MissingInterfaceException(e);
+            } catch (WSDLException e) {
+                throw new MissingInterfaceException(e);
+            }
+        }
 
         String portTypeURI = reader.getAttributeValue(null, "interface");
         if (portTypeURI != null) {

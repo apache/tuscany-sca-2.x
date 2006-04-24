@@ -25,6 +25,8 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensionRegistry;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.common.resource.ResourceLoader;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -35,10 +37,21 @@ public interface WSDLDefinitionRegistry {
      * @param namespace the expected namespace, or null if any namespace should be allowed
      * @param location  the location to load the definition from
      * @return the loaded Definition
-     * @throws IOException if there was a problem reading the document
+     * @throws IOException   if there was a problem reading the document
      * @throws WSDLException if there was a problem parsing the definition
      */
     Definition loadDefinition(String namespace, URL location) throws IOException, WSDLException;
+
+    /**
+     * Load and register a WSDL definition as specified in a WSDL2.0 wsdlLocation attribute.
+     *
+     * @param wsdlLocation   the value of the wsdlLocation attribute
+     * @param resourceLoader application resource loader used to support relative locations
+     * @return the loaded Definition
+     * @throws IOException   if there was a problem reading the document
+     * @throws WSDLException if there was a problem parsing the definition
+     */
+    Definition loadDefinition(String wsdlLocation, ResourceLoader resourceLoader) throws IOException, WSDLException;
 
     /**
      * Returns the PortType with the supplied qualified name, or null if no such port has been defined.
@@ -56,12 +69,12 @@ public interface WSDLDefinitionRegistry {
      */
     Service getService(QName name);
 
-    
+
     /**
      * Returns the ExtensionRegistry that is used when parsing WSDL documents during the
      * loadDefinition call.
-     * 
-     * @return the ExtensionRegistry that is used when parsing WSDL documents.       
+     *
+     * @return the ExtensionRegistry that is used when parsing WSDL documents.
      */
     ExtensionRegistry getExtensionRegistry();
 }
