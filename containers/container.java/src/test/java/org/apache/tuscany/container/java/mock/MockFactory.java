@@ -16,17 +16,9 @@
  */
 package org.apache.tuscany.container.java.mock;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import junit.framework.Assert;
-import org.osoa.sca.annotations.ComponentName;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-
+import org.apache.tuscany.common.monitor.MonitorFactory;
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
 import org.apache.tuscany.container.java.assembly.impl.JavaAssemblyFactoryImpl;
@@ -50,11 +42,12 @@ import org.apache.tuscany.container.java.mock.components.TargetImpl;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
-import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
-import org.apache.tuscany.core.builder.system.PolicyBuilderRegistry;
-import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
+import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
+import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
+import org.apache.tuscany.core.builder.system.PolicyBuilderRegistry;
+import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.CompositeContext;
@@ -68,6 +61,8 @@ import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
+import org.apache.tuscany.core.message.MessageFactory;
+import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
@@ -76,12 +71,9 @@ import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
-import org.apache.tuscany.core.client.BootstrapHelper;
-import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
-import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.wire.WireFactoryFactory;
-import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
 import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
+import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AtomicComponent;
 import org.apache.tuscany.model.assembly.Component;
@@ -97,8 +89,15 @@ import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
-import org.apache.tuscany.common.monitor.MonitorFactory;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
+import org.osoa.sca.annotations.ComponentName;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Generates test components, modules, and runtime artifacts
@@ -294,8 +293,8 @@ public class MockFactory {
     }
 
     /**
-     * Creates a module with a Java-based source component wired to a "target" external service configured with the
-     * {@link FooBinding}
+     * Creates a module with a Java-based source component wired to a "target" external service configured with the {@link
+     * FooBinding}
      */
     public static Module createModuleWithExternalService() {
         Component sourceComponent = createComponent("source", HelloWorldClient.class, Scope.MODULE);
@@ -332,8 +331,8 @@ public class MockFactory {
     }
 
     /**
-     * Creates a module with an entry point named "source" configured with the {@link FooBinding} wired to a service
-     * offered by a Java-based component named "target"
+     * Creates a module with an entry point named "source" configured with the {@link FooBinding} wired to a service offered by a
+     * Java-based component named "target"
      *
      * @param scope the scope of the target service
      */
@@ -373,6 +372,49 @@ public class MockFactory {
         return module;
     }
 
+    /**
+     * Creates a module with an entry point wired to a "target" external service configured with the {@link FooBinding}
+     */
+    public static Module createModuleWithEntryPointToExternalService() {
+        //Component sourceComponent = createComponent("source", HelloWorldClient.class, Scope.MODULE);
+
+        EntryPoint sourceEP = createFooBindingEntryPoint("source", HelloWorldService.class);
+        sourceEP.getConfiguredService().getPort().setName("HelloWorldService");
+        sourceEP.initialize(assemblyContext);
+
+
+        ExternalService targetES = createFooBindingExternalService("target", HelloWorldService.class);
+
+        Service targetService = factory.createService();
+        JavaServiceContract targetContract = factory.createJavaServiceContract();
+        targetContract.setInterface(HelloWorldService.class);
+        targetService.setServiceContract(targetContract);
+        targetService.setName("HelloWorld");
+        ConfiguredService cTargetService = factory.createConfiguredService();
+        cTargetService.setPort(targetService);
+        targetES.setConfiguredService(cTargetService);
+        targetES.initialize(assemblyContext);
+
+        Reference ref = factory.createReference();
+        ref.setName("setHelloWorldService");
+        JavaServiceContract inter = factory.createJavaServiceContract();
+        inter.setInterface(HelloWorldService.class);
+        ref.setServiceContract(inter);
+
+
+        ConfiguredReference cref = factory.createConfiguredReference(ref.getName(), "target");
+        cref.setPort(ref);
+        cref.initialize(assemblyContext);
+        sourceEP.setConfiguredReference(cref);
+        sourceEP.initialize(assemblyContext);
+
+        Module module = factory.createModule();
+        module.setName("test.module");
+        module.getEntryPoints().add(sourceEP);
+        module.getExternalServices().add(targetES);
+        module.initialize(assemblyContext);
+        return module;
+    }
 
 
     /**
@@ -443,7 +485,6 @@ public class MockFactory {
         cReference2.initialize(assemblyContext);
         source.getConfiguredReferences().add(cReference2);
 
-
         // wire multiplicity using a field
         JavaServiceContract refContract3 = systemFactory.createJavaServiceContract();
         refContract3.setInterface(Target.class);
@@ -482,7 +523,7 @@ public class MockFactory {
 
     /**
      * Creates a test system module with source and target components wired together.
-     * 
+     *
      * @see org.apache.tuscany.core.mock.component.Source
      * @see org.apache.tuscany.core.mock.component.Target
      */
@@ -548,7 +589,6 @@ public class MockFactory {
         cReference2.initialize(assemblyContext);
         source.getConfiguredReferences().add(cReference2);
 
-
         // wire multiplicity using a field
         JavaServiceContract refContract3 = systemFactory.createJavaServiceContract();
         refContract3.setInterface(Target.class);
@@ -585,7 +625,6 @@ public class MockFactory {
     }
 
 
-
     /**
      * Returns a collection of bootstrap configuration builders
      */
@@ -600,7 +639,7 @@ public class MockFactory {
     /**
      * Creates an composite context faxtory
      *
-     * @param name             the name of the component
+     * @param name the name of the component
      * @throws BuilderException
      * @see ContextFactory
      */

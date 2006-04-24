@@ -15,12 +15,15 @@ package org.apache.tuscany.core.config.processor;
 
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.InvalidSetterException;
+import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Property;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.ServiceContract;
+import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.osoa.sca.annotations.Remotable;
+import org.osoa.sca.annotations.Scope;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -32,11 +35,20 @@ import java.util.List;
 /**
  * @version $$Rev$$ $$Date$$
  */
+@Scope("MODULE")
 public class ReferenceAndPropertyProcessor extends AnnotationProcessorSupport {
 
+    private AssemblyFactory assemblyFactory;
+
+    @Autowire
+    public void setAssemblyFactory(AssemblyFactory assemblyFactory) {
+        this.assemblyFactory = assemblyFactory;
+    }
 
     public void visitImplementationMethod(Method method, Annotation annotation, ComponentInfo type) {
-
+        if (annotation instanceof org.osoa.sca.annotations.Property){
+        //    type.getProperties().add()
+        }
     }
 
     public void visitField(Field field, Annotation annotation, ComponentInfo type) {

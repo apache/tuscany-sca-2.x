@@ -42,15 +42,7 @@ public class NonProxiedTargetFactory<T> implements ObjectFactory<T> {
         assert (resolver != null) : "Context resolver was null";
 
         this.resolver = resolver;
-        if (targetService.getPart() == null) {
-            // FIXME not correct
-            if (targetService.getPort() == null) {
-                throw new FactoryInitException("No target service specified");
-            }
-            targetName = new QualifiedName(targetService.getPort().getName());
-        } else {
-            targetName = new QualifiedName(targetService.getPart().getName());
-        }
+        targetName = new QualifiedName(targetService.getPart().getName());
         qualifiedServiceName = new QualifiedName("./"+targetName.getPortName());
     }
 

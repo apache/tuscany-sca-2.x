@@ -379,6 +379,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                 }
                 for (ExternalService es : newModule.getExternalServices()) {
                     ContextFactory<Context> contextFactory = (ContextFactory<Context>) es.getContextFactory();
+                    wireSource(contextFactory);
                     buildTarget(contextFactory);
                     contextFactory.prepare(this);
                     try {

@@ -3,11 +3,13 @@ package org.apache.tuscany.container.java.mock.binding.foo;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
-import org.apache.tuscany.core.wire.TargetWireFactory;
-import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.core.wire.TargetInvoker;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.osoa.sca.annotations.Init;
 
 public class FooBindingWireBuilder implements WireBuilder {
@@ -15,7 +17,7 @@ public class FooBindingWireBuilder implements WireBuilder {
     public FooBindingWireBuilder() {
         super();
     }
-    
+
     private RuntimeContext runtimeContext;
 
     @Autowire
@@ -23,35 +25,36 @@ public class FooBindingWireBuilder implements WireBuilder {
         runtimeContext = context;
     }
 
-    @Init(eager=true)
+    @Init(eager = true)
     public void init() {
         runtimeContext.addBuilder(this);
     }
 
 
     public void connect(SourceWireFactory sourceFactory, TargetWireFactory targetFactory, Class targetType, boolean downScope,
-            ScopeContext targetScopeContext) throws BuilderConfigException {
+                        ScopeContext targetScopeContext) throws BuilderConfigException {
         if (!FooExternalServiceContextFactory.class.isAssignableFrom(targetType)) {
             return;
         }
         for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getConfiguration().getInvocationConfigurations()
                 .values()) {
-            FooESTargetInvoker invoker = new FooESTargetInvoker(sourceFactory.getConfiguration().getTargetName()
-                    .getPartName(), targetScopeContext);
+            FooExternalServiceTargetInvoker invoker = new FooExternalServiceTargetInvoker(sourceFactory.getConfiguration().getTargetName()
+                    .getPartName());
             sourceInvocationConfig.setTargetInvoker(invoker);
-            // if (downScope) {
-            // // the source scope is shorter than the target, so the invoker can cache the target instance
-            // invoker.setCacheable(true);
-            // } else {
-            // invoker.setCacheable(false);
-            // }
         }
 
     }
 
     public void completeTargetChain(TargetWireFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
             throws BuilderConfigException {
-        // TODO implement
+        if (FooExternalServiceContextFactory.class.isAssignableFrom(targetType)) {
+            for (TargetInvocationConfiguration targetInvocationConfig : targetFactory.getConfiguration().getInvocationConfigurations()
+                    .values()) {
+                TargetInvoker invoker = new FooExternalServiceTargetInvoker(targetFactory.getConfiguration().getTargetName().getQualifiedName());
+                targetInvocationConfig.setTargetInvoker(invoker);
+            }
+
+        }
     }
 
 }

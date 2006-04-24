@@ -267,9 +267,13 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
             String partName = sourceURI.getPartName();
             String referenceName = sourceURI.getServiceName();
             if (referenceName != null) {
-                Component<?> component = (Component<?>)getPart(partName);
-                if (component != null) {
-                    configuredReference = component.getConfiguredReference(referenceName);
+                //Component<?> component = (Component<?>)getPart(partName);
+//                if (component != null) {
+                Part part = getPart(partName);
+                if (part instanceof Component){
+                    configuredReference = ((Component)part).getConfiguredReference(referenceName);
+                } else if (part instanceof EntryPoint){
+                    configuredReference = ((EntryPoint)part).getConfiguredReference();
                 }
             } else {
                 EntryPoint entryPoint = (EntryPoint)getPart(partName);

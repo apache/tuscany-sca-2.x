@@ -13,48 +13,30 @@
  */
 package org.apache.tuscany.container.java.mock.binding.foo;
 
-import java.lang.reflect.InvocationTargetException;
-
+import org.apache.tuscany.core.context.ExternalServiceContext;
+import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.wire.Interceptor;
 import org.apache.tuscany.core.wire.TargetInvoker;
-import org.apache.tuscany.core.message.Message;
-import org.apache.tuscany.core.context.ExternalServiceContext;
-import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.Context;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
- * Responsible for invoking a mock transport binding client configured for an external service
- * 
+ * Responsible for invoking a mock transport binding client configured for an external service over a wire
+ *
  * @version $Rev$ $Date$
  */
-public class FooESTargetInvoker implements TargetInvoker {
+public class FooExternalServiceTargetInvoker implements TargetInvoker {
 
     private String name;
-
-    private ScopeContext container;
-
     private ExternalServiceContext context;
 
-    public FooESTargetInvoker(String esName, ScopeContext container) {
+    public FooExternalServiceTargetInvoker(String esName) {
         assert (esName != null) : "No external service name specified";
-        assert (container != null) : "No scope container specified";
-        name = esName;
-        this.container = container;
+        name = esName; // name is not used; it is included for illustration
     }
 
     public Object invokeTarget(Object payload) throws InvocationTargetException {
-        if (context == null) {
-            Context iContext = container.getContext(name);
-            if (!(iContext instanceof ExternalServiceContext)) {
-                TargetException te = new TargetException("Unexpected target context type");
-                te.setIdentifier(iContext.getClass().getName());
-                te.addContextName(iContext.getName());
-                throw te;
-            }
-            context = (ExternalServiceContext) iContext;
-        }
-        FooClient client = (FooClient) context.getHandler();
+        FooClient client = new FooClient();
         if (payload != null) {
             return client.invoke(payload);
         } else {
@@ -84,8 +66,7 @@ public class FooESTargetInvoker implements TargetInvoker {
 
     public Object clone() throws CloneNotSupportedException {
         try {
-            FooESTargetInvoker invoker = (FooESTargetInvoker) super.clone();
-            invoker.container = container;
+            FooExternalServiceTargetInvoker invoker = (FooExternalServiceTargetInvoker) super.clone();
             invoker.context = this.context;
             invoker.name = this.name;
             return invoker;
