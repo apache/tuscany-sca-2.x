@@ -16,7 +16,10 @@
  */
 package org.apache.tuscany.binding.axis2.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.List;
@@ -147,8 +150,7 @@ public final class AxiomHelper {
     public static DataObject toDataObject(TypeHelper typeHelper, OMElement omElement) {
         try {
 
-            PipedOutputStream pos = new PipedOutputStream();
-            PipedInputStream pis = new PipedInputStream(pos);
+            ByteArrayOutputStream pos = new java.io.ByteArrayOutputStream();
 
             ClassLoader ccl = Thread.currentThread().getContextClassLoader();
             try {
@@ -161,7 +163,7 @@ public final class AxiomHelper {
             pos.flush();
             pos.close();
 
-            XMLDocument document = new XMLHelperImpl(typeHelper).load(pis);
+            XMLDocument document = new XMLHelperImpl(typeHelper).load(new ByteArrayInputStream(pos.toByteArray() ));
 
             return document.getRootObject();
 
