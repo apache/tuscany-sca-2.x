@@ -117,10 +117,7 @@ public class ExternalWebServiceClient {
             options.setAction(soapAction);
         }
 
-        // If use is encoded assume its an old style service and wont understand chunking
-        if ("encoded".equals(operationMetaData.getUse())) {
-            options.setProperty(MessageContextConstants.CHUNKED, Boolean.FALSE);
-        }
+        options.setProperty(MessageContextConstants.CHUNKED, Boolean.FALSE);
 
         serviceClient.setOptions(options);
     }
