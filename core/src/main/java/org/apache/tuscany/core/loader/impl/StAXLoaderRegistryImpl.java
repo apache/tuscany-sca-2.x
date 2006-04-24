@@ -16,10 +16,10 @@
  */
 package org.apache.tuscany.core.loader.impl;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 
@@ -52,7 +52,7 @@ public class StAXLoaderRegistryImpl implements StAXLoaderRegistry {
         loaders.remove(element);
     }
 
-    public AssemblyObject load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public AssemblyObject load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         QName name = reader.getName();
         monitor.elementLoad(name);
         StAXElementLoader<? extends AssemblyObject> loader = loaders.get(name);
@@ -61,7 +61,7 @@ public class StAXLoaderRegistryImpl implements StAXLoaderRegistry {
             e.setIdentifier(name.toString());
             throw e;
         } else {
-            return loader.load(reader, resourceLoader);
+            return loader.load(reader, loaderContext);
         }
     }
 

@@ -16,8 +16,8 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 
@@ -34,7 +34,7 @@ public class InterfaceJavaLoader extends AbstractLoader {
         return AssemblyConstants.INTERFACE_JAVA;
     }
 
-    public JavaServiceContract load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public JavaServiceContract load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         assert AssemblyConstants.INTERFACE_JAVA.equals(reader.getName());
         JavaServiceContract serviceContract = factory.createJavaServiceContract();
         serviceContract.setScope(Scope.INSTANCE);

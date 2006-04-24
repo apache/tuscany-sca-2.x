@@ -16,8 +16,8 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.model.assembly.ModuleFragment;
 import org.osoa.sca.annotations.Scope;
 
@@ -34,9 +34,9 @@ public class ModuleFragmentLoader extends AggregateLoader {
         return AssemblyConstants.MODULE_FRAGMENT;
     }
 
-    public ModuleFragment load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public ModuleFragment load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         ModuleFragment fragment = factory.createModuleFragment();
-        loadAggregate(reader, fragment, resourceLoader);
+        loadAggregate(reader, fragment, loaderContext);
         return fragment;
     }
 }

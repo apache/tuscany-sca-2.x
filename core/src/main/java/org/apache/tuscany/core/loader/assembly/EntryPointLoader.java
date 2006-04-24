@@ -16,9 +16,9 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXUtil;
+import org.apache.tuscany.core.loader.LoaderContext;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.ENTRY_POINT;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Binding;
@@ -46,7 +46,7 @@ public class EntryPointLoader extends AbstractLoader {
         return ENTRY_POINT;
     }
 
-    public EntryPoint load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public EntryPoint load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         assert ENTRY_POINT.equals(reader.getName());
         EntryPoint entryPoint = factory.createEntryPoint();
         String name = reader.getAttributeValue(null, "name");
@@ -72,7 +72,7 @@ public class EntryPointLoader extends AbstractLoader {
                     String uri = reader.getElementText();
                     configuredReference.getTargets().add(uri);
                 } else {
-                    AssemblyObject o = registry.load(reader, resourceLoader);
+                    AssemblyObject o = registry.load(reader, loaderContext);
                     if (o instanceof Binding) {
                         entryPoint.getBindings().add((Binding) o);
                     } else if (o instanceof ServiceContract) {

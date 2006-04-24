@@ -16,14 +16,13 @@
  */
 package org.apache.tuscany.core.loader;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyObject;
-
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.namespace.QName;
 
 /**
  * Registry for XML loaders that can parse a StAX input stream and return model objects.
@@ -45,15 +44,15 @@ public interface StAXLoaderRegistry {
      * during its initialization.
      *
      * @param element the element that should be delegated to the contibuted loader
-     * @param loader a loader that is being contributed to the system
-
+     * @param loader  a loader that is being contributed to the system
      */
     <T extends AssemblyObject> void registerLoader(QName element, StAXElementLoader<T> loader);
 
     /**
      * Unregister a loader. This will typically be called by a loader as it is being destroyed.
+     *
      * @param element the element that was being delegated to the contibuted loader
-     * @param loader a loader that should no longer be used
+     * @param loader  a loader that should no longer be used
      */
     <T extends AssemblyObject> void unregisterLoader(QName element, StAXElementLoader<T> loader);
 
@@ -65,12 +64,12 @@ public interface StAXLoaderRegistry {
      * When this method returns, the stream will be positioned on the corresponding
      * END_ELEMENT event.
      *
-     * @param reader the XML stream to parse
-     * @param resourceLoader a resource loader for application artifacts
+     * @param reader        the XML stream to parse
+     * @param loaderContext
      * @return the model object obtained by parsing the current element on the stream
      * @throws XMLStreamException if there was a problem reading the stream
      */
-    AssemblyObject load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException;
+    AssemblyObject load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException;
 
     /**
      * Hack to allow loaders to initialize model objects on the fly.

@@ -34,6 +34,7 @@ import org.apache.tuscany.core.config.MissingResourceException;
 import org.apache.tuscany.core.config.SidefileLoadException;
 import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
+import org.apache.tuscany.core.loader.LoaderContext;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.IMPORT_WSDL;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyContext;
@@ -58,13 +59,13 @@ public class ImportWSDLLoader extends AbstractLoader {
         return IMPORT_WSDL;
     }
 
-    public ImportWSDL load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public ImportWSDL load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         assert AssemblyConstants.IMPORT_WSDL.equals(reader.getName());
         String namespace = reader.getAttributeValue(null, "namespace");
         String location = reader.getAttributeValue(null, "location");
         ImportWSDL importWSDL = factory.createImportWSDL(location, namespace);
 
-        Definition definition = loadDefinition(namespace, location, resourceLoader);
+        Definition definition = loadDefinition(namespace, location, loaderContext.getResourceLoader());
 //        importWSDL.setDefinition(definition);
 
         StAXUtil.skipToEndElement(reader);

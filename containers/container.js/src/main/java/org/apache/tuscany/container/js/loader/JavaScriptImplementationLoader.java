@@ -38,6 +38,7 @@ import org.apache.tuscany.core.config.InvalidRootElementException;
 import org.apache.tuscany.core.config.SidefileLoadException;
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.loader.assembly.AssemblyConstants;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.ComponentInfo;
@@ -75,18 +76,18 @@ public class JavaScriptImplementationLoader implements StAXElementLoader<JavaScr
         registry.unregisterLoader(IMPLEMENTATION_JS, this);
     }
 
-    public JavaScriptImplementation load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public JavaScriptImplementation load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         String scriptFile = reader.getAttributeValue(null, "scriptFile");
         String style = reader.getAttributeValue(null, "style");
-        String script = loadScript(scriptFile, resourceLoader);
-        ComponentInfo componentType = loadComponentType(scriptFile, resourceLoader);
+        String script = loadScript(scriptFile, loaderContext.getResourceLoader());
+        ComponentInfo componentType = loadComponentType(scriptFile, loaderContext);
 
         JavaScriptImplementation jsImpl = factory.createJavaScriptImplementation();
         jsImpl.setComponentInfo(componentType);
         jsImpl.setScriptFile(scriptFile);
         jsImpl.setStyle(style);
         jsImpl.setScript(script);
-        jsImpl.setResourceLoader(resourceLoader);
+        jsImpl.setResourceLoader(loaderContext.getResourceLoader());
         return jsImpl;
     }
 
@@ -119,9 +120,9 @@ public class JavaScriptImplementationLoader implements StAXElementLoader<JavaScr
         }
     }
 
-    protected ComponentInfo loadComponentType(String scriptFile, ResourceLoader resourceLoader) throws SidefileLoadException, MissingResourceException{
+    protected ComponentInfo loadComponentType(String scriptFile, LoaderContext loaderContext) throws SidefileLoadException, MissingResourceException{
         String sidefile = scriptFile.substring(0, scriptFile.lastIndexOf('.')) + ".componentType";
-        URL componentTypeFile = resourceLoader.getResource(sidefile);
+        URL componentTypeFile = loaderContext.getResourceLoader().getResource(sidefile);
         if (componentTypeFile == null) {
             throw new MissingResourceException(sidefile);
         }
@@ -139,7 +140,7 @@ public class JavaScriptImplementationLoader implements StAXElementLoader<JavaScr
                         e.setResourceURI(componentTypeFile.toString());
                         throw e;
                     }
-                    return (ComponentInfo) registry.load(reader, resourceLoader);
+                    return (ComponentInfo) registry.load(reader, loaderContext);
                 } finally {
                     try {
                         reader.close();

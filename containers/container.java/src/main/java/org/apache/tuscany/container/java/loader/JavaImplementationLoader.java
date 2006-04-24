@@ -39,6 +39,7 @@ import org.apache.tuscany.core.config.InvalidRootElementException;
 import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.loader.assembly.AssemblyConstants;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.ComponentInfo;
@@ -82,12 +83,12 @@ public class JavaImplementationLoader implements StAXElementLoader<JavaImplement
         registry.unregisterLoader(IMPLEMENTATION_JAVA, this);
     }
 
-    public JavaImplementation load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public JavaImplementation load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         JavaImplementation javaImpl = factory.createJavaImplementation();
         String typeName = reader.getAttributeValue(null, "class");
-        Class<?> implementationClass = getImplementationClass(resourceLoader, typeName);
+        Class<?> implementationClass = getImplementationClass(loaderContext.getResourceLoader(), typeName);
         javaImpl.setImplementationClass(implementationClass);
-        javaImpl.setComponentInfo(loadComponentType(resourceLoader, implementationClass));
+        javaImpl.setComponentInfo(loadComponentType(loaderContext, implementationClass));
         return javaImpl;
     }
 
@@ -104,13 +105,13 @@ public class JavaImplementationLoader implements StAXElementLoader<JavaImplement
         }
     }
 
-    protected ComponentInfo loadComponentType(ResourceLoader loader, Class<?> implClass) throws ConfigurationLoadException, XMLStreamException {
+    protected ComponentInfo loadComponentType(LoaderContext loaderContext, Class<?> implClass) throws ConfigurationLoadException, XMLStreamException {
         String baseName = JavaIntrospectionHelper.getBaseName(implClass);
         URL sidefile = implClass.getResource(baseName + ".componentType");
         if (sidefile == null) {
             return loadComponentTypeByIntrospection(implClass);
         } else {
-            return loadComponentTypeFromSidefile(sidefile, loader);
+            return loadComponentTypeFromSidefile(sidefile, loaderContext);
         }
     }
 
@@ -118,7 +119,7 @@ public class JavaImplementationLoader implements StAXElementLoader<JavaImplement
         return introspector.introspect(implClass);
     }
 
-    protected ComponentInfo loadComponentTypeFromSidefile(URL sidefile, ResourceLoader loader) throws SidefileLoadException {
+    protected ComponentInfo loadComponentTypeFromSidefile(URL sidefile, LoaderContext loaderContext) throws SidefileLoadException {
         try {
             XMLStreamReader reader;
             InputStream is;
@@ -132,7 +133,7 @@ public class JavaImplementationLoader implements StAXElementLoader<JavaImplement
                         e.setResourceURI(sidefile.toString());
                         throw e;
                     }
-                    return (ComponentInfo) registry.load(reader, loader);
+                    return (ComponentInfo) registry.load(reader, loaderContext);
                 } finally {
                     try {
                         reader.close();

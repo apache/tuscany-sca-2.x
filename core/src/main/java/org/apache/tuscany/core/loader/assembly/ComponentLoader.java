@@ -34,7 +34,7 @@ import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.InvalidPropertyFactoryException;
 import org.apache.tuscany.core.loader.StAXPropertyFactory;
 import org.apache.tuscany.core.loader.StAXUtil;
-import org.apache.tuscany.core.loader.impl.StringParserPropertyFactory;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Component;
@@ -62,7 +62,7 @@ public class ComponentLoader extends AbstractLoader {
         return COMPONENT;
     }
 
-    public Component load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public Component load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         assert COMPONENT.equals(reader.getName());
 
         Component component = factory.createSimpleComponent();
@@ -73,11 +73,11 @@ public class ComponentLoader extends AbstractLoader {
             case START_ELEMENT:
                 QName name = reader.getName();
                 if (PROPERTIES.equals(name)) {
-                    loadProperties(reader, resourceLoader, component);
+                    loadProperties(reader, loaderContext.getResourceLoader(), component);
                 } else if (REFERENCES.equals(name)) {
                     loadReferences(reader, component);
                 } else {
-                    AssemblyObject o = registry.load(reader, resourceLoader);
+                    AssemblyObject o = registry.load(reader, loaderContext);
                     if (o instanceof Implementation) {
                         Implementation impl = (Implementation) o;
                         impl.initialize(registry.getContext());

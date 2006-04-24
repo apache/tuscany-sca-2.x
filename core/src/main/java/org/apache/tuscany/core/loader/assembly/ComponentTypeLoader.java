@@ -16,9 +16,9 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.COMPONENT_TYPE;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.Property;
@@ -41,14 +41,14 @@ public class ComponentTypeLoader extends AbstractLoader {
         return COMPONENT_TYPE;
     }
 
-    public ComponentInfo load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public ComponentInfo load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         assert COMPONENT_TYPE.equals(reader.getName());
         ComponentInfo componentType = factory.createComponentInfo();
 
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
-                AssemblyObject o = registry.load(reader, resourceLoader);
+                AssemblyObject o = registry.load(reader, loaderContext);
                 if (o instanceof Service) {
                     componentType.getServices().add((Service) o);
                 } else if (o instanceof Reference) {

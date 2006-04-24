@@ -31,7 +31,7 @@ public class ComponentTypeLoaderTestCase extends LoaderTestSupport {
 
     public void testMinimal() throws XMLStreamException, ConfigurationLoadException {
         XMLStreamReader reader = getReader("<componentType xmlns='http://www.osoa.org/xmlns/sca/0.9'><service name='service1'/></componentType>");
-        ComponentInfo type = (ComponentInfo) registry.load(reader, resourceLoader);
+        ComponentInfo type = (ComponentInfo) registry.load(reader, loaderContext);
         type.initialize(null);
         assertNotNull(type);
         assertEquals(1, type.getServices().size());

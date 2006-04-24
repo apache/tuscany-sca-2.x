@@ -29,6 +29,7 @@ import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.loader.impl.StAXLoaderRegistryImpl;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 
@@ -40,6 +41,7 @@ import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 public abstract class LoaderTestSupport extends TestCase {
     protected SystemAssemblyFactory assemblyFactory;
     protected ResourceLoader resourceLoader;
+    protected LoaderContext loaderContext;
     protected AssemblyContext modelContext;
     protected XMLInputFactory xmlFactory;
     protected StAXLoaderRegistryImpl registry;
@@ -59,6 +61,7 @@ public abstract class LoaderTestSupport extends TestCase {
         super.setUp();
         assemblyFactory = new SystemAssemblyFactoryImpl();
         resourceLoader = new ResourceLoaderImpl(getClass().getClassLoader());
+        loaderContext = new LoaderContext(resourceLoader);
         modelContext = new AssemblyContextImpl(assemblyFactory, null, resourceLoader);
         xmlFactory = XMLInputFactory.newInstance();
         registry = new StAXLoaderRegistryImpl();

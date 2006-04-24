@@ -16,9 +16,9 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXUtil;
+import org.apache.tuscany.core.loader.LoaderContext;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.EXTERNAL_SERVICE;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Binding;
@@ -44,7 +44,7 @@ public class ExternalServiceLoader extends AbstractLoader {
         return EXTERNAL_SERVICE;
     }
 
-    public ExternalService load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public ExternalService load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         assert EXTERNAL_SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         ExternalService externalService = factory.createExternalService();
@@ -54,7 +54,7 @@ public class ExternalServiceLoader extends AbstractLoader {
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
-                AssemblyObject o = registry.load(reader, resourceLoader);
+                AssemblyObject o = registry.load(reader, loaderContext);
                 if (o instanceof ServiceContract) {
                     Service service = factory.createService();
                     service.setName(name);

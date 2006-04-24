@@ -16,11 +16,11 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.MissingInterfaceException;
 import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
 import org.apache.tuscany.core.loader.StAXUtil;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
@@ -46,7 +46,7 @@ public class InterfaceWSDLLoader extends AbstractLoader {
         return AssemblyConstants.INTERFACE_WSDL;
     }
 
-    public WSDLServiceContract load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public WSDLServiceContract load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         assert AssemblyConstants.INTERFACE_WSDL.equals(reader.getName());
         WSDLServiceContract serviceContract = factory.createWSDLServiceContract();
         serviceContract.setScope(Scope.INSTANCE);

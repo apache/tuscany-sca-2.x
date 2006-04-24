@@ -19,7 +19,6 @@ package org.apache.tuscany.core.loader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 
@@ -34,8 +33,8 @@ public interface StAXElementLoader<T extends AssemblyObject> {
      * When this method returns the stream will be positioned on the corresponding END_ELEMENT.
      *
      * @param reader the XML stream reader positioned on the applicable START_ELEMENT
-     * @param resourceLoader a resource loader for application artifacts
+     * @param loaderContext the context for the load operation
      * @return the model object for that element
      */
-    T load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException;
+    T load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException;
 }

@@ -16,10 +16,10 @@
  */
 package org.apache.tuscany.core.loader.system;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXUtil;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.loader.assembly.AbstractLoader;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
@@ -47,13 +47,13 @@ public class SystemImplementationLoader extends AbstractLoader {
         return SYSTEM_IMPLEMENTATION;
     }
 
-    public SystemImplementation load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public SystemImplementation load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         assert SYSTEM_IMPLEMENTATION.equals(reader.getName());
         SystemImplementation implementation = factory.createSystemImplementation();
         String implClass = reader.getAttributeValue(null, "class");
         Class<?> implementationClass;
         try {
-            implementationClass = resourceLoader.loadClass(implClass);
+            implementationClass = loaderContext.getResourceLoader().loadClass(implClass);
             implementation.setImplementationClass(implementationClass);
         } catch (ClassNotFoundException e) {
             throw new ConfigurationLoadException(e);

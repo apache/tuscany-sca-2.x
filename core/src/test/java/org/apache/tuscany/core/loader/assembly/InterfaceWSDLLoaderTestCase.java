@@ -17,11 +17,9 @@
 package org.apache.tuscany.core.loader.assembly;
 
 import java.net.URL;
-import java.io.IOException;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.wsdl.WSDLException;
 
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.INTERFACE_WSDL;
@@ -37,7 +35,7 @@ public class InterfaceWSDLLoaderTestCase extends LoaderTestSupport {
     public void testMinimal() throws XMLStreamException, ConfigurationLoadException {
         String xml = "<interface.wsdl xmlns='http://www.osoa.org/xmlns/sca/0.9'></interface.wsdl>";
         XMLStreamReader reader = getReader(xml);
-        WSDLServiceContract sc = (WSDLServiceContract) registry.load(reader, resourceLoader);
+        WSDLServiceContract sc = (WSDLServiceContract) registry.load(reader, loaderContext);
         reader.require(XMLStreamConstants.END_ELEMENT, INTERFACE_WSDL.getNamespaceURI(), INTERFACE_WSDL.getLocalPart());
         assertEquals(XMLStreamConstants.END_DOCUMENT, reader.next());
         assertNotNull(sc);
@@ -46,7 +44,7 @@ public class InterfaceWSDLLoaderTestCase extends LoaderTestSupport {
     public void testInterface() throws XMLStreamException, ConfigurationLoadException {
         String xml = "<interface.wsdl xmlns='http://www.osoa.org/xmlns/sca/0.9' interface='http://www.example.org#HelloWorld'></interface.wsdl>";
         XMLStreamReader reader = getReader(xml);
-        WSDLServiceContract sc = (WSDLServiceContract) registry.load(reader, resourceLoader);
+        WSDLServiceContract sc = (WSDLServiceContract) registry.load(reader, loaderContext);
         reader.require(XMLStreamConstants.END_ELEMENT, INTERFACE_WSDL.getNamespaceURI(), INTERFACE_WSDL.getLocalPart());
         assertEquals(XMLStreamConstants.END_DOCUMENT, reader.next());
         assertNotNull(sc);

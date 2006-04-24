@@ -23,10 +23,10 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceAssemblyFactory;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis2.assembly.impl.WebServiceAssemblyFactoryImpl;
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 
 import org.osoa.sca.annotations.Destroy;
@@ -61,7 +61,7 @@ public class WebServiceBindingLoader implements StAXElementLoader<WebServiceBind
     }
 
     public WebServiceBinding load(XMLStreamReader reader,
-                                  ResourceLoader resourceLoader)
+                                  LoaderContext loaderContext)
         throws XMLStreamException, ConfigurationLoadException {
         
         WebServiceBinding binding = WS_FACTORY.createWebServiceBinding();

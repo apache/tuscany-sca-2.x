@@ -25,7 +25,6 @@ import javax.xml.namespace.QName;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.container.java.assembly.impl.JavaAssemblyFactoryImpl;
 import org.apache.tuscany.container.java.assembly.mock.HelloWorldImpl;
@@ -34,6 +33,7 @@ import org.apache.tuscany.container.java.assembly.mock.NakedHelloWorld;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.loader.assembly.AssemblyConstants;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyObject;
@@ -108,7 +108,7 @@ public class JavaImplementationLoaderTestCase extends TestCase {
             this.mockType = mockType;
         }
 
-        public AssemblyObject load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+        public AssemblyObject load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
             assertEquals(AssemblyConstants.COMPONENT_TYPE, reader.getName());
             return mockType;
         }

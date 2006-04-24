@@ -18,6 +18,7 @@ package org.apache.tuscany.core.config.impl;
 
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleFragment;
@@ -47,7 +48,7 @@ public class StAXModuleComponentConfigurationLoaderImpl extends AbstractModuleCo
         try {
             XMLStreamReader reader = xmlFactory.createXMLStreamReader(url.openStream());
             getDocumentRoot(reader);
-            return (Module) registry.load(reader, resourceLoader);
+            return (Module) registry.load(reader, new LoaderContext(resourceLoader));
         } catch (XMLStreamException e) {
             ConfigurationLoadException ce = new ConfigurationLoadException(e);
             ce.setResourceURI(url.toString());
@@ -66,7 +67,7 @@ public class StAXModuleComponentConfigurationLoaderImpl extends AbstractModuleCo
         try {
             XMLStreamReader reader = xmlFactory.createXMLStreamReader(url.openStream());
             getDocumentRoot(reader);
-            return (ModuleFragment) registry.load(reader, resourceLoader);
+            return (ModuleFragment) registry.load(reader, new LoaderContext(resourceLoader));
         } catch (XMLStreamException e) {
             ConfigurationLoadException ce = new ConfigurationLoadException(e);
             ce.setResourceURI(url.toString());

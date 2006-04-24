@@ -16,9 +16,9 @@
  */
 package org.apache.tuscany.core.loader.system;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXUtil;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.loader.assembly.AbstractLoader;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.osoa.sca.annotations.Scope;
@@ -38,7 +38,7 @@ public class SystemBindingLoader extends AbstractLoader {
         return SYSTEM_BINDING;
     }
 
-    public SystemBinding load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public SystemBinding load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         assert SystemBindingLoader.SYSTEM_BINDING.equals(reader.getName());
         SystemBinding binding = factory.createSystemBinding();
         StAXUtil.skipToEndElement(reader);

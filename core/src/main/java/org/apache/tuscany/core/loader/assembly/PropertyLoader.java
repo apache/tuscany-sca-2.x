@@ -16,9 +16,9 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXUtil;
+import org.apache.tuscany.core.loader.LoaderContext;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.PROPERTY;
 import org.apache.tuscany.model.assembly.Property;
 import org.osoa.sca.annotations.Scope;
@@ -47,7 +47,7 @@ public class PropertyLoader extends AbstractLoader {
         return PROPERTY;
     }
 
-    public Property load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public Property load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         assert PROPERTY.equals(reader.getName());
         Property property = factory.createProperty();
         property.setName(reader.getAttributeValue(null, "name"));
@@ -62,7 +62,7 @@ public class PropertyLoader extends AbstractLoader {
             property.setType(TYPE_MAP.get(qname));
         } else {
             try {
-                Class<?> type = resourceLoader.loadClass(typeName);
+                Class<?> type = loaderContext.getResourceLoader().loadClass(typeName);
                 property.setType(type);
             } catch (ClassNotFoundException e) {
                 throw new ConfigurationLoadException(e);

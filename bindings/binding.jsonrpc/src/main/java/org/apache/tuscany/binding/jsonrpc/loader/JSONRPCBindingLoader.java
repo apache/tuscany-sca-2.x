@@ -21,10 +21,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.binding.jsonrpc.assembly.JSONRPCBinding;
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
@@ -55,7 +55,7 @@ public class JSONRPCBindingLoader implements StAXElementLoader<JSONRPCBinding> {
         registry.unregisterLoader(BINDING_JSONRPC, this);
     }
 
-    public JSONRPCBinding load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public JSONRPCBinding load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         JSONRPCBinding binding = new JSONRPCBinding();
         binding.setURI(reader.getAttributeValue(null, "uri"));
         return binding;

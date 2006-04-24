@@ -16,9 +16,9 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.SERVICE;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceContract;
@@ -39,7 +39,7 @@ public class ServiceLoader extends AbstractLoader {
         return SERVICE;
     }
 
-    public Service load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public Service load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         assert SERVICE.equals(reader.getName());
         Service service = factory.createService();
         service.setName(reader.getAttributeValue(null, "name"));
@@ -47,7 +47,7 @@ public class ServiceLoader extends AbstractLoader {
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
-                AssemblyObject o = registry.load(reader, resourceLoader);
+                AssemblyObject o = registry.load(reader, loaderContext);
                 if (o instanceof ServiceContract) {
                     service.setServiceContract((ServiceContract) o);
                 }

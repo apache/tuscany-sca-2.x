@@ -34,7 +34,7 @@ public class EntryPointLoaderTestCase extends LoaderTestSupport {
     public void testMinimal() throws XMLStreamException, ConfigurationLoadException {
         String xml = "<entryPoint xmlns='http://www.osoa.org/xmlns/sca/0.9' name='test'></entryPoint>";
         XMLStreamReader reader = getReader(xml);
-        EntryPoint ep = (EntryPoint) registry.load(reader, resourceLoader);
+        EntryPoint ep = (EntryPoint) registry.load(reader, loaderContext);
         reader.require(XMLStreamConstants.END_ELEMENT, ENTRY_POINT.getNamespaceURI(), ENTRY_POINT.getLocalPart());
         assertEquals(XMLStreamConstants.END_DOCUMENT, reader.next());
         assertNotNull(ep);
@@ -45,7 +45,7 @@ public class EntryPointLoaderTestCase extends LoaderTestSupport {
         String interfaceName = MockService.class.getName();
         String xml = "<entryPoint xmlns='http://www.osoa.org/xmlns/sca/0.9' name='test'><interface.java interface='" + interfaceName + "'/></entryPoint>";
         XMLStreamReader reader = getReader(xml);
-        EntryPoint ep = (EntryPoint) registry.load(reader, resourceLoader);
+        EntryPoint ep = (EntryPoint) registry.load(reader, loaderContext);
         reader.require(XMLStreamConstants.END_ELEMENT, ENTRY_POINT.getNamespaceURI(), ENTRY_POINT.getLocalPart());
         assertEquals(XMLStreamConstants.END_DOCUMENT, reader.next());
         assertNotNull(ep);

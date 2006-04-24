@@ -30,7 +30,6 @@ import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyInitializationException;
 import org.apache.tuscany.model.assembly.AssemblyVisitor;
-import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 
 /**
@@ -44,6 +43,7 @@ public class StAXLoaderRegistryTestCase extends TestCase {
     private MockMonitor monitor;
     private QName qname;
     private ResourceLoaderImpl rl;
+    private LoaderContext loaderContext;
 
     public void testRegistrationEvents() throws XMLStreamException, ConfigurationLoadException {
         reader.name = qname;
@@ -64,7 +64,7 @@ public class StAXLoaderRegistryTestCase extends TestCase {
     public void testSuccessfulLoad() throws XMLStreamException, ConfigurationLoadException {
         reader.name = qname;
         registry.registerLoader(qname, loader);
-        assertSame(mockObject, registry.load(reader, rl));
+        assertSame(mockObject, registry.load(reader, loaderContext));
         assertEquals(1, monitor.loading.size());
         assertTrue(monitor.loading.contains(qname));
     }
@@ -73,7 +73,7 @@ public class StAXLoaderRegistryTestCase extends TestCase {
         registry.registerLoader(qname, loader);
         reader.name = new QName("foo");
         try {
-            registry.load(reader, rl);
+            registry.load(reader, loaderContext);
             fail();
         } catch (ConfigurationLoadException e) {
             assertEquals(1, monitor.loading.size());
@@ -91,6 +91,7 @@ public class StAXLoaderRegistryTestCase extends TestCase {
         loader = new MockElementLoader();
         reader = new MockReader();
         rl = new ResourceLoaderImpl(getClass().getClassLoader());
+        loaderContext = new LoaderContext(rl);
     }
 
     public static class MockMonitor implements StAXLoaderRegistryImpl.Monitor {
@@ -112,10 +113,10 @@ public class StAXLoaderRegistryTestCase extends TestCase {
     }
 
     @SuppressWarnings({"NonStaticInnerClassInSecureContext"})
-    public class MockElementLoader implements StAXElementLoader {
-        public AssemblyObject load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
+    public class MockElementLoader<MockObject> implements StAXElementLoader {
+        public AssemblyObject load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
             assertEquals(qname, reader.getName());
-            assertSame(rl, resourceLoader);
+            assertSame(rl, loaderContext.getResourceLoader());
             return mockObject;
         }
     }

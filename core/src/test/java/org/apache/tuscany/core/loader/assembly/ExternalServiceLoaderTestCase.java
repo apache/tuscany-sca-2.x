@@ -35,7 +35,7 @@ public class ExternalServiceLoaderTestCase extends LoaderTestSupport {
     public void testMinimal() throws XMLStreamException, ConfigurationLoadException {
         String xml = "<externalService xmlns='http://www.osoa.org/xmlns/sca/0.9' name='test'></externalService>";
         XMLStreamReader reader = getReader(xml);
-        ExternalService es = (ExternalService) registry.load(reader, resourceLoader);
+        ExternalService es = (ExternalService) registry.load(reader, loaderContext);
         assertNotNull(es);
         assertEquals("test", es.getName());
         reader.require(XMLStreamConstants.END_ELEMENT, EXTERNAL_SERVICE.getNamespaceURI(), EXTERNAL_SERVICE.getLocalPart());
@@ -46,7 +46,7 @@ public class ExternalServiceLoaderTestCase extends LoaderTestSupport {
         String interfaceName = MockService.class.getName();
         String xml = "<externalService xmlns='http://www.osoa.org/xmlns/sca/0.9' name='test'><interface.java interface='" + interfaceName + "'/></externalService>";
         XMLStreamReader reader = getReader(xml);
-        ExternalService es = (ExternalService) registry.load(reader, resourceLoader);
+        ExternalService es = (ExternalService) registry.load(reader, loaderContext);
         reader.require(XMLStreamConstants.END_ELEMENT, EXTERNAL_SERVICE.getNamespaceURI(), EXTERNAL_SERVICE.getLocalPart());
         assertEquals(XMLStreamConstants.END_DOCUMENT, reader.next());
         assertNotNull(es);
