@@ -20,7 +20,9 @@ import org.apache.tuscany.core.runtime.RuntimeContext;
 public class ExternalServiceProxyInvokeTestCase extends TestCase {
 
     /**
-     * Tests that an external service can be invoked by locating a proxy  
+     * Tests that an external service can be invoked by locating a proxy to it as opposed to invoking it over a wire from another
+     * source such as an entry point or external service.
+     *
      * @throws Throwable
      */
     public void testProxyInvocation() throws Throwable {

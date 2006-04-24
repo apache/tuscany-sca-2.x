@@ -24,6 +24,9 @@ import java.lang.reflect.Method;
 public class EPtoExternalServiceTestCase extends TestCase {
     private Method hello;
 
+    /**
+     * Tests wiring of an entry point directly to an external service 
+     */
     public void testEPtoESInvocation() throws Throwable {
         RuntimeContext runtime = MockFactory.registerFooBinding(MockFactory.createJavaRuntime());
         PolicyBuilderRegistry registry = (PolicyBuilderRegistry) ((CompositeContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD))
