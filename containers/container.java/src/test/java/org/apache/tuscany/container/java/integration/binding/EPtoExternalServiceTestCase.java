@@ -25,8 +25,6 @@ public class EPtoExternalServiceTestCase extends TestCase {
     private Method hello;
 
     public void testEPtoESInvocation() throws Throwable {
-
-
         RuntimeContext runtime = MockFactory.registerFooBinding(MockFactory.createJavaRuntime());
         PolicyBuilderRegistry registry = (PolicyBuilderRegistry) ((CompositeContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD))
                 .getContext(MockFactory.POLICY_BUILDER_REGISTRY).getInstance(null);
@@ -51,9 +49,7 @@ public class EPtoExternalServiceTestCase extends TestCase {
         Assert.assertNotNull(ctx);
         handler = (InvocationHandler) ctx.getHandler();
         response = handler.invoke(null, hello, new Object[]{"foo"});
-//        HelloWorldService service1 = (HelloWorldService) child.getContext("target").getInstance(null);
-//        Assert.assertEquals(2, service1.count());
-//
+        Assert.assertEquals("foo", response);
         child.publish(new RequestEnd(this, id));
 
         // second request
@@ -66,8 +62,6 @@ public class EPtoExternalServiceTestCase extends TestCase {
         response = handler.invoke(null, hello, new Object[]{"foo"});
         Assert.assertEquals("foo", response);
         Assert.assertEquals(3, mockInterceptor.getCount());
-//        HelloWorldService service2 = (HelloWorldService) child.getContext("target").getInstance(null);
-//        Assert.assertEquals(1, service2.count());
         child.publish(new RequestEnd(this, id2));
 
         child.publish(new ModuleStop(this));
