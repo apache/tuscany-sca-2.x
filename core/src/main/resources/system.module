@@ -51,6 +51,10 @@
         <system:implementation.system class="org.apache.tuscany.core.loader.assembly.ServiceLoader"/>
     </component>
 
+    <component name="org.apache.tuscany.core.builder.system.PolicyBuilderRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry"/>
+    </component>
+    
     <component name="org.apache.tuscany.core.wire.service.internal.WireFactoryService">
         <system:implementation.system class="org.apache.tuscany.core.wire.service.DefaultWireFactoryService"/>
     </component>
