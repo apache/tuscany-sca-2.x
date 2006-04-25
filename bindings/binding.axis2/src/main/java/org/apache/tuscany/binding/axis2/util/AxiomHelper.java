@@ -110,8 +110,7 @@ public final class AxiomHelper {
     public static OMElement toOMElement(TypeHelper typeHelper, DataObject dataObject, QName typeQN) {
         try {
 
-            PipedOutputStream pos = new PipedOutputStream();
-            PipedInputStream pis = new PipedInputStream(pos);
+            ByteArrayOutputStream pos = new java.io.ByteArrayOutputStream();
             new XMLHelperImpl(typeHelper).save(dataObject,
                                                typeQN.getNamespaceURI(),
                                                typeQN.getLocalPart(),
@@ -122,7 +121,7 @@ public final class AxiomHelper {
             ClassLoader ccl = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(AxiomHelper.class.getClassLoader());
-                parser = XMLInputFactory.newInstance().createXMLStreamReader(pis);
+                parser = XMLInputFactory.newInstance().createXMLStreamReader(new ByteArrayInputStream(pos.toByteArray() ));
             } finally {
                 Thread.currentThread().setContextClassLoader(ccl);
             }
