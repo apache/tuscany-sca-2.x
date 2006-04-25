@@ -99,13 +99,21 @@ public abstract class ExternalServiceContextFactory implements ContextFactory<Ex
     }
 
     public void addSourceWireFactory(String referenceName, SourceWireFactory factory) {
-        // no wires inside a composite from an external service
+        throw new UnsupportedOperationException();
+    }
+
+    public void addSourceWireFactories(String referenceName, Class referenceInterface, List<SourceWireFactory> factory, boolean multiplicity) {
+
     }
 
     public List<SourceWireFactory> getSourceWireFactories() {
         return Collections.emptyList();
     }
-    
+
+    public void addProperty(String propertyName, Object value) {
+        throw new UnsupportedOperationException();
+    }
+
     public void prepare(CompositeContext parent) {
         //parentContext = parent;
     }

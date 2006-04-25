@@ -62,6 +62,10 @@ public class SystemExternalServiceContextFactory implements ContextFactory<Exter
         return name;
     }
 
+    public void addProperty(String propertyName, Object value) {
+        throw new UnsupportedOperationException();
+    }
+
     public ExternalServiceContext createContext() throws ContextCreationException {
         return new SystemExternalServiceContext(name, factory);
     }
@@ -80,6 +84,10 @@ public class SystemExternalServiceContextFactory implements ContextFactory<Exter
 
     public void addSourceWireFactory(String referenceName, SourceWireFactory pFactory) {
         throw new UnsupportedOperationException();
+    }
+
+    public void addSourceWireFactories(String referenceName, Class referenceInterface, List<SourceWireFactory> factory, boolean multiplicity) {
+
     }
 
     public List<SourceWireFactory> getSourceWireFactories() {

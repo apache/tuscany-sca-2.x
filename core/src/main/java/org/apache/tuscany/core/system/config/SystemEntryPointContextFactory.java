@@ -57,6 +57,7 @@ public class SystemEntryPointContextFactory implements ContextFactory<EntryPoint
         return name;
     }
 
+
     public void addTargetWireFactory(String serviceName, TargetWireFactory pFactory) {
         throw new UnsupportedOperationException();
     }
@@ -71,6 +72,13 @@ public class SystemEntryPointContextFactory implements ContextFactory<EntryPoint
 
     public void addSourceWireFactory(String referenceName, SourceWireFactory pFactory) {
         throw new UnsupportedOperationException();
+    }
+
+    public void addSourceWireFactories(String referenceName, Class referenceInterface, List<SourceWireFactory> factory, boolean multiplicity) {
+        throw new UnsupportedOperationException();
+    }
+    public void addProperty(String propertyName, Object value) {
+
     }
 
     public List<SourceWireFactory> getSourceWireFactories() {

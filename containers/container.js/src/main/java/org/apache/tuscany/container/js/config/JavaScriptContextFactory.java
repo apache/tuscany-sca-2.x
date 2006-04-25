@@ -72,6 +72,10 @@ public class JavaScriptContextFactory implements ContextFactory<AtomicContext> {
         return name;
     }
 
+    public void addProperty(String propertyName, Object value) {
+
+    }
+
     private Map<String, TargetWireFactory> targetProxyFactories = new HashMap<String, TargetWireFactory>();
 
     public void addTargetWireFactory(String serviceName, TargetWireFactory factory) {
@@ -90,6 +94,10 @@ public class JavaScriptContextFactory implements ContextFactory<AtomicContext> {
 
     public void addSourceWireFactory(String referenceName, SourceWireFactory factory) {
         sourceProxyFactories.add(factory);
+    }
+
+    public void addSourceWireFactories(String referenceName, Class referenceInterface, List<SourceWireFactory> factory, boolean multiplicity) {
+        //TODO implement
     }
 
     public List<SourceWireFactory> getSourceWireFactories() {

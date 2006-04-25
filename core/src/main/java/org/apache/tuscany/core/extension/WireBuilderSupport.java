@@ -65,6 +65,10 @@ public abstract class WireBuilderSupport implements WireBuilder {
 
     public void completeTargetChain(TargetWireFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
             throws BuilderConfigException {
+        
+        if (!handlesTargetType(targetType)) {
+            return;
+        }
         for (TargetInvocationConfiguration targetInvocationConfig : targetFactory.getConfiguration().getInvocationConfigurations()
                 .values()) {
             Method method = targetInvocationConfig.getMethod();

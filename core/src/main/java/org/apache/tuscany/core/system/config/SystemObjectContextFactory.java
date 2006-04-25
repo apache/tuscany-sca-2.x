@@ -66,6 +66,10 @@ public class SystemObjectContextFactory implements ContextFactory {
         return name;
     }
 
+    public void addProperty(String propertyName, Object value) {
+
+    }
+
     public void addTargetWireFactory(String serviceName, TargetWireFactory factory) {
         throw new UnsupportedOperationException();
     }
@@ -80,6 +84,10 @@ public class SystemObjectContextFactory implements ContextFactory {
 
     public void addSourceWireFactory(String referenceName, SourceWireFactory factory) {
         throw new UnsupportedOperationException();
+    }
+
+    public void addSourceWireFactories(String referenceName, Class referenceInterface, List factory, boolean multiplicity) {
+
     }
 
     public List<WireFactory> getSourceWireFactories() {

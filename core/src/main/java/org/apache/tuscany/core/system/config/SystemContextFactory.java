@@ -65,10 +65,6 @@ public class SystemContextFactory implements ContextFactory<Context>, ContextRes
     // if the component implementation is an composite context
     private boolean isComposite;
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
     /**
      * Creates the runtime configuration
      * 
@@ -104,12 +100,12 @@ public class SystemContextFactory implements ContextFactory<Context>, ContextRes
         }
     }
 
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
-
     public String getName() {
         return name;
+    }
+
+    public void addProperty(String propertyName, Object value) {
+
     }
 
     public Scope getScope() {
@@ -159,6 +155,10 @@ public class SystemContextFactory implements ContextFactory<Context>, ContextRes
 
     public void addSourceWireFactory(String referenceName, SourceWireFactory factory) {
         throw new UnsupportedOperationException();
+    }
+
+    public void addSourceWireFactories(String referenceName, Class referenceInterface, List<SourceWireFactory> factory, boolean multiplicity) {
+
     }
 
     public List<SourceWireFactory> getSourceWireFactories() {

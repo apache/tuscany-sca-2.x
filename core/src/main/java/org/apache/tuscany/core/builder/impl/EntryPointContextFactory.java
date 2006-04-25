@@ -92,7 +92,20 @@ public class EntryPointContextFactory implements ContextFactory<EntryPointContex
         }
         return sourceProxyFactories;
     }
-    
+
+    public void addProperty(String propertyName, Object value) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void addSourceWireFactories(String referenceName, Class referenceInterface, List<SourceWireFactory> factories, boolean multiplicity) {
+        if (factories.size() >1){
+            throw new UnsupportedOperationException("Multiple wires for an entry point not allowed");
+        }else if(factories.size() <1){
+            throw new AssertionError("Empty wire factory list");
+        }
+        this.sourceWireFactory = factories.get(0);
+    }
+
     public void prepare(CompositeContext parent) {
     }
 }

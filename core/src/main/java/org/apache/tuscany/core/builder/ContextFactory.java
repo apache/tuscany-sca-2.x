@@ -49,6 +49,11 @@ public interface ContextFactory<T extends Context> {
     public String getName();
 
     /**
+     * Adds a property to the context
+     */
+    public void addProperty(String propertyName, Object value);
+
+    /**
      * Adds a target-side wire factory for the given service name. Target-side wire factories contain the invocation chains
      * associated with the destination service of a wire and are responsible for generating proxies
      */
@@ -68,8 +73,23 @@ public interface ContextFactory<T extends Context> {
      * Adds a source-side wire factory for the given reference. Source-side wire factories contain the invocation chains for a
      * reference in the implementation associated with the instance context created by this configuration. Source-side wire
      * factories also produce proxies that are injected on a reference in a component implementation.
+     *
+     * @param referenceName
+     * @param factory
      */
     public void addSourceWireFactory(String referenceName, SourceWireFactory factory);
+
+    /**
+     * Adds a set of source-side wire factories for the given reference. Source-side wire factories contain the invocation chains
+     * for a reference in the implementation associated with the instance context created by this configuration. Source-side wire
+     * factories also produce proxies that are injected on a reference in a component implementation.
+     *
+     * @param referenceName
+     * @param referenceInterface
+     * @param factory
+     * @param multiplicity
+     */
+    public void addSourceWireFactories(String referenceName, Class referenceInterface, List<SourceWireFactory> factory, boolean multiplicity);
 
     /**
      * Returns a collection of source-side wire factories for references. There may 1..n wire factories per reference.
