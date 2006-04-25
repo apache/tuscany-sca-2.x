@@ -42,7 +42,6 @@ import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.NonProxiedTargetFactory;
-import org.apache.tuscany.core.injection.SDOObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
@@ -341,13 +340,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
         }
         Injector injector;
         // FIXME support types other than String
-        if (value instanceof DataObject) {
-            if (field != null) {
-                injector = new FieldInjector(field, new SDOObjectFactory((DataObject) value));
-            } else {
-                injector = new MethodInjector(method, new SDOObjectFactory((DataObject) value));
-            }
-        } else if (JavaIntrospectionHelper.isImmutable(type)) {
+        if (JavaIntrospectionHelper.isImmutable(type)) {
             if (field != null) {
                 injector = new FieldInjector(field, new SingletonObjectFactory<Object>(value));
             } else {
