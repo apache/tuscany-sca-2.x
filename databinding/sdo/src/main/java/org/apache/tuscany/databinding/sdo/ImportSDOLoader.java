@@ -16,16 +16,22 @@
  */
 package org.apache.tuscany.databinding.sdo;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import commonj.sdo.helper.XSDHelper;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.config.SidefileLoadException;
 import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.loader.assembly.AbstractLoader;
 import org.apache.tuscany.core.loader.assembly.AssemblyConstants;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.sdo.util.SDOUtil;
 import org.osoa.sca.annotations.Scope;
@@ -45,25 +51,53 @@ public class ImportSDOLoader extends AbstractLoader {
 
     public AssemblyObject load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         assert IMPORT_SDO.equals(reader.getName());
-        String factoryName = reader.getAttributeValue(null, "factory");
-        if (factoryName != null) {
-            Class<?> factoryClass = getFactoryClass(loaderContext.getResourceLoader(), factoryName);
-            SDOUtil.registerStaticTypes(factoryClass);
-        }
+        importFactory(reader, loaderContext);
+        importWSDL(reader, loaderContext);
         StAXUtil.skipToEndElement(reader);
         return null;
     }
 
-    protected Class<?> getFactoryClass(ResourceLoader resourceLoader, String typeName) throws ConfigurationLoadException {
-        ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
-        try {
-            // set TCCL as SDO needs it
-            Thread.currentThread().setContextClassLoader(resourceLoader.getClassLoader());
-            return resourceLoader.loadClass(typeName);
-        } catch (ClassNotFoundException e) {
-            throw new ConfigurationLoadException(e.getMessage(), e);
-        } finally {
-            Thread.currentThread().setContextClassLoader(oldCL);
+    private void importFactory(XMLStreamReader reader, LoaderContext loaderContext) throws ConfigurationLoadException {
+        String factoryName = reader.getAttributeValue(null, "factory");
+        if (factoryName != null) {
+            ResourceLoader resourceLoader = loaderContext.getResourceLoader();
+            ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
+            try {
+                // set TCCL as SDO needs it
+                Thread.currentThread().setContextClassLoader(resourceLoader.getClassLoader());
+                Class<?> factoryClass = resourceLoader.loadClass(factoryName);
+                SDOUtil.registerStaticTypes(factoryClass);
+            } catch (ClassNotFoundException e) {
+                throw new ConfigurationLoadException(e.getMessage(), e);
+            } finally {
+                Thread.currentThread().setContextClassLoader(oldCL);
+            }
+        }
+    }
+
+    private void importWSDL(XMLStreamReader reader, LoaderContext loaderContext) throws ConfigurationLoadException {
+        String wsdLLocation = reader.getAttributeValue(null, "wsdlLocation");
+        if (wsdLLocation != null) {
+            ResourceLoader resourceLoader = loaderContext.getResourceLoader();
+            URL wsdlURL = resourceLoader.getResource(wsdLLocation);
+            ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
+            try {
+//                Thread.currentThread().setContextClassLoader(resourceLoader.getClassLoader());
+                InputStream xsdInputStream = wsdlURL.openStream();
+                try {
+                    AssemblyContext context = registry.getContext();
+                    XSDHelper xsdHelper = SDOUtil.createXSDHelper(context.getTypeHelper());
+                    xsdHelper.define(xsdInputStream, null);
+                } finally {
+                    xsdInputStream.close();
+                }
+            } catch (IOException e) {
+                SidefileLoadException sfe = new SidefileLoadException(e.getMessage());
+                sfe.setResourceURI(wsdLLocation);
+                throw sfe;
+            } finally {
+                Thread.currentThread().setContextClassLoader(oldCL);
+            }
         }
     }
 }

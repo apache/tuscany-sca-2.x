@@ -17,7 +17,6 @@
 package org.apache.tuscany.core.loader.assembly;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import javax.wsdl.Definition;
 import javax.wsdl.WSDLException;
@@ -25,21 +24,17 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import commonj.sdo.helper.XSDHelper;
-import org.osoa.sca.annotations.Scope;
-
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.MissingResourceException;
 import org.apache.tuscany.core.config.SidefileLoadException;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
-import org.apache.tuscany.core.loader.LoaderContext;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.IMPORT_WSDL;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.ImportWSDL;
-import org.apache.tuscany.sdo.util.SDOUtil;
+import org.osoa.sca.annotations.Scope;
 
 /**
  * Loader that handles &lt;import.wsdl&gt; elements.
@@ -86,21 +81,6 @@ public class ImportWSDLLoader extends AbstractLoader {
             sfe.setResourceURI(location);
             throw sfe;
         } catch (WSDLException e) {
-            SidefileLoadException sfe = new SidefileLoadException(e.getMessage());
-            sfe.setResourceURI(location);
-            throw sfe;
-        }
-
-        try {
-            InputStream xsdInputStream = wsdlURL.openStream();
-            try {
-                AssemblyContext context = registry.getContext();
-                XSDHelper xsdHelper = SDOUtil.createXSDHelper(context.getTypeHelper());
-                xsdHelper.define(xsdInputStream, null);
-            } finally {
-                xsdInputStream.close();
-            }
-        } catch (IOException e) {
             SidefileLoadException sfe = new SidefileLoadException(e.getMessage());
             sfe.setResourceURI(location);
             throw sfe;
