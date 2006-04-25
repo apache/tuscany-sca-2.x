@@ -274,7 +274,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
                         throw e;
                     }
                     Class paramType = method.getParameterTypes()[0];
-                    // for system aggregate context types, only allow autowire of certain types, otherwise we have a
+                    // for system composite context types, only allow autowire of certain types, otherwise we have a
                     // chicken-and-egg problem
                     if (SystemCompositeContext.class.isAssignableFrom(implClass)
                             && !(paramType.equals(ConfigurationContext.class) || paramType.equals(MonitorFactory.class)

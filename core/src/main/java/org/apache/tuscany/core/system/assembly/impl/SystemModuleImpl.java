@@ -124,7 +124,7 @@ public class SystemModuleImpl extends CompositeImpl implements SystemModule {
             moduleFragment.initialize(modelContext);
         }
         
-        // Initialize the aggregate
+        // Initialize the composite
         super.initialize(modelContext);
 
         // Derive the component type from the entry points and external services in the module

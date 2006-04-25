@@ -29,14 +29,14 @@ import javax.xml.stream.XMLStreamReader;
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class ModuleLoader extends AggregateLoader {
+public class ModuleLoader extends CompositeLoader {
     public QName getXMLType() {
         return AssemblyConstants.MODULE;
     }
 
     public Module load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         Module module = factory.createModule();
-        loadAggregate(reader, module, loaderContext);
+        loadComposite(reader, module, loaderContext);
         return module;
     }
 }

@@ -34,23 +34,23 @@ import org.apache.tuscany.model.assembly.Wire;
 /**
  * @version $Rev$ $Date$
  */
-public abstract class AggregateLoader extends AbstractLoader {
-    public void loadAggregate(XMLStreamReader reader, Composite aggregate, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
-        aggregate.setName(reader.getAttributeValue(null, "name"));
+public abstract class CompositeLoader extends AbstractLoader {
+    public void loadComposite(XMLStreamReader reader, Composite composite, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
+        composite.setName(reader.getAttributeValue(null, "name"));
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
                 AssemblyObject o = registry.load(reader, loaderContext);
                 if (o instanceof EntryPoint) {
-                    aggregate.getEntryPoints().add((EntryPoint) o);
+                    composite.getEntryPoints().add((EntryPoint) o);
                 } else if (o instanceof ExternalService) {
-                    aggregate.getExternalServices().add((ExternalService) o);
+                    composite.getExternalServices().add((ExternalService) o);
                 } else if (o instanceof Component) {
-                    aggregate.getComponents().add((Component) o);
+                    composite.getComponents().add((Component) o);
                 } else if (o instanceof Wire) {
-                    aggregate.getWires().add((Wire) o);
+                    composite.getWires().add((Wire) o);
                 } else if (o instanceof ImportWSDL) {
-                    aggregate.getWSDLImports().add((ImportWSDL) o);
+                    composite.getWSDLImports().add((ImportWSDL) o);
                 }
                 reader.next();
                 break;

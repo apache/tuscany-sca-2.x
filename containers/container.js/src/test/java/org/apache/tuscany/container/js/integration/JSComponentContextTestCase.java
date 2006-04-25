@@ -42,7 +42,7 @@ import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
- * Integration tests for JavaScript components and aggregate contexts
+ * Integration tests for JavaScript components and composite contexts
  *
  * @version $Rev$ $Date$
  */

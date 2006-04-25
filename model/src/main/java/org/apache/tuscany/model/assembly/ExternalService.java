@@ -33,27 +33,27 @@ public interface ExternalService extends Part {
 
     /**
      * Returns the override option that determines if any wiring for this external service
-     * that is contained in this aggregate can be overridden by wired supplied from outside.
+     * that is contained in this composite can be overridden by wired supplied from outside.
      */
     OverrideOption getOverrideOption();
 
     /**
      * Set the override option that determines if any wiring for this external service
-     * that is contained in this aggregate can be overridden by wired supplied from outside.
+     * that is contained in this composite can be overridden by wired supplied from outside.
      *
      * @param value the option that determines how wires can be overriden
      */
     void setOverrideOption(OverrideOption value);
 
     /**
-     * Returns the configured service that this external service provides to other parts of the containing aggregate.
-     * @return the configured service that this external service provides to other parts of the containing aggregate
+     * Returns the configured service that this external service provides to other parts of the containing composite.
+     * @return the configured service that this external service provides to other parts of the containing composite
      */
     ConfiguredService getConfiguredService();
 
     /**
-     * Sets  the configured service that this external service provides to other parts of the containing aggregate
-     * @param configuredService the configured service that this external service provides to other parts of the containing aggregate
+     * Sets  the configured service that this external service provides to other parts of the containing composite
+     * @param configuredService the configured service that this external service provides to other parts of the containing composite
      */
     void setConfiguredService(ConfiguredService configuredService);
 }

@@ -130,8 +130,8 @@ public class AssemblyFactoryImpl implements AssemblyFactory {
         return new ServiceURIImpl(moduleComponent, serviceName);
     }
 
-    public ServiceURI createServiceURI(ModuleComponent moduleComponent, Part aggregatePart, ConfiguredPort configuredPort) {
-        return new ServiceURIImpl(moduleComponent, aggregatePart, configuredPort);
+    public ServiceURI createServiceURI(ModuleComponent moduleComponent, Part part, ConfiguredPort configuredPort) {
+        return new ServiceURIImpl(moduleComponent, part, configuredPort);
     }
 
     public QName createQName(String uri) {

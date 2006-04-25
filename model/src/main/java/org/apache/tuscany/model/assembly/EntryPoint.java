@@ -49,7 +49,7 @@ public interface EntryPoint extends Part {
 
     /**
      * Returns the configured reference that wires this entry point to the published service
-     * inside the aggregate.
+     * inside the composite.
      *
      * @return the reference that wires this entry point to the published service
      */
@@ -57,10 +57,10 @@ public interface EntryPoint extends Part {
 
     /**
      * Sets the configured reference that wires this entry point to the published service
-     * inside the aggregate.
+     * inside the composite.
      *
      * @param configuredReference the configured reference that wires this entry point to
-     * the published service inside the aggregate
+     * the published service inside the composite
      */
     void setConfiguredReference(ConfiguredReference configuredReference);
 

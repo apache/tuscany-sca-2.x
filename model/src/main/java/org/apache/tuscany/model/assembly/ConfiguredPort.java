@@ -49,8 +49,8 @@ public interface ConfiguredPort<P extends Port> extends AssemblyObject, ProxyFac
     void setPort(P port);
 
     /**
-     * Returns the aggregate part containing this port.
-     * @return the aggregate part that contains this port
+     * Returns the part containing this port.
+     * @return the part that contains this port
      */
     Part getPart();
     

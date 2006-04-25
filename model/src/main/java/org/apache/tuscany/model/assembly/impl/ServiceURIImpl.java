@@ -50,13 +50,13 @@ public class ServiceURIImpl implements ServiceURI {
      * @param moduleComponent
      * @param configuredPort
      */
-    protected ServiceURIImpl(ModuleComponent moduleComponent, Part aggregatePart, ConfiguredPort configuredPort) {
+    protected ServiceURIImpl(ModuleComponent moduleComponent, Part part, ConfiguredPort configuredPort) {
         if (moduleComponent != null)
             moduleComponentName = moduleComponent.getName();
         else
             moduleComponentName = "";
         if (configuredPort instanceof ConfiguredService) {
-            partName = aggregatePart.getName();
+            partName = part.getName();
             ConfiguredService configuredService = (ConfiguredService) configuredPort;
             Service service = configuredService.getPort();
             if (service != null) {
@@ -68,7 +68,7 @@ public class ServiceURIImpl implements ServiceURI {
 
         } else if (configuredPort instanceof ConfiguredReference) {
             ConfiguredReference configuredReference = (ConfiguredReference) configuredPort;
-            partName = aggregatePart.getName();
+            partName = part.getName();
             serviceName = configuredReference.getPort().getName();
             if (serviceName!=null)
                 address = "sca:///" + moduleComponentName + '/' + partName + '/' + serviceName;
