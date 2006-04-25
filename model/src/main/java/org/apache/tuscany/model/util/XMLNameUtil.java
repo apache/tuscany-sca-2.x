@@ -90,7 +90,7 @@ public final class XMLNameUtil {
                 qualifiedPackageName.append(getJavaNameFromXMLName(packageName, false));
             }
         }
-        return qualifiedPackageName.toString();
+        return qualifiedPackageName.toString().toLowerCase();
 
     }
 
