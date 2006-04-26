@@ -16,10 +16,12 @@
  */
 package org.apache.tuscany.core.wire;
 
+import org.apache.tuscany.common.TuscanyException;
+
 /**
- *
+ * Denotes a top-level exception dealing with a wire
  */
-public abstract class WireException extends InvocationException {
+public abstract class WireException extends TuscanyException {
 
     public WireException() {
         super();

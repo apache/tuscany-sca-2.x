@@ -21,6 +21,10 @@ public class MockEntryPointContext implements EntryPointContext {
         return null;
     }
 
+    public Class getServiceInterface() {
+        return null;
+    }
+
     public String getName() {
 
         return null;

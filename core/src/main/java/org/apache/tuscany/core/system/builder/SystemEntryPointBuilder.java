@@ -30,16 +30,8 @@ import org.apache.tuscany.model.assembly.EntryPoint;
  */
 public class SystemEntryPointBuilder implements ContextFactoryBuilder {
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
     public SystemEntryPointBuilder() {
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     public void build(AssemblyObject modelObject) throws BuilderException {
         if (!(modelObject instanceof EntryPoint)) {
@@ -53,6 +45,7 @@ public class SystemEntryPointBuilder implements ContextFactoryBuilder {
         try {
             String targetName;
             ConfiguredService targetService = entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0);
+            Class serviceInterface = entryPoint.getConfiguredReference().getPort().getServiceContract().getInterface();
             if (targetService.getPart() == null) {
                 // FIXME not correct
                 if (targetService.getPort() == null) {
@@ -64,7 +57,7 @@ public class SystemEntryPointBuilder implements ContextFactoryBuilder {
                 targetName = targetService.getPart().getName();
             }
             SystemEntryPointContextFactory contextFactory = new SystemEntryPointContextFactory(entryPoint.getName(),
-                    targetName);
+                    targetName, serviceInterface);
             entryPoint.setContextFactory(contextFactory);
         } catch (FactoryInitException e) {
             e.addContextName(entryPoint.getName());

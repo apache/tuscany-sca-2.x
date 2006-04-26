@@ -60,9 +60,9 @@ public class WebServiceBindingLoader implements StAXElementLoader<WebServiceBind
     }
 
     public WebServiceBinding load(XMLStreamReader reader,
-                                  LoaderContext loaderContext)
+            LoaderContext loaderContext)
         throws XMLStreamException, ConfigurationLoadException {
-        
+
         WebServiceBinding binding = WS_FACTORY.createWebServiceBinding();
         binding.setURI(reader.getAttributeValue(null, "uri"));
         binding.setPortURI(reader.getAttributeValue(null, "port"));

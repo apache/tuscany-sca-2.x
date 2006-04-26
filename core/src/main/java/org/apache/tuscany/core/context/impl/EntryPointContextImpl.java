@@ -83,4 +83,8 @@ public class EntryPointContextImpl extends AbstractContext implements EntryPoint
         return invocationHandler;
     }
 
+    public Class getServiceInterface() {
+        return sourceWireFactory.getBusinessInterface();
+    }
+
 }

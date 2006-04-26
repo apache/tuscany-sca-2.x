@@ -20,7 +20,6 @@ import org.osoa.sca.annotations.ComponentName;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
-import org.apache.tuscany.databinding.sdo.SDOObjectFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

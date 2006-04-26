@@ -35,11 +35,15 @@ public class SystemEntryPointContext extends AbstractContext implements EntryPoi
     private ContextResolver resolver;
     
     private QualifiedName targetName;
-    
-    public SystemEntryPointContext(String name, String targetName, ContextResolver resolver) {
+
+    private  Class serviceInterface;
+
+    public SystemEntryPointContext(String name, String targetName,  Class serviceInterface, ContextResolver resolver) {
         super(name);
         assert (resolver != null) : "Context resolver was null";
         assert (targetName != null) : "Target name was null";
+        assert (serviceInterface != null) : "Service interface is null";
+        this.serviceInterface = serviceInterface;
         this.resolver = resolver;
         this.targetName = new QualifiedName(targetName);
     }
@@ -72,4 +76,7 @@ public class SystemEntryPointContext extends AbstractContext implements EntryPoi
         return getInstance(null);
     }
 
+    public Class getServiceInterface() {
+        return serviceInterface;
+    }
 }

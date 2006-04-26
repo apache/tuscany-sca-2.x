@@ -33,7 +33,8 @@ public class ExternalWebServiceWireBuilder extends WireBuilderSupport {
         return ExternalWebServiceContextFactory.class.isAssignableFrom(targetType);
     }
 
-    protected TargetInvoker createInvoker(QualifiedName targetName, Method operation, ScopeContext context, boolean downScope) {
+    protected TargetInvoker createInvoker(QualifiedName targetName, Method operation,
+                                          ScopeContext context, boolean downScope) {
         return new ExternalWebServiceTargetInvoker(targetName, operation, context);
     }
 }

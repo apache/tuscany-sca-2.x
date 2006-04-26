@@ -122,9 +122,7 @@ public class WebServiceEntryPointServlet extends AxisServlet {
                         false);
 
                 WebServiceEntryPointInOutSyncMessageReceiver msgrec
-                    = new WebServiceEntryPointInOutSyncMessageReceiver(
-                        entryPoint,
-                        (EntryPointContext) entryPointContext,
+                    = new WebServiceEntryPointInOutSyncMessageReceiver((EntryPointContext) entryPointContext,
                         wsdlPortInfo,
                         wsBinding.getTypeHelper(),
                         wsBinding.getResourceLoader().getClassLoader());

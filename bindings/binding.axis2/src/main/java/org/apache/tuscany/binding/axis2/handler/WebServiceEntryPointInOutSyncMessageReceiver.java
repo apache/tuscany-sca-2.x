@@ -32,7 +32,6 @@ import org.apache.axis2.receivers.AbstractInOutSyncMessageReceiver;
 
 import org.apache.tuscany.binding.axis2.util.AxiomHelper;
 import org.apache.tuscany.core.context.EntryPointContext;
-import org.apache.tuscany.model.assembly.EntryPoint;
 
 import org.apache.ws.commons.om.OMElement;
 import org.apache.ws.commons.soap.SOAPBody;
@@ -53,20 +52,17 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
     /**
      * Constructor WebServiceEntryPointInOutSyncMessageReceiver
      *
-     * @param entryPoint
      * @param context
      * @param wsdlPortInfo
      */
-    @SuppressWarnings("unchecked")
-    public WebServiceEntryPointInOutSyncMessageReceiver(EntryPoint entryPoint,
-                                                        EntryPointContext context,
+    public WebServiceEntryPointInOutSyncMessageReceiver(EntryPointContext context,
                                                         WebServicePortMetaData wsdlPortInfo,
                                                         TypeHelper typeHelper,
                                                         ClassLoader classLoader) {
         this.entryPointContext = context;
-
-        Class<?> serviceInterface = entryPoint.getConfiguredService().getPort()
-                .getServiceContract().getInterface();
+        Class<?> serviceInterface = entryPointContext.getServiceInterface();
+//        Class<?> serviceInterface = entryPoint.getConfiguredService().getPort()
+//                .getServiceContract().getInterface();
         Method[] methods = serviceInterface.getMethods();
         Map<String, Method> map = new HashMap<String, Method>(methods.length);
         for (Method method : methods) {

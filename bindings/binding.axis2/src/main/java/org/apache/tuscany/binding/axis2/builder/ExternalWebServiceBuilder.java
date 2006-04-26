@@ -49,7 +49,8 @@ public class ExternalWebServiceBuilder extends ExternalServiceBuilderSupport {
         return binding instanceof WebServiceBinding;
     }
 
-    protected ExternalServiceContextFactory createExternalServiceContextFactory(ExternalService externalService) {
+    protected ExternalServiceContextFactory createExternalServiceContextFactory(
+            ExternalService externalService) {
 
         ExternalWebServiceClient externalWebServiceClient = createExternalWebServiceClient(externalService);
 

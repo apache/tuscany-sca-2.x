@@ -40,13 +40,16 @@ public class SystemEntryPointContextFactory implements ContextFactory<EntryPoint
 
     private String targetName;
 
-    public SystemEntryPointContextFactory(String name, String targetName) {
+    private Class serviceInterface;
+
+    public SystemEntryPointContextFactory(String name, String targetName, Class serviceInterface) {
         this.name = name;
         this.targetName = targetName;
+        this.serviceInterface = serviceInterface;
     }
 
     public EntryPointContext createContext() throws ContextCreationException {
-        return new SystemEntryPointContext(name, targetName, this);
+        return new SystemEntryPointContext(name, targetName, serviceInterface, this);
     }
 
     public Scope getScope() {

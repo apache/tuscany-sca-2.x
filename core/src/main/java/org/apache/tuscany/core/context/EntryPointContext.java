@@ -16,6 +16,8 @@
  */
 package org.apache.tuscany.core.context;
 
+import org.apache.tuscany.core.wire.SourceWireFactory;
+
 /**
  * The runtime artifact representing an entry point, <code>EntryPointContext</code> manages wire handler
  * instances that expose service operations offered by a component in the parent composite. The wire handler
@@ -60,5 +62,8 @@ public interface EntryPointContext extends Context {
      */
     public Object getHandler() throws TargetException;
 
-
+    /**
+     * Returns the service interface configured for the entry poitn
+     */
+    public Class getServiceInterface();
 }

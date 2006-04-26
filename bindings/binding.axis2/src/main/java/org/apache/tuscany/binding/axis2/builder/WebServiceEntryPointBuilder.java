@@ -27,7 +27,8 @@ import org.osoa.sca.annotations.Scope;
 
 
 /**
- * Creates a <code>ContextFactory</code> for an entry point configured with the {@link WebServiceBinding}
+ * Creates a <code>ContextFactory</code> for an entry point configured with the
+ * {@link WebServiceBinding}
  *
  * @version $Rev$ $Date$
  */
@@ -38,7 +39,8 @@ public class WebServiceEntryPointBuilder extends EntryPointBuilderSupport {
         return binding instanceof WebServiceBinding;
     }
 
-    protected EntryPointContextFactory createEntryPointContextFactory(EntryPoint entryPoint, MessageFactory msgFactory) {
+    protected EntryPointContextFactory createEntryPointContextFactory(EntryPoint entryPoint,
+                                                                      MessageFactory msgFactory) {
         return new WebServiceEntryPointContextFactory(entryPoint.getName(),messageFactory);
     }
 
