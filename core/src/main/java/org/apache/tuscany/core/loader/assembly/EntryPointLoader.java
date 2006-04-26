@@ -77,6 +77,7 @@ public class EntryPointLoader extends AbstractLoader {
                         entryPoint.getBindings().add((Binding) o);
                     } else if (o instanceof ServiceContract) {
                         service.setServiceContract((ServiceContract) o);
+                        reference.setServiceContract((ServiceContract) o);
                     }
                 }
                 reader.next();

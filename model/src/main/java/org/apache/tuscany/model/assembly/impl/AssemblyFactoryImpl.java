@@ -177,6 +177,7 @@ public class AssemblyFactoryImpl implements AssemblyFactory {
         // create and configure a reference to target
         Reference reference = createReference();
         reference.setMultiplicity(Multiplicity.ONE_ONE);
+        reference.setServiceContract(serviceContract);
         ConfiguredReference configuredReference = createConfiguredReference(null, targetName);
         configuredReference.setPort(reference);
 
