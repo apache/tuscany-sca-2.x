@@ -86,7 +86,7 @@ public class ExternalWebServiceBuilder extends ExternalServiceBuilderSupport {
             throw bce;
         }
 
-        TypeHelper typeHelper = externalService.getComposite().getAssemblyContext().getTypeHelper();
+        TypeHelper typeHelper = wsBinding.getTypeHelper();
         return new ExternalWebServiceClient(configurationContext, axisService, wsPortMetaData, typeHelper);
     }
 

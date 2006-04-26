@@ -19,6 +19,7 @@ package org.apache.tuscany.container.js.assembly;
 import org.apache.tuscany.model.assembly.AtomicImplementation;
 import org.apache.tuscany.model.assembly.Implementation;
 import org.apache.tuscany.common.resource.ResourceLoader;
+import commonj.sdo.helper.TypeHelper;
 
 /**
  * A representation of a JavaScript component implementation type
@@ -42,4 +43,8 @@ public interface JavaScriptImplementation extends AtomicImplementation {
     void setResourceLoader(ResourceLoader resourceLoader);
 
     ResourceLoader getResourceLoader();
+
+    TypeHelper getTypeHelper();
+
+    void setTypeHelper(TypeHelper typeHelper);
 }

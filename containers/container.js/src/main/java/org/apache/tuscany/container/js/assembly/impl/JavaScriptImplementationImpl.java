@@ -19,6 +19,7 @@ package org.apache.tuscany.container.js.assembly.impl;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
 import org.apache.tuscany.model.assembly.impl.AtomicImplementationImpl;
+import commonj.sdo.helper.TypeHelper;
 
 /**
  * Default implementation of a JavScript component implementation type
@@ -35,6 +36,8 @@ public class JavaScriptImplementationImpl extends AtomicImplementationImpl imple
 
     private ResourceLoader resourceLoader;
 
+    private TypeHelper typeHelper;
+
     public JavaScriptImplementationImpl() {
         super();
     }
@@ -45,6 +48,14 @@ public class JavaScriptImplementationImpl extends AtomicImplementationImpl imple
 
     public ResourceLoader getResourceLoader() {
         return resourceLoader;
+    }
+
+    public TypeHelper getTypeHelper() {
+        return typeHelper;
+    }
+
+    public void setTypeHelper(TypeHelper typeHelper) {
+        this.typeHelper = typeHelper;
     }
 
     public String getScriptFile() {

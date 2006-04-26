@@ -88,6 +88,7 @@ public class JavaScriptImplementationLoader implements StAXElementLoader<JavaScr
         jsImpl.setStyle(style);
         jsImpl.setScript(script);
         jsImpl.setResourceLoader(loaderContext.getResourceLoader());
+        jsImpl.setTypeHelper(registry.getContext().getTypeHelper());
         return jsImpl;
     }
 

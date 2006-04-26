@@ -100,8 +100,6 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
 
     private List<ImportWSDL> wsdlImports = new ImportWSDLList();
 
-    private AssemblyContext modelContext;
-
     protected CompositeImpl() {
     }
 
@@ -151,11 +149,6 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
         this.componentInfo=componentType;
     }
 
-    public AssemblyContext getAssemblyContext() {
-        checkInitialized();
-        return modelContext;
-    }
-
     public ConfiguredService getConfiguredService(ServiceURI address) {
         String partName = address.getPartName();
         String serviceName = address.getServiceName();
@@ -183,9 +176,6 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
         if (isInitialized())
             return;
         super.initialize(modelContext);
-
-        // Save the model context
-        this.modelContext = modelContext;
 
         // Initialize WSDL imports
         for (ImportWSDL importWSDL : wsdlImports) {

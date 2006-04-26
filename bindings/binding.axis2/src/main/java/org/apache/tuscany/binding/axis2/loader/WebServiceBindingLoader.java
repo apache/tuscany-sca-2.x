@@ -24,11 +24,10 @@ import org.apache.tuscany.binding.axis2.assembly.WebServiceAssemblyFactory;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis2.assembly.impl.WebServiceAssemblyFactoryImpl;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
-import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
-
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
@@ -67,6 +66,8 @@ public class WebServiceBindingLoader implements StAXElementLoader<WebServiceBind
         WebServiceBinding binding = WS_FACTORY.createWebServiceBinding();
         binding.setURI(reader.getAttributeValue(null, "uri"));
         binding.setPortURI(reader.getAttributeValue(null, "port"));
+        binding.setTypeHelper(registry.getContext().getTypeHelper());
+        binding.setResourceLoader(loaderContext.getResourceLoader());
         return binding;
     }
 }

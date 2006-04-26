@@ -20,6 +20,8 @@ import javax.wsdl.Definition;
 import javax.wsdl.Port;
 
 import org.apache.tuscany.model.assembly.Binding;
+import org.apache.tuscany.common.resource.ResourceLoader;
+import commonj.sdo.helper.TypeHelper;
 
 /**
  * Represents a Web service binding.
@@ -37,7 +39,7 @@ public interface WebServiceBinding extends Binding {
      * Returns the WSDL port defining this binding.
      */
     Port getWSDLPort();
-    
+
     /**
      * Returns the WSDL definition containing the WSDL port.
      * @return the WSDL definition containing the WSDL port
@@ -54,4 +56,12 @@ public interface WebServiceBinding extends Binding {
      * @param definition
      */
     void setWSDLDefinition(Definition definition);
+
+    TypeHelper getTypeHelper();
+
+    void setTypeHelper(TypeHelper typeHelper);
+
+    ResourceLoader getResourceLoader();
+
+    void setResourceLoader(ResourceLoader resourceLoader);
 }

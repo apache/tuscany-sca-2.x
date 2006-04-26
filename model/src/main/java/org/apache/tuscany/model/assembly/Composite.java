@@ -85,11 +85,4 @@ public interface Composite extends Implementation {
      * @return
      */
     ConfiguredService getConfiguredService(ServiceURI address);
-
-    /**
-     * Returns the assembly model context used by this composite.
-     * @return
-     */
-    AssemblyContext getAssemblyContext();
-    
 }

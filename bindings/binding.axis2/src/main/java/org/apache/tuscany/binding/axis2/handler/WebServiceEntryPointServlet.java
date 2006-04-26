@@ -125,7 +125,9 @@ public class WebServiceEntryPointServlet extends AxisServlet {
                     = new WebServiceEntryPointInOutSyncMessageReceiver(
                         entryPoint,
                         (EntryPointContext) entryPointContext,
-                        wsdlPortInfo);
+                        wsdlPortInfo,
+                        wsBinding.getTypeHelper(),
+                        wsBinding.getResourceLoader().getClassLoader());
 
                 AxisServiceGroup serviceGroup = new AxisServiceGroup(axisConfig);
                 axisConfig.addMessageReceiver(WebServiceEntryPointInOutSyncMessageReceiver.MEP_URL, msgrec);

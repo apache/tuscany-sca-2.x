@@ -26,29 +26,49 @@ import javax.wsdl.Service;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.impl.BindingImpl;
+import org.apache.tuscany.common.resource.ResourceLoader;
+import commonj.sdo.helper.TypeHelper;
 
 /**
  * An implementation of WebServiceBinding.
  */
 public class WebServiceBindingImpl extends BindingImpl implements WebServiceBinding {
-    
+
     private Definition definition;
     private Port port;
     private String portURI;
+    private TypeHelper typeHelper;
+    private ResourceLoader resourceLoader;
 
     /**
      * Constructor
      */
     protected WebServiceBindingImpl() {
     }
-    
+
+    public TypeHelper getTypeHelper() {
+        return typeHelper;
+    }
+
+    public void setTypeHelper(TypeHelper typeHelper) {
+        this.typeHelper = typeHelper;
+    }
+
+    public ResourceLoader getResourceLoader() {
+        return resourceLoader;
+    }
+
+    public void setResourceLoader(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
+
     /**
      * @see org.apache.tuscany.binding.axis2.assembly.WebServiceBinding#getWSDLPort()
      */
     public Port getWSDLPort() {
         return port;
     }
-    
+
     /**
      * @see org.apache.tuscany.binding.axis2.assembly.WebServiceBinding#setWSDLPort(javax.wsdl.Port)
      */
@@ -56,28 +76,28 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
         checkNotFrozen();
         this.port = value;
     }
-    
+
     /**
      * @see org.apache.tuscany.binding.axis2.assembly.WebServiceBinding#getWSDLDefinition()
      */
     public Definition getWSDLDefinition() {
         return definition;
     }
-    
+
     /**
      */
     public void setWSDLDefinition(Definition pdefinition) {
         checkNotFrozen();
         this.definition = pdefinition;
     }
-    
+
     /**
      * @param portURI The portURI to set.
      */
     public void setPortURI(String portURI) {
         this.portURI = portURI;
     }
-    
+
     /**
      */
     @SuppressWarnings("unchecked")
@@ -86,13 +106,13 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
             return;
         }
         super.initialize(modelContext);
-        
+
         // Get the WSDL port namespace and name
         if (port == null && portURI != null) {
             int h = portURI.indexOf('#');
             String portNamespace = portURI.substring(0, h);
             String portName = portURI.substring(h + 1);
-    
+
             // Load the WSDL definitions for the given namespace
             List<Definition> definitions = modelContext.getAssemblyLoader()
                     .loadDefinitions(portNamespace);
@@ -100,7 +120,7 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
                 throw new IllegalArgumentException("Cannot find WSDL definition for " + portNamespace);
             }
             for (Definition def : definitions) {
-    
+
                 // Find the port with the given name
                 for (Service service : (Collection<Service>)def.getServices().values()) {
                     Port prt = service.getPort(portName);
@@ -114,5 +134,5 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
             throw new IllegalArgumentException("Cannot find WSDL port " + portURI);
         }
     }
-    
+
 }

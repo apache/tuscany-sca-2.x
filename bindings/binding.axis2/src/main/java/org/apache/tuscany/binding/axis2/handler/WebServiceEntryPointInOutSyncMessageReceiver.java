@@ -60,15 +60,16 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
     @SuppressWarnings("unchecked")
     public WebServiceEntryPointInOutSyncMessageReceiver(EntryPoint entryPoint,
                                                         EntryPointContext context,
-                                                        WebServicePortMetaData wsdlPortInfo) {
+                                                        WebServicePortMetaData wsdlPortInfo,
+                                                        TypeHelper typeHelper,
+                                                        ClassLoader classLoader) {
         this.entryPointContext = context;
 
         Class<?> serviceInterface = entryPoint.getConfiguredService().getPort()
                 .getServiceContract().getInterface();
         Method[] methods = serviceInterface.getMethods();
         Map<String, Method> map = new HashMap<String, Method>(methods.length);
-        for (int i = 0; i < methods.length; i++) {
-            Method method = methods[i];
+        for (Method method : methods) {
             map.put(method.getName(), method);
         }
 
@@ -85,9 +86,8 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
             methodMap.put(opName, method);
         }
 
-        typeHelper = entryPoint.getComposite().getAssemblyContext().getTypeHelper();
-        classLoader = entryPoint.getComposite().getAssemblyContext()
-                .getApplicationResourceLoader().getClassLoader();
+        this.typeHelper = typeHelper;
+        this.classLoader = classLoader;
     }
 
     public void invokeBusinessLogic(MessageContext msgContext,

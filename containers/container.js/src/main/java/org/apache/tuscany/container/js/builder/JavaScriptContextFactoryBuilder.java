@@ -110,7 +110,7 @@ public class JavaScriptContextFactoryBuilder implements ContextFactoryBuilder {
 
         RhinoScript invoker;
         if ("e4x".equalsIgnoreCase(impl.getStyle())) {  // TODO is constant "e4x" somewhere?
-            TypeHelper typeHelper = component.getComposite().getAssemblyContext().getTypeHelper();
+            TypeHelper typeHelper = impl.getTypeHelper();
             invoker = new RhinoE4XScript(component.getName(), script, defaultProperties, cl, typeHelper);
         } else {
             invoker = new RhinoScript(component.getName(), script, defaultProperties, cl);
