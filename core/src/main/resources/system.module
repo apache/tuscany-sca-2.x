@@ -67,4 +67,15 @@
          <system:implementation.system class="org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory"/>
      </component>
 
+    <component name="org.apache.tuscany.core.async.work.DefaultWorkManager">
+        <system:implementation.system class="org.apache.tuscany.core.async.work.DefaultWorkManager"/>
+        <properties>
+            <v:scheduledMaximumPoolSize>10</v:scheduledMaximumPoolSize>
+        </properties>
+    </component>
+
+    <component name="org.apache.tuscany.core.async.builder.AsyncPolicyBuilder">
+        <system:implementation.system class="org.apache.tuscany.core.async.builder.AsyncPolicyBuilder"/>
+    </component>
+
 </module>
