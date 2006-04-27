@@ -119,7 +119,7 @@ public class WSDL2JavaGenerator {
                 targetDirectory = new File(targetDirectory).getCanonicalPath();
             }
 
-            Map<QName, String> typeMapping = new HashMap<QName, String>();
+            Map<QName, Object> typeMapping = new HashMap<QName, Object>();
             if (!packageRegistry.values().isEmpty()) {
                 ResourceSet resourceSet = DataObjectUtil.createResourceSet();
 
@@ -157,22 +157,37 @@ public class WSDL2JavaGenerator {
                             EClassifier elementType = element.getEType();
                             if (extendedMetaData.isAnonymous(elementType)) {
                                 EClass eClass = (EClass)elementType;
-                                EStructuralFeature feature = (EStructuralFeature)eClass
-                                    .getEStructuralFeatures().get(0);
-                                elementType = feature.getEType();
-                            }
-                            if (elementType instanceof EClass) {
-                                GenClass genClass = genClasses.get(elementType);
                                 QName qname = new QName(extendedMetaData.getNamespace(currentEPackage),
-                                                        extendedMetaData.getName(element));
-                                String interfaceName = genClass.getGenPackage().getInterfacePackageName()
-                                                       + '.' + genClass.getInterfaceName();
-                                typeMapping.put(qname, interfaceName);
-                            } else if (elementType instanceof EClassifier) {
-                                QName qname = new QName(extendedMetaData.getNamespace(currentEPackage),
-                                                        extendedMetaData.getName(element));
-                                String interfaceName = elementType.getInstanceClass().getName();
-                                typeMapping.put(qname, interfaceName);
+                                        extendedMetaData.getName(element));
+                                List<String> interfaceNames=new ArrayList<String>();
+                                for (EStructuralFeature feature :
+                                    (List<EStructuralFeature>)eClass.getEStructuralFeatures()) {
+                                    elementType = feature.getEType();
+                                    if (elementType instanceof EClass) {
+                                        GenClass genClass = genClasses.get(elementType);
+                                        String interfaceName = genClass.getGenPackage().getInterfacePackageName()
+                                                               + '.' + genClass.getInterfaceName();
+                                        interfaceNames.add(interfaceName);
+                                    } else if (elementType instanceof EClassifier) {
+                                        String interfaceName = elementType.getInstanceClass().getName();
+                                        interfaceNames.add(interfaceName);
+                                    }
+                                    typeMapping.put(qname, interfaceNames);
+                                }
+                            } else {
+                                if (elementType instanceof EClass) {
+                                    GenClass genClass = genClasses.get(elementType);
+                                    QName qname = new QName(extendedMetaData.getNamespace(currentEPackage),
+                                                            extendedMetaData.getName(element));
+                                    String interfaceName = genClass.getGenPackage().getInterfacePackageName()
+                                                           + '.' + genClass.getInterfaceName();
+                                    typeMapping.put(qname, interfaceName);
+                                } else if (elementType instanceof EClassifier) {
+                                    QName qname = new QName(extendedMetaData.getNamespace(currentEPackage),
+                                                            extendedMetaData.getName(element));
+                                    String interfaceName = elementType.getInstanceClass().getName();
+                                    typeMapping.put(qname, interfaceName);
+                                }
                             }
                         }
                     }
