@@ -30,8 +30,23 @@
 				<sequence>
 					<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 				</sequence>
-				<attribute name="namespace" type="anyURI" use="required"/>
+				<attribute name="namespace" type="anyURI" use="optional"/>
 				<attribute name="location" type="anyURI" use="required"/>
+				<anyAttribute namespace="##any" processContents="lax"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<!-- This is a Tuscany extension -->
+	<element name="import.sdo" type="sca:SDOImport" substitutionGroup="sca:import"  sdo:name="importSdo"/>
+	<complexType name="SDOImport">
+		<complexContent>
+			<extension base="sca:Import">
+				<sequence>
+					<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+				</sequence>
+				<attribute name="location" type="anyURI" use="optional"/>
+				<attribute name="factory" type="NCName" use="optional"/>
 				<anyAttribute namespace="##any" processContents="lax"/>
 			</extension>
 		</complexContent>

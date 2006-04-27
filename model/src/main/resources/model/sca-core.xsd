@@ -57,12 +57,12 @@
 	<element name="moduleFragment" type="sca:ModuleFragment"/>
 	<complexType name="ModuleFragment">
 		<sequence>
+			<!--  This is a Tuscany extension  -->
+			<element minOccurs="0" maxOccurs="unbounded" name="import" type="sca:Import"/>
 			<element minOccurs="0" maxOccurs="unbounded" name="entryPoint" type="sca:EntryPoint"/>
 			<element minOccurs="0" maxOccurs="unbounded" name="component" type="sca:Component"/>
 			<element minOccurs="0" maxOccurs="unbounded" name="externalService" type="sca:ExternalService"/>
 			<element minOccurs="0" maxOccurs="unbounded" name="wire" type="sca:ModuleWire"/>
-			<!--  This is a Tuscany extension  -->
-			<element minOccurs="0" maxOccurs="unbounded" name="import" type="sca:Import"/>
 			<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</sequence>
 		<attribute name="name" type="NCName" use="required"/>
