@@ -16,8 +16,13 @@
  */
 package org.apache.tuscany.model.types.wsdl.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.wsdl.Input;
+import javax.wsdl.Message;
 import javax.wsdl.Operation;
+import javax.wsdl.Part;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
@@ -33,6 +38,11 @@ import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.impl.ServiceContractImpl;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 import org.apache.tuscany.model.util.XMLNameUtil;
+import org.apache.tuscany.sdo.util.SDOUtil;
+
+import commonj.sdo.Property;
+import commonj.sdo.helper.TypeHelper;
+import commonj.sdo.helper.XSDHelper;
 
 /**
  * An implementation of WSDLServiceContract.
@@ -87,7 +97,7 @@ public class WSDLServiceContractImpl extends ServiceContractImpl implements WSDL
                 interfaceClass = modelContext.getApplicationResourceLoader().loadClass(interfaceName);
             } catch (ClassNotFoundException e) {
                 // Generate the interface on the fly
-                interfaceClass = generateJavaInterface(modelContext.getApplicationResourceLoader(), portType, interfaceName);
+                interfaceClass = generateJavaInterface(modelContext.getTypeHelper(), modelContext.getApplicationResourceLoader(), portType, interfaceName);
             }
             super.setInterface(interfaceClass);
         }
@@ -102,7 +112,7 @@ public class WSDLServiceContractImpl extends ServiceContractImpl implements WSDL
                 interfaceClass = modelContext.getApplicationResourceLoader().loadClass(interfaceName);
             } catch (ClassNotFoundException e) {
                 // Generate the interface on the fly
-                interfaceClass = generateJavaInterface(modelContext.getApplicationResourceLoader(), portType, interfaceName);
+                interfaceClass = generateJavaInterface(modelContext.getTypeHelper(), modelContext.getApplicationResourceLoader(), portType, interfaceName);
             }
             super.setCallbackInterface(interfaceClass);
         }
@@ -116,31 +126,107 @@ public class WSDLServiceContractImpl extends ServiceContractImpl implements WSDL
      * @return a Java interface that provides the same service contract as the WSDL portType
      */
     @SuppressWarnings("unchecked")
-    private static Class<?> generateJavaInterface(ResourceLoader resourceLoader, PortType portType, String interfaceName) {
-        ClassWriter cw = new ClassWriter(false);
+    private static Class<?> generateJavaInterface(TypeHelper typeHelper, ResourceLoader resourceLoader, PortType portType, String interfaceName) {
 
-        // Generate the interface
-        interfaceName = interfaceName.replace('.', '/');
-        cw.visit(V1_5, ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE, interfaceName, null, "java/lang/Object", EMPTY_STRINGS);
+        ClassLoader cl=Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(resourceLoader.getClassLoader());
+            
+            // Create an XSD helper
+            XSDHelper xsdHelper = SDOUtil.createXSDHelper(typeHelper);
+            
+            ClassWriter cw = new ClassWriter(false);
 
-        // Generate methods from the WSDL operations
-        for (Operation operation : (List<Operation>) portType.getOperations()) {
-            String methodName = XMLNameUtil.getJavaNameFromXMLName(operation.getName(), false);
+            // Generate the interface
+            interfaceName = interfaceName.replace('.', '/');
+            cw.visit(V1_5, ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE, interfaceName, null, "java/lang/Object", EMPTY_STRINGS);
 
-            // FIXME integrate XSD to Java type mapping here
-            String inputType = Type.getDescriptor(String.class);
-            String outputType = Type.getDescriptor(String.class);
+            // Generate methods from the WSDL operations
+            for (Operation operation : (List<Operation>) portType.getOperations()) {
+                String methodName = XMLNameUtil.getJavaNameFromXMLName(operation.getName(), false);
+                
+                // FIXME later we may want to wwitch to use the Axis2 WSDL2Java (not to generate the Java source,
+                // just to figure the WSDL to Java mapping)
+                
+                // Derive the method signature from the input message part (and check if it's a doc-wrapped or doc-bare operation)
+                List<Class> inputTypes=new ArrayList<Class>();
+                boolean wrapped = false;
+                if (operation.getInput() != null && operation.getInput().getMessage()!=null && !operation.getInput().getMessage().getParts().isEmpty()) {
+                    QName qname=((Part)operation.getInput().getMessage().getParts().values().iterator().next()).getElementName();
+                    if (qname!=null) {
+                        Property property = xsdHelper.getGlobalProperty(qname.getNamespaceURI(), qname.getLocalPart(), true);
+                        commonj.sdo.Type type = property.getType();
+                        if (property.getName().equals(operation.getName())) {
+                            String localName = xsdHelper.getLocalName(type);
+                            if (localName.indexOf("_._")!=-1) {
+                                for (Property param : (List<Property>)type.getProperties()) {
+                                    Class inputType = param.getType().getInstanceClass();
+                                    if (inputType == null)
+                                        inputType = Object.class;
+                                    inputTypes.add(inputType);
+                                }
+                                wrapped=true;
+                            }
+                        }
 
-            cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, methodName, '(' + inputType + ')' + outputType, null, null).visitEnd();
+                        // Bare doc style
+                        if (!wrapped) {
+                            Class inputType = type.getInstanceClass();
+                            if (inputType == null)
+                                inputType = Object.class;
+                            inputTypes.add(inputType);
+                        }
+                        
+                    } else {
+                        // FIXME only support elements for now 
+                    }
+                }
+                
+                // Derive the return type from the output message part (also support doc-wrapped and doc-bare here)
+                Class outputType=Void.class;
+                if (operation.getOutput() != null && operation.getOutput().getMessage()!=null && !operation.getOutput().getMessage().getParts().isEmpty()) {
+                    QName qname=((Part)operation.getOutput().getMessage().getParts().values().iterator().next()).getElementName();
+                    if (qname!=null) {
+                        Property property = xsdHelper.getGlobalProperty(qname.getNamespaceURI(), qname.getLocalPart(), true);
+                        commonj.sdo.Type type = property.getType();
+                        if (wrapped) {
+                            if (!type.getProperties().isEmpty()) {
+                                outputType=((Property)type.getProperties().get(0)).getType().getInstanceClass();
+                                if (outputType==null)
+                                    outputType=Object.class;
+                            }
+                        } else {
+                            outputType = type.getInstanceClass();
+                            if (outputType==null)
+                                outputType=Object.class;
+                        }
+                    } else {
+                        // FIXME only support elements for now 
+                    }
+                }
+
+                // FIXME integrate XSD to Java type mapping here
+                StringBuffer inputSignature=new StringBuffer();
+                for (Class inputType : inputTypes) {
+                    inputSignature.append(Type.getDescriptor(inputType));
+                }
+                String outputSignature = Type.getDescriptor(outputType);
+
+                cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, methodName, '(' + inputSignature.toString() + ')' + outputSignature, null, null).visitEnd();
+            }
+
+            // Generate the bytecodes
+            cw.visitEnd();
+            byte[] bytes = cw.toByteArray();
+
+            // Add the class to the resource loader
+
+            return resourceLoader.addClass(bytes);
+            
+        } finally {
+            Thread.currentThread().setContextClassLoader(cl);
         }
-
-        // Generate the bytecodes
-        cw.visitEnd();
-        byte[] bytes = cw.toByteArray();
-
-        // Add the class to the resource loader
-
-        return resourceLoader.addClass(bytes);
+        
     }
 
 }
