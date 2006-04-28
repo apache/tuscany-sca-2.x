@@ -33,27 +33,31 @@ import org.apache.wsdl.WSDLOperation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-class JavaInterfaceEmitter extends JavaEmitter {
+/**
+ * Overrides the Axis2 JavaEmitter to generate unwrapped methods.
+ */
+public class JavaInterfaceEmitter extends JavaEmitter {
     
-    private List getParameterElementList(Document doc, MessageReference message) {
+    private List getParameterElementList(Document doc, MessageReference message, boolean wrapped) {
         List parameterElementList = new ArrayList();
         
-        if (message != null) {
+        if (message != null && message.getElementQName()!=null) {
 
-            Object typeMappingObject = this.mapper.getTypeMappingObject(message.getElementQName());
-            List typeMappingList;
-            if (typeMappingObject instanceof List) {
-                typeMappingList = (List)typeMappingObject;
+            SDODataBindingTypeMappingEntry typeMappingEntry =
+                (SDODataBindingTypeMappingEntry)this.mapper.getTypeMappingObject(message.getElementQName());
+            List typeMappings;
+            if (wrapped) {
+                typeMappings = (List)typeMappingEntry.getPropertyClassNames();
             } else {
-                typeMappingList = new ArrayList();
-                typeMappingList.add(typeMappingObject);
+                typeMappings = new ArrayList();
+                typeMappings.add(typeMappingEntry.getClassName());
             }
             
-            for (int i=0; i<typeMappingList.size(); i++) {
+            for (int i=0; i<typeMappings.size(); i++) {
                 Element param = doc.createElement("param");
                 parameterElementList.add(param);
                 
-                String typeMapping = (String)typeMappingList.get(i);
+                String typeMapping = (String)typeMappings.get(i);
     
                 addAttribute(doc, "name", this.mapper.getParameterName(message.getElementQName()), param);
                 addAttribute(doc, "type", (typeMapping == null)
@@ -108,19 +112,37 @@ class JavaInterfaceEmitter extends JavaEmitter {
 
         return parameterElementList;
     }
+    
+    protected boolean isWrapped(WSDLOperation operation) {
+        boolean wrapped = false;
+        
+        if (operation.getInputMessage() != null) {
+            QName qname = operation.getInputMessage().getElementQName();
+            if (qname != null && qname.getLocalPart().equals(operation.getName().getLocalPart())) {
+                
+                SDODataBindingTypeMappingEntry typeMappingEntry =
+                            (SDODataBindingTypeMappingEntry)this.mapper.getTypeMappingObject(qname);
+                if (typeMappingEntry.isAnonymous()) {
+                    wrapped = true;
+                }
+            }
+        }
+        
+        return wrapped;
+    }
 
     protected Element getInputElement(Document doc, WSDLOperation operation, List headerParameterQNameList) {
-        return getElement(doc, "input", operation.getInputMessage(), headerParameterQNameList);
+        return getElement(doc, "input", operation.getInputMessage(), isWrapped(operation), headerParameterQNameList);
     }
     
     protected Element getOutputElement(Document doc, WSDLOperation operation, List headerParameterQNameList) {
-        return getElement(doc, "output", operation.getOutputMessage(), headerParameterQNameList);
+        return getElement(doc, "output", operation.getOutputMessage(), isWrapped(operation), headerParameterQNameList);
     }
 
-    protected Element getElement(Document doc, String elementName, MessageReference message, List headerParameterQNameList) {
+    protected Element getElement(Document doc, String elementName, MessageReference message, boolean wrapped, List headerParameterQNameList) {
         Element element = doc.createElement(elementName);
 
-        List parameterElementList = getParameterElementList(doc, message);
+        List parameterElementList = getParameterElementList(doc, message, wrapped);
         for (int i = 0; i < parameterElementList.size(); i++) {
             element.appendChild((Element) parameterElementList.get(i));
         }

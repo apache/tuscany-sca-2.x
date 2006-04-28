@@ -43,7 +43,7 @@ public class JavaInterfaceGenerator {
     private CodeGenConfiguration codegenConfiguration;
 
     public JavaInterfaceGenerator(String uri, String outputLocation, String packageName,
-                                  Map<QName, Object> typeMapping) throws CodeGenerationException {
+                                  Map<QName, SDODataBindingTypeMappingEntry> typeMapping) throws CodeGenerationException {
         WSDLDescription wom;
         try {
             wom = WOMBuilderFactory.getBuilder(org.apache.wsdl.WSDLConstants.WSDL_1_1)
@@ -57,7 +57,7 @@ public class JavaInterfaceGenerator {
         }
 
         JavaTypeMapper typeMapper = new JavaTypeMapper();
-        for (Map.Entry<QName, Object> e : typeMapping.entrySet()) {
+        for (Map.Entry<QName, SDODataBindingTypeMappingEntry> e : typeMapping.entrySet()) {
             typeMapper.addTypeMappingObject(e.getKey(), e.getValue());
         }
 

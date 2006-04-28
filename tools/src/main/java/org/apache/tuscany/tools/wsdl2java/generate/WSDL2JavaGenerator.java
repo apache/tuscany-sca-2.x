@@ -30,8 +30,10 @@ import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sdo.SDOTypeVisitor;
 import org.apache.tuscany.sdo.helper.XSDHelperImpl;
 import org.apache.tuscany.sdo.util.DataObjectUtil;
+import org.apache.tuscany.sdo.util.SDOUtil;
 import org.eclipse.emf.codegen.ecore.genmodel.GenClass;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelFactory;
@@ -47,6 +49,7 @@ import org.eclipse.emf.ecore.impl.EPackageRegistryImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.BasicExtendedMetaData;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 
 import commonj.sdo.helper.XSDHelper;
@@ -103,14 +106,20 @@ public class WSDL2JavaGenerator {
     public static void generateFromWSDL(String wsdlFileName, String targetDirectory,
                                         String wsdlJavaPackage,
                                         String xsdJavaPackage, int genOptions) {
+
+        // Initialize the SDO runtime
         DataObjectUtil.initRuntime();
         EPackage.Registry packageRegistry = new EPackageRegistryImpl(EPackage.Registry.INSTANCE);
         ExtendedMetaData extendedMetaData = new BasicExtendedMetaData(packageRegistry);
         XSDHelper xsdHelper = new XSDHelperImpl(extendedMetaData);
 
         try {
+            
+            // Load the WSDL file
             File inputFile = new File(wsdlFileName).getAbsoluteFile();
             InputStream inputStream = new FileInputStream(inputFile);
+            
+            // Define SDO metadata
             xsdHelper.define(inputStream, inputFile.toURI().toString());
 
             if (targetDirectory == null) {
@@ -119,13 +128,15 @@ public class WSDL2JavaGenerator {
                 targetDirectory = new File(targetDirectory).getCanonicalPath();
             }
 
-            Map<QName, Object> typeMapping = new HashMap<QName, Object>();
+            // Populate the typeMapping table that will be given to the Axis2 WSDL2Java 
+            Map<QName, SDODataBindingTypeMappingEntry> typeMapping =
+                                    new HashMap<QName, SDODataBindingTypeMappingEntry>();
             if (!packageRegistry.values().isEmpty()) {
                 ResourceSet resourceSet = DataObjectUtil.createResourceSet();
 
+                // Populate list of GenPackages and a map of GenClasses keyed by EClass 
                 List<GenPackage> genPackages = new ArrayList<GenPackage>();
                 Map<EClass, GenClass> genClasses = new HashMap<EClass, GenClass>();
-
                 for (Iterator iter = packageRegistry.values().iterator(); iter.hasNext();) {
                     EPackage currentEPackage = (EPackage)iter.next();
                     String currentBasePackage = extractBasePackageName(currentEPackage, xsdJavaPackage);
@@ -140,54 +151,68 @@ public class WSDL2JavaGenerator {
 
                 }
 
+                // Process all the SDO packages
+                // Populate the qname -> interfaceName typeMapping table
                 for (GenPackage currentGenPackage : genPackages) {
                     EPackage currentEPackage = currentGenPackage.getEcorePackage();
+                    
+                    // Populate the type mappings for all the complex types
                     for (GenClass genClass : (List<GenClass>)currentGenPackage.getGenClasses()) {
                         QName qname = new QName(extendedMetaData.getNamespace(currentEPackage),
                                                 extendedMetaData.getName(genClass.getEcoreClass()));
                         String interfaceName = currentGenPackage.getInterfacePackageName() + '.'
                                                + genClass.getInterfaceName();
-                        typeMapping.put(qname, interfaceName);
+                        SDODataBindingTypeMappingEntry typeMappingEntry =
+                                new SDODataBindingTypeMappingEntry(interfaceName, false, null);
+                        typeMapping.put(qname, typeMappingEntry);
                     }
 
+                    // Process all the global XSD elements
                     EClass documentRoot = extendedMetaData.getDocumentRoot(currentEPackage);
                     if (documentRoot != null) {
                         for (EStructuralFeature element : (List<EStructuralFeature>)extendedMetaData
                             .getElements(documentRoot)) {
                             EClassifier elementType = element.getEType();
-                            if (extendedMetaData.isAnonymous(elementType)) {
+                            
+                            // Handle a complex type
+                            if (elementType instanceof EClass) {
                                 EClass eClass = (EClass)elementType;
+
+                                GenClass genClass = genClasses.get(elementType);
                                 QName qname = new QName(extendedMetaData.getNamespace(currentEPackage),
                                         extendedMetaData.getName(element));
-                                List<String> interfaceNames=new ArrayList<String>();
-                                for (EStructuralFeature feature :
-                                    (List<EStructuralFeature>)eClass.getEStructuralFeatures()) {
-                                    elementType = feature.getEType();
-                                    if (elementType instanceof EClass) {
-                                        GenClass genClass = genClasses.get(elementType);
-                                        String interfaceName = genClass.getGenPackage().getInterfacePackageName()
-                                                               + '.' + genClass.getInterfaceName();
-                                        interfaceNames.add(interfaceName);
-                                    } else if (elementType instanceof EClassifier) {
-                                        String interfaceName = elementType.getInstanceClass().getName();
-                                        interfaceNames.add(interfaceName);
+                                String interfaceName = genClass.getGenPackage().getInterfacePackageName()
+                                + '.' + genClass.getInterfaceName();
+                                boolean anonymous = extendedMetaData.isAnonymous(eClass);
+                                
+                                // Build list of property class names
+                                List<String> propertyClassNames=new ArrayList<String>();
+                                for (EStructuralFeature feature : (List<EStructuralFeature>)eClass.getEStructuralFeatures()) {
+                                    EClassifier propertyType = feature.getEType();
+                                    if (propertyType instanceof EClass) {
+                                        GenClass propertyGenClass = genClasses.get(propertyType);
+                                        String propertyClassName = propertyGenClass.getGenPackage().getInterfacePackageName()
+                                                               + '.' + propertyGenClass.getInterfaceName();
+                                        propertyClassNames.add(propertyClassName);
+                                    } else if (propertyType instanceof EClassifier) {
+                                        String propertyClassName = propertyType.getInstanceClass().getName();
+                                        propertyClassNames.add(propertyClassName);
                                     }
-                                    typeMapping.put(qname, interfaceNames);
                                 }
+
+                                SDODataBindingTypeMappingEntry typeMappingEntry = 
+                                    new SDODataBindingTypeMappingEntry(interfaceName, anonymous, propertyClassNames);
+                                typeMapping.put(qname, typeMappingEntry);
+                                
                             } else {
-                                if (elementType instanceof EClass) {
-                                    GenClass genClass = genClasses.get(elementType);
-                                    QName qname = new QName(extendedMetaData.getNamespace(currentEPackage),
-                                                            extendedMetaData.getName(element));
-                                    String interfaceName = genClass.getGenPackage().getInterfacePackageName()
-                                                           + '.' + genClass.getInterfaceName();
-                                    typeMapping.put(qname, interfaceName);
-                                } else if (elementType instanceof EClassifier) {
-                                    QName qname = new QName(extendedMetaData.getNamespace(currentEPackage),
-                                                            extendedMetaData.getName(element));
-                                    String interfaceName = elementType.getInstanceClass().getName();
-                                    typeMapping.put(qname, interfaceName);
-                                }
+                                
+                                // Handle a simple type
+                                QName qname = new QName(extendedMetaData.getNamespace(currentEPackage),
+                                                        extendedMetaData.getName(element));
+                                String className = elementType.getInstanceClass().getName();
+                                SDODataBindingTypeMappingEntry typeMappingEntry = 
+                                        new SDODataBindingTypeMappingEntry(className, false, null);
+                                typeMapping.put(qname, typeMappingEntry);
                             }
                         }
                     }
