@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.apache.tuscany.sdo.helper.SDOXSDEcoreBuilder;
+
+
 
 /**
  * A utility class that converts between XML names and Java names.
@@ -44,54 +47,7 @@ public final class XMLNameUtil {
      * @return an EPackage name for the given namespace
      */
     public static String getPackageNameFromNamespace(String namespace) {
-
-        URI uri;
-        try {
-            uri = new URI(namespace);
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
-        }
-        List<String> parsedName;
-        if (uri.isAbsolute()) {
-            String host = uri.getHost();
-            if (host != null && host.startsWith("www.")) {
-                host = host.substring(4);
-            }
-            parsedName = parseName(host, '.');
-            Collections.reverse(parsedName);
-            if (!parsedName.isEmpty()) {
-                parsedName.set(0, parsedName.get(0).toLowerCase());
-            }
-
-            parsedName.addAll(parseName(trimFileExtension(uri.getPath()), '/'));
-
-        } else {
-            String opaquePart = uri.getAuthority();
-            int index = opaquePart.indexOf(":");
-            if (index != -1 && "urn".equalsIgnoreCase(uri.getScheme())) {
-                parsedName = parseName(opaquePart.substring(0, index), '-');
-                if (parsedName.size() > 0 && DOMAINS.contains(parsedName.get(parsedName.size() - 1))) {
-                    Collections.reverse(parsedName);
-                    parsedName.set(0, parsedName.get(0).toLowerCase());
-                }
-                parsedName.addAll(parseName(opaquePart.substring(index + 1), '/'));
-
-            } else {
-                parsedName = parseName(opaquePart, '/');
-            }
-        }
-
-        StringBuilder qualifiedPackageName = new StringBuilder(128);
-        for (String packageName : parsedName) {
-            if (packageName.length() > 0) {
-                if (qualifiedPackageName.length() > 0) {
-                    qualifiedPackageName.append('.');
-                }
-                qualifiedPackageName.append(getJavaNameFromXMLName(packageName, false));
-            }
-        }
-        return qualifiedPackageName.toString().toLowerCase();
-
+       return org.apache.tuscany.sdo.helper.SDOXSDEcoreBuilder.getDefaultPackageName(namespace);
     }
 
     /**
