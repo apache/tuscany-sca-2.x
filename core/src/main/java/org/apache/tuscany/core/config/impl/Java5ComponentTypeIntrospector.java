@@ -25,7 +25,7 @@ import java.util.Set;
 
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.core.config.ImplementationProcessor;
+import org.apache.tuscany.core.extension.config.ImplementationProcessor;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.config.processor.ProcessorUtils;
 import org.apache.tuscany.core.system.annotation.Autowire;
@@ -72,7 +72,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
     }
 
     /**
-     * Visits the given implementation type and calls back to {@link ImplementationProcessor}s registered with
+     * Visits the given implementation type and calls back to {@link org.apache.tuscany.core.extension.config.ImplementationProcessor}s registered with
      * this introspector to build up a {@link ComponentInfo}
      *
      * @return ComponentInfo representing the implementation type metadata

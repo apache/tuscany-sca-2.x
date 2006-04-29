@@ -11,24 +11,25 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.config;
+package org.apache.tuscany.core.extension.config;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
 
 /**
  * Implementations process a Java class and contribute to a {@link org.apache.tuscany.model.assembly.ComponentInfo}
  * or provide some validation function. Implementations may contribute to defined <code>ComponentInfo</code>
  * metadata, a general <code>ComponentType</code> extensibility element, or a more specific Java extensibility
- * element, which is associated with {@link org.apache.tuscany.core.assembly.JavaExtensibilityElement} and
+ * element, which is associated with {@link org.apache.tuscany.core.extension.config.JavaExtensibilityElement} and
  * stored in the <code>ComponentInfo</code>'s extensibility collection. Processors will typically use {@link
  * JavaExtensibilityHelper#getExtensibilityElement(org.apache.tuscany.model.assembly.Extensible)}, which
  * provides methods for retrieving the Java extensibility element.
  * <p/>
- * In the runtime, a {@link ComponentTypeIntrospector} system service introspects component implementation
+ * In the runtime, a {@link org.apache.tuscany.core.config.ComponentTypeIntrospector} system service introspects component implementation
  * types when an assembly is loaded, calling out to registered processors in the order defined by {@link
  * ComponentTypeIntrospector#introspect(Class<?>)}. Generally, processors are also system services which
  * register themeselves with a <code>ComponentTypeIntrospector</code>. For convenience, a processor

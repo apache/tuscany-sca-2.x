@@ -43,7 +43,6 @@ public abstract class AssemblyObjectImpl implements AssemblyObject {
      * Walk a visitor through a collection of model objects.
      * @param collection
      * @param visitor
-     * @return
      */
     protected boolean accept(Collection collection, AssemblyVisitor visitor) {
         for (Object member : collection) {

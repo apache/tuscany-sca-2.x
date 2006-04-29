@@ -17,6 +17,7 @@
 package org.apache.tuscany.core.config;
 
 import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.core.extension.config.ImplementationProcessor;
 
 /**
  * Interface for implementations that are able create SCA definitions by inspecting Java classes.

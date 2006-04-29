@@ -33,7 +33,7 @@ public interface Implementation extends Extensible {
     
     /**
      * Sets the generic component type corresponding to this implementation.
-     * @param componentType the generic component type corresponding to this implementation
+     * @param componentInfo the generic component type corresponding to this implementation
      */
     void setComponentInfo(ComponentInfo componentInfo);
 

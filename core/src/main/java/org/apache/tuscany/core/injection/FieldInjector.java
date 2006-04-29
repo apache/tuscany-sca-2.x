@@ -15,10 +15,6 @@ public class FieldInjector<T> implements Injector<T> {
 
     private final ObjectFactory<?> objectFactory;
 
-    // //----------------------------------
-    // Constructors
-    // ----------------------------------
-
     /**
      * Create an injector and have it use the given <code>ObjectFactory</code>
      * to inject a value on the instance using the reflected <code>Field</code>
@@ -27,10 +23,6 @@ public class FieldInjector<T> implements Injector<T> {
         this.field = field;
         this.objectFactory = objectFactory;
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     /**
      * Inject a new value on the given isntance

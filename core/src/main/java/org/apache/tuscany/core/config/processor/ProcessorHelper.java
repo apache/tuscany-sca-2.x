@@ -19,7 +19,7 @@ import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 
 /**
- * Provides utility functions for {@link org.apache.tuscany.core.config.ImplementationProcessor}s
+ * Provides utility functions for {@link org.apache.tuscany.core.extension.config.ImplementationProcessor}s
  *
  * @version $$Rev$$ $$Date$$
  */

@@ -18,12 +18,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.config.ImplementationProcessor;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.extension.config.ImplementationProcessor;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
+import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
@@ -92,4 +92,16 @@ public abstract class ImplementationProcessorSupport implements ImplementationPr
     public void visitEnd(Class<?> clazz, ComponentInfo type) throws ConfigurationLoadException {
 
     }
+
+//    /**
+//     * Creates a {@link JavaExtensibilityElement} subclasses may update while processing annotations
+//     */
+//    protected JavaExtensibilityElement getExtensibilityElement(ComponentInfo type) {
+//        JavaExtensibilityElement element = (JavaExtensibilityElement) type.getExtensibilityElements().get(JAVA_ELEMENT);
+//        if (element == null) {
+//            element = new JavaExtensibilityElementImpl();
+//            type.getExtensibilityElements().put(JAVA_ELEMENT, element);
+//        }
+//        return element;
+//    }
 }

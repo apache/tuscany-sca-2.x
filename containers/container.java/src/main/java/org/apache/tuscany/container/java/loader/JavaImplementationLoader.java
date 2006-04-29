@@ -33,7 +33,7 @@ import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.InvalidRootElementException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.config.SidefileLoadException;
-import org.apache.tuscany.core.config.ImplementationProcessor;
+import org.apache.tuscany.core.extension.config.ImplementationProcessor;
 import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.processor.ProcessorUtils;
 import org.apache.tuscany.core.loader.LoaderContext;

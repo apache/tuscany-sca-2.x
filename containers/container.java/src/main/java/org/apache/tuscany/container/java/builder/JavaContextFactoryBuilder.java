@@ -1,26 +1,22 @@
 package org.apache.tuscany.container.java.builder;
 
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
 import org.apache.tuscany.container.java.config.JavaContextFactory;
-import org.apache.tuscany.core.assembly.JavaExtensibilityElement;
+import org.apache.tuscany.core.extension.config.extensibility.ComponentNameExtensibilityElement;
+import org.apache.tuscany.core.extension.config.extensibility.ContextExtensibilityElement;
+import org.apache.tuscany.core.extension.config.extensibility.DestroyInvokerExtensibilityElement;
+import org.apache.tuscany.core.extension.config.extensibility.InitInvokerExtensibilityElement;
+import org.apache.tuscany.core.extension.config.InjectorExtensibilityElement;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.config.JavaExtensibilityHelper;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.extension.ContextFactoryBuilderSupport;
-import org.apache.tuscany.core.injection.ContextObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
-import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.core.injection.MethodInjector;
-import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.model.assembly.Scope;
 
@@ -62,36 +58,28 @@ public class JavaContextFactoryBuilder extends ContextFactoryBuilderSupport<Java
                     .getDefaultConstructor(implClass), scope);
 
             List<Injector> injectors = new ArrayList<Injector>();
-            EventInvoker<Object> initInvoker;
-            boolean eagerInit;
-            EventInvoker<Object> destroyInvoker;
-            ContextObjectFactory contextObjectFactory = new ContextObjectFactory(contextFactory);
-            JavaExtensibilityElement element = JavaExtensibilityHelper.getExtensibilityElement(javaImpl.getComponentInfo());
-            AccessibleObject ao = element.getComponentName();
-            if (ao instanceof Field) {
-                Injector injector = new FieldInjector((Field) ao, new SingletonObjectFactory<Object>(name));
-                injectors.add(injector);
-            } else if (ao instanceof Method) {
-                Injector injector = new MethodInjector((Method) ao, new SingletonObjectFactory<Object>(name));
-                injectors.add(injector);
-            }
-            ao = element.getContext();
-            if (ao instanceof Field) {
-                Injector injector = new FieldInjector((Field) ao, contextObjectFactory);
-                injectors.add(injector);
-            } else if (ao instanceof Method) {
-                Injector injector = new MethodInjector((Method) ao, contextObjectFactory);
-                injectors.add(injector);
-            }
-            initInvoker = element.getInit();
-            eagerInit = element.isEagerInit();
-            destroyInvoker = element.getDestroy();
-            if (initInvoker != null) {
-                contextFactory.setEagerInit(eagerInit);
-                contextFactory.setInitInvoker(initInvoker);
-            }
-            if (destroyInvoker != null) {
-                contextFactory.setDestroyInvoker(destroyInvoker);
+            List<Object> elements = javaImpl.getComponentInfo().getExtensibilityElements();
+            for (Object element : elements) {
+                if (element instanceof InitInvokerExtensibilityElement) {
+                    InitInvokerExtensibilityElement invokerElement = (InitInvokerExtensibilityElement) element;
+                    EventInvoker<Object> initInvoker = invokerElement.getEventInvoker();
+                    boolean eagerInit = invokerElement.isEager();
+                    contextFactory.setEagerInit(eagerInit);
+                    contextFactory.setInitInvoker(initInvoker);
+                } else if (element instanceof DestroyInvokerExtensibilityElement) {
+                    DestroyInvokerExtensibilityElement invokerElement = (DestroyInvokerExtensibilityElement) element;
+                    EventInvoker<Object> destroyInvoker = invokerElement.getEventInvoker();
+                    contextFactory.setDestroyInvoker(destroyInvoker);
+                } else if (element instanceof ComponentNameExtensibilityElement) {
+                    ComponentNameExtensibilityElement nameElement = (ComponentNameExtensibilityElement) element;
+                    injectors.add(nameElement.getEventInvoker(name));
+                } else if (element instanceof ContextExtensibilityElement) {
+                    ContextExtensibilityElement contextElement = (ContextExtensibilityElement) element;
+                    injectors.add(contextElement.getInjector(contextFactory));
+                }else if (element instanceof InjectorExtensibilityElement){
+                    InjectorExtensibilityElement injectorElement = (InjectorExtensibilityElement)element;
+                    injectors.add(injectorElement.getInjector(contextFactory));
+                }
             }
             contextFactory.setSetters(injectors);
             return contextFactory;

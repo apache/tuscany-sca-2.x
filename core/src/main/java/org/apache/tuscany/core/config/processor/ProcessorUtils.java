@@ -16,7 +16,7 @@ package org.apache.tuscany.core.config.processor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.core.config.ImplementationProcessor;
+import org.apache.tuscany.core.extension.config.ImplementationProcessor;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 
 /**

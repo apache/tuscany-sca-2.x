@@ -1,7 +1,7 @@
 package org.apache.tuscany.core.builder;
 
 /**
- * Represents an error processing a logical configuration model
+ * Represents an error processing an assembly model
  * 
  * @version $Rev$ $Date$
  */

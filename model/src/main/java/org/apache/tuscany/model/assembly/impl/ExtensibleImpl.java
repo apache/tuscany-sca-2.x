@@ -27,21 +27,21 @@ import org.apache.tuscany.model.assembly.Extensible;
  * An implementation of Extensible.
  */
 public abstract class ExtensibleImpl extends AssemblyObjectImpl implements Extensible {
-    
-    private List<Object> extensibilityElements=new ArrayList<Object>();
-    private List<Object> extensibilityAttributes=new ArrayList<Object>();
+
+    private List<Object> extensibilityElements = new ArrayList<Object>();
+    private List<Object> extensibilityAttributes = new ArrayList<Object>();
 
     protected ExtensibleImpl() {
     }
 
-    public List getExtensibilityElements() {
+    public List<Object> getExtensibilityElements() {
         return extensibilityElements;
     }
 
-    public List getExtensibilityAttributes() {
+    public List<Object> getExtensibilityAttributes() {
         return extensibilityAttributes;
     }
-    
+
     public void initialize(AssemblyContext modelContext) {
         if (isInitialized())
             return;
@@ -56,22 +56,20 @@ public abstract class ExtensibleImpl extends AssemblyObjectImpl implements Exten
         if (isFrozen())
             return;
         super.freeze();
-        
+
         // Freeze extensibility elements and attributes
         freeze(extensibilityElements);
         freeze(extensibilityAttributes);
     }
-    
+
     public boolean accept(AssemblyVisitor visitor) {
         if (!super.accept(visitor))
             return false;
-        
+
         if (!accept(extensibilityElements, visitor))
             return false;
-        if (!accept(extensibilityAttributes, visitor))
-            return false;
-        
-        return true;
+        return accept(extensibilityAttributes, visitor);
+
     }
 
 }

@@ -125,7 +125,6 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
         assertEquals(200, response.getStatus());
 
         String s = response.getOutputStream().toString(); // would be better to validate with WSDl4J
-        assertTrue(s.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<wsdl:definitions"));
         assertTrue(s.contains("<wsdl:service name=\"HelloWorldServiceImplService\">"));
 
         host.removeChild(ctx);

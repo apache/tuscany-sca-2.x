@@ -13,14 +13,13 @@
  */
 package org.apache.tuscany.core.config.processor;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
+import org.apache.tuscany.core.extension.config.extensibility.ComponentNameExtensibilityElement;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.ComponentInfo;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.core.config.JavaExtensibilityHelper;
-import org.apache.tuscany.core.assembly.JavaExtensibilityElement;
 import org.osoa.sca.annotations.ComponentName;
 
 /**
@@ -39,8 +38,7 @@ public class ComponentNameProcessor extends ImplementationProcessorSupport {
         if (name == null) {
             return;
         }
-        JavaExtensibilityElement element = JavaExtensibilityHelper.getExtensibilityElement(type);
-        element.setContext(method);
+        type.getExtensibilityElements().add(new ComponentNameExtensibilityElement(method));
     }
 
     public void visitField(Field field, ComponentInfo type) throws ConfigurationLoadException {
@@ -48,7 +46,6 @@ public class ComponentNameProcessor extends ImplementationProcessorSupport {
         if (name == null) {
             return;
         }
-        JavaExtensibilityElement element = JavaExtensibilityHelper.getExtensibilityElement(type);
-        element.setComponentName(field);
+        type.getExtensibilityElements().add(new ComponentNameExtensibilityElement(field));
     }
 }
