@@ -16,26 +16,29 @@
  */
 package org.apache.tuscany.tomcat.integration;
 
-import junit.framework.TestCase;
-import org.apache.catalina.Host;
-import org.apache.catalina.Globals;
-import org.apache.catalina.connector.Connector;
-import org.apache.catalina.connector.Request;
-import org.apache.catalina.connector.Response;
-import org.apache.catalina.core.StandardEngine;
-import org.apache.catalina.core.ApplicationFilterFactory;
-
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Enumeration;
 import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
+
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
+
+import junit.framework.TestCase;
+
+import org.apache.catalina.Globals;
+import org.apache.catalina.Host;
+import org.apache.catalina.connector.Connector;
+import org.apache.catalina.connector.Request;
+import org.apache.catalina.connector.Response;
+import org.apache.catalina.core.ApplicationFilterFactory;
+import org.apache.catalina.core.StandardEngine;
 
 /**
  * @version $Rev$ $Date$
@@ -184,6 +187,20 @@ public class AbstractTomcatTest extends TestCase {
         public String getRemoteAddr() {
           
             return "127.0.0.1";
+        }
+        
+        @Override
+        public Enumeration getParameterNames() {
+            return new Vector().elements();
+        }
+        
+        @Override
+        public String getParameter(String param) {
+            if ("wsdl".equals(param)) {
+                return "";
+            } else {
+                return null;
+            }
         }
     }
 

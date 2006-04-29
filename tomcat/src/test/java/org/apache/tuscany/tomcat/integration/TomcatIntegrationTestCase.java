@@ -99,6 +99,38 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
         host.removeChild(ctx);
     }
 
+    /**
+     * Test ?WSDL works
+     */
+    public void testWebServiceIntegrationWSDL() throws Exception {
+        // create the webapp Context
+        StandardContext ctx = new StandardContext();
+        ctx.addLifecycleListener(new ContextConfig());
+        ctx.setName("testContext");
+        ctx.setDocBase(app1.getAbsolutePath());
+        ctx.setLoader(loader);
+
+        host.addChild(ctx);
+
+        Wrapper wrapper = (Wrapper) ctx.findChild("TuscanyAxis2EntryPointServlet");
+        assertNotNull("No webservice wrapper present", wrapper);
+        request.setContext(ctx);
+        request.setRequestURI("/services/HelloWorldService");
+        request.setMethod("GET");
+
+        request.setWrapper(wrapper);
+
+        host.invoke(request, response);
+
+        assertEquals(200, response.getStatus());
+
+        String s = response.getOutputStream().toString(); // would be better to validate with WSDl4J
+        assertTrue(s.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<wsdl:definitions"));
+        assertTrue(s.contains("<wsdl:service name=\"HelloWorldServiceImplService\">"));
+
+        host.removeChild(ctx);
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         app1 = new File(getClass().getResource("/app1").toURI());
