@@ -92,7 +92,7 @@ public class ComponentLoader extends AbstractLoader {
         }
     }
 
-    protected void loadProperties(XMLStreamReader reader, ResourceLoader resourceLoader, Component component) throws XMLStreamException, ConfigurationLoadException {
+    protected void loadProperties(XMLStreamReader reader, ResourceLoader resourceLoader, Component<?> component) throws XMLStreamException, ConfigurationLoadException {
         ComponentInfo componentType = component.getImplementation().getComponentInfo();
         List<ConfiguredProperty> configuredProperties = component.getConfiguredProperties();
 
@@ -158,7 +158,7 @@ public class ComponentLoader extends AbstractLoader {
         }
     }
 
-    protected void loadReferences(XMLStreamReader reader, Component component) throws XMLStreamException {
+    protected void loadReferences(XMLStreamReader reader, Component<?> component) throws XMLStreamException {
         List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
         while (true) {
             switch (reader.next()) {

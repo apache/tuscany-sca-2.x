@@ -21,7 +21,6 @@ import java.util.List;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeDestroyOnlyComponent;
@@ -32,22 +31,25 @@ import org.apache.tuscany.container.java.mock.components.ModuleScopeInitOnlyComp
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
+import org.apache.tuscany.core.config.ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.core.wire.service.WireFactoryService;
-import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
-import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
+import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
+import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
+import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.model.assembly.AtomicComponent;
+import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Lifecycle unit tests for the module scope container
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class ModuleScopeLifecycleTestCase extends TestCase {
@@ -159,7 +161,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
     }
 
 
-    private List<ContextFactory<Context>> createComponents() throws BuilderException {
+    private List<ContextFactory<Context>> createComponents() throws BuilderException, ConfigurationLoadException {
         AtomicComponent[] ca = new AtomicComponent[3];
         ca[0] = MockFactory.createComponent("TestServiceInitDestroy", ModuleScopeInitDestroyComponent.class,
                 Scope.MODULE);
@@ -167,7 +169,11 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
                 Scope.MODULE);
         ca[2] = MockFactory.createComponent("TestServiceDestroyOnly", ModuleScopeDestroyOnlyComponent.class,
                 Scope.MODULE);
-        List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>> ();
+        List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
+        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ca[0].getImplementation().setComponentInfo(introspector.introspect(ModuleScopeInitDestroyComponent.class));
+        ca[1].getImplementation().setComponentInfo(introspector.introspect(ModuleScopeInitOnlyComponent.class));
+        ca[2].getImplementation().setComponentInfo(introspector.introspect(ModuleScopeDestroyOnlyComponent.class));
         for (AtomicComponent aCa : ca) {
             builder.build(aCa);
             configs.add((ContextFactory<Context>) aCa.getContextFactory());
@@ -177,13 +183,17 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
     }
 
     private List<ContextFactory<Context>> createEagerInitComponents() throws
-            BuilderException {
+            BuilderException, ConfigurationLoadException {
         AtomicComponent[] ca = new AtomicComponent[2];
         ca[0] = MockFactory.createComponent("TestServiceEagerInitDestroy", ModuleScopeEagerInitDestroyComponent.class,
                 Scope.MODULE);
         ca[1] = MockFactory.createComponent("TestServiceEagerInit", ModuleScopeEagerInitComponent.class,
                 Scope.MODULE);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
+        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ComponentInfo type = introspector.introspect(OrderedInitPojo.class);
+        ca[0].getImplementation().setComponentInfo(introspector.introspect(ModuleScopeEagerInitDestroyComponent.class));
+        ca[1].getImplementation().setComponentInfo(introspector.introspect(ModuleScopeEagerInitComponent.class));
         for (AtomicComponent aCa : ca) {
             builder.build(aCa);
             configs.add((ContextFactory<Context>) aCa.getContextFactory());
@@ -192,12 +202,17 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
     }
 
     private List<ContextFactory<Context>> createOrderedInitComponents() throws
-            BuilderException {
+            BuilderException, ConfigurationLoadException {
         AtomicComponent[] ca = new AtomicComponent[3];
         ca[0] = MockFactory.createComponent("one", OrderedInitPojo.class, Scope.MODULE);
         ca[1] = MockFactory.createComponent("two", OrderedInitPojo.class, Scope.MODULE);
         ca[2] = MockFactory.createComponent("three", OrderedInitPojo.class, Scope.MODULE);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
+        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ComponentInfo type = introspector.introspect(OrderedInitPojo.class);
+        ca[0].getImplementation().setComponentInfo(type);
+        ca[1].getImplementation().setComponentInfo(type);
+        ca[2].getImplementation().setComponentInfo(type);
         for (AtomicComponent aCa : ca) {
             builder.build(aCa);
             configs.add((ContextFactory<Context>) aCa.getContextFactory());
@@ -206,11 +221,16 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
     }
 
     private List<ContextFactory<Context>> createOrderedEagerInitComponents() throws
-            BuilderException {
+            BuilderException, ConfigurationLoadException {
         AtomicComponent[] ca = new AtomicComponent[3];
         ca[0] = MockFactory.createComponent("one", OrderedEagerInitPojo.class, Scope.MODULE);
         ca[1] = MockFactory.createComponent("two", OrderedEagerInitPojo.class, Scope.MODULE);
         ca[2] = MockFactory.createComponent("three", OrderedEagerInitPojo.class, Scope.MODULE);
+        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ComponentInfo type = introspector.introspect(OrderedEagerInitPojo.class);
+        ca[0].getImplementation().setComponentInfo(type);
+        ca[1].getImplementation().setComponentInfo(type);
+        ca[2].getImplementation().setComponentInfo(type);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
         for (AtomicComponent aCa : ca) {
             builder.build(aCa);

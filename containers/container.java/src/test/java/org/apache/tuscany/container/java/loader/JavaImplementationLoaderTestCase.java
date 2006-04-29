@@ -51,7 +51,7 @@ public class JavaImplementationLoaderTestCase extends TestCase {
     public void testNakedHelloWorld() throws ConfigurationLoadException {
         ComponentInfo type = loader.loadComponentTypeByIntrospection(NakedHelloWorld.class);
         Assert.assertNotNull(type);
-        Assert.assertTrue(type.getProperties().isEmpty());
+        Assert.assertEquals(1,type.getProperties().size());
         Assert.assertTrue(type.getReferences().isEmpty());
         List<Service> services = type.getServices();
         Assert.assertEquals(1, services.size());
@@ -71,7 +71,7 @@ public class JavaImplementationLoaderTestCase extends TestCase {
         type.initialize(null);
         Assert.assertNotNull(type);
         List<Property> props = type.getProperties();
-        Assert.assertEquals(3, props.size());
+        Assert.assertEquals(5, props.size());
 
         Property prop = type.getProperty("text");
         Assert.assertNotNull(prop);

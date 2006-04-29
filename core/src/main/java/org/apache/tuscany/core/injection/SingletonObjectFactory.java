@@ -10,17 +10,9 @@ import org.apache.tuscany.core.builder.ObjectFactory;
 public class SingletonObjectFactory<T> implements ObjectFactory<T> {
     private final T instance;
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
     public SingletonObjectFactory(T instance) {
         this.instance = instance;
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     public T getInstance() {
         return instance;

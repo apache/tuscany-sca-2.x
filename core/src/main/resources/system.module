@@ -27,6 +27,14 @@
         <system:implementation.system class="org.apache.tuscany.core.loader.assembly.ComponentTypeLoader"/>
     </component>
 
+    <!--
+    <component name="org.apache.tuscany.core.config.processor.ServiceProcessor">
+         <system:implementation.system class="org.apache.tuscany.core.config.processor.ServiceProcessor"/>
+     </component>
+    <component name="org.apache.tuscany.core.config.processor.PropertyProcessor">
+         <system:implementation.system class="org.apache.tuscany.core.config.processor.PropertyProcessor"/>
+    </component>
+    -->
     <component name="org.apache.tuscany.core.loader.assembly.ExternalServiceLoader">
         <system:implementation.system class="org.apache.tuscany.core.loader.assembly.ExternalServiceLoader"/>
     </component>

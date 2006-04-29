@@ -18,7 +18,9 @@ package org.apache.tuscany.container.java.scopes;
 
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
 
+@Scope("MODULE")
 public class OrderedInitPojo {
 
     private static Object lock = new Object();

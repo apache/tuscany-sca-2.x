@@ -21,30 +21,32 @@ import java.util.List;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder;
 import org.apache.tuscany.container.java.mock.MockFactory;
-import org.apache.tuscany.container.java.mock.components.SessionScopeDestroyOnlyComponent;
-import org.apache.tuscany.container.java.mock.components.SessionScopeInitDestroyComponent;
-import org.apache.tuscany.container.java.mock.components.SessionScopeInitOnlyComponent;
+import org.apache.tuscany.container.java.mock.components.RequestScopeDestroyOnlyComponent;
+import org.apache.tuscany.container.java.mock.components.RequestScopeInitDestroyComponent;
+import org.apache.tuscany.container.java.mock.components.RequestScopeInitOnlyComponent;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
-import org.apache.tuscany.core.context.EventContext;
+import org.apache.tuscany.core.config.ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.context.Context;
+import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.event.RequestEnd;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.RequestScopeContext;
-import org.apache.tuscany.core.wire.service.WireFactoryService;
-import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
-import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
-import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
+import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
+import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.model.assembly.AtomicComponent;
+import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Lifecycle unit tests for the Http session scope container
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class RequestScopeLifecycleTestCase extends TestCase {
@@ -57,13 +59,13 @@ public class RequestScopeLifecycleTestCase extends TestCase {
         RequestScopeContext scope = new RequestScopeContext(ctx);
         scope.registerFactories(createComponents());
         scope.start();
-        SessionScopeInitDestroyComponent initDestroy = (SessionScopeInitDestroyComponent) scope.getContext(
+        RequestScopeInitDestroyComponent initDestroy = (RequestScopeInitDestroyComponent) scope.getContext(
                 "TestServiceInitDestroy").getInstance(null);
         Assert.assertNotNull(initDestroy);
-        SessionScopeInitOnlyComponent initOnly = (SessionScopeInitOnlyComponent) scope.getContext("TestServiceInitOnly")
+        RequestScopeInitOnlyComponent initOnly = (RequestScopeInitOnlyComponent) scope.getContext("TestServiceInitOnly")
                 .getInstance(null);
         Assert.assertNotNull(initOnly);
-        SessionScopeDestroyOnlyComponent destroyOnly = (SessionScopeDestroyOnlyComponent) scope.getContext(
+        RequestScopeDestroyOnlyComponent destroyOnly = (RequestScopeDestroyOnlyComponent) scope.getContext(
                 "TestServiceDestroyOnly").getInstance(null);
         Assert.assertNotNull(destroyOnly);
 
@@ -73,7 +75,7 @@ public class RequestScopeLifecycleTestCase extends TestCase {
         Assert.assertFalse(destroyOnly.isDestroyed());
 
         // end request
-        scope.onEvent(new RequestEnd(this,new Object()));
+        scope.onEvent(new RequestEnd(this, new Object()));
         Assert.assertTrue(initDestroy.isDestroyed());
         Assert.assertTrue(destroyOnly.isDestroyed());
 
@@ -89,23 +91,23 @@ public class RequestScopeLifecycleTestCase extends TestCase {
         scope.registerFactories(createOrderedInitComponents());
         scope.start();
         // request start
-        OrderedInitPojo one = (OrderedInitPojo) scope.getContext("one").getInstance(null);
+        RequestScopedOrderedInitPojo one = (RequestScopedOrderedInitPojo) scope.getContext("one").getInstance(null);
         Assert.assertNotNull(one);
         Assert.assertEquals(1, one.getNumberInstantiated());
         Assert.assertEquals(1, one.getInitOrder());
 
-        OrderedInitPojo two = (OrderedInitPojo) scope.getContext("two").getInstance(null);
+        RequestScopedOrderedInitPojo two = (RequestScopedOrderedInitPojo) scope.getContext("two").getInstance(null);
         Assert.assertNotNull(two);
         Assert.assertEquals(2, two.getNumberInstantiated());
         Assert.assertEquals(2, two.getInitOrder());
 
-        OrderedInitPojo three = (OrderedInitPojo) scope.getContext("three").getInstance(null);
+        RequestScopedOrderedInitPojo three = (RequestScopedOrderedInitPojo) scope.getContext("three").getInstance(null);
         Assert.assertNotNull(three);
         Assert.assertEquals(3, three.getNumberInstantiated());
         Assert.assertEquals(3, three.getInitOrder());
 
         // end request
-        scope.onEvent(new RequestEnd(this,new Object()));
+        scope.onEvent(new RequestEnd(this, new Object()));
 
         Assert.assertEquals(0, one.getNumberInstantiated());
         scope.stop();
@@ -114,14 +116,18 @@ public class RequestScopeLifecycleTestCase extends TestCase {
 
     JavaContextFactoryBuilder builder;
 
-    private List<ContextFactory<Context>> createComponents() throws BuilderException {
+    private List<ContextFactory<Context>> createComponents() throws BuilderException, ConfigurationLoadException {
         AtomicComponent[] ca = new AtomicComponent[3];
-        ca[0] = MockFactory.createComponent("TestServiceInitDestroy", SessionScopeInitDestroyComponent.class,
+        ca[0] = MockFactory.createComponent("TestServiceInitDestroy", RequestScopeInitDestroyComponent.class,
                 Scope.REQUEST);
-        ca[1] = MockFactory.createComponent("TestServiceInitOnly", SessionScopeInitOnlyComponent.class,
+        ca[1] = MockFactory.createComponent("TestServiceInitOnly", RequestScopeInitOnlyComponent.class,
                 Scope.REQUEST);
-        ca[2] = MockFactory.createComponent("TestServiceDestroyOnly", SessionScopeDestroyOnlyComponent.class,
+        ca[2] = MockFactory.createComponent("TestServiceDestroyOnly", RequestScopeDestroyOnlyComponent.class,
                 Scope.REQUEST);
+        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ca[0].getImplementation().setComponentInfo(introspector.introspect(RequestScopeInitDestroyComponent.class));
+        ca[1].getImplementation().setComponentInfo(introspector.introspect(RequestScopeInitOnlyComponent.class));
+        ca[2].getImplementation().setComponentInfo(introspector.introspect(RequestScopeDestroyOnlyComponent.class));
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
         for (AtomicComponent aCa : ca) {
             builder.build(aCa);
@@ -132,11 +138,16 @@ public class RequestScopeLifecycleTestCase extends TestCase {
     }
 
     private List<ContextFactory<Context>> createOrderedInitComponents() throws
-            BuilderException {
+            BuilderException, ConfigurationLoadException {
         AtomicComponent[] ca = new AtomicComponent[3];
-        ca[0] = MockFactory.createComponent("one", OrderedInitPojo.class, Scope.REQUEST);
-        ca[1] = MockFactory.createComponent("two", OrderedInitPojo.class, Scope.REQUEST);
-        ca[2] = MockFactory.createComponent("three", OrderedInitPojo.class, Scope.REQUEST);
+        ca[0] = MockFactory.createComponent("one", RequestScopedOrderedInitPojo.class, Scope.REQUEST);
+        ca[1] = MockFactory.createComponent("two", RequestScopedOrderedInitPojo.class, Scope.REQUEST);
+        ca[2] = MockFactory.createComponent("three", RequestScopedOrderedInitPojo.class, Scope.REQUEST);
+        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ComponentInfo type = introspector.introspect(RequestScopedOrderedInitPojo.class);
+        ca[0].getImplementation().setComponentInfo(type);
+        ca[1].getImplementation().setComponentInfo(type);
+        ca[2].getImplementation().setComponentInfo(type);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
         for (AtomicComponent aCa : ca) {
             builder.build(aCa);

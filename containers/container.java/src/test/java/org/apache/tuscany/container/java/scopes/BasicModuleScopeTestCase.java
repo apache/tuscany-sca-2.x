@@ -16,31 +16,39 @@
  */
 package org.apache.tuscany.container.java.scopes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import org.apache.tuscany.container.java.assembly.impl.JavaAssemblyFactoryImpl;
 import org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeComponentImpl;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeInitDestroyComponent;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.builder.system.PolicyBuilderRegistry;
 import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
+import org.apache.tuscany.core.builder.system.PolicyBuilderRegistry;
+import org.apache.tuscany.core.config.ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.config.ImplementationProcessor;
+import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.processor.ProcessorUtils;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.core.wire.service.WireFactoryService;
-import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
-import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
-import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
+import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
+import org.apache.tuscany.core.wire.service.WireFactoryService;
+import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AtomicComponent;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Unit tests for the module scope container
@@ -121,12 +129,15 @@ public class BasicModuleScopeTestCase extends TestCase {
         return configs;
     }
 
-    private ContextFactory<Context> createConfiguration(String name) throws BuilderException {
+    private ContextFactory<Context> createConfiguration(String name) throws BuilderException, ConfigurationLoadException {
         PolicyBuilderRegistry policyRegistry = new DefaultPolicyBuilderRegistry();
         WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryFactory(), policyRegistry);
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         AtomicComponent component = MockFactory.createComponent(name, ModuleScopeInitDestroyComponent.class,
                 Scope.MODULE);
+        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ComponentInfo type = introspector.introspect(ModuleScopeInitDestroyComponent.class);
+        component.getImplementation().setComponentInfo(type);
         builder.build(component);
         return (ContextFactory<Context>) component.getContextFactory();
     }

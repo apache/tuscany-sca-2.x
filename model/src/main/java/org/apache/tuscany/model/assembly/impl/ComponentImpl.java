@@ -166,12 +166,7 @@ public abstract class ComponentImpl<I extends Implementation> extends PartImpl i
         // Derive the configured properties from the properties on the component info
         for (Property property : componentInfo.getProperties()) {
             ConfiguredProperty configuredProperty = configuredPropertiesMap.get(property.getName());
-            if (configuredProperty==null) {
-                configuredProperty=factory.createConfiguredProperty();
-                configuredProperty.setProperty(property);
-                configuredProperties.add(configuredProperty);
-                configuredProperty.initialize(modelContext);
-            } else {
+            if (configuredProperty != null) {
                 configuredProperty.setProperty(property);
                 configuredProperty.initialize(modelContext);
             }

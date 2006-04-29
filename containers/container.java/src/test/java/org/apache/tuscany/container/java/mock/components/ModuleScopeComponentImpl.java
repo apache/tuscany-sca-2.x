@@ -16,10 +16,13 @@
  */
 package org.apache.tuscany.container.java.mock.components;
 
+import org.osoa.sca.annotations.Scope;
+
 
 /**
  * @version $Rev$ $Date$
  */
+@Scope("MODULE")
 public class ModuleScopeComponentImpl extends AbstractGenericComponent implements
         ModuleScopeComponent {
 

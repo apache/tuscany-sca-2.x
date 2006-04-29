@@ -40,8 +40,11 @@ import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
 import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
+import org.apache.tuscany.core.config.ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.AtomicComponent;
+import org.apache.tuscany.model.assembly.ComponentInfo;
 
 /**
  * Lifecycle unit tests for the Http session scope container
@@ -98,17 +101,17 @@ public class SessionScopeLifecycleTestCase extends TestCase {
         // request start
         ctx.setIdentifier(HttpSessionEvent.HTTP_IDENTIFIER,session);
 
-        OrderedInitPojo one = (OrderedInitPojo) scope.getContext("one").getInstance(null);
+        SessionScopedOrderedInitPojo one = (SessionScopedOrderedInitPojo) scope.getContext("one").getInstance(null);
         Assert.assertNotNull(one);
         Assert.assertEquals(1, one.getNumberInstantiated());
         Assert.assertEquals(1, one.getInitOrder());
 
-        OrderedInitPojo two = (OrderedInitPojo) scope.getContext("two").getInstance(null);
+        SessionScopedOrderedInitPojo two = (SessionScopedOrderedInitPojo) scope.getContext("two").getInstance(null);
         Assert.assertNotNull(two);
         Assert.assertEquals(2, two.getNumberInstantiated());
         Assert.assertEquals(2, two.getInitOrder());
 
-        OrderedInitPojo three = (OrderedInitPojo) scope.getContext("three").getInstance(null);
+        SessionScopedOrderedInitPojo three = (SessionScopedOrderedInitPojo) scope.getContext("three").getInstance(null);
         Assert.assertNotNull(three);
         Assert.assertEquals(3, three.getNumberInstantiated());
         Assert.assertEquals(3, three.getInitOrder());
@@ -124,13 +127,17 @@ public class SessionScopeLifecycleTestCase extends TestCase {
 
     JavaContextFactoryBuilder builder;
 
-    private List<ContextFactory<Context>> createComponents() throws BuilderException {
+    private List<ContextFactory<Context>> createComponents() throws BuilderException, ConfigurationLoadException {
         AtomicComponent[] ca = new AtomicComponent[3];
         ca[0] = MockFactory.createComponent("TestServiceInitDestroy", SessionScopeInitDestroyComponent.class,
                 Scope.SESSION);
         ca[1] = MockFactory.createComponent("TestServiceInitOnly", SessionScopeInitOnlyComponent.class, Scope.SESSION);
         ca[2] = MockFactory.createComponent("TestServiceDestroyOnly", SessionScopeDestroyOnlyComponent.class,
                 Scope.SESSION);
+        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ca[0].getImplementation().setComponentInfo(introspector.introspect(SessionScopeInitDestroyComponent.class));
+        ca[1].getImplementation().setComponentInfo(introspector.introspect(SessionScopeInitOnlyComponent.class));
+        ca[2].getImplementation().setComponentInfo(introspector.introspect(SessionScopeDestroyOnlyComponent.class));
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
         for (AtomicComponent aCa : ca) {
             builder.build(aCa);
@@ -141,11 +148,16 @@ public class SessionScopeLifecycleTestCase extends TestCase {
     }
 
     private List<ContextFactory<Context>> createOrderedInitComponents() throws
-            BuilderException {
+            BuilderException, ConfigurationLoadException {
         AtomicComponent[] ca = new AtomicComponent[3];
-        ca[0] = MockFactory.createComponent("one", OrderedInitPojo.class, Scope.SESSION);
-        ca[1] = MockFactory.createComponent("two", OrderedInitPojo.class, Scope.SESSION);
-        ca[2] = MockFactory.createComponent("three", OrderedInitPojo.class, Scope.SESSION);
+        ca[0] = MockFactory.createComponent("one", SessionScopedOrderedInitPojo.class, Scope.SESSION);
+        ca[1] = MockFactory.createComponent("two", SessionScopedOrderedInitPojo.class, Scope.SESSION);
+        ca[2] = MockFactory.createComponent("three", SessionScopedOrderedInitPojo.class, Scope.SESSION);
+        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ComponentInfo type = introspector.introspect(SessionScopedOrderedInitPojo.class);
+        ca[0].getImplementation().setComponentInfo(type);
+        ca[1].getImplementation().setComponentInfo(type);
+        ca[2].getImplementation().setComponentInfo(type);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
         for (AtomicComponent aCa : ca) {
             builder.build(aCa);

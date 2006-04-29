@@ -23,7 +23,7 @@ import org.osoa.sca.annotations.Property;
  */
 public class HelloWorldWithFieldProperties {
     @Property
-    private String text;
+    protected String text;
 
     @Property(required = true)
     public Integer text2;

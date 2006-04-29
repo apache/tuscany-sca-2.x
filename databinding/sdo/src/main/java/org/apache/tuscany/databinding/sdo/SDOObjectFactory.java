@@ -14,17 +14,9 @@ public class SDOObjectFactory implements ObjectFactory<DataObject> {
 
     private DataObject dataObject;
 
-    //----------------------------------
-    // Constructors
-    //----------------------------------
-
     public SDOObjectFactory(DataObject dataObject) {
         this.dataObject = dataObject;
     }
-
-    //----------------------------------
-    // Methods
-    //----------------------------------
 
     public DataObject getInstance() throws ObjectCreationException {
         return CopyHelper.INSTANCE.copy(dataObject);

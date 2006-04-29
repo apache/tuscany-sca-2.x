@@ -11,20 +11,12 @@ import java.lang.reflect.Method;
 public class MethodEventInvoker<T> implements EventInvoker<T> {
     private final Method method;
 
-    //----------------------------------
-    // Constructors
-    //----------------------------------
-
     /**
      * Intantiates an  invoker for the given method
      */
     public MethodEventInvoker(Method method) {
         this.method = method;
     }
-
-    //----------------------------------
-    // Methods
-    //----------------------------------
 
     public void invokeEvent(T instance) throws ObjectCallbackException {
         try {

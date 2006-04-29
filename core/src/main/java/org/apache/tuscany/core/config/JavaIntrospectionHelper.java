@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Set;
 
 /**
  * Implements various reflection-related operations
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class JavaIntrospectionHelper {
@@ -36,9 +37,6 @@ public class JavaIntrospectionHelper {
 
     /**
      * Recursively evaluates the type hierachy to return all fields on a given type
-     * 
-     * TODO spec This raises an interesting issue - do we allow injection on private supertype fields in a subtype even if
-     *       they are annotated?
      */
     private static Set<Field> getAllFields(Class pClass, Set<Field> fields) {
         if (pClass == null || pClass.isArray() || Object.class.equals(pClass)) {
@@ -46,21 +44,50 @@ public class JavaIntrospectionHelper {
         }
         fields = getAllFields(pClass.getSuperclass(), fields);
         Field[] declaredFields = pClass.getDeclaredFields();
-        for (Field declaredField : declaredFields) {
-            declaredField.setAccessible(true); // ignore Java accessibility
-            fields.add(declaredField);
+        for (Field field : declaredFields) {
+            field.setAccessible(true); // ignore Java accessibility
+            fields.add(field);
         }
         return fields;
     }
 
     /**
-     * Returns a collection of public, private, protected, or default methods declared by a class or one of its
-     * supertypes. Note that overriden methods will not be returned in the collection (i.e. only the method override
-     * will be). <p/> This method can potentially be expensive as reflection information is not cached. It is assumed
-     * that this method will be used during a configuration phase.
+     * Returns a collection of public, and protected fields declared by a class or one of its
+     * supertypes
      */
-    public static Set<Method> getAllUniqueMethods(Class pClass) {
-        return getAllUniqueMethods(pClass, new HashSet<Method>());
+    public static Set<Field> getAllPublicAndProtectedFields(Class clazz) {
+        return getAllPublicAndProtectedFields(clazz, new HashSet<Field>());
+    }
+
+    /**
+     * Recursively evaluates the type hierachy to return all fields that are public or protected
+     */
+    private static Set<Field> getAllPublicAndProtectedFields(Class clazz, Set<Field> fields) {
+        if (clazz == null || clazz.isArray() || Object.class.equals(clazz)) {
+            return fields;
+        }
+        fields = getAllPublicAndProtectedFields(clazz.getSuperclass(), fields);
+        Field[] declaredFields = clazz.getDeclaredFields();
+//        fields = new HashSet<Field>();
+//        Field[] declaredFields = clazz.getFields();
+        for (Field field : declaredFields) {
+            int modifiers = field.getModifiers();
+            if ((Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) && !Modifier.isStatic(modifiers)){
+                field.setAccessible(true); // ignore Java accessibility
+                fields.add(field);
+            }
+        }
+        return fields;
+    }
+
+    /**
+     * Returns a collection of public, private, protected, or default methods declared by a class or one of
+     * its supertypes. Note that overriden methods will not be returned in the collection (i.e. only the
+     * method override will be). <p/> This method can potentially be expensive as reflection information is
+     * not cached. It is assumed that this method will be used during a configuration phase.
+     */
+    public static Set<Method> getAllUniqueMethods(Class clazz) {
+        return getAllUniqueMethods(clazz, new HashSet<Method>());
     }
 
     /**
@@ -104,9 +131,9 @@ public class JavaIntrospectionHelper {
     /**
      * Finds the closest matching field with the given name, that is, a field of the exact specified type or,
      * alternately, of a supertype.
-     * 
-     * @param name the name of the field
-     * @param type the field type
+     *
+     * @param name   the name of the field
+     * @param type   the field type
      * @param fields the collection of fields to search
      * @return the matching field or null if not found
      */
@@ -135,11 +162,11 @@ public class JavaIntrospectionHelper {
     }
 
     /**
-     * Finds the closest matching method with the given name, that is, a method taking the exact parameter types or,
-     * alternately, parameter supertypes.
-     * 
-     * @param name the name of the method
-     * @param types the method parameter types
+     * Finds the closest matching method with the given name, that is, a method taking the exact parameter
+     * types or, alternately, parameter supertypes.
+     *
+     * @param name    the name of the method
+     * @param types   the method parameter types
      * @param methods the collection of methods to search
      * @return the matching method or null if not found
      */
@@ -181,17 +208,17 @@ public class JavaIntrospectionHelper {
     }
 
     /**
-     * Searches a collection of fields for one that matches by name and has a multiplicity type. i.e. a List or Array of
-     * interfaces
-     * 
+     * Searches a collection of fields for one that matches by name and has a multiplicity type. i.e. a List
+     * or Array of interfaces
+     *
      * @return a matching field or null
      */
     public static Field findMultiplicityFieldByName(String name, Set<Field> fields) {
         for (Field candidate : fields) {
             if (candidate.getName().equals(name)
                     && (List.class.isAssignableFrom(candidate.getType()) || (candidate.getType().isArray()
-                            && candidate.getType().getComponentType() != null && candidate.getType().getComponentType()
-                            .isInterface()))) {
+                    && candidate.getType().getComponentType() != null && candidate.getType().getComponentType()
+                    .isInterface()))) {
                 return candidate;
             }
         }
@@ -199,9 +226,9 @@ public class JavaIntrospectionHelper {
     }
 
     /**
-     * Searches a collection of method for one that matches by name and has single parameter of a multiplicity type. i.e. a List or Array of
-     * interfaces
-     * 
+     * Searches a collection of method for one that matches by name and has single parameter of a multiplicity
+     * type. i.e. a List or Array of interfaces
+     *
      * @return a matching method or null
      */
     public static Method findMultiplicityMethodByName(String name, Set<Method> methods) {
@@ -209,9 +236,9 @@ public class JavaIntrospectionHelper {
             if (candidate.getName().equals(name)
                     && candidate.getParameterTypes().length == 1
                     && (List.class.isAssignableFrom(candidate.getParameterTypes()[0]) || (candidate.getParameterTypes()[0]
-                            .isArray()
-                            && candidate.getParameterTypes()[0].getComponentType() != null && candidate.getParameterTypes()[0]
-                            .getComponentType().isInterface()))) {
+                    .isArray()
+                    && candidate.getParameterTypes()[0].getComponentType() != null && candidate.getParameterTypes()[0]
+                    .getComponentType().isInterface()))) {
                 return candidate;
             }
         }
@@ -219,13 +246,13 @@ public class JavaIntrospectionHelper {
     }
 
     /**
-     * Returns a field or method defined in the given class or its superclasses matching a literal name and parameter
-     * types <p/> This method can potentially be expensive as reflection information is not cached. It is assumed that
-     * this method will be used during a configuration phase.
-     * 
-     * @param clazz the class to introspect
+     * Returns a field or method defined in the given class or its superclasses matching a literal name and
+     * parameter types <p/> This method can potentially be expensive as reflection information is not cached.
+     * It is assumed that this method will be used during a configuration phase.
+     *
+     * @param clazz       the class to introspect
      * @param propertName the literal name of the property (i.e. JavaBean conventions are not applied)
-     * @param paramTypes the parameter types for a method or null for fields or methods with no parameters
+     * @param paramTypes  the parameter types for a method or null for fields or methods with no parameters
      * @return the field, method or null
      */
     public static AccessibleObject getBeanProperty(Class clazz, String propertName, Class[] paramTypes) {
@@ -259,8 +286,8 @@ public class JavaIntrospectionHelper {
     }
 
     /**
-     * Determines if two methods "match" - that is, they have the same method names and exact parameter types (one is
-     * not a supertype of the other)
+     * Determines if two methods "match" - that is, they have the same method names and exact parameter types
+     * (one is not a supertype of the other)
      */
     public static boolean exactMethodMatch(Method method1, Method method2) {
         if (!method1.getName().equals(method2.getName())) {
@@ -287,7 +314,7 @@ public class JavaIntrospectionHelper {
 
     /**
      * Loads a class corresponding to the class name using the current context class loader.
-     * 
+     *
      * @throws ClassNotFoundException if the class was not found on the classpath
      */
     public static Class loadClass(String pName) throws ClassNotFoundException {
@@ -297,7 +324,7 @@ public class JavaIntrospectionHelper {
 
     /**
      * Returns the simple name of a class - i.e. the class name devoid of its package qualifier
-     * 
+     *
      * @param implClass
      */
     public static String getBaseName(Class<?> implClass) {
@@ -316,24 +343,24 @@ public class JavaIntrospectionHelper {
     }
 
     /**
-     * Takes a property name and converts it to a getter method name according to JavaBean conventions. For example,
-     * property <code>foo<code> is returned as <code>getFoo</code>
+     * Takes a property name and converts it to a getter method name according to JavaBean conventions. For
+     * example, property <code>foo<code> is returned as <code>getFoo</code>
      */
     public static String toGetter(String name) {
         return "get" + name.toUpperCase().substring(0, 1) + name.substring(1);
     }
 
     /**
-     * Takes a setter or getter method name and converts it to a property name according to JavaBean conventions. For
-     * example, <code>setFoo(var)</code> is returned as property <code>foo<code>
+     * Takes a setter or getter method name and converts it to a property name according to JavaBean
+     * conventions. For example, <code>setFoo(var)</code> is returned as property <code>foo<code>
      */
     public static String toPropertyName(String name) {
-        return name.substring(3, 4).toLowerCase() + name.substring(4);
+        return Character.toLowerCase(name.charAt(3)) + name.substring(4);
     }
 
     /**
-     * Takes a property name and converts it to a setter method name according to JavaBean conventions. For example, the
-     * property <code>foo<code> is returned as <code>setFoo(var)</code>
+     * Takes a property name and converts it to a setter method name according to JavaBean conventions. For
+     * example, the property <code>foo<code> is returned as <code>setFoo(var)</code>
      */
     public static String toSetter(String name) {
         return "set" + name.toUpperCase().substring(0, 1) + name.substring(1);
@@ -378,16 +405,13 @@ public class JavaIntrospectionHelper {
 
     /**
      * Returns the generic types represented in the given type. Usage as follows:
-     * <p>
-     * <code>
-     *      // to return the generic type of a field:
-     *      JavaIntrospectionHelper.getGenerics(field.getGenericType());
-     *      
-     *      // to return the generic types for the first parameter of a method:
-     *      JavaIntrospectionHelper.getGenerics(m.getGenericParameterTypes()[0];);
-     *
+     * <p/>
+     * <code> // to return the generic type of a field: JavaIntrospectionHelper.getGenerics(field.getGenericType());
+     * <p/>
+     * // to return the generic types for the first parameter of a method: JavaIntrospectionHelper.getGenerics(m.getGenericParameterTypes()[0];);
+     * <p/>
      * </code>
-     * 
+     *
      * @return the generic types in order of declaration or an empty array if the type is not genericized
      */
     public static List<? extends Type> getGenerics(Type genericType) {

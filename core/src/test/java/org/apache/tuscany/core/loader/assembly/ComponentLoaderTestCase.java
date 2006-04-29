@@ -16,30 +16,25 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import junit.framework.TestCase;
-import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
+import java.util.List;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.config.ImplementationProcessor;
 import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.processor.ProcessorUtils;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.loader.StAXPropertyFactory;
 import org.apache.tuscany.core.loader.impl.StringParserPropertyFactory;
-import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
-import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.Property;
-import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import java.io.StringReader;
+import org.apache.tuscany.model.assembly.AtomicComponent;
 
 /**
  * @version $Rev$ $Date$
@@ -73,7 +68,7 @@ public class ComponentLoaderTestCase extends LoaderTestSupport {
     }
 
     public void testCustomProperty() throws XMLStreamException, ConfigurationLoadException {
-        String xml = "<properties><propFoo factory='"+ FooFactory.class.getName() + "'><name>Hello</name></propFoo></properties>";
+        String xml = "<properties><propFoo factory='" + FooFactory.class.getName() + "'><name>Hello</name></propFoo></properties>";
         Component component = createFooComponent();
         loadProperties(xml, component);
         ConfiguredProperty prop = component.getConfiguredProperty("propFoo");
@@ -96,7 +91,7 @@ public class ComponentLoaderTestCase extends LoaderTestSupport {
             throw new AssertionError();
         }
         impl.initialize(null);
-        Component component = assemblyFactory.createSimpleComponent();
+        AtomicComponent component = assemblyFactory.createSimpleComponent();
         component.setImplementation(impl);
         return component;
     }
@@ -107,6 +102,13 @@ public class ComponentLoaderTestCase extends LoaderTestSupport {
         loader.setFactory(assemblyFactory);
         loader.setDefaultPropertyFactory(new StringParserPropertyFactory());
         introspector = new Java5ComponentTypeIntrospector(assemblyFactory);
+        //FIXME JFM HACK
+        List<ImplementationProcessor> processors = ProcessorUtils.createCoreProcessors(assemblyFactory);
+        for (ImplementationProcessor processor : processors) {
+            introspector.registerProcessor(processor);
+        }
+        // END hack
+
     }
 
     public static interface Service {
@@ -150,7 +152,7 @@ public class ComponentLoaderTestCase extends LoaderTestSupport {
             reader.next();
             Foo foo = new Foo();
             foo.setName(name);
-            return new SingletonObjectFactory(foo);
+            return new SingletonObjectFactory<Foo>(foo);
         }
     }
 }

@@ -13,49 +13,67 @@
  */
 package org.apache.tuscany.core.config.processor;
 
+import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.model.assembly.AssemblyFactory;
+import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.ComponentInfo;
-
-import java.lang.annotation.Annotation;
 
 /**
+ * Processes the {@link org.osoa.sca.annotations.Scope} annotation
+ *
  * @version $$Rev$$ $$Date$$
  */
-public class ScopeProcessor extends AnnotationProcessorSupport {
+public class ScopeProcessor extends ImplementationProcessorSupport {
 
-    public void visitImplementationClass(Class clazz, Annotation annotation, ComponentInfo type) {
-        if (!(annotation instanceof org.osoa.sca.annotations.Scope)) {
-            return;
-        }
-        Scope scope = getScope(annotation); // hack for now - set scope to implementation scope
-        for(Service service: type.getServices()){
-            Scope serviceScope = service.getServiceContract().getScope();
-            if (serviceScope == Scope.INSTANCE || serviceScope == null){
-                service.getServiceContract().setScope(scope);
-            }
-        }
+    public ScopeProcessor() {
+    }
+
+    public ScopeProcessor(AssemblyFactory factory) {
+        super(factory);
     }
 
     @Override
-    public void visitServiceInterface(Class clazz, Annotation annotation, Service service) {
-        if (!(annotation instanceof org.osoa.sca.annotations.Scope)) {
-            return;
-        }
-        service.getServiceContract().setScope(getScope(annotation));
-    }
-
-    private Scope getScope(Annotation annotation){
-        org.osoa.sca.annotations.Scope scopeAnnotation = (org.osoa.sca.annotations.Scope) annotation;
-        if ("MODULE".equalsIgnoreCase(scopeAnnotation.value())) {
-           return Scope.MODULE;
-        } else if ("SESSION".equalsIgnoreCase(scopeAnnotation.value())) {
-            return Scope.SESSION;
-        } else if ("REQUEST".equalsIgnoreCase(scopeAnnotation.value())) {
-            return Scope.REQUEST;
+    public void visitEnd(Class<?> clazz, ComponentInfo type) throws ConfigurationLoadException {
+        Scope scope = null;
+        org.osoa.sca.annotations.Scope annotation = clazz.getAnnotation(org.osoa.sca.annotations.Scope.class);
+        if (annotation != null) {
+            scope = ProcessorHelper.getScope(annotation);
         } else {
-            return Scope.INSTANCE;
+            Class<?> superClass = clazz.getSuperclass();
+            if (superClass != null) {
+                scope = recurseScope(superClass);
+            }
+        }
+        if (scope == null) {
+            scope = Scope.INSTANCE;
+        }
+        //FIXME hack for now - set scope to implementation scope
+        //This will be clean up with spec change
+        for (Service service : type.getServices()) {
+            Scope serviceScope = service.getServiceContract().getScope();
+            if (serviceScope == Scope.INSTANCE || serviceScope == null) {
+                service.getServiceContract().setScope(scope);
+            }
         }
 
     }
+
+    /**
+     * Walks the class hierarchy until a scope annotation is found
+     */
+    private Scope recurseScope(Class<?> superClass) {
+        if (Object.class.equals(superClass)) {
+            return null;
+        }
+        org.osoa.sca.annotations.Scope scope = superClass.getAnnotation(org.osoa.sca.annotations.Scope.class);
+        if (scope == null) {
+            superClass = superClass.getSuperclass();
+            if (superClass != null) {
+                return recurseScope(superClass);
+            }
+        }
+        return ProcessorHelper.getScope(scope);
+    }
+
 }

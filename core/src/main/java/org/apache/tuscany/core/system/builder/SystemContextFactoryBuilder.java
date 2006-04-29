@@ -67,8 +67,6 @@ import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 
-import commonj.sdo.DataObject;
-
 /**
  * Decorates components whose implementation type is a
  * {@link org.apache.tuscany.core.system.assembly.SystemImplementation} with the appropriate runtime configuration. This
@@ -86,6 +84,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
         this.monitorFactory = monitorFactory;
     }
 
+    @SuppressWarnings("unchecked")
     public void build(AssemblyObject modelObject) throws BuilderException {
         if (!(modelObject instanceof Component)) {
             return;

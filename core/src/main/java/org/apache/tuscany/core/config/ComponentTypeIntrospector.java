@@ -19,12 +19,12 @@ package org.apache.tuscany.core.config;
 import org.apache.tuscany.model.assembly.ComponentInfo;
 
 /**
- * Interface for implementations that are able create SCA definitions
- * by inspecting Java classes.
+ * Interface for implementations that are able create SCA definitions by inspecting Java classes.
  *
  * @version $Rev$ $Date$
  */
 public interface ComponentTypeIntrospector {
+
     /**
      * Create a componentType definition by introspecting a Java Class.
      *
@@ -35,13 +35,22 @@ public interface ComponentTypeIntrospector {
     ComponentInfo introspect(Class<?> implClass) throws ConfigurationLoadException;
 
     /**
+     * Completes the given componentType definition by introspecting a Java Class.
+     *
+     * @param implClass the class to inspect
+     * @return a componentType definition
+     * @throws ConfigurationLoadException if the Class does not define a valid component type
+     */
+    ComponentInfo introspect(Class<?> implClass, ComponentInfo compType) throws ConfigurationLoadException;
+
+    /**
      * Registers an annotation processor
      */
-    void registerProcessor(AnnotationProcessor processor);
+    void registerProcessor(ImplementationProcessor processor);
 
     /**
      * De-registers an annotation processor
      */
-    void unregisterProcessor(AnnotationProcessor processor);
+    void unregisterProcessor(ImplementationProcessor processor);
 
 }

@@ -39,6 +39,7 @@ import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.container.java.mock.components.TargetImpl;
+import org.apache.tuscany.container.java.mock.components.ModuleScopeInitDestroyComponent;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
@@ -50,6 +51,10 @@ import org.apache.tuscany.core.builder.system.PolicyBuilderRegistry;
 import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
+import org.apache.tuscany.core.config.ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.ImplementationProcessor;
+import org.apache.tuscany.core.config.processor.ProcessorUtils;
+import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.SystemCompositeContext;
@@ -87,6 +92,7 @@ import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 import org.osoa.sca.annotations.ComponentName;
@@ -130,6 +136,15 @@ public class MockFactory {
 
     private static AssemblyContext assemblyContext = new AssemblyContextImpl(null, null);
 
+    public static ComponentTypeIntrospector createComponentIntrospector(){
+        ComponentTypeIntrospector introspector = new Java5ComponentTypeIntrospector(factory);
+        List<ImplementationProcessor> processors = ProcessorUtils.createCoreProcessors(factory);
+        for (ImplementationProcessor processor : processors) {
+            introspector.registerProcessor(processor);
+        }
+        return introspector;
+    }
+
     /**
      * Creates an initialized simple component
      *
@@ -158,7 +173,7 @@ public class MockFactory {
      * Creates an composite component with the given name
      */
     public static Component createCompositeComponent(String name) {
-        Component sc = sc = systemFactory.createModuleComponent();
+        Component sc = systemFactory.createModuleComponent();
         Module impl = systemFactory.createModule();
         impl.setName(name);
         //impl.setImplementationClass(CompositeContextImpl.class);
@@ -178,7 +193,7 @@ public class MockFactory {
      * Creates a system composite component with the given name
      */
     public static Component createSystemCompositeComponent(String name) {
-        Component sc = sc = systemFactory.createModuleComponent();
+        Component sc = systemFactory.createModuleComponent();
         Module impl = systemFactory.createSystemModule();
         impl.setName(name);
         //impl.setImplementationClass(SystemCompositeContextImpl.class);

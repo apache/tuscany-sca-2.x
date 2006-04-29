@@ -19,30 +19,32 @@ package org.apache.tuscany.container.java.loader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
 import org.apache.tuscany.container.java.assembly.JavaImplementation;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.config.InvalidRootElementException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.config.SidefileLoadException;
-import org.apache.tuscany.core.config.InvalidRootElementException;
+import org.apache.tuscany.core.config.ImplementationProcessor;
 import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.processor.ProcessorUtils;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
-import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.loader.assembly.AssemblyConstants;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
 
 /**
  * @version $Rev$ $Date$
@@ -71,6 +73,12 @@ public class JavaImplementationLoader implements StAXElementLoader<JavaImplement
     public void setFactory(JavaAssemblyFactory factory) {
         this.factory = factory;
         introspector = new Java5ComponentTypeIntrospector(factory);
+        //FIXME JFM HACK
+        List<ImplementationProcessor> processors = ProcessorUtils.createCoreProcessors(factory);
+        for (ImplementationProcessor processor : processors) {
+            introspector.registerProcessor(processor);
+        }
+        // END hack
     }
 
     @Init(eager = true)
@@ -123,7 +131,7 @@ public class JavaImplementationLoader implements StAXElementLoader<JavaImplement
         try {
             XMLStreamReader reader;
             InputStream is;
-                is = sidefile.openStream();
+            is = sidefile.openStream();
             try {
                 reader = xmlFactory.createXMLStreamReader(is);
                 try {

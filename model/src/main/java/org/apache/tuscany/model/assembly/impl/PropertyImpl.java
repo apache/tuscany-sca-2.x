@@ -76,4 +76,5 @@ public class PropertyImpl extends ExtensibleImpl implements Property {
         checkNotFrozen();
         type = value;
     }
+
 }

@@ -579,8 +579,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                     throw e;
                 }
                 // get the proxy chain for the target
-                TargetWireFactory targetFactory = target.getTargetWireFactory(wireConfiguration.getTargetName()
-                        .getPortName());
+                TargetWireFactory targetFactory = target.getTargetWireFactory(targetName.getPortName());
                 if (targetFactory == null) {
                     ContextInitException e = new ContextInitException("No proxy factory found for service");
                     e.setIdentifier(wireConfiguration.getTargetName().getPortName());
