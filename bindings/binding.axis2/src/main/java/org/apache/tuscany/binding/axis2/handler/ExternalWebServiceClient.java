@@ -18,8 +18,6 @@ package org.apache.tuscany.binding.axis2.handler;
 
 import javax.xml.namespace.QName;
 
-import commonj.sdo.helper.TypeHelper;
-
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
@@ -32,6 +30,7 @@ import org.apache.tuscany.binding.axis2.util.AxiomHelper;
 import org.apache.ws.commons.om.OMElement;
 import org.osoa.sca.ServiceRuntimeException;
 
+import commonj.sdo.helper.TypeHelper;
 
 /**
  * An ExternalWebServiceClient using Axis2
@@ -67,8 +66,9 @@ public class ExternalWebServiceClient {
      */
     public Object invoke(String operationName, Object[] args) {
 
+        String wsdlOperationName = wsPortMetaData.getWSDLOperationName(operationName);
         String serviceNamespace = wsPortMetaData.getServiceName().getNamespaceURI();
-        QName operationQName = new QName(serviceNamespace, operationName);
+        QName operationQName = new QName(serviceNamespace, wsdlOperationName);
 
         OMElement requestOM = AxiomHelper.toOMElement(typeHelper, args, operationQName);
 
@@ -78,7 +78,7 @@ public class ExternalWebServiceClient {
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
             ServiceClient serviceClient = new ServiceClient(configurationContext, axisService);
-            setServiceOptions(serviceClient, operationName);
+            setServiceOptions(serviceClient, wsdlOperationName);
             responseOM = serviceClient.sendReceive(operationQName, requestOM);
 
         } catch (AxisFault e) {

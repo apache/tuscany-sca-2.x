@@ -24,15 +24,13 @@ import java.util.List;
 import javax.wsdl.Binding;
 import javax.wsdl.BindingOperation;
 import javax.wsdl.Definition;
+import javax.wsdl.Operation;
 import javax.wsdl.Port;
 import javax.wsdl.PortType;
 import javax.wsdl.Service;
 import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.xml.namespace.QName;
-//import javax.xml.soap.Name;
-//import javax.xml.soap.SOAPBodyElement;
-//import javax.xml.soap.SOAPElement;
 
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 
@@ -364,6 +362,26 @@ public class WebServicePortMetaData {
      */
     public WSDLServiceContract getInterfaceType() {
         return interfaceType;
+    }
+
+    /**
+     * Get the WSDL operation name for a Java method name
+     */
+    public String getWSDLOperationName(String methodName) {
+        StringBuffer sb = new StringBuffer(methodName);
+        sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
+        String capatalizedOpName = sb.toString();
+        for (Object o : wsdlPortType.getOperations()) {
+            Operation operation = (Operation) o;
+            String wsdlOpName = operation.getName();
+            if (wsdlOpName.equals(methodName)) {
+                return wsdlOpName;
+            }
+            if (wsdlOpName.equals(capatalizedOpName)) {
+                return wsdlOpName;
+            }
+        }
+        return null;
     }
 
 }
