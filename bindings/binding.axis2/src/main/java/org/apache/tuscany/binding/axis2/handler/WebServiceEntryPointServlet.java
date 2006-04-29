@@ -21,7 +21,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.URL;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -29,7 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.wsdl.Definition;
 import javax.wsdl.Operation;
-import javax.wsdl.Port;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
@@ -42,19 +43,25 @@ import org.apache.axis2.description.InOutAxisOperation;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.transport.http.AxisServlet;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
+import org.apache.tuscany.binding.axis2.util.DataBinding;
+import org.apache.tuscany.binding.axis2.util.SDODataBinding;
 import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.EntryPointContext;
+import org.apache.tuscany.core.webapp.TuscanyServletListener;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
+import org.apache.wsdl.WSDLConstants;
+
+import commonj.sdo.helper.TypeHelper;
 
 /**
  * @version $Rev: 383148 $ $Date: 2006-03-04 08:07:17 -0800 (Sat, 04 Mar 2006) $
  */
 public class WebServiceEntryPointServlet extends AxisServlet {
-    private static final long serialVersionUID = -2085869393709833372L;
-    private static final String MODULE_COMPONENT_NAME = "org.apache.tuscany.core.webapp.ModuleComponentContext";
+
+    private static final long serialVersionUID = 1L;
+
     private boolean tuscanyGetDefaultAxis2xmlChecked;
 
     public void init(ServletConfig config) throws ServletException {
@@ -64,13 +71,14 @@ public class WebServiceEntryPointServlet extends AxisServlet {
             if (tccl != mycl) {
                 Thread.currentThread().setContextClassLoader(mycl);
             }
-            tuscanyGetDefaultAxis2xml(config);
-            super.init(config);
-            configContext = initConfigContext(config);
-            initTuscany(configContext.getAxisConfiguration(), config);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ServletException(e);
+            try {
+
+                super.init(config);
+                initTuscany(configContext.getAxisConfiguration(), config);
+
+            } catch (Exception e) {
+                throw new ServletException(e);
+            }
         } finally {
             if (tccl != mycl) {
                 Thread.currentThread().setContextClassLoader(tccl);
@@ -79,63 +87,84 @@ public class WebServiceEntryPointServlet extends AxisServlet {
     }
 
     @SuppressWarnings("deprecation")
-    private void initTuscany(final AxisConfiguration axisConfig, ServletConfig config) throws AxisFault {
+    private void initTuscany(AxisConfiguration axisConfig, ServletConfig config) throws AxisFault {
 
-        // Get the current SCA module context
         ServletContext servletContext = config.getServletContext();
-
-        CompositeContext moduleContext = (CompositeContext) servletContext.getAttribute(MODULE_COMPONENT_NAME);
+        CompositeContext moduleContext = (CompositeContext) servletContext.getAttribute(TuscanyServletListener.MODULE_COMPONENT_NAME);
         Module module = (Module) moduleContext.getComposite();
 
         for (EntryPoint entryPoint : module.getEntryPoints()) {
-            final String epName = entryPoint.getName();
-
-            Context entryPointContext = moduleContext.getContext(epName);
-
-            Binding binding = entryPoint.getBindings().get(0);
-            if (!(binding instanceof WebServiceBinding)) {
-                continue;
+            for (Binding binding : entryPoint.getBindings()) {
+                if (binding instanceof WebServiceBinding) {
+                    String entryPointName = entryPoint.getName();
+                    EntryPointContext entryPointContext = (EntryPointContext) moduleContext.getContext(entryPointName);
+                    addAxisService(axisConfig, entryPointName, entryPointContext, (WebServiceBinding) binding);
+                }
             }
-
-            WebServiceBinding wsBinding = (WebServiceBinding) binding;
-            Definition definition = wsBinding.getWSDLDefinition();
-            Port port = wsBinding.getWSDLPort();
-            QName qname = new QName(definition.getTargetNamespace(), port.getName());
-
-            WebServicePortMetaData wsdlPortInfo = new WebServicePortMetaData(definition, port, null, false);
-
-            WebServiceEntryPointInOutSyncMessageReceiver msgrec
-                    = new WebServiceEntryPointInOutSyncMessageReceiver((EntryPointContext) entryPointContext,
-                    wsdlPortInfo,
-                    wsBinding.getTypeHelper(),
-                    wsBinding.getResourceLoader().getClassLoader());
-
-            AxisServiceGroup serviceGroup = new AxisServiceGroup(axisConfig);
-            axisConfig.addMessageReceiver(WebServiceEntryPointInOutSyncMessageReceiver.MEP_URL, msgrec);
-            serviceGroup.setServiceGroupName(wsdlPortInfo.getServiceName().getLocalPart());
-
-            AxisService axisService = new AxisService(epName);
-            axisService.setParent(serviceGroup);
-            axisService.setWSDLDefinition(definition);
-            axisService.setServiceDescription("Tuscany configured service EntryPoint name '" + epName + '\'');
-            axisService.addMessageReceiver(WebServiceEntryPointInOutSyncMessageReceiver.MEP_URL, msgrec);
-
-            // Create operation descriptions for all the operations
-            PortType wsdlPortType = wsdlPortInfo.getPortType();
-            for (Object o : wsdlPortType.getOperations()) {
-                Operation wsdlOperation = (Operation) o;
-                String operationName = wsdlOperation.getName();
-                QName name = new QName(qname.getNamespaceURI(), operationName);
-                AxisOperation axisOp = new InOutAxisOperation(name);
-                axisOp.setMessageReceiver(msgrec);
-                axisService.addOperation(axisOp);
-                axisOp.setMessageExchangePattern(WebServiceEntryPointInOutSyncMessageReceiver.MEP_URL);
-            }
-            axisConfig.addService(axisService);
-            axisConfig.addServiceGroup(serviceGroup);
         }
     }
 
+    private void addAxisService(AxisConfiguration axisConfig, String entryPointName, EntryPointContext entryPointContext, WebServiceBinding wsBinding)
+            throws AxisFault {
+
+        // TODO: really require using WebServicePortMetaData/WebServiceOperationMetaData?
+        Definition definition = wsBinding.getWSDLDefinition();
+        WebServicePortMetaData wsdlPortInfo = new WebServicePortMetaData(definition, wsBinding.getWSDLPort(), null, false);
+
+        AxisServiceGroup serviceGroup = new AxisServiceGroup(axisConfig);
+        serviceGroup.setServiceGroupName(wsdlPortInfo.getServiceName().getLocalPart());
+        axisConfig.addServiceGroup(serviceGroup);
+
+        AxisService axisService = new AxisService(entryPointName);
+        axisService.setParent(serviceGroup);
+        axisService.setWSDLDefinition(definition);
+        axisService.setServiceDescription("Tuscany configured service EntryPoint name '" + entryPointName + '\'');
+
+        TypeHelper typeHelper = wsBinding.getTypeHelper();
+
+        Class<?> serviceInterface = entryPointContext.getServiceInterface();
+
+        PortType wsdlPortType = wsdlPortInfo.getPortType();
+        for (Object o : wsdlPortType.getOperations()) {
+            Operation wsdlOperation = (Operation) o;
+            String operationName = wsdlOperation.getName();
+            QName operationQN = new QName(definition.getTargetNamespace(), operationName);
+            Object entryPointProxy = entryPointContext.getInstance(null);
+
+            WebServiceOperationMetaData omd = wsdlPortInfo.getOperationMetaData(operationName);
+            QName responseTypeQN = omd.getOutputPart(0).getElementName();
+
+            Method operationMethod = getMethod(serviceInterface, operationName);
+            DataBinding dataBinding = new SDODataBinding(typeHelper, responseTypeQN);
+            WebServiceEntryPointInOutSyncMessageReceiver msgrec = new WebServiceEntryPointInOutSyncMessageReceiver(entryPointProxy, operationMethod,
+                    dataBinding);
+
+            AxisOperation axisOp = new InOutAxisOperation(operationQN);
+            axisOp.setMessageExchangePattern(WSDLConstants.MEP_URI_IN_OUT);
+            axisOp.setMessageReceiver(msgrec);
+            axisService.addOperation(axisOp);
+        }
+
+        axisConfig.addService(axisService);
+    }
+
+    protected Method getMethod(Class<?> serviceInterface, String operationName) {
+        // Note: this doesn't support overloaded operations
+        Method[] methods = serviceInterface.getMethods();
+        for (Method m : methods) {
+            if (m.getName().equals(operationName)) {
+                return m;
+            }
+            // tolerate WSDL with capatalized operation name
+            StringBuffer sb = new StringBuffer(operationName);
+            sb.setCharAt(0, Character.toLowerCase(sb.charAt(0)));
+            if (m.getName().equals(sb.toString())) {
+                return m;
+            }
+        }
+        // TODO: throw which ex, or maybe just log and ignore unknown ops?
+        throw new RuntimeException("no operation named " + operationName + " found on service interface: " + serviceInterface.getName());
+    }
 
     @SuppressWarnings("deprecation")
     protected synchronized void tuscanyGetDefaultAxis2xml(ServletConfig config) throws IOException {
@@ -146,9 +175,7 @@ public class WebServiceEntryPointServlet extends AxisServlet {
         tuscanyGetDefaultAxis2xmlChecked = true;
         ServletContext context = config.getServletContext();
         String repoDir = context.getRealPath("/WEB-INF");
-        String axis2config = repoDir +
-                "/" + DeploymentConstants.DIRECTORY_CONF +
-                "/" + DeploymentConstants.AXIS2_CONFIGURATION_XML;
+        String axis2config = repoDir + "/" + DeploymentConstants.DIRECTORY_CONF + "/" + DeploymentConstants.AXIS2_CONFIGURATION_XML;
 
         File axis2xmlFile = new File(axis2config);
         constructSubDirectories(axis2xmlFile.getParentFile());

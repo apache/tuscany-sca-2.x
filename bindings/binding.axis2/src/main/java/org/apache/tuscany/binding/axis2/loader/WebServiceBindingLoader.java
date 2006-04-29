@@ -59,6 +59,7 @@ public class WebServiceBindingLoader implements StAXElementLoader<WebServiceBind
         registry.unregisterLoader(BINDING_WS, this);
     }
 
+    @SuppressWarnings("deprecation")
     public WebServiceBinding load(XMLStreamReader reader,
             LoaderContext loaderContext)
         throws XMLStreamException, ConfigurationLoadException {

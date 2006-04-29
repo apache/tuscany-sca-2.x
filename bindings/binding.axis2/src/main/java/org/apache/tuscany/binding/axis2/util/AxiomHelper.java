@@ -19,9 +19,6 @@ package org.apache.tuscany.binding.axis2.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -29,12 +26,6 @@ import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import commonj.sdo.DataObject;
-import commonj.sdo.Property;
-import commonj.sdo.helper.TypeHelper;
-import commonj.sdo.helper.XMLDocument;
-import commonj.sdo.helper.XSDHelper;
 
 import org.apache.tuscany.sdo.helper.DataFactoryImpl;
 import org.apache.tuscany.sdo.helper.XMLHelperImpl;
@@ -45,6 +36,11 @@ import org.apache.ws.commons.om.OMXMLParserWrapper;
 import org.apache.ws.commons.om.impl.llom.factory.OMXMLBuilderFactory;
 import org.osoa.sca.ServiceRuntimeException;
 
+import commonj.sdo.DataObject;
+import commonj.sdo.Property;
+import commonj.sdo.helper.TypeHelper;
+import commonj.sdo.helper.XMLDocument;
+import commonj.sdo.helper.XSDHelper;
 
 /**
  * Utility methods to convert between Axis2 AXIOM, SDO DataObjects and Java objects.
