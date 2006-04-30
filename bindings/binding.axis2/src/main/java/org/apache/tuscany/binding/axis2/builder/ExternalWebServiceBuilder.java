@@ -116,12 +116,12 @@ public class ExternalWebServiceBuilder extends ExternalServiceBuilderSupport {
      */
     protected Map<String, Axis2OperationInvoker> createOperationInvokers(Class sc, TypeHelper typeHelper, WebServicePortMetaData wsPortMetaData) {
         SOAPFactory soapFactory = OMAbstractFactory.getSOAP11Factory();
-        String serviceNS = wsPortMetaData.getServiceName().getNamespaceURI();
+        String portTypeNS = wsPortMetaData.getPortTypeName().getNamespaceURI();
         Map<String, Axis2OperationInvoker> invokers = new HashMap<String, Axis2OperationInvoker>();
 
         for (Method m : sc.getMethods()) {
             String methodName = m.getName();
-            QName wsdlOperationName = new QName(serviceNS, wsPortMetaData.getWSDLOperationName(methodName));
+            QName wsdlOperationName = new QName(portTypeNS, wsPortMetaData.getWSDLOperationName(methodName));
             DataBinding dataBinding = new SDODataBinding(typeHelper, wsdlOperationName);
             Options options = new Options();
             options.setTo(new EndpointReference(wsPortMetaData.getEndpoint()));

@@ -23,7 +23,6 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.context.MessageContext;
 import org.apache.tuscany.binding.axis2.util.DataBinding;
 import org.apache.ws.commons.om.OMElement;
-import org.apache.ws.commons.soap.SOAPBody;
 import org.apache.ws.commons.soap.SOAPEnvelope;
 import org.apache.ws.commons.soap.SOAPFactory;
 import org.apache.wsdl.WSDLConstants;
@@ -60,12 +59,9 @@ public class Axis2OperationInvoker {
 
         operationClient.setOptions(options);
 
+        SOAPEnvelope env = soapFactory.getDefaultEnvelope();
         OMElement requestOM = dataBinding.toOMElement(args);
-
-        SOAPEnvelope env = soapFactory.createSOAPEnvelope();
-        SOAPBody body = soapFactory.createSOAPBody();
-        body.addChild(requestOM);
-        env.setFirstChild(body);
+        env.getBody().addChild(requestOM);
 
         MessageContext requestMC = new MessageContext();
         requestMC.setEnvelope(env);
