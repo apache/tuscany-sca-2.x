@@ -24,9 +24,10 @@ import javax.wsdl.Port;
 import javax.wsdl.Service;
 
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
+import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.impl.BindingImpl;
-import org.apache.tuscany.common.resource.ResourceLoader;
+
 import commonj.sdo.helper.TypeHelper;
 
 /**
@@ -35,9 +36,13 @@ import commonj.sdo.helper.TypeHelper;
 public class WebServiceBindingImpl extends BindingImpl implements WebServiceBinding {
 
     private Definition definition;
+
     private Port port;
+
     private String portURI;
+
     private TypeHelper typeHelper;
+
     private ResourceLoader resourceLoader;
 
     /**
@@ -92,7 +97,8 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
     }
 
     /**
-     * @param portURI The portURI to set.
+     * @param portURI
+     *            The portURI to set.
      */
     public void setPortURI(String portURI) {
         this.portURI = portURI;
@@ -114,15 +120,14 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
             String portName = portURI.substring(h + 1);
 
             // Load the WSDL definitions for the given namespace
-            List<Definition> definitions = modelContext.getAssemblyLoader()
-                    .loadDefinitions(portNamespace);
+            List<Definition> definitions = modelContext.getAssemblyLoader().loadDefinitions(portNamespace);
             if (definitions == null) {
                 throw new IllegalArgumentException("Cannot find WSDL definition for " + portNamespace);
             }
             for (Definition def : definitions) {
 
                 // Find the port with the given name
-                for (Service service : (Collection<Service>)def.getServices().values()) {
+                for (Service service : (Collection<Service>) def.getServices().values()) {
                     Port prt = service.getPort(portName);
                     if (prt != null) {
                         this.definition = def;

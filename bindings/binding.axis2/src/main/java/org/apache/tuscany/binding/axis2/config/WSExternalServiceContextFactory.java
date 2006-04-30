@@ -20,16 +20,14 @@ import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.builder.impl.ExternalServiceContextFactory;
 
 /**
- * Creates instances of {@link org.apache.tuscany.core.context.ExternalServiceContext}
- * configured with the appropriate wire chains and bindings. This implementation serves
- * as a marker for
- * {@link org.apache.tuscany.binding.axis2.builder.ExternalWebServiceWireBuilder}
+ * Creates instances of {@link org.apache.tuscany.core.context.ExternalServiceContext} configured with the appropriate wire chains and bindings. This
+ * implementation serves as a marker for {@link org.apache.tuscany.binding.axis2.builder.ExternalWebServiceWireBuilder}
  * 
  * @version $Rev$ $Date$
  */
-public class ExternalWebServiceContextFactory extends ExternalServiceContextFactory {
+public class WSExternalServiceContextFactory extends ExternalServiceContextFactory {
 
-    public ExternalWebServiceContextFactory(String name, ObjectFactory objectFactory) {
+    public WSExternalServiceContextFactory(String name, ObjectFactory objectFactory) {
         super(name, objectFactory);
     }
 

@@ -156,7 +156,7 @@ public class WebServiceEntryPointServlet extends AxisServlet {
                 return m;
             }
             // tolerate WSDL with capatalized operation name
-            StringBuffer sb = new StringBuffer(operationName);
+            StringBuilder sb = new StringBuilder(operationName);
             sb.setCharAt(0, Character.toLowerCase(sb.charAt(0)));
             if (m.getName().equals(sb.toString())) {
                 return m;

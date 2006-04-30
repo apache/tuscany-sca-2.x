@@ -69,9 +69,9 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
             InvocationTargetException, SOAPProcessingException, AxisFault {
 
         OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
-        Object[] request = dataBinding.processRequest(requestOM);
+        Object[] request = dataBinding.fromOMElement(requestOM);
         Object response = operationMethod.invoke(entryPointProxy, request);
-        OMElement responseOM = dataBinding.processResponse(response);
+        OMElement responseOM = dataBinding.toOMElement(new Object[] { response });
 
         SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
         soapEnvelope.getBody().addChild(responseOM);

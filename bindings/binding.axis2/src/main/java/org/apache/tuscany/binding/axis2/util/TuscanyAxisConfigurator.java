@@ -31,9 +31,9 @@ import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
- * Helps configure Axis2 from a resource in binding.axis2
- * instead of Axis2.xml
- *
+ * Helps configure Axis2 from a resource in binding.axis2 instead of Axis2.xml
+ * 
+ * TODO: Review: should there be a single global Axis ConfigurationContext
  */
 public class TuscanyAxisConfigurator implements AxisConfigurator {
 
@@ -42,32 +42,28 @@ public class TuscanyAxisConfigurator implements AxisConfigurator {
     protected final ResourceLoader resourceLoader;
 
     /**
-     * @param resourceLoader desired resource loader if null use thread context.
-     * @param axisConfiguration Starting axis configuration, null then use uninitialized configuration. 
+     * @param resourceLoader
+     *            desired resource loader if null use thread context.
+     * @param axisConfiguration
+     *            Starting axis configuration, null then use uninitialized configuration.
      */
     public TuscanyAxisConfigurator(ResourceLoader resourceLoader, AxisConfiguration axisConfiguration) {
-        this.resourceLoader = resourceLoader != null ? resourceLoader
-            : new ResourceLoaderImpl(getClass().getClassLoader());
-        this.axisConfiguration = axisConfiguration == null ? new AxisConfiguration()
-            : axisConfiguration;
+        this.resourceLoader = resourceLoader != null ? resourceLoader : new ResourceLoaderImpl(getClass().getClassLoader());
+        this.axisConfiguration = axisConfiguration == null ? new AxisConfiguration() : axisConfiguration;
     }
 
     public AxisConfiguration getAxisConfiguration() {
-       
+
         return axisConfiguration;
     }
 
     public ConfigurationContext getConfigurationContext() throws ServiceRuntimeException {
-       
 
-        
         try {
             URL url = resourceLoader.getResource("org/apache/tuscany/binding/axis2/engine/config/axis2.xml");
 
             InputStream serviceInputStream = url.openStream();
-            AxisConfigBuilder axisConfigBuilder = new AxisConfigBuilder(serviceInputStream,
-                                                                        new DeploymentEngine(),
-                                                                        axisConfiguration);
+            AxisConfigBuilder axisConfigBuilder = new AxisConfigBuilder(serviceInputStream, new DeploymentEngine(), axisConfiguration);
             axisConfigBuilder.populateConfig();
             serviceInputStream.close();
             return ConfigurationContextFactory.createConfigurationContext(this);

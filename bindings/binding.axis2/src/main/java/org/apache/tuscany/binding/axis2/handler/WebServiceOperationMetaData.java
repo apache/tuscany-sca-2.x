@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import javax.wsdl.Binding;
 import javax.wsdl.BindingInput;
 import javax.wsdl.BindingOperation;
@@ -38,21 +39,29 @@ import javax.xml.namespace.QName;
 
 /**
  * Metadata for a WSDL operation
- *
+ * 
  */
 public class WebServiceOperationMetaData {
     // WSDL Binding and BindingOperation
     private Binding binding;
+
     private BindingOperation bindingOperation;
 
     // Fields to cache derived metadata
     private transient Set<Part> inputHeaderParts;
+
     private transient Set<Part> outputHeaderParts;
+
     private transient String style;
+
     private transient String use;
+
     private transient String soapAction;
+
     private transient List<Object> signature;
+
     private String encoding;
+
     private transient QName rpcOperationName;
 
     public WebServiceOperationMetaData(Binding binding, BindingOperation bindingOperation) {
@@ -60,12 +69,8 @@ public class WebServiceOperationMetaData {
         this.bindingOperation = bindingOperation;
     }
 
-    public WebServiceOperationMetaData(Binding binding,
-                                       BindingOperation bindingOperation,
-                                       String style,
-                                       String use,
-                                       String encoding,
-                                       String soapAction) {
+    public WebServiceOperationMetaData(Binding binding, BindingOperation bindingOperation, String style, String use, String encoding,
+            String soapAction) {
         this.binding = binding;
         this.bindingOperation = bindingOperation;
         this.style = style;
@@ -138,16 +143,13 @@ public class WebServiceOperationMetaData {
 
     public String getStyle() {
         if (style == null) {
-            SOAPOperation soapOperation = (SOAPOperation)WebServicePortMetaData
-                .getExtensibilityElement(bindingOperation.getExtensibilityElements(),
-                                         SOAPOperation.class);
+            SOAPOperation soapOperation = (SOAPOperation) WebServicePortMetaData.getExtensibilityElement(bindingOperation.getExtensibilityElements(),
+                    SOAPOperation.class);
             if (soapOperation != null) {
                 style = soapOperation.getStyle();
             }
             if (style == null) {
-                SOAPBinding soapBinding = WebServicePortMetaData
-                    .getExtensibilityElement(binding.getExtensibilityElements(),
-                                             SOAPBinding.class);
+                SOAPBinding soapBinding = WebServicePortMetaData.getExtensibilityElement(binding.getExtensibilityElements(), SOAPBinding.class);
                 if (soapBinding != null) {
                     style = soapBinding.getStyle();
                 }
@@ -161,16 +163,14 @@ public class WebServiceOperationMetaData {
 
     /**
      * Returns the SOAP action for the given operation.
-     *
+     * 
      * @param wsdlBindingOperation
      * @return
      */
     public String getSOAPAction() {
         if (soapAction == null) {
             final List wsdlBindingOperationExtensions = bindingOperation.getExtensibilityElements();
-            final SOAPOperation soapOp = WebServicePortMetaData
-                .getExtensibilityElement(wsdlBindingOperationExtensions,
-                                         SOAPOperation.class);
+            final SOAPOperation soapOp = WebServicePortMetaData.getExtensibilityElement(wsdlBindingOperationExtensions, SOAPOperation.class);
             if (soapOp != null) {
                 soapAction = soapOp.getSoapActionURI();
             }
@@ -181,8 +181,7 @@ public class WebServiceOperationMetaData {
     public QName getRPCOperationName() {
         if (rpcOperationName == null) {
             javax.wsdl.extensions.soap.SOAPBody soapBody = getSOAPBody(true);
-            String ns = (soapBody != null) ? soapBody.getNamespaceURI()
-                    : binding.getPortType().getQName().getNamespaceURI();
+            String ns = (soapBody != null) ? soapBody.getNamespaceURI() : binding.getPortType().getQName().getNamespaceURI();
             String name = bindingOperation.getOperation().getName();
             rpcOperationName = new QName(ns, name);
         }
@@ -198,9 +197,9 @@ public class WebServiceOperationMetaData {
                 for (Iterator i = parts.iterator(); i.hasNext();) {
                     Object part = i.next();
                     if (part instanceof String) {
-                        names.add((String)part);
+                        names.add((String) part);
                     } else if (part instanceof Part) {
-                        names.add(((Part)part).getName());
+                        names.add(((Part) part).getName());
                     }
                 }
                 return names;
@@ -227,15 +226,14 @@ public class WebServiceOperationMetaData {
             }
             elements = bindingOutput.getExtensibilityElements();
         }
-        javax.wsdl.extensions.soap.SOAPBody soapBody = WebServicePortMetaData
-            .getExtensibilityElement(elements,
-                                     javax.wsdl.extensions.soap.SOAPBody.class);
+        javax.wsdl.extensions.soap.SOAPBody soapBody = WebServicePortMetaData.getExtensibilityElement(elements,
+                javax.wsdl.extensions.soap.SOAPBody.class);
         return soapBody;
     }
 
     /**
      * Returns the use attribute
-     *
+     * 
      * @param wsdlOperation
      * @return
      */
@@ -257,7 +255,7 @@ public class WebServiceOperationMetaData {
         if (encoding == null) {
             javax.wsdl.extensions.soap.SOAPBody soapBody = getSOAPBody(true);
             if (soapBody != null) {
-                List<String> styles = (List<String>)soapBody.getEncodingStyles();
+                List<String> styles = (List<String>) soapBody.getEncodingStyles();
                 if (styles != null && !styles.isEmpty()) {
                     encoding = styles.get(0);
                 }
@@ -268,7 +266,7 @@ public class WebServiceOperationMetaData {
         }
         return encoding;
     }
-    
+
     public boolean isDocLitWrapped() {
         boolean flag = getStyle().equals("document") && getUse().equals("literal");
         if (!flag) {
@@ -291,30 +289,19 @@ public class WebServiceOperationMetaData {
     }
 
     /*
-      public SOAPMediator createMediator(boolean serverMode)
-      throws SOAPException {
-      // create a new mediator for each invoke for thread-safety
-      boolean rpcStyle = getStyle().equals("rpc");
-      boolean rpcEncoded = isEncoded();
-
-      SOAPMediator mediator = null;
-
-      if (!rpcStyle) {
-      // Document
-      mediator = new SOAPDocumentLiteralMediatorImpl(this, serverMode);
-      } else {
-      if (!rpcEncoded)
-      mediator = new SOAPRPCLiteralMediatorImpl(this, serverMode); // RPC-literal
-      else
-      mediator = new SOAPRPCEncodedMediatorImpl(this, serverMode); // RPC-encoded
-      }
-      return mediator;
-      }
-      */
+     * public SOAPMediator createMediator(boolean serverMode) throws SOAPException { // create a new mediator for each invoke for thread-safety
+     * boolean rpcStyle = getStyle().equals("rpc"); boolean rpcEncoded = isEncoded();
+     * 
+     * SOAPMediator mediator = null;
+     * 
+     * if (!rpcStyle) { // Document mediator = new SOAPDocumentLiteralMediatorImpl(this, serverMode); } else { if (!rpcEncoded) mediator = new
+     * SOAPRPCLiteralMediatorImpl(this, serverMode); // RPC-literal else mediator = new SOAPRPCEncodedMediatorImpl(this, serverMode); // RPC-encoded }
+     * return mediator; }
+     */
 
     /**
      * Get the operation signature from the WSDL operation
-     *
+     * 
      * @param wsdlBinding
      * @param bindingOperation
      * @return
@@ -338,36 +325,26 @@ public class WebServiceOperationMetaData {
             if ("rpc".equals(sstyle)) {
                 Collection partNames = input.getMessage().getParts().values();
                 for (Iterator i = partNames.iterator(); i.hasNext();) {
-                    Part part = (Part)i.next();
+                    Part part = (Part) i.next();
                     signature.add(part.getName());
                 }
             } else {
                 /*
-                     * WS-I Basic Profile 1.1 4.7.6 Operation Signatures
-                     * Definition: operation signature
-                     *
-                     * The profile defines the "operation signature" to be the
-                     * fully qualified name of the child element of SOAP body of
-                     * the SOAP input message described by an operation in a
-                     * WSDL binding.
-                     *
-                     * In the case of rpc-literal binding, the operation name is
-                     * used as a wrapper for the part accessors. In the
-                     * document-literal case, since a wrapper with the operation
-                     * name is not present, the message signatures must be
-                     * correctly designed so that they meet this requirement.
-                     *
-                     * An endpoint that supports multiple operations must
-                     * unambiguously identify the operation being invoked based
-                     * on the input message that it receives. This is only
-                     * possible if all the operations specified in the
-                     * wsdl:binding associated with an endpoint have a unique
-                     * operation signature.
-                     *
-                     * R2710 The operations in a wsdl:binding in a DESCRIPTION
-                     * MUST result in operation signatures that are different
-                     * from one another.
-                     */
+                 * WS-I Basic Profile 1.1 4.7.6 Operation Signatures Definition: operation signature
+                 * 
+                 * The profile defines the "operation signature" to be the fully qualified name of the child element of SOAP body of the SOAP input
+                 * message described by an operation in a WSDL binding.
+                 * 
+                 * In the case of rpc-literal binding, the operation name is used as a wrapper for the part accessors. In the document-literal case,
+                 * since a wrapper with the operation name is not present, the message signatures must be correctly designed so that they meet this
+                 * requirement.
+                 * 
+                 * An endpoint that supports multiple operations must unambiguously identify the operation being invoked based on the input message
+                 * that it receives. This is only possible if all the operations specified in the wsdl:binding associated with an endpoint have a
+                 * unique operation signature.
+                 * 
+                 * R2710 The operations in a wsdl:binding in a DESCRIPTION MUST result in operation signatures that are different from one another.
+                 */
                 List<String> bodyParts = getSOAPBodyParts(true);
 
                 Collection<?> parts = input.getMessage().getParts().values();
@@ -450,8 +427,9 @@ public class WebServiceOperationMetaData {
 
     /**
      * Get a list of indexes for each part in the SOAP body
-     *
-     * @param isInput TODO
+     * 
+     * @param isInput
+     *            TODO
      * @return
      */
     public List<Integer> getBodyPartIndexes(boolean isInput) {
@@ -486,11 +464,11 @@ public class WebServiceOperationMetaData {
     }
 
     /**
-     * Get the corresponding index for a part in the SOAP header by element
-     * name
-     *
+     * Get the corresponding index for a part in the SOAP header by element name
+     * 
      * @param elementName
-     * @param isInput     TODO
+     * @param isInput
+     *            TODO
      * @return
      */
     public int getHeaderPartIndex(QName elementName, boolean isInput) {

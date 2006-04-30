@@ -36,40 +36,47 @@ import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 
 /**
  * Metadata for a WSDL port
- *
+ * 
  */
 public class WebServicePortMetaData {
-    
+
     private Service wsdlService;
+
     private QName wsdlServiceName;
+
     private Port wsdlPort;
+
     private Binding wsdlBinding;
+
     private QName wsdlPortName;
+
     private PortType wsdlPortType;
+
     private QName wsdlPortTypeName;
+
     private String endpoint;
+
     private boolean managed;
+
     private List<WebServiceOperationMetaData> allOperationMetaData;
+
     private WSDLServiceContract interfaceType;
 
     /**
      * Constructor
-     *
+     * 
      * @param wsdlDefinition
      * @param portName
      */
-    public WebServicePortMetaData(Definition wsdlDefinition,
-                                  Port wsdlPort,
-                                  String endpoint,
-                                  boolean managed) {
+    public WebServicePortMetaData(Definition wsdlDefinition, Port wsdlPort, String endpoint, boolean managed) {
 
         // Lookup the named port
         this.wsdlPort = wsdlPort;
         wsdlPortName = new QName(wsdlDefinition.getTargetNamespace(), wsdlPort.getName());
-        
+
         Collection services = wsdlDefinition.getServices().values();
         for (Object serviceObj : services) {
-            Service service = (Service)serviceObj;
+            Service service = (Service) serviceObj;
             if (service.getPorts().containsValue(wsdlPort)) {
                 wsdlService = service;
                 wsdlServiceName = service.getQName();
@@ -99,7 +106,7 @@ public class WebServicePortMetaData {
 
     /**
      * Constructor
-     *
+     * 
      * @param serviceName
      * @param portName
      * @param portType
@@ -162,7 +169,7 @@ public class WebServicePortMetaData {
 
     /**
      * Returns the endpoint of a given port.
-     *
+     * 
      * @param wsdlPort
      * @return
      */
@@ -179,7 +186,7 @@ public class WebServicePortMetaData {
             for (Iterator i = wsdlPortExtensions.iterator(); i.hasNext();) {
                 final Object extension = i.next();
                 if (extension instanceof SOAPAddress) {
-                    return ((SOAPAddress)extension).getLocationURI();
+                    return ((SOAPAddress) extension).getLocationURI();
                 }
             }
         }
@@ -189,6 +196,7 @@ public class WebServicePortMetaData {
 
     /**
      * Returns the SOAP binding style.
+     * 
      * @return
      */
     public String getStyle() {
@@ -197,8 +205,7 @@ public class WebServicePortMetaData {
         String style = null;
         if (wsdlBinding != null) {
             final List wsdlBindingExtensions = wsdlBinding.getExtensibilityElements();
-            SOAPBinding soapBinding = getExtensibilityElement(wsdlBindingExtensions,
-                                                              SOAPBinding.class);
+            SOAPBinding soapBinding = getExtensibilityElement(wsdlBindingExtensions, SOAPBinding.class);
             if (soapBinding != null) {
                 style = soapBinding.getStyle();
             }
@@ -210,6 +217,7 @@ public class WebServicePortMetaData {
 
     /**
      * Returns the use attribute
+     * 
      * @return
      */
     public String getUse() {
@@ -219,6 +227,7 @@ public class WebServicePortMetaData {
 
     /**
      * Returns the encoding attribute
+     * 
      * @return
      */
     public String getEncoding() {
@@ -235,6 +244,7 @@ public class WebServicePortMetaData {
 
     /**
      * Returns the first extensibility element of the given type.
+     * 
      * @param elements
      * @param type
      * @return
@@ -251,6 +261,7 @@ public class WebServicePortMetaData {
 
     /**
      * Returns the extensibility elements of the given type.
+     * 
      * @param elements
      * @param type
      * @return
@@ -268,76 +279,73 @@ public class WebServicePortMetaData {
 
     /**
      * Get the operation signature from the SOAP Body
+     * 
      * @param body
      * @return A list of QNames
      */
-//    public static List getOperationSignature(javax.xml.soap.SOAPBody body) {
-//        List signature = new ArrayList();
-//        for (Iterator i = body.getChildElements(); i.hasNext();) {
-//            Object child = i.next();
-//            if (child instanceof SOAPBodyElement) {
-//                Name name = ((SOAPBodyElement) child).getElementName();
-//                QName qname = new QName(name.getURI(), name.getLocalName(), name.getPrefix());
-//                signature.add(qname);
-//            }
-//        }
-//        return signature;
-//    }
-
-//    public static List getRPCOperationSignature(javax.xml.soap.SOAPBody body) {
-//        List signature = new ArrayList();
-//        for (Iterator i = body.getChildElements(); i.hasNext();) {
-//            Object child = i.next();
-//            if (child instanceof SOAPBodyElement) {
-//                SOAPBodyElement op = ((SOAPBodyElement) child);
-//                for (Iterator j = op.getChildElements(); j.hasNext();) {
-//                    Object part = i.next();
-//                    if (part instanceof SOAPElement) {
-//                        SOAPElement p = (SOAPElement) part;
-//                        signature.add(p.getLocalName());
-//                    }
-//                }
-//            }
-//        }
-//        return signature;
-//    }
-
-//    public WebServiceOperationMetaData getOperationMetaData(javax.xml.soap.SOAPBody body) {
-//        List s1 = getOperationSignature(body);
-//        // List rpcParts = getRPCOperationSignature(body);
-//        for (Iterator it = getAllOperationMetaData().iterator(); it.hasNext();) {
-//            WebServiceOperationMetaData descriptor = (WebServiceOperationMetaData) it.next();
-//
-//            String style = descriptor.getStyle();
-//
-//            if (style.equals("document")) {
-//                List s2 = descriptor.getOperationSignature();
-//                if (s1.equals(s2))
-//                    return descriptor;
-//            } else {
-//                QName op1 = (QName) s1.get(0);
-//                QName op2 = descriptor.getRPCOperationName();
-//                if (op1.equals(op2)) {
-//                    /*
-//                          * // FIXME: [rfeng] We don't support method overloading
-//                          * List partNames = getOperationSignature(binding,
-//                          * bindingOperation); if (rpcParts.equals(partNames))
-//                          */
-//                    return descriptor;
-//                }
-//            }
-//        }
-//        return null;
-//    }
-
+    // public static List getOperationSignature(javax.xml.soap.SOAPBody body) {
+    // List signature = new ArrayList();
+    // for (Iterator i = body.getChildElements(); i.hasNext();) {
+    // Object child = i.next();
+    // if (child instanceof SOAPBodyElement) {
+    // Name name = ((SOAPBodyElement) child).getElementName();
+    // QName qname = new QName(name.getURI(), name.getLocalName(), name.getPrefix());
+    // signature.add(qname);
+    // }
+    // }
+    // return signature;
+    // }
+    // public static List getRPCOperationSignature(javax.xml.soap.SOAPBody body) {
+    // List signature = new ArrayList();
+    // for (Iterator i = body.getChildElements(); i.hasNext();) {
+    // Object child = i.next();
+    // if (child instanceof SOAPBodyElement) {
+    // SOAPBodyElement op = ((SOAPBodyElement) child);
+    // for (Iterator j = op.getChildElements(); j.hasNext();) {
+    // Object part = i.next();
+    // if (part instanceof SOAPElement) {
+    // SOAPElement p = (SOAPElement) part;
+    // signature.add(p.getLocalName());
+    // }
+    // }
+    // }
+    // }
+    // return signature;
+    // }
+    // public WebServiceOperationMetaData getOperationMetaData(javax.xml.soap.SOAPBody body) {
+    // List s1 = getOperationSignature(body);
+    // // List rpcParts = getRPCOperationSignature(body);
+    // for (Iterator it = getAllOperationMetaData().iterator(); it.hasNext();) {
+    // WebServiceOperationMetaData descriptor = (WebServiceOperationMetaData) it.next();
+    //
+    // String style = descriptor.getStyle();
+    //
+    // if (style.equals("document")) {
+    // List s2 = descriptor.getOperationSignature();
+    // if (s1.equals(s2))
+    // return descriptor;
+    // } else {
+    // QName op1 = (QName) s1.get(0);
+    // QName op2 = descriptor.getRPCOperationName();
+    // if (op1.equals(op2)) {
+    // /*
+    // * // FIXME: [rfeng] We don't support method overloading
+    // * List partNames = getOperationSignature(binding,
+    // * bindingOperation); if (rpcParts.equals(partNames))
+    // */
+    // return descriptor;
+    // }
+    // }
+    // }
+    // return null;
+    // }
     public List<WebServiceOperationMetaData> getAllOperationMetaData() {
         if (allOperationMetaData == null) {
             allOperationMetaData = new ArrayList<WebServiceOperationMetaData>();
             for (Iterator it = wsdlBinding.getBindingOperations().iterator(); it.hasNext();) {
                 final BindingOperation bindingOperation = (BindingOperation) it.next();
                 if (bindingOperation.getOperation() != null) {
-                    allOperationMetaData.add(new WebServiceOperationMetaData(wsdlBinding,
-                                                                             bindingOperation));
+                    allOperationMetaData.add(new WebServiceOperationMetaData(wsdlBinding, bindingOperation));
                 }
             }
         }
@@ -358,6 +366,7 @@ public class WebServicePortMetaData {
 
     /**
      * Returns the WSDL service contract
+     * 
      * @return
      */
     public WSDLServiceContract getInterfaceType() {
@@ -368,7 +377,7 @@ public class WebServicePortMetaData {
      * Get the WSDL operation name for a Java method name
      */
     public String getWSDLOperationName(String methodName) {
-        StringBuffer sb = new StringBuffer(methodName);
+        StringBuilder sb = new StringBuilder(methodName);
         sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
         String capatalizedOpName = sb.toString();
         for (Object o : wsdlPortType.getOperations()) {

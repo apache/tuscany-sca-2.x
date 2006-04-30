@@ -19,8 +19,9 @@ package org.apache.tuscany.binding.axis2.assembly;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 
-import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.model.assembly.Binding;
+
 import commonj.sdo.helper.TypeHelper;
 
 /**
@@ -30,8 +31,9 @@ public interface WebServiceBinding extends Binding {
 
     /**
      * Set the URI of the WSDL port for this binding.
-     *
-     * @param portURI the URI of the WSDL port
+     * 
+     * @param portURI
+     *            the URI of the WSDL port
      */
     void setPortURI(String portURI);
 
@@ -42,6 +44,7 @@ public interface WebServiceBinding extends Binding {
 
     /**
      * Returns the WSDL definition containing the WSDL port.
+     * 
      * @return the WSDL definition containing the WSDL port
      */
     Definition getWSDLDefinition();
@@ -53,6 +56,7 @@ public interface WebServiceBinding extends Binding {
 
     /**
      * Sets the WSDL definition containing the WSDL port.
+     * 
      * @param definition
      */
     void setWSDLDefinition(Definition definition);

@@ -16,15 +16,27 @@
  */
 package org.apache.tuscany.binding.axis2.builder;
 
-import commonj.sdo.helper.TypeHelper;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.wsdl.Definition;
+import javax.xml.namespace.QName;
+
 import org.apache.axis2.AxisFault;
+import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
+import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.context.MessageContextConstants;
 import org.apache.axis2.description.AxisService;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
-import org.apache.tuscany.binding.axis2.config.ExternalWebServiceContextFactory;
-import org.apache.tuscany.binding.axis2.handler.ExternalWebServiceClient;
+import org.apache.tuscany.binding.axis2.config.WSExternalServiceContextFactory;
+import org.apache.tuscany.binding.axis2.handler.Axis2OperationInvoker;
+import org.apache.tuscany.binding.axis2.handler.Axis2ServiceInvoker;
 import org.apache.tuscany.binding.axis2.handler.WebServicePortMetaData;
+import org.apache.tuscany.binding.axis2.util.DataBinding;
+import org.apache.tuscany.binding.axis2.util.SDODataBinding;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.impl.ExternalServiceContextFactory;
@@ -32,63 +44,93 @@ import org.apache.tuscany.core.extension.ExternalServiceBuilderSupport;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.ExternalService;
+import org.apache.ws.commons.om.OMAbstractFactory;
+import org.apache.ws.commons.soap.SOAPFactory;
 import org.osoa.sca.annotations.Scope;
 
-import javax.xml.namespace.QName;
-
+import commonj.sdo.helper.TypeHelper;
 
 /**
  * Creates a <code>ContextFactory</code> for an external service configured with the {@link WebServiceBinding}
- *
- * @version $Rev$ $Date$
  */
 @Scope("MODULE")
 public class ExternalWebServiceBuilder extends ExternalServiceBuilderSupport {
 
+    @Override
     protected boolean handlesBindingType(Binding binding) {
         return binding instanceof WebServiceBinding;
     }
 
-    protected ExternalServiceContextFactory createExternalServiceContextFactory(
-            ExternalService externalService) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.tuscany.core.extension.ExternalServiceBuilderSupport#createExternalServiceContextFactory(org.apache.tuscany.model.assembly.ExternalService)
+     */
+    @Override
+    protected ExternalServiceContextFactory createExternalServiceContextFactory(ExternalService externalService) {
 
-        ExternalWebServiceClient externalWebServiceClient = createExternalWebServiceClient(externalService);
+        WebServiceBinding wsBinding = (WebServiceBinding) externalService.getBindings().get(0);
+        Definition wsdlDefinition = wsBinding.getWSDLDefinition();
+        WebServicePortMetaData wsPortMetaData = new WebServicePortMetaData(wsdlDefinition, wsBinding.getWSDLPort(), wsBinding.getURI(), false);
 
-        return new ExternalWebServiceContextFactory(externalService.getName(),
-                new SingletonObjectFactory<ExternalWebServiceClient>(externalWebServiceClient));
+        ServiceClient serviceClient = createServiceClient(externalService.getName(), wsdlDefinition, wsPortMetaData);
+
+        TypeHelper typeHelper = wsBinding.getTypeHelper();
+        Class serviceInterface = externalService.getConfiguredService().getPort().getServiceContract().getInterface();
+        Map<String, Axis2OperationInvoker> invokers = createOperationInvokers(serviceInterface, typeHelper, wsPortMetaData);
+
+        Axis2ServiceInvoker axis2Client = new Axis2ServiceInvoker(serviceClient, invokers);
+
+        return new WSExternalServiceContextFactory(externalService.getName(), new SingletonObjectFactory<Axis2ServiceInvoker>(axis2Client));
+
     }
 
     /**
-     * Create an ExternalWebServiceClient for the WebServiceBinding
+     * Create an Axis2 ServiceClient configured for the externalService
      */
-    private ExternalWebServiceClient createExternalWebServiceClient(ExternalService externalService) {
-        // TODO: Review should there be a single global Axis ConfigurationContext
+    protected ServiceClient createServiceClient(String externalServiceName, Definition wsdlDefinition, WebServicePortMetaData wsPortMetaData) {
+
         TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator(null, null);
         ConfigurationContext configurationContext = tuscanyAxisConfigurator.getConfigurationContext();
 
-        WebServiceBinding wsBinding = (WebServiceBinding) externalService.getBindings().get(0);
-
-        WebServicePortMetaData wsPortMetaData = new WebServicePortMetaData(wsBinding.getWSDLDefinition(),
-                wsBinding.getWSDLPort(),
-                wsBinding.getURI(),
-                false);
         QName serviceQName = wsPortMetaData.getServiceName();
         String portName = wsPortMetaData.getPortName().getLocalPart();
 
-        AxisService axisService;
+        ServiceClient serviceClient;
         try {
-            axisService = AxisService.createClientSideAxisService(wsBinding.getWSDLDefinition(),
-                    serviceQName,
-                    portName,
-                    new Options());
+
+            AxisService axisService = AxisService.createClientSideAxisService(wsdlDefinition, serviceQName, portName, new Options());
+            serviceClient = new ServiceClient(configurationContext, axisService);
+
         } catch (AxisFault e) {
             BuilderConfigException bce = new BuilderConfigException("AxisFault creating external service", e);
-            bce.addContextName(externalService.getName());
+            bce.addContextName(externalServiceName);
             throw bce;
         }
 
-        TypeHelper typeHelper = wsBinding.getTypeHelper();
-        return new ExternalWebServiceClient(configurationContext, axisService, wsPortMetaData, typeHelper);
+        return serviceClient;
+    }
+
+    /**
+     * Create and configure an Axis2OperationInvoker for each operation in the externalService
+     */
+    protected Map<String, Axis2OperationInvoker> createOperationInvokers(Class sc, TypeHelper typeHelper, WebServicePortMetaData wsPortMetaData) {
+        SOAPFactory soapFactory = OMAbstractFactory.getSOAP11Factory();
+        String serviceNS = wsPortMetaData.getServiceName().getNamespaceURI();
+        Map<String, Axis2OperationInvoker> invokers = new HashMap<String, Axis2OperationInvoker>();
+
+        for (Method m : sc.getMethods()) {
+            String methodName = m.getName();
+            QName wsdlOperationName = new QName(serviceNS, wsPortMetaData.getWSDLOperationName(methodName));
+            DataBinding dataBinding = new SDODataBinding(typeHelper, wsdlOperationName);
+            Options options = new Options();
+            options.setTo(new EndpointReference(wsPortMetaData.getEndpoint()));
+            options.setProperty(MessageContextConstants.CHUNKED, Boolean.FALSE); // TODO: don't do this for wrapped style
+            Axis2OperationInvoker invoker = new Axis2OperationInvoker(wsdlOperationName, options, dataBinding, soapFactory);
+            invokers.put(methodName, invoker);
+        }
+
+        return invokers;
     }
 
 }

@@ -32,7 +32,6 @@ import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
-
 /**
  * @version $Rev$ $Date$
  */
@@ -60,9 +59,7 @@ public class WebServiceBindingLoader implements StAXElementLoader<WebServiceBind
     }
 
     @SuppressWarnings("deprecation")
-    public WebServiceBinding load(XMLStreamReader reader,
-            LoaderContext loaderContext)
-        throws XMLStreamException, ConfigurationLoadException {
+    public WebServiceBinding load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
 
         WebServiceBinding binding = WS_FACTORY.createWebServiceBinding();
         binding.setURI(reader.getAttributeValue(null, "uri"));

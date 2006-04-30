@@ -32,13 +32,13 @@ public class SDODataBinding implements DataBinding {
         this.typeQN = typeQN;
     }
 
-    public Object[] processRequest(OMElement omElement) {
+    public Object[] fromOMElement(OMElement omElement) {
         Object[] args = AxiomHelper.toObjects(typeHelper, omElement);
         return args;
     }
 
-    public OMElement processResponse(Object response) {
-        OMElement omElement = AxiomHelper.toOMElement(typeHelper, new Object[] { response }, typeQN);
+    public OMElement toOMElement(Object[] args) {
+        OMElement omElement = AxiomHelper.toOMElement(typeHelper, args, typeQN);
         return omElement;
     }
 

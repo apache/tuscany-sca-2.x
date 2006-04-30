@@ -48,9 +48,9 @@ import commonj.sdo.helper.XSDHelper;
  * Most of these methods rely on the schemas having been registered with XSDHelper.define
  */
 public final class AxiomHelper {
-    
+
     private AxiomHelper() {
-        //utility class, never contructed
+        // utility class, never contructed
     }
 
     /**
@@ -107,22 +107,18 @@ public final class AxiomHelper {
         try {
 
             ByteArrayOutputStream pos = new java.io.ByteArrayOutputStream();
-            new XMLHelperImpl(typeHelper).save(dataObject,
-                                               typeQN.getNamespaceURI(),
-                                               typeQN.getLocalPart(),
-                                               pos);
+            new XMLHelperImpl(typeHelper).save(dataObject, typeQN.getNamespaceURI(), typeQN.getLocalPart(), pos);
             pos.close();
 
             XMLStreamReader parser;
             ClassLoader ccl = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(AxiomHelper.class.getClassLoader());
-                parser = XMLInputFactory.newInstance().createXMLStreamReader(new ByteArrayInputStream(pos.toByteArray() ));
+                parser = XMLInputFactory.newInstance().createXMLStreamReader(new ByteArrayInputStream(pos.toByteArray()));
             } finally {
                 Thread.currentThread().setContextClassLoader(ccl);
             }
-            OMXMLParserWrapper builder = OMXMLBuilderFactory
-                    .createStAXOMBuilder(OMAbstractFactory.getOMFactory(), parser);
+            OMXMLParserWrapper builder = OMXMLBuilderFactory.createStAXOMBuilder(OMAbstractFactory.getOMFactory(), parser);
             OMElement root = builder.getDocumentElement();
 
             return root;
@@ -154,11 +150,11 @@ public final class AxiomHelper {
             } finally {
                 Thread.currentThread().setContextClassLoader(ccl);
             }
-            
+
             pos.flush();
             pos.close();
 
-            XMLDocument document = new XMLHelperImpl(typeHelper).load(new ByteArrayInputStream(pos.toByteArray() ));
+            XMLDocument document = new XMLHelperImpl(typeHelper).load(new ByteArrayInputStream(pos.toByteArray()));
 
             return document.getRootObject();
 
@@ -179,9 +175,7 @@ public final class AxiomHelper {
      */
     public static DataObject toDataObject(TypeHelper typeHelper, Object[] os, QName typeQN) {
         XSDHelper xsdHelper = new XSDHelperImpl(typeHelper);
-        Property property = xsdHelper.getGlobalProperty(typeQN.getNamespaceURI(),
-                                                        typeQN.getLocalPart(),
-                                                        true);
+        Property property = xsdHelper.getGlobalProperty(typeQN.getNamespaceURI(), typeQN.getLocalPart(), true);
         DataObject dataObject = new DataFactoryImpl(typeHelper).create(property.getType());
         List ips = dataObject.getInstanceProperties();
         for (int i = 0; i < ips.size(); i++) {
@@ -189,5 +183,5 @@ public final class AxiomHelper {
         }
         return dataObject;
     }
-    
+
 }

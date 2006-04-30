@@ -20,15 +20,14 @@ import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 
 /**
- * Creates instances of {@link org.apache.tuscany.core.context.EntryPointContext}
- * configured with the appropriate wire chains and bindings. This implementation 
- * serves as a marker for
- *
+ * Creates instances of {@link org.apache.tuscany.core.context.EntryPointContext} configured with the appropriate wire chains and bindings. This
+ * implementation serves as a marker for
+ * 
  * @version $Rev$ $Date$
  */
-public class WebServiceEntryPointContextFactory extends EntryPointContextFactory {
+public class WSEntryPointContextFactory extends EntryPointContextFactory {
 
-    public WebServiceEntryPointContextFactory(String name,MessageFactory messageFactory) {
+    public WSEntryPointContextFactory(String name, MessageFactory messageFactory) {
         super(name, messageFactory);
     }
 

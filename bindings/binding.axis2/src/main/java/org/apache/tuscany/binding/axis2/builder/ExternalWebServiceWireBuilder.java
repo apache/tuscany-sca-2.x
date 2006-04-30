@@ -16,25 +16,29 @@
  */
 package org.apache.tuscany.binding.axis2.builder;
 
-import org.apache.tuscany.binding.axis2.config.ExternalWebServiceContextFactory;
-import org.apache.tuscany.binding.axis2.handler.ExternalWebServiceTargetInvoker;
+import java.lang.reflect.Method;
+
+import org.apache.tuscany.binding.axis2.config.WSExternalServiceContextFactory;
+import org.apache.tuscany.binding.axis2.handler.ExternalServiceTargetInvoker;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.extension.WireBuilderSupport;
 import org.apache.tuscany.core.wire.TargetInvoker;
 import org.osoa.sca.annotations.Scope;
 
-import java.lang.reflect.Method;
-
 @Scope("MODULE")
 public class ExternalWebServiceWireBuilder extends WireBuilderSupport {
 
-    protected boolean handlesTargetType(Class targetType) {
-        return ExternalWebServiceContextFactory.class.isAssignableFrom(targetType);
+    public ExternalWebServiceWireBuilder() {
     }
 
-    protected TargetInvoker createInvoker(QualifiedName targetName, Method operation,
-                                          ScopeContext context, boolean downScope) {
-        return new ExternalWebServiceTargetInvoker(targetName, operation, context);
+    @Override
+    protected boolean handlesTargetType(Class targetType) {
+        return WSExternalServiceContextFactory.class.isAssignableFrom(targetType);
+    }
+
+    @Override
+    protected TargetInvoker createInvoker(QualifiedName targetName, Method operation, ScopeContext context, boolean downScope) {
+        return new ExternalServiceTargetInvoker(targetName, operation, context);
     }
 }
