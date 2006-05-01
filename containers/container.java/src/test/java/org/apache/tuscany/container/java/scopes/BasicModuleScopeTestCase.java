@@ -113,7 +113,7 @@ public class BasicModuleScopeTestCase extends TestCase {
     }
 
 
-    private List<ContextFactory<Context>> createConfigurations() throws BuilderException {
+    private List<ContextFactory<Context>> createConfigurations() throws BuilderException, ConfigurationLoadException {
         PolicyBuilderRegistry policyRegistry = new DefaultPolicyBuilderRegistry();
         WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryFactory(), policyRegistry);
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
@@ -130,7 +130,7 @@ public class BasicModuleScopeTestCase extends TestCase {
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         AtomicComponent component = MockFactory.createComponent(name, ModuleScopeInitDestroyComponent.class,
                 Scope.MODULE);
-        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ComponentTypeIntrospector introspector = MockFactory.getIntrospector();
         ComponentInfo type = introspector.introspect(ModuleScopeInitDestroyComponent.class);
         component.getImplementation().setComponentInfo(type);
         builder.build(component);

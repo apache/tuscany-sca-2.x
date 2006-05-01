@@ -260,6 +260,7 @@ public class RuntimeContextImplTestCase extends TestCase {
 
         CompositeContext system = runtime.getSystemContext();
         Component builder = factory.createSystemComponent("TestBuilder", ContextFactoryBuilder.class, TestBuilder.class, Scope.MODULE);
+        builder.getImplementation().setComponentInfo(MockFactory.getIntrospector().introspect(TestBuilder.class));
         system.registerModelObject(builder);
         system.publish(new ModuleStart(this));
         Component module1 = MockFactory.createCompositeComponent("module1");

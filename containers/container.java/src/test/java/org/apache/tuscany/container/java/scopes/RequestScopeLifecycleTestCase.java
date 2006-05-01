@@ -124,7 +124,7 @@ public class RequestScopeLifecycleTestCase extends TestCase {
                 Scope.REQUEST);
         ca[2] = MockFactory.createComponent("TestServiceDestroyOnly", RequestScopeDestroyOnlyComponent.class,
                 Scope.REQUEST);
-        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ComponentTypeIntrospector introspector = MockFactory.getIntrospector();
         ca[0].getImplementation().setComponentInfo(introspector.introspect(RequestScopeInitDestroyComponent.class));
         ca[1].getImplementation().setComponentInfo(introspector.introspect(RequestScopeInitOnlyComponent.class));
         ca[2].getImplementation().setComponentInfo(introspector.introspect(RequestScopeDestroyOnlyComponent.class));
@@ -143,7 +143,7 @@ public class RequestScopeLifecycleTestCase extends TestCase {
         ca[0] = MockFactory.createComponent("one", RequestScopedOrderedInitPojo.class, Scope.REQUEST);
         ca[1] = MockFactory.createComponent("two", RequestScopedOrderedInitPojo.class, Scope.REQUEST);
         ca[2] = MockFactory.createComponent("three", RequestScopedOrderedInitPojo.class, Scope.REQUEST);
-        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ComponentTypeIntrospector introspector = MockFactory.getIntrospector();
         ComponentInfo type = introspector.introspect(RequestScopedOrderedInitPojo.class);
         ca[0].getImplementation().setComponentInfo(type);
         ca[1].getImplementation().setComponentInfo(type);

@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.extension.config.ImplementationProcessor;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.processor.ProcessorUtils;
 import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
 import org.apache.tuscany.core.loader.assembly.ComponentLoader;
@@ -94,15 +94,9 @@ public final class StAXUtil {
         return overrideOption == null ? def : OVERRIDE_OPTIONS.get(overrideOption);
     }
 
-    public static ModuleComponent bootstrapLoader(String name, AssemblyContext context) {
+    public static ModuleComponent bootstrapLoader(String name, AssemblyContext context) throws ConfigurationLoadException {
         SystemAssemblyFactory factory = new SystemAssemblyFactoryImpl();
-        ComponentTypeIntrospector introspector = new Java5ComponentTypeIntrospector(factory);
-        //FIXME JFM HACK
-        List<ImplementationProcessor> processors = ProcessorUtils.createCoreProcessors(factory);
-        for (ImplementationProcessor processor : processors) {
-            introspector.registerProcessor(processor);
-        }
-        // END hack
+        ComponentTypeIntrospector introspector = ProcessorUtils.createCoreIntrospector(factory);
         Module module = factory.createModule();
         module.setName("org.apache.tuscany.core.system.loader");
 
@@ -112,7 +106,9 @@ public final class StAXUtil {
         // all others should be defined in the system.module file
         components.add(bootstrapLoader(factory, introspector, ModuleLoader.class));
         components.add(bootstrapLoader(factory, introspector, ModuleFragmentLoader.class));
-        components.add(factory.createSystemComponent("org.apache.tuscany.core.system.loader.DefaultPropertyFactory", StAXPropertyFactory.class, StringParserPropertyFactory.class, Scope.MODULE));
+        Component propFactory = factory.createSystemComponent("org.apache.tuscany.core.system.loader.DefaultPropertyFactory", StAXPropertyFactory.class, StringParserPropertyFactory.class, Scope.MODULE);
+        introspector.introspect(StAXPropertyFactory.class);
+        components.add(propFactory);
         components.add(bootstrapLoader(factory, introspector, ComponentLoader.class));
         components.add(bootstrapLoader(factory, introspector, EntryPointLoader.class));
         components.add(bootstrapLoader(factory, introspector, InterfaceJavaLoader.class));
@@ -121,9 +117,9 @@ public final class StAXUtil {
         // do not add additional loaders above - they should be in the system.module file
 
         // bootstrap the registries needed by the bootstrap loaders above
-        bootstrapService(factory, module, StAXLoaderRegistry.class, StAXLoaderRegistryImpl.class);
-        bootstrapService(factory, module, SystemAssemblyFactory.class, SystemAssemblyFactoryImpl.class);
-        bootstrapService(factory, module, ComponentTypeIntrospector.class, Java5ComponentTypeIntrospector.class);
+        bootstrapService(factory, introspector, module, StAXLoaderRegistry.class, StAXLoaderRegistryImpl.class);
+        bootstrapService(factory, introspector, module, SystemAssemblyFactory.class, SystemAssemblyFactoryImpl.class);
+        bootstrapService(factory, introspector, module, ComponentTypeIntrospector.class, Java5ComponentTypeIntrospector.class);
 
         ModuleComponent mc = factory.createModuleComponent();
         mc.setName(name);
@@ -146,11 +142,17 @@ public final class StAXUtil {
         return component;
     }
 
-    private static <T> void bootstrapService(SystemAssemblyFactory factory, Module module, Class<T> service, Class<? extends T> impl) {
+    private static <T> void bootstrapService(SystemAssemblyFactory factory, ComponentTypeIntrospector introspector, Module module, Class<T> service, Class<? extends T> impl) {
         String epName = service.getName();
         String compName = impl.getName();
 
         Component component = factory.createSystemComponent(compName, service, impl, Scope.MODULE);
+        try {
+            component.getImplementation().setComponentInfo(introspector.introspect(impl));
+        } catch (ConfigurationException e) {
+            throw (AssertionError) new AssertionError("Invalid bootstrap loader").initCause(e);
+        }
+
         EntryPoint entryPoint = factory.createSystemEntryPoint(epName, service, compName);
 
         module.getComponents().add(component);

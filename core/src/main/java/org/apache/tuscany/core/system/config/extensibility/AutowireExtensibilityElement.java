@@ -20,7 +20,7 @@ import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.MethodInjector;
-import org.apache.tuscany.core.system.config.SystemExtensibilityElement;
+import org.apache.tuscany.core.system.config.SystemInjectorExtensibilityElement;
 import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
 
 /**
@@ -28,7 +28,7 @@ import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class AutowireExtensibilityElement implements SystemExtensibilityElement {
+public class AutowireExtensibilityElement implements SystemInjectorExtensibilityElement {
 
     private Method method;
     private Field field;

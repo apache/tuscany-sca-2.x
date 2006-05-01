@@ -216,7 +216,7 @@ public class BasicSessionScopeTestCase extends TestCase {
         WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryFactory(), new DefaultPolicyBuilderRegistry());
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         AtomicComponent component = MockFactory.createComponent("TestService1", SessionScopeComponentImpl.class, Scope.SESSION);
-        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ComponentTypeIntrospector introspector = MockFactory.getIntrospector();
         ComponentInfo type = introspector.introspect(SessionScopeComponentImpl.class);
         component.getImplementation().setComponentInfo(type);
         builder.build(component);
@@ -229,7 +229,7 @@ public class BasicSessionScopeTestCase extends TestCase {
         WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryFactory(), new DefaultPolicyBuilderRegistry());
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         AtomicComponent component = MockFactory.createComponent(name, SessionScopeInitDestroyComponent.class, Scope.SESSION);
-        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ComponentTypeIntrospector introspector = MockFactory.getIntrospector();
         ComponentInfo type = introspector.introspect(SessionScopeInitDestroyComponent.class);
         component.getImplementation().setComponentInfo(type);
         builder.build(component);

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.core.system.assembly.SystemModule;
+import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyVisitor;
@@ -48,41 +49,31 @@ import org.apache.tuscany.model.assembly.impl.CompositeImpl;
  * An implementation of Module.
  */
 public class SystemModuleImpl extends CompositeImpl implements SystemModule {
-    
+
     private List<ModuleFragment> moduleFragments = new ArrayList<ModuleFragment>();
     private Map<String, ModuleFragment> moduleFragmentsMap;
     private ComponentInfo componentType;
     private Object contextFactory;
-    private Class<?> implementationClass;
 
     /**
      * Constructor
      */
     protected SystemModuleImpl() {
     }
-    
-    public Class<?> getImplementationClass() {
-        return implementationClass;
-    }
 
-    public void setImplementationClass(Class<?> value) {
-        checkNotFrozen();
-        implementationClass = value;
-    }
-    
     /**
      * @see org.apache.tuscany.model.assembly.Implementation#getComponentInfo()
      */
     public ComponentInfo getComponentInfo() {
         return componentType;
     }
-    
+
     /**
      * @see org.apache.tuscany.model.assembly.Implementation#setComponentInfo(org.apache.tuscany.model.assembly.ComponentInfo)
      */
     public void setComponentInfo(ComponentInfo componentType) {
         checkNotFrozen();
-        this.componentType=componentType;
+        this.componentType = componentType;
     }
 
     /**
@@ -106,126 +97,26 @@ public class SystemModuleImpl extends CompositeImpl implements SystemModule {
     public void initialize(AssemblyContext modelContext) {
         if (isInitialized())
             return;
-        
-        // Populate map of module fragments
-        moduleFragmentsMap = new HashMap<String, ModuleFragment>();
+
+        // Initialize module fragments
         for (ModuleFragment moduleFragment : moduleFragments) {
-            moduleFragmentsMap.put(moduleFragment.getName(), moduleFragment);
-            
+
             // Add all WSDL imports, components, entry points and external services from the module fragments
             getWSDLImports().addAll(moduleFragment.getWSDLImports());
             getComponents().addAll(moduleFragment.getComponents());
             getEntryPoints().addAll(moduleFragment.getEntryPoints());
             getExternalServices().addAll(moduleFragment.getExternalServices());
-            
+
             // Add all the wires from the module fragments
             getWires().addAll(moduleFragment.getWires());
-            
+
             moduleFragment.initialize(modelContext);
         }
-        
+
         // Initialize the composite
         super.initialize(modelContext);
-
-        // Derive the component type from the entry points and external services in the module
-        // Also derive properties from the overridable properties of the components in the module
-        if (componentType==null) {
-            AssemblyFactory factory = modelContext.getAssemblyFactory();
-            componentType = factory.createComponentInfo();
-            for (EntryPoint entryPoint : getEntryPoints()) {
-                Service service = factory.createService();
-                service.setName(entryPoint.getName());
-                ServiceContract serviceContract = entryPoint.getConfiguredService().getPort().getServiceContract();
-                if (serviceContract != null)
-                    service.setServiceContract(serviceContract);
-                componentType.getServices().add(service);
-
-                ConfiguredReference configuredReference = entryPoint.getConfiguredReference();
-                ServiceURI sourceURI = factory.createServiceURI(null, entryPoint, configuredReference);
-                for (String target : configuredReference.getTargets()) {
-                    ServiceURI targetURI =factory.createServiceURI(null, target);
-                    Wire wire=factory.createWire();
-                    wire.setSource(sourceURI);
-                    wire.setTarget(targetURI);
-                    getWires().add(wire);
-                }
-            }
-            for (ExternalService externalService : getExternalServices()) {
-                if (externalService.getOverrideOption()==null || externalService.getOverrideOption()== OverrideOption.NO)
-                    continue;
-                Reference reference = factory.createReference();
-                reference.setName(externalService.getName());
-                ServiceContract serviceContract = externalService.getConfiguredService().getPort().getServiceContract();
-                if (serviceContract != null)
-                    reference.setServiceContract(serviceContract);
-                componentType.getReferences().add(reference);
-            }
-            for (Component<Implementation> component : getComponents()) {
-                for (ConfiguredProperty configuredProperty : component.getConfiguredProperties()) {
-                    if (configuredProperty.getOverrideOption()==null || configuredProperty.getOverrideOption()==OverrideOption.NO)
-                        continue;
-                    componentType.getProperties().add(configuredProperty.getProperty());
-                }
-
-                for (ConfiguredReference configuredReference : component.getConfiguredReferences()) {
-                    // Create a wire
-                    ServiceURI sourceURI =factory.createServiceURI(null, component, configuredReference);
-                    for (String target : configuredReference.getTargets()) {
-                        ServiceURI targetURI =factory.createServiceURI(null, target);
-                        Wire wire=factory.createWire();
-                        wire.setSource(sourceURI);
-                        wire.setTarget(targetURI);
-                        getWires().add(wire);
-                    }
-                }
-            }
-        }
-        componentType.initialize(modelContext);
-
-
-        // Wire the module parts
-        for (Wire wire : getWires()) {
-
-            // Get the source reference
-            ServiceURI sourceURI=wire.getSource();
-            ConfiguredReference configuredReference = null;
-            String partName = sourceURI.getPartName();
-            String referenceName = sourceURI.getServiceName();
-            if (referenceName != null) {
-                Component component = (Component)getPart(partName);
-                if (component != null) {
-                    configuredReference = component.getConfiguredReference(referenceName);
-                }
-            } else {
-                EntryPoint entryPoint = (EntryPoint)getPart(partName);
-                if (entryPoint != null) {
-                    configuredReference = entryPoint.getConfiguredReference();
-                }
-            }
-            if (configuredReference == null) {
-                throw new IllegalArgumentException("Cannot find wire source " + sourceURI.getAddress());
-            } else {
-
-                // Resolve the target service endpoint
-                ServiceURI targetURI = wire.getTarget();
-                ConfiguredService configuredService = getConfiguredService(targetURI);
-                if (configuredService != null) {
-
-                    // Wire the reference to the target
-                    Multiplicity multiplicity=configuredReference.getPort().getMultiplicity();
-                    if (multiplicity==Multiplicity.ZERO_N || multiplicity==Multiplicity.ONE_N) {
-                        configuredReference.getTargetConfiguredServices().add(configuredService);
-                    } else {
-                        configuredReference.getTargetConfiguredServices().clear();
-                        configuredReference.getTargetConfiguredServices().add(configuredService);
-                    }
-                } else {
-                    throw new IllegalArgumentException("Cannot find service for " + targetURI.getAddress());
-                }
-            }
-        }
     }
-        
+
     /**
      * @see org.apache.tuscany.model.assembly.AssemblyObject#freeze()
      */
@@ -233,11 +124,11 @@ public class SystemModuleImpl extends CompositeImpl implements SystemModule {
         if (isFrozen())
             return;
         super.freeze();
-        
+
         // Freeze component type and module fragments
-        if (componentType!=null)
+        if (componentType != null)
             componentType.freeze();
-        moduleFragments=Collections.unmodifiableList(moduleFragments);
+        moduleFragments = Collections.unmodifiableList(moduleFragments);
         freeze(moduleFragments);
     }
 
@@ -262,16 +153,22 @@ public class SystemModuleImpl extends CompositeImpl implements SystemModule {
     public boolean accept(AssemblyVisitor visitor) {
         if (!super.accept(visitor))
             return false;
-        
-        if (componentType!=null) {
+
+        if (componentType != null) {
             if (!componentType.accept(visitor))
                 return false;
         }
-        
-        if (!accept(moduleFragments, visitor))
-            return false;
-        
-        return true;
+
+        return accept(moduleFragments, visitor);
+
     }
-    
+
+    public Class<?> getImplementationClass() {
+        return SystemCompositeContextImpl.class; // FIXME hack
+    }
+
+    public void setImplementationClass(Class<?> clazz) {
+        // do nothing
+    }
+
 }

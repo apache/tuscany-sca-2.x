@@ -134,7 +134,7 @@ public class SessionScopeLifecycleTestCase extends TestCase {
         ca[1] = MockFactory.createComponent("TestServiceInitOnly", SessionScopeInitOnlyComponent.class, Scope.SESSION);
         ca[2] = MockFactory.createComponent("TestServiceDestroyOnly", SessionScopeDestroyOnlyComponent.class,
                 Scope.SESSION);
-        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ComponentTypeIntrospector introspector = MockFactory.getIntrospector();
         ca[0].getImplementation().setComponentInfo(introspector.introspect(SessionScopeInitDestroyComponent.class));
         ca[1].getImplementation().setComponentInfo(introspector.introspect(SessionScopeInitOnlyComponent.class));
         ca[2].getImplementation().setComponentInfo(introspector.introspect(SessionScopeDestroyOnlyComponent.class));
@@ -153,7 +153,7 @@ public class SessionScopeLifecycleTestCase extends TestCase {
         ca[0] = MockFactory.createComponent("one", SessionScopedOrderedInitPojo.class, Scope.SESSION);
         ca[1] = MockFactory.createComponent("two", SessionScopedOrderedInitPojo.class, Scope.SESSION);
         ca[2] = MockFactory.createComponent("three", SessionScopedOrderedInitPojo.class, Scope.SESSION);
-        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ComponentTypeIntrospector introspector = MockFactory.getIntrospector();
         ComponentInfo type = introspector.introspect(SessionScopedOrderedInitPojo.class);
         ca[0].getImplementation().setComponentInfo(type);
         ca[1].getImplementation().setComponentInfo(type);

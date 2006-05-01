@@ -15,8 +15,7 @@ import org.osoa.sca.annotations.Destroy;
  */
 public class DestroyProcessor extends ImplementationProcessorSupport {
 
-    public DestroyProcessor(AssemblyFactory factory) {
-        super(factory);
+    public DestroyProcessor() {
     }
 
     public void visitMethod(Method method, ComponentInfo type) throws ConfigurationLoadException {

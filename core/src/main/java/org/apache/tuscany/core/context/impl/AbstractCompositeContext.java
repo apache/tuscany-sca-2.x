@@ -124,7 +124,6 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
     private final Map<Class, NameToScope> autowireInternal = new ConcurrentHashMap<Class, NameToScope>();
     private final Map<Class, NameToScope> autowireExternal = new ConcurrentHashMap<Class, NameToScope>();
 
-    @Autowire
     private AutowireContext autowireContext;
 
     public AbstractCompositeContext() {
@@ -651,6 +650,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         return module;
     }
 
+    @Autowire
     public void setAutowireContext(AutowireContext context) {
         autowireContext = context;
     }

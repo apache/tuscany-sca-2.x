@@ -37,6 +37,7 @@ import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
 import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.AtomicComponent;
 
@@ -104,7 +105,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
     }
 
     private List<ContextFactory<Context>> createConfigurations()
-            throws NoSuchMethodException, BuilderException {
+            throws NoSuchMethodException, BuilderException, ConfigurationLoadException {
         AtomicComponent component = MockFactory.createComponent("TestService1", StatelessComponentImpl.class,
                 Scope.INSTANCE);
         WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryFactory(), new DefaultPolicyBuilderRegistry());
@@ -116,7 +117,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
     }
 
     private ContextFactory<Context> createConfiguration(String name)
-            throws NoSuchMethodException, BuilderException {
+            throws NoSuchMethodException, BuilderException, ConfigurationLoadException {
         AtomicComponent component = MockFactory.createComponent(name, StatelessComponentImpl.class,
                 Scope.INSTANCE);
         WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryFactory(),new DefaultPolicyBuilderRegistry());

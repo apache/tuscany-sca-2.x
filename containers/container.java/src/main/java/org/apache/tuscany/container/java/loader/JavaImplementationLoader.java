@@ -19,7 +19,6 @@ package org.apache.tuscany.container.java.loader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -33,8 +32,6 @@ import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.InvalidRootElementException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.config.SidefileLoadException;
-import org.apache.tuscany.core.extension.config.ImplementationProcessor;
-import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.processor.ProcessorUtils;
 import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.loader.StAXElementLoader;
@@ -72,13 +69,8 @@ public class JavaImplementationLoader implements StAXElementLoader<JavaImplement
     @Autowire
     public void setFactory(JavaAssemblyFactory factory) {
         this.factory = factory;
-        introspector = new Java5ComponentTypeIntrospector(factory);
         //FIXME JFM HACK
-        List<ImplementationProcessor> processors = ProcessorUtils.createCoreProcessors(factory);
-        for (ImplementationProcessor processor : processors) {
-            introspector.registerProcessor(processor);
-        }
-        // END hack
+        introspector = ProcessorUtils.createCoreIntrospector(factory);
     }
 
     @Init(eager = true)

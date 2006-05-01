@@ -21,6 +21,7 @@ import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.runtime.RuntimeContext;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.Scope;
 
@@ -77,7 +78,7 @@ public class CompositeNestingTestCase extends TestCase {
         Assert.assertNull(child1Ctx.getContext("child3")); // sanity check
     }
 
-    private ModuleComponent createHierarchy(){
+    private ModuleComponent createHierarchy() throws ConfigurationLoadException {
         ModuleComponent child3 = MockFactory.createSystemModuleComponentWithWiredComponents("child3", Scope.MODULE, Scope.MODULE);
         ModuleComponent child2 = MockFactory.createSystemModuleComponentWithWiredComponents("child2", Scope.MODULE, Scope.MODULE);
         child2.getImplementation().getComponents().add(child3);

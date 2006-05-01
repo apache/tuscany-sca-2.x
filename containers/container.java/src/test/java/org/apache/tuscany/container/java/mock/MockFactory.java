@@ -16,6 +16,12 @@
  */
 package org.apache.tuscany.container.java.mock;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import junit.framework.Assert;
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
@@ -48,16 +54,18 @@ import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry;
 import org.apache.tuscany.core.builder.system.PolicyBuilderRegistry;
 import org.apache.tuscany.core.client.BootstrapHelper;
-import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
-import org.apache.tuscany.core.extension.config.ImplementationProcessor;
-import org.apache.tuscany.core.config.processor.ProcessorUtils;
+import org.apache.tuscany.core.config.ConfigurationException;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.processor.ProcessorUtils;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
+import org.apache.tuscany.core.extension.config.ImplementationProcessor;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
@@ -75,6 +83,7 @@ import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
+import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.wire.WireFactoryFactory;
 import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
@@ -97,12 +106,6 @@ import org.osoa.sca.annotations.ComponentName;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 /**
  * Generates test components, modules, and runtime artifacts
  *
@@ -111,34 +114,39 @@ import java.util.Set;
 public class MockFactory {
 
     public static final String JAVA_BUILDER = "java.runtime.builder";
-
     public static final String MESSAGE_FACTORY = "java.runtime.messageFactory";
-
     public static final String PROXY_FACTORY_FACTORY = "java.runtime.wireFactoryFactory";
-
     public static final String WIRE_FACTORY_SERVICE = "java.runtime.wireFactoryservice";
-
     public static final String JAVA_WIRE_BUILDER = "java.wire.builder";
-
     public static final String FOO_BUILDER = "foo.binding.builder";
-
     public static final String FOO_WIRE_BUILDER = "foo.binding.wire.builder";
-
     public static final String POLICY_BUILDER_REGISTRY = "foo.binding.policy.registry";
-
     public static final String SYSTEM_CHILD = "tuscany.system.child";
 
     private static JavaAssemblyFactory factory = new JavaAssemblyFactoryImpl();
-
     private static SystemAssemblyFactory systemFactory = new SystemAssemblyFactoryImpl();
-
     private static AssemblyContext assemblyContext = new AssemblyContextImpl(null, null);
+    private static ComponentTypeIntrospector introspector;
+    private static ComponentInfo systemComponentType;
+    private static ComponentInfo compositeComponentType;
 
-    public static ComponentTypeIntrospector createComponentIntrospector(){
-        ComponentTypeIntrospector introspector = new Java5ComponentTypeIntrospector(factory);
-        List<ImplementationProcessor> processors = ProcessorUtils.createCoreProcessors(factory);
-        for (ImplementationProcessor processor : processors) {
-            introspector.registerProcessor(processor);
+    public static ComponentInfo getComponentType() throws ConfigurationLoadException {
+        if (systemComponentType == null) {
+            systemComponentType = getIntrospector().introspect(SystemCompositeContextImpl.class);
+        }
+        return systemComponentType;
+    }
+
+    public static ComponentInfo getCompositeComponentType() throws ConfigurationLoadException {
+        if (compositeComponentType == null) {
+            compositeComponentType = getIntrospector().introspect(CompositeContextImpl.class);
+        }
+        return compositeComponentType;
+    }
+
+    public static ComponentTypeIntrospector getIntrospector() {
+        if (introspector == null) {
+            introspector = ProcessorUtils.createCoreIntrospector(systemFactory);
         }
         return introspector;
     }
@@ -150,10 +158,10 @@ public class MockFactory {
      * @param type  the implementation type
      * @param scope the component scope
      */
-    public static AtomicComponent createComponent(String name, Class type, Scope scope) {
+    public static AtomicComponent createComponent(String name, Class type, Scope scope) throws ConfigurationLoadException {
         AtomicComponent sc = factory.createSimpleComponent();
         JavaImplementation impl = factory.createJavaImplementation();
-        impl.setComponentInfo(factory.createComponentInfo());
+        impl.setComponentInfo(getIntrospector().introspect(type));
         impl.setImplementationClass(type);
         sc.setImplementation(impl);
         Service s = factory.createService();
@@ -167,10 +175,28 @@ public class MockFactory {
         return sc;
     }
 
+    public static AtomicComponent createNonIntrospectedComponent(String name, Class type, Scope scope) throws ConfigurationLoadException {
+         AtomicComponent sc = factory.createSimpleComponent();
+         JavaImplementation impl = factory.createJavaImplementation();
+         impl.setComponentInfo(factory.createComponentInfo());
+         impl.setImplementationClass(type);
+         sc.setImplementation(impl);
+         Service s = factory.createService();
+         JavaServiceContract ji = factory.createJavaServiceContract();
+         ji.setInterface(type);
+         s.setServiceContract(ji);
+         ji.setScope(scope);
+         impl.getComponentInfo().getServices().add(s);
+         sc.setName(name);
+         sc.setImplementation(impl);
+         return sc;
+     }
+
+
     /**
      * Creates an composite component with the given name
      */
-    public static Component createCompositeComponent(String name) {
+    public static Component createCompositeComponent(String name) throws ConfigurationLoadException {
         Component sc = systemFactory.createModuleComponent();
         Module impl = systemFactory.createModule();
         impl.setName(name);
@@ -180,17 +206,20 @@ public class MockFactory {
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(Scope.AGGREGATE);
-        impl.setComponentInfo(systemFactory.createComponentInfo());
+        //impl.setComponentInfo(systemFactory.createComponentInfo());
+        impl.setImplementationClass(CompositeContextImpl.class);
+        impl.setComponentInfo(getCompositeComponentType());
         impl.getComponentInfo().getServices().add(s);
         sc.setName(name);
         sc.setImplementation(impl);
+
         return sc;
     }
 
     /**
      * Creates a system composite component with the given name
      */
-    public static Component createSystemCompositeComponent(String name) {
+    public static Component createSystemCompositeComponent(String name) throws ConfigurationLoadException {
         Component sc = systemFactory.createModuleComponent();
         Module impl = systemFactory.createSystemModule();
         impl.setName(name);
@@ -200,7 +229,8 @@ public class MockFactory {
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(Scope.AGGREGATE);
-        impl.setComponentInfo(systemFactory.createComponentInfo());
+        impl.setComponentInfo(getComponentType());
+        //impl.setComponentInfo(systemFactory.createComponentInfo());
         impl.getComponentInfo().getServices().add(s);
         sc.setName(name);
         sc.setImplementation(impl);
@@ -227,7 +257,8 @@ public class MockFactory {
     }
 
     /**
-     * Creates an entry point with the given name configured with the given interface and the {@link FooBinding}
+     * Creates an entry point with the given name configured with the given interface and the {@link
+     * FooBinding}
      */
     public static EntryPoint createFooBindingEntryPoint(String name, Class interfaz) {
         EntryPoint ep = factory.createEntryPoint();
@@ -263,22 +294,23 @@ public class MockFactory {
     /**
      * Creates a module with a Java-based "target" module-scoped component wired to a module-scoped "source"
      */
-    public static Module createModule() {
+    public static Module createModule() throws ConfigurationLoadException {
         return createModule(Scope.MODULE, Scope.MODULE);
     }
 
     /**
      * Creates a module with a Java-based "target" component wired to a "source"
      */
-    public static Module createModule(Scope sourceScope, Scope targetScope) {
-        Component sourceComponent = createComponent("source", ModuleScopeComponentImpl.class, sourceScope);
-        Component targetComponent = createComponent("target", ModuleScopeComponentImpl.class, targetScope);
+    public static Module createModule(Scope sourceScope, Scope targetScope) throws ConfigurationLoadException {
+        Component sourceComponent = createNonIntrospectedComponent("source", ModuleScopeComponentImpl.class, sourceScope);
+        Component targetComponent = createNonIntrospectedComponent("target", ModuleScopeComponentImpl.class, targetScope);
 
         Service targetService = factory.createService();
         JavaServiceContract targetContract = factory.createJavaServiceContract();
         targetContract.setInterface(GenericComponent.class);
         targetService.setServiceContract(targetContract);
         targetService.setName("GenericComponent");
+        targetContract.setScope(targetScope);
         ConfiguredService cTargetService = factory.createConfiguredService();
         cTargetService.setPort(targetService);
         cTargetService.initialize(assemblyContext);
@@ -306,10 +338,10 @@ public class MockFactory {
     }
 
     /**
-     * Creates a module with a Java-based source component wired to a "target" external service configured with the {@link
-     * FooBinding}
+     * Creates a module with a Java-based source component wired to a "target" external service configured
+     * with the {@link FooBinding}
      */
-    public static Module createModuleWithExternalService() {
+    public static Module createModuleWithExternalService() throws ConfigurationLoadException {
         Component sourceComponent = createComponent("source", HelloWorldClient.class, Scope.MODULE);
         ExternalService targetES = createFooBindingExternalService("target", HelloWorldService.class);
 
@@ -344,12 +376,12 @@ public class MockFactory {
     }
 
     /**
-     * Creates a module with an entry point named "source" configured with the {@link FooBinding} wired to a service offered by a
-     * Java-based component named "target"
+     * Creates a module with an entry point named "source" configured with the {@link FooBinding} wired to a
+     * service offered by a Java-based component named "target"
      *
      * @param scope the scope of the target service
      */
-    public static Module createModuleWithEntryPoint(Scope scope) {
+    public static Module createModuleWithEntryPoint(Scope scope) throws ConfigurationLoadException {
         Component targetComponent = createComponent("target", HelloWorldImpl.class, scope);
 
         Service targetService = factory.createService();
@@ -381,12 +413,15 @@ public class MockFactory {
         module.setName("test.module");
         module.getEntryPoints().add(sourceEP);
         module.getComponents().add(targetComponent);
+        module.setImplementationClass(CompositeContextImpl.class);
+        module.setComponentInfo(getCompositeComponentType());
         module.initialize(assemblyContext);
         return module;
     }
 
     /**
-     * Creates a module with an entry point wired to a "target" external service configured with the {@link FooBinding}
+     * Creates a module with an entry point wired to a "target" external service configured with the {@link
+     * FooBinding}
      */
     public static Module createModuleWithEntryPointToExternalService() {
         //Component sourceComponent = createComponent("source", HelloWorldClient.class, Scope.MODULE);
@@ -657,7 +692,7 @@ public class MockFactory {
      * @see ContextFactory
      */
     public static ContextFactory<Context> createCompositeConfiguration(String name
-    ) throws BuilderException {
+    ) throws BuilderException, ConfigurationLoadException {
 
         Component sc = createCompositeComponent(name);
         SystemContextFactoryBuilder builder = new SystemContextFactoryBuilder(null);
@@ -675,7 +710,7 @@ public class MockFactory {
      * @throws NoSuchMethodException if the POJO does not have a default noi-args constructor
      */
     public static JavaAtomicContext createPojoContext(String name, Class implType, Scope scope,
-                                                      CompositeContext moduleComponentContext) throws NoSuchMethodException {
+                                                      CompositeContext moduleComponentContext) throws NoSuchMethodException, ConfigurationLoadException {
         AtomicComponent component = createComponent(name, implType, scope);
 
         Set<Field> fields = JavaIntrospectionHelper.getAllFields(implType);
@@ -739,12 +774,24 @@ public class MockFactory {
         runtime.start();
         runtime.getSystemContext().registerModelObject(createSystemCompositeComponent(SYSTEM_CHILD));
         SystemCompositeContext ctx = (SystemCompositeContext) runtime.getSystemContext().getContext(SYSTEM_CHILD);
-        ctx.registerModelObject(systemFactory.createSystemComponent(POLICY_BUILDER_REGISTRY, PolicyBuilderRegistry.class, DefaultPolicyBuilderRegistry.class, Scope.MODULE));
-        ctx.registerModelObject(systemFactory.createSystemComponent(MESSAGE_FACTORY, MessageFactory.class, MessageFactoryImpl.class, Scope.MODULE));
-        ctx.registerModelObject(systemFactory.createSystemComponent(PROXY_FACTORY_FACTORY, WireFactoryFactory.class, JDKWireFactoryFactory.class, Scope.MODULE));
-        ctx.registerModelObject(systemFactory.createSystemComponent(WIRE_FACTORY_SERVICE, org.apache.tuscany.core.wire.service.WireFactoryService.class, DefaultWireFactoryService.class, Scope.MODULE));
-        ctx.registerModelObject(systemFactory.createSystemComponent(JAVA_BUILDER, ContextFactoryBuilder.class, JavaContextFactoryBuilder.class, Scope.MODULE));
-        ctx.registerModelObject(systemFactory.createSystemComponent(JAVA_WIRE_BUILDER, WireBuilder.class, JavaTargetWireBuilder.class, Scope.MODULE));
+        Component comp = systemFactory.createSystemComponent(POLICY_BUILDER_REGISTRY, PolicyBuilderRegistry.class, DefaultPolicyBuilderRegistry.class, Scope.MODULE);
+        comp.getImplementation().setComponentInfo(getIntrospector().introspect(DefaultPolicyBuilderRegistry.class));
+        ctx.registerModelObject(comp);
+        comp = systemFactory.createSystemComponent(MESSAGE_FACTORY, MessageFactory.class, MessageFactoryImpl.class, Scope.MODULE);
+        comp.getImplementation().setComponentInfo(getIntrospector().introspect(MessageFactoryImpl.class));
+        ctx.registerModelObject(comp);
+        comp = systemFactory.createSystemComponent(PROXY_FACTORY_FACTORY, WireFactoryFactory.class, JDKWireFactoryFactory.class, Scope.MODULE);
+        comp.getImplementation().setComponentInfo(getIntrospector().introspect(JDKWireFactoryFactory.class));
+        ctx.registerModelObject(comp);
+        comp = systemFactory.createSystemComponent(WIRE_FACTORY_SERVICE, org.apache.tuscany.core.wire.service.WireFactoryService.class, DefaultWireFactoryService.class, Scope.MODULE);
+        comp.getImplementation().setComponentInfo(getIntrospector().introspect(DefaultWireFactoryService.class));
+        ctx.registerModelObject(comp);
+        comp = systemFactory.createSystemComponent(JAVA_BUILDER, ContextFactoryBuilder.class, JavaContextFactoryBuilder.class, Scope.MODULE);
+        comp.getImplementation().setComponentInfo(getIntrospector().introspect(JavaContextFactoryBuilder.class));
+        ctx.registerModelObject(comp);
+        comp = systemFactory.createSystemComponent(JAVA_WIRE_BUILDER, WireBuilder.class, JavaTargetWireBuilder.class, Scope.MODULE);
+        comp.getImplementation().setComponentInfo(getIntrospector().introspect(JavaTargetWireBuilder.class));
+        ctx.registerModelObject(comp);
         ctx.publish(new ModuleStart(new Object()));
         return runtime;
     }
@@ -757,8 +804,12 @@ public class MockFactory {
     public static RuntimeContext registerFooBinding(RuntimeContext runtime) throws ConfigurationException {
         CompositeContext child = (CompositeContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD);
         child.getContext(MockFactory.JAVA_BUILDER).getInstance(null);
-        child.registerModelObject(systemFactory.createSystemComponent(FOO_BUILDER, ContextFactoryBuilder.class, FooBindingBuilder.class, Scope.MODULE));
-        child.registerModelObject(systemFactory.createSystemComponent(FOO_WIRE_BUILDER, WireBuilder.class, FooBindingWireBuilder.class, Scope.MODULE));
+        Component comp = systemFactory.createSystemComponent(FOO_BUILDER, ContextFactoryBuilder.class, FooBindingBuilder.class, Scope.MODULE);
+        comp.getImplementation().setComponentInfo(getIntrospector().introspect(FooBindingBuilder.class));
+        child.registerModelObject(comp);
+        comp = systemFactory.createSystemComponent(FOO_WIRE_BUILDER, WireBuilder.class, FooBindingWireBuilder.class, Scope.MODULE);
+        comp.getImplementation().setComponentInfo(getIntrospector().introspect(FooBindingWireBuilder.class));
+        child.registerModelObject(comp);
         // since the child context is already started, we need to manually retrieve the components to init them
         Assert.assertNotNull(child.getContext(FOO_BUILDER).getInstance(null));
         Assert.assertNotNull(child.getContext(FOO_WIRE_BUILDER).getInstance(null));

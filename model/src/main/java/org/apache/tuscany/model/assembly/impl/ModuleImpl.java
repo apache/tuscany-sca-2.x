@@ -30,28 +30,29 @@ import org.apache.tuscany.model.util.NotifyingList;
  * An implementation of Module.
  */
 public class ModuleImpl extends CompositeImpl implements Module {
-    
+
     /**
      * A list of module fragments synchronized with a map
      */
-    private class ModuleFragmentList<E extends ModuleFragment> extends NotifyingList<E>{
+    private class ModuleFragmentList<E extends ModuleFragment> extends NotifyingList<E> {
         protected void added(E element) {
             moduleFragmentsMap.put(element.getName(), element);
         }
+
         protected void removed(E element) {
             moduleFragmentsMap.remove(element.getName());
         }
     }
-    
+
     private List<ModuleFragment> moduleFragments = new ModuleFragmentList<ModuleFragment>();
-    private Map<String, ModuleFragment> moduleFragmentsMap=new HashMap<String, ModuleFragment>();
+    private Map<String, ModuleFragment> moduleFragmentsMap = new HashMap<String, ModuleFragment>();
 
     /**
      * Constructor
      */
     protected ModuleImpl() {
     }
-    
+
     public List<ModuleFragment> getModuleFragments() {
         return moduleFragments;
     }
@@ -64,42 +65,40 @@ public class ModuleImpl extends CompositeImpl implements Module {
     public void initialize(AssemblyContext modelContext) {
         if (isInitialized())
             return;
-        
+
         // Initialize module fragments
         for (ModuleFragment moduleFragment : moduleFragments) {
-            
+
             // Add all WSDL imports, components, entry points and external services from the module fragments
             getWSDLImports().addAll(moduleFragment.getWSDLImports());
             getComponents().addAll(moduleFragment.getComponents());
             getEntryPoints().addAll(moduleFragment.getEntryPoints());
             getExternalServices().addAll(moduleFragment.getExternalServices());
-            
+
             // Add all the wires from the module fragments
             getWires().addAll(moduleFragment.getWires());
-            
+
             moduleFragment.initialize(modelContext);
         }
-        
+
         // Initialize the composite
         super.initialize(modelContext);
     }
-        
+
     public void freeze() {
         if (isFrozen())
             return;
         super.freeze();
-        
-        moduleFragments=freeze(moduleFragments);
+
+        moduleFragments = freeze(moduleFragments);
     }
 
     public boolean accept(AssemblyVisitor visitor) {
         if (!super.accept(visitor))
             return false;
-        
-        if (!accept(moduleFragments, visitor))
-            return false;
-        
-        return true;
+
+        return accept(moduleFragments, visitor);
+
     }
-    
+
 }

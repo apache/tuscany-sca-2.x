@@ -21,22 +21,24 @@ import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Scope;
 
 /**
  * A system component used for unit testing
  * 
  * @version $Rev$ $Date$
  */
+@Scope("MODULE")
 public class SystemComponentImpl {
 
     @Autowire
-    private ConfigurationContext ctx;
+    protected ConfigurationContext ctx;
 
     @ParentContext
-    private CompositeContext parent;
+    protected CompositeContext parent;
 
     @Autowire
-    private AutowireContext autowireCtx;
+    protected AutowireContext autowireCtx;
 
     private ConfigurationContext ctxSetter;
 
@@ -84,79 +86,79 @@ public class SystemComponentImpl {
     }
 
     private boolean inited;
-    
+
     @Init
     public void init(){
         inited=true;
     }
-    
+
     public boolean initialized(){
         return (inited);
     }
 
    private boolean destroyed;
-    
+
     @Destroy
     public void destroy(){
         destroyed=true;
     }
-    
+
     public boolean destroyed(){
         return (destroyed);
     }
-    
+
     @Property
-    private int testInt;
-    
+    protected int testInt;
+
     public int getTestInt(){
         return testInt;
     }
 
     @Property
-    private double testDouble;
-    
+    protected double testDouble;
+
     public double getTestDouble(){
         return testDouble;
     }
 
     @Property
-    private float testFloat;
-    
+    protected float testFloat;
+
     public float getTestFloat(){
         return testFloat;
     }
-    
+
     @Property
-    private short testShort;
-    
+    protected short testShort;
+
     public short getTestShort(){
         return testShort;
     }
-    
+
     @Property
-    private boolean testBoolean;
-    
+    protected boolean testBoolean;
+
     public boolean getTestBoolean(){
         return testBoolean;
     }
-    
+
     @Property
-    private byte testByte;
-    
+    protected byte testByte;
+
     public byte getTestByte(){
         return testByte;
     }
-    
+
     @Property
-    private char testChar;
-    
+    protected char testChar;
+
     public char getTestChar(){
         return testChar;
     }
-    
+
     @Property
-    private String testString;
-    
+    protected String testString;
+
     public String getTestString(){
         return testString;
     }

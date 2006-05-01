@@ -51,21 +51,23 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
 
     private String name;
     private ComponentInfo componentInfo;
+    private Class<?> implementationClass;
 
     /**
      * A list of parts synchronized with a map
      */
-    private class PartList<E extends Part> extends NotifyingList<E>{
+    private class PartList<E extends Part> extends NotifyingList<E> {
         protected void added(E element) {
             partsMap.put(element.getName(), element);
             element.setComposite(CompositeImpl.this);
         }
+
         protected void removed(E element) {
             partsMap.remove(element.getName());
             element.setComposite(null);
         }
     }
-    
+
     private Map<String, Part> partsMap = new HashMap<String, Part>();
 
     private List<Component> components = new PartList<Component>();
@@ -75,20 +77,21 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
     private List<Wire> wires = new ArrayList<Wire>();
 
     /**
-     * A list of WSDL imports synchronized with a map 
+     * A list of WSDL imports synchronized with a map
      */
-    private class ImportWSDLList extends NotifyingList<ImportWSDL>{
+    private class ImportWSDLList extends NotifyingList<ImportWSDL> {
         protected void added(ImportWSDL element) {
-            List<ImportWSDL> importList=wsdlImportsMap.get(element.getNamespace());
-            if (importList==null) {
-                importList=new ArrayList<ImportWSDL>();
+            List<ImportWSDL> importList = wsdlImportsMap.get(element.getNamespace());
+            if (importList == null) {
+                importList = new ArrayList<ImportWSDL>();
                 wsdlImportsMap.put(element.getNamespace(), importList);
             }
             importList.add(element);
         }
+
         protected void removed(ImportWSDL element) {
-            List<ImportWSDL> importList=wsdlImportsMap.get(element.getNamespace());
-            if (importList!=null) {
+            List<ImportWSDL> importList = wsdlImportsMap.get(element.getNamespace());
+            if (importList != null) {
                 importList.remove(element);
                 if (importList.isEmpty())
                     wsdlImportsMap.remove(element.getNamespace());
@@ -127,7 +130,7 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
     public Part getPart(String name) {
         return partsMap.get(name);
     }
-    
+
     public List<Wire> getWires() {
         return wires;
     }
@@ -143,10 +146,10 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
     public ComponentInfo getComponentInfo() {
         return componentInfo;
     }
-    
+
     public void setComponentInfo(ComponentInfo componentType) {
         checkNotFrozen();
-        this.componentInfo=componentType;
+        this.componentInfo = componentType;
     }
 
     public ConfiguredService getConfiguredService(ServiceURI address) {
@@ -154,7 +157,7 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
         String serviceName = address.getServiceName();
         Part part = getPart(partName);
         if (part instanceof Component) {
-            Component<?> component=(Component<?>)part;
+            Component<?> component = (Component<?>) part;
             if (serviceName != null) {
                 return component.getConfiguredService(serviceName);
             } else {
@@ -165,8 +168,9 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
                 }
             }
 
-        } if (part instanceof ExternalService) {
-            ExternalService externalService = (ExternalService)part;
+        }
+        if (part instanceof ExternalService) {
+            ExternalService externalService = (ExternalService) part;
             return externalService.getConfiguredService();
         } else
             return null;
@@ -192,10 +196,10 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
         for (Part part : entryPoints) {
             part.initialize(modelContext);
         }
-        
+
         // Derive the component info from the entry points and external services in the composite
         // Also derive properties from the overridable properties of the components in the composite
-        if (componentInfo==null) {
+        if (componentInfo == null) {
             AssemblyFactory factory = modelContext.getAssemblyFactory();
             componentInfo = factory.createComponentInfo();
             for (EntryPoint entryPoint : getEntryPoints()) {
@@ -209,15 +213,15 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
                 ConfiguredReference configuredReference = entryPoint.getConfiguredReference();
                 ServiceURI sourceURI = factory.createServiceURI(null, entryPoint, configuredReference);
                 for (String target : configuredReference.getTargets()) {
-                    ServiceURI targetURI =factory.createServiceURI(null, target);
-                    Wire wire=factory.createWire();
+                    ServiceURI targetURI = factory.createServiceURI(null, target);
+                    Wire wire = factory.createWire();
                     wire.setSource(sourceURI);
                     wire.setTarget(targetURI);
                     getWires().add(wire);
                 }
             }
             for (ExternalService externalService : getExternalServices()) {
-                if (externalService.getOverrideOption()==null || externalService.getOverrideOption()==OverrideOption.NO)
+                if (externalService.getOverrideOption() == null || externalService.getOverrideOption() == OverrideOption.NO)
                     continue;
                 Reference reference = factory.createReference();
                 reference.setName(externalService.getName());
@@ -228,17 +232,17 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
             }
             for (Component<Implementation> component : getComponents()) {
                 for (ConfiguredProperty configuredProperty : component.getConfiguredProperties()) {
-                    if (configuredProperty.getOverrideOption()==null || configuredProperty.getOverrideOption()==OverrideOption.NO)
+                    if (configuredProperty.getOverrideOption() == null || configuredProperty.getOverrideOption() == OverrideOption.NO)
                         continue;
                     componentInfo.getProperties().add(configuredProperty.getProperty());
                 }
 
                 for (ConfiguredReference configuredReference : component.getConfiguredReferences()) {
                     // Create a wire
-                    ServiceURI sourceURI =factory.createServiceURI(null, component, configuredReference);
+                    ServiceURI sourceURI = factory.createServiceURI(null, component, configuredReference);
                     for (String target : configuredReference.getTargets()) {
-                        ServiceURI targetURI =factory.createServiceURI(null, target);
-                        Wire wire=factory.createWire();
+                        ServiceURI targetURI = factory.createServiceURI(null, target);
+                        Wire wire = factory.createWire();
                         wire.setSource(sourceURI);
                         wire.setTarget(targetURI);
                         getWires().add(wire);
@@ -252,7 +256,7 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
         for (Wire wire : getWires()) {
 
             // Get the source reference
-            ServiceURI sourceURI=wire.getSource();
+            ServiceURI sourceURI = wire.getSource();
             ConfiguredReference configuredReference = null;
             String partName = sourceURI.getPartName();
             String referenceName = sourceURI.getServiceName();
@@ -260,13 +264,13 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
                 //Component<?> component = (Component<?>)getPart(partName);
 //                if (component != null) {
                 Part part = getPart(partName);
-                if (part instanceof Component){
-                    configuredReference = ((Component)part).getConfiguredReference(referenceName);
-                } else if (part instanceof EntryPoint){
-                    configuredReference = ((EntryPoint)part).getConfiguredReference();
+                if (part instanceof Component) {
+                    configuredReference = ((Component) part).getConfiguredReference(referenceName);
+                } else if (part instanceof EntryPoint) {
+                    configuredReference = ((EntryPoint) part).getConfiguredReference();
                 }
             } else {
-                EntryPoint entryPoint = (EntryPoint)getPart(partName);
+                EntryPoint entryPoint = (EntryPoint) getPart(partName);
                 if (entryPoint != null) {
                     configuredReference = entryPoint.getConfiguredReference();
                 }
@@ -281,8 +285,8 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
                 if (configuredService != null) {
 
                     // Wire the reference to the target
-                    Multiplicity multiplicity=configuredReference.getPort().getMultiplicity();
-                    if (multiplicity==Multiplicity.ZERO_N || multiplicity==Multiplicity.ONE_N) {
+                    Multiplicity multiplicity = configuredReference.getPort().getMultiplicity();
+                    if (multiplicity == Multiplicity.ZERO_N || multiplicity == Multiplicity.ONE_N) {
                         configuredReference.getTargetConfiguredServices().add(configuredService);
                     } else {
                         configuredReference.getTargetConfiguredServices().clear();
@@ -293,7 +297,16 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
                 }
             }
         }
-        
+
+    }
+
+    public Class<?> getImplementationClass() {
+        return implementationClass;
+    }
+
+    public void setImplementationClass(Class<?> clazz) {
+        checkNotFrozen();
+        this.implementationClass = clazz;
     }
 
     public void freeze() {
@@ -302,11 +315,11 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
         super.freeze();
 
         // Freeze component info
-        if (componentInfo!=null)
+        if (componentInfo != null)
             componentInfo.freeze();
-        
+
         // Freeze lists
-        wsdlImports=freeze(wsdlImports);
+        wsdlImports = freeze(wsdlImports);
         components = freeze(components);
         entryPoints = freeze(entryPoints);
         externalServices = freeze(externalServices);
@@ -319,18 +332,18 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
 
         if (!accept(wsdlImports, visitor))
             return false;
-        
+
         if (!accept(partsMap.values(), visitor))
             return false;
 
         if (!accept(wires, visitor))
             return false;
 
-        if (componentInfo!=null) {
+        if (componentInfo != null) {
             if (!componentInfo.accept(visitor))
                 return false;
         }
-        
+
         return true;
     }
 

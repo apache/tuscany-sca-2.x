@@ -16,14 +16,16 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.core.loader.LoaderContext;
-import org.apache.tuscany.model.assembly.Module;
-import org.osoa.sca.annotations.Scope;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+
+import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
+import org.apache.tuscany.core.loader.LoaderContext;
+import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
+import org.apache.tuscany.model.assembly.Module;
+import org.osoa.sca.annotations.Scope;
 
 /**
  * @version $Rev$ $Date$
@@ -37,6 +39,12 @@ public class ModuleLoader extends CompositeLoader {
     public Module load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         Module module = factory.createModule();
         loadComposite(reader, module, loaderContext);
+        // JFM Hack until recursive model in place
+        if (module.getName().startsWith("org.apache.tuscany.core.system")) {
+            module.setImplementationClass(SystemCompositeContextImpl.class);
+        } else {
+            module.setImplementationClass(CompositeContextImpl.class);
+        }
         return module;
     }
 }

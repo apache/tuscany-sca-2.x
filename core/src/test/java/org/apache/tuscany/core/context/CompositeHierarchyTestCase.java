@@ -49,6 +49,7 @@ public class CompositeHierarchyTestCase extends AbstractCompositeHierarchyTests 
         CompositeContext parent = createContextHierachy();
         CompositeContext child = (CompositeContext) parent.getContext("test.child");
         Component component = factory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
+        
         component.initialize(new AssemblyContextImpl(factory, null, null));
         child.registerModelObject(component);
         parent.publish(new ModuleStart(this));

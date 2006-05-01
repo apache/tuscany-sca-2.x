@@ -170,7 +170,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         ca[2] = MockFactory.createComponent("TestServiceDestroyOnly", ModuleScopeDestroyOnlyComponent.class,
                 Scope.MODULE);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
-        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ComponentTypeIntrospector introspector = MockFactory.getIntrospector();
         ca[0].getImplementation().setComponentInfo(introspector.introspect(ModuleScopeInitDestroyComponent.class));
         ca[1].getImplementation().setComponentInfo(introspector.introspect(ModuleScopeInitOnlyComponent.class));
         ca[2].getImplementation().setComponentInfo(introspector.introspect(ModuleScopeDestroyOnlyComponent.class));
@@ -190,7 +190,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         ca[1] = MockFactory.createComponent("TestServiceEagerInit", ModuleScopeEagerInitComponent.class,
                 Scope.MODULE);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
-        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ComponentTypeIntrospector introspector = MockFactory.getIntrospector();
         ComponentInfo type = introspector.introspect(OrderedInitPojo.class);
         ca[0].getImplementation().setComponentInfo(introspector.introspect(ModuleScopeEagerInitDestroyComponent.class));
         ca[1].getImplementation().setComponentInfo(introspector.introspect(ModuleScopeEagerInitComponent.class));
@@ -208,7 +208,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         ca[1] = MockFactory.createComponent("two", OrderedInitPojo.class, Scope.MODULE);
         ca[2] = MockFactory.createComponent("three", OrderedInitPojo.class, Scope.MODULE);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
-        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ComponentTypeIntrospector introspector = MockFactory.getIntrospector();
         ComponentInfo type = introspector.introspect(OrderedInitPojo.class);
         ca[0].getImplementation().setComponentInfo(type);
         ca[1].getImplementation().setComponentInfo(type);
@@ -226,7 +226,7 @@ public class ModuleScopeLifecycleTestCase extends TestCase {
         ca[0] = MockFactory.createComponent("one", OrderedEagerInitPojo.class, Scope.MODULE);
         ca[1] = MockFactory.createComponent("two", OrderedEagerInitPojo.class, Scope.MODULE);
         ca[2] = MockFactory.createComponent("three", OrderedEagerInitPojo.class, Scope.MODULE);
-        ComponentTypeIntrospector introspector = MockFactory.createComponentIntrospector();
+        ComponentTypeIntrospector introspector = MockFactory.getIntrospector();
         ComponentInfo type = introspector.introspect(OrderedEagerInitPojo.class);
         ca[0].getImplementation().setComponentInfo(type);
         ca[1].getImplementation().setComponentInfo(type);

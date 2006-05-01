@@ -38,7 +38,6 @@ public interface Composite extends Implementation {
     /**
      * Returns the named part.
      * @param name
-     * @return
      */
     Part getPart(String name);
 
@@ -62,27 +61,34 @@ public interface Composite extends Implementation {
 
     /**
      * Returns the wires contained in this composite.
-     * @return
      */
     List<Wire> getWires();
     
     /**
      * Returns the WSDL imports declared in this composite.
-     * @return
      */
     List<ImportWSDL> getWSDLImports();
     
     /**
      * Returns the WSDL imports for the given namespace.
      * @param namespace
-     * @return
      */
     List<ImportWSDL> getWSDLImports(String namespace);
 
     /**
      * Returns the configured service at the given address.
      * @param address
-     * @return
      */
     ConfiguredService getConfiguredService(ServiceURI address);
+
+    /**
+     * Returns the implementation class.
+     */
+    Class<?> getImplementationClass();
+
+    /**
+     * Sets the implementation class.
+     */
+    void setImplementationClass(Class<?> value);
+
 }

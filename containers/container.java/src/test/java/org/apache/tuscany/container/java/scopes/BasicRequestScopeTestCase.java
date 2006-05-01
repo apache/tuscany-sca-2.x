@@ -38,6 +38,7 @@ import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
 import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.AtomicComponent;
 
@@ -134,7 +135,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     }
 
 
-    private List<ContextFactory<Context>> createConfigurations() throws BuilderException {
+    private List<ContextFactory<Context>> createConfigurations() throws BuilderException, ConfigurationLoadException {
         AtomicComponent component = MockFactory.createComponent("TestService1", RequestScopeComponentImpl.class,
                 Scope.REQUEST);
         WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryFactory(), new DefaultPolicyBuilderRegistry());
@@ -145,7 +146,7 @@ public class BasicRequestScopeTestCase extends TestCase {
         return configs;
     }
 
-    private ContextFactory<Context> createConfiguration(String name) throws BuilderException {
+    private ContextFactory<Context> createConfiguration(String name) throws BuilderException, ConfigurationLoadException {
         AtomicComponent component = MockFactory.createComponent(name, RequestScopeComponentImpl.class,
                 Scope.REQUEST);
         WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryFactory(), new DefaultPolicyBuilderRegistry());

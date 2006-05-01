@@ -16,29 +16,37 @@
  */
 package org.apache.tuscany.container.js.mock;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
+import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.container.js.assembly.JavaScriptAssemblyFactory;
 import org.apache.tuscany.container.js.assembly.JavaScriptImplementation;
 import org.apache.tuscany.container.js.assembly.impl.JavaScriptAssemblyFactoryImpl;
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.CompositeContext;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
+import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
+import org.apache.tuscany.core.config.ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.config.processor.ProcessorUtils;
+import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
+import org.apache.tuscany.core.extension.config.ImplementationProcessor;
+import org.apache.tuscany.model.assembly.AtomicComponent;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.AtomicComponent;
+import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
-import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 
 /**
  * Generates test components and module assemblies
- * 
+ *
  * @version $Rev: 377775 $ $Date: 2006-02-14 09:18:31 -0800 (Tue, 14 Feb 2006) $
  */
 public class MockAssemblyFactory {
@@ -46,6 +54,14 @@ public class MockAssemblyFactory {
     private static JavaScriptAssemblyFactory factory = new JavaScriptAssemblyFactoryImpl();
 
     private static SystemAssemblyFactory systemFactory = new SystemAssemblyFactoryImpl();
+    private static ComponentTypeIntrospector introspector;
+
+    public static ComponentTypeIntrospector getIntrospector() {
+        if (introspector == null) {
+            introspector = ProcessorUtils.createCoreIntrospector(systemFactory);
+        }
+        return introspector;
+    }
 
     public static AtomicComponent createComponent(String name, String scriptFile, Class type, Scope scope) {
         AtomicComponent sc = factory.createSimpleComponent();
@@ -56,7 +72,7 @@ public class MockAssemblyFactory {
         impl.setResourceLoader(new ResourceLoaderImpl(type.getClassLoader()));
         sc.setImplementation(impl);
         Service s = factory.createService();
-        String serviceName = type.getName().substring(type.getName().lastIndexOf('.')+1);
+        String serviceName = type.getName().substring(type.getName().lastIndexOf('.') + 1);
         s.setName(serviceName);
         JavaServiceContract contract = factory.createJavaServiceContract();
         s.setServiceContract(contract);
@@ -65,16 +81,14 @@ public class MockAssemblyFactory {
         impl.getComponentInfo().getServices().add(s);
         ConfiguredService cService = factory.createConfiguredService();
         cService.setPort(s);
-        cService.initialize(new AssemblyContextImpl(null,null));
+        cService.initialize(new AssemblyContextImpl(null, null));
         sc.getConfiguredServices().add(cService);
         sc.setName(name);
         sc.setImplementation(impl);
         return sc;
     }
 
-    public static Component createSystemComponent(String name, String type, Scope scope) throws
-            ClassNotFoundException {
-        Class claz = JavaIntrospectionHelper.loadClass(type);
+    public static Component createSystemComponent(String name, Class claz, Scope scope) throws ConfigurationLoadException {
         Component sc;
         if (CompositeContext.class.isAssignableFrom(claz)) {
             sc = systemFactory.createModuleComponent();
@@ -84,11 +98,12 @@ public class MockAssemblyFactory {
         Module impl = systemFactory.createModule();
         impl.setName(name);
         sc.setImplementation(impl);
+        impl.setComponentInfo(getIntrospector().introspect(claz));
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(scope);
-        impl.setComponentInfo(systemFactory.createComponentInfo());
+        //impl.setComponentInfo(systemFactory.createComponentInfo());
         impl.getComponentInfo().getServices().add(s);
         sc.setName(name);
         sc.setImplementation(impl);

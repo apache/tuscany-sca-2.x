@@ -30,7 +30,7 @@ import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
  * The default implementation of the system assembly factory
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class SystemAssemblyFactoryImpl extends AssemblyFactoryImpl implements SystemAssemblyFactory {

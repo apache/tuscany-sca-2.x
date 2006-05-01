@@ -14,7 +14,6 @@
 package org.apache.tuscany.core.config.processor;
 
 import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
@@ -27,10 +26,6 @@ import org.apache.tuscany.model.assembly.Service;
 public class ScopeProcessor extends ImplementationProcessorSupport {
 
     public ScopeProcessor() {
-    }
-
-    public ScopeProcessor(AssemblyFactory factory) {
-        super(factory);
     }
 
     @Override

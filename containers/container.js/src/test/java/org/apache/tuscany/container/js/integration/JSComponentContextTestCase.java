@@ -64,7 +64,7 @@ public class JSComponentContextTestCase extends TestCase {
         runtime.addBuilder(new JavaScriptTargetWireBuilder());
         runtime.start();
         runtime.getRootContext().registerModelObject(
-                MockAssemblyFactory.createSystemComponent("test.module", CompositeContextImpl.class.getName(),
+                MockAssemblyFactory.createSystemComponent("test.module", CompositeContextImpl.class,
                         Scope.AGGREGATE));
         CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
         child.registerModelObject(MockModuleFactory.createModule());

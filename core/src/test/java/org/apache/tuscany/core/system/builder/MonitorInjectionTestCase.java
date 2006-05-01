@@ -27,6 +27,7 @@ import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.mock.MockConfigContext;
+import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.system.annotation.Monitor;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
@@ -45,7 +46,7 @@ public class MonitorInjectionTestCase extends TestCase {
 
     public static class TestComponent implements TestService {
         @Monitor
-        Monitor1 monitor1;
+        protected Monitor1 monitor1;
         Monitor2 monitor2;
 
         @Monitor
@@ -79,6 +80,7 @@ public class MonitorInjectionTestCase extends TestCase {
         MockMonitorFactory monitorFactory = new MockMonitorFactory();
         builder = new SystemContextFactoryBuilder(monitorFactory);
         component = factory.createSystemComponent("test", TestService.class, TestComponent.class, Scope.MODULE);
+        component.getImplementation().setComponentInfo(MockFactory.getIntrospector().introspect(TestComponent.class));
     }
 
     private static final Monitor1 MONITOR1 = new Monitor1() {

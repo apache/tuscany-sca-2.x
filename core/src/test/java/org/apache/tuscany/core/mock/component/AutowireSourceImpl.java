@@ -25,7 +25,7 @@ import java.util.List;
 public class AutowireSourceImpl implements Source {
 
     @Autowire
-    private Target target;
+    protected Target target;
     
     private List<Target> targets;
 

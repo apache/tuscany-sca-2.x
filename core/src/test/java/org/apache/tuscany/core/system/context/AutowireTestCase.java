@@ -17,6 +17,7 @@ package org.apache.tuscany.core.system.context;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.SystemCompositeContext;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.mock.MockFactory;
@@ -27,6 +28,7 @@ import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
@@ -292,11 +294,13 @@ public class AutowireTestCase extends TestCase {
         return runtime;
     }
 
-    private ModuleComponent createAppModuleComponent(String name) {
+    private ModuleComponent createAppModuleComponent(String name) throws ConfigurationLoadException {
         AssemblyContext assemblyContext = new AssemblyContextImpl(systemFactory, null, null);
         ModuleComponent mc = systemFactory.createModuleComponent();
         mc.setName(name);
         Module module = systemFactory.createModule();
+        module.setImplementationClass(CompositeContextImpl.class);
+        module.setComponentInfo(MockFactory.getComponentType());
         module.setName(name);
         module.initialize(assemblyContext);
         mc.setImplementation(module);

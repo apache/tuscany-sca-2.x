@@ -101,14 +101,7 @@ public class ComponentLoaderTestCase extends LoaderTestSupport {
         loader = new ComponentLoader();
         loader.setFactory(assemblyFactory);
         loader.setDefaultPropertyFactory(new StringParserPropertyFactory());
-        introspector = new Java5ComponentTypeIntrospector(assemblyFactory);
-        //FIXME JFM HACK
-        List<ImplementationProcessor> processors = ProcessorUtils.createCoreProcessors(assemblyFactory);
-        for (ImplementationProcessor processor : processors) {
-            introspector.registerProcessor(processor);
-        }
-        // END hack
-
+        introspector = ProcessorUtils.createCoreIntrospector(assemblyFactory);
     }
 
     public static interface Service {

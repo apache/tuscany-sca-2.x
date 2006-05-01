@@ -30,30 +30,28 @@ import org.apache.tuscany.core.builder.UnknownTypeException;
 import org.apache.tuscany.core.builder.impl.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.builder.impl.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
-import org.apache.tuscany.core.context.AutowireContext;
-import org.apache.tuscany.core.context.ConfigurationContext;
-import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
-import org.apache.tuscany.core.injection.ContextObjectFactory;
+import org.apache.tuscany.core.extension.config.InjectorExtensibilityElement;
+import org.apache.tuscany.core.extension.config.extensibility.ComponentNameExtensibilityElement;
+import org.apache.tuscany.core.extension.config.extensibility.ContextExtensibilityElement;
+import org.apache.tuscany.core.extension.config.extensibility.DestroyInvokerExtensibilityElement;
+import org.apache.tuscany.core.extension.config.extensibility.InitInvokerExtensibilityElement;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FactoryInitException;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.NonProxiedTargetFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
-import org.apache.tuscany.core.runtime.RuntimeContext;
-import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.core.system.annotation.Monitor;
-import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.SystemModule;
 import org.apache.tuscany.core.system.config.SystemContextFactory;
+import org.apache.tuscany.core.system.config.SystemInjectorExtensibilityElement;
+import org.apache.tuscany.core.system.config.extensibility.MonitorExtensibilityElement;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
-import org.apache.tuscany.core.system.injection.AutowireObjectFactory;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Component;
+import org.apache.tuscany.model.assembly.Composite;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
@@ -62,22 +60,19 @@ import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
-import org.osoa.sca.annotations.ComponentName;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
 
 /**
- * Decorates components whose implementation type is a
- * {@link org.apache.tuscany.core.system.assembly.SystemImplementation} with the appropriate runtime configuration. This
- * builder handles both system composite components as well as system leaf or "simple" components. Consequently, both
- * simple and composite component types may be injected and autowired.
- * <p>
+ * Decorates components whose implementation type is a {@link org.apache.tuscany.core.system.assembly.SystemImplementation}
+ * with the appropriate runtime configuration. This builder handles both system composite components as well
+ * as system leaf or "simple" components. Consequently, both simple and composite component types may be
+ * injected and autowired.
+ * <p/>
  * Note that system component references are not proxied.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
+
     private final MonitorFactory monitorFactory;
 
     public SystemContextFactoryBuilder(MonitorFactory monitorFactory) {
@@ -95,17 +90,18 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
         Scope scope;
         // Get the component implementation
         Implementation componentImplementation = component.getImplementation();
-        if (componentImplementation instanceof SystemImplementation && component.getContextFactory() == null) {
+        if (componentImplementation instanceof SystemImplementation
+                && component.getContextFactory() == null) {
 
             // The component is a system component, implemented by a Java class
-            SystemImplementation javaImpl = (SystemImplementation) componentImplementation;
+            SystemImplementation implementation = (SystemImplementation) componentImplementation;
             if (componentImplementation.getComponentInfo().getServices() == null
                     || componentImplementation.getComponentInfo().getServices().size() < 1) {
                 BuilderConfigException e = new BuilderConfigException("No service configured on component type");
                 e.setIdentifier(component.getName());
                 throw e;
             }
-            implClass = javaImpl.getImplementationClass();
+            implClass = implementation.getImplementationClass();
             Scope previous = null;
             scope = Scope.MODULE;
             List<Service> services = component.getImplementation().getComponentInfo().getServices();
@@ -124,24 +120,26 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
                 }
             }
 
-        } else if (componentImplementation instanceof Module) {
-            // FIXME this is a hack
-            if (((Module) componentImplementation).getName().startsWith("org.apache.tuscany.core.system")) {
-                // The component is a system module component, fix the implementation class to our implementation
-                // of system module component context
-                implClass = SystemCompositeContextImpl.class;
-                scope = Scope.AGGREGATE;
-            } else if (componentImplementation instanceof SystemModule){
-                implClass = SystemCompositeContextImpl.class;
-                scope = Scope.AGGREGATE;
-            } else {
-                // The component is an app module component, fix the implementation class to our implementation
-                // of app module component context
-                //FIXME this should be extensible, i.e. the model should specify the impl class of the module
-                implClass = CompositeContextImpl.class;
-                scope = Scope.AGGREGATE;
+        } else if (componentImplementation instanceof Composite) {
+            implClass = ((Composite) componentImplementation).getImplementationClass();
+            if (implClass == null) {
+                // FIXME this is a hack
+                if (((Module) componentImplementation).getName().startsWith("org.apache.tuscany.core.system"))
+                {
+                    // The component is a system module component, fix the implementation class to our implementation
+                    // of system module component context
+                    implClass = SystemCompositeContextImpl.class;
+                } else if (componentImplementation instanceof SystemModule) {
+                    implClass = SystemCompositeContextImpl.class;
+                } else {
+                    // The component is an app module component, fix the implementation class to our implementation
+                    // of app module component context
+                    //FIXME this should be extensible, i.e. the model should specify the impl class of the module
+                    implClass = CompositeContextImpl.class;
+                }
+                //END hack
             }
-
+            scope = Scope.AGGREGATE;
         } else {
             return;
         }
@@ -153,13 +151,14 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
             methods = JavaIntrospectionHelper.getAllUniqueMethods(implClass);
             String name = component.getName();
             if (componentImplementation instanceof Module) {
-                Module module = (Module)componentImplementation;
+                Module module = (Module) componentImplementation;
                 contextFactory = new SystemContextFactory(name, module, JavaIntrospectionHelper.getDefaultConstructor(implClass), scope);
 
             } else {
                 contextFactory = new SystemContextFactory(name, JavaIntrospectionHelper.getDefaultConstructor(implClass), scope);
             }
-            ContextObjectFactory contextObjectFactory = new ContextObjectFactory(contextFactory);
+
+            //ContextObjectFactory contextObjectFactory = new ContextObjectFactory(contextFactory);
 
             List<Injector> injectors = new ArrayList<Injector>();
 
@@ -183,125 +182,36 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
                     }
                 }
             }
-
-            // create factory for the component implementation type
-            EventInvoker initInvoker = null;
-            boolean eagerInit = false;
-            EventInvoker destroyInvoker = null;
-            for (Field field : fields) {
-                ComponentName compName = field.getAnnotation(ComponentName.class);
-                if (compName != null) {
-                    Injector injector = new FieldInjector(field, new SingletonObjectFactory<String>(name));
-                    injectors.add(injector);
-                }
-                Context context = field.getAnnotation(Context.class);
-                if (context != null) {
-                    Injector injector = new FieldInjector(field, contextObjectFactory);
-                    injectors.add(injector);
-                }
-                ParentContext parentField = field.getAnnotation(ParentContext.class);
-                if (parentField != null) {
-                    Injector injector = new FieldInjector(field, contextObjectFactory);
-                    injectors.add(injector);
-                }
-                Autowire autowire = field.getAnnotation(Autowire.class);
-                if (autowire != null) {
-                    // for system composite context types, only allow autowire of certain types, otherwise we have a
-                    // chicken-and-egg problem
-                    if (SystemCompositeContext.class.isAssignableFrom(implClass)
-                            && !(field.getType().equals(ConfigurationContext.class)
-                                    || field.getType().equals(MonitorFactory.class)
-                                    || field.getType().equals(RuntimeContext.class) || field.getType().equals(
-                                    AutowireContext.class))) {
-                        BuilderConfigException e = new BuilderConfigException("Illegal autowire type for system context");
-                        e.setIdentifier(field.getType().getName());
-                        throw e;
-                    }
-                    Injector<?> injector = new FieldInjector(field, new AutowireObjectFactory(field.getType(), contextFactory));
-                    injectors.add(injector);
-                }
-                Monitor monitor = field.getAnnotation(Monitor.class);
-                if (monitor != null) {
-                    Object instance = monitorFactory.getMonitor(field.getType());
-                    Injector<?> injector = new FieldInjector(field, new SingletonObjectFactory<Object>(instance));
-                    injectors.add(injector);
-                }
-            }
-            for (Method method : methods) {
-                Init init = method.getAnnotation(Init.class);
-                if (init != null && initInvoker == null) {
-                    initInvoker = new MethodEventInvoker(method);
-                    eagerInit = init.eager();
-                    continue;
-                }
-                Destroy destroy = method.getAnnotation(Destroy.class);
-                if (destroy != null && destroyInvoker == null) {
-                    destroyInvoker = new MethodEventInvoker(method);
-                    continue;
-                }
-                ComponentName compName = method.getAnnotation(ComponentName.class);
-                if (compName != null) {
-                    Injector injector = new MethodInjector(method, new SingletonObjectFactory<String>(name));
-                    injectors.add(injector);
-                }
-                Context context = method.getAnnotation(Context.class);
-                if (context != null) {
-                    Injector injector = new MethodInjector(method, contextObjectFactory);
-                    injectors.add(injector);
-                }
-                ParentContext parentMethod = method.getAnnotation(ParentContext.class);
-                if (parentMethod != null) {
-                    // if (!(parentContext instanceof CompositeContext)) {
-                    // BuilderConfigException e = new BuilderConfigException("Component must be a child of ");
-                    // e.setIdentifier(CompositeContext.class.getName());
-                    // throw e;
-                    // }
-                    Injector injector = new MethodInjector(method, contextObjectFactory);
-                    injectors.add(injector);
-                }
-                Autowire autowire = method.getAnnotation(Autowire.class);
-                if (autowire != null) {
-                    // if (!(parentContext instanceof AutowireContext)) {
-                    // BuilderConfigException e = new BuilderConfigException("Parent context must implement)");
-                    // e.setIdentifier(AutowireContext.class.getName());
-                    // throw e;
-                    // }
-                    if (method.getParameterTypes() == null || method.getParameterTypes().length != 1) {
-                        BuilderConfigException e = new BuilderConfigException("Autowire setter methods must take one parameter");
-                        e.setIdentifier(method.getName());
-                        throw e;
-                    }
-                    Class paramType = method.getParameterTypes()[0];
-                    // for system composite context types, only allow autowire of certain types, otherwise we have a
-                    // chicken-and-egg problem
-                    if (SystemCompositeContext.class.isAssignableFrom(implClass)
-                            && !(paramType.equals(ConfigurationContext.class) || paramType.equals(MonitorFactory.class)
-                                    || paramType.equals(RuntimeContext.class) || paramType.equals(AutowireContext.class))) {
-                        BuilderConfigException e = new BuilderConfigException("Illegal autowire type for system context");
-                        e.setIdentifier(paramType.getName());
-                        throw e;
-                    }
-                    Injector injector = new MethodInjector(method, new AutowireObjectFactory(paramType, contextFactory));
-                    injectors.add(injector);
-                }
-
-                Monitor monitor = method.getAnnotation(Monitor.class);
-                if (monitor != null) {
-                    if (method.getParameterTypes() == null || method.getParameterTypes().length != 1) {
-                        BuilderConfigException e = new BuilderConfigException("Monitor setter methods must take one parameter");
-                        e.setIdentifier(method.getName());
-                        throw e;
-                    }
-                    Class<?> paramType = method.getParameterTypes()[0];
-                    Object instance = monitorFactory.getMonitor(paramType);
-                    Injector<?> injector = new MethodInjector(method, new SingletonObjectFactory<Object>(instance));
-                    injectors.add(injector);
+            List<Object> elements = componentImplementation.getComponentInfo().getExtensibilityElements();
+            for (Object element : elements) {
+                if (element instanceof InitInvokerExtensibilityElement) {
+                    InitInvokerExtensibilityElement invokerElement = (InitInvokerExtensibilityElement) element;
+                    EventInvoker<Object> initInvoker = invokerElement.getEventInvoker();
+                    boolean eagerInit = invokerElement.isEager();
+                    contextFactory.setEagerInit(eagerInit);
+                    contextFactory.setInitInvoker(initInvoker);
+                } else if (element instanceof DestroyInvokerExtensibilityElement) {
+                    DestroyInvokerExtensibilityElement invokerElement = (DestroyInvokerExtensibilityElement) element;
+                    EventInvoker<Object> destroyInvoker = invokerElement.getEventInvoker();
+                    contextFactory.setDestroyInvoker(destroyInvoker);
+                } else if (element instanceof ComponentNameExtensibilityElement) {
+                    ComponentNameExtensibilityElement nameElement = (ComponentNameExtensibilityElement) element;
+                    injectors.add(nameElement.getEventInvoker(name));
+                } else if (element instanceof ContextExtensibilityElement) {
+                    ContextExtensibilityElement contextElement = (ContextExtensibilityElement) element;
+                    injectors.add(contextElement.getInjector(contextFactory));
+                } else if (element instanceof InjectorExtensibilityElement) {
+                    InjectorExtensibilityElement injectorElement = (InjectorExtensibilityElement) element;
+                    injectors.add(injectorElement.getInjector(contextFactory));
+                } else if (element instanceof SystemInjectorExtensibilityElement) {
+                    SystemInjectorExtensibilityElement injectorElement = (SystemInjectorExtensibilityElement) element;
+                    injectors.add(injectorElement.getInjector(contextFactory));
+                } else if (element instanceof MonitorExtensibilityElement) {
+                    MonitorExtensibilityElement monitorElement = (MonitorExtensibilityElement) element;
+                    injectors.add(monitorElement.getInjector(monitorFactory));
                 }
             }
             contextFactory.setSetters(injectors);
-            contextFactory.setEagerInit(eagerInit);
-            contextFactory.setInitInvoker(initInvoker);
-            contextFactory.setDestroyInvoker(destroyInvoker);
             // decorate the logical model
             component.setContextFactory(contextFactory);
         } catch (BuilderConfigException e) {
@@ -332,7 +242,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
         Method method = null;
         Field field = JavaIntrospectionHelper.findClosestMatchingField(propName, type, fields);
         if (field == null) {
-            method = JavaIntrospectionHelper.findClosestMatchingMethod(propName, new Class[] { type }, methods);
+            method = JavaIntrospectionHelper.findClosestMatchingMethod(propName, new Class[]{type}, methods);
             if (method == null) {
                 throw new NoAccessorException(propName);
             }
@@ -357,11 +267,11 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
     }
 
     /**
-     * Creates object factories that resolve target(s) of a reference and an <code>Injector</code> responsible for
-     * injecting them into the reference
+     * Creates object factories that resolve target(s) of a reference and an <code>Injector</code> responsible
+     * for injecting them into the reference
      */
     private Injector createReferenceInjector(ConfiguredReference reference, Set<Field> fields, Set<Method> methods,
-            ContextResolver resolver) {
+                                             ContextResolver resolver) {
 
         List<ObjectFactory> objectFactories = new ArrayList<ObjectFactory>();
         String refName = reference.getPort().getName();
@@ -379,7 +289,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
      * Creates an <code>Injector</code> for an object factories associated with a reference.
      */
     private Injector createInjector(String refName, Class refClass, boolean multiplicity, List<ObjectFactory> objectFactories,
-            Set<Field> fields, Set<Method> methods) throws NoAccessorException, BuilderConfigException {
+                                    Set<Field> fields, Set<Method> methods) throws NoAccessorException, BuilderConfigException {
         Field field;
         Method method = null;
         if (multiplicity) {
@@ -415,7 +325,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
         } else {
             field = JavaIntrospectionHelper.findClosestMatchingField(refName, refClass, fields);
             if (field == null) {
-                method = JavaIntrospectionHelper.findClosestMatchingMethod(refName, new Class[] { refClass }, methods);
+                method = JavaIntrospectionHelper.findClosestMatchingMethod(refName, new Class[]{refClass}, methods);
                 if (method == null) {
                     throw new NoAccessorException(refName);
                 }

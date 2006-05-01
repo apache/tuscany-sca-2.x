@@ -19,11 +19,17 @@ package org.apache.tuscany.core.config.impl;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
+import org.apache.tuscany.core.config.ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.processor.ProcessorUtils;
+import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
+import org.apache.tuscany.core.extension.config.ImplementationProcessor;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.ModuleFragment;
+import org.apache.tuscany.model.assembly.ComponentInfo;
 
 import java.io.IOException;
 import java.net.URL;
@@ -47,6 +53,35 @@ public abstract class AbstractModuleComponentConfigurationLoader implements Modu
     protected final ResourceLoader resourceLoader;
     protected final AssemblyFactory assemblyFactory;
 
+    // JFM HACK
+    private ComponentTypeIntrospector introspector;
+
+    private ComponentInfo systemType;
+
+    private ComponentInfo compositeType;
+
+    protected ComponentTypeIntrospector getIntrospector(){
+        if (introspector == null){
+            introspector =  ProcessorUtils.createCoreIntrospector(assemblyFactory);
+        }
+        return introspector;
+    }
+
+    protected ComponentInfo getSystemCompositeComponentType() throws ConfigurationLoadException {
+        if (systemType == null){
+            systemType = getIntrospector().introspect(SystemCompositeContextImpl.class);
+        }
+        return systemType;
+    }
+
+    protected ComponentInfo getCompositeComponentType() throws ConfigurationLoadException {
+        if (compositeType == null){
+            compositeType = getIntrospector().introspect(CompositeContextImpl.class);
+        }
+        return compositeType;
+    }
+    ///  JFM HACK
+
     protected AbstractModuleComponentConfigurationLoader(AssemblyContext modelContext) {
         this.modelContext = modelContext;
         resourceLoader = modelContext.getApplicationResourceLoader();
@@ -54,11 +89,21 @@ public abstract class AbstractModuleComponentConfigurationLoader implements Modu
     }
 
     public ModuleComponent loadSystemModuleComponent(String name, String uri) throws ConfigurationLoadException {
-        return loadModuleComponent(SYSTEM_MODULE_FILE_NAME, SYSTEM_FRAGMENT_FILE_NAME, name, uri);
+        ModuleComponent mc = loadModuleComponent(SYSTEM_MODULE_FILE_NAME, SYSTEM_FRAGMENT_FILE_NAME, name, uri);
+        //JFM HACK  - this is completely gross since it overwrites existing component type
+        mc.getImplementation().setImplementationClass(SystemCompositeContextImpl.class);
+        mc.getImplementation().setComponentInfo(getSystemCompositeComponentType());
+        //END HACK
+        return mc;
     }
 
     public ModuleComponent loadModuleComponent(String name, String uri) throws ConfigurationLoadException {
-        return loadModuleComponent(SCA_MODULE_FILE_NAME, SCA_FRAGMENT_FILE_NAME, name, uri);
+        ModuleComponent mc = loadModuleComponent(SCA_MODULE_FILE_NAME, SCA_FRAGMENT_FILE_NAME, name, uri);
+        //JFM HACK
+        mc.getImplementation().setImplementationClass(CompositeContextImpl.class);
+        mc.getImplementation().setComponentInfo(getCompositeComponentType());
+        //END HACK
+        return mc;
     }
 
     protected ModuleComponent loadModuleComponent(String moduleFileName, String fragmentFileName, String name, String uri) throws ConfigurationLoadException {
@@ -96,7 +141,6 @@ public abstract class AbstractModuleComponentConfigurationLoader implements Modu
 
         // Load the module file
         Module module=loadModule(moduleUri);
-
         // Load the sca.fragment files
         if (moduleFragmentUris!=null) {
             for (URL moduleFragmentUri : moduleFragmentUris) {

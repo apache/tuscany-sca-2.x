@@ -23,6 +23,7 @@ import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.mock.MockConfigContext;
+import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.SystemImplementation;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
@@ -35,7 +36,7 @@ import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
- * Tests to that system components are built properly
+ * Tests to system components are built properly
  * 
  * @version $Rev$ $Date$
  */
@@ -46,7 +47,7 @@ public class SystemContextFactoryBuilderTestCase extends TestCase {
     public void testComponentContextBuilder() throws Exception {
         SystemContextFactoryBuilder builder = new SystemContextFactoryBuilder(null);
         Component component = factory.createSystemComponent("test", null, SystemComponentImpl.class, Scope.AGGREGATE);
-
+        component.getImplementation().setComponentInfo(MockFactory.getIntrospector().introspect(SystemComponentImpl.class));
         ConfiguredProperty cProp = factory.createConfiguredProperty();
         Property prop = factory.createProperty();
         prop.setName("testInt");

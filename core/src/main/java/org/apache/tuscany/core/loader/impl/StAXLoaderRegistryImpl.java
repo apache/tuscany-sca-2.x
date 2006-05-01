@@ -22,6 +22,7 @@ import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyObject;
+import org.osoa.sca.annotations.Scope;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -32,6 +33,7 @@ import java.util.Map;
 /**
  * @version $Rev$ $Date$
  */
+@Scope("MODULE")
 public class StAXLoaderRegistryImpl implements StAXLoaderRegistry {
     private final Map<QName, StAXElementLoader<? extends AssemblyObject>> loaders = new HashMap<QName, StAXElementLoader<? extends AssemblyObject>>();
 

@@ -15,9 +15,8 @@ package org.apache.tuscany.core.config.processor;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.extension.config.extensibility.InitInvokerExtensibilityElement;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.model.assembly.AssemblyFactory;
+import org.apache.tuscany.core.extension.config.extensibility.InitInvokerExtensibilityElement;
 import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.osoa.sca.annotations.Init;
 
@@ -27,10 +26,6 @@ import org.osoa.sca.annotations.Init;
  * @version $$Rev$$ $$Date$$
  */
 public class InitProcessor extends ImplementationProcessorSupport {
-
-    public InitProcessor(AssemblyFactory factory) {
-        super(factory);
-    }
 
     public InitProcessor() {
     }
@@ -43,6 +38,6 @@ public class InitProcessor extends ImplementationProcessorSupport {
         if (method.getParameterTypes().length != 0) {
             throw new ConfigurationLoadException("Initialize methods cannot take parameters");
         }
-        type.getExtensibilityElements().add(new InitInvokerExtensibilityElement(method,init.eager()));
+        type.getExtensibilityElements().add(new InitInvokerExtensibilityElement(method, init.eager()));
     }
 }

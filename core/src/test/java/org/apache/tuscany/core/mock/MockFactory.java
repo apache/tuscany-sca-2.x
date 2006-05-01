@@ -16,7 +16,15 @@ package org.apache.tuscany.core.mock;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
+import org.apache.tuscany.core.client.BootstrapHelper;
+import org.apache.tuscany.core.config.ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.ConfigurationLoadException;
+import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.processor.ProcessorUtils;
+import org.apache.tuscany.core.context.impl.CompositeContextImpl;
+import org.apache.tuscany.core.extension.config.ImplementationProcessor;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
 import org.apache.tuscany.core.mock.component.Source;
@@ -32,7 +40,7 @@ import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
-import org.apache.tuscany.core.client.BootstrapHelper;
+import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ComponentInfo;
@@ -49,36 +57,60 @@ import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 
 /**
  * Generates test components, modules, and runtime artifacts
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class MockFactory {
 
     private static SystemAssemblyFactory systemFactory = new SystemAssemblyFactoryImpl();
-
     private static AssemblyContext assemblyContext = new AssemblyContextImpl(systemFactory, null, null);
+    private static ComponentTypeIntrospector introspector;
+    private static ComponentInfo systemComponentType;
+    private static ComponentInfo compositeComponentType;
 
     private MockFactory() {
+    }
+
+    public static ComponentInfo getComponentType() throws ConfigurationLoadException {
+        if (systemComponentType == null) {
+            systemComponentType = getIntrospector().introspect(SystemCompositeContextImpl.class);
+        }
+        return systemComponentType;
+    }
+
+    public static ComponentInfo getCompositeComponentType() throws ConfigurationLoadException {
+        if (compositeComponentType == null) {
+            compositeComponentType = getIntrospector().introspect(CompositeContextImpl.class);
+        }
+        return compositeComponentType;
+    }
+
+    public static ComponentTypeIntrospector getIntrospector() {
+        if (introspector == null) {
+            introspector = ProcessorUtils.createCoreIntrospector(systemFactory);
+        }
+        return introspector;
     }
 
     /**
      * Creates an composite component with the given name
      */
-    public static ModuleComponent createCompositeComponent(String name) {
+    public static ModuleComponent createCompositeComponent(String name) throws ConfigurationLoadException {
         ModuleComponent sc = systemFactory.createModuleComponent();
         Module impl = systemFactory.createModule();
         impl.setName(name);
         //impl.setImplementationClass(CompositeContextImpl.class);
         sc.setImplementation(impl);
+        impl.setImplementationClass(CompositeContextImpl.class);
+        impl.setComponentInfo(getCompositeComponentType());
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(Scope.AGGREGATE);
-        impl.setComponentInfo(systemFactory.createComponentInfo());
+//        impl.setComponentInfo(systemFactory.createComponentInfo());
         impl.getComponentInfo().getServices().add(s);
         sc.setName(name);
         sc.setImplementation(impl);
@@ -88,17 +120,18 @@ public class MockFactory {
     /**
      * Creates an composite component with the given name
      */
-    public static ModuleComponent createSystemCompositeComponent(String name) {
+    public static ModuleComponent createSystemCompositeComponent(String name) throws ConfigurationLoadException {
         ModuleComponent sc = systemFactory.createModuleComponent();
         SystemModule impl = systemFactory.createSystemModule();
         impl.setName(name);
-        //impl.setImplementationClass(SystemCompositeContextImpl.class);
+        impl.setImplementationClass(SystemCompositeContextImpl.class);
+        impl.setComponentInfo(getComponentType());
         sc.setImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(Scope.AGGREGATE);
-        impl.setComponentInfo(systemFactory.createComponentInfo());
+        //impl.setComponentInfo(systemFactory.createComponentInfo());
         impl.getComponentInfo().getServices().add(s);
         sc.setName(name);
         sc.setImplementation(impl);
@@ -107,22 +140,23 @@ public class MockFactory {
 
     /**
      * Creates a basic entry point with no configured reference using the system binding
-     * 
-     * @param name the name of the entry point
+     *
+     * @param name     the name of the entry point
      * @param interfaz the inteface exposed by the entry point
-     * @param refName the name of the entry point reference
+     * @param refName  the name of the entry point reference
      */
     public static EntryPoint createEPSystemBinding(String name, Class interfaz, String refName) {
         return createEPSystemBinding(name, interfaz, refName, null);
     }
 
     /**
-     * Creates an entry point wired to the given target (e.g. component, external service) using the system binding
-     * 
-     * @param name the name of the entry point
+     * Creates an entry point wired to the given target (e.g. component, external service) using the system
+     * binding
+     *
+     * @param name     the name of the entry point
      * @param interfaz the inteface exposed by the entry point
-     * @param refName the name of the entry point reference
-     * @param target the target the entry point is wired to
+     * @param refName  the name of the entry point reference
+     * @param target   the target the entry point is wired to
      */
     public static EntryPoint createEPSystemBinding(String name, Class interfaz, String refName, Part target) {
         JavaServiceContract contract = systemFactory.createJavaServiceContract();
@@ -170,12 +204,13 @@ public class MockFactory {
     }
 
     /**
-     * Creates an entry point that should be wired to the given target (e.g. component, external service) using the
-     * system binding. The system assembly process should resolve the target name to an actual target configuration.
-     * 
-     * @param name the name of the entry point
-     * @param interfaz the inteface exposed by the entry point
-     * @param refName the name of the entry point reference
+     * Creates an entry point that should be wired to the given target (e.g. component, external service)
+     * using the system binding. The system assembly process should resolve the target name to an actual
+     * target configuration.
+     *
+     * @param name          the name of the entry point
+     * @param interfaz      the inteface exposed by the entry point
+     * @param refName       the name of the entry point reference
      * @param componentName the name of the target to resolve
      */
     public static EntryPoint createEntryPointWithStringRef(String name, Class interfaz, String refName, String componentName) {
@@ -235,13 +270,14 @@ public class MockFactory {
     /**
      * Creates a test system module with a module-scoped component and entry point
      */
-    public static Module createSystemModule() {
-        Module module = systemFactory.createModule();
+    public static Module createSystemModule() throws ConfigurationLoadException {
+        Module module = systemFactory.createSystemModule();
         module.setName("system.module");
 
         // create test component
         Component component = systemFactory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class,
                 ModuleScopeSystemComponentImpl.class, Scope.MODULE);
+        component.getImplementation().setComponentInfo(getIntrospector().introspect(ModuleScopeSystemComponent.class));
         module.getComponents().add(component);
 
         // create the entry point
@@ -249,20 +285,28 @@ public class MockFactory {
         module.getEntryPoints().add(ep);
 
         module.initialize(assemblyContext);
+        module.setImplementationClass(SystemCompositeContextImpl.class);
+        module.setComponentInfo(getComponentType());
         return module;
     }
 
-    public static <T> Component createSystemComponent(String name,  Class<T> service, Class<? extends T> impl,Scope scope ){
-       return systemFactory.createSystemComponent(name,service,impl,scope);
+    public static <T> Component createSystemComponent(String name, Class<T> service, Class<? extends T> impl, Scope scope) throws ConfigurationLoadException {
+        Component c = systemFactory.createSystemComponent(name, service, impl, scope);
+        c.getImplementation().setComponentInfo(getIntrospector().introspect(impl));
+        for (Service s : c.getImplementation().getComponentInfo().getServices()) {
+             s.getServiceContract().setScope(scope);    //hack
+        }
+
+        return c;
     }
 
     /**
      * Creates a test system module with source and target components wired together.
-     * 
+     *
      * @see org.apache.tuscany.core.mock.component.Source
      * @see org.apache.tuscany.core.mock.component.Target
      */
-    public static Module createSystemModuleWithWiredComponents(String moduleName, Scope sourceScope, Scope targetScope) {
+    public static Module createSystemModuleWithWiredComponents(String moduleName, Scope sourceScope, Scope targetScope) throws ConfigurationLoadException {
 
         // create the target component
         Component target = systemFactory.createSystemComponent("target", Target.class, TargetImpl.class, targetScope);
@@ -296,7 +340,9 @@ public class MockFactory {
 
         source.initialize(assemblyContext);
 
-        Module module = systemFactory.createModule();
+        Module module = systemFactory.createSystemModule();
+        module.setImplementationClass(SystemCompositeContextImpl.class);
+        module.setComponentInfo(getComponentType());
         module.setName(moduleName);
         module.getComponents().add(source);
         module.getComponents().add(target);
@@ -306,24 +352,26 @@ public class MockFactory {
 
     /**
      * Creates a test system module component with source and target components wired together.
-     * 
+     *
      * @see org.apache.tuscany.core.mock.component.Source
      * @see org.apache.tuscany.core.mock.component.Target
      */
     public static ModuleComponent createSystemModuleComponentWithWiredComponents(String moduleComponentName, Scope sourceScope,
-                                                                                 Scope targetScope) {
+                                                                                 Scope targetScope) throws ConfigurationLoadException {
         ModuleComponent mc = systemFactory.createModuleComponent();
         mc.setName(moduleComponentName);
-        mc.setImplementation(createSystemModuleWithWiredComponents(moduleComponentName+".module", sourceScope, targetScope));
+        mc.setImplementation(createSystemModuleWithWiredComponents(moduleComponentName + ".module", sourceScope, targetScope));
         return mc;
     }
 
     /**
      * Creates a test system module component with a module-scoped component and entry point
      */
-    public static Module createSystemChildModule() {
-        Module module = systemFactory.createModule();
+    public static Module createSystemChildModule() throws ConfigurationLoadException {
+        Module module = systemFactory.createSystemModule();
         module.setName("system.test.module");
+        module.setImplementationClass(SystemCompositeContextImpl.class);
+        module.setComponentInfo(getComponentType());
 
         // create test component
         Component component = systemFactory.createSystemComponent("TestService2", ModuleScopeSystemComponent.class,

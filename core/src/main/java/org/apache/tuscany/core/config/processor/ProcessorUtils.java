@@ -17,6 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.core.extension.config.ImplementationProcessor;
+import org.apache.tuscany.core.system.config.processor.AutowireProcessor;
+import org.apache.tuscany.core.system.config.processor.MonitorProcessor;
+import org.apache.tuscany.core.system.config.processor.ParentContextProcessor;
+import org.apache.tuscany.core.config.ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 
 /**
@@ -33,14 +38,26 @@ public class ProcessorUtils {
         List<ImplementationProcessor> processors = new ArrayList<ImplementationProcessor>();
         processors.add(new PropertyProcessor(factory));
         processors.add(new ReferenceProcessor(factory));
-        processors.add(new ScopeProcessor(factory));
+        processors.add(new ScopeProcessor());
         processors.add(new ServiceProcessor(factory));
-        processors.add(new InitProcessor(factory));
-        processors.add(new DestroyProcessor(factory));
-        processors.add(new ContextProcessor(factory));
+        processors.add(new InitProcessor());
+        processors.add(new DestroyProcessor());
+        processors.add(new ContextProcessor());
         processors.add(new ComponentNameProcessor(factory));
         processors.add(new DefaultProcessor(factory));
+        processors.add(new AutowireProcessor());
+        processors.add(new MonitorProcessor());
+        processors.add(new ParentContextProcessor());
         return processors;
+    }
+
+    public static ComponentTypeIntrospector createCoreIntrospector(AssemblyFactory factory){
+        ComponentTypeIntrospector introspector = new Java5ComponentTypeIntrospector(factory);
+        List<ImplementationProcessor> processors = createCoreProcessors(factory);
+        for (ImplementationProcessor processor : processors) {
+            introspector.registerProcessor(processor);
+        }
+        return introspector;
     }
 
 }

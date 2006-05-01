@@ -97,7 +97,6 @@ public class TuscanyRuntime extends SCA {
         CompositeContext context = BootstrapHelper.registerModule(systemContext, systemModuleComponent);
         context.publish(new ModuleStart(this));
 
-
         // Load the SCDL configuration of the application module
         CompositeContext rootContext = runtime.getRootContext();
         ModuleComponent moduleComponent = loader.loadModuleComponent(name, uri);

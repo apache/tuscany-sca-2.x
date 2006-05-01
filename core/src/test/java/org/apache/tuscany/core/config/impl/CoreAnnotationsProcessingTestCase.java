@@ -18,6 +18,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
+import org.apache.tuscany.core.config.processor.ProcessorUtils;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.ComponentInfo;
@@ -163,12 +164,7 @@ public class CoreAnnotationsProcessingTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         factory = new SystemAssemblyFactoryImpl();
-        introspector = IntrospectorFactory.createIntrospector();
+        introspector = ProcessorUtils.createCoreIntrospector(factory); 
     }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
 
 }
