@@ -68,7 +68,15 @@ public class Axis2OperationInvoker {
 
         operationClient.addMessageContext(requestMC);
 
-        operationClient.execute(true);
+        ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+
+            operationClient.execute(true);
+
+        } finally {
+            Thread.currentThread().setContextClassLoader(ccl);
+        }
 
         MessageContext responseMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
         OMElement responseOM = responseMC.getEnvelope().getBody().getFirstElement();

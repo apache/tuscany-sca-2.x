@@ -42,23 +42,17 @@ public class Axis2ServiceInvoker implements ExternalServiceInvoker {
      * @see org.apache.tuscany.binding.axis2.handler.ExternalServiceInvoker#invoke(java.lang.String, java.lang.Object[])
      */
     public Object invoke(String methodName, Object[] args) {
-        ClassLoader ccl = Thread.currentThread().getContextClassLoader();
         try {
-            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-            try {
 
-                Axis2OperationInvoker invoker = operationInvokers.get(methodName);
+            Axis2OperationInvoker invoker = operationInvokers.get(methodName);
 
-                // Axis2 operationClients can not be shared so create a new one for each request
-                OperationClient operationClient = serviceClient.createClient(invoker.getWSDLOperationName());
+            // Axis2 operationClients can not be shared so create a new one for each request
+            OperationClient operationClient = serviceClient.createClient(invoker.getWSDLOperationName());
 
-                return invoker.invokeOperation(operationClient, args);
+            return invoker.invokeOperation(operationClient, args);
 
-            } catch (AxisFault e) {
-                throw new ServiceRuntimeException(e);
-            }
-        } finally {
-            Thread.currentThread().setContextClassLoader(ccl);
+        } catch (AxisFault e) {
+            throw new ServiceRuntimeException(e);
         }
     }
 
