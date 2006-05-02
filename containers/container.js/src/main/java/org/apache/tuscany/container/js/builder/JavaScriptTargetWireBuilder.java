@@ -32,11 +32,7 @@ import java.lang.reflect.Method;
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class JavaScriptTargetWireBuilder extends WireBuilderSupport {
-
-    protected boolean handlesTargetType(Class targetType) {
-        return JavaScriptContextFactory.class.isAssignableFrom(targetType);
-    }
+public class JavaScriptTargetWireBuilder extends WireBuilderSupport<JavaScriptContextFactory> {
 
     protected TargetInvoker createInvoker(QualifiedName targetName, Method operation, ScopeContext context, boolean downScope) {
         String serviceName = targetName.getPartName();

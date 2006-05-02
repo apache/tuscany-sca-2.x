@@ -25,20 +25,22 @@ import java.util.Set;
 
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.core.extension.config.ImplementationProcessor;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.config.processor.ProcessorUtils;
+import org.apache.tuscany.core.extension.config.ImplementationProcessor;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.ComponentName;
 
 /**
  * Introspects Java annotation-based metata data
  *
  * @version $Rev$ $Date$
  */
-@org.osoa.sca.annotations.Service(interfaces = {ComponentTypeIntrospector.class})
+@org.osoa.sca.annotations.Service(ComponentTypeIntrospector.class)
 public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector {
 
     private AssemblyFactory factory;
@@ -54,6 +56,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
     @Autowire
     public void setFactory(SystemAssemblyFactory factory) {
+        System.out.println("setting "+factory);
         this.factory = factory;
         //FIXME JFM HACK
         List<ImplementationProcessor> processors = ProcessorUtils.createCoreProcessors(factory);
@@ -61,6 +64,14 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
             this.registerProcessor(processor);
         }
         // END hack
+    }
+
+    @ComponentName
+    protected String name;
+
+    @Init(eager = true)
+    public void init(){
+        System.out.println("Eager init"+name);
     }
 
     public void registerProcessor(ImplementationProcessor processor) {
@@ -72,8 +83,8 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
     }
 
     /**
-     * Visits the given implementation type and calls back to {@link org.apache.tuscany.core.extension.config.ImplementationProcessor}s registered with
-     * this introspector to build up a {@link ComponentInfo}
+     * Visits the given implementation type and calls back to {@link org.apache.tuscany.core.extension.config.ImplementationProcessor}s
+     * registered with this introspector to build up a {@link ComponentInfo}
      *
      * @return ComponentInfo representing the implementation type metadata
      * @throws ConfigurationLoadException if there is an error introspecting the implementation type

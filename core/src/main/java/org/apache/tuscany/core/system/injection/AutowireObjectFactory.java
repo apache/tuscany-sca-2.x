@@ -62,13 +62,6 @@ public class AutowireObjectFactory<T> implements ObjectFactory<T> {
             throw e;
         }
         AutowireContext ctx = (AutowireContext) parent;
-//        if (ctx == null && required) {
-//            AutowireResolutionException e = new AutowireResolutionException("Required autowire not found");
-//            e.setIdentifier(autowireType.getName());
-//            throw e;
-//        } else if (ctx == null) {
-//            return null;
-//        }
         return ctx.resolveInstance(autowireType);
     }
 

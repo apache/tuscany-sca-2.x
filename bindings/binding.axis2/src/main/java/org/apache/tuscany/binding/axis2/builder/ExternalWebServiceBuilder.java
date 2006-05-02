@@ -19,10 +19,10 @@ package org.apache.tuscany.binding.axis2.builder;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
 
+import commonj.sdo.helper.TypeHelper;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
@@ -30,7 +30,6 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContextConstants;
 import org.apache.axis2.description.AxisService;
-import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis2.config.WSExternalServiceContextFactory;
 import org.apache.tuscany.binding.axis2.handler.Axis2OperationInvoker;
 import org.apache.tuscany.binding.axis2.handler.Axis2ServiceInvoker;
@@ -38,28 +37,22 @@ import org.apache.tuscany.binding.axis2.handler.WebServicePortMetaData;
 import org.apache.tuscany.binding.axis2.util.DataBinding;
 import org.apache.tuscany.binding.axis2.util.SDODataBinding;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
+import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.impl.ExternalServiceContextFactory;
 import org.apache.tuscany.core.extension.ExternalServiceBuilderSupport;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
-import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.ws.commons.om.OMAbstractFactory;
 import org.apache.ws.commons.soap.SOAPFactory;
 import org.osoa.sca.annotations.Scope;
 
-import commonj.sdo.helper.TypeHelper;
-
 /**
- * Creates a <code>ContextFactory</code> for an external service configured with the {@link WebServiceBinding}
+ * Creates a <code>ContextFactory</code> for an external service configured with the {@link
+ * WebServiceBinding}
  */
 @Scope("MODULE")
-public class ExternalWebServiceBuilder extends ExternalServiceBuilderSupport {
-
-    @Override
-    protected boolean handlesBindingType(Binding binding) {
-        return binding instanceof WebServiceBinding;
-    }
+public class ExternalWebServiceBuilder extends ExternalServiceBuilderSupport<WebServiceBinding> {
 
     /*
      * (non-Javadoc)

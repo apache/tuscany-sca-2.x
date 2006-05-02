@@ -19,7 +19,6 @@ package org.apache.tuscany.core.loader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -27,8 +26,8 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.core.config.processor.ProcessorUtils;
 import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
+import org.apache.tuscany.core.config.processor.ProcessorUtils;
 import org.apache.tuscany.core.loader.assembly.ComponentLoader;
 import org.apache.tuscany.core.loader.assembly.EntryPointLoader;
 import org.apache.tuscany.core.loader.assembly.InterfaceJavaLoader;

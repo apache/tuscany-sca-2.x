@@ -13,6 +13,10 @@
  */
 package org.apache.tuscany.core.extension;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.QualifiedName;
@@ -21,21 +25,20 @@ import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
 import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
 import org.apache.tuscany.core.wire.TargetInvoker;
 import org.apache.tuscany.core.wire.TargetWireFactory;
-import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
 import org.osoa.sca.annotations.Init;
-
-import java.lang.reflect.Method;
 
 /**
  * A base class for {@link WireBuilder} implementations
  *
  * @version $$Rev$$ $$Date$$
  */
-public abstract class WireBuilderSupport implements WireBuilder {
+public abstract class WireBuilderSupport<T> implements WireBuilder {
 
     protected RuntimeContext runtimeContext;
+    protected Class targetClass;
 
     @Autowire
     public void setRuntimeContext(RuntimeContext context) {
@@ -43,6 +46,13 @@ public abstract class WireBuilderSupport implements WireBuilder {
     }
 
     public WireBuilderSupport() {
+        // reflect the generic type of the subclass
+        Type type = this.getClass().getGenericSuperclass();
+        if (type instanceof ParameterizedType) {
+            targetClass = (Class) ((ParameterizedType) type).getActualTypeArguments()[0];
+        } else {
+            throw new AssertionError("Subclasses of " + ContextFactoryBuilderSupport.class.getName() + " must be genericized");
+        }
     }
 
     @Init(eager = true)
@@ -52,9 +62,10 @@ public abstract class WireBuilderSupport implements WireBuilder {
 
     public void connect(SourceWireFactory sourceFactory, TargetWireFactory targetFactory, Class targetType, boolean downScope,
                         ScopeContext targetScopeContext) throws BuilderConfigException {
-        if (!handlesTargetType(targetType)) {
+        if (!targetClass.isAssignableFrom(targetType)) {
             return;
         }
+
         for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getConfiguration().getInvocationConfigurations()
                 .values()) {
             TargetInvoker invoker = createInvoker(sourceFactory.getConfiguration()
@@ -65,30 +76,25 @@ public abstract class WireBuilderSupport implements WireBuilder {
 
     public void completeTargetChain(TargetWireFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
             throws BuilderConfigException {
-        
-        if (!handlesTargetType(targetType)) {
+
+        if (!targetClass.isAssignableFrom(targetType)) {
             return;
         }
         for (TargetInvocationConfiguration targetInvocationConfig : targetFactory.getConfiguration().getInvocationConfigurations()
                 .values()) {
             Method method = targetInvocationConfig.getMethod();
-            TargetInvoker invoker = createInvoker(targetFactory.getConfiguration().getTargetName(), method, targetScopeContext,false);
+            TargetInvoker invoker = createInvoker(targetFactory.getConfiguration().getTargetName(), method, targetScopeContext, false);
             targetInvocationConfig.setTargetInvoker(invoker);
         }
     }
 
     /**
-     * Returns true if an extending implementation can process the given target type
-     */
-    protected abstract boolean handlesTargetType(Class targetType);
-
-    /**
      * Callback to create the specific <code>TargetInvoker</code> type for dispatching to the target type
      *
      * @param targetName the fully qualified name of the wire target
-     * @param operation the operation the invoker will be associated with
-     * @param context the scope context that manages the target context
-     * @param downScope whether the wire source scope is "longer" than the target
+     * @param operation  the operation the invoker will be associated with
+     * @param context    the scope context that manages the target context
+     * @param downScope  whether the wire source scope is "longer" than the target
      */
     protected abstract TargetInvoker createInvoker(QualifiedName targetName, Method operation, ScopeContext context, boolean downScope);
 

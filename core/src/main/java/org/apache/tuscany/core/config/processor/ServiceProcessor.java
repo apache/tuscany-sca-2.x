@@ -52,15 +52,15 @@ public class ServiceProcessor extends ImplementationProcessorSupport {
         // visiting the base implementation class
         List<org.apache.tuscany.model.assembly.Service> services = type.getServices();
         Class[] interfaces = clazz.getInterfaces();
+        org.osoa.sca.annotations.Service serviceAnnotation = clazz.getAnnotation(org.osoa.sca.annotations.Service.class);
         if (interfaces.length == 0) {
             // no interfaces so the class is the service
             addService(services, clazz);
-        } else if (interfaces.length == 1) {
+        } else if (serviceAnnotation == null && interfaces.length == 1) {
             // the impl has one interface, assign it to be the service
             addService(services, interfaces[0]);
         } else {
             // visiting the implementation class
-            org.osoa.sca.annotations.Service serviceAnnotation = clazz.getAnnotation(org.osoa.sca.annotations.Service.class);
             if (serviceAnnotation == null) {
                 return;
             }

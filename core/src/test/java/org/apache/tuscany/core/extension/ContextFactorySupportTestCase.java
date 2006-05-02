@@ -9,7 +9,7 @@ import org.apache.tuscany.model.assembly.impl.AtomicImplementationImpl;
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class GenericReflectionTestCase extends TestCase {
+public class ContextFactorySupportTestCase extends TestCase {
 
     public void testGenericReflection() throws Exception {
         TestFactoryBuilder b = new TestFactoryBuilder();

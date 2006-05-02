@@ -23,7 +23,6 @@ import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.processor.ProcessorUtils;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
-import org.apache.tuscany.core.extension.config.ImplementationProcessor;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.Module;

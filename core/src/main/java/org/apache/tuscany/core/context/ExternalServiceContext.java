@@ -21,7 +21,7 @@ package org.apache.tuscany.core.context;
 public interface ExternalServiceContext extends Context {
 
     /**
-     * Returns the handler responsible for flowing a request through the entry point
+     * Returns the handler responsible for flowing a request through the external service
      * @throws TargetException
      */
      public Object getHandler() throws TargetException;

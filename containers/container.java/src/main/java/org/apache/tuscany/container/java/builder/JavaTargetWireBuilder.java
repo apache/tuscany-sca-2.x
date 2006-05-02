@@ -29,11 +29,7 @@ import java.lang.reflect.Method;
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class JavaTargetWireBuilder extends WireBuilderSupport {
-
-    protected boolean handlesTargetType(Class targetType) {
-        return JavaContextFactory.class.isAssignableFrom(targetType);
-    }
+public class JavaTargetWireBuilder extends WireBuilderSupport<JavaContextFactory> {
 
     protected TargetInvoker createInvoker(QualifiedName targetName, Method operation, ScopeContext context, boolean downScope) {
         boolean cacheable = !downScope;

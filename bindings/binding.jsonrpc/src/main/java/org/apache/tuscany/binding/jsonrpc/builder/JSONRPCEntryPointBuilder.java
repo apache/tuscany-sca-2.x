@@ -16,17 +16,11 @@ import org.apache.tuscany.binding.jsonrpc.assembly.JSONRPCBinding;
 import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
 import org.apache.tuscany.core.extension.EntryPointBuilderSupport;
 import org.apache.tuscany.core.message.MessageFactory;
-import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.osoa.sca.annotations.Scope;
 
 @Scope("MODULE")
-public class JSONRPCEntryPointBuilder extends  EntryPointBuilderSupport {
-
-    @Override
-    protected boolean handlesBindingType(Binding binding) {
-        return JSONRPCBinding.class.isAssignableFrom(binding.getClass());
-    }
+public class JSONRPCEntryPointBuilder extends EntryPointBuilderSupport<JSONRPCBinding> {
 
     @Override
     protected EntryPointContextFactory createEntryPointContextFactory(EntryPoint entryPoint, MessageFactory msgFactory) {

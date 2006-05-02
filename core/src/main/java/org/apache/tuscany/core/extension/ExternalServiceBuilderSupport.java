@@ -1,5 +1,8 @@
 package org.apache.tuscany.core.extension;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
@@ -19,15 +22,24 @@ import org.osoa.sca.annotations.Init;
  *
  * @version $$Rev$$ $$Date$$
  */
-public abstract class ExternalServiceBuilderSupport implements ContextFactoryBuilder {
+public abstract class ExternalServiceBuilderSupport<T extends Binding> implements ContextFactoryBuilder {
 
     private ContextFactoryBuilderRegistry builderRegistry;
     private WireFactoryService wireService;
+    protected Class bindingClass;
 
     public ExternalServiceBuilderSupport() {
+        // reflect the generic type of the subclass
+        Type type = this.getClass().getGenericSuperclass();
+        if (type instanceof ParameterizedType) {
+            bindingClass = (Class) ((ParameterizedType) type).getActualTypeArguments()[0];
+        } else {
+            throw new AssertionError("Subclasses of " + ContextFactoryBuilderSupport.class.getName() + " must be genericized");
+        }
     }
 
     public ExternalServiceBuilderSupport(WireFactoryService wireService) {
+        this();
         this.wireService = wireService;
     }
 
@@ -51,8 +63,11 @@ public abstract class ExternalServiceBuilderSupport implements ContextFactoryBui
             return;
         }
         ExternalService externalService = (ExternalService) object;
-        if (externalService.getBindings().size() < 1
-                || !(handlesBindingType(externalService.getBindings().get(0)))) {
+        if (externalService.getBindings().size() < 1) {
+            //   || !(handlesBindingType(externalService.getBindings().get(0)))) {
+            return;
+        }
+        if (!bindingClass.isAssignableFrom(externalService.getBindings().get(0).getClass())) {
             return;
         }
 
@@ -69,12 +84,14 @@ public abstract class ExternalServiceBuilderSupport implements ContextFactoryBui
     /**
      * Returns true if an extending implementation can process the given binding element
      */
-    protected abstract boolean handlesBindingType(Binding binding);
+    //protected abstract boolean handlesBindingType(Binding binding);
 
     /**
-    * Callback to create the specific <code>ContextFactory</code> type associated with the extending implementation
-    * @param externalService the external service being processed
-    */
+     * Callback to create the specific <code>ContextFactory</code> type associated with the extending
+     * implementation
+     *
+     * @param externalService the external service being processed
+     */
     protected abstract ExternalServiceContextFactory createExternalServiceContextFactory(ExternalService externalService);
 
 }

@@ -21,6 +21,10 @@
     <component name="org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder">
         <system:implementation.system class="org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder"/>
     </component>
+    <component name="org.apache.tuscany.core.config.ComponentTypeIntrospector">
+        <system:implementation.system class="org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector"/>
+    </component>
+
 
     <component name="org.apache.tuscany.container.java.builder.JavaTargetWireBuilder">
         <system:implementation.system class="org.apache.tuscany.container.java.builder.JavaTargetWireBuilder"/>

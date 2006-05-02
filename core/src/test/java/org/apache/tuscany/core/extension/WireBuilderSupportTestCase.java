@@ -1,5 +1,10 @@
 package org.apache.tuscany.core.extension;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.context.QualifiedName;
@@ -14,11 +19,6 @@ import org.apache.tuscany.core.wire.jdk.JDKTargetWireFactory;
 import org.apache.tuscany.core.wire.mock.MockScopeContext;
 import org.apache.tuscany.model.assembly.Implementation;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @version $$Rev$$ $$Date$$
  */
@@ -26,8 +26,8 @@ public class WireBuilderSupportTestCase extends TestCase {
     private Method m;
 
     /**
-     * Tests that {@link WireBuilderSupport} only processes connect operations and sets target invokers for the correct target
-     * type.
+     * Tests that {@link WireBuilderSupport} only processes connect operations and sets target invokers for
+     * the correct target type.
      * <p/>
      * Verifies TUSCANY-218
      *
@@ -79,22 +79,14 @@ public class WireBuilderSupportTestCase extends TestCase {
 
     }
 
-    private class FooWireBuilder extends WireBuilderSupport {
-
-        protected boolean handlesTargetType(Class targetType) {
-            return Foo.class.isAssignableFrom(targetType);
-        }
+    private class FooWireBuilder extends WireBuilderSupport<Foo> {
 
         protected TargetInvoker createInvoker(QualifiedName targetName, Method operation, ScopeContext context, boolean downScope) {
             return new FooInvoker();
         }
     }
 
-    private class BarWireBuilder extends WireBuilderSupport {
-
-        protected boolean handlesTargetType(Class targetType) {
-            return Bar.class.isAssignableFrom(targetType);
-        }
+    private class BarWireBuilder extends WireBuilderSupport<Bar> {
 
         protected TargetInvoker createInvoker(QualifiedName targetName, Method operation, ScopeContext context, boolean downScope) {
             return new BarInvoker();

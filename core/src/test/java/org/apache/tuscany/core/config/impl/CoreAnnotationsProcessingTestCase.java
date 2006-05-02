@@ -66,6 +66,18 @@ public class CoreAnnotationsProcessingTestCase extends TestCase {
     }
 
     /**
+     * Tests the case where an implementation specifies a service interface of its parent as opposed to the
+     * single interface it directly implements
+     */
+    public void testInteraceHierarchyServiceProcessing() throws Exception {
+        ComponentInfo type = factory.createComponentInfo();
+        introspector.introspect(SuperFooImpl.class, type);
+        assertEquals(1, type.getServices().size());
+        ServiceContract contract = type.getServices().get(0).getServiceContract();
+        assertEquals(SuperSuperFoo.class, contract.getInterface());
+    }
+
+    /**
      * Tests the case where a class implements two interfaces, with one specified using <code>@Service</code>
      * and one marked with <code>@Remotable</code>
      */
@@ -119,24 +131,15 @@ public class CoreAnnotationsProcessingTestCase extends TestCase {
     }
 
     /**
-    FIXME JFM - temporarily disabled until non-annotated properties are fixed
-    public void testPropertyProcessing() throws Exception {
-        ComponentInfo type = factory.createComponentInfo();
-        introspector.introspect(TestComponentImpl.class, type);
-        List<Property>properties = type.getProperties();
-        assertEquals(3, properties.size());
-        for (Property property : properties) {
-            if (!property.getName().equals("foo") && !property.getName().equals("fooRequired")
-                    && !property.getName().equals("baz")) {
-                fail("Property names not handled properly");
-            }
-            if (property.getName().equals("fooRequired")) {
-                assertTrue(property.isRequired());
-            } else {
-                assertFalse(property.isRequired());
-            }
-        }
-    } **/
+     * FIXME JFM - temporarily disabled until non-annotated properties are fixed public void
+     * testPropertyProcessing() throws Exception { ComponentInfo type = factory.createComponentInfo();
+     * introspector.introspect(TestComponentImpl.class, type); List<Property>properties =
+     * type.getProperties(); assertEquals(3, properties.size()); for (Property property : properties) { if
+     * (!property.getName().equals("foo") && !property.getName().equals("fooRequired") &&
+     * !property.getName().equals("baz")) { fail("Property names not handled properly"); } if
+     * (property.getName().equals("fooRequired")) { assertTrue(property.isRequired()); } else {
+     * assertFalse(property.isRequired()); } } } *
+     */
 
     public void testReferenceProcessing() throws Exception {
         ComponentInfo type = factory.createComponentInfo();
@@ -164,7 +167,7 @@ public class CoreAnnotationsProcessingTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         factory = new SystemAssemblyFactoryImpl();
-        introspector = ProcessorUtils.createCoreIntrospector(factory); 
+        introspector = ProcessorUtils.createCoreIntrospector(factory);
     }
 
 }

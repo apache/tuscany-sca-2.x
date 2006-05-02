@@ -27,15 +27,7 @@ import org.apache.tuscany.core.wire.TargetInvoker;
 import org.osoa.sca.annotations.Scope;
 
 @Scope("MODULE")
-public class ExternalWebServiceWireBuilder extends WireBuilderSupport {
-
-    public ExternalWebServiceWireBuilder() {
-    }
-
-    @Override
-    protected boolean handlesTargetType(Class targetType) {
-        return WSExternalServiceContextFactory.class.isAssignableFrom(targetType);
-    }
+public class ExternalWebServiceWireBuilder extends WireBuilderSupport<WSExternalServiceContextFactory> {
 
     @Override
     protected TargetInvoker createInvoker(QualifiedName targetName, Method operation, ScopeContext context, boolean downScope) {

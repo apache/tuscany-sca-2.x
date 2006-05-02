@@ -33,7 +33,7 @@ public class HelloWorldMCTestCase extends TestCase {
 
     public void testHelloWorld() throws Exception {
         TuscanyRuntime tuscany = new TuscanyRuntime("test", null);
-        tuscany.start();
+        tuscany.start();                     
         ModuleContext moduleContext = CurrentModuleContext.getContext();
         assertNotNull(moduleContext);
 

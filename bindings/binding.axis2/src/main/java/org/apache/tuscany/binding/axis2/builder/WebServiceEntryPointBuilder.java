@@ -21,21 +21,16 @@ import org.apache.tuscany.binding.axis2.config.WSEntryPointContextFactory;
 import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
 import org.apache.tuscany.core.extension.EntryPointBuilderSupport;
 import org.apache.tuscany.core.message.MessageFactory;
-import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.osoa.sca.annotations.Scope;
 
 /**
  * Creates a <code>ContextFactory</code> for an entry point configured with the {@link WebServiceBinding}
- * 
+ *
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class WebServiceEntryPointBuilder extends EntryPointBuilderSupport {
-
-    protected boolean handlesBindingType(Binding binding) {
-        return binding instanceof WebServiceBinding;
-    }
+public class WebServiceEntryPointBuilder extends EntryPointBuilderSupport<WebServiceBinding> {
 
     protected EntryPointContextFactory createEntryPointContextFactory(EntryPoint entryPoint, MessageFactory msgFactory) {
         return new WSEntryPointContextFactory(entryPoint.getName(), messageFactory);

@@ -13,6 +13,9 @@
  */
 package org.apache.tuscany.core.extension;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
@@ -33,13 +36,21 @@ import org.osoa.sca.annotations.Init;
  *
  * @version $$Rev$$ $$Date$$
  */
-public abstract class EntryPointBuilderSupport implements ContextFactoryBuilder {
+public abstract class EntryPointBuilderSupport<T extends Binding> implements ContextFactoryBuilder {
 
     protected ContextFactoryBuilderRegistry builderRegistry;
     protected WireFactoryService wireService;
     protected MessageFactory messageFactory;
+    protected Class bindingClass;
 
     public EntryPointBuilderSupport() {
+        // reflect the generic type of the subclass
+        Type type = this.getClass().getGenericSuperclass();
+        if (type instanceof ParameterizedType) {
+            bindingClass = (Class) ((ParameterizedType) type).getActualTypeArguments()[0];
+        } else {
+            throw new AssertionError("Subclasses of " + ContextFactoryBuilderSupport.class.getName() + " must be genericized");
+        }
     }
 
     @Init(eager = true)
@@ -72,8 +83,10 @@ public abstract class EntryPointBuilderSupport implements ContextFactoryBuilder 
             return;
         }
         EntryPoint entryPoint = (EntryPoint) object;
-        if (entryPoint.getBindings().size() < 1
-                || !(handlesBindingType(entryPoint.getBindings().get(0)))) {
+        if (entryPoint.getBindings().size() < 1) {
+            return;
+        }
+        if (!bindingClass.isAssignableFrom(entryPoint.getBindings().get(0).getClass())) {
             return;
         }
 
@@ -86,14 +99,12 @@ public abstract class EntryPointBuilderSupport implements ContextFactoryBuilder 
     }
 
     /**
-     * Returns true if an extending implementation can process the given binding element
-     */
-    protected abstract boolean handlesBindingType(Binding binding);
-
-    /**
-     * Callback to create the specific <code>ContextFactory</code> type associated with the extending implementation
+     * Callback to create the specific <code>ContextFactory</code> type associated with the extending
+     * implementation
+     *
      * @param entryPoint the entry point being processed
-     * @param msgFactory the message factory to be used by <code>EntryPointContext</code> when flowing invocations
+     * @param msgFactory the message factory to be used by <code>EntryPointContext</code> when flowing
+     *                   invocations
      */
     protected abstract EntryPointContextFactory createEntryPointContextFactory(EntryPoint entryPoint, MessageFactory msgFactory);
 
