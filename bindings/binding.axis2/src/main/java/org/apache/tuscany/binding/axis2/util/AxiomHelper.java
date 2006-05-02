@@ -27,6 +27,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.core.wire.InvocationRuntimeException;
 import org.apache.tuscany.sdo.helper.DataFactoryImpl;
 import org.apache.tuscany.sdo.helper.XMLHelperImpl;
 import org.apache.tuscany.sdo.helper.XSDHelperImpl;
@@ -176,6 +177,9 @@ public final class AxiomHelper {
     public static DataObject toDataObject(TypeHelper typeHelper, Object[] os, QName typeQN) {
         XSDHelper xsdHelper = new XSDHelperImpl(typeHelper);
         Property property = xsdHelper.getGlobalProperty(typeQN.getNamespaceURI(), typeQN.getLocalPart(), true);
+        if(null == property){
+            throw new InvocationRuntimeException("Type '" + typeQN.toString() + "' not found in registered SDO types." );
+        }
         DataObject dataObject = new DataFactoryImpl(typeHelper).create(property.getType());
         List ips = dataObject.getInstanceProperties();
         for (int i = 0; i < ips.size(); i++) {
