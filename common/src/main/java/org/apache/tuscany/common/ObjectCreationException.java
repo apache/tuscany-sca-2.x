@@ -1,11 +1,12 @@
-package org.apache.tuscany.spi;
+package org.apache.tuscany.common;
 
 /**
  * Denotes an error creating a new object instance
  *
  * @version $Rev: 368822 $ $Date: 2006-01-13 10:54:38 -0800 (Fri, 13 Jan 2006) $
  */
-public class ObjectCreationException extends CoreRuntimeException {
+public class ObjectCreationException extends TuscanyRuntimeException {
+    private static final long serialVersionUID = -6423113430265944499L;
 
     public ObjectCreationException() {
         super();

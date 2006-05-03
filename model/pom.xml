@@ -28,6 +28,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apache.tuscany</groupId>
+            <artifactId>tuscany-common</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>wsdl4j</groupId>
             <artifactId>wsdl4j</artifactId>
             <version>1.5.2</version>

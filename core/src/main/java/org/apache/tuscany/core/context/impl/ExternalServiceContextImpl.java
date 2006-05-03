@@ -13,7 +13,7 @@
  */
 package org.apache.tuscany.core.context.impl;
 
-import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.core.context.CoreRuntimeException;

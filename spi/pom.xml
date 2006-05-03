@@ -35,12 +35,6 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany</groupId>
-            <artifactId>tuscany-common</artifactId>
-            <version>${pom.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany</groupId>
             <artifactId>tuscany-model</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>

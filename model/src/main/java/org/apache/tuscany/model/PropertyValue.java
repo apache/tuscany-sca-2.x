@@ -16,12 +16,14 @@
  */
 package org.apache.tuscany.model;
 
+import org.apache.tuscany.common.ObjectFactory;
+
 /**
  * @version $Rev$ $Date$
  */
 public class PropertyValue<T> extends ModelObject {
     private String name;
-    private T value;
+    private ObjectFactory<T> valueFactory;
 
     public String getName() {
         return name;
@@ -31,11 +33,11 @@ public class PropertyValue<T> extends ModelObject {
         this.name = name;
     }
 
-    public T getValue() {
-        return value;
+    public ObjectFactory<T> getValueFactory() {
+        return valueFactory;
     }
 
-    public void setValue(T value) {
-        this.value = value;
+    public void setValueFactory(ObjectFactory<T> valueFactory) {
+        this.valueFactory = valueFactory;
     }
 }

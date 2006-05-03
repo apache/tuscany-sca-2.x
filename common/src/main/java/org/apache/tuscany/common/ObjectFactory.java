@@ -1,4 +1,4 @@
-package org.apache.tuscany.spi;
+package org.apache.tuscany.common;
 
 /**
  * Implementations create new instances of a particular type

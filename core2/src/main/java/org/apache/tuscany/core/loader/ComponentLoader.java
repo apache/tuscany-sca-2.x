@@ -115,7 +115,7 @@ public class ComponentLoader extends LoaderSupport {
                 // create the configured property definition
                 ConfiguredProperty configuredProperty = factory.createConfiguredProperty();
                 configuredProperty.setName(name);
-                configuredProperty.setValue(value);
+                configuredProperty.setValueFactory(value);
                 configuredProperty.setOverrideOption(override);
                 configuredProperties.add(configuredProperty);
                 break;

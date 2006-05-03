@@ -16,7 +16,7 @@ package org.apache.tuscany.core.system.config;
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ContextResolver;
-import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.injection.InterCompositeReferenceFactory;

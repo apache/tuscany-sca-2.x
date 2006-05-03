@@ -1,7 +1,7 @@
 package org.apache.tuscany.core.injection;
 
 import org.apache.tuscany.core.builder.ContextResolver;
-import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.core.context.CompositeContext;
 
 /**

@@ -1,6 +1,6 @@
 package org.apache.tuscany.core.injection;
 
-import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.common.ObjectCreationException;
 
 /**
  * Implementations inject a pre-configured value on an instance
