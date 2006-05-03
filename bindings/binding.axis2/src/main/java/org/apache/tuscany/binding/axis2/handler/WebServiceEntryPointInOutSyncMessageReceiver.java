@@ -16,18 +16,17 @@
  */
 package org.apache.tuscany.binding.axis2.handler;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractInOutSyncMessageReceiver;
+import org.apache.tuscany.binding.axis2.util.ClassLoaderHelper;
 import org.apache.tuscany.binding.axis2.util.DataBinding;
 import org.apache.tuscany.core.wire.InvocationRuntimeException;
 import org.apache.ws.commons.om.OMElement;
 import org.apache.ws.commons.soap.SOAPEnvelope;
-import org.apache.ws.commons.soap.SOAPProcessingException;
 
 public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {
 
@@ -45,38 +44,32 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
 
     @Override
     public void invokeBusinessLogic(MessageContext inMC, MessageContext outMC) throws AxisFault {
-        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-        ClassLoader mycl = getClass().getClassLoader();
         try {
-            if (tccl != mycl) {
-                Thread.currentThread().setContextClassLoader(mycl);
-            }
+
+            OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
+            Object[] request = dataBinding.fromOMElement(requestOM);
+            
+            Object response;
+            ClassLoader oldCL = ClassLoaderHelper.setApplicationClassLoader();
             try {
+                
+                response = operationMethod.invoke(entryPointProxy, request);
 
-                invokeEntryPoint(inMC, outMC);
+            } finally {
+                if (oldCL != null) {
+                    Thread.currentThread().setContextClassLoader(oldCL);
+                }
+            }
 
-            } catch (Exception e) {
-                throw new InvocationRuntimeException(e);
-            }
-        } finally {
-            if (tccl != mycl) {
-                Thread.currentThread().setContextClassLoader(tccl);
-            }
+            OMElement responseOM = dataBinding.toOMElement(new Object[] { response });
+
+            SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
+            soapEnvelope.getBody().addChild(responseOM);
+            outMC.setEnvelope(soapEnvelope);
+            outMC.getOperationContext().setProperty(Constants.RESPONSE_WRITTEN, Constants.VALUE_TRUE);
+
+        } catch (Exception e) {
+            throw new InvocationRuntimeException(e);
         }
     }
-
-    protected void invokeEntryPoint(MessageContext inMC, MessageContext outMC) throws IllegalArgumentException, IllegalAccessException,
-            InvocationTargetException, SOAPProcessingException, AxisFault {
-
-        OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
-        Object[] request = dataBinding.fromOMElement(requestOM);
-        Object response = operationMethod.invoke(entryPointProxy, request);
-        OMElement responseOM = dataBinding.toOMElement(new Object[] { response });
-
-        SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
-        soapEnvelope.getBody().addChild(responseOM);
-        outMC.setEnvelope(soapEnvelope);
-        outMC.getOperationContext().setProperty(Constants.RESPONSE_WRITTEN, Constants.VALUE_TRUE);
-    }
-
 }

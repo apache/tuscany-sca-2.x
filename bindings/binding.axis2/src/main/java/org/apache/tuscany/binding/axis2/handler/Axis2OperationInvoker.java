@@ -21,6 +21,7 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.context.MessageContext;
+import org.apache.tuscany.binding.axis2.util.ClassLoaderHelper;
 import org.apache.tuscany.binding.axis2.util.DataBinding;
 import org.apache.ws.commons.om.OMElement;
 import org.apache.ws.commons.soap.SOAPEnvelope;
@@ -68,14 +69,15 @@ public class Axis2OperationInvoker {
 
         operationClient.addMessageContext(requestMC);
 
-        ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+        ClassLoader oldCL = ClassLoaderHelper.setSystemClassLoader();
         try {
-            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
             operationClient.execute(true);
 
         } finally {
-            Thread.currentThread().setContextClassLoader(ccl);
+            if (oldCL != null) {
+                Thread.currentThread().setContextClassLoader(oldCL);
+            }
         }
 
         MessageContext responseMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);

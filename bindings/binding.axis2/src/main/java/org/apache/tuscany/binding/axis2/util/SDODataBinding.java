@@ -33,13 +33,27 @@ public class SDODataBinding implements DataBinding {
     }
 
     public Object[] fromOMElement(OMElement omElement) {
-        Object[] args = AxiomHelper.toObjects(typeHelper, omElement);
-        return args;
+        ClassLoader oldCL = ClassLoaderHelper.setApplicationClassLoader();
+        try {
+            Object[] args = AxiomHelper.toObjects(typeHelper, omElement);
+            return args;
+        } finally {
+            if (oldCL != null) {
+                Thread.currentThread().setContextClassLoader(oldCL);
+            }
+        }
     }
 
     public OMElement toOMElement(Object[] args) {
-        OMElement omElement = AxiomHelper.toOMElement(typeHelper, args, typeQN);
-        return omElement;
+        ClassLoader oldCL = ClassLoaderHelper.setApplicationClassLoader();
+        try {
+            OMElement omElement = AxiomHelper.toOMElement(typeHelper, args, typeQN);
+            return omElement;
+        } finally {
+            if (oldCL != null) {
+                Thread.currentThread().setContextClassLoader(oldCL);
+            }
+        }
     }
 
 }

@@ -43,6 +43,7 @@ import org.apache.axis2.description.InOutAxisOperation;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.transport.http.AxisServlet;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
+import org.apache.tuscany.binding.axis2.util.ClassLoaderHelper;
 import org.apache.tuscany.binding.axis2.util.DataBinding;
 import org.apache.tuscany.binding.axis2.util.SDODataBinding;
 import org.apache.tuscany.core.context.CompositeContext;
@@ -64,13 +65,10 @@ public class WebServiceEntryPointServlet extends AxisServlet {
 
     private boolean tuscanyGetDefaultAxis2xmlChecked;
 
-    public void init(ServletConfig config) throws ServletException {
-        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-        ClassLoader mycl = getClass().getClassLoader();
+    public void init(final ServletConfig config) throws ServletException {
+        ClassLoaderHelper.initApplicationClassLoader();
         try {
-            if (tccl != mycl) {
-                Thread.currentThread().setContextClassLoader(mycl);
-            }
+            ClassLoaderHelper.setSystemClassLoader();
             try {
 
                 super.init(config);
@@ -80,9 +78,7 @@ public class WebServiceEntryPointServlet extends AxisServlet {
                 throw new ServletException(e);
             }
         } finally {
-            if (tccl != mycl) {
-                Thread.currentThread().setContextClassLoader(tccl);
-            }
+            ClassLoaderHelper.setApplicationClassLoader();
         }
     }
 
@@ -211,41 +207,30 @@ public class WebServiceEntryPointServlet extends AxisServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
-
-        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-        ClassLoader mycl = getClass().getClassLoader();
+    protected void doGet(final HttpServletRequest arg0, final HttpServletResponse arg1) throws ServletException, IOException {
+        ClassLoaderHelper.initApplicationClassLoader();
         try {
-            if (tccl != mycl) {
-                Thread.currentThread().setContextClassLoader(mycl);
-            }
+            ClassLoaderHelper.setSystemClassLoader();
             super.doGet(arg0, arg1);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServletException(e);
         } finally {
-            if (tccl != mycl) {
-                Thread.currentThread().setContextClassLoader(tccl);
-            }
+            ClassLoaderHelper.setApplicationClassLoader();
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
-        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-        ClassLoader mycl = getClass().getClassLoader();
+    protected void doPost(final HttpServletRequest arg0, final HttpServletResponse arg1) throws ServletException, IOException {
+        ClassLoaderHelper.initApplicationClassLoader();
         try {
-            if (tccl != mycl) {
-                Thread.currentThread().setContextClassLoader(mycl);
-            }
+            ClassLoaderHelper.setSystemClassLoader();
             super.doPost(arg0, arg1);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServletException(e);
         } finally {
-            if (tccl != mycl) {
-                Thread.currentThread().setContextClassLoader(tccl);
-            }
+            ClassLoaderHelper.setApplicationClassLoader();
         }
     }
 }
