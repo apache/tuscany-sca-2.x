@@ -16,6 +16,8 @@
  */
 package org.apache.tuscany.spi.loader;
 
+import javax.xml.stream.XMLInputFactory;
+
 /**
  * Context holder that can be used during the load process to store information
  * that is not part of the logical model. This should be regarded as transient
@@ -25,21 +27,34 @@ package org.apache.tuscany.spi.loader;
  */
 public class LoaderContext {
     private final ClassLoader classLoader;
+    private final XMLInputFactory xmlFactory;
 
     /**
      * Constructor specifying the loader for application resources.
      *
      * @param classLoader the loader for application resources
+     * @param xmlFactory  a factory that can be used to obtain an StAX XMLStreamReader
      */
-    public LoaderContext(ClassLoader classLoader) {
+    public LoaderContext(ClassLoader classLoader, XMLInputFactory xmlFactory) {
         this.classLoader = classLoader;
+        this.xmlFactory = xmlFactory;
     }
 
     /**
      * Returns a class loader that can be used to load application resources.
+     *
      * @return a class loader that can be used to load application resources
      */
     public ClassLoader getClassLoader() {
         return classLoader;
+    }
+
+    /**
+     * Returns a factory that can be used to obtain an StAX XMLStreamReader.
+     *
+     * @return a factory that can be used to obtain an StAX XMLStreamReader
+     */
+    public XMLInputFactory getXmlFactory() {
+        return xmlFactory;
     }
 }

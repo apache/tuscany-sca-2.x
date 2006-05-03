@@ -24,7 +24,7 @@ import java.util.HashMap;
  */
 public class CompositeComponentType extends ComponentType {
     private String name;
-    private final Map<String, Component> components = new HashMap<String, Component>();
+    private final Map<String, Component<?>> components = new HashMap<String, Component<?>>();
 
     public String getName() {
         return name;
@@ -34,7 +34,7 @@ public class CompositeComponentType extends ComponentType {
         this.name = name;
     }
 
-    public Map<String, Component> getComponents() {
+    public Map<String, Component<?>> getComponents() {
         return components;
     }
 

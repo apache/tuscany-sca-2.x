@@ -76,7 +76,7 @@ public class StAXLoaderRegistryImplTestCase extends MockObjectTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         name = new QName("http://mock", "test");
-        loaderContext = new LoaderContext(null);
+        loaderContext = new LoaderContext(null, null);
         registry = new StAXLoaderRegistryImpl();
         mockMonitor = mock(StAXLoaderRegistryImpl.Monitor.class);
         registry.setMonitor((StAXLoaderRegistryImpl.Monitor) mockMonitor.proxy());

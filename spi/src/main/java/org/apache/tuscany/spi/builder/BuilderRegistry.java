@@ -19,6 +19,7 @@ package org.apache.tuscany.spi.builder;
 import org.apache.tuscany.model.BoundReference;
 import org.apache.tuscany.model.BoundService;
 import org.apache.tuscany.model.Component;
+import org.apache.tuscany.model.Implementation;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.wire.SourceWireFactory;
@@ -28,11 +29,13 @@ import org.apache.tuscany.spi.wire.TargetWireFactory;
  * @version $Rev$ $Date$
  */
 public interface BuilderRegistry {
-    void register(ComponentBuilder<?> builder);
+    <I extends Implementation<?>> void register(ComponentBuilder<I> builder);
+
+    <I extends Implementation<?>> void register(Class<I> implClass, ComponentBuilder<I> builder);
 
     void register(WireBuilder builder);
 
-    Context build(CompositeContext parent, Component component);
+    <I extends Implementation<?>> Context build(CompositeContext parent, Component<I> component);
 
     Context build(CompositeContext parent, BoundService boundService);
 

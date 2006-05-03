@@ -16,19 +16,19 @@
  */
 package org.apache.tuscany.model;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @version $Rev$ $Date$
  */
-public class Component<T extends Implementation> extends ModelObject {
+public class Component<I extends Implementation<?>> extends ModelObject {
     private String name;
-    private final T implementation;
+    private final I implementation;
     private final Map<String, ReferenceTarget> referenceTargets = new HashMap<String, ReferenceTarget>();
     private final Map<String, PropertyValue<?>> propertyValues = new HashMap<String, PropertyValue<?>>();
 
-    public Component(T implementation) {
+    public Component(I implementation) {
         this.implementation = implementation;
     }
 
@@ -40,7 +40,7 @@ public class Component<T extends Implementation> extends ModelObject {
         this.name = name;
     }
 
-    public T getImplementation() {
+    public I getImplementation() {
         return implementation;
     }
 
