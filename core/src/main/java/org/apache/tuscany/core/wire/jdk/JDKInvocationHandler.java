@@ -16,11 +16,11 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.wire.Interceptor;
+import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.core.wire.InvocationConfiguration;
-import org.apache.tuscany.core.wire.TargetInvoker;
-import org.apache.tuscany.core.message.Message;
+import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.core.message.MessageFactory;
 
 import java.lang.reflect.InvocationHandler;

@@ -14,8 +14,9 @@
 package org.apache.tuscany.core.builder;
 
 import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.wire.SourceWireFactory;
-import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.spi.wire.SourceWireFactory;
+import org.apache.tuscany.spi.wire.TargetWireFactory;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
 
 /**
  * Implementations perform the second phase of converting a logical model representing an assembly into a series of
@@ -23,7 +24,7 @@ import org.apache.tuscany.core.wire.TargetWireFactory;
  * bridging {@link org.apache.tuscany.core.wire.InvocationConfiguration}s held by source- and target-side proxy
  * factories. <code>WireBuilder</code>s generally operate by target implementation type. In other words, for a wire
  * from a Java source to a JavaScript target, the Javascript <code>WireBuilder</code> will complete the wire. This is
- * necessary as a <code>WireBuilder</code> must set a {@link org.apache.tuscany.core.wire.TargetInvoker} that is
+ * necessary as a <code>WireBuilder</code> must set a {@link org.apache.tuscany.spi.wire.TargetInvoker} that is
  * responsible for dispatching to an implementation on the source side of the wire.
  * <p>
  * Runtimes are generally configured with a {@link org.apache.tuscany.core.builder.impl.DefaultWireBuilder} as a
@@ -57,7 +58,7 @@ public interface WireBuilder {
 
     /**
      * Finishes processing the target side wire chain. For example, a
-     * {@link org.apache.tuscany.core.wire.TargetInvoker} used by target-side proxies is usually set during this
+     * {@link org.apache.tuscany.spi.wire.TargetInvoker} used by target-side proxies is usually set during this
      * phase.
      * 
      * @param targetFactory the target-side proxy factory

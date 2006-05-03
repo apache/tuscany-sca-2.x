@@ -15,12 +15,13 @@ package org.apache.tuscany.core.builder;
 
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
+import org.apache.tuscany.spi.builder.BuilderException;
 
 import java.util.List;
 
 /**
- * Implementations contribute {@link org.apache.tuscany.core.wire.Interceptor}s or {@link
- * org.apache.tuscany.core.wire.MessageHandler}s that handle source-side policy on a wire.  
+ * Implementations contribute {@link org.apache.tuscany.spi.wire.Interceptor}s or {@link
+ * org.apache.tuscany.spi.wire.MessageHandler}s that handle source-side policy on a wire.
  *
  * @version $$Rev$$ $$Date$$
  */

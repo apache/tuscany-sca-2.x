@@ -13,8 +13,8 @@
  */
 package org.apache.tuscany.core.builder.impl;
 
-import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.injection.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.ObjectCreationException;
 
 import java.util.ArrayList;
 import java.util.List;

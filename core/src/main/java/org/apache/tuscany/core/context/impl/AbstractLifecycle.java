@@ -22,18 +22,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.core.context.RuntimeEventListener;
-import org.apache.tuscany.core.context.EventFilter;
+import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.core.context.Lifecycle;
+import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.filter.TrueFilter;
-import org.apache.tuscany.core.context.event.Event;
+import org.apache.tuscany.spi.event.Event;
 
 /**
  * @version $Rev$ $Date$
  */
-public class AbstractLifecycle {
+public abstract class AbstractLifecycle implements Lifecycle {
     private static final EventFilter TRUE_FILTER = new TrueFilter();
     protected String name;
-    protected int lifecycleState = Lifecycle.UNINITIALIZED;
+    protected int lifecycleState = UNINITIALIZED;
     // Listeners for context events
     private Map<EventFilter, List<RuntimeEventListener>> listeners;
 
@@ -54,6 +55,18 @@ public class AbstractLifecycle {
 
     public int getLifecycleState() {
         return lifecycleState;
+    }
+
+    protected void setLifecycleState(int lifecycleState) {
+        this.lifecycleState = lifecycleState;
+    }
+
+    public void start() throws CoreRuntimeException {
+        setLifecycleState(STARTED);
+    }
+
+    public void stop() throws CoreRuntimeException {
+        setLifecycleState(STOPPED);
     }
 
     public void addListener(RuntimeEventListener listener) {

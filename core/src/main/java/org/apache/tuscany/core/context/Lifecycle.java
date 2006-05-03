@@ -64,16 +64,4 @@ public interface Lifecycle {
      * @throws CoreRuntimeException
      */
     void stop() throws CoreRuntimeException;
-
-    /**
-     * Returns the name of the Lifecycle.
-     * @return the name of the Lifecycle
-     */
-    String getName();
-
-    /**
-     * Sets the name of the Lifecycle.
-     * @param name the name of the Lifecycle
-     */
-    void setName(String name);
 }

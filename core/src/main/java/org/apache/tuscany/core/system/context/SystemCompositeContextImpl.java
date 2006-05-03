@@ -32,7 +32,7 @@ import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.system.config.SystemObjectContextFactory;
-import org.apache.tuscany.core.wire.WireFactoryFactory;
+import org.apache.tuscany.spi.wire.WireFactoryFactory;
 import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 
 

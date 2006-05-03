@@ -1,7 +1,7 @@
 package org.apache.tuscany.core.context.filter;
 
-import org.apache.tuscany.core.context.EventFilter;
-import org.apache.tuscany.core.context.event.Event;
+import org.apache.tuscany.spi.event.EventFilter;
+import org.apache.tuscany.spi.event.Event;
 
 /**
  * An event filter that always returns a true condition

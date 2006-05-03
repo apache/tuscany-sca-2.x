@@ -69,17 +69,17 @@ public class MockFactory {
      * Creates an composite component with the given name
      */
     public static ModuleComponent createCompositeComponent(String name) {
-        ModuleComponent sc = systemFactory.createModuleComponent();
-        Module impl = systemFactory.createModule();
-        impl.setName(name);
-        //impl.setImplementationClass(CompositeContextImpl.class);
-        sc.setImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(Scope.AGGREGATE);
+
+        Module impl = systemFactory.createModule();
+        impl.setName(name);
         impl.setComponentInfo(systemFactory.createComponentInfo());
         impl.getComponentInfo().getServices().add(s);
+
+        ModuleComponent sc = systemFactory.createModuleComponent();
         sc.setName(name);
         sc.setImplementation(impl);
         return sc;

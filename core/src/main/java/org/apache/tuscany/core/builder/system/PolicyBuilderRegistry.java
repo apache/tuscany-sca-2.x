@@ -1,6 +1,6 @@
 package org.apache.tuscany.core.builder.system;
 
-import org.apache.tuscany.core.builder.BuilderException;
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.core.builder.SourcePolicyBuilder;
 import org.apache.tuscany.core.builder.TargetPolicyBuilder;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * A System registry for {@link org.apache.tuscany.core.builder.PolicyBuilder}s. <code>PolicyBuilder</code>s will be invoked when
- * a {@link org.apache.tuscany.core.wire.WireFactory} is constructed by the {@link org.apache.tuscany.core.wire.WireFactory}
+ * a {@link org.apache.tuscany.spi.wire.WireFactory} is constructed by the {@link org.apache.tuscany.spi.wire.WireFactory}
  * service.
  * <p/>
  * <code>PolicyBuilder</code>s operate on either a source- or target-side wire and typically are registered by runtime extensions

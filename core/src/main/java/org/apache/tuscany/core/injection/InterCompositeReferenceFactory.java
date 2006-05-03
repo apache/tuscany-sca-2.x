@@ -14,11 +14,12 @@
 package org.apache.tuscany.core.injection;
 
 import org.apache.tuscany.core.builder.ContextResolver;
-import org.apache.tuscany.core.builder.ObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.context.TargetException;
 
 /**
  * Returns a direct reference to a target service exposed in another composite, i.e. the factory avoids creating proxies

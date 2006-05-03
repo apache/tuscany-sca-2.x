@@ -24,6 +24,9 @@ import org.apache.tuscany.core.wire.mock.MockHandler;
 import org.apache.tuscany.core.wire.mock.MockStaticInvoker;
 import org.apache.tuscany.core.wire.mock.MockSyncInterceptor;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
+import org.apache.tuscany.core.wire.InvocationConfiguration;
+import org.apache.tuscany.core.wire.MethodHashMap;
+import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

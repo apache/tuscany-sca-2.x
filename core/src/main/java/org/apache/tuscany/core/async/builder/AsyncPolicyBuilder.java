@@ -21,13 +21,13 @@ import java.util.List;
 import javax.resource.spi.work.WorkManager;
 
 import org.apache.tuscany.core.async.invocation.AsyncInterceptor;
-import org.apache.tuscany.core.builder.BuilderException;
+import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
 import org.apache.tuscany.core.builder.SourcePolicyBuilder;
 import org.apache.tuscany.core.builder.TargetPolicyBuilder;
 import org.apache.tuscany.core.builder.system.PolicyBuilderRegistry;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.model.assembly.ConfiguredReference;

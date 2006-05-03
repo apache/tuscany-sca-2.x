@@ -16,14 +16,14 @@
  */
 package org.apache.tuscany.core.system.context;
 
-import org.apache.tuscany.core.builder.ObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
-import org.apache.tuscany.core.injection.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.context.impl.AbstractContext;
-import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.core.context.ContextInitException;
 import org.apache.tuscany.core.context.event.InstanceCreated;
 

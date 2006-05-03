@@ -3,7 +3,7 @@ package org.apache.tuscany.core.system.context;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
-import org.apache.tuscany.core.builder.BuilderException;
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.system.annotation.Autowire;

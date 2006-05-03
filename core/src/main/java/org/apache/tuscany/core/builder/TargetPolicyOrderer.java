@@ -16,8 +16,8 @@ package org.apache.tuscany.core.builder;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
 
 /**
- * Implementation order target-side policy {@link org.apache.tuscany.core.wire.Interceptor}s or
- * {@link org.apache.tuscany.core.wire.MessageHandler}s in a {@link org.apache.tuscany.core.wire.WireConfiguration}.
+ * Implementation order target-side policy {@link org.apache.tuscany.spi.wire.Interceptor}s or
+ * {@link org.apache.tuscany.spi.wire.MessageHandler}s in a {@link org.apache.tuscany.core.wire.WireConfiguration}.
 
  * @version $$Rev$$ $$Date$$
  */

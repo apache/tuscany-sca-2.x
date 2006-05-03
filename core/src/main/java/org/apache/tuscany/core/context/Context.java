@@ -16,6 +16,10 @@
  */
 package org.apache.tuscany.core.context;
 
+import org.apache.tuscany.spi.EventPublisher;
+import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.QualifiedName;
+
 /**
  * An entity that provides an execution context for a runtime artifact or artifacts. A <code>Context</code> may
  * be a composite, managing child contexts or it may be an atomic, i.e. leaf, context.
@@ -23,6 +27,18 @@ package org.apache.tuscany.core.context;
  * @version $Rev$ $Date$
  */
 public interface Context extends EventPublisher, Lifecycle {
+    /**
+     * Returns the name of the Context.
+     * @return the name of the Context
+     */
+    String getName();
+
+    /**
+     * Sets the name of the Context.
+     * @param name the name of the Context
+     */
+    void setName(String name);
+
     /**
      * Returns the instance associated with the requested name, which may be in a atomic or composite form. Atomic (i.e.
      * leaf) contexts will return an instance associated with the service name part of the compound name, which may be
@@ -35,7 +51,7 @@ public interface Context extends EventPublisher, Lifecycle {
      *
      * @param qName a qualified name of the requested instance
      * @return the implementation instance or a proxy to it
-     * @throws TargetException
+     * @throws org.apache.tuscany.spi.context.TargetException
      *          if an error occurs retrieving the instance or the requested component is not an entry
      *          point.
      * @see CompositeContext
@@ -43,4 +59,13 @@ public interface Context extends EventPublisher, Lifecycle {
      */
     public Object getInstance(QualifiedName qName) throws TargetException;
 
+    /**
+     * Returns the parent context, or null if the context does not have one
+     */
+    CompositeContext getParent();
+
+    /**
+     * Sets the parent context
+     */
+    void setParent(CompositeContext parent);
 }

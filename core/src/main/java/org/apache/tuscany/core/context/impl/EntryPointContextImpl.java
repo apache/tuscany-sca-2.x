@@ -13,14 +13,14 @@
  */
 package org.apache.tuscany.core.context.impl;
 
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.wire.SourceWireFactory;
+import org.apache.tuscany.spi.wire.ProxyCreationException;
+import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.ContextInitException;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
-import org.apache.tuscany.core.wire.ProxyCreationException;
-import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 
 import java.lang.reflect.InvocationHandler;

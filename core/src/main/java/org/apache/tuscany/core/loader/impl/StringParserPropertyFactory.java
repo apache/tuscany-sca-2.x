@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.core.loader.impl;
 
-import org.apache.tuscany.core.builder.ObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.loader.StAXPropertyFactory;

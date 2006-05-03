@@ -13,10 +13,8 @@
  */
 package org.apache.tuscany.core.runtime;
 
-import java.util.List;
-
 import org.apache.tuscany.common.monitor.MonitorFactory;
-import org.apache.tuscany.core.builder.BuilderConfigException;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.HierarchicalWireBuilder;
 import org.apache.tuscany.core.builder.WireBuilder;
@@ -29,18 +27,18 @@ import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventException;
-import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.SystemCompositeContext;
-import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
-import org.apache.tuscany.core.wire.TargetWireFactory;
-import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.spi.wire.TargetWireFactory;
+import org.apache.tuscany.spi.wire.SourceWireFactory;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Composite;
 import org.apache.tuscany.model.assembly.Extensible;
@@ -125,10 +123,8 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         rootContext.registerModelObject(model);
     }
 
-    public void registerModelObjects(List<? extends Extensible> models) throws ConfigurationException {
-        for (Extensible model : models) {
-            registerModelObject(model);
-        }
+    public void registerContext(Context context) {
+        throw new UnsupportedOperationException("Cannot register children to the runtime context");
     }
 
     public CompositeContext getParent() {

@@ -14,11 +14,11 @@
 package org.apache.tuscany.core.system.injection;
 
 import org.apache.tuscany.core.builder.ContextResolver;
-import org.apache.tuscany.core.builder.ObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.injection.FactoryInitException;
-import org.apache.tuscany.core.injection.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectCreationException;
 
 /**
  * Returns an instance by resolving against an AutowireContext.

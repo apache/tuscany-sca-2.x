@@ -15,12 +15,12 @@ package org.apache.tuscany.core.builder.impl;
 
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.builder.ObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ExternalServiceContext;
 import org.apache.tuscany.core.context.impl.ExternalServiceContextImpl;
-import org.apache.tuscany.core.wire.TargetWireFactory;
-import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.spi.wire.TargetWireFactory;
+import org.apache.tuscany.spi.wire.SourceWireFactory;
 import org.apache.tuscany.model.assembly.Scope;
 
 import java.util.Collections;
@@ -36,7 +36,7 @@ import java.util.Map;
  *
  *
  * }
- * responsible for setting the proper {@link org.apache.tuscany.core.wire.TargetInvoker} on the wire chains
+ * responsible for setting the proper {@link org.apache.tuscany.spi.wire.TargetInvoker} on the wire chains
  * can be notified.
  * 
  * @version $Rev$ $Date$

@@ -13,6 +13,8 @@
  */
 package org.apache.tuscany.core.context;
 
+import org.apache.tuscany.spi.context.TargetException;
+
 /**
  * Manages an external service 
  * 
@@ -22,9 +24,9 @@ public interface ExternalServiceContext extends Context {
 
     /**
      * Returns the handler responsible for flowing a request through the entry point
-     * @throws TargetException
+     * @throws org.apache.tuscany.spi.context.TargetException
      */
      public Object getHandler() throws TargetException;
-    
+
 }
 

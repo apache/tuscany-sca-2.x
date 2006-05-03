@@ -25,7 +25,7 @@ import org.apache.tuscany.core.async.wire.mock.MockSyncInterceptor;
 import org.apache.tuscany.core.async.wire.mock.SimpleTarget;
 import org.apache.tuscany.core.async.wire.mock.SimpleTargetImpl;
 import org.apache.tuscany.core.async.work.DefaultWorkManager;
-import org.apache.tuscany.core.message.Message;
+import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
@@ -39,7 +39,7 @@ public class AsyncInvocationConfigurationTestCase extends TestCase {
     private Method hello;
 
     private MessageFactory factory = new MessageFactoryImpl();
-    
+
     public AsyncInvocationConfigurationTestCase() {
         super();
     }
@@ -50,15 +50,15 @@ public class AsyncInvocationConfigurationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         hello = SimpleTarget.class.getMethod("hello", String.class);
-        
+
         workManager=new DefaultWorkManager();
         workManager.setScheduledMaximumPoolSize(5);
         workManager.init();
     }
-    
+
     protected void tearDown() throws Exception {
         workManager.destroy();
-        
+
         super.tearDown();
     }
 
@@ -69,7 +69,7 @@ public class AsyncInvocationConfigurationTestCase extends TestCase {
         SourceInvocationConfiguration source = new SourceInvocationConfiguration(hello);
 
         source.addInterceptor(new AsyncInterceptor(workManager, factory));
-        
+
         MockHandler sourceRequestHandler = new MockHandler();
         MockHandler sourceResponseHandler = new MockHandler();
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
@@ -91,7 +91,7 @@ public class AsyncInvocationConfigurationTestCase extends TestCase {
         source.setTargetResponseChannel(new MessageChannelImpl(target.getResponseHandlers()));
         source.build();
         target.build();
-        
+
         CountDownLatch startSignal = new CountDownLatch(1);
         CountDownLatch doneSignal = new CountDownLatch(1);
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl(startSignal, doneSignal));
@@ -103,7 +103,7 @@ public class AsyncInvocationConfigurationTestCase extends TestCase {
         Message response = source.getHeadInterceptor().invoke(msg);
         startSignal.countDown();
         doneSignal.await();
-        
+
         Assert.assertEquals(null, response.getBody());
         Assert.assertEquals(1, sourceRequestHandler.getCount());
         //FIXME why isn't the responseHandler invoked?
@@ -119,7 +119,7 @@ public class AsyncInvocationConfigurationTestCase extends TestCase {
         SourceInvocationConfiguration source = new SourceInvocationConfiguration(hello);
 
         source.addInterceptor(new AsyncInterceptor(workManager, factory));
-        
+
         MockHandler sourceRequestHandler = new MockHandler();
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addRequestHandler(sourceRequestHandler);
@@ -149,7 +149,7 @@ public class AsyncInvocationConfigurationTestCase extends TestCase {
         Message response = source.getHeadInterceptor().invoke(msg);
         startSignal.countDown();
         doneSignal.await();
-        
+
         Assert.assertEquals(null, response.getBody());
         Assert.assertEquals(1, sourceRequestHandler.getCount());
         Assert.assertEquals(1, sourceInterceptor.getCount());
@@ -162,9 +162,9 @@ public class AsyncInvocationConfigurationTestCase extends TestCase {
      */
     public void testInvokeWithInterceptorsOnly() throws Exception {
         SourceInvocationConfiguration source = new SourceInvocationConfiguration(hello);
-        
+
         source.addInterceptor(new AsyncInterceptor(workManager, factory));
-        
+
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addInterceptor(sourceInterceptor);
 

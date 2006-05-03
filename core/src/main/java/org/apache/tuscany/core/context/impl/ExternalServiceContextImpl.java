@@ -13,13 +13,13 @@
  */
 package org.apache.tuscany.core.context.impl;
 
-import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.ExternalServiceContext;
-import org.apache.tuscany.core.wire.ProxyCreationException;
-import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.spi.wire.ProxyCreationException;
+import org.apache.tuscany.spi.wire.TargetWireFactory;
 
 /**
  * The default implementation of an external service context

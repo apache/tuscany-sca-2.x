@@ -16,6 +16,8 @@
  */
 package org.apache.tuscany.core.message;
 
+import org.apache.tuscany.spi.wire.Message;
+
 /**
  * A factory for creating messages flowed through a wire during an invocation 
  */

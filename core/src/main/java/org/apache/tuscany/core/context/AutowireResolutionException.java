@@ -13,6 +13,8 @@
  */
 package org.apache.tuscany.core.context;
 
+import org.apache.tuscany.spi.context.TargetException;
+
 /**
  * Denotes an exception while resolving an automatic wire
  * 

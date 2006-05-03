@@ -13,6 +13,8 @@
  */
 package org.apache.tuscany.core.builder;
 
+import org.apache.tuscany.spi.builder.BuilderException;
+
 /**
  * Denotes an attempt to access a non-existent field or method
  * 

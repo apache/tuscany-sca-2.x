@@ -13,13 +13,13 @@
  */
 package org.apache.tuscany.core.mock;
 
-import org.apache.tuscany.core.builder.BuilderConfigException;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
+import org.apache.tuscany.spi.wire.TargetWireFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitorImpl;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.wire.SourceWireFactory;
-import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.spi.wire.SourceWireFactory;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 
 import java.util.ArrayList;

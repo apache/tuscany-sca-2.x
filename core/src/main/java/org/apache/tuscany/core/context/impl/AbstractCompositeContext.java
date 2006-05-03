@@ -13,7 +13,7 @@
  */
 package org.apache.tuscany.core.context.impl;
 
-import org.apache.tuscany.core.builder.BuilderConfigException;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AutowireContext;
@@ -26,11 +26,12 @@ import org.apache.tuscany.core.context.DuplicateNameException;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.EventException;
-import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.wire.WireFactory;
 import org.apache.tuscany.core.context.ScopeAwareContext;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.ScopeStrategy;
-import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.core.context.MissingImplementationException;
 import org.apache.tuscany.core.context.MissingContextFactoryException;
 import org.apache.tuscany.core.context.ProxyConfigurationException;
@@ -38,18 +39,16 @@ import org.apache.tuscany.core.context.MissingScopeException;
 import org.apache.tuscany.core.context.AutowireResolutionException;
 import org.apache.tuscany.core.context.Lifecycle;
 import org.apache.tuscany.core.context.event.RequestEnd;
-import org.apache.tuscany.core.context.event.Event;
+import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.core.context.event.SessionBound;
 import org.apache.tuscany.core.context.event.SessionEvent;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
 import org.apache.tuscany.core.wire.InvocationConfiguration;
 import org.apache.tuscany.core.wire.WireConfiguration;
-import org.apache.tuscany.core.wire.WireFactory;
-import org.apache.tuscany.core.wire.WireFactoryInitException;
-import org.apache.tuscany.core.wire.SourceWireFactory;
-import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.spi.wire.TargetWireFactory;
+import org.apache.tuscany.spi.wire.WireFactoryInitException;
+import org.apache.tuscany.spi.wire.SourceWireFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.model.assembly.Composite;
 import org.apache.tuscany.model.assembly.Component;
@@ -85,8 +84,6 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractCompositeContext extends AbstractContext implements AutowireContext, ScopeAwareContext, ConfigurationContext {
 
     public static final int DEFAULT_WAIT = 1000 * 60;
-
-    protected CompositeContext parentContext;
 
     // The parent configuration context, if one exists
     @Autowire
@@ -143,7 +140,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         this.eventContext = ctx;
         this.configurationContext = configCtx;
         scopeIndex = new ConcurrentHashMap<String, ScopeContext>();
-        parentContext = parent;
+        setParent(parent);
         // FIXME the factory should be injected
         module = new AssemblyFactoryImpl().createModule();
     }
@@ -251,20 +248,8 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         this.configurationContext = context;
     }
 
-    public CompositeContext getParent() {
-        return parentContext;
-    }
+    public void registerContext(Context child) {
 
-    @ParentContext
-    public void setParent(CompositeContext parent){
-        parentContext = parent;
-    }
-
-    public void registerModelObjects(List<? extends Extensible> models) throws ConfigurationException {
-        assert (models != null) : "Model object collection was null";
-        for (Extensible model : models) {
-            registerModelObject(model);
-        }
     }
 
     public void registerModelObject(Extensible model) throws ConfigurationException {

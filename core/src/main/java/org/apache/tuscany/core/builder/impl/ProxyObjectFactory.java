@@ -13,10 +13,10 @@
  */
 package org.apache.tuscany.core.builder.impl;
 
-import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.injection.ObjectCreationException;
-import org.apache.tuscany.core.wire.ProxyCreationException;
-import org.apache.tuscany.core.wire.WireFactory;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.wire.ProxyCreationException;
+import org.apache.tuscany.spi.wire.WireFactory;
 
 /**
  * Uses a proxy factory to return an object instance

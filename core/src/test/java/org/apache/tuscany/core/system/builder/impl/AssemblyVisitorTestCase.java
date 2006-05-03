@@ -19,7 +19,7 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.core.builder.BuilderException;
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.impl.AssemblyVisitorImpl;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
@@ -53,7 +53,7 @@ public class AssemblyVisitorTestCase extends TestCase {
 
     private SystemAssemblyFactory factory = new SystemAssemblyFactoryImpl();
     private AssemblyContext assemblyContext = new AssemblyContextImpl(factory, null, null);
-     
+
     public void testModelVisit() throws Exception {
         ComponentInfo componentType;
         Service service;

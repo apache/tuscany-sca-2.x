@@ -20,12 +20,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.tuscany.common.monitor.MonitorFactory;
-import org.apache.tuscany.core.builder.BuilderConfigException;
-import org.apache.tuscany.core.builder.BuilderException;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
+import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.NoAccessorException;
-import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.builder.UnknownTypeException;
 import org.apache.tuscany.core.builder.impl.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.builder.impl.ListMultiplicityObjectFactory;

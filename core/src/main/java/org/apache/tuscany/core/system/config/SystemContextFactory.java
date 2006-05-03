@@ -10,8 +10,8 @@ import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.wire.SourceWireFactory;
-import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.spi.wire.SourceWireFactory;
+import org.apache.tuscany.spi.wire.TargetWireFactory;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Scope;
@@ -24,7 +24,7 @@ import java.util.Map;
  * A <code>ContextFactory</code> that handles system component implementation types, which may be either simple, leaf
  * types or an composites.
  * <p>
- * For composite types, this factory delegates to an {@link org.apache.tuscany.core.builder.ObjectFactory} to create an
+ * For composite types, this factory delegates to an {@link org.apache.tuscany.spi.ObjectFactory} to create an
  * instance of the composite implementation and perform injection of configuration and references. Once an composite
  * instance is created, the factory will register the composite's children. This process may be done recursively in a
  * lazy fashion, descending down an composite hierarchy as a child composite is instantiated.

@@ -16,16 +16,16 @@
  */
 package org.apache.tuscany.core.wire.impl;
 
-import org.apache.tuscany.core.wire.MessageChannel;
-import org.apache.tuscany.core.wire.MessageHandler;
-import org.apache.tuscany.core.message.Message;
+import org.apache.tuscany.spi.wire.MessageChannel;
+import org.apache.tuscany.spi.wire.MessageHandler;
+import org.apache.tuscany.spi.wire.Message;
 
 import java.util.List;
 
 /**
  * A channel comprising an ordered collection of message handlers.
  *
- *@see org.apache.tuscany.core.message.Message
+ *@see org.apache.tuscany.spi.wire.Message
  * @version $Rev$ $Date$
  */
 public class MessageChannelImpl implements MessageChannel {

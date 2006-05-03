@@ -17,7 +17,7 @@
 package org.apache.tuscany.core.loader;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.builder.ObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.impl.StringParserPropertyFactory;
 import org.apache.tuscany.model.assembly.AssemblyFactory;

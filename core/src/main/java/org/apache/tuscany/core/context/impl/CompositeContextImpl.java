@@ -26,11 +26,11 @@ import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.ScopeStrategy;
 import org.apache.tuscany.core.context.ServiceNotFoundException;
-import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.core.system.annotation.Autowire;
 
 /**

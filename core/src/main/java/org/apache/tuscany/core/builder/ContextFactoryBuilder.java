@@ -1,6 +1,7 @@
 package org.apache.tuscany.core.builder;
 
 import org.apache.tuscany.model.assembly.AssemblyObject;
+import org.apache.tuscany.spi.builder.BuilderException;
 
 /**
  * The extension point for component types in the runtime. Implementations perform the first phase of converting an assembly model

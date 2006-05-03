@@ -13,17 +13,17 @@
  */
 package org.apache.tuscany.core.wire.impl;
 
-import org.apache.tuscany.core.wire.Interceptor;
-import org.apache.tuscany.core.wire.InvocationRuntimeException;
-import org.apache.tuscany.core.wire.TargetInvoker;
-import org.apache.tuscany.core.message.Message;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Message;
 
 /**
  * Serves as a tail interceptor on a target wire chain. This implementation dispatches to the target invoker
  * passed inside the wire message. Target invokers are passed from the source in order to allow for caching of
  * target instances.
  * 
- * @see org.apache.tuscany.core.wire.TargetInvoker
+ * @see org.apache.tuscany.spi.wire.TargetInvoker
  * @version $Rev$ $Date$
  */
 public class InvokerInterceptor implements Interceptor {

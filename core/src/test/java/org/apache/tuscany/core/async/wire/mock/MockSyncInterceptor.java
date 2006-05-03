@@ -16,8 +16,8 @@
  */
 package org.apache.tuscany.core.async.wire.mock;
 
-import org.apache.tuscany.core.wire.Interceptor;
-import org.apache.tuscany.core.message.Message;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.Message;
 
 public class MockSyncInterceptor implements Interceptor {
 
@@ -37,7 +37,7 @@ public class MockSyncInterceptor implements Interceptor {
     public int getCount() {
         return count;
     }
-    
+
     public void setNext(Interceptor next) {
         this.next=next;
     }

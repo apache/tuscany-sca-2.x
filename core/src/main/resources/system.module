@@ -71,7 +71,7 @@
          <system:implementation.system class="org.apache.tuscany.core.message.impl.MessageFactoryImpl"/>
     </component>
 
-    <component name="org.apache.tuscany.core.wire.WireFactoryFactory">
+    <component name="org.apache.tuscany.spi.wire.WireFactoryFactory">
          <system:implementation.system class="org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory"/>
      </component>
 

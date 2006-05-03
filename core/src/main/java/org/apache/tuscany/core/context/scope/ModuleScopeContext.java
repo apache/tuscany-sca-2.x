@@ -21,10 +21,10 @@ import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventContext;
-import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.core.context.Lifecycle;
 import org.apache.tuscany.core.context.event.InstanceCreated;
-import org.apache.tuscany.core.context.event.Event;
+import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 

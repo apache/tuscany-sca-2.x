@@ -14,20 +14,20 @@
 package org.apache.tuscany.core.wire.service;
 
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
-import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.wire.MethodHashMap;
-import org.apache.tuscany.core.wire.WireFactoryFactory;
+import org.apache.tuscany.spi.wire.WireFactoryFactory;
 import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
-import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
-import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.spi.wire.SourceWireFactory;
+import org.apache.tuscany.spi.wire.TargetWireFactory;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
 import org.apache.tuscany.core.builder.system.PolicyBuilderRegistry;
-import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.EntryPoint;
@@ -85,7 +85,7 @@ public class DefaultWireFactoryService implements org.apache.tuscany.core.wire.s
     public void init() {
     }
 
-    public List<SourceWireFactory> createSourceFactory(ConfiguredReference configuredReference) throws BuilderConfigException{
+    public List<SourceWireFactory> createSourceFactory(ConfiguredReference configuredReference) throws BuilderConfigException {
         String referenceName = configuredReference.getPort().getName();
         Class interfaze;
         // FIXME hack for NPE when entry points with no set service contract on their configuredReference

@@ -16,9 +16,9 @@
  */
 package org.apache.tuscany.core.message.impl;
 
-import org.apache.tuscany.core.message.Message;
-import org.apache.tuscany.core.wire.MessageChannel;
-import org.apache.tuscany.core.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageChannel;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * The default implementation of a message flowed through a wire during an invocation
@@ -36,49 +36,49 @@ public class MessageImpl implements Message, MessageChannel {
     }
 
     /**
-     * @see org.apache.tuscany.core.message.Message#getBody()
+     * @see org.apache.tuscany.spi.wire.Message#getBody()
      */
     public Object getBody() {
         return body;
     }
 
     /**
-     * @see org.apache.tuscany.core.message.Message#setBody(java.lang.Object)
+     * @see org.apache.tuscany.spi.wire.Message#setBody(java.lang.Object)
      */
     public void setBody(Object body) {
         this.body = body;
     }
 
     /**
-     * @see org.apache.tuscany.core.message.Message#getCallbackChannel()
+     * @see org.apache.tuscany.spi.wire.Message#getCallbackChannel()
      */
     public MessageChannel getCallbackChannel() {
         return this;
     }
 
     /**
-     * @see org.apache.tuscany.core.wire.MessageChannel#send(org.apache.tuscany.core.message.Message)
+     * @see org.apache.tuscany.spi.wire.MessageChannel#send(org.apache.tuscany.spi.wire.Message)
      */
     public void send(Message message) {
         relatedCallbackMessage = message;
     }
 
     /**
-     * @see org.apache.tuscany.core.message.Message#getRelatedCallbackMessage()
+     * @see org.apache.tuscany.spi.wire.Message#getRelatedCallbackMessage()
      */
     public Message getRelatedCallbackMessage() {
         return relatedCallbackMessage;
     }
 
     /**
-     * @see org.apache.tuscany.core.message.Message#setTargetInvoker(org.apache.tuscany.core.wire.TargetInvoker)
+     * @see org.apache.tuscany.spi.wire.Message#setTargetInvoker(org.apache.tuscany.spi.wire.TargetInvoker)
      */
     public void setTargetInvoker(TargetInvoker invoker) {
         this.invoker = invoker;
     }
 
     /**
-     * @see org.apache.tuscany.core.message.Message#getTargetInvoker()
+     * @see org.apache.tuscany.spi.wire.Message#getTargetInvoker()
      */
     public TargetInvoker getTargetInvoker() {
         return invoker;

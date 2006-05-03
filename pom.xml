@@ -29,6 +29,8 @@
     <modules>
         <module>common</module>
         <module>model</module>
+        <module>spi</module>
+<!--
         <module>core</module>
         <module>bindings</module>
         <module>databinding</module>
@@ -36,6 +38,7 @@
         <module>tomcat</module>
         <module>tools</module>
         <module>plugin</module>
+-->
     </modules>
 
     <build>
@@ -49,6 +52,8 @@
                     </includes>
                     <reportFormat>brief</reportFormat>
                     <useFile>false</useFile>
+                    <forkMode>once</forkMode>
+                    <argLine>-ea</argLine>
                 </configuration>
             </plugin>
         </plugins>

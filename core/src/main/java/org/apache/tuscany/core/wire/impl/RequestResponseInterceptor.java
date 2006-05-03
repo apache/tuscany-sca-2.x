@@ -16,9 +16,9 @@
  */
 package org.apache.tuscany.core.wire.impl;
 
-import org.apache.tuscany.core.wire.Interceptor;
-import org.apache.tuscany.core.wire.MessageChannel;
-import org.apache.tuscany.core.message.Message;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.MessageChannel;
+import org.apache.tuscany.spi.wire.Message;
 
 /**
  * An interceptor that first sends a message down its request channel then extracts the response from the
@@ -43,7 +43,7 @@ public class RequestResponseInterceptor implements Interceptor {
      * @param targetResponseChannel the channel to sent response messages down
      */
     public RequestResponseInterceptor(MessageChannel sourceRequestChannel, MessageChannel targetRequestChannel,
-            MessageChannel sourceResponseChannel, MessageChannel targetResponseChannel) {
+                                      MessageChannel sourceResponseChannel, MessageChannel targetResponseChannel) {
         this.sourceRequestChannel = sourceRequestChannel;
         this.sourceResponseChannel = sourceResponseChannel;
         this.targetRequestChannel = targetRequestChannel;

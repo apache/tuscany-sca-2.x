@@ -16,14 +16,14 @@
  */
 package org.apache.tuscany.core.context;
 
-import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.spi.context.TargetException;
 
 /**
  * The runtime artifact representing an entry point, <code>EntryPointContext</code> manages wire handler
  * instances that expose service operations offered by a component in the parent composite. The wire handler
  * instance is responsible for dispatching the request down an wire chain to the target instance. The wire
- * chain may contain {@link org.apache.tuscany.core.wire.Interceptor}s and
- * {@link org.apache.tuscany.core.wire.MessageHandler}s that implement policies or perform mediations on the
+ * chain may contain {@link org.apache.tuscany.spi.wire.Interceptor}s and
+ * {@link org.apache.tuscany.spi.wire.MessageHandler}s that implement policies or perform mediations on the
  * wire.
  * <p>
  * Entry point contexts are used by transport binding artifacts to invoke an operation on a service. The transport
@@ -58,7 +58,7 @@ public interface EntryPointContext extends Context {
 
     /**
      * Returns the handler responsible for flowing a request through the entry point
-     * @throws TargetException
+     * @throws org.apache.tuscany.spi.context.TargetException
      */
     public Object getHandler() throws TargetException;
 

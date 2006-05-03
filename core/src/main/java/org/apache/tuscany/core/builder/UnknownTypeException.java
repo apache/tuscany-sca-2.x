@@ -1,5 +1,7 @@
 package org.apache.tuscany.core.builder;
 
+import org.apache.tuscany.spi.builder.BuilderException;
+
 /**
  * Denotes an unknown configuration parameter type
  * 

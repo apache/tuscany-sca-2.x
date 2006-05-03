@@ -16,16 +16,9 @@
  */
 package org.apache.tuscany.core.context.impl;
 
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.RuntimeEventListener;
-import org.apache.tuscany.core.context.EventFilter;
-import org.apache.tuscany.core.context.event.Event;
-import org.apache.tuscany.core.context.filter.TrueFilter;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ConcurrentHashMap;
+import org.apache.tuscany.core.system.annotation.ParentContext;
 
 /**
  * Functionality common to all <code>Context<code> implementations
@@ -33,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractContext extends AbstractLifecycle implements Context {
+    private CompositeContext parentContext;
 
     public AbstractContext() {
     }
@@ -41,5 +35,12 @@ public abstract class AbstractContext extends AbstractLifecycle implements Conte
         super(name);
     }
 
+    public CompositeContext getParent() {
+        return parentContext;
+    }
 
+    @ParentContext
+    public void setParent(CompositeContext parent){
+        parentContext = parent;
+    }
 }

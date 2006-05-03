@@ -2,9 +2,9 @@ package org.apache.tuscany.core.wire.impl;
 
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.wire.WireConfiguration;
-import org.apache.tuscany.core.wire.ProxyCreationException;
-import org.apache.tuscany.core.wire.WireFactory;
-import org.apache.tuscany.core.wire.WireFactoryInitException;
+import org.apache.tuscany.spi.wire.ProxyCreationException;
+import org.apache.tuscany.spi.wire.WireFactory;
+import org.apache.tuscany.spi.wire.WireFactoryInitException;
 
 /**
  * Returns an actual implementation instance as opposed to a proxy. Used in cases where proxying may be optimized away.

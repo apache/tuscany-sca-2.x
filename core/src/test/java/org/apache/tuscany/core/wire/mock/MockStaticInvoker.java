@@ -1,9 +1,9 @@
 package org.apache.tuscany.core.wire.mock;
 
-import org.apache.tuscany.core.wire.Interceptor;
-import org.apache.tuscany.core.wire.InvocationRuntimeException;
-import org.apache.tuscany.core.wire.TargetInvoker;
-import org.apache.tuscany.core.message.Message;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Message;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

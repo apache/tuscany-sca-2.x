@@ -6,6 +6,7 @@ import org.apache.tuscany.core.context.EventFilter;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.RuntimeEventListener;
 import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.event.Event;
 
 public class MockEntryPointContext implements EntryPointContext {
@@ -68,4 +69,10 @@ public class MockEntryPointContext implements EntryPointContext {
 
     }
 
+    public CompositeContext getParent() {
+        return null;
+    }
+
+    public void setParent(CompositeContext parent) {
+    }
 }

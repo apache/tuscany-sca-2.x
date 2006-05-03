@@ -16,6 +16,8 @@
  */
 package org.apache.tuscany.core.context;
 
+import org.apache.tuscany.spi.context.TargetException;
+
 /**
  * A runtime entity that manages an atomic (i.e. leaf-type) artifact.
  * 
@@ -30,7 +32,7 @@ public interface AtomicContext extends Context {
 
     /**
      * Notifies the context of an initialization event
-     * @throws TargetException
+     * @throws org.apache.tuscany.spi.context.TargetException
      */
     public void init() throws TargetException;
 

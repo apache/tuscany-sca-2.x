@@ -16,6 +16,8 @@
  */
 package org.apache.tuscany.core.context;
 
+import org.apache.tuscany.spi.context.ContextRuntimeException;
+
 /**
  * Denotes an error encountered while initializing an instance context
  *

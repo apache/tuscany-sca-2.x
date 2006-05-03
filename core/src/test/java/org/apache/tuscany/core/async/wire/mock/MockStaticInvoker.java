@@ -3,10 +3,10 @@ package org.apache.tuscany.core.async.wire.mock;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.message.Message;
-import org.apache.tuscany.core.wire.Interceptor;
-import org.apache.tuscany.core.wire.InvocationRuntimeException;
-import org.apache.tuscany.core.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Caches component instances that do not need to be resolved for every wire, e.g. an wire originating from

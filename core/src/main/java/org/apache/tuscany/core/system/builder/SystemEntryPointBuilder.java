@@ -13,7 +13,7 @@
  */
 package org.apache.tuscany.core.system.builder;
 
-import org.apache.tuscany.core.builder.BuilderException;
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.core.builder.BuilderInitException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.injection.FactoryInitException;

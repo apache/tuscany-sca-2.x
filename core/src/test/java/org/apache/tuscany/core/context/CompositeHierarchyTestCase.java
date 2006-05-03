@@ -28,6 +28,7 @@ import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
+import org.apache.tuscany.spi.QualifiedName;
 import org.osoa.sca.ModuleContext;
 import org.osoa.sca.ServiceUnavailableException;
 

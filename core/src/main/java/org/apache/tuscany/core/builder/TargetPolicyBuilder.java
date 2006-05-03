@@ -15,10 +15,11 @@ package org.apache.tuscany.core.builder;
 
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
+import org.apache.tuscany.spi.builder.BuilderException;
 
 /**
- * Implementations contribute {@link org.apache.tuscany.core.wire.Interceptor}s or {@link
- * org.apache.tuscany.core.wire.MessageHandler}s that handle target-side policy on a wire.  
+ * Implementations contribute {@link org.apache.tuscany.spi.wire.Interceptor}s or {@link
+ * org.apache.tuscany.spi.wire.MessageHandler}s that handle target-side policy on a wire.
  *
  * @version $$Rev$$ $$Date$$
  */

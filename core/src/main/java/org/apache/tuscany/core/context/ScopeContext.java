@@ -17,6 +17,8 @@
 package org.apache.tuscany.core.context;
 
 import org.apache.tuscany.core.builder.ContextFactory;
+import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.QualifiedName;
 
 import java.util.List;
 

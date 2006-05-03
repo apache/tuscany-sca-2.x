@@ -14,9 +14,9 @@
 package org.apache.tuscany.core.wire.jdk;
 
 import org.apache.tuscany.core.wire.MethodHashMap;
-import org.apache.tuscany.core.wire.WireFactoryInitException;
+import org.apache.tuscany.spi.wire.WireFactoryInitException;
 import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
-import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.spi.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
 
 import java.lang.reflect.InvocationHandler;

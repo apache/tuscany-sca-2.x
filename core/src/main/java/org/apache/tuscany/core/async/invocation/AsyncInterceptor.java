@@ -20,9 +20,9 @@ import javax.resource.spi.work.Work;
 import javax.resource.spi.work.WorkException;
 import javax.resource.spi.work.WorkManager;
 
-import org.apache.tuscany.core.message.Message;
+import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.core.message.MessageFactory;
-import org.apache.tuscany.core.wire.Interceptor;
+import org.apache.tuscany.spi.wire.Interceptor;
 import org.osoa.sca.CurrentModuleContext;
 import org.osoa.sca.ModuleContext;
 import org.osoa.sca.SCA;

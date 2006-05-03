@@ -14,6 +14,8 @@
 package org.apache.tuscany.core.context;
  
 import junit.framework.TestCase;
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.InvalidNameException;
 
 /**
  * Tests parsing of naming patters

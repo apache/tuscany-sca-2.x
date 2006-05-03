@@ -14,8 +14,8 @@
 package org.apache.tuscany.core.builder;
 
 /**
- * A marker for implementations that order source- or target-side policy {@link org.apache.tuscany.core.wire.Interceptor}s or
- * {@link org.apache.tuscany.core.wire.MessageHandler}s in a {@link org.apache.tuscany.core.wire.WireConfiguration}.
+ * A marker for implementations that order source- or target-side policy {@link org.apache.tuscany.spi.wire.Interceptor}s or
+ * {@link org.apache.tuscany.spi.wire.MessageHandler}s in a {@link org.apache.tuscany.core.wire.WireConfiguration}.
  *
  * @see SourcePolicyOrderer
  * @see TargetPolicyOrderer

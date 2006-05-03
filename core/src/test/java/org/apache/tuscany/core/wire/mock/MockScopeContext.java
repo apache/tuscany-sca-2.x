@@ -19,13 +19,13 @@ package org.apache.tuscany.core.wire.mock;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.RuntimeEventListener;
-import org.apache.tuscany.core.context.ContextRuntimeException;
+import org.apache.tuscany.spi.context.ContextRuntimeException;
 import org.apache.tuscany.core.context.AtomicContext;
 import org.apache.tuscany.core.context.ScopeRuntimeException;
-import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.EventFilter;
-import org.apache.tuscany.core.context.event.Event;
+import org.apache.tuscany.spi.event.EventFilter;
+import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.model.assembly.AtomicComponent;
 
 import java.util.HashMap;

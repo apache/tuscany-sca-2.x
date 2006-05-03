@@ -13,17 +13,17 @@
  */
 package org.apache.tuscany.core.extension;
 
-import org.apache.tuscany.core.builder.BuilderConfigException;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.WireBuilder;
-import org.apache.tuscany.core.context.QualifiedName;
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.wire.TargetWireFactory;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
-import org.apache.tuscany.core.wire.SourceWireFactory;
-import org.apache.tuscany.core.wire.TargetInvoker;
-import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.spi.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.osoa.sca.annotations.Init;
 
 import java.lang.reflect.Method;

@@ -2,8 +2,8 @@ package org.apache.tuscany.core.builder;
 
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.wire.SourceWireFactory;
-import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.spi.wire.SourceWireFactory;
+import org.apache.tuscany.spi.wire.TargetWireFactory;
 import org.apache.tuscany.model.assembly.Scope;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.Map;
  * Context factories are "built" in two phases. {@link ContextFactoryBuilder}s analyze an assembly, producing
  * <code>ContextFactory</code>s for {@link org.apache.tuscany.model.assembly.Component}s, {@link
  * org.apache.tuscany.model.assembly.EntryPoint}s, and {@link org.apache.tuscany.model.assembly.ExternalService}s. During this
- * phase, {@link org.apache.tuscany.core.wire.WireFactory}s for source- and target-side wires are produced for the
+ * phase, {@link org.apache.tuscany.spi.wire.WireFactory}s for source- and target-side wires are produced for the
  * <code>ContextFactory</code>s.  Ê
  * <p/>
  * The second build phase connects the source- and target-side <code>WireFactories</code>, thereby completing wire configuration.

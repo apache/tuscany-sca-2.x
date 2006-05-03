@@ -18,8 +18,8 @@ import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EntryPointContext;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.context.TargetException;
 
 /**
  * Manages an entry point into a system module. System entry points cache a direct (i.e. non-proxied) reference to a
@@ -33,7 +33,7 @@ public class SystemEntryPointContext extends AbstractContext implements EntryPoi
     private Object cachedInstance;
 
     private ContextResolver resolver;
-    
+
     private QualifiedName targetName;
 
     private  Class serviceInterface;

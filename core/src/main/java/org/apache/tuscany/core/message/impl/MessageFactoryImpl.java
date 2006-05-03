@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.core.message.impl;
 
-import org.apache.tuscany.core.message.Message;
+import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Init;

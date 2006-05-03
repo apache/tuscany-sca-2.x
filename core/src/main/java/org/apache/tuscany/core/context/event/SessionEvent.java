@@ -13,6 +13,8 @@
  */
 package org.apache.tuscany.core.context.event;
 
+import org.apache.tuscany.spi.event.Event;
+
 /**
  * Implemented by runtime events associated with a session. There may be multiple session types in the runtime such as
  * HTTP-based or conversational.
