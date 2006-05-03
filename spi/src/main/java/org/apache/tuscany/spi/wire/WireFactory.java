@@ -30,7 +30,7 @@ package org.apache.tuscany.spi.wire;
  * <p/>
  * Unmanaged code, i.e. clients that are not components, that perform a locate operation are handled differently. In this case, a
  * target-side proxy will be returned by the locate operation created by the <code>WireFactory</code> associated with the target
- * service. This target-side proxy will only contain the target-side wire and its handlers/interceptors.Ê
+ * service. This target-side proxy will only contain the target-side wire and its handlers/interceptors.
  * <p/>
  * Wires are structured by operation; that is, they contain an invocation chain per operation on a service. Note that the service
  * specified by a reference may differ in type from the target service specified by the wire. In this case, a mediation may be

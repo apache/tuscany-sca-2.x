@@ -51,4 +51,12 @@ public class Component<I extends Implementation<?>> extends ModelObject {
     public Map<String, PropertyValue<?>> getPropertyValues() {
         return propertyValues;
     }
+
+    public void add(PropertyValue<?> value) {
+        propertyValues.put(value.getName(), value);
+    }
+
+    public void add(ReferenceTarget target) {
+        referenceTargets.put(target.getReferenceName(), target);
+    }
 }

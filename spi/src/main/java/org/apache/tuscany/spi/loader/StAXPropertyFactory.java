@@ -27,7 +27,7 @@ import org.apache.tuscany.common.ObjectFactory;
  *
  * @version $Rev$ $Date$
  */
-public interface StAXPropertyFactory<T> {
+public interface StAXPropertyFactory {
     /**
      * Return an ObjectFactory for instances of a property defined in an XML stream.
      *
@@ -37,5 +37,5 @@ public interface StAXPropertyFactory<T> {
      * @throws javax.xml.stream.XMLStreamException if there is a problem reading the stream
      * @throws LoaderException if there is a problem creating the ObjectFactory
      */
-    ObjectFactory<T> createObjectFactory(XMLStreamReader reader, Property property) throws XMLStreamException, LoaderException;
+    <T> ObjectFactory<T> createObjectFactory(XMLStreamReader reader, Property<T> property) throws XMLStreamException, LoaderException;
 }

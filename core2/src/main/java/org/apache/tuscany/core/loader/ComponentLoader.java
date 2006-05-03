@@ -16,16 +16,24 @@
  */
 package org.apache.tuscany.core.loader;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.model.Component;
+import org.apache.tuscany.model.ComponentType;
 import org.apache.tuscany.model.Implementation;
 import org.apache.tuscany.model.ModelObject;
+import org.apache.tuscany.model.Property;
+import org.apache.tuscany.model.PropertyValue;
+import org.apache.tuscany.model.ReferenceTarget;
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.loader.InvalidReferenceException;
 import org.apache.tuscany.spi.loader.LoaderContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderSupport;
@@ -38,10 +46,10 @@ import org.osoa.sca.annotations.Scope;
  */
 @Scope("MODULE")
 public class ComponentLoader extends LoaderSupport {
-    private StAXPropertyFactory<?> defaultPropertyFactory;
+    private StAXPropertyFactory defaultPropertyFactory;
 
     @Autowire
-    public void setDefaultPropertyFactory(StAXPropertyFactory<?> defaultPropertyFactory) {
+    public void setDefaultPropertyFactory(StAXPropertyFactory defaultPropertyFactory) {
         this.defaultPropertyFactory = defaultPropertyFactory;
     }
 
@@ -67,13 +75,11 @@ public class ComponentLoader extends LoaderSupport {
             switch (reader.next()) {
                 case START_ELEMENT:
                     QName qname = reader.getName();
-/*
-                    if (AssemblyConstants.PROPERTIES.equals(qname)) {
-                    loadProperties(reader, loaderContext.getResourceLoader(), component);
-                    } else if (AssemblyConstants.REFERENCES.equals(qname)) {
-                    loadReferences(reader, component);
+                    if (AssemblyConstants.PROPERTY.equals(qname)) {
+                        loadProperty(reader, loaderContext, component);
+                    } else if (AssemblyConstants.REFERENCE.equals(qname)) {
+                        loadReference(reader, loaderContext, component);
                     }
-*/
                     reader.next();
                     break;
                 case END_ELEMENT:
@@ -82,49 +88,33 @@ public class ComponentLoader extends LoaderSupport {
         }
     }
 
-/*
-    protected void loadProperties(XMLStreamReader reader, ResourceLoader resourceLoader, Component<?> component) throws XMLStreamException, ConfigurationLoadException {
-        ComponentInfo componentType = component.getImplementation().getComponentInfo();
-        List<ConfiguredProperty> configuredProperties = component.getConfiguredProperties();
-
-        while (true) {
-            switch (reader.next()) {
-            case START_ELEMENT:
-                String name = reader.getLocalName();
-                Property property = componentType.getProperty(name);
-                if (property == null) {
-                    throw new ConfigurationLoadException(name);
-                }
-                OverrideOption override = StAXUtil.overrideOption(reader.getAttributeValue(null, "override"), OverrideOption.NO);
-
-                // get a factory for the property
-                StAXPropertyFactory<?> propertyFactory;
-                String factoryName = reader.getAttributeValue(null, "factory");
-                if (factoryName == null) {
-                    propertyFactory = defaultPropertyFactory;
-                } else {
-                    propertyFactory = getPropertyFactory(factoryName, resourceLoader);
-                }
-
-                // create the property value
-                // FIXME to support complex types we probably should store the factory in the ConfiguredProperty
-                // FIXME instead of the value as the value may be mutable and should not be shared between instances
-                ObjectFactory<?> objectFactory = propertyFactory.createObjectFactory(reader, property);
-                Object value = objectFactory.getInstance();
-
-                // create the configured property definition
-                ConfiguredProperty configuredProperty = factory.createConfiguredProperty();
-                configuredProperty.setName(name);
-                configuredProperty.setValueFactory(value);
-                configuredProperty.setOverrideOption(override);
-                configuredProperties.add(configuredProperty);
-                break;
-            case END_ELEMENT:
-                return;
-            }
-        }
+    protected <T> void loadProperty(XMLStreamReader reader, LoaderContext loaderContext, Component<?> component) throws XMLStreamException, LoaderException {
+        String name = reader.getAttributeValue(null, "name");
+        Implementation<?> implementation = component.getImplementation();
+        ComponentType componentType = implementation.getComponentType();
+        Property<T> property = (Property<T>) componentType.getProperties().get(name);
+        // todo allow property to specify the factory to use
+        ObjectFactory<T> factory = defaultPropertyFactory.createObjectFactory(reader, property);
+        PropertyValue<T> value = new PropertyValue<T>();
+        value.setName(name);
+        value.setValueFactory(factory);
+        component.add(value);
     }
-*/
+
+    protected void loadReference(XMLStreamReader reader, LoaderContext loaderContext, Component<?> component) throws XMLStreamException, LoaderException {
+        String name = reader.getAttributeValue(null, "name");
+        String target = reader.getAttributeValue(null, "target");
+        ReferenceTarget referenceTarget = new ReferenceTarget();
+        referenceTarget.setReferenceName(name);
+        try {
+            referenceTarget.setTarget(new URI(target));
+        } catch (URISyntaxException e) {
+            InvalidReferenceException le = new InvalidReferenceException(e);
+            le.setIdentifier(target);
+            throw le;
+        }
+        component.add(referenceTarget);
+    }
 
 /*
     protected StAXPropertyFactory<?> getPropertyFactory(String factoryName, ResourceLoader resourceLoader) throws InvalidPropertyFactoryException {
@@ -148,31 +138,6 @@ public class ComponentLoader extends LoaderSupport {
             throw new InvalidPropertyFactoryException(factoryName, e);
         } catch (ClassCastException e) {
             throw new InvalidPropertyFactoryException(factoryName, e);
-        }
-    }
-*/
-
-/*
-    protected void loadReferences(XMLStreamReader reader, Component<?> component) throws XMLStreamException {
-        List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
-        while (true) {
-            switch (reader.next()) {
-            case START_ELEMENT:
-                String name = reader.getLocalName();
-                String uri = reader.getElementText();
-
-                ConfiguredReference configuredReference = component.getConfiguredReference(name);
-                if (configuredReference == null) {
-                    configuredReference = factory.createConfiguredReference();
-                    configuredReference.setName(name);
-                    configuredReferences.add(configuredReference);
-                }
-
-                configuredReference.getTargets().add(uri);
-                break;
-            case END_ELEMENT:
-                return;
-            }
         }
     }
 */
