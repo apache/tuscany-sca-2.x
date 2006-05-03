@@ -6,7 +6,7 @@ import org.apache.tuscany.spi.wire.TargetWireFactory;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
-import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.model.assembly.AssemblyObject;

@@ -18,6 +18,7 @@ package org.apache.tuscany.core.loader.assembly;
 
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.LoaderContext;
+import org.apache.tuscany.core.loader.AssemblyConstants;
 import org.apache.tuscany.model.assembly.ModuleFragment;
 import org.osoa.sca.annotations.Scope;
 

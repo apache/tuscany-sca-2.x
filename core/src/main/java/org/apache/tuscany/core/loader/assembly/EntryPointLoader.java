@@ -19,7 +19,9 @@ package org.apache.tuscany.core.loader.assembly;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.loader.LoaderContext;
-import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.ENTRY_POINT;
+import org.apache.tuscany.core.loader.AssemblyConstants;
+import org.apache.tuscany.spi.loader.LoaderSupport;
+import static org.apache.tuscany.core.loader.AssemblyConstants.ENTRY_POINT;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
@@ -41,7 +43,7 @@ import javax.xml.stream.XMLStreamReader;
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class EntryPointLoader extends AbstractLoader {
+public class EntryPointLoader extends LoaderSupport {
     public QName getXMLType() {
         return ENTRY_POINT;
     }

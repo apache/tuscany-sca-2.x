@@ -18,9 +18,9 @@ package org.apache.tuscany.core.loader.assembly;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.COMPONENT;
-import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.PROPERTIES;
-import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.REFERENCES;
+import static org.apache.tuscany.core.loader.AssemblyConstants.COMPONENT;
+import static org.apache.tuscany.core.loader.AssemblyConstants.PROPERTIES;
+import static org.apache.tuscany.core.loader.AssemblyConstants.REFERENCES;
 
 import java.util.List;
 
@@ -30,12 +30,13 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.InvalidPropertyFactoryException;
 import org.apache.tuscany.core.loader.StAXPropertyFactory;
 import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.loader.LoaderContext;
-import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.spi.loader.LoaderSupport;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ComponentInfo;
@@ -50,7 +51,7 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class ComponentLoader extends AbstractLoader {
+public class ComponentLoader extends LoaderSupport {
     private StAXPropertyFactory<?> defaultPropertyFactory;
 
     @Autowire

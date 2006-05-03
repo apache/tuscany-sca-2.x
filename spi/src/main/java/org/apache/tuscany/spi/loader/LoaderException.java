@@ -22,6 +22,9 @@ import org.apache.tuscany.common.TuscanyException;
  * @version $Rev$ $Date$
  */
 public class LoaderException extends TuscanyException {
+    private static final long serialVersionUID = -7459051598906813461L;
+    private String resourceURI;
+
     public LoaderException() {
     }
 
@@ -36,4 +39,23 @@ public class LoaderException extends TuscanyException {
     public LoaderException(Throwable cause) {
         super(cause);
     }
+
+    /**
+     * Returns the location of the resource that was being loaded.
+     *
+     * @return the location of the resource that was being loaded
+     */
+    public String getResourceURI() {
+        return resourceURI;
+    }
+
+    /**
+     * Sets the location of the resource that was being loaded.
+     *
+     * @param resourceURI the location of the resource that was being loaded
+     */
+    public void setResourceURI(String resourceURI) {
+        this.resourceURI = resourceURI;
+    }
+
 }

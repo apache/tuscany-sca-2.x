@@ -16,7 +16,7 @@ package org.apache.tuscany.core.system.builder;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
-import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;

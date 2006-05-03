@@ -11,7 +11,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.system.annotation;
+package org.apache.tuscany.spi.annotation;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -22,7 +22,7 @@ import java.lang.annotation.Target;
 /**
  * A system annotation to inject an autowired instance
  * 
- * @version $Rev$ $Date$
+ * @version $Rev: 395110 $ $Date: 2006-04-18 19:32:30 -0700 (Tue, 18 Apr 2006) $
  */
 @Target( { METHOD, FIELD })
 @Retention(RUNTIME)

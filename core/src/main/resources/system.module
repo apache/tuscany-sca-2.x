@@ -23,8 +23,8 @@
         <system:implementation.system class="org.apache.tuscany.core.loader.impl.WSDLDefinitionRegistryImpl"/>
     </component>
 
-    <component name="org.apache.tuscany.core.loader.assembly.ComponentTypeLoader">
-        <system:implementation.system class="org.apache.tuscany.core.loader.assembly.ComponentTypeLoader"/>
+    <component name="org.apache.tuscany.core.loader.ComponentTypeLoader">
+        <system:implementation.system class="org.apache.tuscany.core.loader.ComponentTypeLoader"/>
     </component>
 
     <!--
@@ -47,16 +47,16 @@
         <system:implementation.system class="org.apache.tuscany.core.loader.assembly.InterfaceWSDLLoader"/>
     </component>
 
-    <component name="org.apache.tuscany.core.loader.assembly.PropertyLoader">
-        <system:implementation.system class="org.apache.tuscany.core.loader.assembly.PropertyLoader"/>
+    <component name="org.apache.tuscany.core.loader.PropertyLoader">
+        <system:implementation.system class="org.apache.tuscany.core.loader.PropertyLoader"/>
     </component>
 
-    <component name="org.apache.tuscany.core.loader.assembly.ReferenceLoader">
-        <system:implementation.system class="org.apache.tuscany.core.loader.assembly.ReferenceLoader"/>
+    <component name="org.apache.tuscany.core.loader.ReferenceLoader">
+        <system:implementation.system class="org.apache.tuscany.core.loader.ReferenceLoader"/>
     </component>
 
-    <component name="org.apache.tuscany.core.loader.assembly.ServiceLoader">
-        <system:implementation.system class="org.apache.tuscany.core.loader.assembly.ServiceLoader"/>
+    <component name="org.apache.tuscany.core.loader.ServiceLoader">
+        <system:implementation.system class="org.apache.tuscany.core.loader.ServiceLoader"/>
     </component>
 
     <component name="org.apache.tuscany.core.builder.system.PolicyBuilderRegistry">

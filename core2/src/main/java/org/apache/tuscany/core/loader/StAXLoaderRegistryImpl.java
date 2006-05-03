@@ -14,69 +14,55 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.loader.impl;
+package org.apache.tuscany.core.loader;
 
-import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.core.loader.StAXElementLoader;
-import org.apache.tuscany.core.loader.StAXLoaderRegistry;
-import org.apache.tuscany.core.loader.LoaderContext;
-import org.apache.tuscany.model.assembly.AssemblyContext;
-import org.apache.tuscany.model.assembly.AssemblyObject;
-
+import java.util.HashMap;
+import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.apache.tuscany.model.ModelObject;
+import org.apache.tuscany.spi.loader.LoaderContext;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.StAXElementLoader;
+import org.apache.tuscany.spi.loader.StAXLoaderRegistry;
+import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 
 /**
  * @version $Rev$ $Date$
  */
 public class StAXLoaderRegistryImpl implements StAXLoaderRegistry {
-    private final Map<QName, StAXElementLoader<? extends AssemblyObject>> loaders = new HashMap<QName, StAXElementLoader<? extends AssemblyObject>>();
+    private final Map<QName, StAXElementLoader<? extends ModelObject>> loaders = new HashMap<QName, StAXElementLoader<? extends ModelObject>>();
 
     private Monitor monitor;
 
-    @org.apache.tuscany.core.system.annotation.Monitor
+    @org.apache.tuscany.spi.annotation.Monitor
     public void setMonitor(Monitor monitor) {
         this.monitor = monitor;
     }
 
-    public <T extends AssemblyObject> void registerLoader(QName element, StAXElementLoader<T> loader) {
+    public <T extends ModelObject> void registerLoader(QName element, StAXElementLoader<T> loader) {
         monitor.registeringLoader(element);
         loaders.put(element, loader);
     }
 
-    public <T extends AssemblyObject> void unregisterLoader(QName element, StAXElementLoader<T> loader) {
+    public <T extends ModelObject> void unregisterLoader(QName element, StAXElementLoader<T> loader) {
         monitor.unregisteringLoader(element);
         loaders.remove(element);
     }
 
-    public AssemblyObject load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
+    public ModelObject load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, LoaderException {
         QName name = reader.getName();
         monitor.elementLoad(name);
-        StAXElementLoader<? extends AssemblyObject> loader = loaders.get(name);
+        StAXElementLoader<? extends ModelObject> loader = loaders.get(name);
         if (loader == null) {
-            ConfigurationLoadException e = new ConfigurationLoadException("Unrecognized element");
-            e.setIdentifier(name.toString());
-            throw e;
+            throw new UnrecognizedElementException(name);
         } else {
             return loader.load(reader, loaderContext);
         }
     }
 
-
-    private final ThreadLocal<AssemblyContext> modelContext = new ThreadLocal<AssemblyContext>();
-
-    @Deprecated
-    public AssemblyContext getContext() {
-        return modelContext.get();
-    }
-
-    @Deprecated
-    public void setContext(AssemblyContext context) {
-        modelContext.set(context);
-    }
 
     public static interface Monitor {
         /**

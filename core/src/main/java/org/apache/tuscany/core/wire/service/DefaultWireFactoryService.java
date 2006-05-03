@@ -15,9 +15,9 @@ package org.apache.tuscany.core.wire.service;
 
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.core.message.MessageFactory;
-import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.wire.MethodHashMap;
 import org.apache.tuscany.spi.wire.WireFactoryFactory;
 import org.apache.tuscany.core.wire.SourceInvocationConfiguration;

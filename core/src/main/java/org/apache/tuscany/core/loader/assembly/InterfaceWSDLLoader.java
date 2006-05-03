@@ -23,7 +23,9 @@ import org.apache.tuscany.core.config.MissingInterfaceException;
 import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
 import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.loader.LoaderContext;
-import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.core.loader.AssemblyConstants;
+import org.apache.tuscany.spi.loader.LoaderSupport;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 
@@ -37,7 +39,7 @@ import javax.wsdl.WSDLException;
  * @version $Rev$ $Date$
  */
 @org.osoa.sca.annotations.Scope("MODULE")
-public class InterfaceWSDLLoader extends AbstractLoader {
+public class InterfaceWSDLLoader extends LoaderSupport {
     private static final String WSDLI = "http://www.w3.org/2006/01/wsdl-instance";
     private static final String WSDLI_LOCATION = "wsdlLocation";
 

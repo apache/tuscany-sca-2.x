@@ -19,7 +19,7 @@ import org.apache.tuscany.core.builder.SourcePolicyBuilder;
 import org.apache.tuscany.core.builder.SourcePolicyOrderer;
 import org.apache.tuscany.core.builder.TargetPolicyBuilder;
 import org.apache.tuscany.core.builder.TargetPolicyOrderer;
-import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;

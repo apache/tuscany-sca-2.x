@@ -48,7 +48,7 @@ import org.apache.tuscany.core.wire.WireConfiguration;
 import org.apache.tuscany.spi.wire.TargetWireFactory;
 import org.apache.tuscany.spi.wire.WireFactoryInitException;
 import org.apache.tuscany.spi.wire.SourceWireFactory;
-import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
 import org.apache.tuscany.model.assembly.Composite;
 import org.apache.tuscany.model.assembly.Component;

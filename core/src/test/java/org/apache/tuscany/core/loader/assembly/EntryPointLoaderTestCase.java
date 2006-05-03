@@ -21,7 +21,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.core.config.ConfigurationLoadException;
-import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.ENTRY_POINT;
+import static org.apache.tuscany.core.loader.AssemblyConstants.ENTRY_POINT;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.types.java.JavaServiceContract;

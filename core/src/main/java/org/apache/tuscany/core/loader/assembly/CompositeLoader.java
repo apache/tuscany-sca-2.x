@@ -23,6 +23,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.LoaderContext;
+import org.apache.tuscany.spi.loader.LoaderSupport;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.Composite;
@@ -34,7 +35,7 @@ import org.apache.tuscany.model.assembly.Wire;
 /**
  * @version $Rev$ $Date$
  */
-public abstract class CompositeLoader extends AbstractLoader {
+public abstract class CompositeLoader extends LoaderSupport {
     public void loadComposite(XMLStreamReader reader, Composite composite, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         composite.setName(reader.getAttributeValue(null, "name"));
         while (true) {

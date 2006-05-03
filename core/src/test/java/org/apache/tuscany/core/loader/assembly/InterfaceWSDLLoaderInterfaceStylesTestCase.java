@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.INTERFACE_WSDL;
+import static org.apache.tuscany.core.loader.AssemblyConstants.INTERFACE_WSDL;
 
 import java.io.InputStream;
 import java.net.URL;

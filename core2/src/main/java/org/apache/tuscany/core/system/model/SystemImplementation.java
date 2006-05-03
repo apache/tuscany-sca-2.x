@@ -14,19 +14,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.system.annotation;
+package org.apache.tuscany.core.system.model;
 
-import java.lang.annotation.Target;
-import java.lang.annotation.Retention;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.RetentionPolicy;
+import org.apache.tuscany.model.AtomicImplementation;
 
 /**
- * A system annotation to inject a monitor
- *
- * @version $Rev: 392146 $ $Date: 2006-04-06 18:11:28 -0700 (Thu, 06 Apr 2006) $
+ * @version $Rev$ $Date$
  */
-@Target( { ElementType.METHOD, ElementType.FIELD })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Monitor {
+public class SystemImplementation extends AtomicImplementation {
+    private Class<?> implementationClass;
+
+    public Class<?> getImplementationClass() {
+        return implementationClass;
+    }
+
+    public void setImplementationClass(Class<?> implementationClass) {
+        this.implementationClass = implementationClass;
+    }
 }

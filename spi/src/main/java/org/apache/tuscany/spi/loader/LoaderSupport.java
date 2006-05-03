@@ -14,29 +14,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.loader.assembly;
+package org.apache.tuscany.spi.loader;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.core.loader.StAXElementLoader;
-import org.apache.tuscany.core.loader.StAXLoaderRegistry;
-import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
-import org.apache.tuscany.model.assembly.AssemblyObject;
+import org.apache.tuscany.model.ModelObject;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 
 /**
+ * Base class for loader implementations that handles registration.
+ *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractLoader<T extends AssemblyObject> implements StAXElementLoader<T> {
-    protected SystemAssemblyFactory factory;
+public abstract class LoaderSupport<T extends ModelObject> implements StAXElementLoader<T> {
     protected StAXLoaderRegistry registry;
-
-    @Autowire
-    public void setFactory(SystemAssemblyFactory factory) {
-        this.factory = factory;
-    }
 
     @Autowire
     public void setRegistry(StAXLoaderRegistry registry) {
@@ -55,6 +48,7 @@ public abstract class AbstractLoader<T extends AssemblyObject> implements StAXEl
 
     /**
      * Returns the QName of the element that this implementation handles.
+     *
      * @return the QName of the element that this implementation handles
      */
     protected abstract QName getXMLType();

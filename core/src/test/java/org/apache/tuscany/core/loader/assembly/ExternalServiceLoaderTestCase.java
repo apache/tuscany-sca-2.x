@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.core.loader.assembly;
 
-import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.EXTERNAL_SERVICE;
+import static org.apache.tuscany.core.loader.AssemblyConstants.EXTERNAL_SERVICE;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;

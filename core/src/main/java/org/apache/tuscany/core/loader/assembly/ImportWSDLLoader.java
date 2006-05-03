@@ -31,8 +31,10 @@ import org.apache.tuscany.core.config.SidefileLoadException;
 import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
-import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.IMPORT_WSDL;
-import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.core.loader.AssemblyConstants;
+import org.apache.tuscany.spi.loader.LoaderSupport;
+import org.apache.tuscany.spi.annotation.Autowire;
+import static org.apache.tuscany.core.loader.AssemblyConstants.IMPORT_WSDL;
 import org.apache.tuscany.model.assembly.ImportWSDL;
 import org.osoa.sca.annotations.Scope;
 
@@ -42,7 +44,7 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class ImportWSDLLoader extends AbstractLoader {
+public class ImportWSDLLoader extends LoaderSupport {
     private WSDLDefinitionRegistry wsdlRegistry;
 
     @Autowire

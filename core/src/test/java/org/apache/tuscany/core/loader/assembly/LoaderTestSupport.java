@@ -30,6 +30,7 @@ import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.core.loader.impl.StAXLoaderRegistryImpl;
 import org.apache.tuscany.core.loader.LoaderContext;
+import org.apache.tuscany.spi.loader.LoaderSupport;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 
@@ -74,7 +75,7 @@ public abstract class LoaderTestSupport extends TestCase {
         return reader;
     }
 
-    protected void registerLoader(AbstractLoader<?> loader) {
+    protected void registerLoader(LoaderSupport<?> loader) {
         loader.setFactory(assemblyFactory);
         loader.setRegistry(registry);
         loader.start();

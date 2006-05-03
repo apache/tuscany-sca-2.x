@@ -13,7 +13,7 @@
  */
 package org.apache.tuscany.core.mock.component;
 
-import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.spi.annotation.Autowire;
 
 import java.util.List;
 

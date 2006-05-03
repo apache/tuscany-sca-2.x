@@ -56,7 +56,7 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         registry = wsdlFactory.newPopulatedExtensionRegistry();
     }
 
-    @org.apache.tuscany.core.system.annotation.Monitor
+    @org.apache.tuscany.spi.annotation.Monitor
     public void setMonitor(Monitor monitor) {
         this.monitor = monitor;
     }

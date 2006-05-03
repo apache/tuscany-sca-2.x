@@ -22,7 +22,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.core.config.ConfigurationLoadException;
-import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.INTERFACE_WSDL;
+import static org.apache.tuscany.core.loader.AssemblyConstants.INTERFACE_WSDL;
 import org.apache.tuscany.core.loader.impl.WSDLDefinitionRegistryImpl;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 

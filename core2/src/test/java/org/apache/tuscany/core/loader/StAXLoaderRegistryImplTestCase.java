@@ -1,0 +1,89 @@
+/**
+ *
+ * Copyright 2006 The Apache Software Foundation
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+package org.apache.tuscany.core.loader;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.apache.tuscany.spi.loader.StAXElementLoader;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderContext;
+import org.apache.tuscany.spi.loader.UnrecognizedElementException;
+import org.apache.tuscany.model.ModelObject;
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
+
+/**
+ * @version $Rev$ $Date$
+ */
+@SuppressWarnings({"CastToIncompatibleInterface"})
+public class StAXLoaderRegistryImplTestCase extends MockObjectTestCase {
+    private StAXLoaderRegistryImpl registry;
+    private QName name;
+    private Mock mockMonitor;
+    private Mock mockLoader;
+    private Mock mockReader;
+    private LoaderContext loaderContext;
+    private ModelObject modelObject;
+
+    public void testLoaderRegistration() {
+        mockMonitor.expects(once()).method("registeringLoader").with(eq(name));
+        registry.registerLoader(name, (StAXElementLoader<ModelObject>) mockLoader.proxy());
+    }
+
+    public void testLoaderUnregistration() {
+        mockMonitor.expects(once()).method("unregisteringLoader").with(eq(name));
+        registry.unregisterLoader(name, (StAXElementLoader<ModelObject>) mockLoader.proxy());
+    }
+
+    public void testSuccessfulDispatch() throws LoaderException, XMLStreamException {
+        mockReader.expects(once()).method("getName").will(returnValue(name));
+        mockMonitor.expects(once()).method("registeringLoader").with(eq(name));
+        mockMonitor.expects(once()).method("elementLoad").with(eq(name));
+        mockLoader.expects(once()).method("load").with(eq(mockReader.proxy()), eq(loaderContext)).will(returnValue(modelObject));
+
+        registry.registerLoader(name, (StAXElementLoader<ModelObject>) mockLoader.proxy());
+        assertSame(modelObject, registry.load((XMLStreamReader) mockReader.proxy(), loaderContext));
+    }
+
+    public void testUnsuccessfulDispatch() throws LoaderException, XMLStreamException {
+        mockReader.expects(once()).method("getName").will(returnValue(name));
+        mockMonitor.expects(once()).method("elementLoad").with(eq(name));
+
+        try {
+            registry.load((XMLStreamReader) mockReader.proxy(), loaderContext);
+            fail();
+        } catch (UnrecognizedElementException e) {
+            assertSame(name, e.getElement());
+        }
+    }
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        name = new QName("http://mock", "test");
+        loaderContext = new LoaderContext(null);
+        registry = new StAXLoaderRegistryImpl();
+        mockMonitor = mock(StAXLoaderRegistryImpl.Monitor.class);
+        registry.setMonitor((StAXLoaderRegistryImpl.Monitor) mockMonitor.proxy());
+
+        mockLoader = mock(StAXElementLoader.class);
+        mockReader = mock(XMLStreamReader.class);
+        modelObject = new ModelObject() {
+        };
+    }
+}

@@ -20,4 +20,40 @@ package org.apache.tuscany.model;
  * @version $Rev$ $Date$
  */
 public class JavaServiceContract extends ServiceContract {
+    private String interfaceName;
+    private Class<?> interfaceClass;
+    private String callbackName;
+    private Class<?> callbackClass;
+
+    public String getInterfaceName() {
+        return interfaceName;
+    }
+
+    public void setInterfaceName(String interfaceName) {
+        this.interfaceName = interfaceName;
+    }
+
+    public Class<?> getInterfaceClass() {
+        return interfaceClass;
+    }
+
+    public void setInterfaceClass(Class<?> interfaceClass) {
+        this.interfaceClass = interfaceClass;
+    }
+
+    public String getCallbackName() {
+        return callbackName;
+    }
+
+    public void setCallbackName(String callbackName) {
+        this.callbackName = callbackName;
+    }
+
+    public Class<?> getCallbackClass() {
+        return callbackClass;
+    }
+
+    public void setCallbackClass(Class<?> callbackClass) {
+        this.callbackClass = callbackClass;
+    }
 }
