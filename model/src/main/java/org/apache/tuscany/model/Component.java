@@ -24,9 +24,13 @@ import java.util.HashMap;
  */
 public class Component<T extends Implementation> extends ModelObject {
     private String name;
-    private T implementation;
+    private final T implementation;
     private final Map<String, ReferenceTarget> referenceTargets = new HashMap<String, ReferenceTarget>();
     private final Map<String, PropertyValue<?>> propertyValues = new HashMap<String, PropertyValue<?>>();
+
+    public Component(T implementation) {
+        this.implementation = implementation;
+    }
 
     public String getName() {
         return name;
@@ -38,10 +42,6 @@ public class Component<T extends Implementation> extends ModelObject {
 
     public T getImplementation() {
         return implementation;
-    }
-
-    public void setImplementation(T implementation) {
-        this.implementation = implementation;
     }
 
     public Map<String, ReferenceTarget> getReferenceTargets() {

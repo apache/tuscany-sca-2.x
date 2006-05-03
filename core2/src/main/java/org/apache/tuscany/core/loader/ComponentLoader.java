@@ -14,37 +14,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.loader.assembly;
-
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static org.apache.tuscany.core.loader.AssemblyConstants.COMPONENT;
-import static org.apache.tuscany.core.loader.AssemblyConstants.PROPERTIES;
-import static org.apache.tuscany.core.loader.AssemblyConstants.REFERENCES;
-
-import java.util.List;
+package org.apache.tuscany.core.loader;
 
 import javax.xml.namespace.QName;
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.model.Component;
+import org.apache.tuscany.model.Implementation;
+import org.apache.tuscany.model.ModelObject;
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.core.loader.InvalidPropertyFactoryException;
-import org.apache.tuscany.core.loader.StAXPropertyFactory;
-import org.apache.tuscany.core.loader.StAXUtil;
-import org.apache.tuscany.core.loader.LoaderContext;
+import org.apache.tuscany.spi.loader.LoaderContext;
+import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderSupport;
-import org.apache.tuscany.model.assembly.AssemblyObject;
-import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentInfo;
-import org.apache.tuscany.model.assembly.ConfiguredProperty;
-import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.Implementation;
-import org.apache.tuscany.model.assembly.OverrideOption;
-import org.apache.tuscany.model.assembly.Property;
+import org.apache.tuscany.spi.loader.MissingImplementationException;
+import org.apache.tuscany.spi.loader.StAXPropertyFactory;
 import org.osoa.sca.annotations.Scope;
 
 /**
@@ -60,39 +46,43 @@ public class ComponentLoader extends LoaderSupport {
     }
 
     public QName getXMLType() {
-        return COMPONENT;
+        return AssemblyConstants.COMPONENT;
     }
 
-    public Component load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
-        assert COMPONENT.equals(reader.getName());
-
-        Component component = factory.createSimpleComponent();
-        component.setName(reader.getAttributeValue(null, "name"));
+    public Component<?> load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, LoaderException {
+        assert AssemblyConstants.COMPONENT.equals(reader.getName());
+        String name = reader.getAttributeValue(null, "name");
+        reader.nextTag();
+        ModelObject o = registry.load(reader, loaderContext);
+        if (!(o instanceof Implementation)) {
+            MissingImplementationException e = new MissingImplementationException();
+            e.setIdentifier(name);
+            throw e;
+        }
+        Implementation<?> impl = (Implementation<?>) o;
+        Component<?> component = impl.newComponent();
+        component.setName(name);
 
         while (true) {
             switch (reader.next()) {
-            case START_ELEMENT:
-                QName name = reader.getName();
-                if (PROPERTIES.equals(name)) {
+                case START_ELEMENT:
+                    QName qname = reader.getName();
+/*
+                    if (AssemblyConstants.PROPERTIES.equals(qname)) {
                     loadProperties(reader, loaderContext.getResourceLoader(), component);
-                } else if (REFERENCES.equals(name)) {
+                    } else if (AssemblyConstants.REFERENCES.equals(qname)) {
                     loadReferences(reader, component);
-                } else {
-                    AssemblyObject o = registry.load(reader, loaderContext);
-                    if (o instanceof Implementation) {
-                        Implementation impl = (Implementation) o;
-                        impl.initialize(registry.getContext());
-                        component.setImplementation(impl);
                     }
-                }
-                reader.next();
-                break;
-            case END_ELEMENT:
-                return component;
+*/
+                    reader.next();
+                    break;
+                case END_ELEMENT:
+                    return component;
             }
         }
     }
 
+/*
     protected void loadProperties(XMLStreamReader reader, ResourceLoader resourceLoader, Component<?> component) throws XMLStreamException, ConfigurationLoadException {
         ComponentInfo componentType = component.getImplementation().getComponentInfo();
         List<ConfiguredProperty> configuredProperties = component.getConfiguredProperties();
@@ -134,7 +124,9 @@ public class ComponentLoader extends LoaderSupport {
             }
         }
     }
+*/
 
+/*
     protected StAXPropertyFactory<?> getPropertyFactory(String factoryName, ResourceLoader resourceLoader) throws InvalidPropertyFactoryException {
         Class<?> impl;
         try {
@@ -158,7 +150,9 @@ public class ComponentLoader extends LoaderSupport {
             throw new InvalidPropertyFactoryException(factoryName, e);
         }
     }
+*/
 
+/*
     protected void loadReferences(XMLStreamReader reader, Component<?> component) throws XMLStreamException {
         List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
         while (true) {
@@ -181,4 +175,5 @@ public class ComponentLoader extends LoaderSupport {
             }
         }
     }
+*/
 }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2006 The Apache Software Foundation or its licensors as applicable
+ * Copyright 2006 The Apache Software Foundation
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,23 +14,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.model;
+package org.apache.tuscany.spi.loader;
 
 /**
- * @version $Rev$ $Date$
+ * Exception that indicates that an implementation was not provided.
+ *
+ * @version $Rev: 392764 $ $Date: 2006-04-09 09:13:55 -0700 (Sun, 09 Apr 2006) $
  */
-public abstract class Implementation<T extends ComponentType> extends ModelObject {
-    private T componentType;
+public class MissingImplementationException extends LoaderException {
+    private static final long serialVersionUID = -2917278473974880124L;
 
-    public T getComponentType() {
-        return componentType;
-    }
-
-    public void setComponentType(T componentType) {
-        this.componentType = componentType;
-    }
-
-    public Component<Implementation<T>> newComponent() {
-        return new Component(this);
+    /**
+     * Default constructor.
+     *
+     */
+    public MissingImplementationException() {
+        super();
     }
 }

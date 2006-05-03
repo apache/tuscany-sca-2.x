@@ -37,4 +37,8 @@ public class CompositeComponentType extends ComponentType {
     public Map<String, Component> getComponents() {
         return components;
     }
+
+    public void add(Component<?> component) {
+        components.put(component.getName(), component);
+    }
 }
