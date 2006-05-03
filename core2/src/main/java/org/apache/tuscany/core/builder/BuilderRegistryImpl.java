@@ -21,10 +21,12 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.model.Binding;
 import org.apache.tuscany.model.BoundReference;
 import org.apache.tuscany.model.BoundService;
 import org.apache.tuscany.model.Component;
 import org.apache.tuscany.model.Implementation;
+import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.builder.WireBuilder;
@@ -38,10 +40,10 @@ import org.apache.tuscany.spi.wire.TargetWireFactory;
  */
 public class BuilderRegistryImpl implements BuilderRegistry {
     private final Map<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>> componentBuilders = new HashMap<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>();
+    private final Map<Class<? extends Binding>, BindingBuilder<? extends Binding>> bindingBuilders = new HashMap<Class<? extends Binding>, BindingBuilder<? extends Binding>>();
 
     public <I extends Implementation<?>> void register(ComponentBuilder<I> builder) {
-        Class<?> aClass = builder.getClass();
-        Type[] interfaces = aClass.getGenericInterfaces();
+        Type[] interfaces = builder.getClass().getGenericInterfaces();
         for (Type type : interfaces) {
             if (! (type instanceof ParameterizedType)) {
                 continue;
@@ -61,21 +63,46 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         componentBuilders.put(implClass, builder);
     }
 
-    public void register(WireBuilder builder) {
-        throw new UnsupportedOperationException();
-    }
-
     public <I extends Implementation<?>> Context build(CompositeContext parent, Component<I> component) {
         Class<I> implClass = (Class<I>) component.getImplementation().getClass();
         ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>) componentBuilders.get(implClass);
         return componentBuilder.build(parent, component);
     }
 
-    public Context build(CompositeContext parent, BoundService boundService) {
-        throw new UnsupportedOperationException();
+    public <B extends Binding> void register(BindingBuilder<B> builder) {
+        Type[] interfaces = builder.getClass().getGenericInterfaces();
+        for (Type type : interfaces) {
+            if (! (type instanceof ParameterizedType)) {
+                continue;
+            }
+            ParameterizedType interfaceType = (ParameterizedType) type;
+            if (!BindingBuilder.class.equals(interfaceType.getRawType())) {
+                continue;
+            }
+            Class<B> implClass = (Class<B>) interfaceType.getActualTypeArguments()[0];
+            register(implClass, builder);
+            return;
+        }
+        throw new IllegalArgumentException("builder is not generified");
     }
 
-    public Context build(CompositeContext parent, BoundReference boundReference) {
+    public <B extends Binding> void register(Class<B> implClass, BindingBuilder<B> builder) {
+        bindingBuilders.put(implClass, builder);
+    }
+
+    public <B extends Binding> Context build(CompositeContext parent, BoundService<B> boundService) {
+        Class<B> bindingClass = (Class<B>) boundService.getBinding().getClass();
+        BindingBuilder<B> bindingBuilder = (BindingBuilder<B>) bindingBuilders.get(bindingClass);
+        return bindingBuilder.build(parent, boundService);
+    }
+
+    public <B extends Binding> Context build(CompositeContext parent, BoundReference<B> boundReference) {
+        Class<B> bindingClass = (Class<B>) boundReference.getBinding().getClass();
+        BindingBuilder<B> bindingBuilder = (BindingBuilder<B>) bindingBuilders.get(bindingClass);
+        return bindingBuilder.build(parent, boundReference);
+    }
+
+    public void register(WireBuilder builder) {
         throw new UnsupportedOperationException();
     }
 

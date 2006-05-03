@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2006 The Apache Software Foundation or its licensors as applicable
+ * Copyright 2006 The Apache Software Foundation
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,19 +14,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.model;
+package org.apache.tuscany.spi.builder;
+
+import org.apache.tuscany.model.Binding;
+import org.apache.tuscany.model.BoundService;
+import org.apache.tuscany.model.BoundReference;
+import org.apache.tuscany.spi.context.Context;
+import org.apache.tuscany.spi.context.CompositeContext;
 
 /**
  * @version $Rev$ $Date$
  */
-public class BoundReference<B extends Binding> extends Reference {
-    private B binding;
-
-    public B getBinding() {
-        return binding;
-    }
-
-    public void setBinding(B binding) {
-        this.binding = binding;
-    }
+public interface BindingBuilder<B extends Binding> {
+    Context build(CompositeContext parent, BoundService<B> boundService);
+    Context build(CompositeContext parent, BoundReference<B> boundReference);
 }

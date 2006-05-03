@@ -16,6 +16,7 @@
  */
 package org.apache.tuscany.spi.builder;
 
+import org.apache.tuscany.model.Binding;
 import org.apache.tuscany.model.BoundReference;
 import org.apache.tuscany.model.BoundService;
 import org.apache.tuscany.model.Component;
@@ -33,13 +34,17 @@ public interface BuilderRegistry {
 
     <I extends Implementation<?>> void register(Class<I> implClass, ComponentBuilder<I> builder);
 
-    void register(WireBuilder builder);
-
     <I extends Implementation<?>> Context build(CompositeContext parent, Component<I> component);
 
-    Context build(CompositeContext parent, BoundService boundService);
+    <B extends Binding> void register(BindingBuilder<B> builder);
 
-    Context build(CompositeContext parent, BoundReference boundReference);
+    <B extends Binding> void register(Class<B> implClass, BindingBuilder<B> builder);
+
+    <B extends Binding> Context build(CompositeContext parent, BoundService<B> boundService);
+
+    <B extends Binding> Context build(CompositeContext parent, BoundReference<B> boundReference);
+
+    void register(WireBuilder builder);
 
     void connect(SourceWireFactory<?> source, TargetWireFactory<?> target);
 

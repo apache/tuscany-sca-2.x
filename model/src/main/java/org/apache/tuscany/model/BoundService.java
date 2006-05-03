@@ -21,15 +21,15 @@ import java.net.URI;
 /**
  * @version $Rev$ $Date$
  */
-public class BoundService extends Service {
-    private Binding binding;
+public class BoundService<B extends Binding> extends Service {
+    private B binding;
     private URI target;
 
-    public Binding getBinding() {
+    public B getBinding() {
         return binding;
     }
 
-    public void setBinding(Binding binding) {
+    public void setBinding(B binding) {
         this.binding = binding;
     }
 
