@@ -17,11 +17,12 @@
 package org.apache.tuscany.core.system.model;
 
 import org.apache.tuscany.model.AtomicImplementation;
+import org.apache.tuscany.model.ComponentType;
 
 /**
  * @version $Rev$ $Date$
  */
-public class SystemImplementation extends AtomicImplementation {
+public class SystemImplementation extends AtomicImplementation<ComponentType> {
     private Class<?> implementationClass;
 
     public Class<?> getImplementationClass() {
