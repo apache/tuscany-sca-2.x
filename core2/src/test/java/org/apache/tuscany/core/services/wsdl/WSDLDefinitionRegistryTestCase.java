@@ -14,19 +14,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.loader.assembly;
+package org.apache.tuscany.core.services.wsdl;
 
-import java.net.URL;
 import java.io.IOException;
-
+import java.net.URL;
 import javax.wsdl.Definition;
 import javax.wsdl.WSDLException;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.loader.impl.WSDLDefinitionRegistryImpl;
-import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -34,12 +30,12 @@ import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 public class WSDLDefinitionRegistryTestCase extends TestCase {
     private static final String NS = "http://www.example.org";
     private WSDLDefinitionRegistryImpl wsdlRegistry;
-    private ResourceLoader rl;
+    private ClassLoader rl;
 
 
     public void testLoadFromAbsoluteWSDLLocation() {
         try {
-            Definition def = wsdlRegistry.loadDefinition(NS + ' ' + rl.getResource("org/apache/tuscany/core/loader/assembly/example.wsdl"), rl);
+            Definition def = wsdlRegistry.loadDefinition(NS + ' ' + rl.getResource("org/apache/tuscany/core/services/wsdl/example.wsdl"), rl);
             assertNotNull(def.getPortType(new QName(NS, "HelloWorld")));
         } catch (IOException e) {
             fail(e.getMessage());
@@ -50,7 +46,7 @@ public class WSDLDefinitionRegistryTestCase extends TestCase {
 
     public void testLoadFromRelativeWSDLLocation() {
         try {
-            Definition def = wsdlRegistry.loadDefinition(NS + " org/apache/tuscany/core/loader/assembly/example.wsdl", rl);
+            Definition def = wsdlRegistry.loadDefinition(NS + " org/apache/tuscany/core/services/wsdl/example.wsdl", rl);
             assertNotNull(def.getPortType(new QName(NS, "HelloWorld")));
         } catch (IOException e) {
             fail(e.getMessage());
@@ -63,7 +59,7 @@ public class WSDLDefinitionRegistryTestCase extends TestCase {
         super.setUp();
         wsdlRegistry = new WSDLDefinitionRegistryImpl();
         wsdlRegistry.setMonitor(NULL_MONITOR);
-        rl = new ResourceLoaderImpl(getClass().getClassLoader());
+        rl = getClass().getClassLoader();
     }
 
     private static final WSDLDefinitionRegistryImpl.Monitor NULL_MONITOR = new WSDLDefinitionRegistryImpl.Monitor() {

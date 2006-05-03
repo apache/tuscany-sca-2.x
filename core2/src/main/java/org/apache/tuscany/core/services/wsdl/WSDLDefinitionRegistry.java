@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.loader;
+package org.apache.tuscany.core.services.wsdl;
 
 import java.net.URL;
 import java.io.IOException;
@@ -46,12 +46,12 @@ public interface WSDLDefinitionRegistry {
      * Load and register a WSDL definition as specified in a WSDL2.0 wsdlLocation attribute.
      *
      * @param wsdlLocation   the value of the wsdlLocation attribute
-     * @param resourceLoader application resource loader used to support relative locations
+     * @param classLoader application classloader used to support relative locations
      * @return the loaded Definition
      * @throws IOException   if there was a problem reading the document
      * @throws WSDLException if there was a problem parsing the definition
      */
-    Definition loadDefinition(String wsdlLocation, ResourceLoader resourceLoader) throws IOException, WSDLException;
+    Definition loadDefinition(String wsdlLocation, ClassLoader classLoader) throws IOException, WSDLException;
 
     /**
      * Returns the PortType with the supplied qualified name, or null if no such port has been defined.

@@ -16,8 +16,28 @@
  */
 package org.apache.tuscany.model;
 
+import javax.wsdl.PortType;
+
 /**
  * @version $Rev$ $Date$
  */
 public class WSDLServiceContract extends ServiceContract {
+    private PortType portType;
+    private PortType callbackPortType;
+
+    public PortType getPortType() {
+        return portType;
+    }
+
+    public void setPortType(PortType portType) {
+        this.portType = portType;
+    }
+
+    public PortType getCallbackPortType() {
+        return callbackPortType;
+    }
+
+    public void setCallbackPortType(PortType callbackPortType) {
+        this.callbackPortType = callbackPortType;
+    }
 }

@@ -14,12 +14,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.loader.impl;
+package org.apache.tuscany.core.services.wsdl;
 
 import java.io.IOException;
-import java.net.URL;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,15 +33,9 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
-import org.osoa.sca.annotations.Scope;
-
 /**
  * @version $Rev$ $Date$
  */
-@org.osoa.sca.annotations.Service(interfaces = {WSDLDefinitionRegistry.class})
-@Scope("MODULE")
 public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
     private final WSDLFactory wsdlFactory;
     private final ExtensionRegistry registry;
@@ -65,7 +59,7 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         return registry;
     }
 
-    public Definition loadDefinition(String wsdlLocation, ResourceLoader resourceLoader) throws IOException, WSDLException {
+    public Definition loadDefinition(String wsdlLocation, ClassLoader classLoader) throws IOException, WSDLException {
         int index = wsdlLocation.indexOf(' ');
         if (index == -1) {
             throw new WSDLException(WSDLException.CONFIGURATION_ERROR, "Invalid wsdlLocation: " + wsdlLocation);
@@ -81,7 +75,7 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         if (uri.isAbsolute()) {
             url = uri.toURL();
         } else {
-            url = resourceLoader.getResource(uri.toString());
+            url = classLoader.getResource(uri.toString());
             if (url == null) {
                 throw new WSDLException(WSDLException.CONFIGURATION_ERROR, "Resource not found: " + uri);
             }
@@ -155,7 +149,7 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
          * read WSDL for the supplied namespace from the supplied location.
          *
          * @param namespace the target namespace expected in the WSDL; may be null
-         * @param location the location where we will attempt to read the WSDL definition from
+         * @param location  the location where we will attempt to read the WSDL definition from
          */
         void readingWSDL(String namespace, URL location);
 
@@ -164,7 +158,7 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
          * in the cache.
          *
          * @param namespace the target namespace for the WSDL
-         * @param location the location where the WSDL definition was read from
+         * @param location  the location where the WSDL definition was read from
          */
         void cachingDefinition(String namespace, URL location);
     }

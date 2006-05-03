@@ -19,8 +19,8 @@
         xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
         name="org.apache.tuscany.core.system">
 
-    <component name="org.apache.tuscany.core.loader.WSDLDefinitionRegistry">
-        <system:implementation.system class="org.apache.tuscany.core.loader.impl.WSDLDefinitionRegistryImpl"/>
+    <component name="org.apache.tuscany.core.services.wsdl.WSDLDefinitionRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.services.wsdl.WSDLDefinitionRegistryImpl"/>
     </component>
 
     <component name="org.apache.tuscany.core.loader.ComponentTypeLoader">
@@ -43,8 +43,8 @@
         <system:implementation.system class="org.apache.tuscany.core.loader.assembly.ImportWSDLLoader"/>
     </component>
 
-    <component name="org.apache.tuscany.core.loader.assembly.InterfaceWSDLLoader">
-        <system:implementation.system class="org.apache.tuscany.core.loader.assembly.InterfaceWSDLLoader"/>
+    <component name="org.apache.tuscany.core.loader.InterfaceWSDLLoader">
+        <system:implementation.system class="org.apache.tuscany.core.loader.InterfaceWSDLLoader"/>
     </component>
 
     <component name="org.apache.tuscany.core.loader.PropertyLoader">
