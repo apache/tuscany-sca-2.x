@@ -39,7 +39,7 @@ import org.apache.tuscany.binding.axis2.util.SDODataBinding;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.core.builder.BuilderConfigException;
-import org.apache.tuscany.core.builder.impl.ExternalServiceContextFactory;
+import org.apache.tuscany.core.extension.ExternalServiceContextFactory;
 import org.apache.tuscany.core.extension.ExternalServiceBuilderSupport;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.model.assembly.ExternalService;

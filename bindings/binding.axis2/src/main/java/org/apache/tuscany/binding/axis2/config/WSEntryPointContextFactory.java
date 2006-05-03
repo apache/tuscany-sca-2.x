@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.binding.axis2.config;
 
-import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
+import org.apache.tuscany.core.extension.EntryPointContextFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 
 /**

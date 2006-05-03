@@ -13,8 +13,9 @@
 package org.apache.tuscany.binding.jsonrpc.builder;
 
 import org.apache.tuscany.binding.jsonrpc.assembly.JSONRPCBinding;
-import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
+import org.apache.tuscany.binding.jsonrpc.config.JSONEntryPointContextFactory;
 import org.apache.tuscany.core.extension.EntryPointBuilderSupport;
+import org.apache.tuscany.core.extension.EntryPointContextFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.osoa.sca.annotations.Scope;
@@ -24,7 +25,7 @@ public class JSONRPCEntryPointBuilder extends EntryPointBuilderSupport<JSONRPCBi
 
     @Override
     protected EntryPointContextFactory createEntryPointContextFactory(EntryPoint entryPoint, MessageFactory msgFactory) {
-        return new EntryPointContextFactory(entryPoint.getName(), msgFactory);
+        return new JSONEntryPointContextFactory(entryPoint.getName(), msgFactory);
     }
 
 }

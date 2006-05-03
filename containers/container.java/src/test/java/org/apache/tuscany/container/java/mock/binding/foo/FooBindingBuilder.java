@@ -17,7 +17,7 @@ import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
+import org.apache.tuscany.core.extension.EntryPointContextFactory;
 import org.apache.tuscany.core.injection.ObjectCreationException;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;

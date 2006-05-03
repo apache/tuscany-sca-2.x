@@ -1,7 +1,7 @@
 package org.apache.tuscany.core.extension;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
+import org.apache.tuscany.core.extension.EntryPointContextFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.EntryPoint;

@@ -14,7 +14,7 @@
 package org.apache.tuscany.container.java.mock.binding.foo;
 
 import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.builder.impl.ExternalServiceContextFactory;
+import org.apache.tuscany.core.extension.ExternalServiceContextFactory;
 
 /**
  * Creates instances of {@link org.apache.tuscany.core.context.ExternalServiceContext} configured with the appropriate

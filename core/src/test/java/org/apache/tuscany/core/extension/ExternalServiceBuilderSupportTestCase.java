@@ -1,7 +1,7 @@
 package org.apache.tuscany.core.extension;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.builder.impl.ExternalServiceContextFactory;
+import org.apache.tuscany.core.extension.ExternalServiceContextFactory;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.ExternalService;
 

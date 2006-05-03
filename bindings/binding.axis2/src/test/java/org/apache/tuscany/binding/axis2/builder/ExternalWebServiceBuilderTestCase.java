@@ -33,7 +33,7 @@ import org.apache.tuscany.binding.axis2.handler.Axis2OperationInvoker;
 import org.apache.tuscany.binding.axis2.handler.Axis2ServiceInvoker;
 import org.apache.tuscany.binding.axis2.handler.WebServicePortMetaData;
 import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.core.builder.impl.ExternalServiceContextFactory;
+import org.apache.tuscany.core.extension.ExternalServiceContextFactory;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyInitializationException;
 import org.apache.tuscany.model.assembly.AssemblyVisitor;
