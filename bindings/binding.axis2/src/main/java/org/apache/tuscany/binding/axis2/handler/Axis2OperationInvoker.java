@@ -17,16 +17,16 @@ package org.apache.tuscany.binding.axis2.handler;
 
 import javax.xml.namespace.QName;
 
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.soap.SOAPEnvelope;
+import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.binding.axis2.util.ClassLoaderHelper;
 import org.apache.tuscany.binding.axis2.util.DataBinding;
-import org.apache.ws.commons.om.OMElement;
-import org.apache.ws.commons.soap.SOAPEnvelope;
-import org.apache.ws.commons.soap.SOAPFactory;
-import org.apache.wsdl.WSDLConstants;
 
 /**
  * Axis2OperationInvoker uses an Axis2 OperationClient to invoke a remote web service

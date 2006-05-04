@@ -19,7 +19,6 @@ package org.apache.tuscany.binding.axis2.assembly.tests.bigbank.account.services
 
 import org.apache.tuscany.binding.axis2.assembly.tests.bigbank.account.services.accountdata.AccountDataService;
 import org.apache.tuscany.binding.axis2.assembly.tests.bigbank.account.services.stockquote.StockQuoteService;
-
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 

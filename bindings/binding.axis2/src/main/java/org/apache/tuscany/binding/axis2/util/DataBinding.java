@@ -15,7 +15,7 @@
  */
 package org.apache.tuscany.binding.axis2.util;
 
-import org.apache.ws.commons.om.OMElement;
+import org.apache.axiom.om.OMElement;
 
 public interface DataBinding {
 

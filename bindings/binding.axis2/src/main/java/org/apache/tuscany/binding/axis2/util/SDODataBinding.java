@@ -17,7 +17,7 @@ package org.apache.tuscany.binding.axis2.util;
 
 import javax.xml.namespace.QName;
 
-import org.apache.ws.commons.om.OMElement;
+import org.apache.axiom.om.OMElement;
 
 import commonj.sdo.helper.TypeHelper;
 

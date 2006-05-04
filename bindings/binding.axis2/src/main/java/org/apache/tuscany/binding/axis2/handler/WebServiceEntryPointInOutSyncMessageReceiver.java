@@ -18,6 +18,8 @@ package org.apache.tuscany.binding.axis2.handler;
 
 import java.lang.reflect.Method;
 
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.context.MessageContext;
@@ -25,8 +27,6 @@ import org.apache.axis2.receivers.AbstractInOutSyncMessageReceiver;
 import org.apache.tuscany.binding.axis2.util.ClassLoaderHelper;
 import org.apache.tuscany.binding.axis2.util.DataBinding;
 import org.apache.tuscany.core.wire.InvocationRuntimeException;
-import org.apache.ws.commons.om.OMElement;
-import org.apache.ws.commons.soap.SOAPEnvelope;
 
 public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {
 

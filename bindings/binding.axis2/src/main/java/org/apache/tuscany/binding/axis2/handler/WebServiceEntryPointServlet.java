@@ -42,6 +42,7 @@ import org.apache.axis2.description.AxisServiceGroup;
 import org.apache.axis2.description.InOutAxisOperation;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.transport.http.AxisServlet;
+import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis2.util.ClassLoaderHelper;
 import org.apache.tuscany.binding.axis2.util.DataBinding;
@@ -52,7 +53,6 @@ import org.apache.tuscany.core.webapp.TuscanyServletListener;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
-import org.apache.wsdl.WSDLConstants;
 
 import commonj.sdo.helper.TypeHelper;
 
@@ -113,7 +113,7 @@ public class WebServiceEntryPointServlet extends AxisServlet {
 
         AxisService axisService = new AxisService(entryPointName);
         axisService.setParent(serviceGroup);
-        axisService.setWSDLDefinition(definition);
+//        axisService.setWSDLDefinition(definition);
         axisService.setServiceDescription("Tuscany configured service EntryPoint name '" + entryPointName + '\'');
 
         TypeHelper typeHelper = wsBinding.getTypeHelper();

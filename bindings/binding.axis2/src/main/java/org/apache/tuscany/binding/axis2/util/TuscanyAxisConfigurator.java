@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.axis2.deployment.AxisConfigBuilder;
@@ -72,6 +73,16 @@ public class TuscanyAxisConfigurator implements AxisConfigurator {
             throw new ServiceRuntimeException(e);
         }
 
+    }
+
+    public void loadServices() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void engageGlobalModules() throws AxisFault {
+        // TODO Auto-generated method stub
+        
     }
 
 }

@@ -18,8 +18,8 @@ package org.apache.tuscany.binding.axis2.builder;
 
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis2.config.WSEntryPointContextFactory;
-import org.apache.tuscany.core.extension.EntryPointContextFactory;
 import org.apache.tuscany.core.extension.EntryPointBuilderSupport;
+import org.apache.tuscany.core.extension.EntryPointContextFactory;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.osoa.sca.annotations.Scope;

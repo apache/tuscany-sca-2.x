@@ -22,10 +22,10 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sdo.helper.XSDHelperImpl;
 import org.apache.tuscany.sdo.util.DataObjectUtil;
 import org.apache.tuscany.sdo.util.SDOUtil;
-import org.apache.ws.commons.om.OMElement;
 
 import commonj.sdo.helper.TypeHelper;
 
