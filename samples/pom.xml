@@ -32,5 +32,6 @@
         <module>helloworldweb</module>
         <module>helloworldws</module>
         <module>helloworldwsclient</module>
+        <module>supplychain</module>
     </modules>
 </project>
