@@ -24,8 +24,13 @@ import org.osoa.sca.annotations.Service;
  */
 @Service(GreetingProvider.class)
 public class GreetingProviderImpl implements GreetingProvider {
-    @Property
+
     public String greeting;
+
+    @Property
+    public void setGreeting(String greeting) {
+        this.greeting = greeting;
+    }
 
     public String getGreeting(String name, String locale) {
         if ("fr".equals(locale)) {

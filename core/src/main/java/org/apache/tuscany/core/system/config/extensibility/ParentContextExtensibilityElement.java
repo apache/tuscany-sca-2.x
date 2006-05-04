@@ -19,7 +19,7 @@ public class ParentContextExtensibilityElement implements SystemInjectorExtensib
     private Field field;
 
     public ParentContextExtensibilityElement(Method m) {
-        assert(method.getParameterTypes().length == 1): "Illegal number of parameters";
+        assert(m.getParameterTypes().length == 1): "Illegal number of parameters";
         method = m;
     }
 

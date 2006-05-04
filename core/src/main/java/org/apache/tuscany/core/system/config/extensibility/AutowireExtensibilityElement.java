@@ -34,7 +34,7 @@ public class AutowireExtensibilityElement implements SystemInjectorExtensibility
     private Field field;
 
     public AutowireExtensibilityElement(Method m) {
-        assert(method == null || method.getParameterTypes().length == 1): "Illegal number of parameters";
+        assert(m == null || m.getParameterTypes().length == 1): "Illegal number of parameters";
         method = m;
     }
 

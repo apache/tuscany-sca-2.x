@@ -21,7 +21,7 @@ public class MonitorExtensibilityElement implements SystemExtensibilityElement {
     private Field field;
 
     public MonitorExtensibilityElement(Method m) {
-        assert(method.getParameterTypes().length == 1): "Illegal number of parameters";
+        assert(m.getParameterTypes().length == 1): "Illegal number of parameters";
         method = m;
     }
 
