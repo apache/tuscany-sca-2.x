@@ -1,0 +1,269 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<!--
+  Copyright (c) 2005 The Apache Software Foundation or its licensors, as applicable.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+
+
+    
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+
+
+    
+  <meta http-equiv="Content-Style-Type" content="text/css">
+
+
+
+    
+
+  <title>Tuscany Hello World Web Sample</title>
+<!-- LINK rel="stylesheet" href="ait.css" type="text/css" --><!-- maven -->
+  <style type="text/css" media="all">
+@import url("../../../../css/maven-base.css");
+@import url("../../../../css/maven-theme.css");
+@import url("../../../../css/site.css");
+  </style>
+  <link rel="stylesheet" href="./css/print.css" type="text/css" media="print">
+<!-- end maven -->
+</head>
+
+
+<body>
+
+
+
+<h2>Tuscany Hello World WS Sample</h2>
+
+
+
+<h3>Overview</h3>
+
+
+
+<p>The Tuscany hello world ws sample shows using the Tuscany SCA
+    runtime in a Tomcat environment&nbsp;providing&nbsp;a web service.. </p>
+
+
+
+<h3>Setup</h3>
+
+
+
+Set up your server as described in the <a href="../../../sampleSetup.htm" target="_blank">Tomcat Setup</a>. &nbsp;If
+you are not configuring with the acceptance test the server, you will need to add <span style="font-weight: bold;">helloworldws-SNAPSHOT.war</span>
+to your Tomcat's webapp directory.
+
+
+<h3>Running</h3>
+
+
+This service can be invoked by either the Tuscany SCA <a target="_blank" href="../helloworldwsclient/readme.htm">helloworldwsclient</a>
+sample or <a href="../helloworldaxis/readme.htm" target="_blank">hello
+    world Axis sample's</a> client &nbsp;sample.<br>
+
+
+<h3>Code Overview</h3>
+
+
+
+The source files are physically organized as shown below:<br>
+
+
+<table style="text-align: left; width: 100%;" border="1" cellpadding="2" cellspacing="2">
+
+
+    <tbody>
+
+
+        <tr>
+
+
+            <td>+---main<br>
+
+                &brvbar;&nbsp;&nbsp; +---java<br>
+
+                &brvbar;&nbsp;&nbsp; &brvbar;&nbsp;&nbsp; &brvbar;&nbsp;&nbsp; sca.module<br>
+
+                &brvbar;&nbsp;&nbsp; &brvbar;&nbsp;&nbsp; &brvbar;<br>
+
+                &brvbar;&nbsp;&nbsp; &brvbar;&nbsp;&nbsp; +---org<br>
+
+                &brvbar;&nbsp;&nbsp; &brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +---apache<br>
+
+                &brvbar;&nbsp;&nbsp; &brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +---tuscany
+                <br>
+&brvbar;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++---samples<br>
+&brvbar;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++---helloworldws<br>
+&brvbar;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HelloWorldService.java<br>
+&brvbar;&nbsp;&nbsp;
+&brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HelloWorldServiceComponentImpl.java<br>
+
+                &brvbar;&nbsp;&nbsp; &brvbar;<br>
+
+                &brvbar;&nbsp;&nbsp; +---resources<br>
+
+                &brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &brvbar;&nbsp;&nbsp; tuscany-model.config<br>
+
+                &brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &brvbar;<br>
+
+                &brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +---wsdl<br>
+
+                &brvbar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                helloworld.wsdl<br>
+
+                &brvbar;<br>
+
+                &brvbar;<br>
+
+                +---webapp<br>
+
+                &nbsp;&nbsp;&nbsp; +---WEB-INF<br>
+
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; web.xml<br>
+
+            </td>
+
+
+        </tr>
+
+
+
+    
+  </tbody>
+</table>
+
+
+<br>
+
+
+<br>
+
+
+
+<table style="text-align: left; width: 100%; height: 154px;" border="0" cellpadding="2" cellspacing="2">
+
+
+
+    <tbody>
+
+
+
+        <tr>
+
+
+
+            <td style="vertical-align: top; height: 62px;">sca.module</td>
+
+
+
+            <td style="height: 62px;">Defines the SCA module, entryPoint
+                and component. Defines for the
+                HelloWorldServiceComponent component and the Java class that
+                implements the component For the entryPoint it defines WSDL for the
+                service, the Java interface provided by the service, and wires the
+                service to the&nbsp;HelloWorldServiceComponent</td>
+
+
+
+        </tr>
+
+
+
+        <tr>
+
+
+
+            <td style="vertical-align: top; height: 26px;">HelloWorldService.java</td>
+
+
+
+            <td style="height: 26px;">Defines the Java interface implemented by the component.</td>
+
+
+
+        </tr>
+
+
+
+        <tr>
+
+
+
+            <td style="vertical-align: top;">HelloWorldServiceComponentImpl.java</td>
+
+
+
+            <td>Implements the SCA component. Uses the SCA service
+                annotation tag on the class to show what SCA interface is being
+                implemented. &nbsp;Also uses the SCA Java annotation "Remotable" to
+                indicate that a component implemented by this class can be
+                referenced&nbsp;out side of the SCA module it resides in.</td>
+
+
+
+        </tr>
+
+
+
+        <tr>
+
+
+            <td>tuscany-model.config</td>
+
+
+            <td>Maps the SCA Entry point WSDL to the physical WSDL file location.</td>
+
+
+        </tr>
+
+
+        <tr>
+
+            <td>helloworld.wsdl</td>
+
+            <td>WSDL for the service.</td>
+
+        </tr>
+
+        <tr>
+
+
+            <td>web.xml</td>
+
+
+            <td>Standard J2EE web application's web.xml</td>
+
+
+        </tr>
+
+
+
+    
+  </tbody>
+</table>
+
+
+
+</body>
+</html>
