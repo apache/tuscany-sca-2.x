@@ -22,7 +22,7 @@ import java.util.Map;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.wire.SourceWireFactory;
 import org.apache.tuscany.spi.wire.TargetWireFactory;
-import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.common.ObjectCreationException;
 
 /**
  * A runtime entity that manages an atomic (i.e. leaf-type) artifact.

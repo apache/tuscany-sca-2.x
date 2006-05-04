@@ -6,9 +6,7 @@ import java.util.Map;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.model.Scope;
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.InstanceContext;
@@ -16,6 +14,8 @@ import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.SourceWireFactory;
 import org.apache.tuscany.spi.wire.TargetWireFactory;
+import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.common.ObjectCreationException;
 
 /**
  * @version $$Rev$$ $$Date$$
