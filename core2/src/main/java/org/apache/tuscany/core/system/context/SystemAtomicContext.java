@@ -20,8 +20,6 @@ import org.apache.tuscany.spi.wire.TargetWireFactory;
  */
 public class SystemAtomicContext extends PojoAtomicContext {
 
-    private ObjectFactory<?> objectFactory;
-
     public SystemAtomicContext(String name, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
                                EventInvoker<Object> destroyInvoker) {
         super(name, objectFactory, eagerInit, initInvoker, destroyInvoker);
