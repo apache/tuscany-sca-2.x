@@ -21,8 +21,8 @@ import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.event.EventPublisher;
 
 /**
- * An entity that provides an execution context for a runtime artifact or artifacts. A <code>Context</code> may
- * be a composite, managing child contexts or it may be an atomic, i.e. leaf, context.
+ * An entity that provides an execution context for a runtime artifact or artifacts. A <code>Context</code>
+ * may be a composite, managing child contexts or it may be an atomic, i.e. leaf, context.
  *
  * @version $Rev: 396520 $ $Date: 2006-04-24 12:38:07 +0100 (Mon, 24 Apr 2006) $
  */
@@ -42,22 +42,23 @@ public interface Context extends EventPublisher, Lifecycle {
     void setName(String name);
 
     /**
-     * Returns the instance associated with the requested name, which may be in a atomic or composite form. Atomic (i.e.
-     * leaf) contexts will return an instance associated with the service name part of the compound name, which may be
-     * null.
+     * Returns the instance associated with the requested name, which may be in a atomic or composite form.
+     * Atomic (i.e. leaf) contexts will return an instance associated with the service name part of the
+     * compound name, which may be null.
      * <p/>
-     * Composite contexts will return an instance (likely a proxy) of a contained entry point context. In this case, the
-     * port name on the qualified name will correspond to the composite context name and the part name will be used to
-     * retrieve the contained entry point context. The latter may be null. If the contained context is not an entry
-     * point context, an exception will be thrown.
+     * Composite contexts will return an instance (likely a proxy) of a contained entry point context. In this
+     * case, the port name on the qualified name will correspond to the composite context name and the part
+     * name will be used to retrieve the contained entry point context. The latter may be null. If the
+     * contained context is not an entry point context, an exception will be thrown.
      *
      * @param qName a qualified name of the requested instance
      * @return the implementation instance or a proxy to it
-     * @throws TargetException if an error occurs retrieving the instance or the requested component is not an entry
-     *                         point.
+     * @throws TargetException if an error occurs retrieving the instance or the requested component is not an
+     *                         entry point.
      * @see CompositeContext
      */
-    public Object getInstance(QualifiedName qName) throws TargetException;
+    Object getInstance(QualifiedName qName) throws TargetException;
+
 
     /**
      * Returns the parent context, or null if the context does not have one
