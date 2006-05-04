@@ -83,12 +83,8 @@ public class StatelessScopeContext extends AbstractScopeContext<AtomicContext> {
         contexts.put(module, ctxs);
     }
 
-    public Object getInstance(AtomicContext context) throws TargetException {
-        return context.createInstance();
-    }
-
     public InstanceContext getInstanceContext(AtomicContext context) throws TargetException {
-       throw new UnsupportedOperationException();
+        return context.createInstance();
     }
 
 }

@@ -6,6 +6,8 @@ import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.mock.context.scope.MockScopeContext;
+import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.context.AtomicContext;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -16,7 +18,9 @@ public class SystemAtomicContextTestCase extends TestCase {
 
     public void testContextCreationAndInit() throws Exception {
         ObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor((Class[]) null), null, null);
-        SystemAtomicContext context = new SystemAtomicContext("foo", new MockScopeContext(), factory, false, initInvoker, null);
+        ScopeContext<AtomicContext> scopeContext = new MockScopeContext();
+        SystemAtomicContext context = new SystemAtomicContext("foo",factory, false, initInvoker, null);
+        context.setScopeContext(scopeContext);
         Foo instance = (Foo) context.getInstance(null);
         assertNotNull(instance);
         assertTrue(instance.initialized);

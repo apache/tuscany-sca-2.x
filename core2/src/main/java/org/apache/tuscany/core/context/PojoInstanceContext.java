@@ -13,8 +13,10 @@
  */
 package org.apache.tuscany.core.context;
 
-import org.apache.tuscany.spi.context.InstanceContext;
 import org.apache.tuscany.core.AbstractLifecycle;
+import org.apache.tuscany.spi.CoreRuntimeException;
+import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.InstanceContext;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -22,12 +24,39 @@ import org.apache.tuscany.core.AbstractLifecycle;
 public class PojoInstanceContext extends AbstractLifecycle implements InstanceContext {
 
     private Object instance;
+    private AtomicContext context;
 
-    public PojoInstanceContext(Object instance){
+    public PojoInstanceContext(AtomicContext context, Object instance) {
+        assert(context != null);
+        assert(instance != null);
+        this.context = context;
         this.instance = instance;
     }
 
     public Object getInstance() {
+        checkInit();
         return instance;
     }
+
+    public void start() throws CoreRuntimeException {
+        try {
+            context.init(instance);
+            lifecycleState = RUNNING;
+        } catch (RuntimeException e) {
+            lifecycleState = ERROR;
+            throw e;
+        }
+    }
+
+    public void stop() throws CoreRuntimeException {
+        checkInit();
+        context.destroy(instance);
+    }
+
+    protected void checkInit() {
+        if (getLifecycleState() != RUNNING) {
+            throw new IllegalStateException("Scope not running [" + getLifecycleState() + "]");
+        }
+    }
+
 }

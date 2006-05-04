@@ -11,7 +11,6 @@ import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.Lifecycle;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
@@ -41,7 +40,7 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
     private Map<CompositeContext, List<InstanceContext>> destroyQueues;
 
     public ModuleScopeContext(WorkContext workContext) {
-        super("Module Scope",workContext);
+        super("Module Scope", workContext);
         instanceContexts = new ConcurrentHashMap<Context, InstanceContext>();
         registeredContexts = new ConcurrentHashMap<CompositeContext, List<AtomicContext>>();
         destroyQueues = new ConcurrentHashMap<CompositeContext, List<InstanceContext>>();
@@ -56,9 +55,9 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
         checkInit();
         if (event instanceof ModuleStart) {
             lifecycleState = RUNNING;
-            initComponentContexts(((ModuleStart)event).getContext());
+            eagerInitContexts(((ModuleStart) event).getContext());
         } else if (event instanceof ModuleStop) {
-            shutdownContexts(((ModuleStop)event).getContext());
+            shutdownContexts(((ModuleStop) event).getContext());
         } else if (event instanceof InstanceCreated) {
             checkInit();
             // Queue the context to have its implementation instance released if destroyable
@@ -74,9 +73,7 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
     }
 
     public synchronized void stop() {
-        if (lifecycleState != RUNNING) {
-            throw new IllegalStateException("Scope in wrong state [" + lifecycleState + "]");
-        }
+        checkInit();
         lifecycleState = STOPPED;
         //TODO implement stop semantics
     }
@@ -95,7 +92,7 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
             // shutdown destroyable instances in reverse instantiation order
             ListIterator<InstanceContext> iter = destroyQueue.listIterator(destroyQueue.size());
             while (iter.hasPrevious()) {
-                Lifecycle context = iter.previous();
+                InstanceContext context = iter.previous();
                 if (context.getLifecycleState() == RUNNING) {
                     context.stop();
                 }
@@ -103,7 +100,7 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
         }
     }
 
-    private void initComponentContexts(CompositeContext module) throws CoreRuntimeException {
+    private void eagerInitContexts(CompositeContext module) throws CoreRuntimeException {
         checkInit();
         assert(module != null): "Current module not set in work context";
         List<AtomicContext> contexts = registeredContexts.get(module);
@@ -112,33 +109,10 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
                 if (context.isEagerInit()) {
                     InstanceContext instanceCtx = context.createInstance();
                     instanceContexts.put(context, instanceCtx);
-                    context.init(instanceCtx.getInstance());
+                    instanceCtx.start();
                 }
             }
         }
-
-//        if (instanceContexts == null) {
-//            instanceContexts = new ConcurrentHashMap<String, Context>();
-//            destroyQueue = new ArrayList<Context>();
-//            for (ContextFactory<Context> config : contextFactories.values()) {
-//                Context context = config.createContext();
-//                context.start();
-//                instanceContexts.put(context.getName(), context);
-//            }
-//            // Initialize eager instanceContexts. Note this cannot be done when we initially create each context since a component may
-//            // contain a forward reference to a component which has not been instantiated
-//            for (Context context : instanceContexts.values()) {
-//                if (context instanceof AtomicContext) {
-//                    AtomicContext atomic = (AtomicContext) context;
-//                    if (atomic.isEagerInit()) {
-//                        // perform silent creation and manual shutdown registration
-//                        atomic.init();
-//                        destroyQueue.add(context);
-//                    }
-//                }
-//                context.addListener(this);
-//            }
-//        }
     }
 
     public void register(AtomicContext context) {
@@ -156,29 +130,17 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
             atomicContexts.add(context);
         }
         context.addListener(this);
-
     }
 
-
-    public Object getInstance(AtomicContext context) throws TargetException {
-        checkInit();
-        InstanceContext ctx = instanceContexts.get(context);
-        if (ctx != null) {
-            if (ctx.getLifecycleState() != RUNNING) {
-                TargetException e = new TargetException("Instance in invalid state");
-                e.setIdentifier(String.valueOf(ctx.getLifecycleState()));
-                throw e;
-            }
-            Object instance = ctx.getInstance();
-            context.init(instance);
-            return instance;
-        }
-        return null;
-    }
 
     public InstanceContext getInstanceContext(AtomicContext context) throws TargetException {
         checkInit();
-        return instanceContexts.get(context);
+        InstanceContext ctx = instanceContexts.get(context);
+        if (ctx == null) {
+            ctx = context.createInstance();
+            instanceContexts.put(context, ctx);
+        }
+        return ctx;
     }
 
 

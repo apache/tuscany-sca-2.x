@@ -15,30 +15,35 @@ import org.apache.tuscany.spi.context.TargetException;
  */
 public abstract class PojoAtomicContext extends AbstractContext implements AtomicContext {
 
-    private ScopeContext<AtomicContext> scopeContext;
+    protected ScopeContext<AtomicContext> scopeContext;
+    protected boolean eagerInit;
+    protected EventInvoker<Object> initInvoker;
+    protected EventInvoker<Object> destroyInvoker;
+    protected ObjectFactory<?> objectFactory;
 
-    private boolean eagerInit;
-
-    private EventInvoker<Object> initInvoker;
-
-    private EventInvoker<Object> destroyInvoker;
-
-
-    private ObjectFactory<?> objectFactory;
-
-    public PojoAtomicContext(String name, ScopeContext<AtomicContext> scopeContext, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
+    public PojoAtomicContext(String name, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
                              EventInvoker<Object> destroyInvoker) {
         super(name);
-        assert (scopeContext != null) : "Scope context was null";
         assert (objectFactory != null) : "Object factory was null";
         if (eagerInit && initInvoker == null) {
             throw new AssertionError("No intialization method found for eager init implementation");
         }
-        this.scopeContext = scopeContext;
         this.objectFactory = objectFactory;
         this.eagerInit = eagerInit;
         this.initInvoker = initInvoker;
         this.destroyInvoker = destroyInvoker;
+    }
+
+    public Scope getScope() {
+        if (scopeContext == null) {
+            return null;
+        }
+        return scopeContext.getScope();
+    }
+
+    public void setScopeContext(ScopeContext<AtomicContext> scopeContext) {
+        this.scopeContext = scopeContext;
+        scopeContext.register(this);
     }
 
     public boolean isEagerInit() {
@@ -65,16 +70,12 @@ public abstract class PojoAtomicContext extends AbstractContext implements Atomi
         return scopeContext.getInstance(this);
     }
 
-    public Scope getScope() {
-        return scopeContext.getScope();
-    }
-
     public void addProperty(String propertyName, Object value) {
 
     }
 
     public InstanceContext createInstance() throws ObjectCreationException {
-        InstanceContext ctx = new PojoInstanceContext(objectFactory.getInstance());
+        InstanceContext ctx = new PojoInstanceContext(this, objectFactory.getInstance());
         ctx.start();
         publish(new InstanceCreated(this, ctx));
         return ctx;

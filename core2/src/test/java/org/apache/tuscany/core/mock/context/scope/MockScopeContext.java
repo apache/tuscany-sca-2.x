@@ -3,6 +3,7 @@ package org.apache.tuscany.core.mock.context.scope;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.tuscany.core.AbstractLifecycle;
 import org.apache.tuscany.core.context.scope.AbstractScopeContext;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.AtomicContext;
@@ -18,6 +19,7 @@ public class MockScopeContext extends AbstractScopeContext<AtomicContext> {
 
     private Map<Context, InstanceContext> instanceContexts;
     private Scope scope;
+    private static final InstanceContext EMPTY = new EmptyContext();
 
     public MockScopeContext() {
         this(null);
@@ -33,18 +35,13 @@ public class MockScopeContext extends AbstractScopeContext<AtomicContext> {
         return scope;
     }
 
-    public Object getInstance(AtomicContext context) throws TargetException {
-        InstanceContext ctx = instanceContexts.get(context);
-        if (ctx == null) {
-            ctx = context.createInstance();
-            context.init(ctx.getInstance());
-            instanceContexts.put(context, ctx);
-        }
-        return ctx.getInstance();
-    }
-
     public InstanceContext getInstanceContext(AtomicContext context) throws TargetException {
-        return instanceContexts.get(context);
+        InstanceContext ctx = instanceContexts.get(context);
+        if(ctx == EMPTY){
+            ctx = context.createInstance();
+            instanceContexts.put(context,ctx);
+        }
+        return ctx;
     }
 
     public void onEvent(Event event) {
@@ -52,8 +49,13 @@ public class MockScopeContext extends AbstractScopeContext<AtomicContext> {
     }
 
     public void register(AtomicContext context) {
-
+        instanceContexts.put(context, EMPTY);
     }
 
 
+    private static class EmptyContext extends AbstractLifecycle implements InstanceContext {
+        public Object getInstance() {
+            return null;
+        }
+    }
 }

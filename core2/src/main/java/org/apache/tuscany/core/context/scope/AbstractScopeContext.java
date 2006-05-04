@@ -3,17 +3,19 @@ package org.apache.tuscany.core.context.scope;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.core.AbstractLifecycle;
 import org.apache.tuscany.core.context.event.filter.TrueFilter;
 import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.context.InstanceContext;
 import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.event.RuntimeEventListener;
-import org.apache.tuscany.spi.event.EventFilter;
+import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.event.Event;
+import org.apache.tuscany.spi.event.EventFilter;
+import org.apache.tuscany.spi.event.RuntimeEventListener;
 
 /**
  * Implements functionality common to scope contexts.
@@ -30,16 +32,6 @@ public abstract class AbstractScopeContext<T extends Context> extends AbstractLi
     public AbstractScopeContext(String name, WorkContext workContext) {
         super(name);
         this.workContext = workContext;
-    }
-
-    protected void checkInit() {
-        if (getLifecycleState() != RUNNING) {
-            throw new IllegalStateException("Scope not running [" + getLifecycleState() + "]");
-        }
-    }
-
-    protected WorkContext getEventContext() {
-        return workContext;
     }
 
     public void addListener(RuntimeEventListener listener) {
@@ -83,11 +75,33 @@ public abstract class AbstractScopeContext<T extends Context> extends AbstractLi
         }
     }
 
+    public Object getInstance(T context) throws TargetException {
+        InstanceContext ctx = getInstanceContext(context);
+        if (ctx != null) {
+            if (ctx.getLifecycleState() == UNINITIALIZED) {
+                ctx.start();
+            }
+            return ctx.getInstance();
+        }
+        return null;
+    }
+
     protected Map<EventFilter, List<RuntimeEventListener>> getListeners() {
         if (listeners == null) {
             listeners = new ConcurrentHashMap<EventFilter, List<RuntimeEventListener>>();
         }
         return listeners;
     }
+
+    protected void checkInit() {
+        if (getLifecycleState() != RUNNING) {
+            throw new IllegalStateException("Scope not running [" + getLifecycleState() + "]");
+        }
+    }
+
+    protected WorkContext getEventContext() {
+        return workContext;
+    }
+
 
 }
