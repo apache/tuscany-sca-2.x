@@ -40,12 +40,19 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
         checkInit();
         if (event instanceof HttpSessionEnd) {
             checkInit();
-            shutdownInstances();
+            shutdownInstances(((HttpSessionEnd)event).getId());
         } else if (event instanceof InstanceCreated) {
             checkInit();
             InstanceContext context = ((InstanceCreated) event).getContext();
-            List<InstanceContext> destroyQueue = destroyQueues.get(workContext.getIdentifier(HTTP_IDENTIFIER));
-            destroyQueue.add(context);
+            Object key = workContext.getIdentifier(HTTP_IDENTIFIER);
+            List<InstanceContext> destroyQueue = destroyQueues.get(key);
+            if (destroyQueue == null) {
+                destroyQueue = new ArrayList<InstanceContext>();
+                destroyQueues.put(key, destroyQueue);
+            }
+            synchronized (destroyQueue) {
+                destroyQueue.add(context);
+            }
         }
     }
 
@@ -62,28 +69,21 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
 
     public void register(AtomicContext context) {
         contexts.put(context, new ConcurrentHashMap<Object, InstanceContext>());
-        Object key = workContext.getIdentifier(HTTP_IDENTIFIER);
-        List<InstanceContext> destroyQueue = destroyQueues.get(key);
-
-        if (destroyQueue == null) {
-            destroyQueues.put(key, new ArrayList<InstanceContext>());
-        }
         context.addListener(this);
 
     }
 
     public InstanceContext getInstanceContext(AtomicContext context) throws TargetException {
-        Map<Object,InstanceContext> contextMap = contexts.get(context);
+        Map<Object, InstanceContext> contextMap = contexts.get(context);
         InstanceContext ctx = contextMap.get(workContext.getIdentifier(HTTP_IDENTIFIER));
-        if(ctx == null){
+        if (ctx == null) {
             ctx = context.createInstance();
-            contextMap.put(context,ctx);
+            contextMap.put(context, ctx);
         }
         return ctx;
     }
 
-    private void shutdownInstances() {
-        Object key = workContext.getIdentifier(HTTP_IDENTIFIER);
+    private void shutdownInstances(Object key) {
         List<InstanceContext> destroyQueue = destroyQueues.get(key);
         if (destroyQueue != null) {
             for (InstanceContext ctx : destroyQueue) {

@@ -21,8 +21,8 @@ import org.apache.tuscany.spi.event.Event;
  */
 public class RequestScopeContext extends AbstractScopeContext<AtomicContext> {
 
-    private Map<AtomicContext, Map<Thread, InstanceContext>> contexts;
-    private Map<Thread, List<InstanceContext>> destroyQueues;
+    private final Map<AtomicContext, Map<Thread, InstanceContext>> contexts;
+    private final Map<Thread,List<InstanceContext>> destroyQueues;
 
     public RequestScopeContext(WorkContext workContext) {
         super("Request Scope", workContext);
@@ -43,7 +43,13 @@ public class RequestScopeContext extends AbstractScopeContext<AtomicContext> {
             checkInit();
             InstanceContext context = ((InstanceCreated) event).getContext();
             List<InstanceContext> destroyQueue = destroyQueues.get(Thread.currentThread());
-            destroyQueue.add(context);
+            if (destroyQueue == null){
+                destroyQueue = new ArrayList<InstanceContext>();
+                destroyQueues.put(Thread.currentThread(),destroyQueue);
+            }
+            synchronized (destroyQueue) {
+                destroyQueue.add(context);
+            }
         }
     }
 
@@ -60,28 +66,22 @@ public class RequestScopeContext extends AbstractScopeContext<AtomicContext> {
 
     public void register(AtomicContext context) {
         contexts.put(context, new ConcurrentHashMap<Thread, InstanceContext>());
-        List<InstanceContext> destroyQueue = destroyQueues.get(Thread.currentThread());
-
-        if (destroyQueue == null) {
-            destroyQueues.put(Thread.currentThread(), new ArrayList<InstanceContext>());
-        }
         context.addListener(this);
-
     }
 
     public InstanceContext getInstanceContext(AtomicContext context) throws TargetException {
-       Map<Thread,InstanceContext> instanceContextMap = contexts.get(context);
-       InstanceContext ctx = instanceContextMap.get(Thread.currentThread());
-        if(ctx == null){
+        Map<Thread, InstanceContext> instanceContextMap = contexts.get(context);
+        InstanceContext ctx = instanceContextMap.get(Thread.currentThread());
+        if (ctx == null) {
             ctx = context.createInstance();
-            instanceContextMap.put(Thread.currentThread(),ctx);
+            instanceContextMap.put(Thread.currentThread(), ctx);
         }
         return ctx;
     }
 
     private void shutdownInstances() {
         List<InstanceContext> destroyQueue = destroyQueues.get(Thread.currentThread());
-        if (destroyQueue != null) {
+        synchronized (destroyQueue) {
             for (InstanceContext ctx : destroyQueue) {
                 ctx.stop();
             }

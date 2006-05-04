@@ -1,14 +1,14 @@
 package org.apache.tuscany.core.context;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.WorkContext;
 
 /**
- * An implementation of an {@link org.apache.tuscany.spi.context.WorkContext} that handles event-to-thread associations using an
- * <code>InheritableThreadLocal</code>
+ * An implementation of an {@link org.apache.tuscany.spi.context.WorkContext} that handles event-to-thread
+ * associations using an <code>InheritableThreadLocal</code>
  *
  * @version $Rev: 393567 $ $Date: 2006-04-12 11:28:58 -0700 (Wed, 12 Apr 2006) $
  */
@@ -21,19 +21,28 @@ public class WorkContextImpl implements WorkContext {
      * a map ( associated with the current thread) of scope identifiers keyed on the event context id type. the scope identifier
      * may be a {@link ScopeIdentifier} or an opaque id
      */
-    private ThreadLocal<Map<Object,Object>> eventContext = new InheritableThreadLocal<Map<Object,Object>>();
+    private ThreadLocal<Map<Object, Object>> workContext = new InheritableThreadLocal<Map<Object, Object>>();
 
     public CompositeContext getCurrentModule() {
-        return (CompositeContext)eventContext.get().get(CURRENT_MODULE);
+        Map<Object, Object> map = workContext.get();
+        if (map == null) {
+            return null;
+        }
+        return (CompositeContext) map.get(CURRENT_MODULE);
     }
 
 
     public void setCurrentModule(CompositeContext context) {
-        eventContext.get().put(CURRENT_MODULE,context);
+        Map<Object, Object> map = workContext.get();
+        if (map == null) {
+            map = new HashMap<Object, Object>();
+            workContext.set(map);
+        }
+        map.put(CURRENT_MODULE, context);
     }
 
     public Object getIdentifier(Object type) {
-        Map<Object,Object> map = eventContext.get();
+        Map<Object, Object> map = workContext.get();
         if (map == null) {
             return null;
         }
@@ -47,10 +56,10 @@ public class WorkContextImpl implements WorkContext {
     }
 
     public void setIdentifier(Object type, Object identifier) {
-        Map<Object,Object> map = eventContext.get();
+        Map<Object, Object> map = workContext.get();
         if (map == null) {
-            map = new HashMap<Object,Object>();
-            eventContext.set(map);
+            map = new HashMap<Object, Object>();
+            workContext.set(map);
         }
         map.put(type, identifier);
     }
@@ -59,14 +68,14 @@ public class WorkContextImpl implements WorkContext {
         if (type == null) {
             return;
         }
-        Map map = eventContext.get();
+        Map map = workContext.get();
         if (map != null) {
             map.remove(type);
         }
     }
 
     public void clearIdentifiers() {
-        eventContext.remove();
+        workContext.remove();
     }
 
     public WorkContextImpl() {
