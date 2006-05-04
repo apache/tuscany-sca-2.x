@@ -28,7 +28,7 @@
     </entryPoint>
 
     <component name="HelloWorldServiceComponent">
-        <implementation.java class="org.apache.tuscany.samples.helloworldws.HelloWorldServiceComponentImpl"/>
+        <implementation.java class="org.apache.tuscany.samples.helloworld.HelloWorldServiceComponentImpl"/>
     </component>
     
 </module>

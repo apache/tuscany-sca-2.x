@@ -28,30 +28,13 @@
     <version>SNAPSHOT</version>
 
     <dependencies>
-        <dependency>
-            <groupId>org.osoa</groupId>
-            <artifactId>sca-api</artifactId>
+    
+          <dependency>
+            <groupId>org.apache.tuscany.sca.samples</groupId>
+            <artifactId>helloworld</artifactId>
             <version>${pom.version}</version>
-            <scope>provided</scope> 
+            <scope>compile</scope> 
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany</groupId>
-            <artifactId>tuscany-core</artifactId>
-            <version>${pom.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca.containers</groupId>
-            <artifactId>tuscany-container-java</artifactId>
-            <version>${pom.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca.bindings</groupId>
-            <artifactId>tuscany-binding-axis2</artifactId>
-            <version>${pom.version}</version>
-            <scope>provided</scope>
-        </dependency>
+    
     </dependencies>
 </project>
