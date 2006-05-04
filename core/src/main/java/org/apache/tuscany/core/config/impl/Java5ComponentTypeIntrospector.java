@@ -56,7 +56,6 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
     @Autowire
     public void setFactory(SystemAssemblyFactory factory) {
-        System.out.println("setting "+factory);
         this.factory = factory;
         //FIXME JFM HACK
         List<ImplementationProcessor> processors = ProcessorUtils.createCoreProcessors(factory);
@@ -71,7 +70,6 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
     @Init(eager = true)
     public void init(){
-        System.out.println("Eager init"+name);
     }
 
     public void registerProcessor(ImplementationProcessor processor) {

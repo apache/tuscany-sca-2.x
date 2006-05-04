@@ -30,6 +30,7 @@ import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 import org.osoa.sca.ModuleContext;
 import org.osoa.sca.ServiceUnavailableException;
+import org.osoa.sca.ServiceRuntimeException;
 
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class CompositeHierarchyTestCase extends AbstractCompositeHierarchyTests 
             ((ModuleContext) parent).locateService("test.child/TestService1");
             fail("Expected " + ServiceUnavailableException.class.getName()
                     + " since [test.child/TestService1] is not an entry point");
-        } catch (ServiceUnavailableException e) {
+        } catch (ServiceRuntimeException e) {
             // should throw an exception since it is not an entry point
         }
 

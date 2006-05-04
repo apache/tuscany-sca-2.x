@@ -13,14 +13,14 @@
  */
 package org.apache.tuscany.core.context;
 
-import org.osoa.sca.ServiceUnavailableException;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Denotes the specific case where a service was not found at runtime
- * 
+ *
  * @version $Rev$ $Date$
  */
-public class ServiceNotFoundException extends ServiceUnavailableException {
+public class ServiceNotFoundException extends ServiceRuntimeException {
 
     public ServiceNotFoundException() {
         super();

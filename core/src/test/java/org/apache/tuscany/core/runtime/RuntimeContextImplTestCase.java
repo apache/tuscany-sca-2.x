@@ -15,16 +15,15 @@ package org.apache.tuscany.core.runtime;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.osoa.sca.ServiceUnavailableException;
-
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.common.monitor.MonitorFactory;
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.client.BootstrapHelper;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Lifecycle;
+import org.apache.tuscany.core.context.ServiceNotFoundException;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
@@ -43,7 +42,7 @@ import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
  * Performs basic tests on the runtime context
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class RuntimeContextImplTestCase extends TestCase {
@@ -57,8 +56,8 @@ public class RuntimeContextImplTestCase extends TestCase {
     private RuntimeContext runtime;
 
     /**
-     * Tests explicit wiring of an external service to a system entry point that is wired to a child system module entry
-     * point
+     * Tests explicit wiring of an external service to a system entry point that is wired to a child system
+     * module entry point
      */
     public void testSystemExplicitWiring() throws Exception {
         CompositeContext root = runtime.getRootContext();
@@ -139,8 +138,8 @@ public class RuntimeContextImplTestCase extends TestCase {
         moduleContext.publish(new ModuleStart(this));
         try {
             moduleContext.locateService("TestService");
-            fail("Expected " + ServiceUnavailableException.class.getName());
-        } catch (ServiceUnavailableException e) {
+            fail("Expected " + ServiceNotFoundException.class.getName());
+        } catch (ServiceNotFoundException e) {
             // expected
         }
         moduleContext.publish(new ModuleStop(this));
@@ -161,8 +160,8 @@ public class RuntimeContextImplTestCase extends TestCase {
         moduleContext.publish(new ModuleStart(this));
         try {
             moduleContext.locateService("TestServiceES");
-            fail("Expected " + ServiceUnavailableException.class.getName());
-        } catch (ServiceUnavailableException e) {
+            fail("Expected " + ServiceNotFoundException.class.getName());
+        } catch (ServiceNotFoundException e) {
             // expected
         }
         moduleContext.publish(new ModuleStop(this));
@@ -184,8 +183,8 @@ public class RuntimeContextImplTestCase extends TestCase {
         moduleContext.publish(new ModuleStart(this));
         try {
             moduleContext.locateService("TestServiceEP");
-            fail("Expected " + ServiceUnavailableException.class.getName());
-        } catch (ServiceUnavailableException e) {
+            fail("Expected " + ServiceNotFoundException.class.getName());
+        } catch (ServiceNotFoundException e) {
             // expected
         }
         moduleContext.publish(new ModuleStop(this));
@@ -225,8 +224,8 @@ public class RuntimeContextImplTestCase extends TestCase {
     }
 
     /**
-     * Tests that a circular reference between an external service in one module and an entry point in another is caught
-     * as an error condition FIXME this must be implemented
+     * Tests that a circular reference between an external service in one module and an entry point in another
+     * is caught as an error condition FIXME this must be implemented
      */
     public void testInterModuleCircularReference() throws Exception {
         // create a test modules

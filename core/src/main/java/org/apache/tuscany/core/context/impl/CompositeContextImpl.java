@@ -20,6 +20,7 @@ import org.osoa.sca.ModuleContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceUnavailableException;
+import org.osoa.sca.ServiceRuntimeException;
 
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.CompositeContext;
@@ -88,12 +89,12 @@ public class CompositeContextImpl extends AbstractCompositeContext implements Mo
         try {
             Object o = ctx.getInstance(qName);
             if (o == null) {
-                throw new ServiceUnavailableException(qualifiedName);
+                throw new ServiceNotFoundException(qualifiedName);
             }
             return o;
         } catch (TargetException e) {
             e.addContextName(getName());
-            throw new ServiceUnavailableException(e);
+            throw new ServiceNotFoundException(e);
         }
     }
 
