@@ -22,7 +22,7 @@ import org.apache.tuscany.spi.Lifecycle;
  * @version $Rev$ $Date$
  */
 public interface InstanceContext extends Lifecycle {
-
+    
     Object getInstance();
 
 }

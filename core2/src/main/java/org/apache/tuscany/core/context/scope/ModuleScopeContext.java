@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.event.Event;
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
-public class ModuleScopeContext extends AbstractScopeContext<CompositeContext, AtomicContext> {
+public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
 
     private Map<Context, InstanceContext> instanceContexts;
 
@@ -41,8 +41,7 @@ public class ModuleScopeContext extends AbstractScopeContext<CompositeContext, A
     private Map<CompositeContext, List<InstanceContext>> destroyQueues;
 
     public ModuleScopeContext(WorkContext workContext) {
-        super(workContext);
-        setName("Module Scope");
+        super("Module Scope",workContext);
         instanceContexts = new ConcurrentHashMap<Context, InstanceContext>();
         registeredContexts = new ConcurrentHashMap<CompositeContext, List<AtomicContext>>();
         destroyQueues = new ConcurrentHashMap<CompositeContext, List<InstanceContext>>();
@@ -54,11 +53,12 @@ public class ModuleScopeContext extends AbstractScopeContext<CompositeContext, A
 
 
     public void onEvent(Event event) {
+        checkInit();
         if (event instanceof ModuleStart) {
             lifecycleState = RUNNING;
-            initComponentContexts();
+            initComponentContexts(((ModuleStart)event).getContext());
         } else if (event instanceof ModuleStop) {
-            shutdownContexts();
+            shutdownContexts(((ModuleStop)event).getContext());
         } else if (event instanceof InstanceCreated) {
             checkInit();
             // Queue the context to have its implementation instance released if destroyable
@@ -77,17 +77,17 @@ public class ModuleScopeContext extends AbstractScopeContext<CompositeContext, A
         if (lifecycleState != RUNNING) {
             throw new IllegalStateException("Scope in wrong state [" + lifecycleState + "]");
         }
-//        instanceContexts = null;
-//        destroyQueue = null;
         lifecycleState = STOPPED;
+        //TODO implement stop semantics
     }
 
 
     /**
      * Notifies instanceContexts of a shutdown in reverse order to which they were started
      */
-    private void shutdownContexts() {
-        List<InstanceContext> destroyQueue = destroyQueues.remove(workContext.getCurrentModule());
+    private void shutdownContexts(CompositeContext ctx) {
+        checkInit();
+        List<InstanceContext> destroyQueue = destroyQueues.remove(ctx);
         if (destroyQueue == null || destroyQueue.size() == 0) {
             return;
         }
@@ -103,8 +103,8 @@ public class ModuleScopeContext extends AbstractScopeContext<CompositeContext, A
         }
     }
 
-    private void initComponentContexts() throws CoreRuntimeException {
-        CompositeContext module = workContext.getCurrentModule();
+    private void initComponentContexts(CompositeContext module) throws CoreRuntimeException {
+        checkInit();
         assert(module != null): "Current module not set in work context";
         List<AtomicContext> contexts = registeredContexts.get(module);
         synchronized (contexts) {
@@ -141,14 +141,16 @@ public class ModuleScopeContext extends AbstractScopeContext<CompositeContext, A
 //        }
     }
 
-    public void register(CompositeContext key, AtomicContext context) {
-        List<AtomicContext> atomicContexts = registeredContexts.get(key);
-        List<InstanceContext> destroyQueue = destroyQueues.get(key);
+    public void register(AtomicContext context) {
+        checkInit();
+        CompositeContext module = workContext.getCurrentModule();
+        List<AtomicContext> atomicContexts = registeredContexts.get(module);
+        List<InstanceContext> destroyQueue = destroyQueues.get(module);
         if (atomicContexts == null) {
-            atomicContexts = registeredContexts.put(key, new ArrayList<AtomicContext>());
+            atomicContexts = registeredContexts.put(module, new ArrayList<AtomicContext>());
         }
         if (destroyQueue == null) {
-            destroyQueues.put(key, new ArrayList<InstanceContext>());
+            destroyQueues.put(module, new ArrayList<InstanceContext>());
         }
         synchronized (atomicContexts) {
             atomicContexts.add(context);
@@ -159,6 +161,7 @@ public class ModuleScopeContext extends AbstractScopeContext<CompositeContext, A
 
 
     public Object getInstance(AtomicContext context) throws TargetException {
+        checkInit();
         InstanceContext ctx = instanceContexts.get(context);
         if (ctx != null) {
             if (ctx.getLifecycleState() != RUNNING) {
@@ -174,6 +177,7 @@ public class ModuleScopeContext extends AbstractScopeContext<CompositeContext, A
     }
 
     public InstanceContext getInstanceContext(AtomicContext context) throws TargetException {
+        checkInit();
         return instanceContexts.get(context);
     }
 

@@ -16,10 +16,9 @@
  */
 package org.apache.tuscany.spi.context;
 
+import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.Lifecycle;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
-import org.apache.tuscany.model.Scope;
-import sun.security.jca.GetInstance;
 
 
 /**
@@ -28,11 +27,11 @@ import sun.security.jca.GetInstance;
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  * @see Context
  */
-public interface ScopeContext<S, T extends Context> extends Lifecycle, RuntimeEventListener {
+public interface ScopeContext<T extends Context> extends Lifecycle, RuntimeEventListener {
 
     public Scope getScope();
 
-    public void register(S key, T context);
+    public void register(T context);
 
     /**
      * Returns an instance associated with the current context
@@ -43,7 +42,6 @@ public interface ScopeContext<S, T extends Context> extends Lifecycle, RuntimeEv
 
 
     /**
-     *
      * @throws TargetException
      */
     public InstanceContext getInstanceContext(T context) throws TargetException;

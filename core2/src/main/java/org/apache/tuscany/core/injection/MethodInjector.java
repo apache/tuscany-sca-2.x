@@ -1,0 +1,33 @@
+package org.apache.tuscany.core.injection;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+
+import org.apache.tuscany.common.ObjectCreationException;
+import org.apache.tuscany.common.ObjectFactory;
+
+/**
+ * Injects a value created by an {@link org.apache.tuscany.common.ObjectFactory} using a given method
+ * @version $Rev: 399488 $ $Date: 2006-05-03 16:20:27 -0700 (Wed, 03 May 2006) $
+ */
+public class MethodInjector<T> implements Injector<T> {
+    private final Method method;
+    private final ObjectFactory<?> objectFactory;
+
+    public MethodInjector(Method method, ObjectFactory<?> objectFactory) {
+        this.method = method;
+        this.objectFactory = objectFactory;
+    }
+
+    public void inject(T instance) throws ObjectCreationException {
+        try {
+            method.invoke(instance, objectFactory.getInstance());
+        } catch (IllegalAccessException e) {
+            throw new AssertionError("Method is not accessible [" + method + "]");
+        } catch (InvocationTargetException e) {
+            ObjectCreationException oce= new ObjectCreationException("Exception thrown by setter", e);
+            oce.setIdentifier(method.getName());
+            throw oce;
+        }
+    }
+}

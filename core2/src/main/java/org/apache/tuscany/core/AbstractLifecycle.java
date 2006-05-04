@@ -56,6 +56,7 @@ public abstract class AbstractLifecycle implements Lifecycle {
     }
 
     public String toString() {
+        if (name != null){
         switch (lifecycleState) {
             case (Lifecycle.CONFIG_ERROR):
                 return new StringBuilder().append("[").append(name).append("] in state [CONFIG_ERROR]").toString();
@@ -75,6 +76,28 @@ public abstract class AbstractLifecycle implements Lifecycle {
                 return new StringBuilder().append("[").append(name).append("] in state [UNINITIALIZED]").toString();
             default:
                 return new StringBuilder().append("[").append(name).append("] in state [UNKNOWN]").toString();
+            }
+        }else{
+            switch (lifecycleState) {
+            case (Lifecycle.CONFIG_ERROR):
+                return new StringBuilder().append("state [CONFIG_ERROR]").toString();
+            case (Lifecycle.ERROR):
+                return new StringBuilder().append("state [ERROR]").toString();
+            case (Lifecycle.INITIALIZING):
+                return new StringBuilder().append("state [INITIALIZING]").toString();
+            case (Lifecycle.INITIALIZED):
+                return new StringBuilder().append("state [INITIALIZED]").toString();
+            case (Lifecycle.RUNNING):
+                return new StringBuilder().append("state [RUNNING]").toString();
+            case (Lifecycle.STOPPING):
+                return new StringBuilder().append("state [STOPPING]").toString();
+            case (Lifecycle.STOPPED):
+                return new StringBuilder().append("state [STOPPED]").toString();
+            case (Lifecycle.UNINITIALIZED):
+                return new StringBuilder().append("state [UNINITIALIZED]").toString();
+            default:
+                return new StringBuilder().append("state [UNKNOWN]").toString();
+            }
         }
     }
 }

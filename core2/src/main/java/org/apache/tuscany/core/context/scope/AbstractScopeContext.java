@@ -20,15 +20,15 @@ import org.apache.tuscany.spi.event.Event;
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
-public abstract class AbstractScopeContext<S, T extends Context> extends AbstractLifecycle implements ScopeContext<S, T> {
+public abstract class AbstractScopeContext<T extends Context> extends AbstractLifecycle implements ScopeContext<T> {
 
     // The event context the scope container is associated with
     protected WorkContext workContext;
     private Map<EventFilter, List<RuntimeEventListener>> listeners;
     private static final EventFilter TRUE_FILTER = new TrueFilter();
- 
-    public AbstractScopeContext(WorkContext workContext) {
-        assert (workContext != null) : "Event context was null";
+
+    public AbstractScopeContext(String name, WorkContext workContext) {
+        super(name);
         this.workContext = workContext;
     }
 
