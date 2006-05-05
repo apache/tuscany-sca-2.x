@@ -15,10 +15,15 @@ package org.apache.tuscany.spi.context;
 
 import java.util.List;
 
+import org.apache.tuscany.common.ObjectFactory;
+
 /**
  * @version $$Rev$$ $$Date$$
  */
 public interface ScopeRegistry {
 
     List<ScopeContext> getScopeContexts(CompositeContext module);
+
+    void registerFactory(ObjectFactory<ScopeContext> factory);
+    
 }

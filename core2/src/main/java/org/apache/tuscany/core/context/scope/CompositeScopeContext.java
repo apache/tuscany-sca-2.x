@@ -13,10 +13,8 @@
  */
 package org.apache.tuscany.core.context.scope;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.core.AbstractLifecycle;
 import org.apache.tuscany.model.Scope;
@@ -27,7 +25,6 @@ import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.ScopeInitializationException;
 import org.apache.tuscany.spi.context.ScopeRuntimeException;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 
 /**
@@ -39,13 +36,11 @@ import org.apache.tuscany.spi.event.Event;
 public class CompositeScopeContext extends AbstractLifecycle implements ScopeContext<CompositeContext> {
 
     // Composite component contexts in this scope keyed by parent
-    private Map<CompositeContext, List<CompositeContext>> contexts = new ConcurrentHashMap<CompositeContext, List<CompositeContext>>();
-    private WorkContext workContext;
+    private final List<CompositeContext> contexts;
 
-    public CompositeScopeContext(WorkContext workContext) {
+    public CompositeScopeContext() {
         setName("Composite Scope");
-        assert(workContext != null): "Work context was null";
-        this.workContext = workContext;
+        contexts = new CopyOnWriteArrayList<CompositeContext>();
     }
 
     public Scope getScope() {
@@ -65,15 +60,7 @@ public class CompositeScopeContext extends AbstractLifecycle implements ScopeCon
 
     public void register(CompositeContext context) {
         checkInit();
-        CompositeContext module = workContext.getCurrentModule();
-        List<CompositeContext> ctxs = contexts.get(module);
-        if (ctxs == null) {
-            ctxs = new ArrayList<CompositeContext>();
-        }
-        synchronized (ctxs) {
-            ctxs.add(context);
-        }
-        contexts.put(module, ctxs);
+        contexts.add(context);
     }
 
     public Object getInstance(CompositeContext context) throws TargetException {

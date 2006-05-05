@@ -23,8 +23,8 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
 
     public static final Object HTTP_IDENTIFIER = new Object();
 
-    private Map<AtomicContext, Map<Object, InstanceContext>> contexts;
-    private Map<Object, List<InstanceContext>> destroyQueues;
+    private final Map<AtomicContext, Map<Object, InstanceContext>> contexts;
+    private final Map<Object, List<InstanceContext>> destroyQueues;
 
     public HttpSessionScopeContext(WorkContext workContext) {
         super("Session Scope", workContext);
