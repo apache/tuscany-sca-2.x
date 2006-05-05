@@ -11,13 +11,12 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.context.impl;
+package org.apache.tuscany.core.context;
 
 import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.core.context.CoreRuntimeException;
-import org.apache.tuscany.core.context.ExternalServiceContext;
+import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.TargetWireFactory;
 
@@ -26,23 +25,23 @@ import org.apache.tuscany.spi.wire.TargetWireFactory;
  *
  * @version $Rev$ $Date$
  */
-public class ExternalServiceContextImpl extends AbstractContext implements ExternalServiceContext {
+public class ReferenceContextImpl extends AbstractContext implements ReferenceContext {
 
     private TargetWireFactory<?> targetWireFactory;
 
     private ObjectFactory targetInstanceFactory;
 
     /**
-     * Creates an external service context
+     * Creates a reference context
      *
-     * @param name the name of the external service
+     * @param name the name of the reference context
      * @param targetWireFactory the factory which creates proxies implementing the configured service interface for the
-     *        external service. There is always only one proxy factory as an external service is configured with one
+     *        reference context. There is always only one proxy factory as an reference context is configured with one
      *        service
      * @param targetInstanceFactory the object factory that creates an artifact capabile of communicating over the
-     *        binding transport configured on the external service. The object factory may implement a caching strategy.
+     *        binding transport configured on the reference context. The object factory may implement a caching strategy.
      */
-    public ExternalServiceContextImpl(String name, TargetWireFactory targetWireFactory, ObjectFactory targetInstanceFactory) {
+    public ReferenceContextImpl(String name, TargetWireFactory targetWireFactory, ObjectFactory targetInstanceFactory) {
         super(name);
         assert (targetWireFactory != null) : "Target proxy factory was null";
         assert (targetInstanceFactory != null) : "Target instance factory was null";
@@ -50,11 +49,11 @@ public class ExternalServiceContextImpl extends AbstractContext implements Exter
         this.targetInstanceFactory = targetInstanceFactory;
     }
 
-    public void start() throws CoreRuntimeException {
+    public void start() {
         lifecycleState = RUNNING;
     }
 
-    public void stop() throws CoreRuntimeException {
+    public void stop() {
         lifecycleState = STOPPED;
     }
 

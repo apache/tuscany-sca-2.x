@@ -26,8 +26,8 @@ public class ServiceContextImpl<T extends Class> extends AbstractContext impleme
     /**
      * Creates a new service context
      *
-     * @param name              the entry point name
-     * @param sourceWireFactory the proxy factory containing the invocation chains for the entry point
+     * @param name              the bound service name
+     * @param sourceWireFactory the proxy factory containing the invocation chains for the service
      * @throws CoreRuntimeException if an error occurs creating the service context
      */
     public ServiceContextImpl(String name, SourceWireFactory<T> sourceWireFactory) throws CoreRuntimeException {
