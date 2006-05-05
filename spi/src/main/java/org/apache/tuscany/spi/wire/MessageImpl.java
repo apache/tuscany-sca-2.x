@@ -14,11 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.message.impl;
-
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageChannel;
-import org.apache.tuscany.spi.wire.TargetInvoker;
+package org.apache.tuscany.spi.wire;
 
 /**
  * The default implementation of a message flowed through a wire during an invocation
@@ -31,55 +27,33 @@ public class MessageImpl implements Message, MessageChannel {
     private Message relatedCallbackMessage;
     private TargetInvoker invoker;
 
-    protected MessageImpl() {
-        super();
+    public MessageImpl() {
     }
 
-    /**
-     * @see org.apache.tuscany.spi.wire.Message#getBody()
-     */
     public Object getBody() {
         return body;
     }
 
-    /**
-     * @see org.apache.tuscany.spi.wire.Message#setBody(java.lang.Object)
-     */
     public void setBody(Object body) {
         this.body = body;
     }
 
-    /**
-     * @see org.apache.tuscany.spi.wire.Message#getCallbackChannel()
-     */
     public MessageChannel getCallbackChannel() {
         return this;
     }
 
-    /**
-     * @see org.apache.tuscany.spi.wire.MessageChannel#send(org.apache.tuscany.spi.wire.Message)
-     */
     public void send(Message message) {
         relatedCallbackMessage = message;
     }
 
-    /**
-     * @see org.apache.tuscany.spi.wire.Message#getRelatedCallbackMessage()
-     */
     public Message getRelatedCallbackMessage() {
         return relatedCallbackMessage;
     }
 
-    /**
-     * @see org.apache.tuscany.spi.wire.Message#setTargetInvoker(org.apache.tuscany.spi.wire.TargetInvoker)
-     */
     public void setTargetInvoker(TargetInvoker invoker) {
         this.invoker = invoker;
     }
 
-    /**
-     * @see org.apache.tuscany.spi.wire.Message#getTargetInvoker()
-     */
     public TargetInvoker getTargetInvoker() {
         return invoker;
     }

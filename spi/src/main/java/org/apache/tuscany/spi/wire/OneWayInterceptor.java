@@ -14,15 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.wire.impl;
-
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.MessageChannel;
-import org.apache.tuscany.spi.wire.Message;
+package org.apache.tuscany.spi.wire;
 
 /**
  * An interceptor that sends the wire Message down its request channel and does not expect a response.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class OneWayInterceptor implements Interceptor {
@@ -30,7 +26,7 @@ public class OneWayInterceptor implements Interceptor {
 
     /**
      * Construct an interceptor that sends messages down the supplied channel.
-     * 
+     *
      * @param requestChannel the channel to send messages down
      */
     public OneWayInterceptor(MessageChannel requestChannel) {

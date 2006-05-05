@@ -26,7 +26,7 @@ import java.util.Set;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.extension.config.ImplementationProcessor;
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.core.config.processor.ProcessorUtils;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;

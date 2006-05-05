@@ -30,7 +30,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         SystemAtomicContext atomicContext = createContext();
         atomicContext.setScopeContext(scopeContext);
         // start the request
-        workContext.setCurrentModule(currentModule);
+        workContext.setRemoteContext(currentModule);
         Object session = new Object();
         workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session);
         SessionScopeInitDestroyComponent o1 = (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
@@ -52,7 +52,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         SystemAtomicContext atomicContext = createContext();
         atomicContext.setScopeContext(scopeContext);
 
-        workContext.setCurrentModule(currentModule);
+        workContext.setRemoteContext(currentModule);
         Object session1 = new Object();
         workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
         SessionScopeInitDestroyComponent o1 = (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);

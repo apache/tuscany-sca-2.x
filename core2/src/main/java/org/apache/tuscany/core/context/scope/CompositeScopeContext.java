@@ -22,8 +22,6 @@ import org.apache.tuscany.spi.Lifecycle;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.InstanceContext;
 import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.context.ScopeInitializationException;
-import org.apache.tuscany.spi.context.ScopeRuntimeException;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.event.Event;
 
@@ -47,11 +45,11 @@ public class CompositeScopeContext extends AbstractLifecycle implements ScopeCon
         return Scope.AGGREGATE;
     }
 
-    public void start() throws ScopeInitializationException {
+    public void start(){
         lifecycleState = Lifecycle.RUNNING;
     }
 
-    public void stop() throws ScopeRuntimeException {
+    public void stop(){
         lifecycleState = STOPPED;
     }
 

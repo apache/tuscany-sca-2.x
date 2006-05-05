@@ -1,10 +1,10 @@
 package org.apache.tuscany.core.wire.jdk;
 
-import org.apache.tuscany.core.wire.MethodHashMap;
 import org.apache.tuscany.spi.wire.WireFactoryInitException;
-import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
 import org.apache.tuscany.spi.wire.TargetWireFactory;
-import org.apache.tuscany.core.wire.WireTargetConfiguration;
+import org.apache.tuscany.spi.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.spi.wire.WireTargetConfiguration;
+import org.apache.tuscany.core.util.MethodHashMap;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -48,7 +48,7 @@ public class JDKTargetWireFactory implements TargetWireFactory {
         if (state != INITIALIZED) {
             throw new IllegalStateException("Proxy factory not INITIALIZED [" + state + "]");
         }
-        InvocationHandler handler = new JDKInvocationHandler(configuration.getMessageFactory(), methodToInvocationConfig);
+        InvocationHandler handler = new JDKInvocationHandler(methodToInvocationConfig);
         return Proxy.newProxyInstance(configuration.getProxyClassLoader(), businessInterfaceArray, handler);
     }
 

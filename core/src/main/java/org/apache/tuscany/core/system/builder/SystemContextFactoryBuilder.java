@@ -31,7 +31,7 @@ import org.apache.tuscany.core.builder.NoAccessorException;
 import org.apache.tuscany.core.builder.UnknownTypeException;
 import org.apache.tuscany.core.builder.impl.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.builder.impl.ListMultiplicityObjectFactory;
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.SystemCompositeContext;

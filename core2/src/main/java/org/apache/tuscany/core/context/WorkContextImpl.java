@@ -14,7 +14,7 @@ import org.apache.tuscany.spi.context.WorkContext;
  */
 public class WorkContextImpl implements WorkContext {
 
-    private static final Object CURRENT_MODULE = new Object();
+    private static final Object REMOTE_CONTEXT = new Object();
 
     // @TODO design a proper propagation strategy for creating new threads
     /*
@@ -23,22 +23,22 @@ public class WorkContextImpl implements WorkContext {
      */
     private ThreadLocal<Map<Object, Object>> workContext = new InheritableThreadLocal<Map<Object, Object>>();
 
-    public CompositeContext getCurrentModule() {
+    public CompositeContext getRemoteContext() {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             return null;
         }
-        return (CompositeContext) map.get(CURRENT_MODULE);
+        return (CompositeContext) map.get(REMOTE_CONTEXT);
     }
 
 
-    public void setCurrentModule(CompositeContext context) {
+    public void setRemoteContext(CompositeContext context) {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             map = new HashMap<Object, Object>();
             workContext.set(map);
         }
-        map.put(CURRENT_MODULE, context);
+        map.put(REMOTE_CONTEXT, context);
     }
 
     public Object getIdentifier(Object type) {

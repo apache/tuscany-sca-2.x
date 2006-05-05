@@ -17,7 +17,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.ComponentInfo;

@@ -1,19 +1,17 @@
 package org.apache.tuscany.core.wire.jdk;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.apache.tuscany.core.wire.InvocationConfiguration;
-import org.apache.tuscany.core.wire.MethodHashMap;
-import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
-import org.apache.tuscany.core.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.spi.wire.InvocationConfiguration;
+import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.mock.SimpleTarget;
 import org.apache.tuscany.core.wire.mock.SimpleTargetImpl;
 import org.apache.tuscany.core.wire.mock.MockStaticInvoker;
 import org.apache.tuscany.core.wire.mock.MockHandler;
 import org.apache.tuscany.core.wire.mock.MockSyncInterceptor;
-import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
-import org.apache.tuscany.core.wire.impl.MessageChannelImpl;
-import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
+import org.apache.tuscany.spi.wire.InvokerInterceptor;
+import org.apache.tuscany.spi.wire.MessageChannelImpl;
+import org.apache.tuscany.spi.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.spi.wire.SourceInvocationConfiguration;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -37,16 +35,16 @@ public class JDKInvocationHandlerTestCase extends TestCase {
     public void testBasicInvoke() throws Throwable {
         Map<Method, InvocationConfiguration> configs = new MethodHashMap<InvocationConfiguration>();
         configs.put(hello, getInvocationHandler(hello));
-        JDKInvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), configs);
-        Assert.assertEquals("foo", handler.invoke(null, hello, new Object[] { "foo" }));
+        JDKInvocationHandler handler = new JDKInvocationHandler(configs);
+        assertEquals("foo", handler.invoke(null, hello, new Object[] { "foo" }));
     }
 
     public void testErrorInvoke() throws Throwable {
         Map<Method, InvocationConfiguration> configs = new MethodHashMap<InvocationConfiguration>();
         configs.put(hello, getInvocationHandler(hello));
-        JDKInvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), configs);
+        JDKInvocationHandler handler = new JDKInvocationHandler(configs);
         try {
-            Assert.assertEquals("foo", handler.invoke(null, hello, new Object[] {}));
+            assertEquals("foo", handler.invoke(null, hello, new Object[] {}));
             fail("Expected " + IllegalArgumentException.class.getName());
         } catch (IllegalArgumentException e) {
             // should throw
@@ -60,9 +58,9 @@ public class JDKInvocationHandlerTestCase extends TestCase {
 
         Map<Method, InvocationConfiguration> configs = new MethodHashMap<InvocationConfiguration>();
         configs.put(hello, source);
-        JDKInvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), configs);
+        JDKInvocationHandler handler = new JDKInvocationHandler(configs);
         try {
-            Assert.assertEquals("foo", handler.invoke(null, hello, new Object[] {}));
+            assertEquals("foo", handler.invoke(null, hello, new Object[] {}));
             fail("Expected " + IllegalArgumentException.class.getName());
         } catch (IllegalArgumentException e) {
             // should throw
@@ -76,8 +74,8 @@ public class JDKInvocationHandlerTestCase extends TestCase {
 
         Map<Method, InvocationConfiguration> configs = new MethodHashMap<InvocationConfiguration>();
         configs.put(hello, source);
-        JDKInvocationHandler handler = new JDKInvocationHandler(new MessageFactoryImpl(), configs);
-        Assert.assertEquals("foo", handler.invoke(null, hello, new Object[] { "foo" }));
+        JDKInvocationHandler handler = new JDKInvocationHandler(configs);
+        assertEquals("foo", handler.invoke(null, hello, new Object[] { "foo" }));
     }
 
     private InvocationConfiguration getInvocationHandler(Method m) {

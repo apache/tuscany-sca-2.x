@@ -18,10 +18,10 @@ package org.apache.tuscany.core.wire.jdk;
 
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.core.wire.InvocationConfiguration;
+import org.apache.tuscany.spi.wire.InvocationConfiguration;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.core.message.MessageFactory;
+import org.apache.tuscany.spi.wire.MessageImpl;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -36,8 +36,6 @@ import java.util.Map;
  */
 public class JDKInvocationHandler implements InvocationHandler {
 
-    private MessageFactory messageFactory;
-
     /*
      * an association of an operation to configuration holder. The holder contains the master wire configuration
      * and a locale clone of the master TargetInvoker. TargetInvokers will be cloned by the handler and placed in the
@@ -47,14 +45,12 @@ public class JDKInvocationHandler implements InvocationHandler {
      */
     private Map<Method, ConfigHolder> configuration;
 
-    public JDKInvocationHandler(MessageFactory messageFactory, Map<Method, ? extends InvocationConfiguration> configuration) {
-        assert (messageFactory != null) : "Message factory was null";
+    public JDKInvocationHandler(Map<Method, ? extends InvocationConfiguration> configuration) {
         assert (configuration != null) : "Configuration not specified";
         this.configuration = new HashMap<Method, ConfigHolder>(configuration.size());
         for (Map.Entry<Method, ? extends InvocationConfiguration> entry : configuration.entrySet()) {
             this.configuration.put(entry.getKey(), new ConfigHolder(entry.getValue()));
         }
-        this.messageFactory = messageFactory;
     }
 
     /**
@@ -105,7 +101,7 @@ public class JDKInvocationHandler implements InvocationHandler {
                 throw e.getCause();
             }
         } else {
-            Message msg = messageFactory.createMessage();
+            Message msg = new MessageImpl();
             msg.setTargetInvoker(invoker);
             msg.setBody(args);
             // dispatch the wire down the chain and get the response

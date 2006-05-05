@@ -16,7 +16,7 @@ package org.apache.tuscany.container.java.builder;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.SourcePolicyBuilder;
 import org.apache.tuscany.core.builder.TargetPolicyBuilder;
-import org.apache.tuscany.core.wire.InvocationConfiguration;
+import org.apache.tuscany.spi.wire.InvocationConfiguration;
 import org.apache.tuscany.core.wire.MessageHandler;
 import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
 import org.apache.tuscany.core.wire.SourceWireFactory;

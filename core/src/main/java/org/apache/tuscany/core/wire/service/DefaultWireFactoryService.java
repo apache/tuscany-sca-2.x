@@ -13,7 +13,7 @@
  */
 package org.apache.tuscany.core.wire.service;
 
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;

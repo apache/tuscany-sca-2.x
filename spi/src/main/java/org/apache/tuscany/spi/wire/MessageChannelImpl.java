@@ -14,27 +14,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.wire.impl;
-
-import org.apache.tuscany.spi.wire.MessageChannel;
-import org.apache.tuscany.spi.wire.MessageHandler;
-import org.apache.tuscany.spi.wire.Message;
+package org.apache.tuscany.spi.wire;
 
 import java.util.List;
 
 /**
  * A channel comprising an ordered collection of message handlers.
  *
- *@see org.apache.tuscany.spi.wire.Message
  * @version $Rev$ $Date$
+ * @see org.apache.tuscany.spi.wire.Message
  */
 public class MessageChannelImpl implements MessageChannel {
 
     private final List<MessageHandler> pipeline;
-
-    //----------------------------------
-    // Constructors
-    //----------------------------------
 
     /**
      * Construct a new channel comprising the supplied list of handlers.
@@ -45,19 +37,14 @@ public class MessageChannelImpl implements MessageChannel {
         this.pipeline = pipeline;
     }
 
-    //----------------------------------
-    // Methods
-    //----------------------------------
-
     /**
-     * Send a message down the channel. The message will be processed by all handlers
-     * in order until one returns false to indicate processing is complete or all
-     * handlers have been called.
+     * Send a message down the channel. The message will be processed by all handlers in order until one
+     * returns false to indicate processing is complete or all handlers have been called.
      *
      * @param msg a Message to send down the channel
      */
     public void send(Message msg) {
-        if (pipeline!=null) {
+        if (pipeline != null) {
             for (MessageHandler handler : pipeline) {
                 if (!handler.processMessage(msg)) {
                     break;

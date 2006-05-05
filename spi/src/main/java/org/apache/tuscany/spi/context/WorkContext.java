@@ -6,9 +6,9 @@ package org.apache.tuscany.spi.context;
  */
 public interface WorkContext {
 
-    public CompositeContext getCurrentModule();
+    public CompositeContext getRemoteContext();
 
-    public void setCurrentModule(CompositeContext context);
+    public void setRemoteContext(CompositeContext context);
 
     /**
      * Returns the unique key for the given identifier associated with the current request

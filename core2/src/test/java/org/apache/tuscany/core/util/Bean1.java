@@ -1,4 +1,4 @@
-package org.apache.tuscany.core.config;
+package org.apache.tuscany.core.util;
 
 
 public class Bean1 extends SuperBean {

@@ -14,16 +14,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.wire.impl;
-
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.MessageChannel;
-import org.apache.tuscany.spi.wire.Message;
+package org.apache.tuscany.spi.wire;
 
 /**
  * An interceptor that first sends a message down its request channel then extracts the response from the
  * message and sends it down the response channel before returning it up the interceptor stack.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class RequestResponseInterceptor implements Interceptor {
@@ -38,8 +34,8 @@ public class RequestResponseInterceptor implements Interceptor {
 
     /**
      * Construct an interceptor that sends messages down the supplied channels.
-     * 
-     * @param targetRequestChannel the channel to send request messages down
+     *
+     * @param targetRequestChannel  the channel to send request messages down
      * @param targetResponseChannel the channel to sent response messages down
      */
     public RequestResponseInterceptor(MessageChannel sourceRequestChannel, MessageChannel targetRequestChannel,

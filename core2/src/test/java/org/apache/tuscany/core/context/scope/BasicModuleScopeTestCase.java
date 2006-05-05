@@ -30,7 +30,7 @@ public class BasicModuleScopeTestCase extends TestCase {
         SystemAtomicContext atomicContext = createContext();
         atomicContext.setScopeContext(scopeContext);
         // start the request
-        workContext.setCurrentModule(currentModule);
+        workContext.setRemoteContext(currentModule);
         ModuleScopeInitDestroyComponent o1 = (ModuleScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertTrue(o1.isInitialized());
         assertFalse(o1.isDestroyed());
@@ -52,7 +52,7 @@ public class BasicModuleScopeTestCase extends TestCase {
         SystemAtomicContext atomicContext2 = createContext();
         atomicContext2.setScopeContext(scopeContext);
 
-        workContext.setCurrentModule(currentModule);
+        workContext.setRemoteContext(currentModule);
         ModuleScopeInitDestroyComponent o1 = (ModuleScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertTrue(o1.isInitialized());
         assertFalse(o1.isDestroyed());

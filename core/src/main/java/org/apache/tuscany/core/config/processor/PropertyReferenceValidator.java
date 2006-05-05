@@ -20,7 +20,7 @@ import java.util.Set;
 
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.MetaDataException;
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.osoa.sca.annotations.Property;

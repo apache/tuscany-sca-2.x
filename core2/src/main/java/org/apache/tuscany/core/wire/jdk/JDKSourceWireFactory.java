@@ -13,11 +13,11 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import org.apache.tuscany.core.wire.MethodHashMap;
+import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.spi.wire.WireFactoryInitException;
-import org.apache.tuscany.core.wire.SourceInvocationConfiguration;
+import org.apache.tuscany.spi.wire.SourceInvocationConfiguration;
 import org.apache.tuscany.spi.wire.SourceWireFactory;
-import org.apache.tuscany.core.wire.WireSourceConfiguration;
+import org.apache.tuscany.spi.wire.WireSourceConfiguration;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -61,7 +61,7 @@ public class JDKSourceWireFactory implements SourceWireFactory {
         if (state != INITIALIZED) {
             throw new IllegalStateException("Proxy factory not INITIALIZED [" + state + "]");
         }
-        InvocationHandler handler = new JDKInvocationHandler(configuration.getMessageFactory(), methodToInvocationConfig);
+        InvocationHandler handler = new JDKInvocationHandler(methodToInvocationConfig);
         return Proxy.newProxyInstance(configuration.getProxyClassLoader(), businessInterfaceArray, handler);
     }
 

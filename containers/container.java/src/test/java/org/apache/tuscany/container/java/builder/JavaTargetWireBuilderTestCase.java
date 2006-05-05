@@ -15,8 +15,8 @@ import org.apache.tuscany.container.java.invocation.mock.SimpleTargetImpl;
 import org.apache.tuscany.container.java.mock.MockScopeContext;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.wire.MethodHashMap;
-import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
+import org.apache.tuscany.core.util.MethodHashMap;
+import org.apache.tuscany.spi.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 import org.apache.tuscany.core.wire.WireSourceConfiguration;
 import org.apache.tuscany.core.wire.WireTargetConfiguration;
@@ -42,8 +42,8 @@ public class JavaTargetWireBuilderTestCase extends TestCase {
     public void setUp() throws Exception {
         hello = SimpleTarget.class.getMethod("hello", String.class);
     }
-    
-    
+
+
     /**
      * Tests basic wiring of a source to a target, including handlers and interceptors
      */
@@ -65,7 +65,7 @@ public class JavaTargetWireBuilderTestCase extends TestCase {
                 sourceInvocationConfigs, Thread.currentThread().getContextClassLoader(), msgFactory);
         sourceFactory.setConfiguration(sourceConfig);
         sourceFactory.setBusinessInterface(SimpleTarget.class);
-        
+
         TargetInvocationConfiguration target = new TargetInvocationConfiguration(hello);
         MockHandler targetRequestHandler = new MockHandler();
         MockHandler targetResponseHandler = new MockHandler();
@@ -92,12 +92,12 @@ public class JavaTargetWireBuilderTestCase extends TestCase {
         // connect the source to the target
         DefaultWireBuilder builder = new DefaultWireBuilder();
         builder.addWireBuilder(new JavaTargetWireBuilder());
-        
+
         builder.connect(sourceFactory, targetFactory, JavaContextFactory.class, true, scopeCtx);
         source.build();
         target.build();
         Assert.assertNotNull(source.getTargetInvoker());
-        
+
         Message msg = msgFactory.createMessage();
         msg.setBody("foo");
         msg.setTargetInvoker(source.getTargetInvoker());

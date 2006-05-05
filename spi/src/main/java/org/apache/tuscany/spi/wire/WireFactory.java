@@ -20,7 +20,7 @@ package org.apache.tuscany.spi.wire;
  * Implementations are responsible for managing source or target sides of a wire, including creation of service proxies.
  * Source-side wires are injected on references and may contain policy interceptors and/or handlers specified by them. Target-side
  * wires may contain policy interceptors and/or handlers specified by the service the wire is targeted to or one of its
- * operations. Source- and target-side <code>WireFactory</code>s are held in the {@link org.apache.tuscany.core.builder.ContextFactory}
+ * operations. Source- and target-side <code>WireFactory</code>s are held in the {@link org.apache.tuscany.spi.context.AtomicContext}
  * associated with the source reference or target service.
  * <p/>
  * When an assembly is built by the runtime, source-side and target-side wires are "bridged" on the source side (i.e. a reference
@@ -61,7 +61,7 @@ public interface WireFactory<T> {
     /**
      * Returns the primary interface type implemented by generated proxies
      */
-    public Class getBusinessInterface();
+    public T getBusinessInterface();
 
     /**
      * Adds an interface type generated proxies implement

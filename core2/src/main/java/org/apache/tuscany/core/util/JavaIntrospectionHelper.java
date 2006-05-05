@@ -1,4 +1,4 @@
-package org.apache.tuscany.core.config;
+package org.apache.tuscany.core.util;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
