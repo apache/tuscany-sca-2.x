@@ -67,7 +67,7 @@ public class JDKTargetWireFactory<T> implements TargetWireFactory<T> {
     }
 
     public T getBusinessInterface() {
-        return (T)businessInterfaceArray[0];
+        return (T) businessInterfaceArray[0];
     }
 
     public void addInterface(Class claz) {

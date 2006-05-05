@@ -13,7 +13,6 @@ import org.apache.tuscany.spi.QualifiedName;
 public class WireTargetConfiguration {
 
     protected Map<Method, TargetInvocationConfiguration> configurations;
-
     protected QualifiedName targetName;
 
 

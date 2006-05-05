@@ -14,7 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.spi.wire;
+package org.apache.tuscany.core.wire;
+
+import org.apache.tuscany.spi.wire.MessageHandler;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.Message;
 
 /**
  * A message handler that dispatches the message through an interceptor stack and the uses the response

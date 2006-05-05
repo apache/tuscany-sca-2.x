@@ -22,12 +22,14 @@ import org.apache.tuscany.core.wire.mock.MockStaticInvoker;
 import org.apache.tuscany.core.wire.mock.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.mock.SimpleTarget;
 import org.apache.tuscany.core.wire.mock.SimpleTargetImpl;
+import org.apache.tuscany.core.wire.SourceInvocationConfigurationImpl;
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.wire.InvokerInterceptor;
-import org.apache.tuscany.spi.wire.SourceInvocationConfiguration;
-import org.apache.tuscany.spi.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.apache.tuscany.core.wire.TargetInvocationConfigurationImpl;
 import org.apache.tuscany.spi.wire.WireSourceConfiguration;
 import org.apache.tuscany.spi.wire.WireTargetConfiguration;
+import org.apache.tuscany.spi.wire.SourceInvocationConfiguration;
+import org.apache.tuscany.spi.wire.TargetInvocationConfiguration;
 
 public class JDKWireFactoryFactoryTestCase extends TestCase {
 
@@ -42,7 +44,7 @@ public class JDKWireFactoryFactoryTestCase extends TestCase {
     }
 
     public void testSourceWireFactory() throws Exception {
-        SourceInvocationConfiguration source = new SourceInvocationConfiguration(hello);
+        SourceInvocationConfigurationImpl source = new SourceInvocationConfigurationImpl(hello);
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addInterceptor(sourceInterceptor);
         source.setTargetInterceptor(new InvokerInterceptor());
@@ -60,7 +62,7 @@ public class JDKWireFactoryFactoryTestCase extends TestCase {
     }
 
     public void testTargetWireFactory() throws Exception {
-        TargetInvocationConfiguration source = new TargetInvocationConfiguration(hello);
+        TargetInvocationConfigurationImpl source = new TargetInvocationConfigurationImpl(hello);
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addInterceptor(sourceInterceptor);
         source.addInterceptor(new InvokerInterceptor());

@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
 /**
- * A system service that creates JDK dynamic proxy-based {@link org.apache.tuscany.spi.wire.WireFactory}s
+ * A system service that creates JDK dynamic proxy-based wire factories
  *
  * @version $Rev$ $Date$
  */

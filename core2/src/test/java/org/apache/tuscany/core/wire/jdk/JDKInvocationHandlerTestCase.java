@@ -1,17 +1,20 @@
 package org.apache.tuscany.core.wire.jdk;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.spi.wire.InvocationConfiguration;
+import org.apache.tuscany.core.wire.InvocationConfigurationImpl;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.mock.SimpleTarget;
 import org.apache.tuscany.core.wire.mock.SimpleTargetImpl;
 import org.apache.tuscany.core.wire.mock.MockStaticInvoker;
 import org.apache.tuscany.core.wire.mock.MockHandler;
 import org.apache.tuscany.core.wire.mock.MockSyncInterceptor;
-import org.apache.tuscany.spi.wire.InvokerInterceptor;
-import org.apache.tuscany.spi.wire.MessageChannelImpl;
-import org.apache.tuscany.spi.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.core.wire.SourceInvocationConfigurationImpl;
+import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.apache.tuscany.core.wire.MessageChannelImpl;
+import org.apache.tuscany.core.wire.TargetInvocationConfigurationImpl;
 import org.apache.tuscany.spi.wire.SourceInvocationConfiguration;
+import org.apache.tuscany.spi.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.spi.wire.InvocationConfiguration;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -52,7 +55,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
     }
 
     public void testDirectErrorInvoke() throws Throwable {
-        SourceInvocationConfiguration source = new SourceInvocationConfiguration(hello);
+        SourceInvocationConfigurationImpl source = new SourceInvocationConfigurationImpl(hello);
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
@@ -68,18 +71,18 @@ public class JDKInvocationHandlerTestCase extends TestCase {
     }
 
     public void testDirectInvoke() throws Throwable {
-        SourceInvocationConfiguration source = new SourceInvocationConfiguration(hello);
+        SourceInvocationConfigurationImpl source = new SourceInvocationConfigurationImpl(hello);
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
-        Map<Method, InvocationConfiguration> configs = new MethodHashMap<InvocationConfiguration>();
+        Map<Method, InvocationConfigurationImpl> configs = new MethodHashMap<InvocationConfigurationImpl>();
         configs.put(hello, source);
         JDKInvocationHandler handler = new JDKInvocationHandler(configs);
         assertEquals("foo", handler.invoke(null, hello, new Object[] { "foo" }));
     }
 
     private InvocationConfiguration getInvocationHandler(Method m) {
-        SourceInvocationConfiguration source = new SourceInvocationConfiguration(m);
+        SourceInvocationConfiguration source = new SourceInvocationConfigurationImpl(m);
         MockHandler sourceRequestHandler = new MockHandler();
         MockHandler sourceResponseHandler = new MockHandler();
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
@@ -87,7 +90,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         source.addResponseHandler(sourceResponseHandler);
         source.addInterceptor(sourceInterceptor);
 
-        TargetInvocationConfiguration target = new TargetInvocationConfiguration(m);
+        TargetInvocationConfiguration target = new TargetInvocationConfigurationImpl(m);
         MockHandler targetRequestHandler = new MockHandler();
         MockHandler targetResponseHandler = new MockHandler();
         MockSyncInterceptor targetInterceptor = new MockSyncInterceptor();

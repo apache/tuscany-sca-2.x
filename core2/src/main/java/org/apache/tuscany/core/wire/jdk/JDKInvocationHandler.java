@@ -16,22 +16,22 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationConfiguration;
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.core.wire.MessageImpl;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.core.wire.MessageImpl;
+import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationConfiguration;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.TargetInvoker;
+
 /**
  * Receives a request from a JDK proxy and dispatches it to a target invoker or source interceptor stack
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class JDKInvocationHandler implements InvocationHandler {
@@ -66,15 +66,15 @@ public class JDKInvocationHandler implements InvocationHandler {
         }
         InvocationConfiguration config = holder.config;
         if (config != null) {
-           headInterceptor = config.getHeadInterceptor();
+            headInterceptor = config.getHeadInterceptor();
         }
 
         TargetInvoker invoker;
 
         if (holder.cachedInvoker == null) {
             assert config != null;
-            if(config.getTargetInvoker() == null){
-                TargetException e= new TargetException("No target invoker configured for operation");
+            if (config.getTargetInvoker() == null) {
+                TargetException e = new TargetException("No target invoker configured for operation");
                 e.setIdentifier(config.getMethod().getName());
                 throw e;
             }
@@ -116,18 +116,18 @@ public class JDKInvocationHandler implements InvocationHandler {
     }
 
     /**
-     * A holder used to associate an wire configuration with a local copy of a target invoker that was previously
-     * cloned from the configuration master
+     * A holder used to associate an wire configuration with a local copy of a target invoker that was
+     * previously cloned from the configuration master
      */
     private class ConfigHolder {
+
+        InvocationConfiguration config;
+        TargetInvoker cachedInvoker;
 
         public ConfigHolder(InvocationConfiguration config) {
             this.config = config;
         }
 
-        InvocationConfiguration config;
-
-        TargetInvoker cachedInvoker;
     }
 
 }

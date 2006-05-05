@@ -1,23 +1,6 @@
-/**
- *
- *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
 package org.apache.tuscany.spi.wire;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -79,113 +62,61 @@ import java.util.List;
  * @version $Rev: 396284 $ $Date: 2006-04-23 08:27:42 -0700 (Sun, 23 Apr 2006) $
  * @see org.apache.tuscany.spi.builder.WireBuilder
  * @see TargetInvoker
- * @see MessageDispatcher
  */
-public abstract class InvocationConfiguration {
-
-    // the operation on the target that will utlimately be invoked
-    protected Method operation;
-
-    // responsible for invoking a target instance
-    protected TargetInvoker targetInvoker;
-
-    protected Interceptor interceptorChainHead;
-
-    protected Interceptor interceptorChainTail;
-
-    protected List<MessageHandler> requestHandlers;
-
-    protected List<MessageHandler> responseHandlers;
-
-    public InvocationConfiguration(Method operation) {
-        assert (operation != null) : "No operation type specified";
-        this.operation = operation;
-    }
-
+public interface InvocationConfiguration {
     /**
      * Returns the target operation for this invocation chain
      */
-    public Method getMethod() {
-        return operation;
-    }
+    Method getMethod();
 
     /**
      * Adds an request handler to the invocation chain
      */
-    public void addRequestHandler(MessageHandler handler) {
-        if (requestHandlers == null) {
-            requestHandlers = new ArrayList<MessageHandler>();
-        }
-        requestHandlers.add(handler);
-    }
+    void addRequestHandler(MessageHandler handler);
 
     /**
      * Adds an response handler to the invocation chain
      */
-    public void addResponseHandler(MessageHandler handler) {
-        if (responseHandlers == null) {
-            responseHandlers = new ArrayList<MessageHandler>();
-        }
-        responseHandlers.add(handler);
-    }
+    void addResponseHandler(MessageHandler handler);
 
     /**
      * Returns the request handler chain
      */
-    public List<MessageHandler> getRequestHandlers() {
-        return requestHandlers;
-    }
+    List<MessageHandler> getRequestHandlers();
 
     /**
      * Returns the response handler chain
      */
-    public List<MessageHandler> getResponseHandlers() {
-        return responseHandlers;
-    }
+    List<MessageHandler> getResponseHandlers();
 
     /**
      * Sets the target invoker to pass down the chain
      */
-    public void setTargetInvoker(TargetInvoker invoker) {
-        this.targetInvoker = invoker;
-    }
+    void setTargetInvoker(TargetInvoker invoker);
 
     /**
      * Returns the target invoker that is passed down the chain
      */
-    public TargetInvoker getTargetInvoker() {
-        return targetInvoker;
-    }
+    TargetInvoker getTargetInvoker();
 
     /**
      * Adds an interceptor to the chain
      */
-    public void addInterceptor(Interceptor interceptor) {
-        if (interceptorChainHead == null) {
-            interceptorChainHead = interceptor;
-        } else {
-            interceptorChainTail.setNext(interceptor);
-        }
-        interceptorChainTail = interceptor;
-    }
+    void addInterceptor(Interceptor interceptor);
 
     /**
      * Returns the last interceptor in the chain
      */
-    public Interceptor getTailInterceptor() {
-        return interceptorChainTail;
-    }
+    Interceptor getTailInterceptor();
 
     /**
      * Returns the first interceptor in the chain
      */
-    public Interceptor getHeadInterceptor() {
-        return interceptorChainHead;
-    }
+    Interceptor getHeadInterceptor();
 
     /**
      * Signals to the chain that its configuration is complete. Implementations may use this callback to
      * prepare there invocation chains.
      */
-    public abstract void build();
+    void build();
 }

@@ -13,20 +13,20 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import org.apache.tuscany.core.util.MethodHashMap;
-import org.apache.tuscany.spi.wire.WireFactoryInitException;
-import org.apache.tuscany.spi.wire.SourceInvocationConfiguration;
-import org.apache.tuscany.spi.wire.SourceWireFactory;
-import org.apache.tuscany.spi.wire.WireSourceConfiguration;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
+import org.apache.tuscany.core.util.MethodHashMap;
+import org.apache.tuscany.spi.wire.SourceInvocationConfiguration;
+import org.apache.tuscany.spi.wire.SourceWireFactory;
+import org.apache.tuscany.spi.wire.WireFactoryInitException;
+import org.apache.tuscany.spi.wire.WireSourceConfiguration;
+
 /**
- * Creates proxies that are injected on references using JDK dynamic proxy facilities and front a wire. The proxies implement the
- * business interface associated with the service required by reference.
+ * Creates proxies that are injected on references using JDK dynamic proxy facilities and front a wire. The
+ * proxies implement the business interface associated with the service required by reference.
  *
  * @version $Rev: 394431 $ $Date: 2006-04-15 21:27:44 -0700 (Sat, 15 Apr 2006) $
  */
@@ -79,7 +79,7 @@ public class JDKSourceWireFactory<T> implements SourceWireFactory<T> {
     }
 
     public T getBusinessInterface() {
-        return (T)businessInterfaceArray[0];
+        return (T) businessInterfaceArray[0];
     }
 
     public void addInterface(Class claz) {

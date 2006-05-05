@@ -25,12 +25,12 @@ public interface WireFactoryFactory {
     /**
      * Creates a target-side wire factory
      */
-    public TargetWireFactory createTargetWireFactory();
+    public TargetWireFactory<?> createTargetWireFactory();
 
     /**
      * Creates a source-side wire factory
      */
-    public SourceWireFactory createSourceWireFactory();
+    public SourceWireFactory<?> createSourceWireFactory();
 
     /**
      * Determines whether the given object is a proxy
