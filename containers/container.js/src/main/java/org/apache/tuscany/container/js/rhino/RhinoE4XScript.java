@@ -40,7 +40,7 @@ public class RhinoE4XScript extends RhinoScript {
     @Override
     protected Object[] processArgs(String functionName, Object arg, Scriptable scope) {
         QName operationQN = new QName(serviceNS, functionName);
-        OMElement om = AxiomHelper.toOMElement(typeHelper, (Object[]) arg, operationQN);
+        OMElement om = AxiomHelper.toOMElement(typeHelper, (Object[]) arg, operationQN, true);
         try {
             return new Object[] { E4XAXIOMUtils.toScriptableObject(om, scope) };
         } catch (XmlException e) {
@@ -55,7 +55,7 @@ public class RhinoE4XScript extends RhinoScript {
     protected Object processResponse(Object response, Class responseClass) {
         if (response instanceof XMLObject) {
             OMElement om = E4XAXIOMUtils.toOMElement((XMLObject) response);
-            Object[] resp = AxiomHelper.toObjects(typeHelper, om);
+            Object[] resp = AxiomHelper.toObjects(typeHelper, om, true);
             return resp[0];
         } else {
             return super.processResponse(response, responseClass);
