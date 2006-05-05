@@ -14,7 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.spi.wire;
+package org.apache.tuscany.core.wire;
+
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageChannel;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * The default implementation of a message flowed through a wire during an invocation

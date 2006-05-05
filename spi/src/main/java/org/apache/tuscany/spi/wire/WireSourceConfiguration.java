@@ -13,19 +13,23 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import org.apache.tuscany.spi.QualifiedName;
-
 import java.lang.reflect.Method;
 import java.util.Map;
+
+import org.apache.tuscany.spi.QualifiedName;
 
 /**
  * Contains configuration for the source side of a wire
  *
  * @version $Rev: 394379 $ $Date: 2006-04-15 15:01:36 -0700 (Sat, 15 Apr 2006) $
  */
-public class WireSourceConfiguration extends WireConfiguration<SourceInvocationConfiguration> {
+public class WireSourceConfiguration {
 
     private String referenceName;
+    protected Map<Method, SourceInvocationConfiguration> configurations;
+    protected ClassLoader proxyClassLoader;
+    protected QualifiedName targetName;
+
 
     /**
      * Creates the source side of a wire
@@ -37,7 +41,12 @@ public class WireSourceConfiguration extends WireConfiguration<SourceInvocationC
      */
     public WireSourceConfiguration(String referenceName, QualifiedName targetName,
                                    Map<Method, SourceInvocationConfiguration> invocationConfigs, ClassLoader proxyClassLoader) {
-        super(targetName, proxyClassLoader);
+        this.targetName = targetName;
+        if (proxyClassLoader == null) {
+            this.proxyClassLoader = Thread.currentThread().getContextClassLoader();
+        } else {
+            this.proxyClassLoader = proxyClassLoader;
+        }
         this.referenceName = referenceName;
         this.configurations = invocationConfigs;
     }
@@ -52,6 +61,28 @@ public class WireSourceConfiguration extends WireConfiguration<SourceInvocationC
     public WireSourceConfiguration(QualifiedName targetName,
                                    Map<Method, SourceInvocationConfiguration> invocationConfigs, ClassLoader proxyClassLoader) {
         this(null, targetName, invocationConfigs, proxyClassLoader);
+    }
+
+    /**
+     * Returns the qualified name of the target service specified by the wire
+     */
+    public QualifiedName getTargetName() {
+        return targetName;
+    }
+
+    /**
+     * Returns the classloader used for creating proxies
+     */
+    public ClassLoader getProxyClassLoader() {
+        return proxyClassLoader;
+    }
+
+    /**
+     * Returns the invocation configuration for each operation on a service specified by a reference or a
+     * target service.
+     */
+    public Map<Method, SourceInvocationConfiguration> getInvocationConfigurations() {
+        return configurations;
     }
 
 

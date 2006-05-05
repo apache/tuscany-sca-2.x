@@ -21,7 +21,7 @@ import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationConfiguration;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageImpl;
+import org.apache.tuscany.core.wire.MessageImpl;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
