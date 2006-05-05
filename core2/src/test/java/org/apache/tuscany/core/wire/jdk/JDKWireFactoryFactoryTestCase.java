@@ -26,10 +26,12 @@ import org.apache.tuscany.core.wire.SourceInvocationConfigurationImpl;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.TargetInvocationConfigurationImpl;
-import org.apache.tuscany.spi.wire.WireSourceConfiguration;
-import org.apache.tuscany.spi.wire.WireTargetConfiguration;
+import org.apache.tuscany.core.wire.WireSourceConfigurationImpl;
+import org.apache.tuscany.core.wire.WireTargetConfigurationImpl;
 import org.apache.tuscany.spi.wire.SourceInvocationConfiguration;
 import org.apache.tuscany.spi.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.spi.wire.WireSourceConfiguration;
+import org.apache.tuscany.spi.wire.WireTargetConfiguration;
 
 public class JDKWireFactoryFactoryTestCase extends TestCase {
 
@@ -52,7 +54,7 @@ public class JDKWireFactoryFactoryTestCase extends TestCase {
         source.build();
         Map<Method, SourceInvocationConfiguration> configs = new MethodHashMap<SourceInvocationConfiguration>();
         configs.put(hello, source);
-        WireSourceConfiguration config = new WireSourceConfiguration("foo", new QualifiedName("foo"), configs);
+        WireSourceConfiguration config = new WireSourceConfigurationImpl("foo", new QualifiedName("foo"), configs);
         JDKSourceWireFactory<SimpleTarget> factory = new JDKSourceWireFactory<SimpleTarget>();
         factory.setConfiguration(config);
         factory.setBusinessInterface(SimpleTarget.class);
@@ -70,7 +72,7 @@ public class JDKWireFactoryFactoryTestCase extends TestCase {
         source.build();
         Map<Method, TargetInvocationConfiguration> configs = new MethodHashMap<TargetInvocationConfiguration>();
         configs.put(hello, source);
-        WireTargetConfiguration config = new WireTargetConfiguration(new QualifiedName("foo"), configs);
+        WireTargetConfiguration config = new WireTargetConfigurationImpl(new QualifiedName("foo"), configs);
         JDKTargetWireFactory<SimpleTarget> factory = new JDKTargetWireFactory<SimpleTarget>();
         factory.setConfiguration(config);
         factory.setBusinessInterface(SimpleTarget.class);

@@ -11,7 +11,7 @@ import java.util.List;
  * references to the target.
  * <p/>
  * <code>InvocationChain</code>s are managed by {@link WireSourceConfiguration}s and {@link
- * WireTargetConfiguration}s, which are used by wire factories to
+ * WireTargetConfigurationImpl}s, which are used by wire factories to
  * buildSource wires and proxies.
  * <p/>
  * Invocation configurations must contain at least one interceptor and may have 0 to N handlers. Handlers

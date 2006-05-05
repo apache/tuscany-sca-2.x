@@ -23,7 +23,8 @@ public class RequestScopeContext extends AbstractScopeContext<AtomicContext> {
 
     private final Map<AtomicContext, Map<Thread, InstanceContext>> contexts;
     private final Map<Thread, List<InstanceContext>> destroyQueues;
-      //flip Thread, Map<AtomicContext,InstanceContext>
+    //flip Thread, Map<AtomicContext,InstanceContext>
+
     public RequestScopeContext(WorkContext workContext) {
         super("Request Scope", workContext);
         contexts = new ConcurrentHashMap<AtomicContext, Map<Thread, InstanceContext>>();
