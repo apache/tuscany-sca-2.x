@@ -46,31 +46,4 @@ public class ClassLoaderHelper {
         }
         return oldCL;
     }
-    
-    public static void applicationInvoke(Runnable runnable) {
-        ClassLoader currentCL = Thread.currentThread().getContextClassLoader();
-        ClassLoader appCL = applicationClassLoader.get();
-        invoke(runnable, currentCL, appCL);
-    }
-
-    public static void systemInvoke(Runnable runnable) {
-        ClassLoader currentCL = Thread.currentThread().getContextClassLoader();
-        ClassLoader sysCL = ClassLoaderHelper.class.getClassLoader();
-        invoke(runnable, currentCL, sysCL);
-    }
-
-    private static void invoke(Runnable runnable, ClassLoader old, ClassLoader newCL) {
-        try {
-            if (newCL != old) {
-                Thread.currentThread().setContextClassLoader(newCL);
-            }
-
-            runnable.run();
-
-        }finally {
-            if (newCL != old) {
-                Thread.currentThread().setContextClassLoader(old);
-            }
-        }
-    }
 }
