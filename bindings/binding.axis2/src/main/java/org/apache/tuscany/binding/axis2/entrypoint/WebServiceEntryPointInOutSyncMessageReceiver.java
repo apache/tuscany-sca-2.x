@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.binding.axis2.handler;
+package org.apache.tuscany.binding.axis2.entrypoint;
 
 import java.lang.reflect.Method;
 
@@ -24,8 +24,8 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractInOutSyncMessageReceiver;
+import org.apache.tuscany.binding.axis2.databinding.DataBinding;
 import org.apache.tuscany.binding.axis2.util.ClassLoaderHelper;
-import org.apache.tuscany.binding.axis2.util.DataBinding;
 import org.apache.tuscany.core.wire.InvocationRuntimeException;
 
 public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {

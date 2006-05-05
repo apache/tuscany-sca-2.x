@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.binding.axis2.util.AxiomHelper;
+import org.apache.tuscany.binding.axis2.databinding.AxiomHelper;
 import org.apache.xmlbeans.XmlException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.xml.XMLObject;

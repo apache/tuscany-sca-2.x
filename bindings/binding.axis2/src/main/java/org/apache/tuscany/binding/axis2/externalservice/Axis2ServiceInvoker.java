@@ -13,13 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.binding.axis2.handler;
+package org.apache.tuscany.binding.axis2.externalservice;
 
 import java.util.Map;
 
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.ServiceClient;
+import org.apache.tuscany.core.extension.ExternalServiceInvoker;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**

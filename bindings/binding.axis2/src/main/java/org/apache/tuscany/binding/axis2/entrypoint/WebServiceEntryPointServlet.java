@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.apache.tuscany.binding.axis2.handler;
+package org.apache.tuscany.binding.axis2.entrypoint;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,9 +44,11 @@ import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.transport.http.AxisServlet;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
+import org.apache.tuscany.binding.axis2.databinding.DataBinding;
+import org.apache.tuscany.binding.axis2.databinding.SDODataBinding;
 import org.apache.tuscany.binding.axis2.util.ClassLoaderHelper;
-import org.apache.tuscany.binding.axis2.util.DataBinding;
-import org.apache.tuscany.binding.axis2.util.SDODataBinding;
+import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
+import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.webapp.TuscanyServletListener;

@@ -19,9 +19,9 @@ package org.apache.tuscany.binding.axis2.builder;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.binding.axis2.config.WSExternalServiceContextFactory;
-import org.apache.tuscany.binding.axis2.handler.ExternalServiceTargetInvoker;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
+import org.apache.tuscany.core.extension.ExternalServiceTargetInvoker;
 import org.apache.tuscany.core.extension.WireBuilderSupport;
 import org.apache.tuscany.core.wire.TargetInvoker;
 import org.osoa.sca.annotations.Scope;

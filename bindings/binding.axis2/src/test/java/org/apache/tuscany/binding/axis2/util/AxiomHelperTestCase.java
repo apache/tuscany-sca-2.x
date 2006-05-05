@@ -7,6 +7,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.tuscany.binding.axis2.databinding.AxiomHelper;
 import org.apache.tuscany.sdo.util.DataObjectUtil;
 import org.apache.tuscany.sdo.util.SDOUtil;
 

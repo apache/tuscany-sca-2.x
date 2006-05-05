@@ -1,5 +1,4 @@
 /**
- *
  *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,10 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.binding.axis2.handler;
+package org.apache.tuscany.binding.axis2.databinding;
 
-public interface ExternalServiceInvoker {
+import org.apache.axiom.om.OMElement;
 
-    public Object invoke(String methodName, Object[] args);
+public interface DataBinding {
+
+    Object[] fromOMElement(OMElement omElement);
+
+    OMElement toOMElement(Object[] args);
 
 }

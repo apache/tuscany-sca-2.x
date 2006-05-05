@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.binding.axis2.handler;
+package org.apache.tuscany.binding.axis2.externalservice;
 
 import javax.xml.namespace.QName;
 
@@ -25,8 +25,8 @@ import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.wsdl.WSDLConstants;
+import org.apache.tuscany.binding.axis2.databinding.DataBinding;
 import org.apache.tuscany.binding.axis2.util.ClassLoaderHelper;
-import org.apache.tuscany.binding.axis2.util.DataBinding;
 
 /**
  * Axis2OperationInvoker uses an Axis2 OperationClient to invoke a remote web service

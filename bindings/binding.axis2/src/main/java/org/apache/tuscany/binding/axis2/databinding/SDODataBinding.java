@@ -13,11 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.binding.axis2.util;
+package org.apache.tuscany.binding.axis2.databinding;
 
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.tuscany.binding.axis2.util.ClassLoaderHelper;
 
 import commonj.sdo.helper.TypeHelper;
 

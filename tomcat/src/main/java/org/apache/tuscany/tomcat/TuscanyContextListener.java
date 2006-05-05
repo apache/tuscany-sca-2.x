@@ -27,7 +27,7 @@ import org.apache.catalina.util.StringManager;
 import org.apache.catalina.core.StandardWrapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.tuscany.binding.axis2.handler.WebServiceEntryPointServlet;
+import org.apache.tuscany.binding.axis2.entrypoint.WebServiceEntryPointServlet;
 import org.apache.tuscany.binding.jsonrpc.handler.JSONRPCEntryPointServlet;
 import org.apache.tuscany.binding.jsonrpc.handler.ScriptGetterServlet;
 import org.apache.tuscany.common.resource.ResourceLoader;

@@ -29,9 +29,9 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
-import org.apache.tuscany.binding.axis2.handler.Axis2OperationInvoker;
-import org.apache.tuscany.binding.axis2.handler.Axis2ServiceInvoker;
-import org.apache.tuscany.binding.axis2.handler.WebServicePortMetaData;
+import org.apache.tuscany.binding.axis2.externalservice.Axis2OperationInvoker;
+import org.apache.tuscany.binding.axis2.externalservice.Axis2ServiceInvoker;
+import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.extension.ExternalServiceContextFactory;
 import org.apache.tuscany.model.assembly.AssemblyContext;
