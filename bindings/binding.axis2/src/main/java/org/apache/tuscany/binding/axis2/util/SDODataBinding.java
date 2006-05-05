@@ -27,15 +27,18 @@ public class SDODataBinding implements DataBinding {
 
     private QName typeQN;
 
-    public SDODataBinding(TypeHelper typeHelper, QName typeQN) {
+    private boolean isWrapped;
+
+    public SDODataBinding(TypeHelper typeHelper, QName typeQN, boolean isWrapped) {
         this.typeHelper = typeHelper;
         this.typeQN = typeQN;
+        this.isWrapped = isWrapped;
     }
 
     public Object[] fromOMElement(OMElement omElement) {
         ClassLoader oldCL = ClassLoaderHelper.setApplicationClassLoader();
         try {
-            Object[] args = AxiomHelper.toObjects(typeHelper, omElement);
+            Object[] args = AxiomHelper.toObjects(typeHelper, omElement, isWrapped);
             return args;
         } finally {
             if (oldCL != null) {
@@ -47,7 +50,7 @@ public class SDODataBinding implements DataBinding {
     public OMElement toOMElement(Object[] args) {
         ClassLoader oldCL = ClassLoaderHelper.setApplicationClassLoader();
         try {
-            OMElement omElement = AxiomHelper.toOMElement(typeHelper, args, typeQN);
+            OMElement omElement = AxiomHelper.toOMElement(typeHelper, args, typeQN, isWrapped);
             return omElement;
         } finally {
             if (oldCL != null) {

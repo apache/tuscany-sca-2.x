@@ -353,11 +353,15 @@ public class WebServicePortMetaData {
     }
 
     public WebServiceOperationMetaData getOperationMetaData(String operationName) {
+        StringBuilder sb = new StringBuilder(operationName);
+        sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
+        String capatalizedOpName = sb.toString();
+        
         for (Iterator it = getAllOperationMetaData().iterator(); it.hasNext();) {
             WebServiceOperationMetaData descriptor = (WebServiceOperationMetaData) it.next();
             String opName = descriptor.getBindingOperation().getOperation().getName();
 
-            if (opName.equals(operationName)) {
+            if (opName.equals(operationName) || opName.equals(capatalizedOpName)) {
                 return descriptor;
             }
         }

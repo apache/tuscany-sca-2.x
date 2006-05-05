@@ -36,6 +36,7 @@ import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis2.config.WSExternalServiceContextFactory;
 import org.apache.tuscany.binding.axis2.handler.Axis2OperationInvoker;
 import org.apache.tuscany.binding.axis2.handler.Axis2ServiceInvoker;
+import org.apache.tuscany.binding.axis2.handler.WebServiceOperationMetaData;
 import org.apache.tuscany.binding.axis2.handler.WebServicePortMetaData;
 import org.apache.tuscany.binding.axis2.util.DataBinding;
 import org.apache.tuscany.binding.axis2.util.SDODataBinding;
@@ -50,8 +51,7 @@ import org.osoa.sca.annotations.Scope;
 import commonj.sdo.helper.TypeHelper;
 
 /**
- * Creates a <code>ContextFactory</code> for an external service configured with the {@link
- * WebServiceBinding}
+ * Creates a <code>ContextFactory</code> for an external service configured with the {@link WebServiceBinding}
  */
 @Scope("MODULE")
 public class ExternalWebServiceBuilder extends ExternalServiceBuilderSupport<WebServiceBinding> {
@@ -116,17 +116,25 @@ public class ExternalWebServiceBuilder extends ExternalServiceBuilderSupport<Web
 
         for (Method m : sc.getMethods()) {
             String methodName = m.getName();
-            String wsdlOperationName = wsPortMetaData.getWSDLOperationName(methodName);
-            QName wsdlOperationQName = new QName(portTypeNS, wsdlOperationName);
-            DataBinding dataBinding = new SDODataBinding(typeHelper, wsdlOperationQName);
+
+            WebServiceOperationMetaData operationMetaData = wsPortMetaData.getOperationMetaData(methodName);
+            boolean isWrapped = operationMetaData.isDocLitWrapped();
+            DataBinding dataBinding = new SDODataBinding(typeHelper, (QName) operationMetaData.getOperationSignature().get(0), isWrapped);
+
             Options options = new Options();
             options.setTo(new EndpointReference(wsPortMetaData.getEndpoint()));
+            options.setProperty(MessageContextConstants.CHUNKED, Boolean.FALSE);
+
+            String wsdlOperationName = operationMetaData.getBindingOperation().getOperation().getName();
+
             String soapAction = wsPortMetaData.getOperationMetaData(wsdlOperationName).getSOAPAction();
-            if (soapAction != null && soapAction.length() >1) {
+            if (soapAction != null && soapAction.length() > 1) {
                 options.setAction(soapAction);
             }
-            options.setProperty(MessageContextConstants.CHUNKED, Boolean.FALSE);
+
+            QName wsdlOperationQName = new QName(portTypeNS, wsdlOperationName);
             Axis2OperationInvoker invoker = new Axis2OperationInvoker(wsdlOperationQName, options, dataBinding, soapFactory);
+
             invokers.put(methodName, invoker);
         }
 

@@ -23,26 +23,75 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.sdo.helper.XSDHelperImpl;
 import org.apache.tuscany.sdo.util.DataObjectUtil;
 import org.apache.tuscany.sdo.util.SDOUtil;
 
+import commonj.sdo.DataObject;
+import commonj.sdo.helper.DataFactory;
 import commonj.sdo.helper.TypeHelper;
+import commonj.sdo.helper.XSDHelper;
 
 public class SDODataBindingTestCase extends TestCase {
+    public static final QName DOCLITWRAPPED_QN = new QName("http://www.example.org/creditscore/doclitwrapped/", "getCreditScore");
 
-    private SDODataBinding dataBinding;
+    public static final QName DOCLIT_QN = new QName("http://www.example.org/creditscore/doclit/", "getCreditScoreRequest");
+
+    public static final QName GREETING_QN = new QName("http://helloworldaxis.samples.tuscany.apache.org", "getGreetings");
+
+    private TypeHelper typeHelper;
+
+    private SDODataBinding docLitWrappedDB;
+
+    private SDODataBinding docLitDB;
+
+    private SDODataBinding greetingDB;
 
     public void testToOMElement() {
         String s = "petra";
 
-        OMElement omElement = dataBinding.toOMElement(new Object[] { s });
+        OMElement omElement = greetingDB.toOMElement(new Object[] { s });
         assertNotNull(omElement);
 
-        Object[] os = dataBinding.fromOMElement(omElement);
+        Object[] os = greetingDB.fromOMElement(omElement);
         assertNotNull(os);
         assertEquals(1, os.length);
         assertEquals(s, os[0]);
+    }
+
+    public void testDocLit() {
+        DataFactory dataFactory = SDOUtil.createDataFactory(typeHelper);
+        DataObject dataObject = dataFactory.create("http://www.example.org/creditscore/doclit/", "Customer");
+        dataObject.setString(0, "111-22-3333");
+        dataObject.setString(1, "John");
+        dataObject.setString(2, "Smith");
+
+        OMElement omElement = docLitDB.toOMElement(new Object[] { dataObject });
+        assertNotNull(omElement);
+
+        Object[] os = docLitDB.fromOMElement(omElement);
+        assertNotNull(os);
+        assertEquals(os.length, 1);
+        assertTrue(os[0] instanceof DataObject);
+
+        dataObject = (DataObject) os[0];
+        assertEquals(dataObject.getString(0), "111-22-3333");
+        assertEquals(dataObject.getString(1), "John");
+        assertEquals(dataObject.getString(2), "Smith");
+    }
+
+    public void testDocLitWrapped() {
+        Object[] args = new Object[] { "111-22-3333", "John", "Smith" };
+
+        OMElement omElement = docLitWrappedDB.toOMElement(args);
+        assertNotNull(omElement);
+
+        Object[] os = docLitWrappedDB.fromOMElement(omElement);
+        assertNotNull(os);
+        assertEquals(os.length, 3);
+
+        assertEquals(os[0], "111-22-3333");
+        assertEquals(os[1], "John");
+        assertEquals(os[2], "Smith");
     }
 
     protected void setUp() throws Exception {
@@ -52,13 +101,19 @@ public class SDODataBindingTestCase extends TestCase {
         try {
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 
-            TypeHelper typeHelper = SDOUtil.createTypeHelper();
+            typeHelper = SDOUtil.createTypeHelper();
+            XSDHelper xsdHelper = SDOUtil.createXSDHelper(typeHelper);
             URL url = getClass().getResource("helloworld.wsdl");
-            new XSDHelperImpl(typeHelper).define(url.openStream(), null);
+            xsdHelper.define(url.openStream(), null);
+            url = getClass().getResource("CreditScoreDocLitWrapped.wsdl");
+            xsdHelper.define(url.openStream(), null);
+            url = getClass().getResource("CreditScoreDocLit.wsdl");
+            xsdHelper.define(url.openStream(), null);
 
-            QName getGreetingsQName = new QName("http://helloworldaxis.samples.tuscany.apache.org", "getGreetings");
+            this.greetingDB = new SDODataBinding(typeHelper, GREETING_QN, true);
+            this.docLitWrappedDB = new SDODataBinding(typeHelper, DOCLITWRAPPED_QN, true);
 
-            this.dataBinding = new SDODataBinding(typeHelper, getGreetingsQName);
+            this.docLitDB = new SDODataBinding(typeHelper, DOCLIT_QN, false);
 
         } finally {
             Thread.currentThread().setContextClassLoader(cl);

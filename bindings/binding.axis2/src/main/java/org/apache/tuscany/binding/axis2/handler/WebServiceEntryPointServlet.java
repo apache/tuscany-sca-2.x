@@ -39,7 +39,7 @@ import org.apache.axis2.deployment.DeploymentConstants;
 import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.AxisServiceGroup;
-import org.apache.axis2.description.InOutAxisOperation;
+import org.apache.axis2.description.WSDL2AxisServiceBuilder;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.transport.http.AxisServlet;
 import org.apache.axis2.wsdl.WSDLConstants;
@@ -111,9 +111,12 @@ public class WebServiceEntryPointServlet extends AxisServlet {
         serviceGroup.setServiceGroupName(wsdlPortInfo.getServiceName().getLocalPart());
         axisConfig.addServiceGroup(serviceGroup);
 
-        AxisService axisService = new AxisService(entryPointName);
+        WSDL2AxisServiceBuilder builder = new WSDL2AxisServiceBuilder(definition, wsdlPortInfo.getServiceName(), wsdlPortInfo.getPort().getName());
+        builder.setServerSide(true);
+        AxisService axisService = builder.populateService();
+        
+        axisService.setName(entryPointName);
         axisService.setParent(serviceGroup);
-//        axisService.setWSDLDefinition(definition);
         axisService.setServiceDescription("Tuscany configured service EntryPoint name '" + entryPointName + '\'');
 
         TypeHelper typeHelper = wsBinding.getTypeHelper();
@@ -131,14 +134,13 @@ public class WebServiceEntryPointServlet extends AxisServlet {
             QName responseTypeQN = omd.getOutputPart(0).getElementName();
 
             Method operationMethod = getMethod(serviceInterface, operationName);
-            DataBinding dataBinding = new SDODataBinding(typeHelper, responseTypeQN);
+            DataBinding dataBinding = new SDODataBinding(typeHelper, responseTypeQN, omd.isDocLitWrapped());
             WebServiceEntryPointInOutSyncMessageReceiver msgrec = new WebServiceEntryPointInOutSyncMessageReceiver(entryPointProxy, operationMethod,
                     dataBinding);
 
-            AxisOperation axisOp = new InOutAxisOperation(operationQN);
+            AxisOperation axisOp = axisService.getOperation(operationQN);
             axisOp.setMessageExchangePattern(WSDLConstants.MEP_URI_IN_OUT);
             axisOp.setMessageReceiver(msgrec);
-            axisService.addOperation(axisOp);
         }
 
         axisConfig.addService(axisService);

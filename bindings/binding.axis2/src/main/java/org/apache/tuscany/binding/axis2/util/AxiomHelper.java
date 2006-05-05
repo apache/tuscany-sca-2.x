@@ -32,15 +32,16 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMXMLParserWrapper;
 import org.apache.axiom.om.impl.llom.factory.OMXMLBuilderFactory;
 import org.apache.tuscany.core.wire.InvocationRuntimeException;
-import org.apache.tuscany.sdo.helper.DataFactoryImpl;
-import org.apache.tuscany.sdo.helper.XMLHelperImpl;
-import org.apache.tuscany.sdo.helper.XSDHelperImpl;
+import org.apache.tuscany.sdo.util.SDOUtil;
 import org.osoa.sca.ServiceRuntimeException;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;
+import commonj.sdo.Type;
+import commonj.sdo.helper.DataFactory;
 import commonj.sdo.helper.TypeHelper;
 import commonj.sdo.helper.XMLDocument;
+import commonj.sdo.helper.XMLHelper;
 import commonj.sdo.helper.XSDHelper;
 
 /**
@@ -59,26 +60,38 @@ public final class AxiomHelper {
      * 
      * @param om
      *            the OMElement
+     * @param isWrapped
+     * 
      * @return the array of deserialized Java objects
      */
-    public static Object[] toObjects(TypeHelper typeHelper, OMElement om) {
+    public static Object[] toObjects(TypeHelper typeHelper, OMElement om, boolean isWrapped) {
         DataObject dataObject = toDataObject(typeHelper, om);
-        return toObjects(dataObject);
+        return toObjects(dataObject, isWrapped);
     }
 
     /**
      * Convert a typed DataObject to Java objects
      * 
      * @param dataObject
+     * @param isWrapped
      * @return the array of Objects from the DataObject
      */
-    public static Object[] toObjects(DataObject dataObject) {
-        List ips = dataObject.getInstanceProperties();
-        Object[] os = new Object[ips.size()];
-        for (int i = 0; i < ips.size(); i++) {
-            os[i] = dataObject.get((Property) ips.get(i));
+    public static Object[] toObjects(DataObject dataObject, boolean isWrapped) {
+        if (isWrapped) {
+            List ips = dataObject.getInstanceProperties();
+            Object[] os = new Object[ips.size()];
+            for (int i = 0; i < ips.size(); i++) {
+                os[i] = dataObject.get((Property) ips.get(i));
+            }
+            return os;
+        } else {
+            Object object = dataObject;
+            Type type = dataObject.getType();
+            if (type.isSequenced()) {
+                object = dataObject.getSequence().getValue(0);
+            }
+            return new Object[] { object };
         }
-        return os;
     }
 
     /**
@@ -89,9 +102,9 @@ public final class AxiomHelper {
      * @param typeName
      * @return an AXIOM OMElement
      */
-    public static OMElement toOMElement(TypeHelper typeHelper, Object[] os, QName typeQN) {
-        DataObject dataObject = toDataObject(typeHelper, os, typeQN);
-        return toOMElement(typeHelper, dataObject, typeQN);
+    public static OMElement toOMElement(TypeHelper typeHelper, Object[] os, QName elementQName, boolean isWrapped) {
+        DataObject dataObject = toDataObject(typeHelper, os, elementQName, isWrapped);
+        return toOMElement(typeHelper, dataObject, elementQName);
     }
 
     /**
@@ -104,11 +117,12 @@ public final class AxiomHelper {
      * @throws XMLStreamException
      * @throws IOException
      */
-    public static OMElement toOMElement(TypeHelper typeHelper, DataObject dataObject, QName typeQN) {
+    public static OMElement toOMElement(TypeHelper typeHelper, DataObject dataObject, QName elementQName) {
         try {
 
-            ByteArrayOutputStream pos = new java.io.ByteArrayOutputStream();
-            new XMLHelperImpl(typeHelper).save(dataObject, typeQN.getNamespaceURI(), typeQN.getLocalPart(), pos);
+            ByteArrayOutputStream pos = new ByteArrayOutputStream();
+            XMLHelper xmlHelper = SDOUtil.createXMLHelper(typeHelper);
+            xmlHelper.save(dataObject, elementQName.getNamespaceURI(), elementQName.getLocalPart(), pos);
             pos.close();
 
             XMLStreamReader parser;
@@ -142,7 +156,7 @@ public final class AxiomHelper {
     public static DataObject toDataObject(TypeHelper typeHelper, OMElement omElement) {
         try {
 
-            ByteArrayOutputStream pos = new java.io.ByteArrayOutputStream();
+            ByteArrayOutputStream pos = new ByteArrayOutputStream();
 
             ClassLoader ccl = Thread.currentThread().getContextClassLoader();
             try {
@@ -155,7 +169,8 @@ public final class AxiomHelper {
             pos.flush();
             pos.close();
 
-            XMLDocument document = new XMLHelperImpl(typeHelper).load(new ByteArrayInputStream(pos.toByteArray()));
+            XMLHelper xmlHelper = SDOUtil.createXMLHelper(typeHelper);
+            XMLDocument document = xmlHelper.load(new ByteArrayInputStream(pos.toByteArray()));
 
             return document.getRootObject();
 
@@ -174,18 +189,30 @@ public final class AxiomHelper {
      * @param os
      * @return the DataObject
      */
-    public static DataObject toDataObject(TypeHelper typeHelper, Object[] os, QName typeQN) {
-        XSDHelper xsdHelper = new XSDHelperImpl(typeHelper);
-        Property property = xsdHelper.getGlobalProperty(typeQN.getNamespaceURI(), typeQN.getLocalPart(), true);
-        if(null == property){
-            throw new InvocationRuntimeException("Type '" + typeQN.toString() + "' not found in registered SDO types." );
+    public static DataObject toDataObject(TypeHelper typeHelper, Object[] os, QName elementQName, boolean isWrapped) {
+        XSDHelper xsdHelper = SDOUtil.createXSDHelper(typeHelper);
+
+        Property property = xsdHelper.getGlobalProperty(elementQName.getNamespaceURI(), elementQName.getLocalPart(), true);
+        if (null == property) {
+            throw new InvocationRuntimeException("Type '" + elementQName.toString() + "' not found in registered SDO types.");
         }
-        DataObject dataObject = new DataFactoryImpl(typeHelper).create(property.getType());
-        List ips = dataObject.getInstanceProperties();
-        for (int i = 0; i < ips.size(); i++) {
-            dataObject.set(i, os[i]);
+        if (isWrapped) {
+            DataFactory dataFactory = SDOUtil.createDataFactory(typeHelper);
+            DataObject dataObject = dataFactory.create(property.getType());
+            List ips = dataObject.getInstanceProperties();
+            for (int i = 0; i < ips.size(); i++) {
+                dataObject.set(i, os[i]);
+            }
+            return dataObject;
+        } else {
+            Object value = os[0];
+            Type type = property.getType();
+            if (!type.isDataType()) {
+                return (DataObject) value;
+            } else {
+                return SDOUtil.createDataTypeWrapper(type, value);
+            }
         }
-        return dataObject;
     }
 
 }
