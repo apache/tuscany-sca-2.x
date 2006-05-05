@@ -18,10 +18,6 @@ package org.apache.tuscany.samples.helloworld;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.core.client.TuscanyRuntime;
-import org.osoa.sca.CurrentModuleContext;
-import org.osoa.sca.ModuleContext;
-
 /**
  * 
  */
