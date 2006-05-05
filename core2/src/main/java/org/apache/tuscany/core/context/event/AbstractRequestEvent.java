@@ -20,21 +20,13 @@ package org.apache.tuscany.core.context.event;
  */
 public abstract class AbstractRequestEvent extends AbstractEvent implements RequestEvent {
 
-    private Object id;
-
     /**
      * Creates a new event
      * @param source the source of the event
-     * @param id the id of the request associated with the event
      */
-     public AbstractRequestEvent(Object source, Object id) {
+     public AbstractRequestEvent(Object source) {
          super(source);
-         assert (id !=null): "Request id was null";
-         this.id = id;
      }
 
-    public Object getId(){
-        return id;
-    }
 
 }

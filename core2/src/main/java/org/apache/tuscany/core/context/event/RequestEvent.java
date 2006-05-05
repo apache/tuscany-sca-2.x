@@ -19,9 +19,4 @@ package org.apache.tuscany.core.context.event;
  */
 public interface RequestEvent {
 
-    /**
-     * Returns the id of the request the event is associated with
-     */
-      public Object getId();
-
 }

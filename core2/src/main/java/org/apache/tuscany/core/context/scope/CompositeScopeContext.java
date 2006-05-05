@@ -57,6 +57,7 @@ public class CompositeScopeContext extends AbstractLifecycle implements ScopeCon
     }
 
     public void stop() throws ScopeRuntimeException {
+        lifecycleState = STOPPED;
     }
 
     public void onEvent(Event event) {

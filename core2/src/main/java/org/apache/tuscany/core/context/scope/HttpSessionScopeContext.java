@@ -33,7 +33,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
     }
 
     public Scope getScope() {
-        return Scope.REQUEST;
+        return Scope.SESSION;
     }
 
     public void onEvent(Event event) {
@@ -60,6 +60,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
         if (lifecycleState != UNINITIALIZED) {
             throw new IllegalStateException("Scope must be in UNINITIALIZED state [" + lifecycleState + "]");
         }
+        lifecycleState = RUNNING;
     }
 
     public synchronized void stop() {
@@ -75,10 +76,11 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
 
     public InstanceContext getInstanceContext(AtomicContext context) throws TargetException {
         Map<Object, InstanceContext> contextMap = contexts.get(context);
-        InstanceContext ctx = contextMap.get(workContext.getIdentifier(HTTP_IDENTIFIER));
+        Object key = workContext.getIdentifier(HTTP_IDENTIFIER);
+        InstanceContext ctx = contextMap.get(key);
         if (ctx == null) {
             ctx = context.createInstance();
-            contextMap.put(context, ctx);
+            contextMap.put(key, ctx);
         }
         return ctx;
     }
@@ -86,6 +88,9 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
     private void shutdownInstances(Object key) {
         List<InstanceContext> destroyQueue = destroyQueues.get(key);
         if (destroyQueue != null) {
+            for (Map<Object, InstanceContext> map : contexts.values()) {
+                map.remove(key);
+            }
             for (InstanceContext ctx : destroyQueue) {
                 ctx.stop();
             }

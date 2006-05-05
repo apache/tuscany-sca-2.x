@@ -23,10 +23,9 @@ public class RequestStart extends AbstractRequestEvent {
     /**
      * Creates a new event
      * @param source the source of the event
-     * @param id the id of the request being started
      */
-     public RequestStart(Object source, Object id) {
-         super(source,id);
+     public RequestStart(Object source) {
+         super(source);
      }
 
 }

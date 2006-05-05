@@ -22,7 +22,7 @@ import org.apache.tuscany.spi.event.Event;
 public class RequestScopeContext extends AbstractScopeContext<AtomicContext> {
 
     private final Map<AtomicContext, Map<Thread, InstanceContext>> contexts;
-    private final Map<Thread,List<InstanceContext>> destroyQueues;
+    private final Map<Thread, List<InstanceContext>> destroyQueues;
 
     public RequestScopeContext(WorkContext workContext) {
         super("Request Scope", workContext);
@@ -38,14 +38,14 @@ public class RequestScopeContext extends AbstractScopeContext<AtomicContext> {
         checkInit();
         if (event instanceof RequestEnd) {
             checkInit();
-            shutdownInstances();
+            shutdownInstances(Thread.currentThread());
         } else if (event instanceof InstanceCreated) {
             checkInit();
             InstanceContext context = ((InstanceCreated) event).getContext();
             List<InstanceContext> destroyQueue = destroyQueues.get(Thread.currentThread());
-            if (destroyQueue == null){
+            if (destroyQueue == null) {
                 destroyQueue = new ArrayList<InstanceContext>();
-                destroyQueues.put(Thread.currentThread(),destroyQueue);
+                destroyQueues.put(Thread.currentThread(), destroyQueue);
             }
             synchronized (destroyQueue) {
                 destroyQueue.add(context);
@@ -57,6 +57,7 @@ public class RequestScopeContext extends AbstractScopeContext<AtomicContext> {
         if (lifecycleState != UNINITIALIZED) {
             throw new IllegalStateException("Scope must be in UNINITIALIZED state [" + lifecycleState + "]");
         }
+        lifecycleState = RUNNING;
     }
 
     public synchronized void stop() {
@@ -79,11 +80,17 @@ public class RequestScopeContext extends AbstractScopeContext<AtomicContext> {
         return ctx;
     }
 
-    private void shutdownInstances() {
-        List<InstanceContext> destroyQueue = destroyQueues.get(Thread.currentThread());
-        synchronized (destroyQueue) {
-            for (InstanceContext ctx : destroyQueue) {
-                ctx.stop();
+    private void shutdownInstances(Thread key) {
+        List<InstanceContext> destroyQueue = destroyQueues.remove(key);
+        if (destroyQueue != null && destroyQueue.size() > 0) {
+            synchronized (destroyQueue) {
+                Thread thread = Thread.currentThread();
+                for (Map<Thread, InstanceContext> map : contexts.values()) {
+                    map.remove(thread);
+                }
+                for (InstanceContext ctx : destroyQueue) {
+                    ctx.stop();
+                }
             }
         }
     }

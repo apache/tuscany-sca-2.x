@@ -23,10 +23,9 @@ public class RequestEnd extends AbstractRequestEvent{
     /**
      * Creates a new event
      * @param source the source of the event
-     * @param id the id of the completed/ended request
      */
-     public RequestEnd(Object source, Object id) {
-         super(source,id);
+     public RequestEnd(Object source) {
+         super(source);
      }
 
 
