@@ -118,7 +118,12 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
 
         return definition;
     }
+    
+    public List<Definition> getDefinitionsForNamespace(String namespace) {
+        return definitionsByNamespace.get(namespace);
+    }
 
+    
     public PortType getPortType(QName name) {
         String namespace = name.getNamespaceURI();
         List<Definition> definitions = definitionsByNamespace.get(namespace);

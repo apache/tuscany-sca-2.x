@@ -17,6 +17,7 @@
 package org.apache.tuscany.core.loader;
 
 import java.net.URL;
+import java.util.List;
 import java.io.IOException;
 import javax.wsdl.Definition;
 import javax.wsdl.PortType;
@@ -68,6 +69,16 @@ public interface WSDLDefinitionRegistry {
      * @return the Service for the supplied name, or null if none has been defined
      */
     Service getService(QName name);
+    
+    
+    /**
+     * Returns a list of definitions that have been loaded for the given namespace, or null if
+     * no WSDL documents have been loaded for the given namespace
+     * 
+     * @param namespace the namespace to lookup
+     * @return The list of definitions that have been loaded for the given namespace, or null
+     */
+    List<Definition> getDefinitionsForNamespace(String namespace);
 
 
     /**
