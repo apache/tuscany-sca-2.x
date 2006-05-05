@@ -13,6 +13,15 @@
  */
 package org.apache.tuscany.container.java.config;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import commonj.sdo.DataObject;
 import org.apache.tuscany.container.java.context.JavaAtomicContext;
 import org.apache.tuscany.core.builder.BuilderConfigException;
@@ -35,17 +44,9 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.TargetWireFactory;
-import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.databinding.sdo.SDOObjectFactory;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.apache.tuscany.model.assembly.Scope;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * A ContextFactory that handles POJO component implementation types
@@ -209,8 +210,8 @@ public class JavaContextFactory implements ContextFactory<AtomicContext>, Contex
     }
 
     /**
-     * Creates proxy factories that represent target(s) of a reference and an <code>Injector</code> responsible for injecting them
-     * into the reference
+     * Creates proxy factories that represent target(s) of a reference and an <code>Injector</code>
+     * responsible for injecting them into the reference
      */
     private Injector createReferenceInjector(String refName, List<SourceWireFactory> wireFactories, boolean multiplicity) {
         assert wireFactories.size() > 0;
@@ -271,9 +272,33 @@ public class JavaContextFactory implements ContextFactory<AtomicContext>, Contex
         } else {
             field = JavaIntrospectionHelper.findClosestMatchingField(refName, refClass, fields);
             if (field == null) {
-                method = JavaIntrospectionHelper.findClosestMatchingMethod(refName, new Class[]{refClass}, methods);
-                if (method == null) {
-                    throw new NoAccessorException(refName);
+                // hack for TUSCANY-300
+                for (Field current : fields) {
+                    Reference annot = current.getAnnotation(Reference.class);
+                    if (annot != null) {
+                        if (refName.equals(annot.name())) {
+                            field = current;
+                            break;
+                        }
+                    }
+                }
+                if (field == null) {
+                    method = JavaIntrospectionHelper.findClosestMatchingMethod(refName, new Class[]{refClass}, methods);
+                    if (method == null) {
+                        // hack for TUSCANY-300
+                        for (Method current : methods) {
+                            Reference annot = current.getAnnotation(Reference.class);
+                            if (annot != null) {
+                                if (refName.equals(annot.name())) {
+                                    method = current;
+                                    break;
+                                }
+                            }
+                        }
+                        if (method == null) {
+                            throw new NoAccessorException(refName);
+                        }
+                    }
                 }
             }
             Injector injector;

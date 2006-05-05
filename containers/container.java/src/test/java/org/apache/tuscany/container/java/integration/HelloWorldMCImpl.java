@@ -29,11 +29,11 @@ public class HelloWorldMCImpl implements HelloWorldService {
     @Property
     public String locale;
 
-    @Reference
-    public GreetingProvider greetingProvider;
+    @Reference(name="greetingProvider")
+    public GreetingProvider greetingProvider2;
 
     public String getGreetings(String name) {
-        return greetingProvider.getGreeting(name, locale);
+        return greetingProvider2.getGreeting(name, locale);
     }
 
 }
