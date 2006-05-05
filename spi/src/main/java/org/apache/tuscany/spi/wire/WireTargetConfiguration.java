@@ -14,8 +14,6 @@ public class WireTargetConfiguration {
 
     protected Map<Method, TargetInvocationConfiguration> configurations;
 
-    protected ClassLoader proxyClassLoader;
-
     protected QualifiedName targetName;
 
 
@@ -24,17 +22,10 @@ public class WireTargetConfiguration {
      *
      * @param targetName        the qualified name of the target service specified by the wire
      * @param invocationConfigs a collection of target service operation-to-invocation chain mappings
-     * @param proxyClassLoader  the classloader to use when creating a proxy
      */
-    public WireTargetConfiguration(QualifiedName targetName, Map<Method, TargetInvocationConfiguration> invocationConfigs,
-                                   ClassLoader proxyClassLoader) {
-        this.targetName = targetName;
-        if (proxyClassLoader == null) {
-            this.proxyClassLoader = Thread.currentThread().getContextClassLoader();
-        } else {
-            this.proxyClassLoader = proxyClassLoader;
-        }
+    public WireTargetConfiguration(QualifiedName targetName, Map<Method, TargetInvocationConfiguration> invocationConfigs) {
         assert (invocationConfigs != null) : "No wire configuration map specified";
+        this.targetName = targetName;
         configurations = invocationConfigs;
 
     }
@@ -47,21 +38,12 @@ public class WireTargetConfiguration {
     }
 
     /**
-     * Returns the classloader used for creating proxies
-     */
-    public ClassLoader getProxyClassLoader() {
-        return proxyClassLoader;
-    }
-
-    /**
      * Returns the invocation configuration for each operation on a service specified by a reference or a
      * target service.
      */
     public Map<Method, TargetInvocationConfiguration> getInvocationConfigurations() {
         return configurations;
     }
-
-
 
 
 }

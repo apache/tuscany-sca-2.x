@@ -16,7 +16,7 @@ package org.apache.tuscany.spi.wire;
 import java.lang.reflect.InvocationHandler;
 
 /**
- * Implementations provide a runtime system service that creates {@link org.apache.tuscany.spi.wire.WireFactory}s
+ * Implementations provide a runtime system service that creates wire factories
  * 
  * @version $Rev$ $Date$
  */

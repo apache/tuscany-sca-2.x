@@ -27,7 +27,6 @@ public class WireSourceConfiguration {
 
     private String referenceName;
     protected Map<Method, SourceInvocationConfiguration> configurations;
-    protected ClassLoader proxyClassLoader;
     protected QualifiedName targetName;
 
 
@@ -37,16 +36,10 @@ public class WireSourceConfiguration {
      * @param referenceName     the name of the reference the wire is associated with
      * @param targetName        the qualified name of the target service specified by the wire
      * @param invocationConfigs a collection of service operation-to-invocation chain mappings
-     * @param proxyClassLoader  the classloader to use when creating a proxy
      */
     public WireSourceConfiguration(String referenceName, QualifiedName targetName,
-                                   Map<Method, SourceInvocationConfiguration> invocationConfigs, ClassLoader proxyClassLoader) {
+                                   Map<Method, SourceInvocationConfiguration> invocationConfigs) {
         this.targetName = targetName;
-        if (proxyClassLoader == null) {
-            this.proxyClassLoader = Thread.currentThread().getContextClassLoader();
-        } else {
-            this.proxyClassLoader = proxyClassLoader;
-        }
         this.referenceName = referenceName;
         this.configurations = invocationConfigs;
     }
@@ -56,11 +49,9 @@ public class WireSourceConfiguration {
      *
      * @param targetName        the qualified name of the target service specified by the wire
      * @param invocationConfigs a collection of service operation-to-invocation chain mappings
-     * @param proxyClassLoader  the classloader to use when creating a proxy
      */
-    public WireSourceConfiguration(QualifiedName targetName,
-                                   Map<Method, SourceInvocationConfiguration> invocationConfigs, ClassLoader proxyClassLoader) {
-        this(null, targetName, invocationConfigs, proxyClassLoader);
+    public WireSourceConfiguration(QualifiedName targetName, Map<Method, SourceInvocationConfiguration> invocationConfigs) {
+        this(null, targetName, invocationConfigs);
     }
 
     /**
@@ -68,13 +59,6 @@ public class WireSourceConfiguration {
      */
     public QualifiedName getTargetName() {
         return targetName;
-    }
-
-    /**
-     * Returns the classloader used for creating proxies
-     */
-    public ClassLoader getProxyClassLoader() {
-        return proxyClassLoader;
     }
 
     /**

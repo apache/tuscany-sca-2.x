@@ -28,7 +28,7 @@ import java.util.List;
  * references to the target.
  * <p/>
  * <code>InvocationChain</code>s are managed by {@link WireSourceConfiguration}s and {@link
- * WireTargetConfiguration}s, which are used by {@link org.apache.tuscany.spi.wire.WireFactory}s to
+ * WireTargetConfiguration}s, which are used by wire factories to
  * buildSource wires and proxies.
  * <p/>
  * Invocation configurations must contain at least one interceptor and may have 0 to N handlers. Handlers
@@ -78,7 +78,6 @@ import java.util.List;
  *
  * @version $Rev: 396284 $ $Date: 2006-04-23 08:27:42 -0700 (Sun, 23 Apr 2006) $
  * @see org.apache.tuscany.spi.builder.WireBuilder
- * @see WireFactory
  * @see TargetInvoker
  * @see MessageDispatcher
  */

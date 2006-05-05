@@ -30,7 +30,7 @@ import java.util.Map;
  *
  * @version $Rev: 394431 $ $Date: 2006-04-15 21:27:44 -0700 (Sat, 15 Apr 2006) $
  */
-public class JDKSourceWireFactory implements SourceWireFactory {
+public class JDKSourceWireFactory<T> implements SourceWireFactory<T> {
 
     private static final int UNINITIALIZED = 0;
 
@@ -57,12 +57,13 @@ public class JDKSourceWireFactory implements SourceWireFactory {
         state = INITIALIZED;
     }
 
-    public Object createProxy() {
+    @SuppressWarnings("unchecked")
+    public T createProxy() {
         if (state != INITIALIZED) {
             throw new IllegalStateException("Proxy factory not INITIALIZED [" + state + "]");
         }
         InvocationHandler handler = new JDKInvocationHandler(methodToInvocationConfig);
-        return Proxy.newProxyInstance(configuration.getProxyClassLoader(), businessInterfaceArray, handler);
+        return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaceArray, handler);
     }
 
     public WireSourceConfiguration getConfiguration() {
@@ -77,8 +78,8 @@ public class JDKSourceWireFactory implements SourceWireFactory {
         businessInterfaceArray = new Class[]{interfaze};
     }
 
-    public Class getBusinessInterface() {
-        return businessInterfaceArray[0];
+    public T getBusinessInterface() {
+        return (T)businessInterfaceArray[0];
     }
 
     public void addInterface(Class claz) {

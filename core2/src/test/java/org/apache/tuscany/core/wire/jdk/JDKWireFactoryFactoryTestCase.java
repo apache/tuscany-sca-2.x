@@ -50,13 +50,12 @@ public class JDKWireFactoryFactoryTestCase extends TestCase {
         source.build();
         Map<Method, SourceInvocationConfiguration> configs = new MethodHashMap<SourceInvocationConfiguration>();
         configs.put(hello, source);
-        WireSourceConfiguration config = new WireSourceConfiguration("foo", new QualifiedName("foo"), configs, Thread.currentThread()
-                .getContextClassLoader());
-        JDKSourceWireFactory factory = new JDKSourceWireFactory();
+        WireSourceConfiguration config = new WireSourceConfiguration("foo", new QualifiedName("foo"), configs);
+        JDKSourceWireFactory<SimpleTarget> factory = new JDKSourceWireFactory<SimpleTarget>();
         factory.setConfiguration(config);
         factory.setBusinessInterface(SimpleTarget.class);
         factory.initialize();
-        SimpleTarget instance = (SimpleTarget) factory.createProxy();
+        SimpleTarget instance = factory.createProxy();
         assertEquals("foo", instance.hello("foo"));
     }
 
@@ -69,13 +68,12 @@ public class JDKWireFactoryFactoryTestCase extends TestCase {
         source.build();
         Map<Method, TargetInvocationConfiguration> configs = new MethodHashMap<TargetInvocationConfiguration>();
         configs.put(hello, source);
-        WireTargetConfiguration config = new WireTargetConfiguration(new QualifiedName("foo"), configs, Thread.currentThread()
-                .getContextClassLoader());
-        JDKTargetWireFactory factory = new JDKTargetWireFactory();
+        WireTargetConfiguration config = new WireTargetConfiguration(new QualifiedName("foo"), configs);
+        JDKTargetWireFactory<SimpleTarget> factory = new JDKTargetWireFactory<SimpleTarget>();
         factory.setConfiguration(config);
         factory.setBusinessInterface(SimpleTarget.class);
         factory.initialize();
-        SimpleTarget instance = (SimpleTarget) factory.createProxy();
+        SimpleTarget instance = factory.createProxy();
         assertEquals("foo", instance.hello("foo"));
     }
 }
