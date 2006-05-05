@@ -150,9 +150,12 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
     public void start() {
         synchronized (lock) {
             try {
-                if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
-                    throw new IllegalStateException("Context not in UNINITIALIZED state");
+                if (lifecycleState == STOPPED){
+                    throw new IllegalStateException("Context cannot be restarted - create a new one");
+                }else if (lifecycleState != UNINITIALIZED) {
+                        throw new IllegalStateException("Context not in UNINITIALIZED state");
                 }
+
                 lifecycleState = INITIALIZING;
                 initializeScopes();
 
@@ -219,7 +222,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
             return;
         }
         // need to block a start until reset is complete
-        initializeLatch = new CountDownLatch(2);
+        initializeLatch = new CountDownLatch(1); //xcv
         lifecycleState = STOPPING;
         initialized = false;
         if (scopeContexts != null) {
@@ -234,6 +237,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         // allow initialized to be called
         initializeLatch.countDown();
         lifecycleState = STOPPED;
+
     }
 
     public void setModule(Module module) {
@@ -540,6 +544,9 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
      * Blocks until the module context has been initialized
      */
     protected void checkInit() {
+        if (lifecycleState == STOPPED){
+            throw new IllegalStateException("Context cannot be restarted - create a new one");
+        }        
         if (!initialized) {
             try {
                 /* block until the module has initialized */

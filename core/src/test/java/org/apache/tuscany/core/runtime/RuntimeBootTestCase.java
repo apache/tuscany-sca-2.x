@@ -56,9 +56,6 @@ public class RuntimeBootTestCase extends TestCase {
         runtime.stop();
 
         assertEquals(Lifecycle.STOPPED, runtime.getLifecycleState());
-
-        runtime.start();
-        assertEquals(Lifecycle.RUNNING, runtime.getLifecycleState());
     }
 
     public void testIncrementalBoot() throws Exception{
