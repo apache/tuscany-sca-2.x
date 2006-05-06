@@ -19,7 +19,9 @@ package org.apache.tuscany.tomcat;
 import javax.servlet.Servlet;
 
 import org.apache.catalina.Container;
+import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
+import org.apache.catalina.Wrapper;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.util.StringManager;
@@ -137,6 +139,18 @@ public class TuscanyHost extends StandardHost implements ServletHost {
     }
 
     public void registerMapping(String mapping, Servlet servlet) {
+        // strip leading "/" as Tomcat uses host-relative context names
+        if (mapping.charAt(0) == '/') {
+            mapping = mapping.substring(1);
+        }
+        Context ctx = map(mapping);
+        if (ctx == null) {
+            throw new UnsupportedOperationException("Cannot find context for mapping " + mapping);
+        }
+        Wrapper wrapper = new TuscanyWrapper(servlet);
+        ctx.addChild(wrapper);
+        wrapper.addMapping(mapping);
+        ctx.getMapper().addWrapper(mapping, wrapper, false);
     }
 
     public void unregisterMapping(String mapping) {

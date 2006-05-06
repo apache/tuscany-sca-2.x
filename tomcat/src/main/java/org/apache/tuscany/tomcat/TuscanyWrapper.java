@@ -17,33 +17,22 @@
 package org.apache.tuscany.tomcat;
 
 import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 
-import org.osoa.sca.annotations.Scope;
-
-import org.apache.tuscany.core.webapp.ServletHost;
+import org.apache.catalina.core.StandardWrapper;
 
 /**
- * SCA Component that acts as a proxy for the Tomcat Host container that created the runtime.
- *
  * @version $Rev$ $Date$
  */
-@Scope("MODULE")
-public class TomcatHost implements ServletHost {
-    private TuscanyHost host;
+public class TuscanyWrapper extends StandardWrapper {
+    private final Servlet servlet;
 
-    public void setHost(TuscanyHost host) {
-        this.host = host;
+    public TuscanyWrapper(Servlet servlet) {
+        super();
+        this.servlet = servlet;
     }
 
-    public TuscanyHost getHost() {
-        return host;
-    }
-
-    public void registerMapping(String mapping, Servlet servlet) {
-        host.registerMapping(mapping, servlet);
-    }
-
-    public void unregisterMapping(String mapping) {
-        host.unregisterMapping(mapping);
+    public synchronized Servlet loadServlet() throws ServletException {
+        return servlet;
     }
 }

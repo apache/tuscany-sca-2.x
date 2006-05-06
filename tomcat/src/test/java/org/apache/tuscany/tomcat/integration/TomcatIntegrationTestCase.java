@@ -22,11 +22,20 @@ import org.apache.catalina.Wrapper;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardWrapper;
 import org.apache.catalina.startup.ContextConfig;
+import org.apache.tomcat.util.buf.MessageBytes;
+import org.apache.tomcat.util.http.mapper.MappingData;
+
 import org.apache.tuscany.tomcat.TuscanyHost;
 import org.apache.tuscany.tomcat.TuscanyValve;
 import org.apache.tuscany.tomcat.ContainerLoader;
 
 import java.io.File;
+import java.io.IOException;
+import javax.servlet.Servlet;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 /**
  * @version $Rev$ $Date$
@@ -34,15 +43,9 @@ import java.io.File;
 public class TomcatIntegrationTestCase extends AbstractTomcatTest {
     protected File app1;
     private Loader loader;
+    private StandardContext ctx;
 
     public void testComponentIntegration() throws Exception {
-        // create the webapp Context
-        StandardContext ctx = new StandardContext();
-        ctx.addLifecycleListener(new ContextConfig());
-        ctx.setName("testContext");
-        ctx.setDocBase(app1.getAbsolutePath());
-        ctx.setLoader(loader);
-
         // define our test servlet
         StandardWrapper wrapper = new StandardWrapper();
         wrapper.setServletClass(TestServlet.class.getName());
@@ -66,13 +69,6 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
     }
 
     public void testWebServiceIntegration() throws Exception {
-        // create the webapp Context
-        StandardContext ctx = new StandardContext();
-        ctx.addLifecycleListener(new ContextConfig());
-        ctx.setName("testContext");
-        ctx.setDocBase(app1.getAbsolutePath());
-        ctx.setLoader(loader);
-
         host.addChild(ctx);
 
         Wrapper wrapper = (Wrapper) ctx.findChild("TuscanyAxis2EntryPointServlet");
@@ -103,15 +99,6 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
      * Test ?WSDL works
      */
     public void testWebServiceIntegrationWSDL() throws Exception {
-//        // create the webapp Context
-//        StandardContext ctx = new StandardContext();
-//        ctx.addLifecycleListener(new ContextConfig());
-//        ctx.setName("testContext");
-//        ctx.setDocBase(app1.getAbsolutePath());
-//        ctx.setLoader(loader);
-//
-//        host.addChild(ctx);
-//
 //        Wrapper wrapper = (Wrapper) ctx.findChild("TuscanyAxis2EntryPointServlet");
 //        assertNotNull("No webservice wrapper present", wrapper);
 //        request.setContext(ctx);
@@ -130,6 +117,19 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
 //        host.removeChild(ctx);
     }
 
+    public void testServletMapping() throws Exception {
+        host.addChild(ctx);
+
+        ((TuscanyHost)host).registerMapping("testContext/magicServlet", new MockServlet());
+        assertSame(ctx, host.map("testContext/magicServlet"));
+        MessageBytes uri = MessageBytes.newInstance();
+        uri.setString("testContext/magicServlet");
+        MappingData mappingData = new MappingData();
+        ctx.getMapper().map(uri, mappingData);
+        assertEquals("/magicServlet", mappingData.requestPath.getString());
+        host.removeChild(ctx);
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         app1 = new File(getClass().getResource("/app1").toURI());
@@ -140,6 +140,13 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
         TestClassLoader cl = new TestClassLoader(classes, new File(app1, "WEB-INF/classes").toURL(), getClass().getClassLoader());
         cl.start();
         loader = new ContainerLoader(cl);
+
+        // create the webapp Context
+        ctx = new StandardContext();
+        ctx.addLifecycleListener(new ContextConfig());
+        ctx.setName("testContext");
+        ctx.setDocBase(app1.getAbsolutePath());
+        ctx.setLoader(loader);
     }
 
     protected void tearDown() throws Exception {
@@ -147,4 +154,24 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
         super.tearDown();
     }
 
+    public static class MockServlet implements Servlet {
+        public void init(ServletConfig servletConfig) throws ServletException {
+            throw new UnsupportedOperationException();
+        }
+
+        public ServletConfig getServletConfig() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+        }
+
+        public String getServletInfo() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void destroy() {
+            throw new UnsupportedOperationException();
+        }
+    }
 }

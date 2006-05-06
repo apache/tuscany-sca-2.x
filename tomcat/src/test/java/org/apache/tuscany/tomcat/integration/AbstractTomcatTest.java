@@ -40,6 +40,8 @@ import org.apache.catalina.connector.Response;
 import org.apache.catalina.core.ApplicationFilterFactory;
 import org.apache.catalina.core.StandardEngine;
 
+import org.apache.tuscany.tomcat.TuscanyHost;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -173,27 +175,27 @@ public class AbstractTomcatTest extends TestCase {
 
         @Override
         public String getRemoteHost() {
-           
+
             return "locahost";
         }
 
         @Override
         public int getRemotePort() {
-           
+
             return 1080;
         }
 
         @Override
         public String getRemoteAddr() {
-          
+
             return "127.0.0.1";
         }
-        
+
         @Override
         public Enumeration getParameterNames() {
             return new Vector().elements();
         }
-        
+
         @Override
         public String getParameter(String param) {
             if ("wsdl".equals(param)) {
