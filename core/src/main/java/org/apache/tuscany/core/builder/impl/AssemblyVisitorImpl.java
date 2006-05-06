@@ -16,6 +16,7 @@ package org.apache.tuscany.core.builder.impl;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.AssemblyVisitor;
+import org.apache.tuscany.model.assembly.ContextFactoryHolder;
 
 import java.util.List;
 
@@ -48,6 +49,11 @@ public class AssemblyVisitorImpl implements AssemblyVisitor {
      * Callback when walking the graph
      */
     public boolean visit(AssemblyObject modelObject) {
+        if (modelObject instanceof ContextFactoryHolder){
+            if (((ContextFactoryHolder)modelObject).getContextFactory() != null){
+                return true;     // HACK FIX for TUSCANY 249
+            }
+        }
         for (ContextFactoryBuilder builder : builders) {
             builder.build(modelObject);
         }
