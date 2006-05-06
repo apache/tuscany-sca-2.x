@@ -139,14 +139,13 @@ public class TuscanyHost extends StandardHost implements ServletHost {
     }
 
     public void registerMapping(String mapping, Servlet servlet) {
-        // strip leading "/" as Tomcat uses host-relative context names
-        if (mapping.charAt(0) == '/') {
-            mapping = mapping.substring(1);
-        }
         Context ctx = map(mapping);
         if (ctx == null) {
             throw new UnsupportedOperationException("Cannot find context for mapping " + mapping);
         }
+        String contextPath = ctx.getPath();
+        assert mapping.startsWith(contextPath);
+        mapping = mapping.substring(contextPath.length());
         Wrapper wrapper = new TuscanyWrapper(servlet);
         ctx.addChild(wrapper);
         wrapper.addMapping(mapping);
