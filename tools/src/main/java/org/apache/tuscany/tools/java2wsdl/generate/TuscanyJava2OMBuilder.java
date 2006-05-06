@@ -1,3 +1,19 @@
+/**
+ *
+ *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.apache.tuscany.tools.java2wsdl.generate;
 
 import java.io.ByteArrayInputStream;
@@ -18,27 +34,9 @@ import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.om.OMNode;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.ws.commons.schema.XmlSchema;
-import org.apache.ws.commons.schema.XmlSchemaObject;
+import org.apache.ws.java2wsdl.Java2WSDLConstants;
 import org.apache.ws.java2wsdl.utils.TypeTable;
 import org.codehaus.jam.JMethod;
-import org.apache.ws.java2wsdl.Java2WSDLConstants;
-
-/*
-* Copyright 2004,2005 The Apache Software Foundation.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-*/
 
 public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
 
@@ -168,12 +166,11 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
 
     private void writeSchemas(StringWriter writer) {
         Iterator iterator = schemaCollection.iterator();
-        Iterator typeIterator = null;
-        Iterator elementIterator = null;
         XmlSchema xmlSchema = null;
+        //Iterator typeIterator = null;
         while (iterator.hasNext()) {
             xmlSchema = (XmlSchema) iterator.next();
-            typeIterator = xmlSchema.getSchemaTypes().getValues();
+            //typeIterator = xmlSchema.getSchemaTypes().getValues();
             /*while (typeIterator.hasNext()) {
                 xmlSchema.getItems().add((XmlSchemaObject) typeIterator.next());
                 
@@ -396,17 +393,17 @@ public class TuscanyJava2OMBuilder implements Java2WSDLConstants {
     }
     }
 
-    private void addExtensionElement(OMFactory fac, OMElement element, String name, OMNamespace namespace,
-                                     Hashtable attrs) {
-        OMElement soapbinding = fac.createOMElement(name, namespace);
-        element.addChild(soapbinding);
-        Enumeration enumeration = attrs.keys();
-        String attrName = null;
-        while (enumeration.hasMoreElements()) {
-            attrName = (String) enumeration.nextElement();
-            soapbinding.addAttribute(attrName, (String) attrs.get(attrName), null);
-        }
-    }
+//    private void addExtensionElement(OMFactory fac, OMElement element, String name, OMNamespace namespace,
+//                                     Hashtable attrs) {
+//        OMElement soapbinding = fac.createOMElement(name, namespace);
+//        element.addChild(soapbinding);
+//        Enumeration enumeration = attrs.keys();
+//        String attrName = null;
+//        while (enumeration.hasMoreElements()) {
+//            attrName = (String) enumeration.nextElement();
+//            soapbinding.addAttribute(attrName, (String) attrs.get(attrName), null);
+//        }
+//    }
 
     private void addExtensionElement(OMFactory fac, OMElement element, OMNamespace namespace,
                                      String name, String att1Name, String att1Value, String att2Name,

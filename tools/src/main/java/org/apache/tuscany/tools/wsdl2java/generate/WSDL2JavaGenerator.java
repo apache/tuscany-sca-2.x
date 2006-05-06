@@ -30,10 +30,8 @@ import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sdo.SDOTypeVisitor;
 import org.apache.tuscany.sdo.helper.XSDHelperImpl;
 import org.apache.tuscany.sdo.util.DataObjectUtil;
-import org.apache.tuscany.sdo.util.SDOUtil;
 import org.eclipse.emf.codegen.ecore.genmodel.GenClass;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelFactory;
@@ -49,7 +47,6 @@ import org.eclipse.emf.ecore.impl.EPackageRegistryImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.BasicExtendedMetaData;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 
 import commonj.sdo.helper.XSDHelper;

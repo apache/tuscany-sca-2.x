@@ -18,18 +18,18 @@ package org.apache.tuscany.tools.wsdl2java.generate;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.axis2.description.AxisMessage;
+import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.util.FileWriter;
+import org.apache.axis2.wsdl.WSDLConstants;
+import org.apache.axis2.wsdl.codegen.CodeGenConfiguration;
 import org.apache.axis2.wsdl.codegen.emitter.JavaEmitter;
 import org.apache.axis2.wsdl.codegen.writer.InterfaceWriter;
 import org.apache.axis2.wsdl.databinding.TypeMapper;
-import org.apache.wsdl.MessageReference;
-import org.apache.wsdl.WSDLExtensibilityAttribute;
-import org.apache.wsdl.WSDLOperation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -38,13 +38,26 @@ import org.w3c.dom.Element;
  */
 public class JavaInterfaceEmitter extends JavaEmitter {
     
-    private List getParameterElementList(Document doc, MessageReference message, boolean wrapped) {
+    private CodeGenConfiguration codegenConfiguration;
+    private TypeMapper typeMapper;
+
+    public void setCodeGenConfiguration(CodeGenConfiguration configuration) {
+        super.setCodeGenConfiguration(configuration);
+        codegenConfiguration=configuration;
+    }
+    
+    public void setMapper(TypeMapper typeMapper) {
+        super.setMapper(typeMapper);
+        this.typeMapper = typeMapper;
+    }
+    
+    private List getParameterElementList(Document doc, AxisMessage message, boolean wrapped) {
         List parameterElementList = new ArrayList();
         
         if (message != null && message.getElementQName()!=null) {
 
             SDODataBindingTypeMappingEntry typeMappingEntry =
-                (SDODataBindingTypeMappingEntry)this.mapper.getTypeMappingObject(message.getElementQName());
+                (SDODataBindingTypeMappingEntry)this.typeMapper.getTypeMappingObject(message.getElementQName());
             List typeMappings;
             if (wrapped) {
                 typeMappings = (List)typeMappingEntry.getPropertyClassNames();
@@ -59,7 +72,7 @@ public class JavaInterfaceEmitter extends JavaEmitter {
                 
                 String typeMapping = (String)typeMappings.get(i);
     
-                addAttribute(doc, "name", this.mapper.getParameterName(message.getElementQName()), param);
+                addAttribute(doc, "name", this.typeMapper.getParameterName(message.getElementQName()), param);
                 addAttribute(doc, "type", (typeMapping == null)
                         ? ""
                         : typeMapping, param);
@@ -74,13 +87,6 @@ public class JavaInterfaceEmitter extends JavaEmitter {
                 // add this as a body parameter
                 addAttribute(doc, "location", "body", param);
     
-                Iterator iter = message.getExtensibilityAttributes().iterator();
-    
-                while (iter.hasNext()) {
-                    WSDLExtensibilityAttribute att = (WSDLExtensibilityAttribute) iter.next();
-    
-                    addAttribute(doc, att.getKey().getLocalPart(), att.getValue().toString(), param);
-                }
             }
         }
 
@@ -97,9 +103,9 @@ public class JavaInterfaceEmitter extends JavaEmitter {
                 Element param = doc.createElement("param");
                 QName name = (QName) parameters.get(i);
 
-                addAttribute(doc, "name", this.mapper.getParameterName(name), param);
+                addAttribute(doc, "name", this.typeMapper.getParameterName(name), param);
 
-                String typeMapping = this.mapper.getTypeMappingName(name);
+                String typeMapping = this.typeMapper.getTypeMappingName(name);
                 String typeMappingStr = (typeMapping == null)
                         ? ""
                         : typeMapping;
@@ -113,15 +119,15 @@ public class JavaInterfaceEmitter extends JavaEmitter {
         return parameterElementList;
     }
     
-    protected boolean isWrapped(WSDLOperation operation) {
+    protected boolean isWrapped(AxisOperation operation) {
         boolean wrapped = false;
-        
-        if (operation.getInputMessage() != null) {
-            QName qname = operation.getInputMessage().getElementQName();
+
+        if (isInputPresentForMEP(operation.getMessageExchangePattern())) {
+            QName qname = operation.getMessage(WSDLConstants.MESSAGE_LABEL_IN_VALUE).getElementQName();
             if (qname != null && qname.getLocalPart().equals(operation.getName().getLocalPart())) {
                 
                 SDODataBindingTypeMappingEntry typeMappingEntry =
-                            (SDODataBindingTypeMappingEntry)this.mapper.getTypeMappingObject(qname);
+                            (SDODataBindingTypeMappingEntry)this.typeMapper.getTypeMappingObject(qname);
                 if (typeMappingEntry.isAnonymous()) {
                     wrapped = true;
                 }
@@ -131,15 +137,24 @@ public class JavaInterfaceEmitter extends JavaEmitter {
         return wrapped;
     }
 
-    protected Element getInputElement(Document doc, WSDLOperation operation, List headerParameterQNameList) {
-        return getElement(doc, "input", operation.getInputMessage(), isWrapped(operation), headerParameterQNameList);
-    }
-    
-    protected Element getOutputElement(Document doc, WSDLOperation operation, List headerParameterQNameList) {
-        return getElement(doc, "output", operation.getOutputMessage(), isWrapped(operation), headerParameterQNameList);
+    private boolean isInputPresentForMEP(String MEP) {
+        return WSDLConstants.MEP_URI_IN_ONLY.equals(MEP) ||
+                WSDLConstants.MEP_URI_IN_OPTIONAL_OUT.equals(MEP) ||
+                WSDLConstants.MEP_URI_OUT_OPTIONAL_IN.equals(MEP) ||
+                WSDLConstants.MEP_URI_ROBUST_OUT_ONLY.equals(MEP) ||
+                WSDLConstants.MEP_URI_ROBUST_IN_ONLY.equals(MEP) ||
+                WSDLConstants.MEP_URI_IN_OUT.equals(MEP);
     }
 
-    protected Element getElement(Document doc, String elementName, MessageReference message, boolean wrapped, List headerParameterQNameList) {
+    protected Element getInputElement(Document doc, AxisOperation operation, List headerParameterQNameList) {
+        return getElement(doc, "input", operation.getMessage(WSDLConstants.MESSAGE_LABEL_IN_VALUE), isWrapped(operation), headerParameterQNameList);
+    }
+    
+    protected Element getOutputElement(Document doc, AxisOperation operation, List headerParameterQNameList) {
+        return getElement(doc, "output", operation.getMessage(WSDLConstants.MESSAGE_LABEL_OUT_VALUE), isWrapped(operation), headerParameterQNameList);
+    }
+
+    protected Element getElement(Document doc, String elementName, AxisMessage message, boolean wrapped, List headerParameterQNameList) {
         Element element = doc.createElement(elementName);
 
         List parameterElementList = getParameterElementList(doc, message, wrapped);
@@ -155,20 +170,20 @@ public class JavaInterfaceEmitter extends JavaEmitter {
 
         return element;
     }
-
+    
     protected void writeInterface(boolean writeDatabinders) throws Exception {
         Document interfaceModel = createDOMDocumentForInterface(writeDatabinders);
-        if (!configuration.getOutputLocation().exists()) {
-            configuration.getOutputLocation().mkdirs();
+        if (!codegenConfiguration.getOutputLocation().exists()) {
+            codegenConfiguration.getOutputLocation().mkdirs();
         }
-        InterfaceWriter interfaceWriter = new InterfaceWriter(this.configuration
-            .getOutputLocation(), this.configuration.getOutputLanguage());
+        InterfaceWriter interfaceWriter = new InterfaceWriter(this.codegenConfiguration
+            .getOutputLocation(), this.codegenConfiguration.getOutputLanguage());
 
         String packageName = interfaceModel.getDocumentElement().getAttribute("package");
         String className = interfaceModel.getDocumentElement().getAttribute("name");
 
         System.out.println(">>  Generating Java class " + packageName + "." + className);
-        File outputFile = FileWriter.createClassFile(this.configuration.getOutputLocation(),
+        File outputFile = FileWriter.createClassFile(this.codegenConfiguration.getOutputLocation(),
                                                      packageName, className, ".java");
         if (outputFile.exists()) {
             outputFile.delete();
