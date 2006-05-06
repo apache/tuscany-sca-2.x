@@ -30,8 +30,6 @@ public class JavaScriptImplementation extends AtomicImplementationImpl {
 
     private String scriptFile;
 
-    private String style;
-
     private String script;
 
     private ResourceLoader resourceLoader;
@@ -64,14 +62,6 @@ public class JavaScriptImplementation extends AtomicImplementationImpl {
 
     public void setScriptFile(String fn) {
         scriptFile = fn;
-    }
-
-    public String getStyle() {
-        return this.style;
-    }
-
-    public void setStyle(String style) {
-        this.style = style;
     }
 
     public String getScript() {

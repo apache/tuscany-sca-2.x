@@ -75,14 +75,12 @@ public class JavaScriptImplementationLoader implements StAXElementLoader<JavaScr
 
     public JavaScriptImplementation load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         String scriptFile = reader.getAttributeValue(null, "scriptFile");
-        String style = reader.getAttributeValue(null, "style");
         String script = loadScript(scriptFile, loaderContext.getResourceLoader());
         ComponentInfo componentType = loadComponentType(scriptFile, loaderContext);
 
         JavaScriptImplementation jsImpl = new JavaScriptImplementation();
         jsImpl.setComponentInfo(componentType);
         jsImpl.setScriptFile(scriptFile);
-        jsImpl.setStyle(style);
         jsImpl.setScript(script);
         jsImpl.setResourceLoader(loaderContext.getResourceLoader());
         jsImpl.setTypeHelper(registry.getContext().getTypeHelper());

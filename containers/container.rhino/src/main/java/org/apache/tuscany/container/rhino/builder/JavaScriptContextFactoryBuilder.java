@@ -23,10 +23,14 @@ import org.apache.tuscany.container.rhino.assembly.JavaScriptImplementation;
 import org.apache.tuscany.container.rhino.config.JavaScriptContextFactory;
 import org.apache.tuscany.container.rhino.rhino.RhinoE4XScript;
 import org.apache.tuscany.container.rhino.rhino.RhinoScript;
+import org.apache.tuscany.core.builder.BuilderConfigException;
+import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.extension.ContextFactoryBuilderSupport;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
+import org.apache.tuscany.model.assembly.ServiceContract;
+import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 
 import commonj.sdo.helper.TypeHelper;
 
@@ -41,8 +45,22 @@ public class JavaScriptContextFactoryBuilder extends ContextFactoryBuilderSuppor
     @Override
     protected ContextFactory createContextFactory(String componentName, JavaScriptImplementation jsImplementation, Scope scope) {
         Map<String, Class> services = new HashMap<String, Class>();
+
+        Boolean isWSDLService = null;
         for (Service service : jsImplementation.getComponentInfo().getServices()) {
-            services.put(service.getName(), service.getServiceContract().getInterface());
+            ServiceContract sc = service.getServiceContract();
+            if (sc instanceof WSDLServiceContract) {
+                if (isWSDLService != null && !isWSDLService.booleanValue()) {
+                    BuilderException e = new BuilderConfigException("mixed service interface types not supportted");
+                    e.setIdentifier(componentName);
+                    throw e;
+                }
+                isWSDLService = Boolean.TRUE;
+            } else {
+                isWSDLService = Boolean.FALSE;
+            }
+
+            services.put(service.getName(), sc.getInterface());
         }
 
         Map<String, Object> defaultProperties = new HashMap<String, Object>();
@@ -54,7 +72,7 @@ public class JavaScriptContextFactoryBuilder extends ContextFactoryBuilderSuppor
         ClassLoader cl = jsImplementation.getResourceLoader().getClassLoader();
 
         RhinoScript invoker;
-        if ("e4x".equalsIgnoreCase(jsImplementation.getStyle())) { // TODO is constant "e4x" somewhere?
+        if (Boolean.TRUE.equals(isWSDLService)) {
             TypeHelper typeHelper = jsImplementation.getTypeHelper();
             invoker = new RhinoE4XScript(componentName, script, defaultProperties, cl, typeHelper);
         } else {
