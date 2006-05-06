@@ -39,7 +39,7 @@ public class Java2WSDLGeneratorFactory {
 	/**
 	 * Default Generator class name
 	 */
-	public static final String DEFAULT_GENERATOR_CLASSNAME = "org.apache.tuscany.tools.java2wsdl.generate.Java2WSDLDefaultGenerator";
+	public static final String DEFAULT_GENERATOR_CLASSNAME = "org.apache.tuscany.tools.java2wsdl.generate.Java2WSDLGeneratorImpl";
 
 	/**
 	 * list of generator classnames in a position that corresponds to their

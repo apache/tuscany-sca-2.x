@@ -158,5 +158,31 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                <excludes>
+                <exclude>**/org/apache/tuscany/tools/java2wsdl/generate/GenerationParameters.java</exclude>
+                <exclude>**/org/apache/tuscany/tools/java2wsdl/generate/Java2WSDL.java</exclude>
+                <exclude>**/org/apache/tuscany/tools/java2wsdl/generate/Java2WSDLGenerator.java</exclude>
+                <exclude>**/org/apache/tuscany/tools/java2wsdl/generate/Java2WSDLGeneratorFactory.java</exclude>
+                <exclude>**/org/apache/tuscany/tools/java2wsdl/generate/Java2WSDLGeneratorImpl.java</exclude>
+                <exclude>**/org/apache/tuscany/tools/java2wsdl/generate/TuscanyJava2OMBuilder.java</exclude>
+                <exclude>**/org/apache/tuscany/tools/java2wsdl/generate/TuscanyJava2WSDLBuilder.java</exclude>
+                <exclude>**/org/apache/tuscany/tools/java2wsdl/generate/WSDLGenEvent.java</exclude>
+                <exclude>**/org/apache/tuscany/tools/java2wsdl/generate/WSDLGenListener.java</exclude>
+                <exclude>**/org/apache/tuscany/tools/java2wsdl/generate/WSDLModel.java</exclude>
+                </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+
+    </build>
     
 </project>

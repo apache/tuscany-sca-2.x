@@ -1,11 +1,5 @@
 package org.apache.tuscany.tools.java2wsdl.generate;
 
-import java.util.Map;
-
-import org.apache.wsdl.extensions.ExtensionConstants;
-import org.apache.wsdl.extensions.Schema;
-import org.apache.wsdl.impl.WSDLDescriptionImpl;
-import org.w3c.dom.Element;
 
 /**
  * This class provides a higher level abstraction to parts of the WSDL model
@@ -13,35 +7,7 @@ import org.w3c.dom.Element;
  * when the Tuscany Java2WSDL is applying fixes to the model.
  * 
  */
-public class WSDLModel {
-
-	/**
-	 * the Axis2 description of the WSDL Model
-	 */
-	protected WSDLDescriptionImpl wsdlDescription = null;
-
-	public WSDLModel(WSDLDescriptionImpl desc) {
-		wsdlDescription = desc;
-	}
-
-	/**
-	 * provides access to the map of namespaces that form the attributes of the
-	 * wsdl:definition element
-	 * 
-	 * @return
-	 */
-	public Map getDefnNamespaceMap() {
-		return wsdlDescription.getNamespaces();
-	}
-
-	/**
-	 * provides access to the Schema type definitions fragment of the WSDL
-	 * 
-	 * @return
-	 */
-	public Element getSchemaElement() {
-		return ((Schema) wsdlDescription.getTypes().getFirstElement(
-				ExtensionConstants.SCHEMA)).getElement();
-	}
-
+public class WSDLModel 
+{
+	//this class is to be populated later after identifying requirements for it.
 }
