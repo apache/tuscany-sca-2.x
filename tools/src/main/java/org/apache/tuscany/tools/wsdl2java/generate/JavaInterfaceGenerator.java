@@ -57,7 +57,7 @@ public class JavaInterfaceGenerator {
         
         Definition definition;
         try {
-            definition = readInTheWSDLFile(uri);
+            definition = readWSDL(uri);
         } catch (WSDLException e) {
             throw new CodeGenerationException(e);
         }
@@ -81,6 +81,7 @@ public class JavaInterfaceGenerator {
         } catch (AxisFault e) {
             throw new CodeGenerationException(e);
         }
+        axisService.setName(port.getBinding().getPortType().getQName().getLocalPart());
 
         codegenConfiguration= new CodeGenConfiguration(Collections.EMPTY_MAP);
         codegenConfiguration.setAxisService(axisService);
@@ -137,7 +138,7 @@ public class JavaInterfaceGenerator {
      * @return
      * @throws WSDLException
      */
-    private Definition readInTheWSDLFile(String uri) throws WSDLException {
+    private Definition readWSDL(String uri) throws WSDLException {
 
         WSDLReader reader =
                 WSDLFactory.newInstance().newWSDLReader();
@@ -159,7 +160,6 @@ public class JavaInterfaceGenerator {
                 baseURI = file.getParentFile().toURI().toString();
             }
         }
-
 
         Document doc;
         try {
