@@ -23,9 +23,9 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tuscany-container-js</artifactId>
-    <name>Tuscany JavaScript Component Implementation Type</name>
-    <description>Tuscany JavaScript Component Implementation Type.</description>
+    <artifactId>tuscany-container-rhino</artifactId>
+    <name>Tuscany Rhino JavaScript Container</name>
+    <description>Tuscany Rhino JavaScript Container</description>
     <version>SNAPSHOT</version>
 
     <dependencies>

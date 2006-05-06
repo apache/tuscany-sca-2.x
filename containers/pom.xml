@@ -31,7 +31,7 @@
 
     <modules>
         <module>container.java</module>
-        <module>container.js</module>
+        <module>container.rhino</module>
     </modules>
 
 </project>
