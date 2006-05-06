@@ -44,7 +44,6 @@ public class ExternalServiceContextImpl extends AbstractContext implements Exter
      */
     public ExternalServiceContextImpl(String name, TargetWireFactory targetWireFactory, ObjectFactory targetInstanceFactory) {
         super(name);
-        assert (targetWireFactory != null) : "Target proxy factory was null";
         assert (targetInstanceFactory != null) : "Target instance factory was null";
         this.targetWireFactory = targetWireFactory;
         this.targetInstanceFactory = targetInstanceFactory;
