@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.core.AbstractLifecycle;
-import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.model.Scope;
@@ -48,12 +47,6 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
             eagerInitContexts();
         } else if (event instanceof ModuleStop) {
             shutdownContexts();
-        } else if (event instanceof InstanceCreated) {
-            checkInit();
-            synchronized (destroyQueue) {
-                // Queue the context to have its implementation instance released if destroyable
-                destroyQueue.add(((InstanceCreated) event).getContext());
-            }
         }
     }
 
@@ -95,7 +88,6 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
     public void register(AtomicContext context) {
         checkInit();
         instanceContexts.put(context, EMPTY);
-        context.addListener(this);
     }
 
 
@@ -105,6 +97,9 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
         if (ctx == EMPTY) {
             ctx = context.createInstance();
             instanceContexts.put(context, ctx);
+            synchronized (destroyQueue) {
+                destroyQueue.add(ctx);
+            }
         }
         return ctx;
     }

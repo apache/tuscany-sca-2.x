@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.core.context.event.HttpSessionEnd;
-import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.InstanceContext;
@@ -40,19 +39,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
         checkInit();
         if (event instanceof HttpSessionEnd) {
             checkInit();
-            shutdownInstances(((HttpSessionEnd)event).getId());
-        } else if (event instanceof InstanceCreated) {
-            checkInit();
-            InstanceContext context = ((InstanceCreated) event).getContext();
-            Object key = workContext.getIdentifier(HTTP_IDENTIFIER);
-            List<InstanceContext> destroyQueue = destroyQueues.get(key);
-            if (destroyQueue == null) {
-                destroyQueue = new ArrayList<InstanceContext>();
-                destroyQueues.put(key, destroyQueue);
-            }
-            synchronized (destroyQueue) {
-                destroyQueue.add(context);
-            }
+            shutdownInstances(((HttpSessionEnd) event).getId());
         }
     }
 
@@ -81,6 +68,14 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
         if (ctx == null) {
             ctx = context.createInstance();
             contextMap.put(key, ctx);
+            List<InstanceContext> destroyQueue = destroyQueues.get(key);
+            if (destroyQueue == null) {
+                destroyQueue = new ArrayList<InstanceContext>();
+                destroyQueues.put(key, destroyQueue);
+            }
+            synchronized (destroyQueue) {
+                destroyQueue.add(ctx);
+            }
         }
         return ctx;
     }

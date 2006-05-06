@@ -7,7 +7,6 @@ import org.apache.tuscany.common.ObjectCreationException;
 import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.core.context.PojoAtomicContext;
 import org.apache.tuscany.core.context.PojoInstanceContext;
-import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.InstanceContext;
@@ -33,7 +32,6 @@ public class SystemAtomicContext extends PojoAtomicContext {
     public InstanceContext createInstance() throws ObjectCreationException {
         InstanceContext ctx = new PojoInstanceContext(this, objectFactory.getInstance());
         ctx.start();
-        publish(new InstanceCreated(this, ctx));
         return ctx;
     }
 

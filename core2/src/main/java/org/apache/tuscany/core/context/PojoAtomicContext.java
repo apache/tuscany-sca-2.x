@@ -2,7 +2,6 @@ package org.apache.tuscany.core.context;
 
 import org.apache.tuscany.common.ObjectCreationException;
 import org.apache.tuscany.common.ObjectFactory;
-import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.AtomicContext;
@@ -77,7 +76,6 @@ public abstract class PojoAtomicContext extends AbstractContext implements Atomi
     public InstanceContext createInstance() throws ObjectCreationException {
         InstanceContext ctx = new PojoInstanceContext(this, objectFactory.getInstance());
         ctx.start();
-        publish(new InstanceCreated(this, ctx));
         return ctx;
     }
 

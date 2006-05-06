@@ -16,6 +16,9 @@
  */
 package org.apache.tuscany.model;
 
+import java.lang.reflect.Type;
+import java.lang.reflect.ParameterizedType;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -31,6 +34,15 @@ public abstract class Implementation<T extends ComponentType> extends ModelObjec
     }
 
     public Component<Implementation<T>> newComponent() {
-        return new Component(this);
+        return new Component<Implementation<T>>(this);
+    }
+
+    public Class<T> getComponentTypeClass(){
+        Type type = this.getClass().getGenericSuperclass();
+        if (type instanceof ParameterizedType) {
+            return (Class<T>) ((ParameterizedType) type).getActualTypeArguments()[0];
+
+        }
+        return null;
     }
 }

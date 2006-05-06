@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.core.context.event.InstanceCreated;
 import org.apache.tuscany.core.context.event.RequestEnd;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.AtomicContext;
@@ -40,17 +39,6 @@ public class RequestScopeContext extends AbstractScopeContext<AtomicContext> {
         if (event instanceof RequestEnd) {
             checkInit();
             shutdownInstances(Thread.currentThread());
-        } else if (event instanceof InstanceCreated) {
-            checkInit();
-            InstanceContext context = ((InstanceCreated) event).getContext();
-            List<InstanceContext> destroyQueue = destroyQueues.get(Thread.currentThread());
-            if (destroyQueue == null) {
-                destroyQueue = new ArrayList<InstanceContext>();
-                destroyQueues.put(Thread.currentThread(), destroyQueue);
-            }
-            synchronized (destroyQueue) {
-                destroyQueue.add(context);
-            }
         }
     }
 
@@ -68,7 +56,6 @@ public class RequestScopeContext extends AbstractScopeContext<AtomicContext> {
 
     public void register(AtomicContext context) {
         contexts.put(context, new ConcurrentHashMap<Thread, InstanceContext>());
-        context.addListener(this);
     }
 
     public InstanceContext getInstanceContext(AtomicContext context) throws TargetException {
@@ -77,6 +64,14 @@ public class RequestScopeContext extends AbstractScopeContext<AtomicContext> {
         if (ctx == null) {
             ctx = context.createInstance();
             instanceContextMap.put(Thread.currentThread(), ctx);
+            List<InstanceContext> destroyQueue = destroyQueues.get(Thread.currentThread());
+            if (destroyQueue == null) {
+                destroyQueue = new ArrayList<InstanceContext>();
+                destroyQueues.put(Thread.currentThread(), destroyQueue);
+            }
+            synchronized (destroyQueue) {
+                destroyQueue.add(ctx);
+            }
         }
         return ctx;
     }
