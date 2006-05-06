@@ -78,6 +78,7 @@ public class TuscanyRuntime extends SCA {
      * @throws ConfigurationException if there was a problem loading the SCA configuration
      */
     public TuscanyRuntime(String name, String uri, MonitorFactory monitorFactory) throws ConfigurationException {
+        assert(monitorFactory != null): "monitor factory was null";
         this.monitor = monitorFactory.getMonitor(Monitor.class);
 
         // Create an assembly model context

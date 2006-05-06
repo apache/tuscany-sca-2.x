@@ -214,7 +214,6 @@ public class JavaContextFactory implements ContextFactory<AtomicContext>, Contex
      * responsible for injecting them into the reference
      */
     private Injector createReferenceInjector(String refName, List<SourceWireFactory> wireFactories, boolean multiplicity) {
-        assert wireFactories.size() > 0;
         Class refClass = wireFactories.get(0).getBusinessInterface(); //reference.getPort().getServiceContract().getInterface();
         // iterate through the targets
         List<ObjectFactory> objectFactories = new ArrayList<ObjectFactory>();

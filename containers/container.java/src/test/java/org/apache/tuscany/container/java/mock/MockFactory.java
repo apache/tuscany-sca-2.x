@@ -45,6 +45,7 @@ import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.container.java.mock.components.TargetImpl;
+import org.apache.tuscany.container.java.mock.components.ModuleScopeComponent;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
@@ -175,7 +176,7 @@ public class MockFactory {
         return sc;
     }
 
-    public static AtomicComponent createNonIntrospectedComponent(String name, Class type, Scope scope) throws ConfigurationLoadException {
+    public static AtomicComponent createNonIntrospectedComponent(String name, Class service,  Class type, Scope scope) throws ConfigurationLoadException {
          AtomicComponent sc = factory.createSimpleComponent();
          JavaImplementation impl = factory.createJavaImplementation();
          impl.setComponentInfo(factory.createComponentInfo());
@@ -183,7 +184,7 @@ public class MockFactory {
          sc.setImplementation(impl);
          Service s = factory.createService();
          JavaServiceContract ji = factory.createJavaServiceContract();
-         ji.setInterface(type);
+         ji.setInterface(service);
          s.setServiceContract(ji);
          ji.setScope(scope);
          impl.getComponentInfo().getServices().add(s);
@@ -302,8 +303,8 @@ public class MockFactory {
      * Creates a module with a Java-based "target" component wired to a "source"
      */
     public static Module createModule(Scope sourceScope, Scope targetScope) throws ConfigurationLoadException {
-        Component sourceComponent = createNonIntrospectedComponent("source", ModuleScopeComponentImpl.class, sourceScope);
-        Component targetComponent = createNonIntrospectedComponent("target", ModuleScopeComponentImpl.class, targetScope);
+        Component sourceComponent = createNonIntrospectedComponent("source", ModuleScopeComponent.class, ModuleScopeComponentImpl.class, sourceScope);
+        Component targetComponent = createNonIntrospectedComponent("target", ModuleScopeComponent.class, ModuleScopeComponentImpl.class, targetScope);
 
         Service targetService = factory.createService();
         JavaServiceContract targetContract = factory.createJavaServiceContract();

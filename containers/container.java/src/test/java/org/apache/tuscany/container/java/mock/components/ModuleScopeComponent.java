@@ -23,7 +23,9 @@ import org.osoa.sca.annotations.Scope;
  */
 @Scope("MODULE")
 public interface ModuleScopeComponent extends GenericComponent {
+    public GenericComponent getGenericComponent();
 
+    public String getString();
     //public boolean isInit();
 }
 

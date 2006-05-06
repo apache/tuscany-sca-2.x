@@ -29,8 +29,15 @@ public class HelloWorldMCImpl implements HelloWorldService {
     @Property
     public String locale;
 
+    public void setGreetingProvider(GreetingProvider greetingProvider) {
+        this.greetingProvider2 = greetingProvider;
+    }
+
     @Reference(name="greetingProvider")
     public GreetingProvider greetingProvider2;
+
+    @Reference(required=false)
+    public GreetingProvider foo;
 
     public String getGreetings(String name) {
         return greetingProvider2.getGreeting(name, locale);

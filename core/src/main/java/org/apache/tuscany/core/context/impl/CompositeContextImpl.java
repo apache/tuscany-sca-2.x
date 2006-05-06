@@ -20,7 +20,6 @@ import org.osoa.sca.ModuleContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceUnavailableException;
-import org.osoa.sca.ServiceRuntimeException;
 
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.CompositeContext;

@@ -126,6 +126,11 @@ public abstract class ContextFactoryBuilderSupport<T extends Implementation> imp
             List<ConfiguredReference> configuredReferences = component.getConfiguredReferences();
             if (configuredReferences != null) {
                 for (ConfiguredReference reference : configuredReferences) {
+                    if (reference.getPort().getMultiplicity() == Multiplicity.ZERO_N || reference.getPort().getMultiplicity() == Multiplicity.ZERO_ONE){
+                        if (reference.getTargetConfiguredServices().size() < 1 && reference.getTargets().size() <1 ){
+                            continue; // not required, not configured fix TUSCANY-299 
+                        }
+                    }
                     List<SourceWireFactory> wireFactories = wireFactoryService.createSourceFactory(reference);
                     String refName = reference.getPort().getName();
                     Class refClass = reference.getPort().getServiceContract().getInterface();
