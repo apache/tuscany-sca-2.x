@@ -39,6 +39,10 @@ public class PojoObjectFactory<T> implements ObjectFactory<T> {
 
     private final List<Injector> setters;
 
+    public PojoObjectFactory(Constructor<T> ctr) {
+        this(ctr,null,null);
+    }
+
     public PojoObjectFactory(Constructor<T> ctr, List<ObjectFactory> initParams, List<Injector> setters) {
         this.ctr = ctr;
         if (initParams != null && initParams.size() > 0) {

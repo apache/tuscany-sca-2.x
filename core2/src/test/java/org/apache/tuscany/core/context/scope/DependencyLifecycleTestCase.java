@@ -1,5 +1,7 @@
 package org.apache.tuscany.core.context.scope;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 import junit.framework.Assert;
 import org.apache.tuscany.core.context.event.ModuleStart;
@@ -8,6 +10,14 @@ import org.apache.tuscany.core.context.event.HttpSessionEvent;
 import org.apache.tuscany.core.context.event.HttpSessionEnd;
 import org.apache.tuscany.core.context.event.RequestStart;
 import org.apache.tuscany.core.context.event.RequestEnd;
+import org.apache.tuscany.core.context.WorkContextImpl;
+import org.apache.tuscany.core.mock.MockFactory;
+import org.apache.tuscany.core.mock.component.SourceImpl;
+import org.apache.tuscany.core.mock.component.TargetImpl;
+import org.apache.tuscany.core.mock.component.Source;
+import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.model.Scope;
 
 /**
  * Tests that dependencies are initalized and destroyed in the proper order (i.e. LIFO)
@@ -16,12 +26,18 @@ import org.apache.tuscany.core.context.event.RequestEnd;
  */
 public class DependencyLifecycleTestCase extends TestCase {
 
-
-
     public void testInitDestroyOrderModuleScope() throws Exception {
-//        WorkContext ctx = new WorkContextImpl();
-//        ModuleScopeContext scope = new ModuleScopeContext(ctx);
-//        scope.registerFactories(MockContextFactory.createWiredContexts(Scope.MODULE,scope));
+        WorkContext ctx = new WorkContextImpl();
+        ModuleScopeContext scopeCtx = new ModuleScopeContext(ctx);
+        scopeCtx.start();
+        //scopeCtx.onEvent(new ModuleStart(this, null));
+        List<AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class,"target", TargetImpl.class,scopeCtx,scopeCtx);
+        Source source = (Source)contexts.get(0).getInstance(null);
+        assertNotNull(source.getTarget());
+        //scopeCtx.onEvent(new ModuleStop(this, null));
+
+
+        //scope.registerFactories(MockContextFactory.createWiredContexts(Scope.MODULE,scope));
 //        scope.start();
 //        scope.onEvent(new ModuleStart(this));
 //        OrderedDependentPojo source = (OrderedDependentPojo) scope.getContext("source").getInstance(null);
