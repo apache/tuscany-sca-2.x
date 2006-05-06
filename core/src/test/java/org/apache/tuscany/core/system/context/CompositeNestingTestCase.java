@@ -17,6 +17,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.Target;
@@ -76,6 +77,7 @@ public class CompositeNestingTestCase extends TestCase {
         analyzeLeafComponents(child3Ctx);
         
         Assert.assertNull(child1Ctx.getContext("child3")); // sanity check
+        child1Ctx.publish(new ModuleStop(this));
     }
 
     private ModuleComponent createHierarchy() throws ConfigurationLoadException {

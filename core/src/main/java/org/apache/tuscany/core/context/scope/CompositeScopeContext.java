@@ -140,6 +140,7 @@ public class CompositeScopeContext extends AbstractLifecycle implements ScopeCon
             moduleScopeStarted = true;
         } else if (event instanceof ModuleStop) {
             moduleScopeStarted = false;
+            publish(event);
         }
         // propagate events to child contexts
         for (CompositeContext context : contexts.values()) {

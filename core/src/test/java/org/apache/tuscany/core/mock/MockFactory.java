@@ -15,6 +15,7 @@ package org.apache.tuscany.core.mock;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.reflect.Method;
 
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
@@ -25,6 +26,7 @@ import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.processor.ProcessorUtils;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.extension.config.ImplementationProcessor;
+import org.apache.tuscany.core.extension.config.extensibility.DestroyInvokerExtensibilityElement;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeSystemComponentImpl;
 import org.apache.tuscany.core.mock.component.Source;
@@ -41,6 +43,7 @@ import org.apache.tuscany.core.system.builder.SystemContextFactoryBuilder;
 import org.apache.tuscany.core.system.builder.SystemEntryPointBuilder;
 import org.apache.tuscany.core.system.builder.SystemExternalServiceBuilder;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
+import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ComponentInfo;
