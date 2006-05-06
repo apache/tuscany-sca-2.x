@@ -18,30 +18,23 @@ package org.apache.tuscany.container.rhino.mock;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
-import org.apache.tuscany.container.rhino.assembly.JavaScriptAssemblyFactory;
 import org.apache.tuscany.container.rhino.assembly.JavaScriptImplementation;
-import org.apache.tuscany.container.rhino.assembly.impl.JavaScriptAssemblyFactoryImpl;
-import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.impl.CompositeContextImpl;
-import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
-import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.processor.ProcessorUtils;
-import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
-import org.apache.tuscany.core.extension.config.ImplementationProcessor;
+import org.apache.tuscany.core.context.CompositeContext;
+import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
+import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.AtomicComponent;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.ComponentInfo;
 import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
+import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
@@ -51,7 +44,7 @@ import org.apache.tuscany.model.types.java.JavaServiceContract;
  */
 public class MockAssemblyFactory {
 
-    private static JavaScriptAssemblyFactory factory = new JavaScriptAssemblyFactoryImpl();
+    private static AssemblyFactoryImpl factory = new AssemblyFactoryImpl();
 
     private static SystemAssemblyFactory systemFactory = new SystemAssemblyFactoryImpl();
     private static ComponentTypeIntrospector introspector;
@@ -65,7 +58,7 @@ public class MockAssemblyFactory {
 
     public static AtomicComponent createComponent(String name, String scriptFile, Class type, Scope scope) {
         AtomicComponent sc = factory.createSimpleComponent();
-        JavaScriptImplementation impl = factory.createJavaScriptImplementation();
+        JavaScriptImplementation impl = new JavaScriptImplementation();
         impl.setComponentInfo(factory.createComponentInfo());
         impl.setScriptFile(scriptFile);
         impl.setScript(readScript(type.getClassLoader().getResourceAsStream(scriptFile)));

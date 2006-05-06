@@ -19,38 +19,35 @@ package org.apache.tuscany.container.rhino.loader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLInputFactory;
-
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
-import org.apache.tuscany.container.rhino.assembly.JavaScriptAssemblyFactory;
 import org.apache.tuscany.container.rhino.assembly.JavaScriptImplementation;
-import org.apache.tuscany.container.rhino.assembly.impl.JavaScriptAssemblyFactoryImpl;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.core.config.MissingResourceException;
 import org.apache.tuscany.core.config.InvalidRootElementException;
+import org.apache.tuscany.core.config.MissingResourceException;
 import org.apache.tuscany.core.config.SidefileLoadException;
+import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
-import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.loader.assembly.AssemblyConstants;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
 
 /**
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
 public class JavaScriptImplementationLoader implements StAXElementLoader<JavaScriptImplementation> {
-    public static final QName IMPLEMENTATION_JS = new QName("http://org.apache.tuscany/xmlns/js/0.9", "implementation.js");
 
-    private static final JavaScriptAssemblyFactory factory = new JavaScriptAssemblyFactoryImpl();
+    public static final QName IMPLEMENTATION_JS = new QName("http://org.apache.tuscany/xmlns/js/0.9", "implementation.js");
 
     protected StAXLoaderRegistry registry;
 
@@ -82,7 +79,7 @@ public class JavaScriptImplementationLoader implements StAXElementLoader<JavaScr
         String script = loadScript(scriptFile, loaderContext.getResourceLoader());
         ComponentInfo componentType = loadComponentType(scriptFile, loaderContext);
 
-        JavaScriptImplementation jsImpl = factory.createJavaScriptImplementation();
+        JavaScriptImplementation jsImpl = new JavaScriptImplementation();
         jsImpl.setComponentInfo(componentType);
         jsImpl.setScriptFile(scriptFile);
         jsImpl.setStyle(style);

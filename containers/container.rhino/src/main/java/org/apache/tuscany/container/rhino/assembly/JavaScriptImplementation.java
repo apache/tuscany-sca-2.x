@@ -16,35 +16,69 @@
  */
 package org.apache.tuscany.container.rhino.assembly;
 
-import org.apache.tuscany.model.assembly.AtomicImplementation;
-import org.apache.tuscany.model.assembly.Implementation;
 import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.model.assembly.impl.AtomicImplementationImpl;
+
 import commonj.sdo.helper.TypeHelper;
 
 /**
- * A representation of a JavaScript component implementation type
- * 
+ * Default implementation of a JavScript component implementation type
+ *
  * @version $Rev$ $Date$
  */
-public interface JavaScriptImplementation extends AtomicImplementation {
+public class JavaScriptImplementation extends AtomicImplementationImpl {
 
-    public String getScriptFile();
+    private String scriptFile;
 
-    public void setScriptFile(String fn);
+    private String style;
 
-    public String getStyle();
+    private String script;
 
-    public void setStyle(String style);
+    private ResourceLoader resourceLoader;
 
-    String getScript();
+    private TypeHelper typeHelper;
 
-    void setScript(String script);
+    public JavaScriptImplementation() {
+        super();
+    }
 
-    void setResourceLoader(ResourceLoader resourceLoader);
+    public void setResourceLoader(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
 
-    ResourceLoader getResourceLoader();
+    public ResourceLoader getResourceLoader() {
+        return resourceLoader;
+    }
 
-    TypeHelper getTypeHelper();
+    public TypeHelper getTypeHelper() {
+        return typeHelper;
+    }
 
-    void setTypeHelper(TypeHelper typeHelper);
+    public void setTypeHelper(TypeHelper typeHelper) {
+        this.typeHelper = typeHelper;
+    }
+
+    public String getScriptFile() {
+        return scriptFile;
+    }
+
+    public void setScriptFile(String fn) {
+        scriptFile = fn;
+    }
+
+    public String getStyle() {
+        return this.style;
+    }
+
+    public void setStyle(String style) {
+        this.style = style;
+    }
+
+    public String getScript() {
+        return script;
+    }
+
+    public void setScript(String script) {
+        this.script = script;
+    }
 }

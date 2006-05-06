@@ -16,10 +16,9 @@
  */
 package org.apache.tuscany.container.rhino.assembly.impl;
 
-import org.apache.tuscany.container.rhino.assembly.impl.JavaScriptAssemblyFactoryImpl;
-import org.apache.tuscany.container.rhino.assembly.impl.JavaScriptImplementationImpl;
-
 import junit.framework.TestCase;
+
+import org.apache.tuscany.container.rhino.assembly.JavaScriptImplementation;
 
 /**
  * FIXME commented out until SCDL loading works
@@ -28,8 +27,7 @@ import junit.framework.TestCase;
  */
 public class JavaScriptImplementationTestCase extends TestCase {
 
-    private JavaScriptImplementationImpl impl = (JavaScriptImplementationImpl) new JavaScriptAssemblyFactoryImpl()
-            .createJavaScriptImplementation();
+    private JavaScriptImplementation impl = (JavaScriptImplementation) new JavaScriptImplementation();
     private ClassLoader origLoader;
 
     public void testDummy(){} // remove when tests added back
