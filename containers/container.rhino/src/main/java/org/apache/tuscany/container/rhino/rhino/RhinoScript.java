@@ -19,6 +19,7 @@ package org.apache.tuscany.container.rhino.rhino;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.tuscany.core.extension.ExternalServiceInvoker;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Function;
@@ -30,7 +31,7 @@ import org.mozilla.javascript.Wrapper;
 /**
  * Represents, and is responsible for dispatching to, a JavaScript artifact in Rhino
  */
-public class RhinoScript {
+public class RhinoScript implements ExternalServiceInvoker {
 
     protected String scriptName;
 
@@ -284,6 +285,10 @@ public class RhinoScript {
         } finally {
             Context.exit();
         }
+    }
+
+    public Object invoke(String methodName, Object[] args) {
+        return invoke(methodName, (Object) args);
     }
 
 }

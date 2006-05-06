@@ -16,15 +16,15 @@
  */
 package org.apache.tuscany.container.rhino.builder;
 
+import java.lang.reflect.Method;
+
 import org.apache.tuscany.container.rhino.config.JavaScriptContextFactory;
-import org.apache.tuscany.container.rhino.rhino.RhinoTargetInvoker;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
+import org.apache.tuscany.core.extension.ComponentTargetInvoker;
 import org.apache.tuscany.core.extension.WireBuilderSupport;
 import org.apache.tuscany.core.wire.TargetInvoker;
 import org.osoa.sca.annotations.Scope;
-
-import java.lang.reflect.Method;
 
 /**
  * Responsible for bridging source- and target-side invocations chains when the target type is a JavaScript implementation
@@ -35,7 +35,6 @@ import java.lang.reflect.Method;
 public class JavaScriptTargetWireBuilder extends WireBuilderSupport<JavaScriptContextFactory> {
 
     protected TargetInvoker createInvoker(QualifiedName targetName, Method operation, ScopeContext context, boolean downScope) {
-        String serviceName = targetName.getPartName();
-        return new RhinoTargetInvoker(serviceName, operation, context);
+        return new ComponentTargetInvoker(targetName, operation, context);
     }
 }
