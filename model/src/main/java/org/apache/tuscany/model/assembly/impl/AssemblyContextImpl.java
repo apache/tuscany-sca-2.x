@@ -32,6 +32,7 @@ public class AssemblyContextImpl implements AssemblyContext {
     private final AssemblyModelLoader assemblyLoader;
     private final ResourceLoader applicationResourceLoader;
     private final TypeHelper typeHelper;
+    private String webAppName;
 
     public AssemblyContextImpl(AssemblyModelLoader assemblyLoader, ResourceLoader resourceLoader) {
         this(new AssemblyFactoryImpl(), assemblyLoader, resourceLoader);
@@ -41,11 +42,19 @@ public class AssemblyContextImpl implements AssemblyContext {
         this(assemblyFactory, assemblyLoader, artifactLoader, SDOUtil.createTypeHelper());
     }
     
+    public AssemblyContextImpl(AssemblyFactory assemblyFactory, AssemblyModelLoader assemblyLoader, ResourceLoader artifactLoader, String webAppName) {
+        this(assemblyFactory, assemblyLoader, artifactLoader, SDOUtil.createTypeHelper(), webAppName);
+    }
     public AssemblyContextImpl(AssemblyFactory assemblyFactory, AssemblyModelLoader assemblyLoader, ResourceLoader artifactLoader, TypeHelper typeHelper) {
+        this(assemblyFactory, assemblyLoader, artifactLoader, SDOUtil.createTypeHelper(), null);
+    }
+
+    public AssemblyContextImpl(AssemblyFactory assemblyFactory, AssemblyModelLoader assemblyLoader, ResourceLoader artifactLoader, TypeHelper typeHelper, String webAppName) {
         this.assemblyFactory = assemblyFactory;
         this.assemblyLoader = assemblyLoader;
         this.applicationResourceLoader = artifactLoader;
         this.typeHelper=typeHelper;
+        this.webAppName=webAppName;
     }
 
     /**
@@ -71,5 +80,9 @@ public class AssemblyContextImpl implements AssemblyContext {
      */
     public TypeHelper getTypeHelper() {
         return typeHelper;
+    }
+
+    public String getWebAppName() {
+        return webAppName;
     }
 }

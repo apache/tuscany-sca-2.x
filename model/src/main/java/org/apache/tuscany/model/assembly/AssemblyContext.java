@@ -54,4 +54,11 @@ public interface AssemblyContext {
      */
     TypeHelper getTypeHelper();
     
+    /**
+     * Returns the Web application module URI
+     * 
+     * @return the module name of the Web app
+     */
+    String getWebAppName();
+    
 }
