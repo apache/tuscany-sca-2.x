@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ASCII"?>
 <!--
-  Copyright (c) 2005 BEA Sytems Inc.
-  Copyright (c) 2005 International Business Machines
+  Copyright (c) 2005 The Apache Software Foundation or its licensors, as applicable.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,11 +14,10 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  -->
-<module xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
-        name="sampleHelloworld">
-
-    <component name="HelloWorldJSComponent">
-        <implementation.js scriptFile="org/apache/tuscany/container/rhino/sample/helloworld/HelloWorldImpl.js"/>
-    </component>
-
-</module>
+<componentType xmlns="http://www.osoa.org/xmlns/sca/0.9"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <service name="HelloWorldService">
+        <interface.java interface="org.apache.tuscany.container.rhino.assembly.mock.HelloWorldService" remoteable="true"/>
+    </service>
+    <property name="text" type="xsd:string"/>
+</componentType>

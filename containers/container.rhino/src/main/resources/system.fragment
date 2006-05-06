@@ -16,17 +16,17 @@
  -->
 <moduleFragment xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
         xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
-		name="org.apache.tuscany.container.js">
+		name="org.apache.tuscany.container.rhino">
 
-    <component name="org.apache.tuscany.container.js.builder.JavaScriptContextFactoryBuilder">
-        <system:implementation.system class="org.apache.tuscany.container.js.builder.JavaScriptContextFactoryBuilder"/>
+    <component name="org.apache.tuscany.container.rhino.builder.JavaScriptContextFactoryBuilder">
+        <system:implementation.system class="org.apache.tuscany.container.rhino.builder.JavaScriptContextFactoryBuilder"/>
     </component>
 
-    <component name="org.apache.tuscany.container.js.builder.JavaScriptTargetWireBuilder">
-        <system:implementation.system class="org.apache.tuscany.container.js.builder.JavaScriptTargetWireBuilder"/>
+    <component name="org.apache.tuscany.container.rhino.builder.JavaScriptTargetWireBuilder">
+        <system:implementation.system class="org.apache.tuscany.container.rhino.builder.JavaScriptTargetWireBuilder"/>
     </component>
 
-    <component name="org.apache.tuscany.container.js.loader.JavaScriptImplementationLoader">
-        <system:implementation.system class="org.apache.tuscany.container.js.loader.JavaScriptImplementationLoader"/>
+    <component name="org.apache.tuscany.container.rhino.loader.JavaScriptImplementationLoader">
+        <system:implementation.system class="org.apache.tuscany.container.rhino.loader.JavaScriptImplementationLoader"/>
     </component>
 </moduleFragment>

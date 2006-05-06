@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<componentType xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <service name="test1MediatorService">
+        <interface.java interface="org.apache.tuscany.container.rhino.assembly.tests.bigbank.account.services.account.AccountService"/>
+    </service>
+
+    <reference name="accountDataService">
+        <interface.java interface="org.apache.tuscany.container.rhino.assembly.tests.bigbank.account.services.accountdata.AccountDataService"/>
+    </reference>
+    
+    <reference name="stockQuoteService">
+        <interface.java interface="org.apache.tuscany.container.rhino.assembly.tests.bigbank.account.services.stockquote.StockQuoteService"/>
+    </reference>
+
+    <property name="currency" type="xsd:string" default="USD"/>
+
+</componentType>
