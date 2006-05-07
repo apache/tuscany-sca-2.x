@@ -46,7 +46,7 @@ import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
@@ -71,20 +71,20 @@ public class MockFactory {
     private static SystemAssemblyFactory systemFactory = new SystemAssemblyFactoryImpl();
     private static AssemblyContext assemblyContext = new AssemblyContextImpl(systemFactory, null, null);
     private static ComponentTypeIntrospector introspector;
-    private static ComponentInfo systemComponentType;
-    private static ComponentInfo compositeComponentType;
+    private static ComponentType systemComponentType;
+    private static ComponentType compositeComponentType;
 
     private MockFactory() {
     }
 
-    public static ComponentInfo getComponentType() throws ConfigurationLoadException {
+    public static ComponentType getComponentType() throws ConfigurationLoadException {
         if (systemComponentType == null) {
             systemComponentType = getIntrospector().introspect(SystemCompositeContextImpl.class);
         }
         return systemComponentType;
     }
 
-    public static ComponentInfo getCompositeComponentType() throws ConfigurationLoadException {
+    public static ComponentType getCompositeComponentType() throws ConfigurationLoadException {
         if (compositeComponentType == null) {
             compositeComponentType = getIntrospector().introspect(CompositeContextImpl.class);
         }
@@ -108,13 +108,12 @@ public class MockFactory {
         //impl.setImplementationClass(CompositeContextImpl.class);
         sc.setImplementation(impl);
         impl.setImplementationClass(CompositeContextImpl.class);
-        impl.setComponentInfo(getCompositeComponentType());
+        impl.setComponentType(getCompositeComponentType());
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(Scope.AGGREGATE);
-//        impl.setComponentInfo(systemFactory.createComponentInfo());
-        impl.getComponentInfo().getServices().add(s);
+        impl.getComponentType().getServices().add(s);
         sc.setName(name);
         sc.setImplementation(impl);
         return sc;
@@ -128,14 +127,13 @@ public class MockFactory {
         SystemModule impl = systemFactory.createSystemModule();
         impl.setName(name);
         impl.setImplementationClass(SystemCompositeContextImpl.class);
-        impl.setComponentInfo(getComponentType());
+        impl.setComponentType(getComponentType());
         sc.setImplementation(impl);
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(Scope.AGGREGATE);
-        //impl.setComponentInfo(systemFactory.createComponentInfo());
-        impl.getComponentInfo().getServices().add(s);
+        impl.getComponentType().getServices().add(s);
         sc.setName(name);
         sc.setImplementation(impl);
         return sc;
@@ -280,7 +278,7 @@ public class MockFactory {
         // create test component
         Component component = systemFactory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class,
                 ModuleScopeSystemComponentImpl.class, Scope.MODULE);
-        component.getImplementation().setComponentInfo(getIntrospector().introspect(ModuleScopeSystemComponent.class));
+        component.getImplementation().setComponentType(getIntrospector().introspect(ModuleScopeSystemComponent.class));
         module.getComponents().add(component);
 
         // create the entry point
@@ -289,14 +287,14 @@ public class MockFactory {
 
         module.initialize(assemblyContext);
         module.setImplementationClass(SystemCompositeContextImpl.class);
-        module.setComponentInfo(getComponentType());
+        module.setComponentType(getComponentType());
         return module;
     }
 
     public static <T> Component createSystemComponent(String name, Class<T> service, Class<? extends T> impl, Scope scope) throws ConfigurationLoadException {
         Component c = systemFactory.createSystemComponent(name, service, impl, scope);
-        c.getImplementation().setComponentInfo(getIntrospector().introspect(impl));
-        for (Service s : c.getImplementation().getComponentInfo().getServices()) {
+        c.getImplementation().setComponentType(getIntrospector().introspect(impl));
+        for (Service s : c.getImplementation().getComponentType().getServices()) {
              s.getServiceContract().setScope(scope);    //hack
         }
 
@@ -317,7 +315,7 @@ public class MockFactory {
 
         // create the source componentType
         Component source = systemFactory.createSystemComponent("source", Source.class, SourceImpl.class, sourceScope);
-        ComponentInfo sourceComponentType = source.getImplementation().getComponentInfo();
+        ComponentType sourceComponentType = source.getImplementation().getComponentType();
         List<Reference> references = sourceComponentType.getReferences();
         List<ConfiguredReference> configuredReferences = source.getConfiguredReferences();
 
@@ -345,7 +343,7 @@ public class MockFactory {
 
         Module module = systemFactory.createSystemModule();
         module.setImplementationClass(SystemCompositeContextImpl.class);
-        module.setComponentInfo(getComponentType());
+        module.setComponentType(getComponentType());
         module.setName(moduleName);
         module.getComponents().add(source);
         module.getComponents().add(target);
@@ -374,7 +372,7 @@ public class MockFactory {
         Module module = systemFactory.createSystemModule();
         module.setName("system.test.module");
         module.setImplementationClass(SystemCompositeContextImpl.class);
-        module.setComponentInfo(getComponentType());
+        module.setComponentType(getComponentType());
 
         // create test component
         Component component = systemFactory.createSystemComponent("TestService2", ModuleScopeSystemComponent.class,

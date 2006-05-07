@@ -32,7 +32,7 @@ import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.Property;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
 
 /**
@@ -47,7 +47,7 @@ public class SystemContextFactoryBuilderTestCase extends TestCase {
     public void testComponentContextBuilder() throws Exception {
         SystemContextFactoryBuilder builder = new SystemContextFactoryBuilder(null);
         Component component = factory.createSystemComponent("test", null, SystemComponentImpl.class, Scope.AGGREGATE);
-        component.getImplementation().setComponentInfo(MockFactory.getIntrospector().introspect(SystemComponentImpl.class));
+        component.getImplementation().setComponentType(MockFactory.getIntrospector().introspect(SystemComponentImpl.class));
         ConfiguredProperty cProp = factory.createConfiguredProperty();
         Property prop = factory.createProperty();
         prop.setName("testInt");
@@ -156,12 +156,12 @@ public class SystemContextFactoryBuilderTestCase extends TestCase {
         Service s = factory.createService();
         s.setServiceContract(jsc);
 
-        ComponentInfo componentType = factory.createComponentInfo();
+        ComponentType componentType = factory.createComponentType();
         componentType.getServices().add(s);
 
         SystemImplementation sysImpl = factory.createSystemImplementation();
         sysImpl.setImplementationClass(impl);
-        sysImpl.setComponentInfo(componentType);
+        sysImpl.setComponentType(componentType);
 
         Component sc = factory.createSimpleComponent();
         sc.setName(name);

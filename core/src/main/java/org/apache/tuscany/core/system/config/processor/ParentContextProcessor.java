@@ -10,7 +10,7 @@ import org.apache.tuscany.core.config.processor.ImplementationProcessorSupport;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.config.extensibility.ParentContextExtensibilityElement;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 
 /**
  * Processes {@link org.apache.tuscany.core.system.annotation.Autowire} annotations
@@ -20,7 +20,7 @@ import org.apache.tuscany.model.assembly.ComponentInfo;
 public class ParentContextProcessor extends ImplementationProcessorSupport {
 
     @Override
-    public void visitMethod(Method method, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitMethod(Method method, ComponentType type) throws ConfigurationLoadException {
         ParentContext annotation = method.getAnnotation(ParentContext.class);
         if (annotation != null) {
             if (!Modifier.isPublic(method.getModifiers())) {
@@ -39,7 +39,7 @@ public class ParentContextProcessor extends ImplementationProcessorSupport {
     }
 
     @Override
-    public void visitField(Field field, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitField(Field field, ComponentType type) throws ConfigurationLoadException {
         int modifiers = field.getModifiers();
         ParentContext annotation = field.getAnnotation(ParentContext.class);
         if (annotation != null) {

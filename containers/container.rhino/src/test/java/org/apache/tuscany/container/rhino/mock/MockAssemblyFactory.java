@@ -59,7 +59,7 @@ public class MockAssemblyFactory {
     public static AtomicComponent createComponent(String name, String scriptFile, Class type, Scope scope) {
         AtomicComponent sc = factory.createSimpleComponent();
         JavaScriptImplementation impl = new JavaScriptImplementation();
-        impl.setComponentInfo(factory.createComponentInfo());
+        impl.setComponentType(factory.createComponentType());
         impl.setScriptFile(scriptFile);
         impl.setScript(readScript(type.getClassLoader().getResourceAsStream(scriptFile)));
         impl.setResourceLoader(new ResourceLoaderImpl(type.getClassLoader()));
@@ -71,7 +71,7 @@ public class MockAssemblyFactory {
         s.setServiceContract(contract);
         contract.setScope(scope);
         contract.setInterface(type);
-        impl.getComponentInfo().getServices().add(s);
+        impl.getComponentType().getServices().add(s);
         ConfiguredService cService = factory.createConfiguredService();
         cService.setPort(s);
         cService.initialize(new AssemblyContextImpl(null, null));
@@ -91,13 +91,12 @@ public class MockAssemblyFactory {
         Module impl = systemFactory.createModule();
         impl.setName(name);
         sc.setImplementation(impl);
-        impl.setComponentInfo(getIntrospector().introspect(claz));
+        impl.setComponentType(getIntrospector().introspect(claz));
         Service s = systemFactory.createService();
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(scope);
-        //impl.setComponentInfo(systemFactory.createComponentInfo());
-        impl.getComponentInfo().getServices().add(s);
+        impl.getComponentType().getServices().add(s);
         sc.setName(name);
         sc.setImplementation(impl);
         return sc;

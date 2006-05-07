@@ -90,7 +90,7 @@ public abstract class ContextFactoryBuilderSupport<T extends Implementation> imp
             return;
         }
         Component<T> component = (Component<T>) modelObject;
-        List<Service> services = component.getImplementation().getComponentInfo().getServices();
+        List<Service> services = component.getImplementation().getComponentType().getServices();
         Scope previous = null;
         Scope scope = Scope.INSTANCE;
         for (Service service : services) {

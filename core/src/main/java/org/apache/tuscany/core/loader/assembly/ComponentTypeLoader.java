@@ -20,7 +20,7 @@ import org.apache.tuscany.core.config.ConfigurationLoadException;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.COMPONENT_TYPE;
 import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.model.assembly.AssemblyObject;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Property;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.Service;
@@ -41,9 +41,9 @@ public class ComponentTypeLoader extends AbstractLoader {
         return COMPONENT_TYPE;
     }
 
-    public ComponentInfo load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
+    public ComponentType load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         assert COMPONENT_TYPE.equals(reader.getName());
-        ComponentInfo componentType = factory.createComponentInfo();
+        ComponentType componentType = factory.createComponentType();
 
         while (true) {
             switch (reader.next()) {

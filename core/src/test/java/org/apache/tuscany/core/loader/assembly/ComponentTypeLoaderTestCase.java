@@ -21,7 +21,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Service;
 
 /**
@@ -31,7 +31,7 @@ public class ComponentTypeLoaderTestCase extends LoaderTestSupport {
 
     public void testMinimal() throws XMLStreamException, ConfigurationLoadException {
         XMLStreamReader reader = getReader("<componentType xmlns='http://www.osoa.org/xmlns/sca/0.9'><service name='service1'/></componentType>");
-        ComponentInfo type = (ComponentInfo) registry.load(reader, loaderContext);
+        ComponentType type = (ComponentType) registry.load(reader, loaderContext);
         type.initialize(null);
         assertNotNull(type);
         assertEquals(1, type.getServices().size());

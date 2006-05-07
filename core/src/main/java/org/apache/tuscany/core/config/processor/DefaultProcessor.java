@@ -21,7 +21,7 @@ import java.util.Set;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Property;
 import org.apache.tuscany.model.assembly.Reference;
 
@@ -40,7 +40,7 @@ public class DefaultProcessor extends ImplementationProcessorSupport {
     public DefaultProcessor() {
     }
 
-    public void visitEnd(Class<?> clazz, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitEnd(Class<?> clazz, ComponentType type) throws ConfigurationLoadException {
         // add any public/protected fields and public setter methods as properties
         Set<Field> fields = JavaIntrospectionHelper.getAllPublicAndProtectedFields(clazz);
         List<Property> properties = type.getProperties();
@@ -102,7 +102,7 @@ public class DefaultProcessor extends ImplementationProcessorSupport {
         return false;
     }
 
-    private void addProperty(String name, Class<?> propType, ComponentInfo type) {
+    private void addProperty(String name, Class<?> propType, ComponentType type) {
         Property property = factory.createProperty();
         property.setName(name);
         property.setRequired(false);

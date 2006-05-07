@@ -25,7 +25,7 @@ import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyVisitor;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Composite;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
@@ -50,7 +50,7 @@ import org.apache.tuscany.model.util.NotifyingList;
 public abstract class CompositeImpl extends ExtensibleImpl implements Composite {
 
     private String name;
-    private ComponentInfo componentInfo;
+    private ComponentType componentType;
     private Class<?> implementationClass;
 
     /**
@@ -143,13 +143,13 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
         return wsdlImportsMap.get(namespace);
     }
 
-    public ComponentInfo getComponentInfo() {
-        return componentInfo;
+    public ComponentType getComponentType() {
+        return componentType;
     }
 
-    public void setComponentInfo(ComponentInfo componentType) {
+    public void setComponentType(ComponentType componentType) {
         checkNotFrozen();
-        this.componentInfo = componentType;
+        this.componentType = componentType;
     }
 
     public ConfiguredService getConfiguredService(ServiceURI address) {
@@ -197,18 +197,18 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
             part.initialize(modelContext);
         }
 
-        // Derive the component info from the entry points and external services in the composite
+        // Derive the component type from the entry points and external services in the composite
         // Also derive properties from the overridable properties of the components in the composite
-        if (componentInfo == null) {
+        if (componentType == null) {
             AssemblyFactory factory = modelContext.getAssemblyFactory();
-            componentInfo = factory.createComponentInfo();
+            componentType = factory.createComponentType();
             for (EntryPoint entryPoint : getEntryPoints()) {
                 Service service = factory.createService();
                 service.setName(entryPoint.getName());
                 ServiceContract serviceContract = entryPoint.getConfiguredService().getPort().getServiceContract();
                 if (serviceContract != null)
                     service.setServiceContract(serviceContract);
-                componentInfo.getServices().add(service);
+                componentType.getServices().add(service);
 
                 ConfiguredReference configuredReference = entryPoint.getConfiguredReference();
                 ServiceURI sourceURI = factory.createServiceURI(null, entryPoint, configuredReference);
@@ -228,13 +228,13 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
                 ServiceContract serviceContract = externalService.getConfiguredService().getPort().getServiceContract();
                 if (serviceContract != null)
                     reference.setServiceContract(serviceContract);
-                componentInfo.getReferences().add(reference);
+                componentType.getReferences().add(reference);
             }
             for (Component<Implementation> component : getComponents()) {
                 for (ConfiguredProperty configuredProperty : component.getConfiguredProperties()) {
                     if (configuredProperty.getOverrideOption() == null || configuredProperty.getOverrideOption() == OverrideOption.NO)
                         continue;
-                    componentInfo.getProperties().add(configuredProperty.getProperty());
+                    componentType.getProperties().add(configuredProperty.getProperty());
                 }
 
                 for (ConfiguredReference configuredReference : component.getConfiguredReferences()) {
@@ -250,7 +250,7 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
                 }
             }
         }
-        componentInfo.initialize(modelContext);
+        componentType.initialize(modelContext);
 
         // Wire the module parts
         for (Wire wire : getWires()) {
@@ -314,9 +314,9 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
             return;
         super.freeze();
 
-        // Freeze component info
-        if (componentInfo != null)
-            componentInfo.freeze();
+        // Freeze component type
+        if (componentType != null)
+            componentType.freeze();
 
         // Freeze lists
         wsdlImports = freeze(wsdlImports);
@@ -339,8 +339,8 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
         if (!accept(wires, visitor))
             return false;
 
-        if (componentInfo != null) {
-            if (!componentInfo.accept(visitor))
+        if (componentType != null) {
+            if (!componentType.accept(visitor))
                 return false;
         }
 

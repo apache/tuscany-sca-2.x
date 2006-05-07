@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.core.config;
 
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.core.extension.config.ImplementationProcessor;
 
 /**
@@ -33,7 +33,7 @@ public interface ComponentTypeIntrospector {
      * @return a componentType definition
      * @throws ConfigurationLoadException if the Class does not define a valid component type
      */
-    ComponentInfo introspect(Class<?> implClass) throws ConfigurationLoadException;
+    ComponentType introspect(Class<?> implClass) throws ConfigurationLoadException;
 
     /**
      * Completes the given componentType definition by introspecting a Java Class.
@@ -42,7 +42,7 @@ public interface ComponentTypeIntrospector {
      * @return a componentType definition
      * @throws ConfigurationLoadException if the Class does not define a valid component type
      */
-    ComponentInfo introspect(Class<?> implClass, ComponentInfo compType) throws ConfigurationLoadException;
+    ComponentType introspect(Class<?> implClass, ComponentType compType) throws ConfigurationLoadException;
 
     /**
      * Registers an annotation processor

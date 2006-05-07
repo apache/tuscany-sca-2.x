@@ -38,7 +38,7 @@ import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.Implementation;
@@ -93,7 +93,7 @@ public class ComponentLoader extends AbstractLoader {
     }
 
     protected void loadProperties(XMLStreamReader reader, ResourceLoader resourceLoader, Component<?> component) throws XMLStreamException, ConfigurationLoadException {
-        ComponentInfo componentType = component.getImplementation().getComponentInfo();
+        ComponentType componentType = component.getImplementation().getComponentType();
         List<ConfiguredProperty> configuredProperties = component.getConfiguredProperties();
 
         while (true) {

@@ -25,7 +25,7 @@ import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyInitializationException;
 import org.apache.tuscany.model.assembly.AssemblyVisitor;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.ConfiguredPort;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
@@ -135,9 +135,9 @@ public abstract class ComponentImpl<I extends Implementation> extends PartImpl i
         implementation.initialize(modelContext);
 
         // Derive the configured services from the component implementation
-        ComponentInfo componentInfo=implementation.getComponentInfo();
+        ComponentType componentType=implementation.getComponentType();
         AssemblyFactory factory = modelContext.getAssemblyFactory();
-        for (Service service : componentInfo.getServices()) {
+        for (Service service : componentType.getServices()) {
             ConfiguredService configuredService = factory.createConfiguredService();
             configuredService.setPort(service);
             configuredServices.add(configuredService);
@@ -145,7 +145,7 @@ public abstract class ComponentImpl<I extends Implementation> extends PartImpl i
         }
 
         // Derive the configured references from the references on the component info
-        for (Reference reference : componentInfo.getReferences()) {
+        for (Reference reference : componentType.getReferences()) {
             ConfiguredReference configuredReference = configuredReferencesMap.get(reference.getName());
             if (configuredReference==null) {
                 configuredReference=factory.createConfiguredReference();
@@ -164,7 +164,7 @@ public abstract class ComponentImpl<I extends Implementation> extends PartImpl i
         }
 
         // Derive the configured properties from the properties on the component info
-        for (Property property : componentInfo.getProperties()) {
+        for (Property property : componentType.getProperties()) {
             ConfiguredProperty configuredProperty = configuredPropertiesMap.get(property.getName());
             if (configuredProperty != null) {
                 configuredProperty.setProperty(property);

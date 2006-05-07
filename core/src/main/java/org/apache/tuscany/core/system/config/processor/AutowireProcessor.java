@@ -14,7 +14,7 @@ import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.builder.BuilderConfigException;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.common.monitor.MonitorFactory;
 
 /**
@@ -25,7 +25,7 @@ import org.apache.tuscany.common.monitor.MonitorFactory;
 public class AutowireProcessor extends ImplementationProcessorSupport {
 
     @Override
-    public void visitMethod(Method method, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitMethod(Method method, ComponentType type) throws ConfigurationLoadException {
         Autowire annotation = method.getAnnotation(Autowire.class);
         if (annotation != null) {
             if (!Modifier.isPublic(method.getModifiers())) {
@@ -44,7 +44,7 @@ public class AutowireProcessor extends ImplementationProcessorSupport {
     }
 
     @Override
-    public void visitField(Field field, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitField(Field field, ComponentType type) throws ConfigurationLoadException {
         checkAutowireType(field.getType(),field.getDeclaringClass());
         int modifiers = field.getModifiers();
         Autowire annotation = field.getAnnotation(Autowire.class);

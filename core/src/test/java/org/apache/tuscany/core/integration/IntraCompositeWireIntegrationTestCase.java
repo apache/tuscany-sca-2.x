@@ -78,8 +78,8 @@ public class IntraCompositeWireIntegrationTestCase extends TestCase {
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(Scope.AGGREGATE);
-        impl.setComponentInfo(systemFactory.createComponentInfo());
-        impl.getComponentInfo().getServices().add(s);
+        impl.setComponentType(systemFactory.createComponentType());
+        impl.getComponentType().getServices().add(s);
         sc.setName(name);
         sc.setImplementation(impl);
         return sc;

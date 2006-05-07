@@ -21,7 +21,7 @@ import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.InvalidSetterException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Property;
 import org.osoa.sca.annotations.Scope;
 
@@ -41,7 +41,7 @@ public class PropertyProcessor extends ImplementationProcessorSupport {
     }
 
     @Override
-    public void visitMethod(Method method, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitMethod(Method method, ComponentType type) throws ConfigurationLoadException {
         if (method.getDeclaringClass().equals(Object.class)) {
             return;
         }
@@ -73,7 +73,7 @@ public class PropertyProcessor extends ImplementationProcessorSupport {
     }
 
     @Override
-    public void visitField(Field field, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitField(Field field, ComponentType type) throws ConfigurationLoadException {
         if (field.getDeclaringClass().equals(Object.class)) {
             return;
         }
@@ -93,7 +93,7 @@ public class PropertyProcessor extends ImplementationProcessorSupport {
         }
     }
 
-    private void addProperty(String name, Class<?> propType, boolean required, ComponentInfo type) {
+    private void addProperty(String name, Class<?> propType, boolean required, ComponentType type) {
         Property property = factory.createProperty();
         property.setName(name);
         property.setRequired(required);

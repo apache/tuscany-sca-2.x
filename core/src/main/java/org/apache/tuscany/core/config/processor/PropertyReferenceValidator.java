@@ -22,7 +22,7 @@ import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.MetaDataException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
@@ -38,7 +38,7 @@ public class PropertyReferenceValidator extends ImplementationProcessorSupport {
         super(factory);
     }
 
-    public void visitEnd(Class<?> clazz, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitEnd(Class<?> clazz, ComponentType type) throws ConfigurationLoadException {
         // validate methods do not contain both @Reference and @Property annotations
         Method[] methods = clazz.getMethods();
         boolean found;

@@ -19,7 +19,7 @@ import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.InvalidMetaDataException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
@@ -40,7 +40,7 @@ public class ServiceProcessor extends ImplementationProcessorSupport {
     }
 
     @Override
-    public void visitClass(Class<?> clazz, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitClass(Class<?> clazz, ComponentType type) throws ConfigurationLoadException {
         if (!clazz.isInterface()) {
             processImplementation(clazz,type);
         } else {
@@ -48,7 +48,7 @@ public class ServiceProcessor extends ImplementationProcessorSupport {
         }
     }
 
-    private void processImplementation(Class<?> clazz, ComponentInfo type) throws ConfigurationLoadException {
+    private void processImplementation(Class<?> clazz, ComponentType type) throws ConfigurationLoadException {
         // visiting the base implementation class
         List<org.apache.tuscany.model.assembly.Service> services = type.getServices();
         Class[] interfaces = clazz.getInterfaces();
@@ -83,7 +83,7 @@ public class ServiceProcessor extends ImplementationProcessorSupport {
 
 
     @Override
-    public void visitEnd(Class<?> clazz, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitEnd(Class<?> clazz, ComponentType type) throws ConfigurationLoadException {
         List<Service> services = type.getServices();
         if (services.size() == 0) {
             // no services processed so the class is the service
@@ -91,7 +91,7 @@ public class ServiceProcessor extends ImplementationProcessorSupport {
         }
     }
 
-    private void processInterface(Class<?> clazz, ComponentInfo type) {
+    private void processInterface(Class<?> clazz, ComponentType type) {
         List<org.apache.tuscany.model.assembly.Service> services = type.getServices();
         // the interface is a remotable service, add it
         org.osoa.sca.annotations.Remotable remotableAnnotation = clazz.getAnnotation(org.osoa.sca.annotations.Remotable.class);

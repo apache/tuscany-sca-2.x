@@ -18,7 +18,7 @@ package org.apache.tuscany.model.assembly.impl;
 
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyVisitor;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Implementation;
 
 /**
@@ -26,15 +26,15 @@ import org.apache.tuscany.model.assembly.Implementation;
  */
 public abstract class ImplementationImpl extends ExtensibleImpl implements Implementation {
     
-    private ComponentInfo componentInfo;
+    private ComponentType componentType;
     
-    public ComponentInfo getComponentInfo() {
-        return componentInfo;
+    public ComponentType getComponentType() {
+        return componentType;
     }
     
-    public void setComponentInfo(ComponentInfo componentType) {
+    public void setComponentType(ComponentType componentType) {
         checkNotFrozen();
-        this.componentInfo=componentType;
+        this.componentType=componentType;
     }
 
     public void initialize(AssemblyContext modelContext) {
@@ -42,9 +42,9 @@ public abstract class ImplementationImpl extends ExtensibleImpl implements Imple
             return;
         super.initialize(modelContext);
 
-        // Initialize the component info
-        if (componentInfo!=null) {
-            componentInfo.initialize(modelContext);
+        // Initialize the component type
+        if (componentType!=null) {
+            componentType.initialize(modelContext);
         }
         
     }
@@ -54,16 +54,16 @@ public abstract class ImplementationImpl extends ExtensibleImpl implements Imple
             return;
         super.freeze();
 
-        if (componentInfo!=null)
-            componentInfo.freeze();
+        if (componentType!=null)
+            componentType.freeze();
     }
 
     public boolean accept(AssemblyVisitor visitor) {
         if (!super.accept(visitor))
             return false;
         
-        if (componentInfo!=null) {
-            if (!componentInfo.accept(visitor))
+        if (componentType!=null) {
+            if (!componentType.accept(visitor))
                 return false;
         }
         return true;

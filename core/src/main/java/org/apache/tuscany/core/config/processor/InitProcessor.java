@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.extension.config.extensibility.InitInvokerExtensibilityElement;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.osoa.sca.annotations.Init;
 
 /**
@@ -30,7 +30,7 @@ public class InitProcessor extends ImplementationProcessorSupport {
     public InitProcessor() {
     }
 
-    public void visitMethod(Method method, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitMethod(Method method, ComponentType type) throws ConfigurationLoadException {
         Init init = method.getAnnotation(Init.class);
         if (init == null) {
             return;

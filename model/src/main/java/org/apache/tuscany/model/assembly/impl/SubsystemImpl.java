@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Subsystem;
 
 /**
@@ -38,12 +38,12 @@ public class SubsystemImpl extends CompositeImpl implements Subsystem {
         uri=value;
     }
     
-    public ComponentInfo getComponentInfo() {
+    public ComponentType getComponentType() {
         //TODO implement
         return null;
     }
     
-    public void setComponentInfo(ComponentInfo componentInfo) {
+    public void setComponentType(ComponentType componentType) {
     }
 
  

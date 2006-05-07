@@ -30,7 +30,7 @@ import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.ConfiguredPort;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
@@ -55,7 +55,7 @@ public class AssemblyVisitorTestCase extends TestCase {
     private AssemblyContext assemblyContext = new AssemblyContextImpl(factory, null, null);
      
     public void testModelVisit() throws Exception {
-        ComponentInfo componentType;
+        ComponentType componentType;
         Service service;
         SystemImplementation impl;
         Component component;
@@ -63,12 +63,12 @@ public class AssemblyVisitorTestCase extends TestCase {
         Module module = factory.createModule();
 
         // create target component
-        componentType = factory.createComponentInfo();
+        componentType = factory.createComponentType();
         service = factory.createService();
         service.setName("target");
         componentType.getServices().add(service);
         impl = factory.createSystemImplementation();
-        impl.setComponentInfo(componentType);
+        impl.setComponentType(componentType);
         component = factory.createSimpleComponent();
         component.setName("target");
         component.setImplementation(impl);
@@ -76,12 +76,12 @@ public class AssemblyVisitorTestCase extends TestCase {
         module.getComponents().add(component);
 
         // create source component
-        componentType = factory.createComponentInfo();
+        componentType = factory.createComponentType();
         Reference ref = factory.createReference();
         ref.setName("ref");
         componentType.getReferences().add(ref);
         impl = factory.createSystemImplementation();
-        impl.setComponentInfo(componentType);
+        impl.setComponentType(componentType);
         component = factory.createSimpleComponent();
         component.setName("source");
         component.setImplementation(impl);

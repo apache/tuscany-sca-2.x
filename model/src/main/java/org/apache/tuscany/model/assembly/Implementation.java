@@ -29,12 +29,12 @@ public interface Implementation extends Extensible {
      * Returns the generic component type corresponding to this implementation.
      * @return the generic component type corresponding to this implementation
      */
-    ComponentInfo getComponentInfo();
+    ComponentType getComponentType();
     
     /**
      * Sets the generic component type corresponding to this implementation.
-     * @param componentInfo the generic component type corresponding to this implementation
+     * @param componentType the generic component type corresponding to this implementation
      */
-    void setComponentInfo(ComponentInfo componentInfo);
+    void setComponentType(ComponentType componentType);
 
 }

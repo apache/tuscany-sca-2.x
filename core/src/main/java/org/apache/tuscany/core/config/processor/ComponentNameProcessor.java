@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.core.extension.config.extensibility.ComponentNameExtensibilityElement;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.osoa.sca.annotations.ComponentName;
 
 /**
@@ -33,7 +33,7 @@ public class ComponentNameProcessor extends ImplementationProcessorSupport {
         super(factory);
     }
 
-    public void visitMethod(Method method, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitMethod(Method method, ComponentType type) throws ConfigurationLoadException {
         ComponentName name = method.getAnnotation(ComponentName.class);
         if (name == null) {
             return;
@@ -41,7 +41,7 @@ public class ComponentNameProcessor extends ImplementationProcessorSupport {
         type.getExtensibilityElements().add(new ComponentNameExtensibilityElement(method));
     }
 
-    public void visitField(Field field, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitField(Field field, ComponentType type) throws ConfigurationLoadException {
         ComponentName name = field.getAnnotation(ComponentName.class);
         if (name == null) {
             return;

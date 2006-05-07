@@ -80,7 +80,7 @@ public class MonitorInjectionTestCase extends TestCase {
         MockMonitorFactory monitorFactory = new MockMonitorFactory();
         builder = new SystemContextFactoryBuilder(monitorFactory);
         component = factory.createSystemComponent("test", TestService.class, TestComponent.class, Scope.MODULE);
-        component.getImplementation().setComponentInfo(MockFactory.getIntrospector().introspect(TestComponent.class));
+        component.getImplementation().setComponentType(MockFactory.getIntrospector().introspect(TestComponent.class));
     }
 
     private static final Monitor1 MONITOR1 = new Monitor1() {

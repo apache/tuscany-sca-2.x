@@ -95,8 +95,8 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
 
             // The component is a system component, implemented by a Java class
             SystemImplementation implementation = (SystemImplementation) componentImplementation;
-            if (componentImplementation.getComponentInfo().getServices() == null
-                    || componentImplementation.getComponentInfo().getServices().size() < 1) {
+            if (componentImplementation.getComponentType().getServices() == null
+                    || componentImplementation.getComponentType().getServices().size() < 1) {
                 BuilderConfigException e = new BuilderConfigException("No service configured on component type");
                 e.setIdentifier(component.getName());
                 throw e;
@@ -104,7 +104,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
             implClass = implementation.getImplementationClass();
             Scope previous = null;
             scope = Scope.MODULE;
-            List<Service> services = component.getImplementation().getComponentInfo().getServices();
+            List<Service> services = component.getImplementation().getComponentType().getServices();
             for (Service service : services) {
                 // calculate and validate the scope of the component; ensure that all service scopes are the same unless
                 // a scope is stateless
@@ -182,7 +182,7 @@ public class SystemContextFactoryBuilder implements ContextFactoryBuilder {
                     }
                 }
             }
-            List<Object> elements = componentImplementation.getComponentInfo().getExtensibilityElements();
+            List<Object> elements = componentImplementation.getComponentType().getExtensibilityElements();
             for (Object element : elements) {
                 if (element instanceof InitInvokerExtensibilityElement) {
                     InitInvokerExtensibilityElement invokerElement = (InitInvokerExtensibilityElement) element;

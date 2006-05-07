@@ -47,7 +47,7 @@ public class JavaScriptContextFactoryBuilder extends ContextFactoryBuilderSuppor
         Map<String, Class> services = new HashMap<String, Class>();
 
         Boolean isWSDLService = null;
-        for (Service service : jsImplementation.getComponentInfo().getServices()) {
+        for (Service service : jsImplementation.getComponentType().getServices()) {
             ServiceContract sc = service.getServiceContract();
             if (sc instanceof WSDLServiceContract) {
                 if (isWSDLService != null && !isWSDLService.booleanValue()) {
@@ -64,7 +64,7 @@ public class JavaScriptContextFactoryBuilder extends ContextFactoryBuilderSuppor
         }
 
         Map<String, Object> defaultProperties = new HashMap<String, Object>();
-        for (org.apache.tuscany.model.assembly.Property property : jsImplementation.getComponentInfo().getProperties()) {
+        for (org.apache.tuscany.model.assembly.Property property : jsImplementation.getComponentType().getProperties()) {
             defaultProperties.put(property.getName(), property.getDefaultValue());
         }
 

@@ -86,7 +86,7 @@ public class ComponentLoaderTestCase extends LoaderTestSupport {
         SystemImplementation impl = assemblyFactory.createSystemImplementation();
         impl.setImplementationClass(ServiceImpl.class);
         try {
-            impl.setComponentInfo(introspector.introspect(ServiceImpl.class));
+            impl.setComponentType(introspector.introspect(ServiceImpl.class));
         } catch (ConfigurationException e) {
             throw new AssertionError();
         }

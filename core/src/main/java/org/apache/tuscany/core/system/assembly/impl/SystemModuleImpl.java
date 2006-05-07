@@ -28,7 +28,7 @@ import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyVisitor;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
@@ -52,7 +52,7 @@ public class SystemModuleImpl extends CompositeImpl implements SystemModule {
 
     private List<ModuleFragment> moduleFragments = new ArrayList<ModuleFragment>();
     private Map<String, ModuleFragment> moduleFragmentsMap;
-    private ComponentInfo componentType;
+    private ComponentType componentType;
     private Object contextFactory;
 
     /**
@@ -62,16 +62,16 @@ public class SystemModuleImpl extends CompositeImpl implements SystemModule {
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.Implementation#getComponentInfo()
+     * @see org.apache.tuscany.model.assembly.Implementation#getComponentType()
      */
-    public ComponentInfo getComponentInfo() {
+    public ComponentType getComponentType() {
         return componentType;
     }
 
     /**
-     * @see org.apache.tuscany.model.assembly.Implementation#setComponentInfo(org.apache.tuscany.model.assembly.ComponentInfo)
+     * @see org.apache.tuscany.model.assembly.Implementation#setComponentType(org.apache.tuscany.model.assembly.ComponentType)
      */
-    public void setComponentInfo(ComponentInfo componentType) {
+    public void setComponentType(ComponentType componentType) {
         checkNotFrozen();
         this.componentType = componentType;
     }

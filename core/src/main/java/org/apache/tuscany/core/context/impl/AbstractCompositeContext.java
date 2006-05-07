@@ -723,7 +723,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
     }
 
     private void registerAutowire(Component component) {
-        for (Service service : component.getImplementation().getComponentInfo().getServices()) {
+        for (Service service : component.getImplementation().getComponentType().getServices()) {
             Class interfaze = service.getServiceContract().getInterface();
             ScopeContext scopeCtx = scopeContexts.get(service.getServiceContract().getScope());
             registerAutowireInternal(interfaze, component.getName(), scopeCtx);

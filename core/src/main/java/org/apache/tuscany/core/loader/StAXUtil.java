@@ -131,7 +131,7 @@ public final class StAXUtil {
         SystemImplementation implementation = factory.createSystemImplementation();
         implementation.setImplementationClass(loaderClass);
         try {
-            implementation.setComponentInfo(introspector.introspect(loaderClass));
+            implementation.setComponentType(introspector.introspect(loaderClass));
         } catch (ConfigurationException e) {
             throw (AssertionError) new AssertionError("Invalid bootstrap loader").initCause(e);
         }
@@ -147,7 +147,7 @@ public final class StAXUtil {
 
         Component component = factory.createSystemComponent(compName, service, impl, Scope.MODULE);
         try {
-            component.getImplementation().setComponentInfo(introspector.introspect(impl));
+            component.getImplementation().setComponentType(introspector.introspect(impl));
         } catch (ConfigurationException e) {
             throw (AssertionError) new AssertionError("Invalid bootstrap loader").initCause(e);
         }

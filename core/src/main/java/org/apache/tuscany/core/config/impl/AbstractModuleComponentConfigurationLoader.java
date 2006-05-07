@@ -28,7 +28,7 @@ import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.Module;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.ModuleFragment;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 
 import java.io.IOException;
 import java.net.URL;
@@ -55,9 +55,9 @@ public abstract class AbstractModuleComponentConfigurationLoader implements Modu
     // JFM HACK
     private ComponentTypeIntrospector introspector;
 
-    private ComponentInfo systemType;
+    private ComponentType systemType;
 
-    private ComponentInfo compositeType;
+    private ComponentType compositeType;
 
     protected ComponentTypeIntrospector getIntrospector(){
         if (introspector == null){
@@ -66,14 +66,14 @@ public abstract class AbstractModuleComponentConfigurationLoader implements Modu
         return introspector;
     }
 
-    protected ComponentInfo getSystemCompositeComponentType() throws ConfigurationLoadException {
+    protected ComponentType getSystemCompositeComponentType() throws ConfigurationLoadException {
         if (systemType == null){
             systemType = getIntrospector().introspect(SystemCompositeContextImpl.class);
         }
         return systemType;
     }
 
-    protected ComponentInfo getCompositeComponentType() throws ConfigurationLoadException {
+    protected ComponentType getCompositeComponentType() throws ConfigurationLoadException {
         if (compositeType == null){
             compositeType = getIntrospector().introspect(CompositeContextImpl.class);
         }
@@ -91,7 +91,7 @@ public abstract class AbstractModuleComponentConfigurationLoader implements Modu
         ModuleComponent mc = loadModuleComponent(SYSTEM_MODULE_FILE_NAME, SYSTEM_FRAGMENT_FILE_NAME, name, uri);
         //JFM HACK  - this is completely gross since it overwrites existing component type
         mc.getImplementation().setImplementationClass(SystemCompositeContextImpl.class);
-        mc.getImplementation().setComponentInfo(getSystemCompositeComponentType());
+        mc.getImplementation().setComponentType(getSystemCompositeComponentType());
         //END HACK
         return mc;
     }
@@ -100,7 +100,7 @@ public abstract class AbstractModuleComponentConfigurationLoader implements Modu
         ModuleComponent mc = loadModuleComponent(SCA_MODULE_FILE_NAME, SCA_FRAGMENT_FILE_NAME, name, uri);
         //JFM HACK
         mc.getImplementation().setImplementationClass(CompositeContextImpl.class);
-        mc.getImplementation().setComponentInfo(getCompositeComponentType());
+        mc.getImplementation().setComponentType(getCompositeComponentType());
         //END HACK
         return mc;
     }

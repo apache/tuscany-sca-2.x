@@ -58,7 +58,7 @@ public class JavaContextFactoryBuilder extends ContextFactoryBuilderSupport<Java
                     .getDefaultConstructor(implClass), scope);
 
             List<Injector> injectors = new ArrayList<Injector>();
-            List<Object> elements = javaImpl.getComponentInfo().getExtensibilityElements();
+            List<Object> elements = javaImpl.getComponentType().getExtensibilityElements();
             for (Object element : elements) {
                 if (element instanceof InitInvokerExtensibilityElement) {
                     InitInvokerExtensibilityElement invokerElement = (InitInvokerExtensibilityElement) element;

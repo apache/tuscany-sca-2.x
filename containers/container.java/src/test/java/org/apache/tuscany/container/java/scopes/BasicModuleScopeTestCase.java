@@ -42,7 +42,7 @@ import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
 import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.model.assembly.AtomicComponent;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
@@ -131,8 +131,8 @@ public class BasicModuleScopeTestCase extends TestCase {
         AtomicComponent component = MockFactory.createComponent(name, ModuleScopeInitDestroyComponent.class,
                 Scope.MODULE);
         ComponentTypeIntrospector introspector = MockFactory.getIntrospector();
-        ComponentInfo type = introspector.introspect(ModuleScopeInitDestroyComponent.class);
-        component.getImplementation().setComponentInfo(type);
+        ComponentType type = introspector.introspect(ModuleScopeInitDestroyComponent.class);
+        component.getImplementation().setComponentType(type);
         builder.build(component);
         return (ContextFactory<Context>) component.getContextFactory();
     }

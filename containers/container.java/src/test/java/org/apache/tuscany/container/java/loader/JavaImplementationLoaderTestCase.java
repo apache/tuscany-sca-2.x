@@ -37,7 +37,7 @@ import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.loader.assembly.AssemblyConstants;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyObject;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Property;
 import org.apache.tuscany.model.assembly.Service;
 
@@ -46,10 +46,10 @@ import org.apache.tuscany.model.assembly.Service;
  */
 public class JavaImplementationLoaderTestCase extends TestCase {
     private JavaImplementationLoader loader;
-    private ComponentInfo mockType;
+    private ComponentType mockType;
 
     public void testNakedHelloWorld() throws ConfigurationLoadException {
-        ComponentInfo type = loader.loadComponentTypeByIntrospection(NakedHelloWorld.class);
+        ComponentType type = loader.loadComponentTypeByIntrospection(NakedHelloWorld.class);
         Assert.assertNotNull(type);
         Assert.assertEquals(1,type.getProperties().size());
         Assert.assertTrue(type.getReferences().isEmpty());
@@ -62,12 +62,12 @@ public class JavaImplementationLoaderTestCase extends TestCase {
         StAXLoaderRegistry mockRegistry = new MockRegistry(mockType);
         loader.setRegistry(mockRegistry);
         URL sidefile = HelloWorldImpl.class.getResource("HelloWorldImpl.componentType");
-        ComponentInfo type = loader.loadComponentTypeFromSidefile(sidefile, null);
+        ComponentType type = loader.loadComponentTypeFromSidefile(sidefile, null);
         assertSame(mockType, type);
     }
 
     public void testHelloWorldWithFieldProperties() throws ConfigurationLoadException {
-        ComponentInfo type = loader.loadComponentTypeByIntrospection(HelloWorldWithFieldProperties.class);
+        ComponentType type = loader.loadComponentTypeByIntrospection(HelloWorldWithFieldProperties.class);
         type.initialize(null);
         Assert.assertNotNull(type);
         List<Property> props = type.getProperties();
@@ -95,16 +95,16 @@ public class JavaImplementationLoaderTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         JavaAssemblyFactory factory = new JavaAssemblyFactoryImpl();
-        mockType = factory.createComponentInfo();
+        mockType = factory.createComponentType();
 
         loader = new JavaImplementationLoader();
         loader.setFactory(factory);
     }
 
     private static class MockRegistry implements StAXLoaderRegistry {
-        private final ComponentInfo mockType;
+        private final ComponentType mockType;
 
-        public MockRegistry(ComponentInfo mockType) {
+        public MockRegistry(ComponentType mockType) {
             this.mockType = mockType;
         }
 

@@ -300,7 +300,7 @@ public class AutowireTestCase extends TestCase {
         mc.setName(name);
         Module module = systemFactory.createModule();
         module.setImplementationClass(CompositeContextImpl.class);
-        module.setComponentInfo(MockFactory.getComponentType());
+        module.setComponentType(MockFactory.getComponentType());
         module.setName(name);
         module.initialize(assemblyContext);
         mc.setImplementation(module);

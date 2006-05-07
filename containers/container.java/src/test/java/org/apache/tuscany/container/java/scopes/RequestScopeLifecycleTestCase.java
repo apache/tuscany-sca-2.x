@@ -41,7 +41,7 @@ import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
 import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.model.assembly.AtomicComponent;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
@@ -125,9 +125,9 @@ public class RequestScopeLifecycleTestCase extends TestCase {
         ca[2] = MockFactory.createComponent("TestServiceDestroyOnly", RequestScopeDestroyOnlyComponent.class,
                 Scope.REQUEST);
         ComponentTypeIntrospector introspector = MockFactory.getIntrospector();
-        ca[0].getImplementation().setComponentInfo(introspector.introspect(RequestScopeInitDestroyComponent.class));
-        ca[1].getImplementation().setComponentInfo(introspector.introspect(RequestScopeInitOnlyComponent.class));
-        ca[2].getImplementation().setComponentInfo(introspector.introspect(RequestScopeDestroyOnlyComponent.class));
+        ca[0].getImplementation().setComponentType(introspector.introspect(RequestScopeInitDestroyComponent.class));
+        ca[1].getImplementation().setComponentType(introspector.introspect(RequestScopeInitOnlyComponent.class));
+        ca[2].getImplementation().setComponentType(introspector.introspect(RequestScopeDestroyOnlyComponent.class));
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
         for (AtomicComponent aCa : ca) {
             builder.build(aCa);
@@ -144,10 +144,10 @@ public class RequestScopeLifecycleTestCase extends TestCase {
         ca[1] = MockFactory.createComponent("two", RequestScopedOrderedInitPojo.class, Scope.REQUEST);
         ca[2] = MockFactory.createComponent("three", RequestScopedOrderedInitPojo.class, Scope.REQUEST);
         ComponentTypeIntrospector introspector = MockFactory.getIntrospector();
-        ComponentInfo type = introspector.introspect(RequestScopedOrderedInitPojo.class);
-        ca[0].getImplementation().setComponentInfo(type);
-        ca[1].getImplementation().setComponentInfo(type);
-        ca[2].getImplementation().setComponentInfo(type);
+        ComponentType type = introspector.introspect(RequestScopedOrderedInitPojo.class);
+        ca[0].getImplementation().setComponentType(type);
+        ca[1].getImplementation().setComponentType(type);
+        ca[2].getImplementation().setComponentType(type);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
         for (AtomicComponent aCa : ca) {
             builder.build(aCa);

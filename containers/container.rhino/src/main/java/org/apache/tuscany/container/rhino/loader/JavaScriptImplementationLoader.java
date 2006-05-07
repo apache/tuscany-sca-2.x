@@ -36,7 +36,7 @@ import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.core.loader.assembly.AssemblyConstants;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
@@ -76,10 +76,10 @@ public class JavaScriptImplementationLoader implements StAXElementLoader<JavaScr
     public JavaScriptImplementation load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         String scriptFile = reader.getAttributeValue(null, "scriptFile");
         String script = loadScript(scriptFile, loaderContext.getResourceLoader());
-        ComponentInfo componentType = loadComponentType(scriptFile, loaderContext);
+        ComponentType componentType = loadComponentType(scriptFile, loaderContext);
 
         JavaScriptImplementation jsImpl = new JavaScriptImplementation();
-        jsImpl.setComponentInfo(componentType);
+        jsImpl.setComponentType(componentType);
         jsImpl.setScriptFile(scriptFile);
         jsImpl.setScript(script);
         jsImpl.setResourceLoader(loaderContext.getResourceLoader());
@@ -116,7 +116,7 @@ public class JavaScriptImplementationLoader implements StAXElementLoader<JavaScr
         }
     }
 
-    protected ComponentInfo loadComponentType(String scriptFile, LoaderContext loaderContext) throws SidefileLoadException, MissingResourceException{
+    protected ComponentType loadComponentType(String scriptFile, LoaderContext loaderContext) throws SidefileLoadException, MissingResourceException{
         String sidefile = scriptFile.substring(0, scriptFile.lastIndexOf('.')) + ".componentType";
         URL componentTypeFile = loaderContext.getResourceLoader().getResource(sidefile);
         if (componentTypeFile == null) {
@@ -136,7 +136,7 @@ public class JavaScriptImplementationLoader implements StAXElementLoader<JavaScr
                         e.setResourceURI(componentTypeFile.toString());
                         throw e;
                     }
-                    return (ComponentInfo) registry.load(reader, loaderContext);
+                    return (ComponentType) registry.load(reader, loaderContext);
                 } finally {
                     try {
                         reader.close();

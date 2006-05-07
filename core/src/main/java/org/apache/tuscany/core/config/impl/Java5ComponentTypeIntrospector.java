@@ -31,7 +31,7 @@ import org.apache.tuscany.core.extension.config.ImplementationProcessor;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.ComponentName;
 
@@ -82,17 +82,17 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
 
     /**
      * Visits the given implementation type and calls back to {@link org.apache.tuscany.core.extension.config.ImplementationProcessor}s
-     * registered with this introspector to build up a {@link ComponentInfo}
+     * registered with this introspector to build up a {@link ComponentType}
      *
-     * @return ComponentInfo representing the implementation type metadata
+     * @return ComponentType representing the implementation type metadata
      * @throws ConfigurationLoadException if there is an error introspecting the implementation type
      */
-    public ComponentInfo introspect(Class<?> implClass) throws ConfigurationLoadException {
-        ComponentInfo compType = factory.createComponentInfo();
+    public ComponentType introspect(Class<?> implClass) throws ConfigurationLoadException {
+        ComponentType compType = factory.createComponentType();
         return introspect(implClass, compType);
     }
 
-    public ComponentInfo introspect(Class<?> implClass, ComponentInfo compType) throws ConfigurationLoadException {
+    public ComponentType introspect(Class<?> implClass, ComponentType compType) throws ConfigurationLoadException {
         for (ImplementationProcessor processor : processors) {
             processor.visitClass(implClass, compType);
         }
@@ -124,7 +124,7 @@ public class Java5ComponentTypeIntrospector implements ComponentTypeIntrospector
         return compType;
     }
 
-    private void visitSuperClass(Class<?> superClass, ComponentInfo compType) throws ConfigurationLoadException {
+    private void visitSuperClass(Class<?> superClass, ComponentType compType) throws ConfigurationLoadException {
         if (!Object.class.equals(superClass)) {
             for (ImplementationProcessor processor : processors) {
                 processor.visitSuperClass(superClass, compType);

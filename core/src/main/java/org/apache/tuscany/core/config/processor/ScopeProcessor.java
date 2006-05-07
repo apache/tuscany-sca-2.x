@@ -14,7 +14,7 @@
 package org.apache.tuscany.core.config.processor;
 
 import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 
@@ -29,7 +29,7 @@ public class ScopeProcessor extends ImplementationProcessorSupport {
     }
 
     @Override
-    public void visitEnd(Class<?> clazz, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitEnd(Class<?> clazz, ComponentType type) throws ConfigurationLoadException {
         Scope scope = null;
         org.osoa.sca.annotations.Scope annotation = clazz.getAnnotation(org.osoa.sca.annotations.Scope.class);
         if (annotation != null) {

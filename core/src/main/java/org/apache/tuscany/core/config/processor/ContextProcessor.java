@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.extension.config.extensibility.ContextExtensibilityElement;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.osoa.sca.annotations.Context;
 
 /**
@@ -31,7 +31,7 @@ public class ContextProcessor extends ImplementationProcessorSupport {
     public ContextProcessor() {
     }
 
-    public void visitMethod(Method method, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitMethod(Method method, ComponentType type) throws ConfigurationLoadException {
         Context context = method.getAnnotation(Context.class);
         if (context == null) {
             return;
@@ -39,7 +39,7 @@ public class ContextProcessor extends ImplementationProcessorSupport {
         type.getExtensibilityElements().add(new ContextExtensibilityElement(method));
     }
 
-    public void visitField(Field field, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitField(Field field, ComponentType type) throws ConfigurationLoadException {
         Context context = field.getAnnotation(Context.class);
         if (context == null) {
             return;

@@ -43,7 +43,7 @@ import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
 import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
 import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.model.assembly.AtomicComponent;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
@@ -217,8 +217,8 @@ public class BasicSessionScopeTestCase extends TestCase {
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         AtomicComponent component = MockFactory.createComponent("TestService1", SessionScopeComponentImpl.class, Scope.SESSION);
         ComponentTypeIntrospector introspector = MockFactory.getIntrospector();
-        ComponentInfo type = introspector.introspect(SessionScopeComponentImpl.class);
-        component.getImplementation().setComponentInfo(type);
+        ComponentType type = introspector.introspect(SessionScopeComponentImpl.class);
+        component.getImplementation().setComponentType(type);
         builder.build(component);
         List<ContextFactory<Context>> configs = new ArrayList<ContextFactory<Context>>();
         configs.add((ContextFactory<Context>) component.getContextFactory());
@@ -230,8 +230,8 @@ public class BasicSessionScopeTestCase extends TestCase {
         JavaContextFactoryBuilder builder = new JavaContextFactoryBuilder(wireService);
         AtomicComponent component = MockFactory.createComponent(name, SessionScopeInitDestroyComponent.class, Scope.SESSION);
         ComponentTypeIntrospector introspector = MockFactory.getIntrospector();
-        ComponentInfo type = introspector.introspect(SessionScopeInitDestroyComponent.class);
-        component.getImplementation().setComponentInfo(type);
+        ComponentType type = introspector.introspect(SessionScopeInitDestroyComponent.class);
+        component.getImplementation().setComponentType(type);
         builder.build(component);
         return (ContextFactory<Context>) component.getContextFactory();
     }

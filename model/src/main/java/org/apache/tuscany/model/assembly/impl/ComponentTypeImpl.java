@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyVisitor;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Port;
 import org.apache.tuscany.model.assembly.Property;
 import org.apache.tuscany.model.assembly.Reference;
@@ -30,9 +30,9 @@ import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.util.NotifyingList;
 
 /**
- * An implementation of ComponentInfo.
+ * An implementation of ComponentType.
  */
-public class ComponentInfoImpl extends ExtensibleImpl implements ComponentInfo {
+public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType {
     
     /**
      * A list of ports synchronized with a map
@@ -75,7 +75,7 @@ public class ComponentInfoImpl extends ExtensibleImpl implements ComponentInfo {
     private Map<String, Property> propertiesMap=new HashMap<String, Property>();
     private List<Property> properties=new PropertyList<Property>();
 
-    protected ComponentInfoImpl() {
+    protected ComponentTypeImpl() {
     }
 
     public List<Reference> getReferences() {

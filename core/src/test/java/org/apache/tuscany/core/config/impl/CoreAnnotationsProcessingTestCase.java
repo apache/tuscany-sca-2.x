@@ -21,7 +21,7 @@ import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.core.config.processor.ProcessorUtils;
 import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.Scope;
@@ -37,7 +37,7 @@ public class CoreAnnotationsProcessingTestCase extends TestCase {
     private AssemblyFactory factory;
 
     public void testServiceBasicProcessing() throws Exception {
-        ComponentInfo type = factory.createComponentInfo();
+        ComponentType type = factory.createComponentType();
         introspector.introspect(TestComponentImpl.class, type);
         assertEquals(1, type.getServices().size());
         ServiceContract contract = type.getServices().get(0).getServiceContract();
@@ -46,7 +46,7 @@ public class CoreAnnotationsProcessingTestCase extends TestCase {
     }
 
     public void testServiceNameSet() throws Exception {
-        ComponentInfo type = factory.createComponentInfo();
+        ComponentType type = factory.createComponentType();
         introspector.introspect(TestComponentImpl.class, type);
         assertEquals(1, type.getServices().size());
         Service service = type.getServices().get(0);
@@ -57,7 +57,7 @@ public class CoreAnnotationsProcessingTestCase extends TestCase {
      * Tests the case where a class implements one interface not marked as with <code>Remotable</code>
      */
     public void testSingleServiceProcessing() throws Exception {
-        ComponentInfo type = factory.createComponentInfo();
+        ComponentType type = factory.createComponentType();
         introspector.introspect(TestLocalComponentImpl.class, type);
         assertEquals(1, type.getServices().size());
         ServiceContract contract = type.getServices().get(0).getServiceContract();
@@ -70,7 +70,7 @@ public class CoreAnnotationsProcessingTestCase extends TestCase {
      * single interface it directly implements
      */
     public void testInteraceHierarchyServiceProcessing() throws Exception {
-        ComponentInfo type = factory.createComponentInfo();
+        ComponentType type = factory.createComponentType();
         introspector.introspect(SuperFooImpl.class, type);
         assertEquals(1, type.getServices().size());
         ServiceContract contract = type.getServices().get(0).getServiceContract();
@@ -82,7 +82,7 @@ public class CoreAnnotationsProcessingTestCase extends TestCase {
      * and one marked with <code>@Remotable</code>
      */
     public void testMutlipleServiceProcessing() throws Exception {
-        ComponentInfo type = factory.createComponentInfo();
+        ComponentType type = factory.createComponentType();
         introspector.introspect(TestMultipleInterfacesComponentImpl.class, type);
         assertEquals(2, type.getServices().size());
         for (Service service : type.getServices()) {
@@ -98,7 +98,7 @@ public class CoreAnnotationsProcessingTestCase extends TestCase {
      * <code>@Service</code>
      */
     public void testNonServiceProcessing() throws Exception {
-        ComponentInfo type = factory.createComponentInfo();
+        ComponentType type = factory.createComponentType();
         introspector.introspect(TestNonServiceInterfacesImpl.class, type);
         assertEquals(1, type.getServices().size());
         ServiceContract contract = type.getServices().get(0).getServiceContract();
@@ -111,7 +111,7 @@ public class CoreAnnotationsProcessingTestCase extends TestCase {
      * <code>@Service</code>
      */
     public void testNonServiceSpecifiedProcessing() throws Exception {
-        ComponentInfo type = factory.createComponentInfo();
+        ComponentType type = factory.createComponentType();
         introspector.introspect(TestNonServiceSpecifiedImpl.class, type);
         assertEquals(1, type.getServices().size());
         ServiceContract contract = type.getServices().get(0).getServiceContract();
@@ -123,7 +123,7 @@ public class CoreAnnotationsProcessingTestCase extends TestCase {
      * Tests the case where a component's scope is specified by its superclass
      */
     public void testParentScopeEvaluation() throws Exception {
-        ComponentInfo type = factory.createComponentInfo();
+        ComponentType type = factory.createComponentType();
         introspector.introspect(ScopeTestComponent.class, type);
         assertEquals(1, type.getServices().size());
         ServiceContract contract = type.getServices().get(0).getServiceContract();
@@ -132,7 +132,7 @@ public class CoreAnnotationsProcessingTestCase extends TestCase {
 
     /**
      * FIXME JFM - temporarily disabled until non-annotated properties are fixed public void
-     * testPropertyProcessing() throws Exception { ComponentInfo type = factory.createComponentInfo();
+     * testPropertyProcessing() throws Exception { ComponentType type = factory.createComponentType();
      * introspector.introspect(TestComponentImpl.class, type); List<Property>properties =
      * type.getProperties(); assertEquals(3, properties.size()); for (Property property : properties) { if
      * (!property.getName().equals("foo") && !property.getName().equals("fooRequired") &&
@@ -142,7 +142,7 @@ public class CoreAnnotationsProcessingTestCase extends TestCase {
      */
 
     public void testReferenceProcessing() throws Exception {
-        ComponentInfo type = factory.createComponentInfo();
+        ComponentType type = factory.createComponentType();
         introspector.introspect(TestComponentImpl.class, type);
         List<Reference>references = type.getReferences();
         assertEquals(5, references.size());

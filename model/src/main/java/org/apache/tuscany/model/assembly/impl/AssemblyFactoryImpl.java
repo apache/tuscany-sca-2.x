@@ -20,7 +20,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.model.assembly.Part;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.ConfiguredPort;
 import org.apache.tuscany.model.assembly.ConfiguredProperty;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
@@ -62,8 +62,8 @@ public class AssemblyFactoryImpl implements AssemblyFactory {
         return new AtomicComponentImpl();
     }
 
-    public ComponentInfo createComponentInfo() {
-        return new ComponentInfoImpl();
+    public ComponentType createComponentType() {
+        return new ComponentTypeImpl();
     }
 
     public EntryPoint createEntryPoint() {

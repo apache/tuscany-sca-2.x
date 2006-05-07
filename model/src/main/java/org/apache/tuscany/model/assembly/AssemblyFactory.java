@@ -34,11 +34,11 @@ public interface AssemblyFactory {
     AtomicComponent createSimpleComponent();
 
     /**
-     * Returns a new ComponentInfo.
+     * Returns a new ComponentType.
      *
-     * @return a new ComponentInfo
+     * @return a new ComponentType
      */
-    ComponentInfo createComponentInfo();
+    ComponentType createComponentType();
 
     /**
      * Returns a new EntryPoint.

@@ -38,7 +38,7 @@ import org.apache.tuscany.core.loader.StAXElementLoader;
 import org.apache.tuscany.core.loader.StAXLoaderRegistry;
 import org.apache.tuscany.core.loader.assembly.AssemblyConstants;
 import org.apache.tuscany.core.system.annotation.Autowire;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
@@ -88,7 +88,7 @@ public class JavaImplementationLoader implements StAXElementLoader<JavaImplement
         String typeName = reader.getAttributeValue(null, "class");
         Class<?> implementationClass = getImplementationClass(loaderContext.getResourceLoader(), typeName);
         javaImpl.setImplementationClass(implementationClass);
-        javaImpl.setComponentInfo(loadComponentType(loaderContext, implementationClass));
+        javaImpl.setComponentType(loadComponentType(loaderContext, implementationClass));
         return javaImpl;
     }
 
@@ -105,7 +105,7 @@ public class JavaImplementationLoader implements StAXElementLoader<JavaImplement
         }
     }
 
-    protected ComponentInfo loadComponentType(LoaderContext loaderContext, Class<?> implClass) throws ConfigurationLoadException, XMLStreamException {
+    protected ComponentType loadComponentType(LoaderContext loaderContext, Class<?> implClass) throws ConfigurationLoadException, XMLStreamException {
         String baseName = JavaIntrospectionHelper.getBaseName(implClass);
         URL sidefile = implClass.getResource(baseName + ".componentType");
         if (sidefile == null) {
@@ -115,11 +115,11 @@ public class JavaImplementationLoader implements StAXElementLoader<JavaImplement
         }
     }
 
-    protected ComponentInfo loadComponentTypeByIntrospection(Class<?> implClass) throws ConfigurationLoadException {
+    protected ComponentType loadComponentTypeByIntrospection(Class<?> implClass) throws ConfigurationLoadException {
         return introspector.introspect(implClass);
     }
 
-    protected ComponentInfo loadComponentTypeFromSidefile(URL sidefile, LoaderContext loaderContext) throws SidefileLoadException {
+    protected ComponentType loadComponentTypeFromSidefile(URL sidefile, LoaderContext loaderContext) throws SidefileLoadException {
         try {
             XMLStreamReader reader;
             InputStream is;
@@ -133,7 +133,7 @@ public class JavaImplementationLoader implements StAXElementLoader<JavaImplement
                         e.setResourceURI(sidefile.toString());
                         throw e;
                     }
-                    return (ComponentInfo) registry.load(reader, loaderContext);
+                    return (ComponentType) registry.load(reader, loaderContext);
                 } finally {
                     try {
                         reader.close();

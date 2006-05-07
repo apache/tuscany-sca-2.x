@@ -22,7 +22,7 @@ import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.InvalidSetterException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.model.assembly.Multiplicity;
 import org.apache.tuscany.model.assembly.Reference;
 import org.apache.tuscany.model.assembly.ServiceContract;
@@ -44,7 +44,7 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
     }
 
     @Override
-    public void visitMethod(Method method, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitMethod(Method method, ComponentType type) throws ConfigurationLoadException {
         if(method.getDeclaringClass().equals(Object.class)){
             return;
         }
@@ -80,7 +80,7 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
     }
 
     @Override
-    public void visitField(Field field, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitField(Field field, ComponentType type) throws ConfigurationLoadException {
         if(field.getDeclaringClass().equals(Object.class)){
             return;
         }
@@ -100,7 +100,7 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         }
     }
 
-    private void addReference(String name, Class<?> paramType, boolean required, ComponentInfo type) {
+    private void addReference(String name, Class<?> paramType, boolean required, ComponentType type) {
         Reference reference = factory.createReference();
         reference.setName(name);
         ServiceContract contract = factory.createJavaServiceContract();

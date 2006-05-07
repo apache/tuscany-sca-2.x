@@ -9,7 +9,7 @@ import org.apache.tuscany.core.config.InvalidSetterException;
 import org.apache.tuscany.core.config.processor.ImplementationProcessorSupport;
 import org.apache.tuscany.core.system.annotation.Monitor;
 import org.apache.tuscany.core.system.config.extensibility.MonitorExtensibilityElement;
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 
 /**
  * Processes {@link org.apache.tuscany.core.system.annotation.Autowire} annotations
@@ -19,7 +19,7 @@ import org.apache.tuscany.model.assembly.ComponentInfo;
 public class MonitorProcessor extends ImplementationProcessorSupport {
 
     @Override
-    public void visitMethod(Method method, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitMethod(Method method, ComponentType type) throws ConfigurationLoadException {
         Monitor annotation = method.getAnnotation(Monitor.class);
         if (annotation != null) {
             if (!Modifier.isPublic(method.getModifiers())) {
@@ -37,7 +37,7 @@ public class MonitorProcessor extends ImplementationProcessorSupport {
     }
 
     @Override
-    public void visitField(Field field, ComponentInfo type) throws ConfigurationLoadException {
+    public void visitField(Field field, ComponentType type) throws ConfigurationLoadException {
         int modifiers = field.getModifiers();
         Monitor annotation = field.getAnnotation(Monitor.class);
         if (annotation != null) {

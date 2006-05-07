@@ -17,15 +17,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.model.assembly.ComponentInfo;
+import org.apache.tuscany.model.assembly.ComponentType;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 
 /**
- * Implementations process a Java class and contribute to a {@link org.apache.tuscany.model.assembly.ComponentInfo}
- * or provide some validation function. Implementations may contribute to defined <code>ComponentInfo</code>
+ * Implementations process a Java class and contribute to a {@link org.apache.tuscany.model.assembly.ComponentType}
+ * or provide some validation function. Implementations may contribute to defined <code>ComponentType</code>
  * metadata, a general <code>ComponentType</code> extensibility element, or a more specific Java extensibility
  * element, which is associated with {@link org.apache.tuscany.core.extension.config.JavaExtensibilityElement} and
- * stored in the <code>ComponentInfo</code>'s extensibility collection. Processors will typically use {@link
+ * stored in the <code>ComponentType</code>'s extensibility collection. Processors will typically use {@link
  * JavaExtensibilityHelper#getExtensibilityElement(org.apache.tuscany.model.assembly.Extensible)}, which
  * provides methods for retrieving the Java extensibility element.
  * <p/>
@@ -50,16 +50,16 @@ import org.apache.tuscany.core.config.ConfigurationLoadException;
  */
 public interface ImplementationProcessor {
 
-    public void visitClass(Class<?> clazz, ComponentInfo type) throws ConfigurationLoadException;
+    public void visitClass(Class<?> clazz, ComponentType type) throws ConfigurationLoadException;
 
-    public void visitSuperClass(Class<?> clazz, ComponentInfo type) throws ConfigurationLoadException;
+    public void visitSuperClass(Class<?> clazz, ComponentType type) throws ConfigurationLoadException;
 
-    public void visitMethod(Method method, ComponentInfo type) throws ConfigurationLoadException;
+    public void visitMethod(Method method, ComponentType type) throws ConfigurationLoadException;
 
-    public void visitConstructor(Constructor<?> constructor, ComponentInfo type) throws ConfigurationLoadException;
+    public void visitConstructor(Constructor<?> constructor, ComponentType type) throws ConfigurationLoadException;
 
-    public void visitField(Field field, ComponentInfo type) throws ConfigurationLoadException;
+    public void visitField(Field field, ComponentType type) throws ConfigurationLoadException;
 
-    public void visitEnd(Class<?> clazz, ComponentInfo type) throws ConfigurationLoadException;
+    public void visitEnd(Class<?> clazz, ComponentType type) throws ConfigurationLoadException;
 
 }
