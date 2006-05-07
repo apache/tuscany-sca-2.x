@@ -68,8 +68,20 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
             outMC.setEnvelope(soapEnvelope);
             outMC.getOperationContext().setProperty(Constants.RESPONSE_WRITTEN, Constants.VALUE_TRUE);
 
+        } catch (InvocationRuntimeException e) {
+           // throw new InvocationRuntimeException(e);
+            Throwable t = e.getCause();
+            if(t instanceof Exception) {
+               
+                throw AxisFault.makeFault((Exception)t);
+                
+            }
+            throw e;
+        
+        
         } catch (Exception e) {
-            throw new InvocationRuntimeException(e);
+            throw AxisFault.makeFault(e);
         }
+
     }
 }
