@@ -128,9 +128,27 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
         uri.setString("/testContext/magicServlet");
         MappingData mappingData = new MappingData();
         ctx.getMapper().map(uri, mappingData);
-        assertEquals("/magicServlet", mappingData.requestPath.getString());
+        assertTrue(mappingData.requestPath.equals("/magicServlet"));
 
         assertSame(servlet, tuscanyHost.getMapping("/testContext/magicServlet"));
+        host.removeChild(ctx);
+    }
+
+    public void testServletMappingWithWildard() throws Exception {
+        TuscanyHost tuscanyHost = (TuscanyHost) host;
+        host.addChild(ctx);
+
+        MockServlet servlet = new MockServlet();
+        tuscanyHost.registerMapping("/testContext/magicServlet/*", servlet);
+        assertSame(ctx, host.map("/testContext/magicServlet/foo"));
+        MessageBytes uri = MessageBytes.newInstance();
+        uri.setString("/testContext/magicServlet/foo");
+        MappingData mappingData = new MappingData();
+        mappingData.recycle();
+        ctx.getMapper().map(uri, mappingData);
+        assertTrue(mappingData.requestPath.equals("/magicServlet/foo"));
+
+        assertSame(servlet, tuscanyHost.getMapping("/testContext/magicServlet/bar"));
         host.removeChild(ctx);
     }
 
