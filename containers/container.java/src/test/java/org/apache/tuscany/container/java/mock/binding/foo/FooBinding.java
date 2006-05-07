@@ -13,16 +13,19 @@
  */
 package org.apache.tuscany.container.java.mock.binding.foo;
 
+import java.util.Map;
+
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyVisitor;
 import org.apache.tuscany.model.assembly.Binding;
+import org.apache.tuscany.model.Binding;
 
 /**
  * Represents a mock binding that echoes back a single parameter
  * 
  * @version $Rev$ $Date$
  */
-public class FooBinding implements Binding {
+public class FooBinding extends Binding {
 
     public FooBinding() {
     }
@@ -34,25 +37,8 @@ public class FooBinding implements Binding {
     public void setURI(String value) {
     }
 
-    public void initialize(AssemblyContext modelContext) {
-    }
-
-    public void freeze() {
-    }
-
-    public boolean accept(AssemblyVisitor visitor) {
-        return true;
-    }
-
-    private Object contextFactory;
-
-    public void setContextFactory(Object factory) {
-        contextFactory = factory;
-    }
-
-    public Object getContextFactory() {
-        System.out.println("retting");
-        return contextFactory;
+    public Map<?, ?> getExtensions() {
+        return super.getExtensions();
     }
 
 }

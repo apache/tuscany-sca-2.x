@@ -2,10 +2,12 @@ package org.apache.tuscany.core.context.scope;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.core.context.event.HttpSessionEnd;
+import org.apache.tuscany.core.context.event.HttpSessionStart;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.InstanceContext;
@@ -37,8 +39,14 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
 
     public void onEvent(Event event) {
         checkInit();
-        if (event instanceof HttpSessionEnd) {
-            checkInit();
+        if (event instanceof HttpSessionStart) {
+            Object key = ((HttpSessionStart) event).getId();
+            for (Map.Entry<AtomicContext, Map<Object, InstanceContext>> entry : contexts.entrySet()) {
+                if(entry.getKey().isEagerInit()){
+                    getInstance(entry.getKey(),key);
+                }
+            }
+        } else if (event instanceof HttpSessionEnd) {
             shutdownInstances(((HttpSessionEnd) event).getId());
         }
     }
@@ -62,8 +70,13 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
     }
 
     public InstanceContext getInstanceContext(AtomicContext context) throws TargetException {
-        Map<Object, InstanceContext> contextMap = contexts.get(context);
         Object key = workContext.getIdentifier(HTTP_IDENTIFIER);
+        assert(key != null):"HTTP session key not bound in work context";
+        return getInstance(context, key);
+    }
+
+    private InstanceContext getInstance(AtomicContext context, Object key) {
+        Map<Object, InstanceContext> contextMap = contexts.get(context);
         InstanceContext ctx = contextMap.get(key);
         if (ctx == null) {
             ctx = context.createInstance();
@@ -78,16 +91,24 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
             }
         }
         return ctx;
+
     }
 
     private void shutdownInstances(Object key) {
-        List<InstanceContext> destroyQueue = destroyQueues.get(key);
+        List<InstanceContext> destroyQueue = destroyQueues.remove(key);
         if (destroyQueue != null) {
             for (Map<Object, InstanceContext> map : contexts.values()) {
                 map.remove(key);
             }
-            for (InstanceContext ctx : destroyQueue) {
-                ctx.stop();
+            ListIterator<InstanceContext> iter = destroyQueue.listIterator(destroyQueue.size());
+            synchronized (destroyQueue) {
+                while (iter.hasPrevious()) {
+                    try {
+                        iter.previous().stop();
+                    } catch (TargetException e) {
+                        // TODO send a monitoring event
+                    }
+                }
             }
         }
     }

@@ -43,8 +43,8 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
     public void onEvent(Event event) {
         checkInit();
         if (event instanceof ModuleStart) {
-            lifecycleState = RUNNING;
             eagerInitContexts();
+            lifecycleState = RUNNING;
         } else if (event instanceof ModuleStop) {
             shutdownContexts();
         }
@@ -68,7 +68,6 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
      * Notifies instanceContexts of a shutdown in reverse order to which they were started
      */
     private void shutdownContexts() {
-        checkInit();
         if (destroyQueue.size() == 0) {
             return;
         }
@@ -76,10 +75,7 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
             // shutdown destroyable instances in reverse instantiation order
             ListIterator<InstanceContext> iter = destroyQueue.listIterator(destroyQueue.size());
             while (iter.hasPrevious()) {
-                InstanceContext context = iter.previous();
-                if (context.getLifecycleState() == RUNNING) {
-                    context.stop();
-                }
+                iter.previous().stop();
             }
             destroyQueue.clear();
         }
@@ -105,13 +101,12 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
     }
 
     private void eagerInitContexts() throws CoreRuntimeException {
-        checkInit();
         for (Map.Entry<AtomicContext, InstanceContext> entry : instanceContexts.entrySet()) {
             AtomicContext context = entry.getKey();
             if (context.isEagerInit()) {
                 InstanceContext instanceCtx = context.createInstance();
                 instanceContexts.put(context, instanceCtx);
-                instanceCtx.start();
+                destroyQueue.add(instanceCtx);
             }
         }
 

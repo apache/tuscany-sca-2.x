@@ -22,6 +22,8 @@ import org.apache.tuscany.container.java.invocation.mock.SimpleTargetImpl;
 import org.apache.tuscany.core.message.Message;
 import org.apache.tuscany.core.message.MessageFactory;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
+import org.apache.tuscany.core.wire.MessageImpl;
+import org.apache.tuscany.spi.wire.Message;
 
 /**
  * Tests invoking on a different interface from the one actually implemented by the target
@@ -32,15 +34,13 @@ public class MediationTestCase extends TestCase {
 
     private Method hello;
 
-    private MessageFactory msgFactory = new MessageFactoryImpl();
-
     public void setUp() throws Exception {
         hello = Hello.class.getMethod("hello", String.class);
     }
 
     public void testMediation() throws Exception {
         StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(hello, new SimpleTargetImpl());
-        Message msg = msgFactory.createMessage();
+        Message msg = new MessageImpl();
         msg.setBody("foo");
         Assert.assertEquals("foo", invoker.invoke(msg).getBody());
     }

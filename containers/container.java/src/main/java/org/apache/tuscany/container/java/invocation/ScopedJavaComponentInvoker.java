@@ -19,6 +19,9 @@ package org.apache.tuscany.container.java.invocation;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.QualifiedName;
 
 import java.lang.reflect.Method;
 

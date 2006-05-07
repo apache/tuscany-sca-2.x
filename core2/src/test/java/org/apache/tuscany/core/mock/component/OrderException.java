@@ -14,32 +14,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.java.invocation.mock;
+package org.apache.tuscany.core.mock.component;
 
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.Message;
+public class OrderException extends Exception {
 
-public class MockSyncInterceptor implements Interceptor {
-
-    private int count;
-
-    private Interceptor next;
-
-    public MockSyncInterceptor() {
+    public OrderException() {
+        super();
     }
 
-    public Message invoke(Message msg) {
-        ++count;
-        //System.out.println("Invoking interceptor");
-        return next.invoke(msg);
+    public OrderException(String message) {
+        super(message);
     }
 
-    public int getCount() {
-        return count;
+    public OrderException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public void setNext(Interceptor next) {
-        this.next = next;
+    public OrderException(Throwable cause) {
+        super(cause);
     }
+
 }
 

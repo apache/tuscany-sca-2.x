@@ -18,7 +18,6 @@ public class ModuleStop extends AbstractEvent implements ModuleEvent{
      */
     public ModuleStop(Object source, CompositeContext ctx) {
         super(source);
-        assert(ctx != null): "Module composite context was null";
         context = ctx;
     }
 

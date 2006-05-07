@@ -18,7 +18,6 @@ public class ModuleStart extends AbstractEvent implements ModuleEvent {
      */
     public ModuleStart(Object source, CompositeContext ctx) {
         super(source);
-        assert(ctx != null): "Module composite context was null";
         context = ctx;
     }
 

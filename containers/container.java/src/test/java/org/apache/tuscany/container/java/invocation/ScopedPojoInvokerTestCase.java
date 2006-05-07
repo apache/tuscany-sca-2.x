@@ -25,6 +25,9 @@ import org.apache.tuscany.container.java.invocation.mock.SimpleTarget;
 import org.apache.tuscany.container.java.mock.MockScopeContext;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
+import org.apache.tuscany.core.mock.context.scope.MockScopeContext;
+import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.QualifiedName;
 
 public class ScopedPojoInvokerTestCase extends TestCase {
 

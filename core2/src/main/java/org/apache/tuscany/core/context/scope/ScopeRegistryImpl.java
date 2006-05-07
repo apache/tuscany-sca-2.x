@@ -1,14 +1,13 @@
 package org.apache.tuscany.core.context.scope;
 
-import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.context.ScopeNotFoundException;
 import org.apache.tuscany.spi.context.ScopeRegistry;
 
 /**
@@ -16,32 +15,62 @@ import org.apache.tuscany.spi.context.ScopeRegistry;
  */
 public class ScopeRegistryImpl implements ScopeRegistry {
 
-    private final Map<CompositeContext, List<ScopeContext>> cache;
-    private final List<ObjectFactory<ScopeContext>> factories;
+    private final Map<CompositeContext, ScopeContext> moduleScopeCache;
+    private final Map<Scope, ObjectFactory<ScopeContext>> factoryCache;
 
     public ScopeRegistryImpl() {
-        cache = new ConcurrentHashMap<CompositeContext, List<ScopeContext>>();
-        factories = new CopyOnWriteArrayList<ObjectFactory<ScopeContext>>();
+        moduleScopeCache = new ConcurrentHashMap<CompositeContext, ScopeContext>();
+        factoryCache = new ConcurrentHashMap<Scope, ObjectFactory<ScopeContext>>();
     }
 
-    public List<ScopeContext> getScopeContexts(CompositeContext module) {
-        List<ScopeContext> scopes = cache.get(module);
-        if (scopes == null){
-            scopes = new ArrayList<ScopeContext>();
-            for (ObjectFactory<ScopeContext> factory : factories) {
-                scopes.add(factory.getInstance());
+    public ScopeContext getScopeContext(Scope scope, CompositeContext remotableContext) {
+        if (Scope.MODULE == scope) {
+            ScopeContext moduleScope = moduleScopeCache.get(remotableContext);
+            if (moduleScope == null) {
+                ObjectFactory<ScopeContext> factory = factoryCache.get(scope);
+                if (factory == null) {
+                    ScopeNotFoundException e = new ScopeNotFoundException("Scope object factor not registered for scope");
+                    e.setIdentifier("MODULE");
+                    throw e;
+                }
+                moduleScope = factory.getInstance();
+                moduleScopeCache.put(remotableContext, moduleScope);
             }
-            cache.put(module,scopes);
+            return moduleScope;
         }
-        return scopes;
+        ObjectFactory<ScopeContext> factory = factoryCache.get(scope);
+        if (factory == null) {
+            ScopeNotFoundException e = new ScopeNotFoundException("Scope object factor not registered for scope");
+            switch (scope) {
+                case AGGREGATE:
+                    e.setIdentifier("AGGREGATE");
+                    break;
+                case SESSION:
+                    e.setIdentifier("SESSION");
+                    break;
+                case REQUEST:
+                    e.setIdentifier("REQUEST");
+                    break;
+                case INSTANCE:
+                    e.setIdentifier("INSTANCE");
+                    break;
+                default:
+                    e.setIdentifier("UNKNOWN");
+                    break;
+            }
+            throw e;
+
+        }
+
+        return null;
     }
 
-    public void registerFactory(ObjectFactory<ScopeContext> factory) {
-        factories.add(factory);
+    public void registerFactory(Scope scope, ObjectFactory<ScopeContext> factory) {
+        factoryCache.put(scope, factory);
     }
 
-    public void deRegisterFactory(ObjectFactory<ScopeContext> factory) {
-       factories.remove(factory);
+    public void deregisterFactory(Scope scope) {
+        factoryCache.remove(scope);
     }
 
 

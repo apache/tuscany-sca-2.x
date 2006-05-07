@@ -20,12 +20,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import org.apache.tuscany.core.config.JavaIntrospectionHelper;
-import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.wire.Interceptor;
-import org.apache.tuscany.core.wire.InvocationRuntimeException;
-import org.apache.tuscany.core.wire.TargetInvoker;
-import org.apache.tuscany.core.message.Message;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.context.TargetException;
 
 /**
  * Base class for dispatching to a Java based component implementation. Subclasses implement a strategy for resolving

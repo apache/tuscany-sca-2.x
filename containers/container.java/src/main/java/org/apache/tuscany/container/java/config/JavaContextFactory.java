@@ -52,7 +52,7 @@ import java.util.Set;
  *
  * @version $Rev$ $Date$
  */
-public class JavaContextFactory implements ContextFactory<AtomicContext>, ContextResolver {
+public class JavaContextFactory{ //implements ContextFactory<AtomicContext>, ContextResolver {
 
     // the component name as configured in the hosting module
     private String name;

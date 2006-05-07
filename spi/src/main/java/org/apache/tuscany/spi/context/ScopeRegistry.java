@@ -16,14 +16,17 @@ package org.apache.tuscany.spi.context;
 import java.util.List;
 
 import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.model.Scope;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public interface ScopeRegistry {
 
-    List<ScopeContext> getScopeContexts(CompositeContext module);
+    ScopeContext getScopeContext(Scope scope,CompositeContext remotableContext) throws ScopeNotFoundException;
 
-    void registerFactory(ObjectFactory<ScopeContext> factory);
-    
+    void registerFactory(Scope scope, ObjectFactory<ScopeContext> factory);
+
+    void deregisterFactory(Scope scope);
+
 }

@@ -39,7 +39,7 @@ public class SystemAtomicContext extends PojoAtomicContext {
     }
 
     public Object getInstance(QualifiedName qName) throws TargetException {
-        return scopeContext.getInstance(this);
+        return getTargetInstance();
     }
 
     public void addTargetWireFactory(String serviceName, TargetWireFactory factory) {
