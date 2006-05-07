@@ -32,13 +32,13 @@
             <groupId>org.apache.tuscany</groupId>
             <artifactId>tuscany-core</artifactId>
             <version>${pom.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca.containers</groupId>
             <artifactId>tuscany-container-java</artifactId>
             <version>${pom.version}</version>
-            <scope>runtime</scope>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
