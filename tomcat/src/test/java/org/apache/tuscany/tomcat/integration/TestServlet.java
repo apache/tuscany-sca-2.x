@@ -47,7 +47,7 @@ public class TestServlet extends GenericServlet {
             throw new ServletException("No module context returned");
         }
         String name = moduleContext.getName();
-        if (!"testContext".equals(name)) {
+        if (!"/testContext".equals(name)) {
             throw new ServletException("Invalid module context name: " + name);
         }
 

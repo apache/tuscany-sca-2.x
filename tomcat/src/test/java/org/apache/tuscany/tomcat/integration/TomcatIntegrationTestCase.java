@@ -118,15 +118,19 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
     }
 
     public void testServletMapping() throws Exception {
+        TuscanyHost tuscanyHost = (TuscanyHost) host;
         host.addChild(ctx);
 
-        ((TuscanyHost)host).registerMapping("testContext/magicServlet", new MockServlet());
-        assertSame(ctx, host.map("testContext/magicServlet"));
+        MockServlet servlet = new MockServlet();
+        tuscanyHost.registerMapping("/testContext/magicServlet", servlet);
+        assertSame(ctx, host.map("/testContext/magicServlet"));
         MessageBytes uri = MessageBytes.newInstance();
-        uri.setString("testContext/magicServlet");
+        uri.setString("/testContext/magicServlet");
         MappingData mappingData = new MappingData();
         ctx.getMapper().map(uri, mappingData);
         assertEquals("/magicServlet", mappingData.requestPath.getString());
+
+        assertSame(servlet, tuscanyHost.getMapping("/testContext/magicServlet"));
         host.removeChild(ctx);
     }
 
@@ -144,7 +148,7 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
         // create the webapp Context
         ctx = new StandardContext();
         ctx.addLifecycleListener(new ContextConfig());
-        ctx.setName("testContext");
+        ctx.setName("/testContext");
         ctx.setDocBase(app1.getAbsolutePath());
         ctx.setLoader(loader);
     }

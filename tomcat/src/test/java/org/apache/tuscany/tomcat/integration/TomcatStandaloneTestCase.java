@@ -26,7 +26,7 @@ public class TomcatStandaloneTestCase extends AbstractTomcatTest {
         ctx.setParentClassLoader(cl);
 
         ctx.addLifecycleListener(new ContextConfig());
-        ctx.setName("testContext");
+        ctx.setName("/testContext");
         ctx.setDocBase(app2.getAbsolutePath());
 
         host.addChild(ctx);
