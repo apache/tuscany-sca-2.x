@@ -16,10 +16,10 @@
   limitations under the License.
  -->
 <module xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
-        name="sampleHelloworld">
+        name="helloworld">
 
     <component name="HelloWorldServiceComponent">
-        <implementation.java class="org.apache.tuscany.samples.helloworld.HelloWorldServiceComponentImpl"/>
+        <implementation.java class="helloworld.HelloWorldImpl"/>
     </component>
     
 </module>

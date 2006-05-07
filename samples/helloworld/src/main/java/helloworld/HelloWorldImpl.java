@@ -14,15 +14,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.samples.helloworld;
+package helloworld;
 
-import junit.framework.TestCase;
+import org.osoa.sca.annotations.Service;
 
 /**
- * 
+ * This class implements the HelloWorld service.
  */
-public class HelloWorldServiceComponentTestCase extends TestCase {
-    public void testGeetings() throws Exception {
-        HelloWorldClient.main(null);
+@Service(HelloWorldService.class)
+public class HelloWorldImpl implements HelloWorldService {
+
+    public String getGreetings(String name) {
+        return "Hello " + name;
     }
+
 }

@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.samples.helloworld;
+package helloworld;
 
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -29,28 +29,32 @@ import org.apache.tuscany.common.monitor.impl.JavaLoggingMonitorFactory;
 
 /**
  * This client program shows how to create an SCA runtime, start it,
- * locate a simple HelloWorld service component and invoke it.
+ * locate the HelloWorld service and invoke it.
  */
 public class HelloWorldClient {
 
     public static final void main(String[] args) throws Exception {
+        
         // Setup Tuscany monitoring to use java.util.logging
         LogManager.getLogManager().readConfiguration(HelloWorldClient.class.getResourceAsStream("/logging.properties"));
         Properties levels = new Properties();
         MonitorFactory monitorFactory = new JavaLoggingMonitorFactory(levels, Level.FINEST, "MonitorMessages");
 
-        // Obtain Tuscany runtime
-        TuscanyRuntime tuscany = new TuscanyRuntime("hello", null, monitorFactory);
+        // Create a Tuscany runtime for the sample module component
+        TuscanyRuntime tuscany = new TuscanyRuntime("HelloWorldModuleComponent", null, monitorFactory);
 
-        // Associate the application module component with this thread
+        // Start the Tuscany runtime and associate it with this thread
         tuscany.start();
 
-        // Obtain SCA module context.
+        // Get the SCA module context.
         ModuleContext moduleContext = CurrentModuleContext.getContext();
 
-        // Locate the HelloWorld service component and invoke it
+        // Locate the HelloWorld service
         HelloWorldService helloworldService = (HelloWorldService) moduleContext.locateService("HelloWorldServiceComponent");
+        
+        // Invoke the HelloWorld service
         String value = helloworldService.getGreetings("World");
+        
         System.out.println(value);
         System.out.flush();
 
