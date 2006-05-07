@@ -25,7 +25,6 @@ import org.apache.catalina.Wrapper;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.util.StringManager;
-
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
@@ -147,11 +146,16 @@ public class TuscanyHost extends StandardHost implements ServletHost {
         assert mapping.startsWith(contextPath);
         mapping = mapping.substring(contextPath.length());
         Wrapper wrapper = new TuscanyWrapper(servlet);
+        wrapper.setName(mapping.substring(0,mapping.lastIndexOf('/')));
         ctx.addChild(wrapper);
         wrapper.addMapping(mapping);
         ctx.getMapper().addWrapper(mapping, wrapper, false);
     }
 
     public void unregisterMapping(String mapping) {
+    }
+
+    public Servlet getMapping(String mapping) {
+        return null;
     }
 }

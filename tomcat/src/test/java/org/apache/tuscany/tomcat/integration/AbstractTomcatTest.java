@@ -40,8 +40,6 @@ import org.apache.catalina.connector.Response;
 import org.apache.catalina.core.ApplicationFilterFactory;
 import org.apache.catalina.core.StandardEngine;
 
-import org.apache.tuscany.tomcat.TuscanyHost;
-
 /**
  * @version $Rev$ $Date$
  */
@@ -89,7 +87,7 @@ public class AbstractTomcatTest extends TestCase {
         private String scheme;
         private String requestURI;
         private String contentType;
-        private Map<String,String> headers = new HashMap();
+        private Map<String,String> headers = new HashMap<String,String>();
         private ServletInputStream inputStream;
 
         public void setScheme(String scheme) {
@@ -210,7 +208,7 @@ public class AbstractTomcatTest extends TestCase {
         private boolean suspended;
         private String contentType;
         private int status = 200;
-        private Map headers = new HashMap();
+        private Map<String, String> headers = new HashMap<String, String>();
         private MockOutputStream outputStream = new MockOutputStream();
 
         public boolean isCommitted() {

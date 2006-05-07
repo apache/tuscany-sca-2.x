@@ -39,19 +39,6 @@
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca.bindings</groupId>
-            <artifactId>tuscany-binding-jsonrpc</artifactId>
-            <version>${pom.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>metaparadigm</groupId>
-            <artifactId>jsonrpc</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
-
 
         <dependency>
             <groupId>tomcat</groupId>

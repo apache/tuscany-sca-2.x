@@ -46,4 +46,8 @@ public class TomcatHost implements ServletHost {
     public void unregisterMapping(String mapping) {
         host.unregisterMapping(mapping);
     }
+
+    public Servlet getMapping(String mapping) {
+        return host.getMapping(mapping);
+    }
 }

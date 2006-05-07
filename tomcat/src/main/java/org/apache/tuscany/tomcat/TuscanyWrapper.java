@@ -25,6 +25,8 @@ import org.apache.catalina.core.StandardWrapper;
  * @version $Rev$ $Date$
  */
 public class TuscanyWrapper extends StandardWrapper {
+    private static final long serialVersionUID = 1L;
+
     private final Servlet servlet;
 
     public TuscanyWrapper(Servlet servlet) {

@@ -23,13 +23,11 @@ import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Valve;
-import org.apache.catalina.util.StringManager;
 import org.apache.catalina.core.StandardWrapper;
+import org.apache.catalina.util.StringManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tuscany.binding.axis2.entrypoint.WebServiceEntryPointServlet;
-import org.apache.tuscany.binding.jsonrpc.handler.JSONRPCEntryPointServlet;
-import org.apache.tuscany.binding.jsonrpc.handler.ScriptGetterServlet;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.client.BootstrapHelper;
@@ -40,7 +38,6 @@ import org.apache.tuscany.core.context.EventException;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 import org.apache.tuscany.model.assembly.loader.AssemblyModelLoader;
@@ -108,7 +105,6 @@ public class TuscanyContextListener implements LifecycleListener {
 
         // add the web service servlet wrapper
         addWebServiceWrapper(ctx);
-        addJSONRPCServiceWrapper(ctx);
 
         // add the RuntimeContext in as a servlet context parameter
         ServletContext servletContext = ctx.getServletContext();
@@ -121,7 +117,7 @@ public class TuscanyContextListener implements LifecycleListener {
         ClassLoader oldCl  = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         try {
-            AssemblyContext modelContext = new AssemblyContextImpl(modelFactory, modelLoader, resourceLoader);
+            AssemblyContextImpl modelContext = new AssemblyContextImpl(modelFactory, modelLoader, resourceLoader, ctx.getName());
 
             ModuleComponentConfigurationLoader loader = BootstrapHelper.getConfigurationLoader(runtime.getSystemContext(), modelContext);
 
@@ -159,29 +155,4 @@ public class TuscanyContextListener implements LifecycleListener {
         ctx.addServletMapping("/services/*", wrapper.getName());
     }
 
-    private static void addJSONRPCServiceWrapper(Context ctx) {
-        // todo this should not depend on jsonrpc, we need an API in the model for embedders
-        // todo should only add this servlet if we need it
-        // todo servlet implementation should be determined by the binding implementation
-        // todo should get path from entry point definition and not hard code to /services
-
-    	{
-            Class<JSONRPCEntryPointServlet> servletClass = JSONRPCEntryPointServlet.class;
-            StandardWrapper wrapper = new StandardWrapper();
-            wrapper.setName("TuscanyJSONRPCServlet");
-            wrapper.setLoader(new ContainerLoader(servletClass.getClassLoader()));
-            wrapper.setServletClass(servletClass.getName());
-            ctx.addChild(wrapper);
-            ctx.addServletMapping("/SCA/jsonrpc/*", wrapper.getName());
-    	}
-    	{
-            Class<ScriptGetterServlet> servletClass = ScriptGetterServlet.class;
-            StandardWrapper wrapper = new StandardWrapper();
-            wrapper.setName("TuscanyJSONRPCScriptServlet");
-            wrapper.setLoader(new ContainerLoader(servletClass.getClassLoader()));
-            wrapper.setServletClass(servletClass.getName());
-            ctx.addChild(wrapper);
-            ctx.addServletMapping("/SCA/scripts/*", wrapper.getName());
-    	}
-    }
 }
