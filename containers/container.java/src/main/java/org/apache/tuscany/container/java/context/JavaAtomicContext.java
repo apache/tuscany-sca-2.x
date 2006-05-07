@@ -16,145 +16,85 @@
  */
 package org.apache.tuscany.container.java.context;
 
-import org.apache.tuscany.core.context.AbstractContext;
-import org.apache.tuscany.core.injection.EventInvoker;
-import org.apache.tuscany.core.injection.ObjectCallbackException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.lang.reflect.Method;
+import java.lang.reflect.Field;
+
+import org.apache.tuscany.common.ObjectCreationException;
 import org.apache.tuscany.common.ObjectFactory;
-import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.core.context.PojoAtomicContext;
+import org.apache.tuscany.core.context.PojoInstanceContext;
+import org.apache.tuscany.core.injection.EventInvoker;
+import org.apache.tuscany.core.injection.Injector;
+import org.apache.tuscany.core.injection.FieldInjector;
+import org.apache.tuscany.core.injection.MethodInjector;
+import org.apache.tuscany.core.injection.SingletonObjectFactory;
+import org.apache.tuscany.core.injection.NoAccessorException;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import org.apache.tuscany.core.mock.component.DataObject;
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.context.InstanceContext;
+import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.wire.SourceWireFactory;
+import org.apache.tuscany.spi.wire.TargetWireFactory;
+import org.apache.tuscany.databinding.sdo.SDOObjectFactory;
 
 /**
  * Manages Java component implementation instances
  *
  * @version $Rev$ $Date$
  */
-public class JavaAtomicContext extends AbstractContext implements AtomicContext {
+public class JavaAtomicContext extends PojoAtomicContext {
 
-    private boolean eagerInit;
+    private Map<String, TargetWireFactory> targetWireFactories = new HashMap<String, TargetWireFactory>();
+    private List<SourceWireFactory> sourceWireFactories = new ArrayList<SourceWireFactory>();
 
-    private EventInvoker<Object> initInvoker;
-
-    private EventInvoker<Object> destroyInvoker;
-
-    private boolean stateless;
-
-    // the cached target instance
-    private Object cachedTargetInstance;
-
-    // creates a new implementation instance with injected references and properties
-    private ObjectFactory objectFactory;
-
-    public JavaAtomicContext(String name, ObjectFactory objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
-                             EventInvoker<Object> destroyInvoker, boolean stateless) {
-        super(name);
-        assert (objectFactory != null) : "Object factory was null";
-        if (eagerInit && initInvoker == null) {
-            ContextInitException e = new ContextInitException("No intialization method found for implementation");
-            e.setIdentifier(getName());
-            throw e;
-        }
+    public JavaAtomicContext(String name, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
+                             EventInvoker<Object> destroyInvoker) {
+        super(name, objectFactory, eagerInit, initInvoker, destroyInvoker);
         this.objectFactory = objectFactory;
-
-        this.eagerInit = eagerInit;
-        this.initInvoker = initInvoker;
-        this.destroyInvoker = destroyInvoker;
-        this.stateless = stateless;
     }
 
-    public void setName(String name) {
-        super.setName(name);
+    public InstanceContext createInstance() throws ObjectCreationException {
+        InstanceContext ctx = new PojoInstanceContext(this, objectFactory.getInstance());
+        ctx.start();
+        return ctx;
     }
 
-    protected int type;
-
-    public int getType() {
-        return type;
+    public void prepare() {
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public Object getInstance(QualifiedName qName) throws TargetException {
+        return getTargetInstance();
     }
 
-    public void init() throws TargetException {
-        getInstance(null);
+    public void addTargetWireFactory(String serviceName, TargetWireFactory factory) {
+        targetWireFactories.put(serviceName, factory);
     }
 
-    public void destroy() throws TargetException {
-        if (cachedTargetInstance != null) {
-            if (destroyInvoker != null) {
-                try {
-                    destroyInvoker.invokeEvent(cachedTargetInstance);
-                } catch (ObjectCallbackException e) {
-                    TargetException te = new TargetException(e.getCause());
-                    te.setIdentifier(getName());
-                    throw te;
-                }
-            }
-        }
-        lifecycleState = STARTED;
+    public TargetWireFactory getTargetWireFactory(String serviceName) {
+        return targetWireFactories.get(serviceName);
     }
 
-    public synchronized Object getInstance(QualifiedName qName) throws TargetException {
-        //TODO implement returning of proxy and wire chain for service
-        if (cachedTargetInstance != null) {
-            return cachedTargetInstance; // already cached, just return
-        }
-
-        if (getLifecycleState() == ERROR || getLifecycleState() == CONFIG_ERROR) {
-            return null;
-        }
-        synchronized (this) {
-            try {
-                Object instance = objectFactory.getInstance();
-                // handle @Init
-                if (initInvoker != null) {
-                    initInvoker.invokeEvent(instance);
-                }
-                publish(new InstanceCreated(this));
-                lifecycleState = RUNNING;
-                if (stateless) {
-                    return instance;
-                } else {
-                    cachedTargetInstance = instance;  // cache the instance
-                    return cachedTargetInstance;
-                }
-            } catch (ObjectCreationException e) {
-                lifecycleState = ERROR;
-                TargetException te = new TargetException("Error creating component instance", e);
-                te.setIdentifier(getName());
-                throw te;
-            }
-        }
-
+    public Map<String, TargetWireFactory> getTargetWireFactories() {
+        return targetWireFactories;
     }
 
-    public Object getTargetInstance() throws TargetException {
-        //TODO refactor when getInstance() returns a proxy
-        return getInstance(null);
+    public void addSourceWireFactory(String referenceName, SourceWireFactory factory) {
+        sourceWireFactories.add(factory);
+        //setters.add(createReferenceInjector(referenceName, factory, false));
     }
 
-    public boolean isEagerInit() {
-        return eagerInit;
+    public void addSourceWireFactories(String referenceName, Class referenceInterface, List<SourceWireFactory> factories, boolean multiplicity) {
+        sourceWireFactories.addAll(factories);
+        //setters.add(createReferenceInjector(referenceName, factories, multiplicity));
     }
 
-    public boolean isDestroyable() {
-        return (destroyInvoker != null);
-    }
-
-    public void start() throws ContextInitException {
-        if (getLifecycleState() != UNINITIALIZED && getLifecycleState() != STOPPED) {
-            throw new IllegalStateException("Context must be in UNINITIALIZED state [" + getLifecycleState() + "]");
-        }
-        if (objectFactory == null) {
-            lifecycleState = ERROR;
-            ContextInitException e = new ContextInitException("Object factory not found");
-            e.setIdentifier(getName());
-            throw e;
-        }
-        lifecycleState = INITIALIZED;
-    }
-
-    public void stop() {
-        lifecycleState = STOPPED;
+    public List<SourceWireFactory> getSourceWireFactories() {
+        return sourceWireFactories;
     }
 
 }

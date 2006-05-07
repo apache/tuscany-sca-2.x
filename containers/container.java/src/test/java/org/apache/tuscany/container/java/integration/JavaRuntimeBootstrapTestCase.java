@@ -13,13 +13,6 @@
  */
 package org.apache.tuscany.container.java.integration;
 
-import org.apache.tuscany.container.java.mock.MockFactory;
-import org.apache.tuscany.container.java.mock.components.GenericComponent;
-import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.Context;
-import org.apache.tuscany.core.context.event.ModuleStart;
-import org.apache.tuscany.core.runtime.RuntimeContext;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

@@ -21,15 +21,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.common.monitor.MonitorFactory;
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.container.java.assembly.JavaAssemblyFactory;
-import org.apache.tuscany.container.java.assembly.impl.JavaAssemblyFactoryImpl;
-import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
-import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
-import org.apache.tuscany.core.client.BootstrapHelper;
-import org.apache.tuscany.core.runtime.RuntimeContext;
-import org.apache.tuscany.core.runtime.RuntimeContextImpl;
-import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.ModuleComponent;
 
 /**
  * Integration test that verifies container.java can be used to host components.
@@ -38,7 +29,7 @@ import org.apache.tuscany.model.assembly.ModuleComponent;
  */
 public class JavaIntegrationTestCase extends TestCase {
 //    private JavaAssemblyFactory factory;
-    private RuntimeContext runtime;
+//    private RuntimeContext runtime;
 
     public void testModuleWithOneComponent() throws Exception {
 //        Module module = factory.createModule();

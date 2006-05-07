@@ -33,10 +33,18 @@ import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
+import org.apache.tuscany.core.injection.NoAccessorException;
 import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.core.mock.component.DataObject;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.databinding.sdo.SDOObjectFactory;
+import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.wire.SourceWireFactory;
+import org.apache.tuscany.spi.wire.TargetWireFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

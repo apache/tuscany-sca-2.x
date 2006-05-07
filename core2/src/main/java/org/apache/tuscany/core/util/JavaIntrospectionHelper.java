@@ -406,7 +406,8 @@ public class JavaIntrospectionHelper {
     /**
      * Returns the generic types represented in the given type. Usage as follows:
      * <p/>
-     * <code> // to return the generic type of a field: JavaIntrospectionHelper.getGenerics(field.getGenericType());
+     * <code> // to return the generic type of a field:
+     *        JavaIntrospectionHelper.getGenerics(field.getGenericType());
      * <p/>
      * // to return the generic types for the first parameter of a method: JavaIntrospectionHelper.getGenerics(m.getGenericParameterTypes()[0];);
      * <p/>

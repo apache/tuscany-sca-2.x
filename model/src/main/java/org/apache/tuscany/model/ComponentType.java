@@ -23,9 +23,18 @@ import java.util.Map;
  * @version $Rev$ $Date$
  */
 public class ComponentType extends ModelObject {
+    private boolean eagerInit;
     private final Map<String, Service> services = new HashMap<String, Service>();
     private final Map<String, Reference> references = new HashMap<String, Reference>();
     private final Map<String, Property<?>> properties = new HashMap<String, Property<?>>();
+
+    public boolean isEagerInit() {
+        return eagerInit;
+    }
+
+    public void setEagerInit(boolean eagerInit) {
+        this.eagerInit = eagerInit;
+    }
 
     public Map<String, Service> getServices() {
         return services;

@@ -70,7 +70,7 @@ public abstract class PojoAtomicContext extends AbstractContext implements Atomi
     }
 
     public void addProperty(String propertyName, Object value) {
-
+        //TODO implement
     }
 
     public InstanceContext createInstance() throws ObjectCreationException {

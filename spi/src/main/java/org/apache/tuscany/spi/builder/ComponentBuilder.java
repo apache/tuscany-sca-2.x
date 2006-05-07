@@ -25,5 +25,5 @@ import org.apache.tuscany.spi.context.Context;
  * @version $Rev$ $Date$
  */
 public interface ComponentBuilder<I extends Implementation<?>> {
-    Context build(CompositeContext parent, Component<I> component);
+    Context build(CompositeContext parent, Component<I> component) throws BuilderConfigException;
 }
