@@ -64,7 +64,7 @@ public class TuscanyContextListener implements LifecycleListener {
 
     public void lifecycleEvent(LifecycleEvent event) {
         String type = event.getType();
-        if (Lifecycle.START_EVENT.equals(type)) {
+        if (Lifecycle.AFTER_START_EVENT.equals(type)) {
             startContext((Context) event.getLifecycle());
         } else if (Lifecycle.STOP_EVENT.equals(type)) {
             stopContext((Context) event.getLifecycle());
