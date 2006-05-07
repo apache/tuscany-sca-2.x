@@ -17,7 +17,6 @@
 package org.apache.tuscany.tomcat;
 
 import javax.servlet.Servlet;
-import javax.servlet.ServletException;
 
 import org.apache.catalina.core.StandardWrapper;
 
@@ -34,7 +33,11 @@ public class TuscanyWrapper extends StandardWrapper {
         this.servlet = servlet;
     }
 
-    public synchronized Servlet loadServlet() throws ServletException {
+    public synchronized Servlet loadServlet() {
+        return servlet;
+    }
+
+    public Servlet getServlet() {
         return servlet;
     }
 }

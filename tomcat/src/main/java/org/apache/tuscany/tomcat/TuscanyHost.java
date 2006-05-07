@@ -25,6 +25,9 @@ import org.apache.catalina.Wrapper;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.util.StringManager;
+import org.apache.tomcat.util.buf.MessageBytes;
+import org.apache.tomcat.util.http.mapper.MappingData;
+
 import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
@@ -156,6 +159,25 @@ public class TuscanyHost extends StandardHost implements ServletHost {
     }
 
     public Servlet getMapping(String mapping) {
-        return null;
+        Context ctx = map(mapping);
+        if (ctx == null) {
+            return null;
+        }
+        String contextPath = ctx.getPath();
+        assert mapping.startsWith(contextPath);
+
+        MappingData mappingData = new MappingData();
+        MessageBytes mb = MessageBytes.newInstance();
+        mb.setString(mapping);
+        try {
+            ctx.getMapper().map(mb, mappingData);
+        } catch (Exception e) {
+            return null;
+        }
+        if (!(mappingData.wrapper instanceof TuscanyWrapper)) {
+            return null;
+        }
+        TuscanyWrapper wrapper = (TuscanyWrapper) mappingData.wrapper;
+        return wrapper.getServlet();
     }
 }

@@ -48,10 +48,11 @@ public interface ServletHost {
     void unregisterMapping(String mapping);
 
     /**
-     * Get the servlet instance registered for the mapping
+     * Get the servlet instance registered for the mapping.
      * 
      * @param mapping the uri-mapping for the Servlet
      * @return the Servelt for the mapping or null if there is no Servlet registered for the mapping
      */
+    @Deprecated
     Servlet getMapping(String mapping);
 }
