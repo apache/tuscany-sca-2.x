@@ -293,7 +293,7 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
                         configuredReference.getTargetConfiguredServices().add(configuredService);
                     }
                 } else {
-                    throw new IllegalArgumentException("Cannot find service for " + targetURI.getAddress());
+                    throw new IllegalArgumentException("Cannot find service for '" + targetURI.getAddress() +"'.");
                 }
             }
         }
