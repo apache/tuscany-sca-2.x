@@ -23,7 +23,17 @@ import org.apache.tuscany.model.assembly.impl.BindingImpl;
  */
 public class JSONRPCBinding extends BindingImpl {
 
+    private String webAppName;
+    
     public JSONRPCBinding() {
+    }
+
+    public void setWebAppName(String webAppName) {
+        this.webAppName = webAppName;
+    }
+
+    public String getWebAppName() {
+        return webAppName;
     }
 
 }

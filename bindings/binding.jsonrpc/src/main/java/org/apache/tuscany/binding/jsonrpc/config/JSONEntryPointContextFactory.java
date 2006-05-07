@@ -13,15 +13,48 @@
  */
 package org.apache.tuscany.binding.jsonrpc.config;
 
+import org.apache.tuscany.binding.jsonrpc.handler.JSONRPCEntryPointServlet;
+import org.apache.tuscany.binding.jsonrpc.handler.ScriptGetterServlet;
+import org.apache.tuscany.core.builder.ContextCreationException;
+import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.extension.EntryPointContextFactory;
 import org.apache.tuscany.core.message.MessageFactory;
+import org.apache.tuscany.core.webapp.ServletHost;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class JSONEntryPointContextFactory extends EntryPointContextFactory {
 
-    public JSONEntryPointContextFactory(String name, MessageFactory msgFactory) {
+    private ServletHost tomcatHost;
+
+    private String webAppName;
+
+    public JSONEntryPointContextFactory(String name, MessageFactory msgFactory, String webAppName, ServletHost tomcatHost) {
         super(name, msgFactory);
+        this.webAppName = webAppName;
+        this.tomcatHost = tomcatHost;
     }
+
+    public EntryPointContext createContext() throws ContextCreationException {
+        EntryPointContext epc = super.createContext();
+        JSONRPCEntryPointServlet jsonrpcServlet = getServlet();
+        jsonrpcServlet.addEntryPoint(epc);
+        return epc;
+    }
+
+    private JSONRPCEntryPointServlet getServlet() {
+        String jsonrpcServletMapping = webAppName + "/SCA/jsonrpc/*";
+        JSONRPCEntryPointServlet servlet;
+        synchronized (tomcatHost) {
+            servlet = (JSONRPCEntryPointServlet) tomcatHost.getMapping(jsonrpcServletMapping);
+            if (servlet == null) {
+                servlet = new JSONRPCEntryPointServlet();
+                tomcatHost.registerMapping(jsonrpcServletMapping, servlet);
+                tomcatHost.registerMapping(webAppName + "/SCA/scripts/*", new ScriptGetterServlet());
+            }
+        }
+        return servlet;
+    }
+
 }

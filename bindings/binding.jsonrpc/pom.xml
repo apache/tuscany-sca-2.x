@@ -47,6 +47,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.tuscany</groupId>
+            <artifactId>tuscany-tomcat</artifactId>
+            <version>${pom.version}</version>
+            <scope>provided</scope> <!-- use provided so tuscany infrastructue is not inc. in the war-->
+        </dependency>
+
+        <dependency>
             <groupId>metaparadigm</groupId>
             <artifactId>jsonrpc</artifactId>
             <version>1.0</version>
