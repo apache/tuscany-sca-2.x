@@ -46,6 +46,7 @@ import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.databinding.sdo.SDOObjectFactory;
 import org.apache.tuscany.model.assembly.Scope;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 /**
@@ -186,9 +187,31 @@ public class JavaContextFactory implements ContextFactory<AtomicContext>, Contex
         Method method = null;
         Field field = JavaIntrospectionHelper.findClosestMatchingField(propertyName, type, fields);
         if (field == null) {
+            // hack for TUSCANY-322
+            for (Field current : fields) {
+                Property annot = current.getAnnotation(Property.class);
+                if (annot != null) {
+                    if (propertyName.equals(annot.name())) {
+                        field = current;
+                        break;
+                    }
+                }
+            }
             method = JavaIntrospectionHelper.findClosestMatchingMethod(propertyName, new Class[]{type}, methods);
             if (method == null) {
-                throw new NoAccessorException(propertyName);
+                // hack for TUSCANY-322
+                for (Method current : methods) {
+                    Property annot = current.getAnnotation(Property.class);
+                    if (annot != null) {
+                        if (propertyName.equals(annot.name())) {
+                            method = current;
+                            break;
+                        }
+                    }
+                }
+                if (method == null) {
+                    throw new NoAccessorException(propertyName);
+                }
             }
         }
         Injector injector = null;

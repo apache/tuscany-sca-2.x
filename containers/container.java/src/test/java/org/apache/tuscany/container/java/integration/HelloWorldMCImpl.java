@@ -33,8 +33,8 @@ public class HelloWorldMCImpl implements HelloWorldService {
         return bar;
     }
 
-    @Property(required=true)
-     public void setBar(String bar) {
+    @Property(name= "bar", required=true)
+     public void setXBar(String bar) {
         this.bar = bar;
     }
 
