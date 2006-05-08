@@ -44,19 +44,6 @@ public class JDKSourceWireFactory<T> implements SourceWireFactory<T> {
 
     private WireSourceConfiguration configuration;
 
-    public void initialize() throws WireFactoryInitException {
-        if (state != UNINITIALIZED) {
-            throw new IllegalStateException("Proxy factory in wrong state [" + state + "]");
-        }
-        Map<Method, SourceInvocationConfiguration> invocationConfigs = configuration.getInvocationConfigurations();
-        methodToInvocationConfig = new MethodHashMap<SourceInvocationConfiguration>(invocationConfigs.size());
-        for (Map.Entry<Method, SourceInvocationConfiguration> entry : invocationConfigs.entrySet()) {
-            Method method = entry.getKey();
-            methodToInvocationConfig.put(method, entry.getValue());
-        }
-        state = INITIALIZED;
-    }
-
     @SuppressWarnings("unchecked")
     public T createProxy() {
         if (state != INITIALIZED) {
@@ -91,4 +78,17 @@ public class JDKSourceWireFactory<T> implements SourceWireFactory<T> {
         return businessInterfaceArray;
     }
 
+    public void initialize() throws WireFactoryInitException {
+        if (state != UNINITIALIZED) {
+            throw new IllegalStateException("Proxy factory in wrong state [" + state + "]");
+        }
+        Map<Method, SourceInvocationConfiguration> invocationConfigs = configuration.getInvocationConfigurations();
+        methodToInvocationConfig = new MethodHashMap<SourceInvocationConfiguration>(invocationConfigs.size());
+        for (Map.Entry<Method, SourceInvocationConfiguration> entry : invocationConfigs.entrySet()) {
+            Method method = entry.getKey();
+            methodToInvocationConfig.put(method, entry.getValue());
+        }
+        state = INITIALIZED;
+    }
+    
 }

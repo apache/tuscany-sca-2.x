@@ -42,7 +42,7 @@ public class SystemAtomicContext extends PojoAtomicContext {
         return getTargetInstance();
     }
 
-    public void addTargetWireFactory(String serviceName, TargetWireFactory factory) {
+    public void addTargetWireFactory(TargetWireFactory factory) {
         throw new UnsupportedOperationException();
     }
 
@@ -54,11 +54,11 @@ public class SystemAtomicContext extends PojoAtomicContext {
         throw new UnsupportedOperationException();
     }
 
-    public void addSourceWireFactory(String referenceName, SourceWireFactory factory) {
+    public void addSourceWireFactory(SourceWireFactory factory) {
         throw new UnsupportedOperationException();
     }
 
-    public void addSourceWireFactories(String referenceName, Class<?> multiplicityClass,  List<SourceWireFactory> factories){
+    public void addSourceWireFactories(Class<?> multiplicityClass,  List<SourceWireFactory> factories){
         throw new UnsupportedOperationException();
     }
 

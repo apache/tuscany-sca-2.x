@@ -10,9 +10,9 @@ import org.apache.tuscany.spi.QualifiedName;
  */
 public interface WireTargetConfiguration {
     /**
-     * Returns the qualified name of the target service specified by the wire
+     * Returns the name of the target service specified by the wire
      */
-    QualifiedName getTargetName();
+    String getServiceName();
 
     /**
      * Returns the invocation configuration for each operation on a service specified by a reference or a

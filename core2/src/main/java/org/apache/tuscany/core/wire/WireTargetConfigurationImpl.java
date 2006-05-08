@@ -15,23 +15,23 @@ import org.apache.tuscany.spi.wire.TargetInvocationConfiguration;
 public class WireTargetConfigurationImpl implements WireTargetConfiguration {
 
     protected Map<Method, TargetInvocationConfiguration> configurations;
-    protected QualifiedName targetName;
+    protected String targetName;
 
 
     /**
      * Creates the source side of a wire
      *
-     * @param targetName        the qualified name of the target service specified by the wire
+     * @param targetName        the name of the target service specified by the wire
      * @param invocationConfigs a collection of target service operation-to-invocation chain mappings
      */
-    public WireTargetConfigurationImpl(QualifiedName targetName, Map<Method, TargetInvocationConfiguration> invocationConfigs) {
+    public WireTargetConfigurationImpl(String targetName, Map<Method, TargetInvocationConfiguration> invocationConfigs) {
         assert (invocationConfigs != null) : "No wire configuration map specified";
         this.targetName = targetName;
         configurations = invocationConfigs;
 
     }
 
-    public QualifiedName getTargetName() {
+    public String getServiceName() {
         return targetName;
     }
 

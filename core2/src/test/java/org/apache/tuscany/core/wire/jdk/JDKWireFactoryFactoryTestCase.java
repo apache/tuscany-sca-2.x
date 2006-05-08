@@ -72,7 +72,7 @@ public class JDKWireFactoryFactoryTestCase extends TestCase {
         source.build();
         Map<Method, TargetInvocationConfiguration> configs = new MethodHashMap<TargetInvocationConfiguration>();
         configs.put(hello, source);
-        WireTargetConfiguration config = new WireTargetConfigurationImpl(new QualifiedName("foo"), configs);
+        WireTargetConfiguration config = new WireTargetConfigurationImpl("Foo", configs);
         JDKTargetWireFactory<SimpleTarget> factory = new JDKTargetWireFactory<SimpleTarget>();
         factory.setConfiguration(config);
         factory.setBusinessInterface(SimpleTarget.class);

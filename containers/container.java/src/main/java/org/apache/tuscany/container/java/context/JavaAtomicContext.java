@@ -64,7 +64,12 @@ public class JavaAtomicContext extends PojoAtomicContext {
     }
 
     public InstanceContext createInstance() throws ObjectCreationException {
-        InstanceContext ctx = new PojoInstanceContext(this, objectFactory.getInstance());
+        Object instance = objectFactory.getInstance();
+        // inject the instance with properties and references
+        for (Injector<Object> injector : injectors) {
+            injector.inject(instance);
+        }
+        InstanceContext ctx = new PojoInstanceContext(this,instance);
         ctx.start();
         return ctx;
     }
@@ -76,8 +81,8 @@ public class JavaAtomicContext extends PojoAtomicContext {
         return getTargetInstance();
     }
 
-    public void addTargetWireFactory(String serviceName, TargetWireFactory factory) {
-        targetWireFactories.put(serviceName, factory);
+    public void addTargetWireFactory(TargetWireFactory factory) {
+        targetWireFactories.put(factory.getConfiguration().getServiceName(), factory);
     }
 
     public TargetWireFactory getTargetWireFactory(String serviceName) {
@@ -88,7 +93,8 @@ public class JavaAtomicContext extends PojoAtomicContext {
         return targetWireFactories;
     }
 
-    public void addSourceWireFactory(String referenceName, SourceWireFactory factory) {
+    public void addSourceWireFactory(SourceWireFactory factory) {
+        String referenceName = factory.getConfiguration().getReferenceName();
         Member member = members.get(referenceName);
         if (member == null) {
             throw new NoAccessorException(referenceName);
@@ -97,7 +103,9 @@ public class JavaAtomicContext extends PojoAtomicContext {
         sourceWireFactories.add(factory);
     }
 
-    public void addSourceWireFactories(String referenceName, Class<?> multiplicityClass, List<SourceWireFactory> factories) {
+    public void addSourceWireFactories(Class<?> multiplicityClass, List<SourceWireFactory> factories) {
+        assert(factories.size() >0): "Wire factories was empty";
+        String referenceName = factories.get(0).getConfiguration().getReferenceName();
         Member member = members.get(referenceName);
         if (member == null) {
             throw new NoAccessorException(referenceName);

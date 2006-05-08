@@ -75,7 +75,7 @@ public interface AtomicContext extends Context {
      * invocation chains associated with the destination service of a wire and are responsible for generating
      * proxies
      */
-    public void addTargetWireFactory(String serviceName, TargetWireFactory factory);
+    public void addTargetWireFactory(TargetWireFactory factory);
 
     /**
      * Returns the target-side wire factory associated with the given service name
@@ -93,20 +93,17 @@ public interface AtomicContext extends Context {
      * this configuration. Source-side wire factories also produce proxies that are injected on a reference in
      * a component implementation.
      *
-     * @param referenceName
      * @param factory
      */
-    public void addSourceWireFactory(String referenceName, SourceWireFactory factory);
+    public void addSourceWireFactory(SourceWireFactory factory);
 
     /**
      * Adds a set of source-side wire multiplicity factories for the given reference. Source-side wire factories contain
      * the invocation chains for a reference in the implementation associated with the instance context
      * created by this configuration. Source-side wire factories also produce proxies that are injected on a
      * reference in a component implementation.
-     *
-     * @param referenceName
      */
-    public void addSourceWireFactories(String referenceName, Class<?> multiplicityClass, List<SourceWireFactory> factories);
+    public void addSourceWireFactories(Class<?> multiplicityClass, List<SourceWireFactory> factories);
     /**
      * Returns a collection of source-side wire factories for references. There may 1..n wire factories per
      * reference.
