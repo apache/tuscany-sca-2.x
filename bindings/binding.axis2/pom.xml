@@ -35,6 +35,7 @@
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca.containers</groupId>
             <artifactId>tuscany-container-java</artifactId>

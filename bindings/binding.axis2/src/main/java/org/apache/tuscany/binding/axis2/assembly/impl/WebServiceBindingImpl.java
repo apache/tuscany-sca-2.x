@@ -45,6 +45,8 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
 
     private ResourceLoader resourceLoader;
 
+    private String webAppName;
+
     /**
      * Constructor
      */
@@ -102,6 +104,14 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
      */
     public void setPortURI(String portURI) {
         this.portURI = portURI;
+    }
+
+    public void setWebAppName(String webAppName) {
+        this.webAppName = webAppName;
+    }
+
+    public String getWebAppName() {
+        return webAppName;
     }
 
     /**

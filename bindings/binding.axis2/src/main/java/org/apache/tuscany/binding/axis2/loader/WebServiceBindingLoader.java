@@ -65,6 +65,7 @@ public class WebServiceBindingLoader implements StAXElementLoader<WebServiceBind
         binding.setURI(reader.getAttributeValue(null, "uri"));
         binding.setPortURI(reader.getAttributeValue(null, "port"));
         binding.setTypeHelper(registry.getContext().getTypeHelper());
+        binding.setWebAppName(registry.getContext().getWebAppName());
         binding.setResourceLoader(loaderContext.getResourceLoader());
         return binding;
     }

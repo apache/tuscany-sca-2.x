@@ -68,4 +68,8 @@ public interface WebServiceBinding extends Binding {
     ResourceLoader getResourceLoader();
 
     void setResourceLoader(ResourceLoader resourceLoader);
+    
+    public void setWebAppName(String webAppName);
+
+    public String getWebAppName();
 }

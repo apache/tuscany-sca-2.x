@@ -365,6 +365,13 @@ public class ExternalWebServiceBuilderTestCase extends TestCase {
                 return false;
             }
 
+            public void setWebAppName(String webAppName) {
+            }
+
+            public String getWebAppName() {
+                return null;
+            }
+
         };
         return b;
     }
