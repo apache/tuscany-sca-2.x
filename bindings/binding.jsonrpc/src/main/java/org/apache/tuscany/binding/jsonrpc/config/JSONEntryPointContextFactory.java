@@ -44,7 +44,7 @@ public class JSONEntryPointContextFactory extends EntryPointContextFactory {
     }
 
     private JSONRPCEntryPointServlet getServlet() {
-        String jsonrpcServletMapping = webAppName + "/SCA/jsonrpc/*";
+        String jsonrpcServletMapping = webAppName + "/SCA/jsonrpc";
         JSONRPCEntryPointServlet servlet;
         synchronized (tomcatHost) {
             servlet = (JSONRPCEntryPointServlet) tomcatHost.getMapping(jsonrpcServletMapping);
