@@ -173,11 +173,42 @@ public class ComponentLoader extends AbstractLoader {
                     configuredReferences.add(configuredReference);
                 }
 
-                configuredReference.getTargets().add(uri);
+                configuredReference.getTargets().add(prevSpace(uri));
                 break;
             case END_ELEMENT:
                 return;
             }
         }
+    }
+    
+    protected String prevSpace(String uri){
+        if(uri == null ) return null;
+        String ret= uri.replace('\t', ' ');
+        ret= ret.replace('\n', ' ');
+        ret= ret.replace('\r', ' ');
+        int j;
+        int i;
+        for( i=0; i< ret.length() && ret.charAt(i) == ' '; ++i);
+        if(i== ret.length())return "";
+        for( j= ret.length()-1; j >-1 && ret.charAt(j)== ' ' ; --j);
+        if(j == -1) return "";
+        ret= ret.substring(i, j+1);
+        StringBuilder sb= new StringBuilder(ret.length());
+        boolean prevSpace= false;
+        for(i=0; i< ret.length(); ++i){
+            char c= ret.charAt(i);
+            if(c == ' '){
+                if(!prevSpace){
+                    sb.append(c);
+                    prevSpace= true;
+                }
+            }else{
+                sb.append(c);
+                prevSpace= false;
+            }
+            
+        }
+        
+        return sb.toString();
     }
 }
