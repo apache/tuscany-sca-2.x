@@ -14,31 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.samples.supplychain;
-
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+package supplychain;
 
 /**
- * This class implements the Customer service component.
+ * This is the business interface of the Retailer service component.
  */
-@Service(Customer.class)
-public class CustomerComponentImpl implements Customer {
+public interface Retailer {
     
-    private Retailer retailer;
-    
-    @Reference
-    public void setRetailer(Retailer retailer) {
-        this.retailer = retailer;
-    }
-    
-    public void purchaseGoods() {
-        retailer.submitOrder("Order");
-    }
-    
-    public void notifyShipment(String order) {
-        System.out.print("Work thread " + Thread.currentThread() + " - ");
-        System.out.println(order);
-    }
+    public void submitOrder(String order);
 
 }

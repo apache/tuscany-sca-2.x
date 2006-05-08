@@ -16,31 +16,31 @@
   limitations under the License.
  -->
 <module xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
-        name="SupplyChain">
+        name="supplychain">
 
     <component name="CustomerComponent">
-        <implementation.java class="org.apache.tuscany.samples.supplychain.CustomerComponentImpl"/>
+        <implementation.java class="supplychain.CustomerComponentImpl"/>
         <references>
             <v:retailer>RetailerComponent</v:retailer>
         </references>
     </component>
     
     <component name="RetailerComponent">
-        <implementation.java class="org.apache.tuscany.samples.supplychain.RetailerComponentImpl"/>
+        <implementation.java class="supplychain.RetailerComponentImpl"/>
         <references>
             <v:warehouse>WarehouseComponent</v:warehouse>
         </references>
     </component>
     
     <component name="WarehouseComponent">
-        <implementation.java class="org.apache.tuscany.samples.supplychain.WarehouseComponentImpl"/>
+        <implementation.java class="supplychain.WarehouseComponentImpl"/>
         <references>
             <v:shipper>ShipperComponent</v:shipper>
         </references>
     </component>
     
     <component name="ShipperComponent">
-        <implementation.java class="org.apache.tuscany.samples.supplychain.ShipperComponentImpl"/>
+        <implementation.java class="supplychain.ShipperComponentImpl"/>
         <references>
             <v:customer>CustomerComponent</v:customer>
         </references>

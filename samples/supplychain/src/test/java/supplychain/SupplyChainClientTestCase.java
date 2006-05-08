@@ -14,13 +14,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.samples.supplychain;
+package supplychain;
 
 import junit.framework.TestCase;
 
 import org.apache.tuscany.core.client.TuscanyRuntime;
 import org.osoa.sca.CurrentModuleContext;
 import org.osoa.sca.ModuleContext;
+
+import supplychain.Customer;
 
 /**
  * This client program shows how to create an SCA runtime, start it,

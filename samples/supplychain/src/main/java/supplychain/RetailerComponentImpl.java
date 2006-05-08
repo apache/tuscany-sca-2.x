@@ -14,13 +14,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.samples.supplychain;
+package supplychain;
+
+import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
 
 /**
- * This is the business interface of the Shipper service component.
+ * This class implements the Customer service component.
  */
-public interface Shipper {
+@Service(Retailer.class)
+public class RetailerComponentImpl implements Retailer {
     
-    public void processShipment(String order);
+    private Warehouse warehouse;
+    
+    @Reference
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
+    }
+    
+    public void submitOrder(String order) {
+        warehouse.fulfillOrder(order + ", submitted");
+    }
 
 }
