@@ -16,7 +16,7 @@
   limitations under the License.
  -->
 <module xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
-        name="sampleHelloworld">
+        name="helloworld">
 
     <import.sdo wsdlLocation="wsdl/helloworld.wsdl"/>
     <import.wsdl location="wsdl/helloworld.wsdl" namespace="http://helloworldaxis.samples.tuscany.apache.org"/>
