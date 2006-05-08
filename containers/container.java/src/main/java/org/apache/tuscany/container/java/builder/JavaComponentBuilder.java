@@ -50,7 +50,7 @@ public class JavaComponentBuilder implements ComponentBuilder<JavaImplementation
         }
         PojoObjectFactory<?> factory = new PojoObjectFactory(ctr, null, componentType.getInjectors());
         return new JavaAtomicContext(name, factory, componentType.isEagerInit(), componentType.getInitInvoker(),
-                componentType.getDestroyInvoker(), injectors);
+                componentType.getDestroyInvoker(), injectors, componentType.getMembers());
     }
 
 }
