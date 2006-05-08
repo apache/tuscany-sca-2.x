@@ -14,21 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.samples.helloworldweb;
-
-import org.osoa.sca.annotations.Service;
+package helloworld;
 
 /**
- * This class implements the HelloWorld service component.
+ * This is the business interface of the HelloWorld greetings service.
  */
-@Service(HelloWorldServiceComponent.class)
-public class HelloWorldServiceComponentImpl implements HelloWorldServiceComponent {
+public interface HelloWorldService {
 
-     /*
-      * @see org.apache.tuscany.samples.helloworld.HelloWorldServiceComponent#getGreetings()
-      */
-    public String getGreetings(String name) {
-        return "Hello " + name;
-    }
+    public String getGreetings(String name);
 
 }

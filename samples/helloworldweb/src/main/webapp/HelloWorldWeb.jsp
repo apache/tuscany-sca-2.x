@@ -20,7 +20,7 @@
     <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
              pageEncoding="ISO-8859-1" session="true" autoFlush="true"
              isThreadSafe="true" isErrorPage="false"
-             import="org.apache.tuscany.samples.helloworldweb.HelloWorldServiceComponent"
+             import="helloworld.HelloWorldService"
              import="java.io.PrintWriter"
              import="java.io.StringWriter"
              import="org.osoa.sca.CurrentModuleContext"
@@ -35,7 +35,7 @@
 </HEAD>
 
 <BODY>
-<H2>Tuscany HelloWorld WEB Example</H2>
+<H2>Tuscany HelloWorld Web Application Sample</H2>
 
 <P>&nbsp;</P>
 
@@ -51,7 +51,7 @@
     try {
         if (null != name) {
             ModuleContext moduleContext = CurrentModuleContext.getContext();
-            HelloWorldServiceComponent helloworldService = (HelloWorldServiceComponent) moduleContext.locateService("HelloWorldServiceComponent");
+            HelloWorldService helloworldService = (HelloWorldService) moduleContext.locateService("HelloWorldServiceComponent");
             String value = helloworldService.getGreetings(name);
 %>
 <HR>
