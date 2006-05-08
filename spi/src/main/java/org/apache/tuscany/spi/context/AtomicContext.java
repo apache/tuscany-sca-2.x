@@ -19,10 +19,10 @@ package org.apache.tuscany.spi.context;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.common.ObjectCreationException;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.wire.SourceWireFactory;
 import org.apache.tuscany.spi.wire.TargetWireFactory;
-import org.apache.tuscany.common.ObjectCreationException;
 
 /**
  * A runtime entity that manages an atomic (i.e. leaf-type) artifact.
@@ -30,6 +30,11 @@ import org.apache.tuscany.common.ObjectCreationException;
  * @version $Rev$ $Date$
  */
 public interface AtomicContext extends Context {
+
+    /**
+     * Returns the context implementation scope
+     */
+    public Scope getScope();
 
     /**
      * Returns whether the context should be eagerly initialized
@@ -40,7 +45,6 @@ public interface AtomicContext extends Context {
      * Notifies the given instance of an initialization event
      *
      * @throws TargetException
-     *
      */
     public void init(Object instance) throws TargetException;
 
@@ -52,11 +56,6 @@ public interface AtomicContext extends Context {
     public void destroy(Object instance) throws TargetException;
 
     /**
-     * Returns whether the context should be called back when its scope ends
-     */
-    public boolean isDestroyable();
-
-    /**
      * Returns the target instance associated with the context. A target instance is the actual object a
      * request is dispatched to sans proxy wire chain.
      *
@@ -64,17 +63,12 @@ public interface AtomicContext extends Context {
      */
     public Object getTargetInstance() throws TargetException;
 
-    public InstanceContext createInstance() throws ObjectCreationException;
-
     /**
+     * Creates a new implementation instance, generally used as a callback by a {@link ScopeContext}
      *
+     * @throws ObjectCreationException
      */
-    public Scope getScope();
-
-    /**
-     * Adds a property to the context
-     */
-    public void addProperty(String propertyName, Object value);
+    public InstanceContext createInstance() throws ObjectCreationException;
 
     /**
      * Adds a target-side wire factory for the given service name. Target-side wire factories contain the
@@ -105,18 +99,14 @@ public interface AtomicContext extends Context {
     public void addSourceWireFactory(String referenceName, SourceWireFactory factory);
 
     /**
-     * Adds a set of source-side wire factories for the given reference. Source-side wire factories contain
+     * Adds a set of source-side wire multiplicity factories for the given reference. Source-side wire factories contain
      * the invocation chains for a reference in the implementation associated with the instance context
      * created by this configuration. Source-side wire factories also produce proxies that are injected on a
      * reference in a component implementation.
      *
      * @param referenceName
-     * @param referenceInterface
-     * @param factory
-     * @param multiplicity
      */
-    public void addSourceWireFactories(String referenceName, Class referenceInterface, List<SourceWireFactory> factory, boolean multiplicity);
-
+    public void addSourceWireFactories(String referenceName, Class<?> multiplicityClass, List<SourceWireFactory> factories);
     /**
      * Returns a collection of source-side wire factories for references. There may 1..n wire factories per
      * reference.

@@ -35,17 +35,17 @@ public interface SourceWireFactory<T> {
     /**
      * Sets the primary interface type generated proxies implement
      */
-    public void setBusinessInterface(Class interfaze);
+    public void setBusinessInterface(Class<T> interfaze);
 
     /**
      * Returns the primary interface type implemented by generated proxies
      */
-    public T getBusinessInterface();
+    public Class<T> getBusinessInterface();
 
     /**
      * Adds an interface type generated proxies implement
      */
-    public void addInterface(Class claz);
+    public void addInterface(Class<?> claz);
 
     /**
      * Returns an array of all interfaces implemented by generated proxies

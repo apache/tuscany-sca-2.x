@@ -4,9 +4,9 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -52,8 +52,7 @@ public class JavaIntrospectionHelper {
     }
 
     /**
-     * Returns a collection of public, and protected fields declared by a class or one of its
-     * supertypes
+     * Returns a collection of public, and protected fields declared by a class or one of its supertypes
      */
     public static Set<Field> getAllPublicAndProtectedFields(Class clazz) {
         return getAllPublicAndProtectedFields(clazz, new HashSet<Field>());
@@ -72,7 +71,8 @@ public class JavaIntrospectionHelper {
 //        Field[] declaredFields = clazz.getFields();
         for (Field field : declaredFields) {
             int modifiers = field.getModifiers();
-            if ((Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) && !Modifier.isStatic(modifiers)){
+            if ((Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) && !Modifier.isStatic(modifiers))
+            {
                 field.setAccessible(true); // ignore Java accessibility
                 fields.add(field);
             }
@@ -406,8 +406,7 @@ public class JavaIntrospectionHelper {
     /**
      * Returns the generic types represented in the given type. Usage as follows:
      * <p/>
-     * <code> // to return the generic type of a field:
-     *        JavaIntrospectionHelper.getGenerics(field.getGenericType());
+     * <code> // to return the generic type of a field: JavaIntrospectionHelper.getGenerics(field.getGenericType());
      * <p/>
      * // to return the generic types for the first parameter of a method: JavaIntrospectionHelper.getGenerics(m.getGenericParameterTypes()[0];);
      * <p/>
@@ -427,5 +426,30 @@ public class JavaIntrospectionHelper {
         }
         return classes;
     }
+
+    /**
+     * Returns the generic type specified by the class at the given position as in:
+     * <p/>
+     * <code> public class Foo<Bar,Baz>{ //.. }
+     * <p/>
+     * JavaIntrospectionHelper.introspectGeneric(Foo.class,1); <code>
+     * <p/>
+     * will return Baz.
+     */
+    public static Class introspectGeneric(Class clazz, int pos) {
+        assert(clazz != null): "No class specified";
+        Type type = clazz.getClass().getGenericSuperclass();
+        if (type instanceof ParameterizedType) {
+            Type[] args = ((ParameterizedType) type).getActualTypeArguments();
+            if (args.length <= pos) {
+                throw new IllegalArgumentException("Invalid index value for generic class " + clazz.getName());
+            }
+            return (Class) ((ParameterizedType) type).getActualTypeArguments()[pos];
+        } else {
+            throw new AssertionError("Subclasses of " + clazz.getName() + " must be genericized");
+        }
+
+    }
+
 
 }

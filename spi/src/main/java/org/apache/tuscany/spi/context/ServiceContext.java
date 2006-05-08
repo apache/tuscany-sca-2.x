@@ -45,7 +45,7 @@ public interface ServiceContext<T extends Class> extends Context {
     public Object getHandler() throws TargetException;
 
     /**
-     * Returns the service interface configured for the entry poitn
+     * Returns the service interface configured for the service
      */
-    public T getServiceInterface();
+    public Class<T> getServiceInterface();
 }

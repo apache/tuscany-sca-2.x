@@ -62,7 +62,7 @@ public class ServiceContextImpl<T extends Class> extends AbstractContext impleme
         return invocationHandler;
     }
 
-    public T getServiceInterface() {
+    public Class<T> getServiceInterface() {
         return sourceWireFactory.getBusinessInterface();
     }
 

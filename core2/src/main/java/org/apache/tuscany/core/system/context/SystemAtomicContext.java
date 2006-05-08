@@ -58,7 +58,7 @@ public class SystemAtomicContext extends PojoAtomicContext {
         throw new UnsupportedOperationException();
     }
 
-    public void addSourceWireFactories(String referenceName, Class referenceInterface, List<SourceWireFactory> factory, boolean multiplicity) {
+    public void addSourceWireFactories(String referenceName, Class<?> multiplicityClass,  List<SourceWireFactory> factories){
         throw new UnsupportedOperationException();
     }
 

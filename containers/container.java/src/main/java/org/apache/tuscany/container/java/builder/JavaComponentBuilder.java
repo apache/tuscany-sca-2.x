@@ -1,16 +1,15 @@
 package org.apache.tuscany.container.java.builder;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Type;
-import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 import org.apache.tuscany.container.java.context.JavaAtomicContext;
 import org.apache.tuscany.container.java.model.JavaImplementation;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.injection.ContextInjector;
 import org.apache.tuscany.core.injection.Injector;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.model.PojoComponentType;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.model.Component;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
@@ -36,14 +35,14 @@ public class JavaComponentBuilder implements ComponentBuilder<JavaImplementation
         }
         List<Injector> injectors = componentType.getInjectors();
         for (Injector injector : injectors) {
-            if (injector instanceof ContextInjector){
+            if (injector instanceof ContextInjector) {
                 // a context injector is found; iterate and determine if the parent context
                 // implements the interface
-                Class contextType = introspectGeneric(injector.getClass());
-                if(contextType.isAssignableFrom(parent.getClass())){
-                    ((ContextInjector)injector).setContext(parent);
-                }else{
-                    BuilderConfigException e =new BuilderConfigException("Context not found for type");
+                Class contextType = JavaIntrospectionHelper.introspectGeneric(injector.getClass(), 0);
+                if (contextType.isAssignableFrom(parent.getClass())) {
+                    ((ContextInjector) injector).setContext(parent);
+                } else {
+                    BuilderConfigException e = new BuilderConfigException("Context not found for type");
                     e.setIdentifier(contextType.getName());
                     throw e;
                 }
@@ -51,16 +50,7 @@ public class JavaComponentBuilder implements ComponentBuilder<JavaImplementation
         }
         PojoObjectFactory<?> factory = new PojoObjectFactory(ctr, null, componentType.getInjectors());
         return new JavaAtomicContext(name, factory, componentType.isEagerInit(), componentType.getInitInvoker(),
-                componentType.getDestroyInvoker());
+                componentType.getDestroyInvoker(), injectors);
     }
 
-    private Class introspectGeneric(Class clazz){
-        Type type = clazz.getClass().getGenericSuperclass();
-        if (type instanceof ParameterizedType) {
-            return (Class) ((ParameterizedType) type).getActualTypeArguments()[0];
-        } else {
-            throw new AssertionError("Subclasses of " + ContextInjector.class.getName() + " must be genericized");
-        }
-
-    }
 }

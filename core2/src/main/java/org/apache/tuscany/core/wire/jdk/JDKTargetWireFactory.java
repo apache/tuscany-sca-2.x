@@ -66,8 +66,9 @@ public class JDKTargetWireFactory<T> implements TargetWireFactory<T> {
         businessInterfaceArray = new Class[]{interfaze};
     }
 
-    public T getBusinessInterface() {
-        return (T) businessInterfaceArray[0];
+    @SuppressWarnings("unchecked")
+    public Class<T> getBusinessInterface() {
+        return businessInterfaceArray[0];
     }
 
     public void addInterface(Class claz) {

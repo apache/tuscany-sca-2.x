@@ -61,16 +61,8 @@ public abstract class PojoAtomicContext extends AbstractContext implements Atomi
         }
     }
 
-    public boolean isDestroyable() {
-        return (destroyInvoker != null);
-    }
-
     public Object getTargetInstance() throws TargetException {
         return scopeContext.getInstance(this);
-    }
-
-    public void addProperty(String propertyName, Object value) {
-        //TODO implement
     }
 
     public InstanceContext createInstance() throws ObjectCreationException {

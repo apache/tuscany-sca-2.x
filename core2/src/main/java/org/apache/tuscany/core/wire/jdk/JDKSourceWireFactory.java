@@ -38,7 +38,7 @@ public class JDKSourceWireFactory<T> implements SourceWireFactory<T> {
 
     private int state = UNINITIALIZED;
 
-    private Class[] businessInterfaceArray;
+    private Class<T>[] businessInterfaceArray;
 
     private Map<Method, SourceInvocationConfiguration> methodToInvocationConfig;
 
@@ -74,15 +74,16 @@ public class JDKSourceWireFactory<T> implements SourceWireFactory<T> {
         configuration = config;
     }
 
-    public void setBusinessInterface(Class interfaze) {
+    @SuppressWarnings("unchecked")
+    public void setBusinessInterface(Class<T> interfaze) {
         businessInterfaceArray = new Class[]{interfaze};
     }
 
-    public T getBusinessInterface() {
-        return (T) businessInterfaceArray[0];
+    public Class<T> getBusinessInterface() {
+        return businessInterfaceArray[0];
     }
 
-    public void addInterface(Class claz) {
+    public void addInterface(Class<?> claz) {
         throw new UnsupportedOperationException("Additional proxy interfaces not yet supported");
     }
 
