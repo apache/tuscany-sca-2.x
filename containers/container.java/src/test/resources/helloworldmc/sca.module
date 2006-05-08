@@ -24,6 +24,7 @@
             <v:greetingProvider>GreetingProvider</v:greetingProvider>
         </references>
         <properties>
+            <v:bar>bar</v:bar>
             <v:locale>en</v:locale>
         </properties>
     </component>

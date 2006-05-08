@@ -113,6 +113,7 @@ public class MockFactory {
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(Scope.AGGREGATE);
+//        impl.setComponentType(systemFactory.createComponentType());
         impl.getComponentType().getServices().add(s);
         sc.setName(name);
         sc.setImplementation(impl);
@@ -133,6 +134,7 @@ public class MockFactory {
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(Scope.AGGREGATE);
+        //impl.setComponentType(systemFactory.createComponentType());
         impl.getComponentType().getServices().add(s);
         sc.setName(name);
         sc.setImplementation(impl);

@@ -38,6 +38,7 @@ import org.apache.tuscany.container.java.mock.binding.foo.FooBindingBuilder;
 import org.apache.tuscany.container.java.mock.binding.foo.FooBindingWireBuilder;
 import org.apache.tuscany.container.java.mock.components.GenericComponent;
 import org.apache.tuscany.container.java.mock.components.HelloWorldClient;
+import org.apache.tuscany.container.java.mock.components.ModuleScopeComponent;
 import org.apache.tuscany.container.java.mock.components.ModuleScopeComponentImpl;
 import org.apache.tuscany.container.java.mock.components.OtherTarget;
 import org.apache.tuscany.container.java.mock.components.OtherTargetImpl;
@@ -45,7 +46,6 @@ import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.container.java.mock.components.TargetImpl;
-import org.apache.tuscany.container.java.mock.components.ModuleScopeComponent;
 import org.apache.tuscany.core.builder.BuilderException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
@@ -59,14 +59,12 @@ import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.JavaIntrospectionHelper;
-import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.processor.ProcessorUtils;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
-import org.apache.tuscany.core.extension.config.ImplementationProcessor;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
@@ -176,22 +174,22 @@ public class MockFactory {
         return sc;
     }
 
-    public static AtomicComponent createNonIntrospectedComponent(String name, Class service,  Class type, Scope scope) throws ConfigurationLoadException {
-         AtomicComponent sc = factory.createSimpleComponent();
-         JavaImplementation impl = factory.createJavaImplementation();
-         impl.setComponentType(factory.createComponentType());
-         impl.setImplementationClass(type);
-         sc.setImplementation(impl);
-         Service s = factory.createService();
-         JavaServiceContract ji = factory.createJavaServiceContract();
-         ji.setInterface(service);
-         s.setServiceContract(ji);
-         ji.setScope(scope);
-         impl.getComponentType().getServices().add(s);
-         sc.setName(name);
-         sc.setImplementation(impl);
-         return sc;
-     }
+    public static AtomicComponent createNonIntrospectedComponent(String name, Class service, Class type, Scope scope) throws ConfigurationLoadException {
+        AtomicComponent sc = factory.createSimpleComponent();
+        JavaImplementation impl = factory.createJavaImplementation();
+        impl.setComponentType(factory.createComponentType());
+        impl.setImplementationClass(type);
+        sc.setImplementation(impl);
+        Service s = factory.createService();
+        JavaServiceContract ji = factory.createJavaServiceContract();
+        ji.setInterface(service);
+        s.setServiceContract(ji);
+        ji.setScope(scope);
+        impl.getComponentType().getServices().add(s);
+        sc.setName(name);
+        sc.setImplementation(impl);
+        return sc;
+    }
 
 
     /**
@@ -207,6 +205,7 @@ public class MockFactory {
         JavaServiceContract ji = systemFactory.createJavaServiceContract();
         s.setServiceContract(ji);
         ji.setScope(Scope.AGGREGATE);
+        //impl.setComponentType(systemFactory.createComponentType());
         impl.setImplementationClass(CompositeContextImpl.class);
         impl.setComponentType(getCompositeComponentType());
         impl.getComponentType().getServices().add(s);
@@ -230,6 +229,7 @@ public class MockFactory {
         s.setServiceContract(ji);
         ji.setScope(Scope.AGGREGATE);
         impl.setComponentType(getComponentType());
+        //impl.setComponentType(systemFactory.createComponentType());
         impl.getComponentType().getServices().add(s);
         sc.setName(name);
         sc.setImplementation(impl);

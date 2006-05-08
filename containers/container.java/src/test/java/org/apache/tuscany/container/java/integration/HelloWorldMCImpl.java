@@ -29,6 +29,17 @@ public class HelloWorldMCImpl implements HelloWorldService {
     @Property
     public String locale;
 
+    public String getBar() {
+        return bar;
+    }
+
+    @Property(required=true)
+     public void setBar(String bar) {
+        this.bar = bar;
+    }
+
+    public String bar;
+
     public void setGreetingProvider(GreetingProvider greetingProvider) {
         this.greetingProvider2 = greetingProvider;
     }
