@@ -30,18 +30,18 @@
 
 
     <properties>
-        <celtix.version>1.0-SNAPSHOT</celtix.version>
+        <celtix.version>1.0</celtix.version>
     </properties>
     <repositories>
         <repository>
-            <id>objectweb_snapshots</id>
-            <name>ObjectWeb snapshot repo</name>
-            <url>http://maven.objectweb.org/maven2-snapshot</url>
+            <id>objectweb</id>
+            <name>ObjectWeb repo</name>
+            <url>http://maven.objectweb.org/maven2</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
     </repositories>

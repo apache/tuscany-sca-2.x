@@ -6,6 +6,7 @@ import org.objectweb.celtix.bindings.DataReader;
 import org.objectweb.celtix.bindings.DataWriter;
 import org.objectweb.celtix.bus.bindings.AbstractWSDLOperationDataBindingCallback;
 import org.objectweb.celtix.bus.bindings.WSDLOperationInfo;
+import org.objectweb.celtix.context.ObjectMessageContext;
 
 public class SCADataBindingCallback extends AbstractWSDLOperationDataBindingCallback {
     TypeHelper typeHelper;
@@ -48,6 +49,10 @@ public class SCADataBindingCallback extends AbstractWSDLOperationDataBindingCall
         }
         //REVISIT - need to figure out what to do with Faults
         return null;
+    }
+
+    public void initObjectContext(ObjectMessageContext octx) {
+        //REVISIT - this is only used server side, must be implemented for server side to work        
     }
 
 }
