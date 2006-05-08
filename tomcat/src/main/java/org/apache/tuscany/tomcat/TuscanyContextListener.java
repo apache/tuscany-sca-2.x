@@ -103,9 +103,6 @@ public class TuscanyContextListener implements LifecycleListener {
         Valve valve = new TuscanyValve(moduleContext);
         ctx.getPipeline().addValve(valve);
 
-        // add the web service servlet wrapper
-        addWebServiceWrapper(ctx);
-
         // add the RuntimeContext in as a servlet context parameter
         ServletContext servletContext = ctx.getServletContext();
         servletContext.setAttribute(TUSCANY_RUNTIME_NAME, runtime);
@@ -138,21 +135,6 @@ public class TuscanyContextListener implements LifecycleListener {
             moduleContext.publish(new ModuleStart(this));
         }
         // todo unload module component from runtime
-    }
-
-    private static void addWebServiceWrapper(Context ctx) {
-        // todo this should not depend on axis2, we need an API in the model for embedders
-        // todo should only add this servlet if we need it
-        // todo servlet implementation should be determined by the binding implementation
-        // todo should get path from entry point definition and not hard code to /services
-
-        Class<WebServiceEntryPointServlet> servletClass = WebServiceEntryPointServlet.class;
-        StandardWrapper wrapper = new StandardWrapper();
-        wrapper.setName("TuscanyAxis2EntryPointServlet");
-        wrapper.setLoader(new ContainerLoader(servletClass.getClassLoader()));
-        wrapper.setServletClass(servletClass.getName());
-        ctx.addChild(wrapper);
-        ctx.addServletMapping("/services/*", wrapper.getName());
     }
 
 }

@@ -71,7 +71,7 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
     public void testWebServiceIntegration() throws Exception {
         host.addChild(ctx);
 
-        Wrapper wrapper = (Wrapper) ctx.findChild("TuscanyAxis2EntryPointServlet");
+        Wrapper wrapper = (Wrapper) ctx.findChild("/services");
         assertNotNull("No webservice wrapper present", wrapper);
         request.setContext(ctx);
         request.setRequestURI("/services/HelloWorldService");
@@ -99,7 +99,8 @@ public class TomcatIntegrationTestCase extends AbstractTomcatTest {
      * Test ?WSDL works
      */
     public void testWebServiceIntegrationWSDL() throws Exception {
-//        Wrapper wrapper = (Wrapper) ctx.findChild("TuscanyAxis2EntryPointServlet");
+// ?WSDL doesn't work right now: TUSCANY-61
+//        Wrapper wrapper = (Wrapper) ctx.findChild("/services");
 //        assertNotNull("No webservice wrapper present", wrapper);
 //        request.setContext(ctx);
 //        request.setRequestURI("/services/HelloWorldService");
