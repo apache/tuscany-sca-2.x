@@ -20,22 +20,10 @@
     <import.sdo wsdlLocation="wsdl/helloworld.wsdl"/>
     <import.wsdl location="wsdl/helloworld.wsdl" namespace="http://helloworldaxis.samples.tuscany.apache.org"/>
 
-    <component name="HelloWorldServiceComponent">
-        <implementation.java class="org.apache.tuscany.samples.helloworldwsclient.HelloWorldServiceComponentImpl"/>
-        <references>
-            <v:helloWorldService>
-            HelloWorldService
-            </v:helloWorldService>
-        </references>
-    </component>
-
     <externalService name="HelloWorldService">
-        <interface.wsdl interface="http://helloworldaxis.samples.tuscany.apache.org#HelloWorldServiceImpl"/>
+        <interface.java interface="helloworld.HelloWorldService"/>
+        <!-- <interface.wsdl interface="http://helloworldaxis.samples.tuscany.apache.org#HelloWorldServiceImpl"/> -->
         <binding.ws port="http://helloworldaxis.samples.tuscany.apache.org#helloworld"/>
-        <!-- 
-        <interface.java interface="org.apache.tuscany.samples.helloworldwsclient.HelloWorldServiceComponent"/>
-        <binding.ws port="http://helloworldaxis.samples.tuscany.apache.org#wsdl.endpoint(HelloWorldServiceImplService/helloworldws)"/>
-        -->
     </externalService>
     
 </module>
