@@ -18,12 +18,6 @@ package org.apache.tuscany.container.java.context;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.java.mock.MockFactory;
-import org.apache.tuscany.container.java.mock.components.BadContextPojo;
-import org.apache.tuscany.container.java.mock.components.BadNamePojo;
-import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.impl.CompositeContextImpl;
-import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Performs rudimentary negative testing by using malformed metadata on a POJO

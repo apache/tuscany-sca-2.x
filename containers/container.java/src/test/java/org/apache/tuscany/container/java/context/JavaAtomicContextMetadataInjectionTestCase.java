@@ -2,12 +2,6 @@ package org.apache.tuscany.container.java.context;
 
 import junit.framework.TestCase;
 import junit.framework.Assert;
-import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.impl.CompositeContextImpl;
-import org.apache.tuscany.container.java.mock.MockFactory;
-import org.apache.tuscany.container.java.mock.components.ModuleScopeInitOnlyComponent;
-import org.apache.tuscany.container.java.mock.components.ModuleScopeInitDestroyComponent;
-import org.apache.tuscany.model.assembly.Scope;
 
 /**
  * Tests SCA metadata such as <code>@ComponentName</code> and <code>@Context</code> are handled properly

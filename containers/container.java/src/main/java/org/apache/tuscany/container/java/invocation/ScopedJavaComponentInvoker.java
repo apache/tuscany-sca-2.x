@@ -16,14 +16,10 @@
  */
 package org.apache.tuscany.container.java.invocation;
 
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.QualifiedName;
-
 import java.lang.reflect.Method;
+
+import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.TargetException;
 
 /**
  * Uses a scope container to resolve an implementation instance based on the current thread context
@@ -32,9 +28,7 @@ import java.lang.reflect.Method;
  */
 public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
 
-    private ScopeContext container;
-
-    private QualifiedName name;
+    private AtomicContext container;
 
     private Object target;
 
@@ -44,18 +38,15 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
     /**
      * Creates a new invoker
      *
-     * @param serviceName the name of the component/service pair to invoke
-     * @param operation   the operation the invoker is associated with
+     * @param operation    the operation the invoker is associated with
      * @param scopeContext the scope context the component is resolved in
-     * @param cacheable   Sets whether the target service instance may be cached by the invoker. This is a possible optimization
-     *                    when a wire is configured for a "down-scope" reference, i.e. a reference from a source of a shorter
-     *                    lifetime to a source of greater lifetime.
+     * @param cacheable    Sets whether the target service instance may be cached by the invoker. This is a
+     *                     possible optimization when a wire is configured for a "down-scope" reference, i.e.
+     *                     a reference from a source of a shorter lifetime to a source of greater lifetime.
      */
-    public ScopedJavaComponentInvoker(QualifiedName serviceName, Method operation, ScopeContext scopeContext, boolean cacheable) {
+    public ScopedJavaComponentInvoker(Method operation, AtomicContext scopeContext, boolean cacheable) {
         super(operation);
-        assert (serviceName != null) : "No service name specified";
         assert (scopeContext != null) : "No scope scopeContext specified";
-        name = serviceName;
         this.container = scopeContext;
         this.cacheable = cacheable;
     }
@@ -72,10 +63,10 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
      */
     protected Object getInstance() throws TargetException {
         if (!cacheable) {
-            return container.getInstance(name);
+            return container.getTargetInstance();
         } else {
             if (target == null) {
-                target = container.getInstance(name);
+                target = container.getTargetInstance();
             }
             return target;
         }
@@ -86,7 +77,6 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
         invoker.target = null;
         invoker.cacheable = this.cacheable;
         invoker.container = this.container;
-        invoker.name = this.name;
         return invoker;
     }
 }

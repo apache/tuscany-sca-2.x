@@ -19,9 +19,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.container.java.invocation.mock.SimpleTargetImpl;
-import org.apache.tuscany.core.message.Message;
-import org.apache.tuscany.core.message.MessageFactory;
-import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.Message;
 

@@ -20,14 +20,15 @@ import java.lang.reflect.Method;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
+import org.apache.tuscany.container.java.context.JavaAtomicContext;
 import org.apache.tuscany.container.java.invocation.mock.SimpleTarget;
-import org.apache.tuscany.container.java.mock.MockScopeContext;
-import org.apache.tuscany.core.context.QualifiedName;
-import org.apache.tuscany.core.context.ScopeContext;
-import org.apache.tuscany.core.mock.context.scope.MockScopeContext;
+import org.apache.tuscany.container.java.invocation.mock.SimpleTargetImpl;
+import org.apache.tuscany.container.java.mock.MockFactory;
+import org.apache.tuscany.core.context.WorkContextImpl;
+import org.apache.tuscany.core.context.scope.ModuleScopeContext;
+import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.context.WorkContext;
 
 public class ScopedPojoInvokerTestCase extends TestCase {
 
@@ -47,10 +48,16 @@ public class ScopedPojoInvokerTestCase extends TestCase {
     }
 
     public void testScopedInvoke() throws Exception {
-        ScopeContext container = new MockScopeContext();
-        ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(new QualifiedName("foo"), echoMethod, container,false);
+        WorkContext ctx = new WorkContextImpl();
+        ScopeContext<AtomicContext> scope = new ModuleScopeContext(ctx);
+        scope.start();
+        JavaAtomicContext context = MockFactory.createJavaAtomicContext("foo", SimpleTargetImpl.class, false, null, null, null);
+        scope.register(context);
+        context.setScopeContext(scope);
+        ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(echoMethod, context, false);
         Object ret = invoker.invokeTarget("foo");
-        Assert.assertEquals("foo", ret);
+        assertEquals("foo", ret);
+        scope.stop();
     }
 
 }

@@ -15,7 +15,7 @@ package org.apache.tuscany.container.java.mock.binding.foo;
 
 import java.lang.reflect.Array;
 
-import org.apache.tuscany.core.context.TargetException;
+import org.apache.tuscany.spi.context.TargetException;
 
 /**
  * A mock client for a transport binding

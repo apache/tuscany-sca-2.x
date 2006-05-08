@@ -31,6 +31,7 @@
         <module>model</module>
         <module>spi</module>
         <module>core2</module>
+	<module>containers</module>
 <!--
         <module>bindings</module>
         <module>databinding</module>

@@ -15,9 +15,6 @@ package org.apache.tuscany.container.java.mock.binding.foo;
 
 import java.util.Map;
 
-import org.apache.tuscany.model.assembly.AssemblyContext;
-import org.apache.tuscany.model.assembly.AssemblyVisitor;
-import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.Binding;
 
 /**

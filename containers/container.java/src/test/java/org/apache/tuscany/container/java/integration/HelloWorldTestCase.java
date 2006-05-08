@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.osoa.sca.CurrentModuleContext;
 import org.osoa.sca.ModuleContext;
 
-import org.apache.tuscany.core.client.TuscanyRuntime;
 
 /**
  * @version $Rev$ $Date$

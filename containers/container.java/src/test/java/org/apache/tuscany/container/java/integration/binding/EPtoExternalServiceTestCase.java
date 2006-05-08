@@ -2,18 +2,6 @@ package org.apache.tuscany.container.java.integration.binding;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.apache.tuscany.container.java.assembly.mock.HelloWorldService;
-import org.apache.tuscany.container.java.builder.MockInterceptorBuilder;
-import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
-import org.apache.tuscany.container.java.mock.MockFactory;
-import org.apache.tuscany.core.builder.system.PolicyBuilderRegistry;
-import org.apache.tuscany.core.context.CompositeContext;
-import org.apache.tuscany.core.context.EntryPointContext;
-import org.apache.tuscany.core.context.event.ModuleStart;
-import org.apache.tuscany.core.context.event.ModuleStop;
-import org.apache.tuscany.core.context.event.RequestEnd;
-import org.apache.tuscany.core.context.event.RequestStart;
-import org.apache.tuscany.core.runtime.RuntimeContext;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

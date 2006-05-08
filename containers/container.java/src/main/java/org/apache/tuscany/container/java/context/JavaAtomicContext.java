@@ -28,15 +28,15 @@ import org.apache.tuscany.common.ObjectCreationException;
 import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.core.context.PojoAtomicContext;
 import org.apache.tuscany.core.context.PojoInstanceContext;
+import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.InvalidAccessorException;
+import org.apache.tuscany.core.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.NoAccessorException;
 import org.apache.tuscany.core.injection.ProxyObjectFactory;
-import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
-import org.apache.tuscany.core.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.InstanceContext;
 import org.apache.tuscany.spi.context.TargetException;
@@ -59,8 +59,8 @@ public class JavaAtomicContext extends PojoAtomicContext {
                              EventInvoker<Object> destroyInvoker, List<Injector> injectors, Map<String, Member> members) {
         super(name, objectFactory, eagerInit, initInvoker, destroyInvoker);
         this.objectFactory = objectFactory;
-        this.injectors = injectors;
-        this.members = members;
+        this.injectors = injectors != null ? injectors : new ArrayList<Injector>();
+        this.members = members != null ? members : new HashMap<String,Member>();
     }
 
     public InstanceContext createInstance() throws ObjectCreationException {
@@ -90,16 +90,16 @@ public class JavaAtomicContext extends PojoAtomicContext {
 
     public void addSourceWireFactory(String referenceName, SourceWireFactory factory) {
         Member member = members.get(referenceName);
-        if(member == null){
+        if (member == null) {
             throw new NoAccessorException(referenceName);
         }
         injectors.add(createInjector(member, factory));
         sourceWireFactories.add(factory);
     }
 
-    public void addSourceWireFactories(String referenceName, Class<?> multiplicityClass,  List<SourceWireFactory> factories) {
+    public void addSourceWireFactories(String referenceName, Class<?> multiplicityClass, List<SourceWireFactory> factories) {
         Member member = members.get(referenceName);
-        if(member == null){
+        if (member == null) {
             throw new NoAccessorException(referenceName);
         }
         injectors.add(createMultiplicityInjector(member, multiplicityClass, factories));
@@ -149,5 +149,5 @@ public class JavaAtomicContext extends PojoAtomicContext {
             throw e;
         }
     }
- 
+
 }
