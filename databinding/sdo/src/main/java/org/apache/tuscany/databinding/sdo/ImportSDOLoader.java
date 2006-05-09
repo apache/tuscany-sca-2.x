@@ -75,6 +75,7 @@ public class ImportSDOLoader extends AbstractLoader {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void importWSDL(XMLStreamReader reader, LoaderContext loaderContext) throws ConfigurationLoadException {
         String wsdLLocation = reader.getAttributeValue(null, "wsdlLocation");
         if (wsdLLocation != null) {
