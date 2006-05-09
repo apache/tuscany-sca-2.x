@@ -31,6 +31,7 @@
         <module>helloworld</module>
         <module>helloworldweb</module>
         <module>helloworldws</module>
+        <module>helloworldws-celtix</module>
         <module>helloworldwsclient</module>
         <module>supplychain</module>
         <module>helloworldjsonrpc</module>
