@@ -61,8 +61,11 @@ public class Axis2OperationInvoker {
         operationClient.setOptions(options);
 
         SOAPEnvelope env = soapFactory.getDefaultEnvelope();
-        OMElement requestOM = dataBinding.toOMElement(args);
-        env.getBody().addChild(requestOM);
+
+        if (args != null && args.length > 0) {
+            OMElement requestOM = dataBinding.toOMElement(args);
+            env.getBody().addChild(requestOM);
+        }
 
         MessageContext requestMC = new MessageContext();
         requestMC.setEnvelope(env);
@@ -83,7 +86,10 @@ public class Axis2OperationInvoker {
         MessageContext responseMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
         OMElement responseOM = responseMC.getEnvelope().getBody().getFirstElement();
 
-        Object[] os = dataBinding.fromOMElement(responseOM);
+        Object[] os = null;
+        if (responseOM != null) {
+            os = dataBinding.fromOMElement(responseOM);
+        }
 
         Object response;
         if (os == null || os.length < 1) {

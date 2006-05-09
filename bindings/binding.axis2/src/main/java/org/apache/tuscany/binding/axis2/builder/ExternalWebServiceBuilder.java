@@ -18,6 +18,7 @@ package org.apache.tuscany.binding.axis2.builder;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.wsdl.Definition;
@@ -119,7 +120,8 @@ public class ExternalWebServiceBuilder extends ExternalServiceBuilderSupport<Web
 
             WebServiceOperationMetaData operationMetaData = wsPortMetaData.getOperationMetaData(methodName);
             boolean isWrapped = operationMetaData.isDocLitWrapped();
-            DataBinding dataBinding = new SDODataBinding(typeHelper, (QName) operationMetaData.getOperationSignature().get(0), isWrapped);
+            List<?> sig = operationMetaData.getOperationSignature();
+            DataBinding dataBinding = new SDODataBinding(typeHelper, sig.size() > 0 ? (QName) sig.get(0) : null, isWrapped);
 
             Options options = new Options();
             options.setTo(new EndpointReference(wsPortMetaData.getEndpoint()));
