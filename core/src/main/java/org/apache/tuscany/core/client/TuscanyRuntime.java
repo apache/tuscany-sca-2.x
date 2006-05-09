@@ -141,6 +141,7 @@ public class TuscanyRuntime extends SCA {
      * Shut down the Tuscany runtime.
      */
     public void shutdown() {
+        runtime.getSystemContext().publish(new ModuleStop(this));
         runtime.stop();
     }
 

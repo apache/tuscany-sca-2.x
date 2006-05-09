@@ -23,11 +23,9 @@ import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Valve;
-import org.apache.catalina.core.StandardWrapper;
 import org.apache.catalina.util.StringManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.tuscany.binding.axis2.entrypoint.WebServiceEntryPointServlet;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.client.BootstrapHelper;
@@ -36,6 +34,7 @@ import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.EventException;
 import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 import org.apache.tuscany.model.assembly.ModuleComponent;
@@ -111,7 +110,7 @@ public class TuscanyContextListener implements LifecycleListener {
 
     private void loadContext(Context ctx) throws ConfigurationException {
         ResourceLoader resourceLoader = new ResourceLoaderImpl(ctx.getLoader().getClassLoader());
-        ClassLoader oldCl  = Thread.currentThread().getContextClassLoader();
+        ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         try {
             AssemblyContextImpl modelContext = new AssemblyContextImpl(modelFactory, modelLoader, resourceLoader, ctx.getName());
@@ -124,15 +123,15 @@ public class TuscanyContextListener implements LifecycleListener {
             // Register it under the root application context
             CompositeContext rootContext = runtime.getRootContext();
             rootContext.registerModelObject(moduleComponent);
-            moduleContext = (CompositeContext)rootContext.getContext(moduleComponent.getName());
+            moduleContext = (CompositeContext) rootContext.getContext(moduleComponent.getName());
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }
     }
 
     private void stopContext(Context ctx) {
-        if (moduleContext!=null) {
-            moduleContext.publish(new ModuleStart(this));
+        if (moduleContext != null) {
+            moduleContext.publish(new ModuleStop(this));
         }
         // todo unload module component from runtime
     }

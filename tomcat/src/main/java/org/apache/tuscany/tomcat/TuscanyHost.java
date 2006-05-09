@@ -37,6 +37,7 @@ import org.apache.tuscany.core.config.ModuleComponentConfigurationLoader;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.context.event.ModuleStart;
+import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.core.webapp.ServletHost;
@@ -116,7 +117,8 @@ public class TuscanyHost extends StandardHost implements ServletHost {
         if (runtime == null) {
             return;
         }
-
+        runtime.getSystemContext().publish(new ModuleStop(this));
+        
         runtime.stop();
         runtime = null;
         getLogger().info(sm.getString("runtime.stopped"));
