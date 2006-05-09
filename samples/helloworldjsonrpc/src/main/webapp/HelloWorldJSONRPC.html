@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <title>Tuscany JSON-RPC HelloWorld Example</TITLE>
+
+    <script type="text/javascript" src="SCA/scripts/sca.js"></script>
+
+    <script language="JavaScript">
+       function getGreeting() {
+          var name = document.getElementById("name").value;
+          var result = SCA.HelloWorldService.getGreetings(name);
+          document.getElementById('greeting').innerHTML=result;
+       }
+    </script>
+  </head>
+
+  <body>
+
+    <h2>Tuscany JSON-RPC HelloWorld Example</h2><br>
+     
+    <p>
+      Name please: &nbsp;&nbsp;&nbsp;
+      <input type="text" id="name" size="30" value="World" />
+
+      <br><BR>
+
+      <input type="button" value="Submit" onclick="getGreeting()" />
+    </p>
+        
+    <br><hr>
+    <div id='greeting'></div>
+       
+  </body>
+</html>

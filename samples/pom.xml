@@ -33,5 +33,6 @@
         <module>helloworldws</module>
         <module>helloworldwsclient</module>
         <module>supplychain</module>
+        <module>helloworldjsonrpc</module>
     </modules>
 </project>
