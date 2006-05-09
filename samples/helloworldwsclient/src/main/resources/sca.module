@@ -18,12 +18,11 @@
         name="sampleHelloworld">
 
     <import.sdo wsdlLocation="wsdl/helloworld.wsdl"/>
-    <import.wsdl location="wsdl/helloworld.wsdl" namespace="http://helloworldaxis.samples.tuscany.apache.org"/>
+    <import.wsdl location="wsdl/helloworld.wsdl" namespace="http://helloworld"/>
 
     <externalService name="HelloWorldService">
         <interface.java interface="helloworld.HelloWorldService"/>
-        <!-- <interface.wsdl interface="http://helloworldaxis.samples.tuscany.apache.org#HelloWorldServiceImpl"/> -->
-        <binding.ws port="http://helloworldaxis.samples.tuscany.apache.org#helloworld"/>
+        <binding.ws port="http://helloworld#HelloWorldSoapPort"/>
     </externalService>
     
 </module>
