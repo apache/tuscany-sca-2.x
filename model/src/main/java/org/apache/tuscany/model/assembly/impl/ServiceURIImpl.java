@@ -44,6 +44,15 @@ public class ServiceURIImpl implements ServiceURI {
         this.address = address;
     }
 
+    protected ServiceURIImpl(ModuleComponent moduleComponent, String partName, String portName) {
+         if (moduleComponent != null)
+             moduleComponentName = moduleComponent.getName();
+         else
+             moduleComponentName = "";
+        this.partName = partName;
+        this.serviceName = portName;
+    }
+
     /**
      * Constructor
      *
@@ -110,7 +119,7 @@ public class ServiceURIImpl implements ServiceURI {
      */
     public boolean isSCAScheme() {
         if (isSCAScheme == null) {
-            if (address.startsWith("sca://")) {
+            if (address != null && address.startsWith("sca://")) {
                 isSCAScheme = Boolean.TRUE;
             } else {
                 isSCAScheme = Boolean.FALSE;
@@ -154,7 +163,6 @@ public class ServiceURIImpl implements ServiceURI {
 
     /**
      * Returns the module component name
-     * @return
      */
     public String getModuleComponentName() {
         if (!isParsed)
@@ -164,7 +172,6 @@ public class ServiceURIImpl implements ServiceURI {
 
     /**
      * Returns the part name
-     * @return
      */
     public String getPartName() {
         if (!isParsed)
@@ -174,7 +181,6 @@ public class ServiceURIImpl implements ServiceURI {
 
     /**
      * Returns the service name
-     * @return
      */
     public String getServiceName() {
         if (!isParsed)

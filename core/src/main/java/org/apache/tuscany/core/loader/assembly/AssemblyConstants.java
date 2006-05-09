@@ -39,6 +39,8 @@ public final class AssemblyConstants {
     public static final QName REFERENCES = new QName(SCA_NAMESPACE, "references");
     public static final QName SERVICE = new QName(SCA_NAMESPACE, "service");
     public static final QName WIRE = new QName(SCA_NAMESPACE, "wire");
+    public static final QName WIRE_SOURCE = new QName(SCA_NAMESPACE, "source.uri");
+    public static final QName WIRE_TARGET = new QName(SCA_NAMESPACE, "target.uri");
 
     private AssemblyConstants() {
     }

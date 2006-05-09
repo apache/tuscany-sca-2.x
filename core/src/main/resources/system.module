@@ -55,6 +55,10 @@
         <system:implementation.system class="org.apache.tuscany.core.loader.assembly.ReferenceLoader"/>
     </component>
 
+    <component name="org.apache.tuscany.core.loader.assembly.WireLoader">
+        <system:implementation.system class="org.apache.tuscany.core.loader.assembly.WireLoader"/>
+    </component>
+
     <component name="org.apache.tuscany.core.loader.assembly.ServiceLoader">
         <system:implementation.system class="org.apache.tuscany.core.loader.assembly.ServiceLoader"/>
     </component>

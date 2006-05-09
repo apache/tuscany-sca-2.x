@@ -21,14 +21,17 @@
     <component name="HelloWorld">
         <implementation.java class="org.apache.tuscany.container.java.integration.HelloWorldMCImpl"/>
         <references>
-            <v:greetingProvider>GreetingProvider</v:greetingProvider>
+        <!--    <v:greetingProvider>GreetingProvider</v:greetingProvider>-->
         </references>
         <properties>
             <v:bar>bar</v:bar>
             <v:locale>en</v:locale>
         </properties>
     </component>
-
+    <wire>
+		<source.uri>HelloWorld/greetingProvider</source.uri>
+		<target.uri>GreetingProvider</target.uri>
+	</wire>
     <component name="GreetingProvider">
         <implementation.java class="org.apache.tuscany.container.java.integration.GreetingProviderImpl"/>
         <properties>

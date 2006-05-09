@@ -134,6 +134,10 @@ public class AssemblyFactoryImpl implements AssemblyFactory {
         return new ServiceURIImpl(moduleComponent, part, configuredPort);
     }
 
+    public ServiceURI createServiceURI(ModuleComponent moduleComponent, String partName, String serviceName) {
+        return new ServiceURIImpl(moduleComponent,partName,serviceName);
+    }
+
     public QName createQName(String uri) {
         int h = uri.indexOf('#');
         return new QName(uri.substring(0, h), uri.substring(h + 1));

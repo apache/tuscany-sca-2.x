@@ -159,11 +159,13 @@ public interface AssemblyFactory {
      * Creates a new ServiceURI from a module component and configured port.
      *
      * @param moduleComponent the module component exposing the service
-     * @param part   the part that is providing the service
+     * @param part            the part that is providing the service
      * @param configuredPort  the port on the part
      * @return a new serviceURI for the exposed service
      */
     ServiceURI createServiceURI(ModuleComponent moduleComponent, Part part, ConfiguredPort configuredPort);
+
+    ServiceURI createServiceURI(ModuleComponent moduleComponent, String partName, String serviceName);
 
     /**
      * Create a qname from a URI
@@ -226,7 +228,8 @@ public interface AssemblyFactory {
      * @param configuredService   the configured service to expose
      * @param binding             the binding the EntryPoint should use
      * @param configuredReference a configured reference to the target
-     * @return an EntryPoint that exposes the supplied service using the supplied bindng and which is wired using the supplied reference
+     * @return an EntryPoint that exposes the supplied service using the supplied bindng and which is wired
+     *         using the supplied reference
      */
     EntryPoint createEntryPoint(String entryPointName, ConfiguredService configuredService, Binding binding, ConfiguredReference configuredReference);
 
@@ -241,13 +244,15 @@ public interface AssemblyFactory {
 
     /**
      * Returns a new ImportWSDL model object.
+     *
      * @return a new ImportWSDL model object
      */
     ImportWSDL createImportWSDL();
 
     /**
      * Returns a new ImportWSDL model object initialized with the supplied values.
-     * @param location the location where the WSDL definition can be found
+     *
+     * @param location  the location where the WSDL definition can be found
      * @param namespace the namespace URI for this import
      * @return a new ImportWSDL model object
      */
