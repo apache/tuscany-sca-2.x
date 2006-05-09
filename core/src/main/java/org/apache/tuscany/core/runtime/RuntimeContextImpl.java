@@ -27,20 +27,20 @@ import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.AutowireResolutionException;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
+import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.CoreRuntimeException;
 import org.apache.tuscany.core.context.EventException;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.SystemCompositeContext;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.Context;
 import org.apache.tuscany.core.context.impl.AbstractContext;
 import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
-import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Composite;
 import org.apache.tuscany.model.assembly.Extensible;
@@ -137,6 +137,13 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
 
     public void setParent(CompositeContext parent) {
         throw new UnsupportedOperationException();
+    }
+
+    public String getURI() {
+        return null;
+    }
+
+    public void setURI(String uri) {
     }
 
     //TODO remove

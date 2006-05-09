@@ -14,6 +14,10 @@ import java.util.List;
  */
 public interface CompositeContext extends Context {
 
+    public String getURI();
+
+    public void setURI(String uri);
+
     /**
      * Returns the parent context, or null if the context does not have one
      */

@@ -147,6 +147,17 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         module = new AssemblyFactoryImpl().createModule();
     }
 
+    private String uri;
+
+    public String getURI() {
+        return uri;
+    }
+
+    public void setURI(String uri) {
+        this.uri = uri;
+    }
+
+
     public void start() {
         synchronized (lock) {
             try {

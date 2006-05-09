@@ -102,6 +102,9 @@ public class TuscanyRuntime extends SCA {
         CompositeContext rootContext = runtime.getRootContext();
         ModuleComponent moduleComponent = loader.loadModuleComponent(name, uri);
         moduleContext = BootstrapHelper.registerModule(rootContext, moduleComponent);
+        if (moduleContext.getURI() == null){
+            moduleContext.setURI(uri);
+        }
     }
 
     /**

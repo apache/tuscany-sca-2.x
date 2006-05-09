@@ -32,11 +32,11 @@ public class HelloWorldMCTestCase extends TestCase {
     private ClassLoader oldCL;
 
     public void testHelloWorld() throws Exception {
-        TuscanyRuntime tuscany = new TuscanyRuntime("test", null);
+        TuscanyRuntime tuscany = new TuscanyRuntime("test", "foo");
         tuscany.start();                     
         ModuleContext moduleContext = CurrentModuleContext.getContext();
         assertNotNull(moduleContext);
-
+        assertEquals("foo",moduleContext.getURI());
         HelloWorldService helloworldService = (HelloWorldService) moduleContext.locateService("HelloWorld");
         assertNotNull(helloworldService);
 

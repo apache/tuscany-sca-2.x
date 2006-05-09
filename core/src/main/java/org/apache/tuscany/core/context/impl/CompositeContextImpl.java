@@ -67,16 +67,6 @@ public class CompositeContextImpl extends AbstractCompositeContext implements Mo
     // ModuleContext methods
     // ----------------------------------
 
-    private String uri;
-
-    public String getURI() {
-        return uri;
-    }
-
-    public void setURI(String uri) {
-        this.uri = uri;
-    }
-
     public Object locateService(String qualifiedName) throws ServiceUnavailableException {
         checkInit();
         QualifiedName qName = new QualifiedName(qualifiedName);
