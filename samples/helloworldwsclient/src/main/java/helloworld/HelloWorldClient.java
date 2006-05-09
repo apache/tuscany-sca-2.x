@@ -41,7 +41,7 @@ public class HelloWorldClient {
         MonitorFactory monitorFactory = new JavaLoggingMonitorFactory(levels, Level.FINEST, "MonitorMessages");
 
         // Create a Tuscany runtime for the sample module component
-        TuscanyRuntime tuscany = new TuscanyRuntime("HelloWorldModuleComponent", null, monitorFactory);
+        TuscanyRuntime tuscany = new TuscanyRuntime("HelloWorldModuleComponent", "http://helloworld", monitorFactory);
 
         // Start the Tuscany runtime and associate it with this thread
         tuscany.start();
@@ -58,7 +58,7 @@ public class HelloWorldClient {
         System.out.println(value);
         System.out.flush();
 
-        // Disassociate the application module component
+        // Disassociate the runtime from this thread
         tuscany.stop();
 
         // Shut down the runtime
