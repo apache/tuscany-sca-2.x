@@ -19,12 +19,18 @@ package org.apache.tuscany.tools.wsdl2java.generate;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.wsdl.Binding;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
+import javax.wsdl.PortType;
 import javax.wsdl.Service;
 import javax.wsdl.WSDLException;
 import javax.wsdl.factory.WSDLFactory;
@@ -50,9 +56,12 @@ import org.xml.sax.SAXException;
 public class JavaInterfaceGenerator {
 
     private List codegenExtensions = new ArrayList();
-    private CodeGenConfiguration codegenConfiguration;
+    private List<CodeGenConfiguration> codegenConfigurations= new LinkedList<CodeGenConfiguration>();
+    
+    
 
-    public JavaInterfaceGenerator(String uri, String outputLocation, String packageName,
+
+    public JavaInterfaceGenerator(String uri, String ports[], String outputLocation, String packageName,
                                   Map<QName, SDODataBindingTypeMappingEntry> typeMapping) throws CodeGenerationException {
         
         Definition definition;
@@ -62,55 +71,80 @@ public class JavaInterfaceGenerator {
             throw new CodeGenerationException(e);
         }
         
-        Service service=(Service)definition.getServices().values().iterator().next();
-        QName serviceQname = service.getQName();
-        Port port = (Port)service.getPorts().values().iterator().next();
-
-        if (packageName == null) {
-            packageName = XMLNameUtil.getPackageNameFromNamespace(definition.getTargetNamespace());
-        }
-
-        JavaTypeMapper typeMapper = new JavaTypeMapper();
-        for (Map.Entry<QName, SDODataBindingTypeMappingEntry> e : typeMapping.entrySet()) {
-            typeMapper.addTypeMappingObject(e.getKey(), e.getValue());
-        }
-
-        AxisService axisService;
-        try {
-            axisService = new WSDL2AxisServiceBuilder(definition, serviceQname, port.getName()).populateService();
-        } catch (AxisFault e) {
-            throw new CodeGenerationException(e);
-        }
-        axisService.setName(port.getBinding().getPortType().getQName().getLocalPart());
-
-        codegenConfiguration= new CodeGenConfiguration(Collections.EMPTY_MAP);
-        codegenConfiguration.setAxisService(axisService);
-        codegenConfiguration.setAdvancedCodeGenEnabled(false);
-        codegenConfiguration.setAsyncOn(false);
-        codegenConfiguration.setDatabindingType("sdo");
-        codegenConfiguration.setGenerateAll(true);
-        codegenConfiguration.setGenerateDeployementDescriptor(false);
-        codegenConfiguration.setOutputLanguage("java");
-        codegenConfiguration.setOutputLocation(new File(outputLocation));
-        codegenConfiguration.setPackageName(packageName);
-        codegenConfiguration.setPackClasses(false);
-        codegenConfiguration.setPolicyMap(Collections.EMPTY_MAP);
-        codegenConfiguration.setPortName(port.getName());
-        codegenConfiguration.setServerSide(false);
-        codegenConfiguration.setServiceName(service.getQName().getLocalPart());
-        codegenConfiguration.setSyncOn(true);
-        codegenConfiguration.setTypeMapper(typeMapper);
-        codegenConfiguration.setWriteMessageReceiver(false);
-        codegenConfiguration.setWriteTestCase(false);
-
-        addExtension(new WSDLValidatorExtension());
-        addExtension(new PackageFinder());
-        addExtension(new SDODataBindingCodegenExtension(typeMapper));
-        addExtension(new DefaultDatabindingExtension());
+        HashSet interestedPorts= ports == null ? null : new HashSet(Arrays.asList(ports));
+        
+       // Service service=(Service)definition.getServices().values().().next();
+        
+        HashSet<QName> donePortTypes= new HashSet<QName>();
+        
+        for (Iterator sIter  = definition.getServices().values().iterator(); sIter.hasNext(); ) {
+            Service service = (Service) sIter.next();
+            
+            QName serviceQname = service.getQName();
+             for (Iterator pIter= service.getPorts().values().iterator(); pIter.hasNext(); ) {
+                 Port port= (Port) pIter.next();
+                if(interestedPorts != null && ! interestedPorts.contains(port.getName())) continue;//not iterested.
+                 PortType portType= getPortType(port);
+                 if(null == portType) continue; // not connected.
+                 QName pQName= portType.getQName();
+                 if(donePortTypes.contains(pQName)) continue; //allready did it.
+                 donePortTypes.add(pQName);
+              
+                if (packageName == null) {
+                    packageName = XMLNameUtil.getPackageNameFromNamespace(definition.getTargetNamespace());
+                }
+                JavaTypeMapper typeMapper = new JavaTypeMapper();
+                for (Map.Entry<QName, SDODataBindingTypeMappingEntry> e : typeMapping.entrySet()) {
+                    typeMapper.addTypeMappingObject(e.getKey(), e.getValue());
+                }
+                AxisService axisService;
+                try {
+                    axisService = new WSDL2AxisServiceBuilder(definition, serviceQname, port.getName()).populateService();
+                } catch (AxisFault e) {
+                    throw new CodeGenerationException(e);
+                }
+                axisService.setName(port.getBinding().getPortType().getQName().getLocalPart());
+                CodeGenConfiguration codegenConfiguration = new CodeGenConfiguration(Collections.EMPTY_MAP);
+                codegenConfigurations.add(codegenConfiguration);
+                codegenConfiguration.setAxisService(axisService);
+                codegenConfiguration.setAdvancedCodeGenEnabled(false);
+                codegenConfiguration.setAsyncOn(false);
+                codegenConfiguration.setDatabindingType("sdo");
+                codegenConfiguration.setGenerateAll(true);
+                codegenConfiguration.setGenerateDeployementDescriptor(false);
+                codegenConfiguration.setOutputLanguage("java");
+                codegenConfiguration.setOutputLocation(new File(outputLocation));
+                codegenConfiguration.setPackageName(packageName);
+                codegenConfiguration.setPackClasses(false);
+                codegenConfiguration.setPolicyMap(Collections.EMPTY_MAP);
+                codegenConfiguration.setPortName(port.getName());
+                codegenConfiguration.setServerSide(false);
+                codegenConfiguration.setServiceName(service.getQName().getLocalPart());
+                codegenConfiguration.setSyncOn(true);
+                codegenConfiguration.setTypeMapper(typeMapper);
+                codegenConfiguration.setWriteMessageReceiver(false);
+                codegenConfiguration.setWriteTestCase(false);
+                addExtension(new WSDLValidatorExtension(), codegenConfiguration);
+                addExtension(new PackageFinder(), codegenConfiguration);
+                addExtension(new SDODataBindingCodegenExtension(typeMapper), codegenConfiguration);
+                addExtension(new DefaultDatabindingExtension(), codegenConfiguration);
+            }            
+        }        
     }
 
+
+    private PortType getPortType(Port port) {
+       Binding binding = port.getBinding();
+       if(null != binding){
+          return binding.getPortType();
+       }
+       return null;
+        
+    }
+
+
     @SuppressWarnings("unchecked")
-    private void addExtension(CodeGenExtension ext) {
+    private void addExtension(CodeGenExtension ext, CodeGenConfiguration codegenConfiguration) {
         ext.init(codegenConfiguration);
         codegenExtensions.add(ext);
     }
@@ -121,11 +155,13 @@ public class JavaInterfaceGenerator {
                 ((CodeGenExtension)codegenExtensions.get(i)).engage();
             }
 
+            for(CodeGenConfiguration codegenConfiguration : codegenConfigurations){
             JavaInterfaceEmitter emitter = new JavaInterfaceEmitter();
             emitter.setCodeGenConfiguration(codegenConfiguration);
             emitter.setMapper(codegenConfiguration.getTypeMapper());
 
             emitter.writeInterface(false);
+            }
 
         } catch (Exception e) {
             throw new CodeGenerationException(e);

@@ -19,11 +19,13 @@ package org.apache.tuscany.tools.wsdl2java.plugin;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.tuscany.tools.wsdl2java.generate.WSDL2JavaGenerator;
+import org.apache.tuscany.tools.wsdl2java.plugin.WSDLFileOption;
 
 /**
  * @version $Rev$ $Date$
@@ -57,6 +59,13 @@ public class WSDL2JavaGeneratorMojo extends AbstractMojo {
      * @parameter expression="${project.build.directory}/wsdl2java-source"
      */
     private String targetDirectory;
+    
+    /**
+     * The directory to generate into; defaults to ${project.build.directory}/wsdl2java-source
+     *
+     * @parameter 
+     */
+    private WSDLFileOption[] wsdlFiles;
 
     /**
      * @parameter expression="${project.compileSourceRoots}"
@@ -65,21 +74,64 @@ public class WSDL2JavaGeneratorMojo extends AbstractMojo {
     private List compilerSourceRoots;
 
     public void execute() throws MojoExecutionException {
-        File[] files;
-        if (wsdlFile == null) {
-            files = new File(wsdlDir).listFiles(FILTER);
-        } else {
-            files = new File[]{wsdlFile};
+        
+        if(null != wsdlFiles){
+            for(int i=0; i< wsdlFiles.length ; ++i ){
+                System.err.println("wsdlFiles" + wsdlFiles[i].getFileName());
+                WSDLFileOption wf = wsdlFiles[i];
+
+                if(null == wf.getTargetDirectory())
+                    wf.setTargetDirectory(targetDirectory);
+                if(null == wf.getJavaPackage()){
+                    wf.setJavaPackage(javaPackage);
+                }
+                if(wf.getFileName() == null || wf.getFileName().length() ==0){
+                    throw new MojoExecutionException("no fileName specfied for wsdl.");    
+                }
+                if(!wf.getFileName().canRead() || !wf.getFileName().isFile()){
+
+                    throw new MojoExecutionException("file can not be read:"+wf.getFileName());    
+                }
+
+            }
+        }else{
+
+
+            
+            if (wsdlFile == null) {
+             
+             File[] files = new File(wsdlDir).listFiles(FILTER);
+             
+             wsdlFiles=   new WSDLFileOption[files.length];
+             for(int i= files.length -1; i> -1; --i){
+                 
+                 
+                 wsdlFiles[i] = new WSDLFileOption();
+                 wsdlFiles[i].setFileName(files[i]);
+                 wsdlFiles[i].setJavaPackage(javaPackage);
+                 wsdlFiles[i].setPorts(null);
+                 wsdlFiles[i].setTargetDirectory(targetDirectory);
+                 
+                 
+             }
+                
+            } else {
+                wsdlFiles=   new WSDLFileOption[]{new WSDLFileOption()};
+                wsdlFiles[0].setFileName(wsdlFile);
+                wsdlFiles[0].setJavaPackage(javaPackage);
+                wsdlFiles[0].setPorts(null);
+                wsdlFiles[0].setTargetDirectory(targetDirectory);
+            }
         }
         
         int genOptions = 0;
 
-        for (int i = 0; i < files.length; i++) {
-            File file = files[i];
+        for (int i = 0; i < wsdlFiles.length; i++) {
+            File file = wsdlFiles[i].getFileName();
             File marker = new File(targetDirectory, ".gen#" + file.getName());
             if (file.lastModified() > marker.lastModified()) {
                 getLog().info("Generating Java service interfaces from " + file);
-                WSDL2JavaGenerator.generateFromWSDL(file.toString(), targetDirectory, javaPackage, null, genOptions);
+                WSDL2JavaGenerator.generateFromWSDL(file.toString(), wsdlFiles[i].getPorts(), wsdlFiles[i].getTargetDirectory(), wsdlFiles[i].getJavaPackage(), null, genOptions);
             }
             try {
                 marker.createNewFile();

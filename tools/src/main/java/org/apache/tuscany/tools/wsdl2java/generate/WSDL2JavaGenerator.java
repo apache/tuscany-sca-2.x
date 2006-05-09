@@ -101,8 +101,20 @@ public class WSDL2JavaGenerator {
 
     @SuppressWarnings("unchecked")
     public static void generateFromWSDL(String wsdlFileName, String targetDirectory,
-                                        String wsdlJavaPackage,
-                                        String xsdJavaPackage, int genOptions) {
+            String wsdlJavaPackage,
+            String xsdJavaPackage, int genOptions){
+        generateFromWSDL( wsdlFileName, null, targetDirectory,
+                wsdlJavaPackage,
+                xsdJavaPackage, genOptions);
+        
+    }
+    
+    
+    @SuppressWarnings("unchecked")
+      public static void generateFromWSDL(String wsdlFileName, String[] ports,
+                 String targetDirectory, String wsdlJavaPackage,
+                 String xsdJavaPackage, int genOptions) 
+     {
 
         // Initialize the SDO runtime
         DataObjectUtil.initRuntime();
@@ -218,6 +230,7 @@ public class WSDL2JavaGenerator {
 
             try {
                 JavaInterfaceGenerator codeGenerator = new JavaInterfaceGenerator(wsdlFileName,
+                                                                                  ports,
                                                                                   targetDirectory,
                                                                                   wsdlJavaPackage,
                                                                                   typeMapping);
@@ -326,5 +339,6 @@ public class WSDL2JavaGenerator {
         System.out.println("");
         System.out.println("  generate somedir/somefile.wsdl");
     }
+
 
 }
