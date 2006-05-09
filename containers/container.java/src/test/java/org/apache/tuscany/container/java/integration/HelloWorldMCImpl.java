@@ -40,11 +40,11 @@ public class HelloWorldMCImpl implements HelloWorldService {
 
     public String bar;
 
+    @Reference(name="greetingProvider")
     public void setGreetingProvider(GreetingProvider greetingProvider) {
         this.greetingProvider2 = greetingProvider;
     }
 
-    @Reference(name="greetingProvider")
     public GreetingProvider greetingProvider2;
 
     @Reference(required=false)

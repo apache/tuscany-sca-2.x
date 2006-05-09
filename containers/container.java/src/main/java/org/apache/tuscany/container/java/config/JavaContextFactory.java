@@ -306,6 +306,10 @@ public class JavaContextFactory implements ContextFactory<AtomicContext>, Contex
                 }
                 if (field == null) {
                     method = JavaIntrospectionHelper.findClosestMatchingMethod(refName, new Class[]{refClass}, methods);
+                    if(method == null){
+                        // Fix for Tuscany-325
+                        method = JavaIntrospectionHelper.findClosestMatchingMethod("set"+refName.substring(0,1).toUpperCase()+ refName.substring(1), new Class[]{refClass}, methods);
+                    }
                     if (method == null) {
                         // hack for TUSCANY-300
                         for (Method current : methods) {
