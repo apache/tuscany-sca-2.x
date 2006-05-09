@@ -16,6 +16,7 @@
  */
 package org.apache.tuscany.binding.celtix.assembly;
 
+import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 
 /**
@@ -26,6 +27,6 @@ public interface WebServiceAssemblyFactory extends AssemblyFactory {
     /**
      * Returns a new WebServiceBinding.
      */
-    WebServiceBinding createWebServiceBinding();
+    WebServiceBinding createWebServiceBinding(WSDLDefinitionRegistry wsdlRegistry);
 
 }

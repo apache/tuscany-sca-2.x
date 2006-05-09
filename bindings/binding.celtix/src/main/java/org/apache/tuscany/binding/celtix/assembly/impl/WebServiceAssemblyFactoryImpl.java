@@ -18,6 +18,7 @@ package org.apache.tuscany.binding.celtix.assembly.impl;
 
 import org.apache.tuscany.binding.celtix.assembly.WebServiceAssemblyFactory;
 import org.apache.tuscany.binding.celtix.assembly.WebServiceBinding;
+import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
 
 /**
@@ -35,8 +36,8 @@ public class WebServiceAssemblyFactoryImpl extends AssemblyFactoryImpl implement
     /**
      * @see org.apache.tuscany.binding.celtix.assembly.WebServiceAssemblyFactory#createWebServiceBinding()
      */
-    public WebServiceBinding createWebServiceBinding() {
-        return new WebServiceBindingImpl();
+    public WebServiceBinding createWebServiceBinding(WSDLDefinitionRegistry wsdlRegistry) {
+        return new WebServiceBindingImpl(wsdlRegistry);
     }
 
 }

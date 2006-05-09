@@ -21,7 +21,6 @@ import org.apache.tuscany.core.extension.ExternalServiceBuilderSupport;
 import org.apache.tuscany.core.extension.ExternalServiceContextFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.model.assembly.ExternalService;
-import org.objectweb.celtix.Bus;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
@@ -35,19 +34,14 @@ import org.osoa.sca.annotations.Scope;
 @Scope("MODULE")
 public class ExternalWebServiceBuilder extends ExternalServiceBuilderSupport<WebServiceBinding> {
 
-    private Bus bus;
-
-    @Override
     @Init(eager = true)
     public void init() throws Exception {
         super.init();
-        bus = Bus.init();
     }
-
+        
     protected ExternalServiceContextFactory createExternalServiceContextFactory(
             ExternalService externalService) {
-        ExternalWebServiceClient externalWebServiceClient = new ExternalWebServiceClient(bus,
-                externalService);
+        ExternalWebServiceClient externalWebServiceClient = new ExternalWebServiceClient(externalService);
         return new ExternalWebServiceContextFactory(externalService.getName(),
                 new SingletonObjectFactory<ExternalWebServiceClient>(externalWebServiceClient));
     }

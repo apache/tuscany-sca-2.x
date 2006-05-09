@@ -25,25 +25,31 @@ import javax.wsdl.Service;
 import commonj.sdo.helper.TypeHelper;
 import org.apache.tuscany.binding.celtix.assembly.WebServiceBinding;
 import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.impl.BindingImpl;
+import org.objectweb.celtix.Bus;
 
 /**
  * An implementation of WebServiceBinding.
  */
 public class WebServiceBindingImpl extends BindingImpl implements WebServiceBinding {
 
+    private WSDLDefinitionRegistry wsdlRegistry;
+    
     private Definition definition;
     private Port port;
     private Service service;
     private String portURI;
     private TypeHelper typeHelper;
     private ResourceLoader resourceLoader;
+    private Bus bus;
 
     /**
      * Constructor
      */
-    protected WebServiceBindingImpl() {
+    protected WebServiceBindingImpl(WSDLDefinitionRegistry reg) {
+        wsdlRegistry = reg;
     }
 
     /**
@@ -122,7 +128,7 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
             String portName = portURI.substring(h + 1);
 
             // Load the WSDL definitions for the given namespace
-            List<Definition> definitions = modelContext.getAssemblyLoader().loadDefinitions(portNamespace);
+            List<Definition> definitions = wsdlRegistry.getDefinitionsForNamespace(portNamespace);
             if (definitions == null) {
                 throw new IllegalArgumentException("Cannot find WSDL definition for " + portNamespace);
             }
@@ -141,6 +147,14 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
             }
             throw new IllegalArgumentException("Cannot find WSDL port " + portURI);
         }
+    }
+
+    public Bus getBus() {
+        return bus;
+    }
+
+    public void setBus(Bus b) {
+        bus = b;
     }
 
 }

@@ -88,10 +88,21 @@ public class NodeDataReader implements DataReader<Node> {
             InstantiationException, IllegalAccessException {
 
         //This is also a hack, the JDK should already have this set, but it doesn't
-        System.setProperty(DOMImplementationRegistry.PROPERTY,
-                "com.sun.org.apache.xerces.internal.dom.DOMImplementationSourceImpl");
+        /*
+                */
         DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
+        if (registry == null) {
+            System.setProperty(DOMImplementationRegistry.PROPERTY,
+                "com.sun.org.apache.xerces.internal.dom.DOMImplementationSourceImpl");
+            registry = DOMImplementationRegistry.newInstance();
+        }
         DOMImplementationLS impl = (DOMImplementationLS)registry.getDOMImplementation("LS");
+        if (impl == null) {
+            System.setProperty(DOMImplementationRegistry.PROPERTY,
+                "com.sun.org.apache.xerces.internal.dom.DOMImplementationSourceImpl");
+            registry = DOMImplementationRegistry.newInstance();            
+            impl = (DOMImplementationLS)registry.getDOMImplementation("LS");
+        }
         LSOutput output = impl.createLSOutput();
         RawByteArrayOutputStream bout = new RawByteArrayOutputStream();
         output.setByteStream(bout);

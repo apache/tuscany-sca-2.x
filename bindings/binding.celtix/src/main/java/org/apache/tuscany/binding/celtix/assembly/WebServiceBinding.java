@@ -24,6 +24,7 @@ import commonj.sdo.helper.TypeHelper;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.model.assembly.Binding;
+import org.objectweb.celtix.Bus;
 
 /**
  * Represents a Web service binding.
@@ -73,4 +74,7 @@ public interface WebServiceBinding extends Binding {
     ResourceLoader getResourceLoader();
 
     void setResourceLoader(ResourceLoader resourceLoader);
+    
+    Bus getBus();
+    void setBus(Bus b);
 }

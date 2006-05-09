@@ -58,9 +58,11 @@ public class ExternalWebServiceClient {
     private WSDLMetaDataCache wsdlCache;
     private ClientBinding clientBinding;
 
-    public ExternalWebServiceClient(Bus b, ExternalService externalService) throws BuilderException {
-        bus = b;
+    
+    
+    public ExternalWebServiceClient(ExternalService externalService) throws BuilderException {
         WebServiceBinding wsBinding = (WebServiceBinding)externalService.getBindings().get(0);
+        bus = wsBinding.getBus();
         typeHelper = wsBinding.getTypeHelper();
         Definition wsdlDef = wsBinding.getWSDLDefinition();
         wsdlCache = new WSDLMetaDataCache(wsdlDef, wsBinding.getWSDLPort());
@@ -68,8 +70,6 @@ public class ExternalWebServiceClient {
         try {
             String key = wsdlDef.getDocumentBaseURI();
             URL url = new URL(key);
-            bus.getWSDLManager().addDefinition(key, wsdlDef);
-            bus.getWSDLManager().addDefinition(url, wsdlDef);
 
             EndpointReferenceType reference = EndpointReferenceUtils.getEndpointReference(url,
                     wsBinding.getWSDLService().getQName(),
