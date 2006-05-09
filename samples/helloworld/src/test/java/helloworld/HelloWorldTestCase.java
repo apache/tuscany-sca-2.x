@@ -34,13 +34,13 @@ public class HelloWorldTestCase extends TestCase {
         super.setUp();
         
         // Create a Tuscany runtime for the sample module component
-        tuscany = new TuscanyRuntime("HelloWorldModuleComponent", null);
+        tuscany = new TuscanyRuntime("HelloWorldModuleComponent", "http://helloworld");
 
         // Start the Tuscany runtime and associate it with this thread
         tuscany.start();
     }
     
-    public void testGeetings() throws Exception {
+    public void testGreetings() throws Exception {
 
         // Get the SCA module context.
         ModuleContext moduleContext = CurrentModuleContext.getContext();
@@ -58,6 +58,9 @@ public class HelloWorldTestCase extends TestCase {
         
         // Stop the Tuscany runtime
         tuscany.stop();
+        
+        // Shutdown the runtime
+        tuscany.shutdown();
         
         super.tearDown();
     }

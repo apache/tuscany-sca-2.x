@@ -16,16 +16,9 @@
  */
 package helloworld;
 
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.Properties;
-
+import org.apache.tuscany.core.client.TuscanyRuntime;
 import org.osoa.sca.CurrentModuleContext;
 import org.osoa.sca.ModuleContext;
-
-import org.apache.tuscany.core.client.TuscanyRuntime;
-import org.apache.tuscany.common.monitor.MonitorFactory;
-import org.apache.tuscany.common.monitor.impl.JavaLoggingMonitorFactory;
 
 /**
  * This client program shows how to create an SCA runtime, start it,
@@ -35,13 +28,8 @@ public class HelloWorldClient {
 
     public static final void main(String[] args) throws Exception {
         
-        // Setup Tuscany monitoring to use java.util.logging
-        LogManager.getLogManager().readConfiguration(HelloWorldClient.class.getResourceAsStream("/logging.properties"));
-        Properties levels = new Properties();
-        MonitorFactory monitorFactory = new JavaLoggingMonitorFactory(levels, Level.FINEST, "MonitorMessages");
-
         // Create a Tuscany runtime for the sample module component
-        TuscanyRuntime tuscany = new TuscanyRuntime("HelloWorldModuleComponent", null, monitorFactory);
+        TuscanyRuntime tuscany = new TuscanyRuntime("HelloWorldModuleComponent", "http://helloworld");
 
         // Start the Tuscany runtime and associate it with this thread
         tuscany.start();
@@ -58,7 +46,7 @@ public class HelloWorldClient {
         System.out.println(value);
         System.out.flush();
 
-        // Disassociate the application module component
+        // Disassociate the runtime from this thread
         tuscany.stop();
 
         // Shut down the runtime
