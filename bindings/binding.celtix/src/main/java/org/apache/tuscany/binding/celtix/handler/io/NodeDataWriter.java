@@ -51,6 +51,7 @@ public class NodeDataWriter implements DataWriter<Node> {
         }
 
         DataObject obj = toWrappedDataObject(callback.getTypeHelper(),
+                isOutbound ? objCtx.getReturn() : null,
                 objCtx.getMessageObjects(),
                 wrapperName);
 
@@ -82,6 +83,7 @@ public class NodeDataWriter implements DataWriter<Node> {
 
 
     public static DataObject toWrappedDataObject(TypeHelper typeHelper,
+                                                 Object ret,
                                                  Object[] os,
                                                  QName typeQN) {
         XSDHelper xsdHelper = new XSDHelperImpl(typeHelper);
@@ -89,12 +91,17 @@ public class NodeDataWriter implements DataWriter<Node> {
                 typeQN.getLocalPart(), true);
         DataObject dataObject = new DataFactoryImpl(typeHelper).create(property.getType());
         List ips = dataObject.getInstanceProperties();
-        for (int i = 0; i < ips.size(); i++) {
-            if (os[i] instanceof Holder) {
-                Holder<?> holder = (Holder<?>)os[i];
+        int offset = 0;
+        if (ret != null) {
+            dataObject.set(0, ret);
+            offset = 1;
+        }
+        for (int i = offset; i < ips.size(); i++) {
+            if (os[i - offset] instanceof Holder) {
+                Holder<?> holder = (Holder<?>)os[i - offset];
                 dataObject.set(i, holder.value);
             } else {
-                dataObject.set(i, os[i]);
+                dataObject.set(i, os[i - offset]);
             }
         }
         return dataObject;

@@ -68,7 +68,11 @@ public class NodeDataReader implements DataReader<Node> {
             if (callback.hasInOut()) {
                 //REVISIT - inOuts
             } else {
-                objCtx.setReturn(os[0]);
+                if (isOutBound) {
+                    objCtx.setReturn(os[0]);
+                } else {
+                    objCtx.setMessageObjects(os);
+                }
             }
         } catch (IOException e) {
             throw new WebServiceException(e);

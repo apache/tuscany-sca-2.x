@@ -1,5 +1,6 @@
 package org.apache.tuscany.binding.celtix.handler.io;
 
+
 import org.w3c.dom.Node;
 import commonj.sdo.helper.TypeHelper;
 import org.objectweb.celtix.bindings.DataReader;
@@ -9,8 +10,9 @@ import org.objectweb.celtix.bus.bindings.WSDLOperationInfo;
 import org.objectweb.celtix.context.ObjectMessageContext;
 
 public class SCADataBindingCallback extends AbstractWSDLOperationDataBindingCallback {
-    TypeHelper typeHelper;
-    boolean hasInOut;
+    
+    protected TypeHelper typeHelper;
+    protected boolean hasInOut;
 
     public SCADataBindingCallback(WSDLOperationInfo op, TypeHelper helper, boolean inout) {
         super(op);
@@ -52,7 +54,8 @@ public class SCADataBindingCallback extends AbstractWSDLOperationDataBindingCall
     }
 
     public void initObjectContext(ObjectMessageContext octx) {
-        //REVISIT - this is only used server side, must be implemented for server side to work        
+        //REVISIT - is this even used?       
     }
+
 
 }

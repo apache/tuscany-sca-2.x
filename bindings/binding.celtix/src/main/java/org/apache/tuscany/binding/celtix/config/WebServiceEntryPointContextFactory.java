@@ -16,8 +16,13 @@
  */
 package org.apache.tuscany.binding.celtix.config;
 
+import org.apache.tuscany.binding.celtix.handler.CeltixEntryPointContextImpl;
+import org.apache.tuscany.core.builder.ContextCreationException;
+import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.extension.EntryPointContextFactory;
 import org.apache.tuscany.core.message.MessageFactory;
+import org.apache.tuscany.core.webapp.ServletHost;
+import org.apache.tuscany.model.assembly.EntryPoint;
 
 /**
  * Creates instances of {@link org.apache.tuscany.core.context.EntryPointContext} configured with the
@@ -26,9 +31,28 @@ import org.apache.tuscany.core.message.MessageFactory;
  * @version $Rev$ $Date$
  */
 public class WebServiceEntryPointContextFactory extends EntryPointContextFactory {
-
-    public WebServiceEntryPointContextFactory(String name, MessageFactory messageFactory) {
-        super(name, messageFactory);
+    MessageFactory messageFactory;
+    EntryPoint entryPoint;
+    ServletHost servlet;
+    
+    public WebServiceEntryPointContextFactory(ServletHost tomcatHost,
+                                            EntryPoint entryPoint,
+                                            MessageFactory mf) {
+        super(entryPoint.getName(), mf);
+        messageFactory = mf;
+        this.entryPoint = entryPoint;
+        servlet = tomcatHost;
+    }
+    
+    public EntryPointContext createContext() throws ContextCreationException {
+        if (servlet == null) {
+            return new CeltixEntryPointContextImpl(entryPoint,
+                                               getSourceWireFactories().get(0),
+                                               messageFactory);
+        } else {
+            //REVISIT - running in tomcat
+            return null;
+        }
     }
 
 }

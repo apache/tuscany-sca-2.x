@@ -20,6 +20,8 @@ import org.apache.tuscany.binding.celtix.config.WebServiceEntryPointContextFacto
 import org.apache.tuscany.core.extension.EntryPointBuilderSupport;
 import org.apache.tuscany.core.extension.EntryPointContextFactory;
 import org.apache.tuscany.core.message.MessageFactory;
+import org.apache.tuscany.core.system.annotation.Autowire;
+import org.apache.tuscany.core.webapp.ServletHost;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.osoa.sca.annotations.Scope;
 
@@ -30,9 +32,16 @@ import org.osoa.sca.annotations.Scope;
  */
 @Scope("MODULE")
 public class WebServiceEntryPointBuilder extends EntryPointBuilderSupport<WebServiceBinding> {
+    ServletHost tomcatHost;
+    
+    @Autowire
+    public void setTomcatHost(ServletHost tomcatHost) {
+        this.tomcatHost = tomcatHost;
+    }
 
+    
     protected EntryPointContextFactory createEntryPointContextFactory(EntryPoint entryPoint,
                                                                       MessageFactory msgFactory) {
-        return new WebServiceEntryPointContextFactory(entryPoint.getName(), msgFactory);
+        return new WebServiceEntryPointContextFactory(tomcatHost, entryPoint, msgFactory);
     }
 }

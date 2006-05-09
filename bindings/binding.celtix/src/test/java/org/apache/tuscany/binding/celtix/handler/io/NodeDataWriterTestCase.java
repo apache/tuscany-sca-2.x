@@ -75,7 +75,7 @@ public class NodeDataWriterTestCase extends TestCase {
         assertEquals("Value not written", "Hello", element.getFirstChild().getTextContent().trim());
         
         DataReader<Node> reader = callback.createReader(Node.class);
-        reader.readWrapper(objCtx , false, element);
+        reader.readWrapper(objCtx , true, element);
         
         assertEquals("Hello", objCtx.getReturn());
     }
