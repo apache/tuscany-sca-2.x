@@ -19,11 +19,11 @@
         name="helloworld">
 
     <import.sdo wsdlLocation="wsdl/helloworld.wsdl"/>
-    <import.wsdl location="wsdl/helloworld.wsdl" namespace="http://helloworldaxis.samples.tuscany.apache.org"/>
+    <import.wsdl location="wsdl/helloworld.wsdl" namespace="http://helloworld"/>
 
     <entryPoint name="HelloWorldService">
-        <interface.wsdl interface="http://helloworldaxis.samples.tuscany.apache.org#HelloWorldServiceImpl"/>
-        <binding.ws port="http://helloworldaxis.samples.tuscany.apache.org#helloworld"/>
+        <interface.wsdl interface="http://helloworld#HelloWorld"/>
+        <binding.ws port="http://helloworld#HelloWorldSoapPort"/>
         <reference>HelloWorldServiceComponent/HelloWorldService</reference>
     </entryPoint>
 
