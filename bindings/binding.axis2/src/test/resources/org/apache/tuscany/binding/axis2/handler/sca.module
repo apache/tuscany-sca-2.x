@@ -17,6 +17,8 @@
 <module xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
         name="org.apache.tuscany.binding.axis2.handler.helloworld">
 
+    <import.wsdl wsdlLocation="org/apache/tuscany/binding/axis2/handler/helloworld.wsdl"/>
+
     <component name="HelloWorldServiceComponent">
         <implementation.java class="org.apache.tuscany.binding.axis2.handler.HelloWorldServiceComponentImpl"/>
         <references>
@@ -29,8 +31,4 @@
         <binding.ws port="http://helloworldaxis.samples.tuscany.apache.org#helloworld"/>
     </externalService>
     
-    <import.wsdl
-		location="org/apache/tuscany/binding/axis2/handler/helloworld.wsdl"
-		namespace="http://helloworldaxis.samples.tuscany.apache.org"/>
-
 </module>

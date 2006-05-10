@@ -15,8 +15,10 @@
  *  limitations under the License.
  -->
 <module xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
-
         name="tuscany.binding.axis2.assembly.tests.bigbank.account">
+
+	<import.wsdl wsdlLocation="org/apache/tuscany/binding/axis2/assembly/tests/bigbank/account/services/account/AccountService.wsdl"/>
+	<import.wsdl wsdlLocation="org/apache/tuscany/binding/axis2/assembly/tests/bigbank/account/services/stockquote/StockQuoteWebService.wsdl"/>
 
     <entryPoint name="AccountService">
         <interface.java interface="org.apache.tuscany.binding.axis2.assembly.tests.bigbank.account.services.account.AccountService"/>
@@ -54,13 +56,5 @@
         <binding.ws port="http://webservice.stockquote#StockQuoteWebService"/>
     </externalService>
     
-	<import.wsdl
-		location="org/apache/tuscany/binding/axis2/assembly/tests/bigbank/account/services/account/AccountService.wsdl"
-		namespace="http://www.bigbank.com/AccountService/"/>
-
-	<import.wsdl
-		location="org/apache/tuscany/binding/axis2/assembly/tests/bigbank/account/services/stockquote/StockQuoteWebService.wsdl"
-		namespace="http://webservice.stockquote"/>
-
 </module>
 	

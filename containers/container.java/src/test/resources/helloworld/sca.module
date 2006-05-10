@@ -23,7 +23,7 @@
     </component>
 
 <!--
-    <import.wsdl namespace="http://www.example.org" location="example.wsdl"/>
+    <import.wsdl wsdlLocation="example.wsdl"/>
 
     <externalService name="external">
         <interface.wsdl interface="http://www.example.org#HelloWorld"/>

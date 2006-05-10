@@ -18,8 +18,8 @@
 <module xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
         name="testModule">
 
-    <import.wsdl location="wsdl/helloworld.wsdl" namespace="http://helloworldaxis.samples.tuscany.apache.org"/>
     <import.sdo wsdlLocation="wsdl/helloworld.wsdl"/>
+    <import.wsdl wsdlLocation="wsdl/helloworld.wsdl"/>
 
     <entryPoint name="HelloWorldService">
         <interface.wsdl interface="http://helloworldaxis.samples.tuscany.apache.org#HelloWorldServiceImpl"/>
