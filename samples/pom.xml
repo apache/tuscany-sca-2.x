@@ -30,6 +30,8 @@
     <modules>
         <module>helloworld</module>
         <module>helloworldweb</module>
+        <module>calculator</module>
+        <module>customerinfo</module>
         <module>helloworldws</module>
         <module>helloworldws-celtix</module>
         <module>helloworldwsclient</module>

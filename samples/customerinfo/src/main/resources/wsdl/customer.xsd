@@ -1,0 +1,11 @@
+<schema elementFormDefault="qualified" targetNamespace="http://customer" xmlns="http://www.w3.org/2001/XMLSchema">
+    
+    <complexType name="Customer">
+        <sequence>
+            <element name="customerID" type="string"/>
+            <element name="firstName" type="string"/>
+            <element name="lastName" type="string"/>
+        </sequence>
+    </complexType>
+
+</schema>

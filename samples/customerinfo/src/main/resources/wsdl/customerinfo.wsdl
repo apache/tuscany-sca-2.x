@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2005 The Apache Software Foundation or its licensors, as applicable.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+<wsdl:definitions targetNamespace="http://customerinfo" xmlns:tns="http://customerinfo" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	name="helloworld">
+
+    <wsdl:types>
+        <schema elementFormDefault="qualified" targetNamespace="http://customerinfo" xmlns:customer="http://customer" xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://customer" schemaLocation="customer.xsd"/>
+            
+            <element name="getCustomerInfo">
+                <complexType>
+                    <sequence>
+                        <element name="customerID" type="xsd:string"/>
+                    </sequence>
+                </complexType>
+            </element>
+            
+            <element name="getCustomerInfoResponse">
+                <complexType>
+                    <sequence>
+                        <element name="getCustomerInfoReturn" type="customer:Customer"/>
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+    </wsdl:types>
+
+    <wsdl:message name="getCustomerInfoRequest">
+        <wsdl:part element="tns:getCustomerInfo" name="parameters"/>
+    </wsdl:message>
+
+    <wsdl:message name="getCustomerInfoResponse">
+        <wsdl:part element="tns:getCustomerInfoResponse" name="parameters"/>
+    </wsdl:message>
+
+    <wsdl:portType name="CustomerInfo">
+        <wsdl:operation name="getCustomerInfo">
+            <wsdl:input message="tns:getCustomerInfoRequest" name="getCustomerInfoRequest"/>
+            <wsdl:output message="tns:getCustomerInfoResponse" name="getCustomerInfoResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="CustomerInfoSoapBinding" type="tns:CustomerInfo">
+        <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getCustomerInfo">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input name="getCustomerInfoRequest">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getCustomerInfoResponse">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="CustomerInfoService">
+        <wsdl:port binding="tns:CustomerInfoSoapBinding" name="CustomerInfoSoapPort">
+            <wsdlsoap:address location="http://localhost:8080/helloworldws-SNAPSHOT/services/CustomerInfoService"/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>
