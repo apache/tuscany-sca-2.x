@@ -52,7 +52,7 @@ public class ImportSDOLoader extends AbstractLoader {
     public AssemblyObject load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, ConfigurationLoadException {
         assert IMPORT_SDO.equals(reader.getName());
         importFactory(reader, loaderContext);
-        importWSDL(reader, loaderContext);
+        importWSDLOrXSD(reader, loaderContext);
         StAXUtil.skipToEndElement(reader);
         return null;
     }
@@ -76,11 +76,13 @@ public class ImportSDOLoader extends AbstractLoader {
     }
 
     @SuppressWarnings("deprecation")
-    private void importWSDL(XMLStreamReader reader, LoaderContext loaderContext) throws ConfigurationLoadException {
-        String wsdLLocation = reader.getAttributeValue(null, "wsdlLocation");
-        if (wsdLLocation != null) {
+    private void importWSDLOrXSD(XMLStreamReader reader, LoaderContext loaderContext) throws ConfigurationLoadException {
+        String location = reader.getAttributeValue(null, "wsdlLocation");
+        if (location == null)
+            location = reader.getAttributeValue(null, "schemaLocation");
+        if (location != null) {
             ResourceLoader resourceLoader = loaderContext.getResourceLoader();
-            URL wsdlURL = resourceLoader.getResource(wsdLLocation);
+            URL wsdlURL = resourceLoader.getResource(location);
             ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
             try {
 //                Thread.currentThread().setContextClassLoader(resourceLoader.getClassLoader());
@@ -94,7 +96,7 @@ public class ImportSDOLoader extends AbstractLoader {
                 }
             } catch (IOException e) {
                 SidefileLoadException sfe = new SidefileLoadException(e.getMessage());
-                sfe.setResourceURI(wsdLLocation);
+                sfe.setResourceURI(location);
                 throw sfe;
             } finally {
                 Thread.currentThread().setContextClassLoader(oldCL);
