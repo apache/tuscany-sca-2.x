@@ -124,6 +124,9 @@ public class TuscanyContextListener implements LifecycleListener {
             CompositeContext rootContext = runtime.getRootContext();
             rootContext.registerModelObject(moduleComponent);
             moduleContext = (CompositeContext) rootContext.getContext(moduleComponent.getName());
+            //TODO remove the hack below
+            moduleContext.setAssemblyContext(modelContext);
+
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }

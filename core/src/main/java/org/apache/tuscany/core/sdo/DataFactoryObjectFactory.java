@@ -1,19 +1,18 @@
-package org.apache.tuscany.databinding.sdo.injection;
+package org.apache.tuscany.core.sdo;
 
+import commonj.sdo.helper.DataFactory;
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.injection.ObjectCreationException;
-import org.apache.tuscany.databinding.sdo.system.SDOService;
-
-import commonj.sdo.helper.DataFactory;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.sdo.util.SDOUtil;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class DataFactoryObjectFactory implements ObjectFactory<DataFactory> {
-
 
     private ContextResolver resolver;
 
@@ -38,12 +37,8 @@ public class DataFactoryObjectFactory implements ObjectFactory<DataFactory> {
             throw e;
         }
         AutowireContext ctx = (AutowireContext) parent;
-        SDOService sdoService = ctx.resolveInstance(SDOService.class);
-        return sdoService.getDataFactory();
-    }
-
-    public void setContextResolver(ContextResolver resolver) {
-        this.resolver = resolver;
+        AssemblyContext assemblyContext = ctx.resolveInstance(AssemblyContext.class);
+        return SDOUtil.createDataFactory(assemblyContext.getTypeHelper());
     }
 
 

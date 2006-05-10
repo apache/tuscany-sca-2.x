@@ -19,6 +19,9 @@ package org.apache.tuscany.container.java.integration;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
+import org.apache.tuscany.core.sdo.helper.SDOHelper;
+import commonj.sdo.helper.TypeHelper;
+import commonj.sdo.helper.DataFactory;
 
 /**
  * @version $Rev$ $Date$
@@ -53,5 +56,6 @@ public class HelloWorldMCImpl implements HelloWorldService {
     public String getGreetings(String name) {
         return greetingProvider2.getGreeting(name, locale);
     }
+
 
 }

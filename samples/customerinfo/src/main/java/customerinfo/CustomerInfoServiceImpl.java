@@ -1,6 +1,6 @@
 package customerinfo;
 
-import org.apache.tuscany.databinding.sdo.helper.SDOHelper;
+import org.apache.tuscany.core.sdo.helper.SDOHelper;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.DataFactory;

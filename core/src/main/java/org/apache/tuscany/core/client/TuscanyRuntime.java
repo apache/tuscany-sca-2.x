@@ -105,6 +105,8 @@ public class TuscanyRuntime extends SCA {
         if (moduleContext.getURI() == null){
             moduleContext.setURI(uri);
         }
+        //TODO remove hack
+        moduleContext.setAssemblyContext(modelContext);        
     }
 
     /**

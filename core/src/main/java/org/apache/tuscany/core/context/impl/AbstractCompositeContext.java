@@ -13,10 +13,22 @@
  */
 package org.apache.tuscany.core.context.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.tuscany.common.TuscanyRuntimeException;
 import org.apache.tuscany.core.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.core.context.AutowireContext;
+import org.apache.tuscany.core.context.AutowireResolutionException;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.ConfigurationContext;
 import org.apache.tuscany.core.context.Context;
@@ -26,55 +38,44 @@ import org.apache.tuscany.core.context.DuplicateNameException;
 import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.EventException;
+import org.apache.tuscany.core.context.Lifecycle;
+import org.apache.tuscany.core.context.MissingContextFactoryException;
+import org.apache.tuscany.core.context.MissingImplementationException;
+import org.apache.tuscany.core.context.MissingScopeException;
+import org.apache.tuscany.core.context.ProxyConfigurationException;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeAwareContext;
 import org.apache.tuscany.core.context.ScopeContext;
 import org.apache.tuscany.core.context.ScopeStrategy;
 import org.apache.tuscany.core.context.TargetException;
-import org.apache.tuscany.core.context.MissingImplementationException;
-import org.apache.tuscany.core.context.MissingContextFactoryException;
-import org.apache.tuscany.core.context.ProxyConfigurationException;
-import org.apache.tuscany.core.context.MissingScopeException;
-import org.apache.tuscany.core.context.AutowireResolutionException;
-import org.apache.tuscany.core.context.Lifecycle;
-import org.apache.tuscany.core.context.event.RequestEnd;
 import org.apache.tuscany.core.context.event.Event;
+import org.apache.tuscany.core.context.event.RequestEnd;
 import org.apache.tuscany.core.context.event.SessionBound;
 import org.apache.tuscany.core.context.event.SessionEvent;
 import org.apache.tuscany.core.context.scope.DefaultScopeStrategy;
-import org.apache.tuscany.core.wire.InvocationConfiguration;
-import org.apache.tuscany.core.wire.WireConfiguration;
-import org.apache.tuscany.core.wire.WireFactory;
-import org.apache.tuscany.core.wire.WireFactoryInitException;
-import org.apache.tuscany.core.wire.SourceWireFactory;
-import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.system.annotation.Autowire;
 import org.apache.tuscany.core.system.annotation.ParentContext;
 import org.apache.tuscany.core.system.assembly.SystemBinding;
-import org.apache.tuscany.model.assembly.Composite;
+import org.apache.tuscany.core.wire.InvocationConfiguration;
+import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.core.wire.WireConfiguration;
+import org.apache.tuscany.core.wire.WireFactory;
+import org.apache.tuscany.core.wire.WireFactoryInitException;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.model.assembly.AssemblyObject;
+import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.Implementation;
+import org.apache.tuscany.model.assembly.Composite;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Extensible;
 import org.apache.tuscany.model.assembly.ExternalService;
+import org.apache.tuscany.model.assembly.Implementation;
 import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.Scope;
-import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.ModuleComponent;
+import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
-import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
-import org.apache.tuscany.common.TuscanyRuntimeException;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.EnumMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * The base implementation of a composite context
@@ -85,6 +86,8 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractCompositeContext extends AbstractContext implements AutowireContext, ScopeAwareContext, ConfigurationContext {
 
     public static final int DEFAULT_WAIT = 1000 * 60;
+
+    protected AssemblyContext assemblyContext;
 
     protected CompositeContext parentContext;
 
@@ -147,6 +150,10 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         module = new AssemblyFactoryImpl().createModule();
     }
 
+    public void setAssemblyContext(AssemblyContext assemblyContext) {
+        this.assemblyContext = assemblyContext;
+    }
+
     private String uri;
 
     public String getURI() {
@@ -161,10 +168,10 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
     public void start() {
         synchronized (lock) {
             try {
-                if (lifecycleState == STOPPED){
+                if (lifecycleState == STOPPED) {
                     throw new IllegalStateException("Context cannot be restarted - create a new one");
-                }else if (lifecycleState != UNINITIALIZED) {
-                        throw new IllegalStateException("Context not in UNINITIALIZED state");
+                } else if (lifecycleState != UNINITIALIZED) {
+                    throw new IllegalStateException("Context not in UNINITIALIZED state");
                 }
 
                 lifecycleState = INITIALIZING;
@@ -199,7 +206,8 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                 for (ExternalService es : module.getExternalServices()) {
                     registerAutowire(es);
                 }
-                for (Map.Entry<Scope, List<ContextFactory<Context>>> entries : configurationsByScope.entrySet()) {
+                for (Map.Entry<Scope, List<ContextFactory<Context>>> entries : configurationsByScope.entrySet())
+                {
                     // register configurations with scope contexts
                     ScopeContext scope = scopeContexts.get(entries.getKey());
                     scope.registerFactories(entries.getValue());
@@ -270,7 +278,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
     }
 
     @ParentContext
-    public void setParent(CompositeContext parent){
+    public void setParent(CompositeContext parent) {
         parentContext = parent;
     }
 
@@ -350,7 +358,8 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                     contextFactory.prepare(this);
                     try {
                         if (contextFactory.getSourceWireFactories() != null) {
-                            for (SourceWireFactory sourceWireFactory : contextFactory.getSourceWireFactories()) {
+                            for (SourceWireFactory sourceWireFactory : contextFactory.getSourceWireFactories())
+                            {
                                 sourceWireFactory.initialize();
                             }
                         }
@@ -374,7 +383,8 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                     contextFactory.prepare(this);
                     try {
                         if (contextFactory.getSourceWireFactories() != null) {
-                            for (SourceWireFactory sourceWireFactory : contextFactory.getSourceWireFactories()) {
+                            for (SourceWireFactory sourceWireFactory : contextFactory.getSourceWireFactories())
+                            {
                                 sourceWireFactory.initialize();
                             }
                         }
@@ -398,7 +408,8 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
                     contextFactory.prepare(this);
                     try {
                         if (contextFactory.getSourceWireFactories() != null) {
-                            for (SourceWireFactory sourceWireFactory : contextFactory.getSourceWireFactories()) {
+                            for (SourceWireFactory sourceWireFactory : contextFactory.getSourceWireFactories())
+                            {
                                 sourceWireFactory.initialize();
                             }
                         }
@@ -505,12 +516,12 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
         throw new UnsupportedOperationException();
     }
 
-    public void publish(Event event){
+    public void publish(Event event) {
         checkInit();
         if (event instanceof SessionBound) {
             SessionEvent sessionEvent = ((SessionBound) event);
             // update context
-            eventContext.setIdentifier(sessionEvent.getSessionTypeIdentifier() ,sessionEvent.getId());
+            eventContext.setIdentifier(sessionEvent.getSessionTypeIdentifier(), sessionEvent.getId());
         } else if (event instanceof RequestEnd) {
             // be very careful with pooled threads, ensuring threadlocals are cleaned up
             eventContext.clearIdentifiers();
@@ -555,9 +566,9 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
      * Blocks until the module context has been initialized
      */
     protected void checkInit() {
-        if (lifecycleState == STOPPED){
+        if (lifecycleState == STOPPED) {
             throw new IllegalStateException("Context cannot be restarted - create a new one");
-        }        
+        }
         if (!initialized) {
             try {
                 /* block until the module has initialized */
@@ -678,6 +689,8 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
             return instanceInterface.cast(this);
         } else if (AutowireContext.class.equals(instanceInterface)) {
             return instanceInterface.cast(this);
+        } else if (AssemblyContext.class.equals(instanceInterface)) {
+            return instanceInterface.cast(assemblyContext);
         }
 
         NameToScope nts = autowireInternal.get(instanceInterface);
@@ -804,7 +817,7 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
     }
 
     public void connect(SourceWireFactory sourceFactory, TargetWireFactory targetFactory, Class targetType, boolean downScope,
-            ScopeContext targetScopeContext) throws BuilderConfigException {
+                        ScopeContext targetScopeContext) throws BuilderConfigException {
         if (configurationContext != null) {
             try {
                 configurationContext.connect(sourceFactory, targetFactory, targetType, downScope, targetScopeContext);

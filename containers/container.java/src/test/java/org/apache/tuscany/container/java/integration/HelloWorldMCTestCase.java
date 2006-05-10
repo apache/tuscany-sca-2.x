@@ -20,10 +20,9 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.client.TuscanyRuntime;
 import org.osoa.sca.CurrentModuleContext;
 import org.osoa.sca.ModuleContext;
-
-import org.apache.tuscany.core.client.TuscanyRuntime;
 
 /**
  * @version $Rev$ $Date$
@@ -33,16 +32,15 @@ public class HelloWorldMCTestCase extends TestCase {
 
     public void testHelloWorld() throws Exception {
         TuscanyRuntime tuscany = new TuscanyRuntime("test", "foo");
-        tuscany.start();                     
+        tuscany.start();
         ModuleContext moduleContext = CurrentModuleContext.getContext();
         assertNotNull(moduleContext);
-        assertEquals("foo",moduleContext.getURI());
+        assertEquals("foo", moduleContext.getURI());
         HelloWorldService helloworldService = (HelloWorldService) moduleContext.locateService("HelloWorld");
         assertNotNull(helloworldService);
 
         String value = helloworldService .getGreetings("World");
         assertEquals("Hello World", value);
-
         tuscany.stop();
     }
 

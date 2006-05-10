@@ -22,6 +22,7 @@ import org.apache.tuscany.core.system.config.processor.MonitorProcessor;
 import org.apache.tuscany.core.system.config.processor.ParentContextProcessor;
 import org.apache.tuscany.core.config.ComponentTypeIntrospector;
 import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
+import org.apache.tuscany.core.sdo.helper.SDOHelperProcessor;
 import org.apache.tuscany.model.assembly.AssemblyFactory;
 
 /**
@@ -48,6 +49,7 @@ public class ProcessorUtils {
         processors.add(new AutowireProcessor());
         processors.add(new MonitorProcessor());
         processors.add(new ParentContextProcessor());
+        processors.add(new SDOHelperProcessor());
         return processors;
     }
 

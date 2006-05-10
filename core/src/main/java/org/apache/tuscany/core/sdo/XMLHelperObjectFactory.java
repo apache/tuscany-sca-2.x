@@ -1,17 +1,18 @@
-package org.apache.tuscany.databinding.sdo.injection;
+package org.apache.tuscany.core.sdo;
 
-import commonj.sdo.helper.XSDHelper;
+import commonj.sdo.helper.XMLHelper;
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.injection.ObjectCreationException;
-import org.apache.tuscany.databinding.sdo.system.SDOService;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.sdo.util.SDOUtil;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class XSDHelperObjectFactory implements ObjectFactory<XSDHelper> {
+public class XMLHelperObjectFactory implements ObjectFactory<XMLHelper> {
 
 
     private ContextResolver resolver;
@@ -20,12 +21,12 @@ public class XSDHelperObjectFactory implements ObjectFactory<XSDHelper> {
      * @throws org.apache.tuscany.core.injection.FactoryInitException
      *
      */
-    public XSDHelperObjectFactory(ContextResolver resolver) {
+    public XMLHelperObjectFactory(ContextResolver resolver) {
         this.resolver = resolver;
     }
 
 
-    public XSDHelper getInstance() throws ObjectCreationException {
+    public XMLHelper getInstance() throws ObjectCreationException {
         CompositeContext parent = resolver.getCurrentContext();
         if (parent == null) {
             return null;// FIXME semantic here means required is not followed
@@ -37,13 +38,8 @@ public class XSDHelperObjectFactory implements ObjectFactory<XSDHelper> {
             throw e;
         }
         AutowireContext ctx = (AutowireContext) parent;
-        SDOService sdoService = ctx.resolveInstance(SDOService.class);
-        return sdoService.getXSDHelper();
+        AssemblyContext assemblyContext = ctx.resolveInstance(AssemblyContext.class);
+        return SDOUtil.createXMLHelper(assemblyContext.getTypeHelper());
     }
-
-    public void setContextResolver(ContextResolver resolver) {
-        this.resolver = resolver;
-    }
-
 
 }

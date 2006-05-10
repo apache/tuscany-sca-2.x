@@ -4,6 +4,7 @@ import org.apache.tuscany.core.config.ConfigurationException;
 import org.apache.tuscany.model.assembly.Composite;
 import org.apache.tuscany.model.assembly.Part;
 import org.apache.tuscany.model.assembly.Extensible;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 
 import java.util.List;
 
@@ -17,6 +18,12 @@ public interface CompositeContext extends Context {
     public String getURI();
 
     public void setURI(String uri);
+
+    /**
+     * TODO remove this method
+     * @deprecated
+     */
+    public void setAssemblyContext(AssemblyContext context);
 
     /**
      * Returns the parent context, or null if the context does not have one

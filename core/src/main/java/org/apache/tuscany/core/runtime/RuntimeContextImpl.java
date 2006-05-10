@@ -41,6 +41,7 @@ import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.context.SystemScopeStrategy;
 import org.apache.tuscany.core.wire.SourceWireFactory;
 import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Composite;
 import org.apache.tuscany.model.assembly.Extensible;
@@ -144,6 +145,10 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
     }
 
     public void setURI(String uri) {
+    }
+
+    public void setAssemblyContext(AssemblyContext context) {
+
     }
 
     //TODO remove

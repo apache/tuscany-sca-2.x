@@ -1,18 +1,18 @@
-package org.apache.tuscany.databinding.sdo.injection;
+package org.apache.tuscany.core.sdo;
 
+import commonj.sdo.helper.XSDHelper;
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.injection.ObjectCreationException;
-import org.apache.tuscany.databinding.sdo.system.SDOService;
-
-import commonj.sdo.helper.TypeHelper;
+import org.apache.tuscany.model.assembly.AssemblyContext;
+import org.apache.tuscany.sdo.util.SDOUtil;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class TypeHelperObjectFactory implements ObjectFactory<TypeHelper> {
+public class XSDHelperObjectFactory implements ObjectFactory<XSDHelper> {
 
 
     private ContextResolver resolver;
@@ -21,12 +21,12 @@ public class TypeHelperObjectFactory implements ObjectFactory<TypeHelper> {
      * @throws org.apache.tuscany.core.injection.FactoryInitException
      *
      */
-    public TypeHelperObjectFactory(ContextResolver resolver) {
+    public XSDHelperObjectFactory(ContextResolver resolver) {
         this.resolver = resolver;
     }
 
 
-    public TypeHelper getInstance() throws ObjectCreationException {
+    public XSDHelper getInstance() throws ObjectCreationException {
         CompositeContext parent = resolver.getCurrentContext();
         if (parent == null) {
             return null;// FIXME semantic here means required is not followed
@@ -38,12 +38,8 @@ public class TypeHelperObjectFactory implements ObjectFactory<TypeHelper> {
             throw e;
         }
         AutowireContext ctx = (AutowireContext) parent;
-        SDOService sdoService = ctx.resolveInstance(SDOService.class);
-        return sdoService.getTypeHelper();
-    }
-
-    public void setContextResolver(ContextResolver resolver) {
-        this.resolver = resolver;
+        AssemblyContext assemblyContext = ctx.resolveInstance(AssemblyContext.class);
+        return SDOUtil.createXSDHelper(assemblyContext.getTypeHelper());
     }
 
 
