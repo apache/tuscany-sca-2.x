@@ -4,7 +4,6 @@ import org.apache.tuscany.core.sdo.helper.SDOHelper;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.DataFactory;
-import commonj.sdo.helper.XSDHelper;
 
 /**
  * Implementation of the CustomerInfo service.
@@ -12,18 +11,7 @@ import commonj.sdo.helper.XSDHelper;
 public class CustomerInfoServiceImpl {
 
     @SDOHelper
-    DataFactory dataFactory;
-    
-    /**
-     * Constructs a new CustomerInfoServiceImpl.
-     */
-    public CustomerInfoServiceImpl() {
-        //FIXME workaround for JIRA TUSCANY-179
-        if (dataFactory == null) {
-            dataFactory = DataFactory.INSTANCE;
-            XSDHelper.INSTANCE.define(CustomerInfoServiceImpl.class.getClassLoader().getResourceAsStream("wsdl/customer.xsd"), "wsdl/customer.xsd");
-        }
-    }
+    public DataFactory dataFactory;
     
     public DataObject getCustomerInfo(String customerID) {
 
