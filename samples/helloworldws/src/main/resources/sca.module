@@ -19,7 +19,7 @@
         name="helloworld">
 
     <import.sdo wsdlLocation="wsdl/helloworld.wsdl"/>
-    <import.wsdl location="wsdl/helloworld.wsdl" namespace="http://helloworld"/>
+    <import.wsdl wsdlLocation="wsdl/helloworld.wsdl"/>
 
     <entryPoint name="HelloWorldWebService">
         <interface.wsdl interface="http://helloworld#HelloWorld"/>

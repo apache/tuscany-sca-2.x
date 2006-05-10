@@ -18,8 +18,8 @@
 <module xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
         name="customerinfo">
         
-    <import.sdo wsdlLocation="wsdl/customer.xsd"/>
-    <import.wsdl namespace="http://customerinfo" location="wsdl/customerinfo.wsdl"/>
+    <import.sdo schemaLocation="wsdl/customer.xsd"/>
+    <import.wsdl wsdlLocation="wsdl/customerinfo.wsdl"/>
         
     <component name="CustomerInfoServiceComponent">
         <implementation.java class="customerinfo.CustomerInfoServiceImpl"/>

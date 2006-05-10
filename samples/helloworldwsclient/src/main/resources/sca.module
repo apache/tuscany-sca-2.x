@@ -18,7 +18,7 @@
         name="sampleHelloworld">
 
     <import.sdo wsdlLocation="wsdl/helloworld.wsdl"/>
-    <import.wsdl location="wsdl/helloworld.wsdl" namespace="http://helloworld"/>
+    <import.wsdl wsdlLocation="wsdl/helloworld.wsdl"/>
 
     <externalService name="HelloWorldService">
         <interface.java interface="helloworld.HelloWorldService"/>
