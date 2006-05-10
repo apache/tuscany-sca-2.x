@@ -40,12 +40,12 @@
             <groupId>rhino</groupId>
             <artifactId>js</artifactId>
             <version>1.6R2</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.sca.bindings</groupId>
-            <artifactId>tuscany-binding-axis2</artifactId> <!-- Reqd for E4X -->
+            <groupId>org.apache.tuscany.databinding</groupId>
+            <artifactId>tuscany-databinding-sdo</artifactId> <!-- Reqd for E4X -->
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency>
@@ -54,7 +54,7 @@
             <groupId>xmlbeans</groupId>
             <artifactId>xbean</artifactId>  <!-- Reqd for E4X -->
             <version>2.1.0</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>

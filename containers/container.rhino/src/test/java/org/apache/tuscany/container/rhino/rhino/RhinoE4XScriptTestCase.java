@@ -19,9 +19,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import javax.xml.namespace.QName;
+
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.rhino.rhino.RhinoE4XScript;
 import org.apache.tuscany.sdo.helper.XSDHelperImpl;
 import org.apache.tuscany.sdo.util.SDOUtil;
 
@@ -37,19 +38,22 @@ public class RhinoE4XScriptTestCase extends TestCase {
 
     private String script;
 
-    private TypeHelper th;
+    private E4XDataBinding dataBinding;
 
     protected void setUp() throws Exception {
         super.setUp();
         this.script = readResource(scriptName);
-        this.th = SDOUtil.createTypeHelper();
+        TypeHelper th = SDOUtil.createTypeHelper();
         XSDHelper xsdHelper = new XSDHelperImpl(th);
         URL url = getClass().getResource("helloworld.wsdl");
         xsdHelper.define(url.openStream(), null);
+
+        dataBinding = new E4XDataBinding(th);
+        dataBinding.addElementQName("getGreetings", new QName("http://helloworld.samples.tuscany.apache.org", "getGreetings"));
     }
 
     public void testSimpleInvocation() throws IOException {
-        RhinoE4XScript ri = new RhinoE4XScript(scriptName, script, null, null, th);
+        RhinoE4XScript ri = new RhinoE4XScript(scriptName, script, null, null, dataBinding);
         Object x = ri.invoke("getGreetings", new Object[] { "petra" }, null);
         assertEquals(x, "hello petra");
     }

@@ -1,70 +1,70 @@
+/**
+ *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.apache.tuscany.container.rhino.rhino;
 
 import java.util.Map;
 
-import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.binding.axis2.databinding.AxiomHelper;
-import org.apache.xmlbeans.XmlException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.xml.XMLObject;
-import org.osoa.sca.ServiceRuntimeException;
-
-import commonj.sdo.helper.TypeHelper;
 
 /**
- * Invokes a JavaScript/E4X function with argument and return values that may be E4X XML objects. When calling the script from Java request arguments
- * that are AXIOM OMElements are converted to E4X XML objects. If the response from the script is an E4X XML object it is converted to an AXIOM
- * OMElement.
+ * Invokes a JavaScript/E4X function with argument and return values that may be E4X XML objects. 
  */
 public class RhinoE4XScript extends RhinoScript {
 
-    private TypeHelper typeHelper;
+    private E4XDataBinding dataBinding;
 
-    private String serviceNS = "http://helloworld.samples.tuscany.apache.org"; // TODO can't hardcode this!
-
-    public RhinoE4XScript(String scriptName, String script, Map context, ClassLoader cl, TypeHelper typeHelper) {
+    public RhinoE4XScript(String scriptName, String script, Map context, ClassLoader cl, E4XDataBinding dataBinding) {
         super(scriptName, script, context, cl);
-        this.typeHelper = typeHelper;
+        this.dataBinding = dataBinding;
     }
 
-    protected RhinoE4XScript(String scriptName, String script, Scriptable scriptScope, TypeHelper typeHelper) {
+    protected RhinoE4XScript(String scriptName, String script, Scriptable scriptScope, E4XDataBinding dataBinding) {
         super(scriptName, script, scriptScope);
-        this.typeHelper = typeHelper;
+        this.dataBinding = dataBinding;
     }
 
     /**
      * Turn args to JS objects and convert any OMElement to E4X XML
      */
     @Override
-    protected Object[] processArgs(String functionName, Object arg, Scriptable scope) {
-        QName operationQN = new QName(serviceNS, functionName);
-        OMElement om = AxiomHelper.toOMElement(typeHelper, (Object[]) arg, operationQN, true);
-        try {
-            return new Object[] { E4XAXIOMUtils.toScriptableObject(om, scope) };
-        } catch (XmlException e) {
-            throw new ServiceRuntimeException(e);
-        }
+    protected Object[] processArgs(String functionName, Object[] args, Scriptable scope) {
+        return new Object[] { dataBinding.toE4X(functionName, args, scope) };
     }
 
     /**
-     * Unwrap and convert response
+     * Unwrap and convert response converting any E4X XML into Java objects
      */
     @Override
-    protected Object processResponse(Object response, Class responseClass) {
+    protected Object processResponse(String functionName, Object response, Class responseClass) {
         if (response instanceof XMLObject) {
-            OMElement om = E4XAXIOMUtils.toOMElement((XMLObject) response);
-            Object[] resp = AxiomHelper.toObjects(typeHelper, om, true);
-            return resp[0];
+            Object[] os = dataBinding.toObjects((XMLObject) response);
+            if (os == null || os.length < 1) {
+                return null;
+            } else {
+                return os[0];
+            }
         } else {
-            return super.processResponse(response, responseClass);
+            return super.processResponse(functionName, response, responseClass);
         }
     }
 
     @Override
     public RhinoE4XScript copy() {
-        return new RhinoE4XScript(scriptName, script, scriptScope, typeHelper);
+        return new RhinoE4XScript(scriptName, script, scriptScope, dataBinding);
     }
 
 }

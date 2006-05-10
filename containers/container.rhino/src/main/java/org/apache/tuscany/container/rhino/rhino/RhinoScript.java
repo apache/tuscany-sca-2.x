@@ -101,7 +101,7 @@ public class RhinoScript implements ExternalServiceInvoker {
      * @param arg arguments to the function, may be a single object or an array of objects.
      * @return the function return value.
      */
-    public Object invoke(String functionName, Object args) {
+    public Object invoke(String functionName, Object[] args) {
         return invoke(functionName, args, null, null);
     }
 
@@ -114,7 +114,7 @@ public class RhinoScript implements ExternalServiceInvoker {
      *        the values by using the variable in name.
      * @return the function return value.
      */
-    public Object invoke(String functionName, Object args, Map contexts) {
+    public Object invoke(String functionName, Object[] args, Map contexts) {
         return invoke(functionName, args, null, contexts);
     }
 
@@ -128,14 +128,14 @@ public class RhinoScript implements ExternalServiceInvoker {
      *        the values by using the variable in name.
      * @return the function return value.
      */
-    public Object invoke(String functionName, Object arg, Class responseClass, Map contexts) {
+    public Object invoke(String functionName, Object[] arg, Class responseClass, Map contexts) {
         Context cx = Context.enter();
         try {
             Function function = getFunction(scriptScope, functionName);
             Scriptable invocationScope = getInvocationScope(cx, contexts);
             Object[] args = processArgs(functionName, arg, invocationScope);
             Object jsResponse = function.call(cx, invocationScope, invocationScope, args);
-            Object response = processResponse(jsResponse, responseClass);
+            Object response = processResponse(functionName, jsResponse, responseClass);
             return response;
         } finally {
             Context.exit();
@@ -145,7 +145,7 @@ public class RhinoScript implements ExternalServiceInvoker {
     /**
      * Turn args to JS objects and convert any OMElement to E4X XML
      */
-    protected Object[] processArgs(String functionName, Object arg, Scriptable scope) {
+    protected Object[] processArgs(String functionName, Object[] arg, Scriptable scope) {
         Object[] args;
         if (arg == null) {
             args = new Object[] { null };
@@ -163,7 +163,7 @@ public class RhinoScript implements ExternalServiceInvoker {
     /**
      * Unwrap and convert response
      */
-    protected Object processResponse(Object response, Class responseClass) {
+    protected Object processResponse(String functionName, Object response, Class responseClass) {
         if (Context.getUndefinedValue().equals(response)) {
             response = null;
         } else if (response instanceof Wrapper) {
@@ -285,10 +285,6 @@ public class RhinoScript implements ExternalServiceInvoker {
         } finally {
             Context.exit();
         }
-    }
-
-    public Object invoke(String methodName, Object[] args) {
-        return invoke(methodName, (Object) args);
     }
 
 }

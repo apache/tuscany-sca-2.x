@@ -32,8 +32,9 @@ import org.mozilla.javascript.EcmaError;
 public class RhinoScriptTestCase extends TestCase {
 
     private static final String scriptName = "RhinoScriptTestCase.js";
+
     private String script;
-    
+
     protected void setUp() throws Exception {
         super.setUp();
         this.script = readResource(scriptName);
@@ -41,17 +42,17 @@ public class RhinoScriptTestCase extends TestCase {
 
     public void testSimpleInvocation() {
         RhinoScript ri = new RhinoScript(scriptName, script);
-        Object x = ri.invoke("echo", "petra", null);
+        Object x = ri.invoke("echo", new Object[] { "petra" }, null);
         assertEquals("petra", x);
     }
 
     public void testCopy() {
         RhinoScript ri = new RhinoScript(scriptName, script);
-        Object x = ri.invoke("echo", "petra", null);
+        Object x = ri.invoke("echo", new Object[] { "petra" }, null);
         assertEquals("petra", x);
 
         ri = ri.copy();
-        x = ri.invoke("echo", "sue", null);
+        x = ri.invoke("echo", new Object[] { "sue" }, null);
         assertEquals("sue", x);
 
     }
@@ -87,7 +88,7 @@ public class RhinoScriptTestCase extends TestCase {
      */
     public void testScopes1() {
         RhinoScript ri = new RhinoScript(scriptName, script);
-        ri.invoke("setGlobalVarY", "petra", null);
+        ri.invoke("setGlobalVarY", new Object[] { "petra" }, null);
 
         Object x = ri.invoke("getGlobalVarY", null, null);
         assertEquals("petra", x);
@@ -98,7 +99,7 @@ public class RhinoScriptTestCase extends TestCase {
      */
     public void testScopes2() {
         RhinoScript ri = new RhinoScript(scriptName, script);
-        ri.invoke("setLocalVarY", "petra", null);
+        ri.invoke("setLocalVarY", new Object[] { "petra" }, null);
 
         try {
             ri.invoke("getGlobalVarY", null, null);
@@ -113,7 +114,7 @@ public class RhinoScriptTestCase extends TestCase {
      */
     public void testScopes3() {
         RhinoScript ri = new RhinoScript(scriptName, script);
-        ri.invoke("setGlobalVarY", "petra", null);
+        ri.invoke("setGlobalVarY", new Object[] { "petra" }, null);
 
         Map<String, Object> contexts = new HashMap<String, Object>();
         contexts.put("a", "sue");
@@ -130,7 +131,7 @@ public class RhinoScriptTestCase extends TestCase {
      */
     public void testScopes4() {
         RhinoScript ri = new RhinoScript(scriptName, script);
-        ri.invoke("setGlobalVarY", "petra", null);
+        ri.invoke("setGlobalVarY", new Object[] { "petra" }, null);
 
         ri = ri.copy();
         try {
@@ -159,14 +160,14 @@ public class RhinoScriptTestCase extends TestCase {
      */
     private String readResource(String name) {
         try {
-        URL url = getClass().getResource(name);
-        if (url == null) {
-            throw new RuntimeException("resource not found: " + name);
-        }
-        InputStream inputStream = url.openStream();
+            URL url = getClass().getResource(name);
+            if (url == null) {
+                throw new RuntimeException("resource not found: " + name);
+            }
+            InputStream inputStream = url.openStream();
 
-        StringBuffer resource = new StringBuffer();
-        int n = 0;
+            StringBuffer resource = new StringBuffer();
+            int n = 0;
 
             while ((n = inputStream.read()) != -1) {
                 resource.append((char) n);
@@ -174,8 +175,8 @@ public class RhinoScriptTestCase extends TestCase {
 
             inputStream.close();
 
-        String s = resource.toString();
-        return s;
+            String s = resource.toString();
+            return s;
 
         } catch (IOException e) {
             throw new RuntimeException("IOException reading resource " + name, e);
