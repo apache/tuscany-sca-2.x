@@ -18,6 +18,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import org.apache.tuscany.core.builder.BuilderConfigException;
+import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.WireBuilder;
 import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.ScopeContext;
@@ -35,7 +36,7 @@ import org.osoa.sca.annotations.Init;
  *
  * @version $$Rev$$ $$Date$$
  */
-public abstract class WireBuilderSupport<T> implements WireBuilder {
+public abstract class WireBuilderSupport<T extends ContextFactory<?>> implements WireBuilder {
 
     protected RuntimeContext runtimeContext;
     protected Class targetClass;
