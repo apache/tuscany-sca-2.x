@@ -1,6 +1,5 @@
 package org.apache.tuscany.databinding.sdo.injection;
 
-import commonj.sdo.helper.XSDHelper;
 import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.builder.ObjectFactory;
 import org.apache.tuscany.core.context.AutowireContext;
@@ -8,10 +7,12 @@ import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.injection.ObjectCreationException;
 import org.apache.tuscany.databinding.sdo.system.SDOService;
 
+import commonj.sdo.helper.DataFactory;
+
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class XSDHelperObjectFactory implements ObjectFactory<XSDHelper> {
+public class DataFactoryObjectFactory implements ObjectFactory<DataFactory> {
 
 
     private ContextResolver resolver;
@@ -20,12 +21,12 @@ public class XSDHelperObjectFactory implements ObjectFactory<XSDHelper> {
      * @throws org.apache.tuscany.core.injection.FactoryInitException
      *
      */
-    public XSDHelperObjectFactory(ContextResolver resolver) {
+    public DataFactoryObjectFactory(ContextResolver resolver) {
         this.resolver = resolver;
     }
 
 
-    public XSDHelper getInstance() throws ObjectCreationException {
+    public DataFactory getInstance() throws ObjectCreationException {
         CompositeContext parent = resolver.getCurrentContext();
         if (parent == null) {
             return null;// FIXME semantic here means required is not followed
@@ -38,7 +39,7 @@ public class XSDHelperObjectFactory implements ObjectFactory<XSDHelper> {
         }
         AutowireContext ctx = (AutowireContext) parent;
         SDOService sdoService = ctx.resolveInstance(SDOService.class);
-        return sdoService.getXSDHelper();
+        return sdoService.getDataFactory();
     }
 
     public void setContextResolver(ContextResolver resolver) {
