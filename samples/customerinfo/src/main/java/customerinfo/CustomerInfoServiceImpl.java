@@ -1,5 +1,7 @@
 package customerinfo;
 
+import org.apache.tuscany.databinding.sdo.helper.SDOHelper;
+
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.DataFactory;
 import commonj.sdo.helper.XSDHelper;
@@ -9,12 +11,18 @@ import commonj.sdo.helper.XSDHelper;
  */
 public class CustomerInfoServiceImpl {
 
-    //FIXME replace this with an @SDOHelper annotation when TUSCANY-179 gets fixed 
-    DataFactory dataFactory = DataFactory.INSTANCE;
+    @SDOHelper
+    DataFactory dataFactory;
     
-    //FIXME workaround for JIRA TUSCANY-179
-    static { 
-        XSDHelper.INSTANCE.define(CustomerInfoServiceImpl.class.getClassLoader().getResourceAsStream("wsdl/customer.xsd"), "wsdl/customer.xsd");
+    /**
+     * Constructs a new CustomerInfoServiceImpl.
+     */
+    public CustomerInfoServiceImpl() {
+        //FIXME workaround for JIRA TUSCANY-179
+        if (dataFactory == null) {
+            dataFactory = DataFactory.INSTANCE;
+            XSDHelper.INSTANCE.define(CustomerInfoServiceImpl.class.getClassLoader().getResourceAsStream("wsdl/customer.xsd"), "wsdl/customer.xsd");
+        }
     }
     
     public DataObject getCustomerInfo(String customerID) {
