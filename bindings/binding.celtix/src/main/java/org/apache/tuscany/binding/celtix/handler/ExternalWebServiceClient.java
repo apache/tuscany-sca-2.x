@@ -118,6 +118,15 @@ public class ExternalWebServiceClient {
      */
     public Object invoke(String operationName, Object[] args) {
         WSDLOperationInfo opInfo = wsdlCache.getOperationInfo(operationName);
+        if (opInfo == null) {
+            //REVISIT - really map the operation name to a WSDL operation
+            for (String opName : wsdlCache.getAllOperationInfo().keySet()) {
+                if (operationName.equalsIgnoreCase(opName)) {
+                    opInfo = wsdlCache.getOperationInfo(opName);
+                    break;
+                }
+            }
+        }
         ObjectMessageContext objMsgContext = clientBinding.createObjectContext();
 
         boolean hasInOut = false;

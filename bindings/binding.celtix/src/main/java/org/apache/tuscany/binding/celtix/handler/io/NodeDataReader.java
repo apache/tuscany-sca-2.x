@@ -1,6 +1,7 @@
 package org.apache.tuscany.binding.celtix.handler.io;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -15,6 +16,8 @@ import org.w3c.dom.ls.LSSerializer;
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;
 import commonj.sdo.helper.XMLDocument;
+
+import org.apache.tuscany.databinding.sdo.SDOXMLHelper;
 import org.apache.tuscany.sdo.helper.XMLHelperImpl;
 import org.objectweb.celtix.bindings.DataReader;
 import org.objectweb.celtix.context.ObjectMessageContext;
@@ -32,9 +35,16 @@ public class NodeDataReader implements DataReader<Node> {
     }
 
     public Object read(QName name, int idx, Node input) {
-        //REVISIT - doc/lit and rpc/lit support
+        try {
+            byte bytes[] = getNodeBytes(input);
+            Object os[] = SDOXMLHelper.toObjects(callback.getTypeHelper(), bytes, false);
+            return os[0];
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new WebServiceException(e);
+        }
 
-        return null;
     }
 
     public void readWrapper(ObjectMessageContext objCtx, boolean isOutBound, Node input) {
@@ -86,16 +96,40 @@ public class NodeDataReader implements DataReader<Node> {
             throw new WebServiceException(e);
         }
     }
+    private byte[] getNodeBytes(Node node)
+        throws ClassCastException, ClassNotFoundException,
+            InstantiationException, IllegalAccessException {
+    
+        //This is also a hack, the JDK should already have this set, but it doesn't
+        DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
+        if (registry == null) {
+            System.setProperty(DOMImplementationRegistry.PROPERTY,
+                "com.sun.org.apache.xerces.internal.dom.DOMImplementationSourceImpl");
+            registry = DOMImplementationRegistry.newInstance();
+        }
+        DOMImplementationLS impl = (DOMImplementationLS)registry.getDOMImplementation("LS");
+        if (impl == null) {
+            System.setProperty(DOMImplementationRegistry.PROPERTY,
+                "com.sun.org.apache.xerces.internal.dom.DOMImplementationSourceImpl");
+            registry = DOMImplementationRegistry.newInstance();            
+            impl = (DOMImplementationLS)registry.getDOMImplementation("LS");
+        }
+        LSOutput output = impl.createLSOutput();
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        output.setByteStream(bout);
+        LSSerializer writer = impl.createLSSerializer();
+        writer.write(node, output);
+    
+        return bout.toByteArray();
+    }
 
     private InputStream getNodeStream(Node node)
         throws ClassCastException, ClassNotFoundException,
             InstantiationException, IllegalAccessException {
 
-        //This is also a hack, the JDK should already have this set, but it doesn't
-        /*
-                */
         DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
         if (registry == null) {
+            //This is also a hack, the JDK should already have this set, but it doesn't
             System.setProperty(DOMImplementationRegistry.PROPERTY,
                 "com.sun.org.apache.xerces.internal.dom.DOMImplementationSourceImpl");
             registry = DOMImplementationRegistry.newInstance();

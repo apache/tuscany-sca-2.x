@@ -71,9 +71,7 @@ public class CeltixEntryPointContextImpl extends EntryPointContextImpl
     }
 
     public void start() throws ContextInitException {
-        // TODO Auto-generated method stub
         super.start();
-        System.out.println("In start");
         
         entryPointProxy = getInstance(null);
         WebServiceBinding wsBinding = (WebServiceBinding)entry.getBindings().get(0);
@@ -176,13 +174,20 @@ public class CeltixEntryPointContextImpl extends EntryPointContextImpl
             return opMap.get(operationName);
         }
         WSDLOperationInfo opInfo = wsdlCache.getOperationInfo(operationName.getLocalPart());
+        if (opInfo == null) {
+            //REVISIT - really map the operation name to a WSDL operation
+            for (String opName : wsdlCache.getAllOperationInfo().keySet()) {
+                if (operationName.getLocalPart().equalsIgnoreCase(opName)) {
+                    opInfo = wsdlCache.getOperationInfo(opName);
+                    break;
+                }
+            }
+        }
         boolean inout = false;
         
         
         Class<?> serviceInterface = getServiceInterface();
-        System.out.println(serviceInterface.getName());
         Method meth = getMethod(serviceInterface, operationName.getLocalPart());
-        System.out.println(meth);
         
         ServerDataBindingCallback scb = new SCAServerDataBindingCallback(opInfo,
                                                                          typeHelper,
@@ -212,7 +217,7 @@ public class CeltixEntryPointContextImpl extends EntryPointContextImpl
 
     
     public DataBindingCallback getFaultDataBindingCallback(ObjectMessageContext objContext) {
-        // TODO Auto-generated method stub
+        // REVISIT - what to do about faults
         return null;
     }
 
@@ -221,7 +226,6 @@ public class CeltixEntryPointContextImpl extends EntryPointContextImpl
     }
 
     public Style getStyle() {
-        // TODO Auto-generated method stub
         return wsdlCache.getStyle();
     }
     public DataBindingCallback.Mode getServiceMode() {
@@ -229,7 +233,7 @@ public class CeltixEntryPointContextImpl extends EntryPointContextImpl
     }
 
     public WebServiceProvider getWebServiceProvider() {
-        // TODO Auto-generated method stub
+        //not needed I think
         return null;
     }
 
@@ -239,7 +243,5 @@ public class CeltixEntryPointContextImpl extends EntryPointContextImpl
         return null;
     }
 
-    
-    
 }
 

@@ -21,6 +21,8 @@ import commonj.sdo.DataObject;
 import commonj.sdo.Property;
 import commonj.sdo.helper.TypeHelper;
 import commonj.sdo.helper.XSDHelper;
+
+import org.apache.tuscany.databinding.sdo.SDOXMLHelper;
 import org.apache.tuscany.sdo.helper.DataFactoryImpl;
 import org.apache.tuscany.sdo.helper.XMLHelperImpl;
 import org.apache.tuscany.sdo.helper.XSDHelperImpl;
@@ -39,7 +41,22 @@ public class NodeDataWriter implements DataWriter<Node> {
     }
 
     public void write(Object obj, QName elName, Node output) {
-        //REVISIT - doc/lit and rpc/lit support
+        byte bytes[] = SDOXMLHelper.toXMLBytes(callback.getTypeHelper(),
+                                new Object[] {obj},
+                                elName,
+                                false);
+        ByteArrayInputStream bin = new ByteArrayInputStream(bytes);
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        factory.setNamespaceAware(true);
+        try {
+            SAXParser parser = factory.newSAXParser();
+            parser.parse(bin, new NodeContentHandler(output));
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new WebServiceException(e);
+        }
+        
     }
 
     public void writeWrapper(ObjectMessageContext objCtx, boolean isOutbound, Node nd) {
@@ -108,12 +125,15 @@ public class NodeDataWriter implements DataWriter<Node> {
     }
 
     private class NodeContentHandler extends DefaultHandler {
-        Element current;
+        Node current;
         Document doc;
 
         public NodeContentHandler(Node nd) {
-            current = (Element)nd;
             doc = nd.getOwnerDocument();
+            if (doc == null && nd instanceof Document) {
+                doc = (Document)nd;
+            }
+            current = nd;
         }
 
         public void characters(char[] ch, int start, int length) {
@@ -126,14 +146,14 @@ public class NodeDataWriter implements DataWriter<Node> {
             current.appendChild(newEl);
             current = newEl;
             for (int x = 0; x < attributes.getLength(); x++) {
-                current.setAttributeNS(attributes.getURI(x),
+                newEl.setAttributeNS(attributes.getURI(x),
                         attributes.getQName(x),
                         attributes.getValue(x));
             }
         }
 
         public void endElement(String uri, String localName, String qName) {
-            current = (Element)current.getParentNode();
+            current = current.getParentNode();
         }
     }
 
