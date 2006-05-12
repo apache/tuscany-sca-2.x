@@ -89,7 +89,7 @@ Built on Jun 14, 2005 (09:15:57 EDT)-->
         <wsdl:port binding="impl:helloworldSoapBinding" name="helloworld">
 
             <!-- Tuscany SCA Service -->
-            <wsdlsoap:address location="http://localhost:8080/helloworldws-SNAPSHOT/services/HelloWorldService"/>
+            <wsdlsoap:address location="http://localhost:8080/sample-helloworldws-SNAPSHOT/services/HelloWorldService"/>
 
             <!-- Axis Web Service -->
             <!--
