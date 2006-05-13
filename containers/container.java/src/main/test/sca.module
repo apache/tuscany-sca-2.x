@@ -20,7 +20,7 @@
     <!--
         <entryPoint name="MyValueService">
             <interface.java interface="services.myvalue.MyValueService"/>
-            <binding.ws port="http://webservice.myvalue#MyValueWebService"/>
+            <binding.ws port="http://webservice.myvalue#wsdl.endpoint(MyValueService/MyValueWebService)"/>
             <reference>MyValueServiceComponent</reference>
         </entryPoint>
 
@@ -67,7 +67,7 @@
     <!--
         <externalService name="StockQuoteService">
             <interface.java interface="services.stockquote.StockQuoteService"/>
-            <binding.ws port="http://webservice.stockquote#StockQuoteWebService"/>
+            <binding.ws port="http://webservice.stockquote#wsdl.endpoint(StockQuoteService/StockQuoteWebService)"/>
         </externalService>
     -->
 
