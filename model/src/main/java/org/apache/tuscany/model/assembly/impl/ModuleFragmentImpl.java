@@ -16,6 +16,7 @@
  */
 package org.apache.tuscany.model.assembly.impl;
 
+import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.ModuleFragment;
 
 /**
@@ -24,6 +25,11 @@ import org.apache.tuscany.model.assembly.ModuleFragment;
 public class ModuleFragmentImpl extends CompositeImpl implements ModuleFragment {
 
     protected ModuleFragmentImpl() {
+    }
+
+    protected void wire(AssemblyContext modelContext) {
+        // No wiring inside a module fragment
+        // Wires are handled at the module level
     }
 
 }

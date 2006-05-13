@@ -37,13 +37,19 @@ public class ServiceURIImpl implements ServiceURI {
     private String serviceName;
 
     /**
-     * Constructor
+     * Constructs a new ServiceURIImpl.
      * @param address
      */
     protected ServiceURIImpl(String address) {
         this.address = address;
     }
 
+    /**
+     * Constructs a new ServiceURIImpl.
+     * @param moduleComponent
+     * @param partName
+     * @param portName
+     */
     protected ServiceURIImpl(ModuleComponent moduleComponent, String partName, String portName) {
          if (moduleComponent != null)
              moduleComponentName = moduleComponent.getName();
@@ -54,8 +60,7 @@ public class ServiceURIImpl implements ServiceURI {
     }
 
     /**
-     * Constructor
-     *
+     * Constructs a new ServiceURIImpl.
      * @param moduleComponent
      * @param configuredPort
      */
@@ -113,10 +118,6 @@ public class ServiceURIImpl implements ServiceURI {
         isParsed = true;
     }
 
-    /**
-     * Returns true if the address scheme is sca:
-     *
-     */
     public boolean isSCAScheme() {
         if (isSCAScheme == null) {
             if (address != null && address.startsWith("sca://")) {
@@ -128,13 +129,31 @@ public class ServiceURIImpl implements ServiceURI {
         return isSCAScheme.booleanValue();
     }
 
-    /**
-     * @return Returns the address.
-     */
     public String getAddress() {
         return address;
     }
 
+    public String getPath() {
+        StringBuffer path = new StringBuffer();
+        String mc = getModuleComponentName();
+        if (mc != null) {
+            path.append(mc);
+        }
+        String p = getPartName();
+        if (p !=null) {
+            if (path.length()!=0)
+                path.append('/');
+            path.append(p);
+        }
+        String s = getServiceName();
+        if (s !=null) {
+            if (path.length()!=0)
+                path.append('/');
+            path.append(s);
+        }
+        return path.toString();
+    }
+    
     /**
      * Parse the address.
      */

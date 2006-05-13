@@ -252,7 +252,15 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
         }
         componentType.initialize(modelContext);
 
-        // Wire the module parts
+        // Wire the parts in this composite
+        wire(modelContext);
+    }
+
+    /**
+     * Wire the parts in this composite.
+     * @param modelContext
+     */
+    protected void wire(AssemblyContext modelContext) {
         for (Wire wire : getWires()) {
 
             // Get the source reference
@@ -276,7 +284,7 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
                 }
             }
             if (configuredReference == null) {
-                throw new IllegalArgumentException("Cannot find wire source " + sourceURI.getAddress());
+                throw new IllegalArgumentException("Cannot find wire source " + sourceURI.getPath());
             } else {
 
                 // Resolve the target service endpoint
@@ -293,11 +301,10 @@ public abstract class CompositeImpl extends ExtensibleImpl implements Composite 
                         configuredReference.getTargetConfiguredServices().add(configuredService);
                     }
                 } else {
-                    throw new IllegalArgumentException("Cannot find service for '" + targetURI.getAddress() +"'.");
+                    throw new IllegalArgumentException("Cannot find service '" + targetURI.getPath() +"'.");
                 }
             }
         }
-
     }
 
     public Class<?> getImplementationClass() {

@@ -33,6 +33,11 @@ public interface ServiceURI {
     public String getAddress();
 
     /**
+     * @return Returns the path.
+     */
+    public String getPath();
+
+    /**
      * Returns the module component name
      * @return
      */
