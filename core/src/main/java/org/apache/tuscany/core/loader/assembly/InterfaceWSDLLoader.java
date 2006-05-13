@@ -82,11 +82,22 @@ public class InterfaceWSDLLoader extends AbstractLoader {
     }
 
     protected PortType getPortType(String uri) throws MissingInterfaceException {
-        // fixme support WSDL 2.0 XPointer references and possible XML Schema QNames
+        
+        // We currently support two syntaxes for specifying a WSDL portType:
+        // namespace#portTypeName, this is what we supported in the initial contribution, we will
+        // deprecate this after M1
+        // namespace#wsdl.interface(portTypeName), this is the WSDL 2.0 syntax
+        
         int index = uri.indexOf('#');
         String namespace = uri.substring(0, index);
-        String name = uri.substring(index + 1);
-        QName qname = new QName(namespace, name);
+        String fragment = uri.substring(index + 1);
+        String localName;
+        if (fragment.startsWith("wsdl.interface(") && fragment.endsWith(")")) {
+            localName = fragment.substring(15, fragment.length()-1);
+        } else {
+            localName = fragment;
+        }
+        QName qname = new QName(namespace, localName);
         PortType portType = wsdlRegistry.getPortType(qname);
         if (portType == null) {
             throw new MissingInterfaceException(uri);

@@ -16,78 +16,78 @@
  -->
 <module xmlns="http://www.osoa.org/xmlns/sca/0.9"
         xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
-        xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
+        xmlns:tuscany="http://org.apache.tuscany/xmlns/system/0.9"
         name="org.apache.tuscany.core.system">
 
     <component name="org.apache.tuscany.core.loader.WSDLDefinitionRegistry">
-        <system:implementation.system class="org.apache.tuscany.core.loader.impl.WSDLDefinitionRegistryImpl"/>
+        <tuscany:implementation.system class="org.apache.tuscany.core.loader.impl.WSDLDefinitionRegistryImpl"/>
     </component>
 
     <component name="org.apache.tuscany.core.loader.assembly.ComponentTypeLoader">
-        <system:implementation.system class="org.apache.tuscany.core.loader.assembly.ComponentTypeLoader"/>
+        <tuscany:implementation.system class="org.apache.tuscany.core.loader.assembly.ComponentTypeLoader"/>
     </component>
 
     <!--
     <component name="org.apache.tuscany.core.config.processor.ServiceProcessor">
-         <system:implementation.system class="org.apache.tuscany.core.config.processor.ServiceProcessor"/>
+         <tuscany:implementation.system class="org.apache.tuscany.core.config.processor.ServiceProcessor"/>
      </component>
     <component name="org.apache.tuscany.core.config.processor.PropertyProcessor">
-         <system:implementation.system class="org.apache.tuscany.core.config.processor.PropertyProcessor"/>
+         <tuscany:implementation.system class="org.apache.tuscany.core.config.processor.PropertyProcessor"/>
     </component>
     -->
     <component name="org.apache.tuscany.core.loader.assembly.ExternalServiceLoader">
-        <system:implementation.system class="org.apache.tuscany.core.loader.assembly.ExternalServiceLoader"/>
+        <tuscany:implementation.system class="org.apache.tuscany.core.loader.assembly.ExternalServiceLoader"/>
     </component>
 
     <component name="org.apache.tuscany.core.loader.assembly.ImportWSDLLoader">
-        <system:implementation.system class="org.apache.tuscany.core.loader.assembly.ImportWSDLLoader"/>
+        <tuscany:implementation.system class="org.apache.tuscany.core.loader.assembly.ImportWSDLLoader"/>
     </component>
 
     <component name="org.apache.tuscany.core.loader.assembly.InterfaceWSDLLoader">
-        <system:implementation.system class="org.apache.tuscany.core.loader.assembly.InterfaceWSDLLoader"/>
+        <tuscany:implementation.system class="org.apache.tuscany.core.loader.assembly.InterfaceWSDLLoader"/>
     </component>
 
     <component name="org.apache.tuscany.core.loader.assembly.PropertyLoader">
-        <system:implementation.system class="org.apache.tuscany.core.loader.assembly.PropertyLoader"/>
+        <tuscany:implementation.system class="org.apache.tuscany.core.loader.assembly.PropertyLoader"/>
     </component>
 
     <component name="org.apache.tuscany.core.loader.assembly.ReferenceLoader">
-        <system:implementation.system class="org.apache.tuscany.core.loader.assembly.ReferenceLoader"/>
+        <tuscany:implementation.system class="org.apache.tuscany.core.loader.assembly.ReferenceLoader"/>
     </component>
 
     <component name="org.apache.tuscany.core.loader.assembly.WireLoader">
-        <system:implementation.system class="org.apache.tuscany.core.loader.assembly.WireLoader"/>
+        <tuscany:implementation.system class="org.apache.tuscany.core.loader.assembly.WireLoader"/>
     </component>
 
     <component name="org.apache.tuscany.core.loader.assembly.ServiceLoader">
-        <system:implementation.system class="org.apache.tuscany.core.loader.assembly.ServiceLoader"/>
+        <tuscany:implementation.system class="org.apache.tuscany.core.loader.assembly.ServiceLoader"/>
     </component>
 
     <component name="org.apache.tuscany.core.builder.system.PolicyBuilderRegistry">
-        <system:implementation.system class="org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry"/>
+        <tuscany:implementation.system class="org.apache.tuscany.core.builder.system.DefaultPolicyBuilderRegistry"/>
     </component>
     
     <component name="org.apache.tuscany.core.wire.service.internal.WireFactoryService">
-        <system:implementation.system class="org.apache.tuscany.core.wire.service.DefaultWireFactoryService"/>
+        <tuscany:implementation.system class="org.apache.tuscany.core.wire.service.DefaultWireFactoryService"/>
     </component>
 
     <component name="org.apache.tuscany.core.message.MessageFactory">
-         <system:implementation.system class="org.apache.tuscany.core.message.impl.MessageFactoryImpl"/>
+         <tuscany:implementation.system class="org.apache.tuscany.core.message.impl.MessageFactoryImpl"/>
     </component>
 
     <component name="org.apache.tuscany.core.wire.WireFactoryFactory">
-         <system:implementation.system class="org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory"/>
+         <tuscany:implementation.system class="org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory"/>
      </component>
 
     <component name="org.apache.tuscany.core.async.work.DefaultWorkManager">
-        <system:implementation.system class="org.apache.tuscany.core.async.work.DefaultWorkManager"/>
+        <tuscany:implementation.system class="org.apache.tuscany.core.async.work.DefaultWorkManager"/>
         <properties>
             <v:scheduledMaximumPoolSize>10</v:scheduledMaximumPoolSize>
         </properties>
     </component>
 
     <component name="org.apache.tuscany.core.async.builder.AsyncPolicyBuilder">
-        <system:implementation.system class="org.apache.tuscany.core.async.builder.AsyncPolicyBuilder"/>
+        <tuscany:implementation.system class="org.apache.tuscany.core.async.builder.AsyncPolicyBuilder"/>
     </component>
 
 </module>
