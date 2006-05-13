@@ -19,13 +19,11 @@ package org.apache.tuscany.tools.wsdl2java.plugin;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.tuscany.tools.wsdl2java.generate.WSDL2JavaGenerator;
-import org.apache.tuscany.tools.wsdl2java.plugin.WSDLFileOption;
 
 /**
  * @version $Rev$ $Date$
@@ -128,7 +126,7 @@ public class WSDL2JavaGeneratorMojo extends AbstractMojo {
 
         for (int i = 0; i < wsdlFiles.length; i++) {
             File file = wsdlFiles[i].getFileName();
-            File marker = new File(targetDirectory, ".gen#" + file.getName());
+            File marker = new File(targetDirectory, ".gen#" + file.getName()+".wsdl2java");
             if (file.lastModified() > marker.lastModified()) {
                 getLog().info("Generating Java service interfaces from " + file);
                 WSDL2JavaGenerator.generateFromWSDL(file.toString(), wsdlFiles[i].getPorts(), wsdlFiles[i].getTargetDirectory(), wsdlFiles[i].getJavaPackage(), null, genOptions);
