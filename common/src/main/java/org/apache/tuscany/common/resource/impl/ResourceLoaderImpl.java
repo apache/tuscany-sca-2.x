@@ -28,7 +28,7 @@ import java.util.NoSuchElementException;
 import org.apache.tuscany.common.resource.ResourceLoader;
 
 /**
- * Default implementation of the ResourceLoader interface.
+ * Default implementation of the ResourceLoader interface
  *
  * @version $Rev: 369102 $ $Date: 2006-01-14 13:48:56 -0800 (Sat, 14 Jan 2006) $
  */

@@ -208,6 +208,10 @@ public class RuntimeContextImpl extends AbstractContext implements RuntimeContex
         return systemContext.getComposite();
     }
 
+    public void removeContext(String name) {
+
+    }
+
     private void checkRunning() {
         if (lifecycleState != RUNNING) {
             throw new IllegalStateException("Context must be in RUNNING state");

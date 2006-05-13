@@ -69,5 +69,7 @@ public interface CompositeContext extends Context {
      */
     @Deprecated
     public Composite getComposite();
-    
+
+    public void removeContext(String name);
+
 }

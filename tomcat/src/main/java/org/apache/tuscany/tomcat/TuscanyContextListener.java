@@ -98,10 +98,17 @@ public class TuscanyContextListener implements LifecycleListener {
             throw e;
         }
 
+        // hack for TUSCANY-367
+        Valve[] valves = ctx.getPipeline().getValves();
+        for (Valve valve : valves) {
+            if (valve instanceof TuscanyValve){
+                ctx.getPipeline().removeValve(valve);
+            }
+        }
+
         // add a valve to this context's pipeline that will associate the request with the runtime
         Valve valve = new TuscanyValve(moduleContext);
         ctx.getPipeline().addValve(valve);
-
         // add the RuntimeContext in as a servlet context parameter
         ServletContext servletContext = ctx.getServletContext();
         servletContext.setAttribute(TUSCANY_RUNTIME_NAME, runtime);
@@ -126,7 +133,6 @@ public class TuscanyContextListener implements LifecycleListener {
             moduleContext = (CompositeContext) rootContext.getContext(moduleComponent.getName());
             //TODO remove the hack below
             moduleContext.setAssemblyContext(modelContext);
-
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }
@@ -136,6 +142,10 @@ public class TuscanyContextListener implements LifecycleListener {
         if (moduleContext != null) {
             moduleContext.publish(new ModuleStop(this));
         }
+        CompositeContext rootContext = runtime.getRootContext();
+        rootContext.removeContext(moduleContext.getName());
+        moduleContext.stop();
+        moduleContext = null;
         // todo unload module component from runtime
     }
 

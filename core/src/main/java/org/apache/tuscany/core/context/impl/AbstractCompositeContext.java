@@ -839,4 +839,14 @@ public abstract class AbstractCompositeContext extends AbstractContext implement
             }
         }
     }
+
+
+    public void removeContext(String name){
+       configurations.remove(name);
+       ScopeContext ctx = scopeIndex.remove(name);
+        if (ctx != null){
+            ctx.removeContext(name);
+        }
+
+    }
 }

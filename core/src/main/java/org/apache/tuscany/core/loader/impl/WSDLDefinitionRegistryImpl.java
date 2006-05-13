@@ -17,9 +17,9 @@
 package org.apache.tuscany.core.loader.impl;
 
 import java.io.IOException;
-import java.net.URL;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +38,7 @@ import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
 import org.osoa.sca.annotations.Scope;
 
 /**
+ * A WSDL definition registry with memory leaks. Keying off classloader as a temporary hack to avoid WSDL collisions in different classloaders 
  * @version $Rev$ $Date$
  */
 @org.osoa.sca.annotations.Service(interfaces = {WSDLDefinitionRegistry.class})
@@ -46,8 +47,8 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
     private final WSDLFactory wsdlFactory;
     private final ExtensionRegistry registry;
 
-    private final Map<URL, Definition> definitionsByLocation = new HashMap<URL, Definition>();
-    private final Map<String, List<Definition>> definitionsByNamespace = new HashMap<String, List<Definition>>();
+    private final Map<ClassLoader, Map<URL, Definition>> definitionsByLocation = new HashMap<ClassLoader, Map<URL, Definition>>();// new HashMap<URL, Definition>();
+    private final Map<ClassLoader, Map<String, List<Definition>>> definitionsByNamespace = new HashMap<ClassLoader, Map<String, List<Definition>>>(); //new HashMap<String, List<Definition>>();
 
     private Monitor monitor;
 
@@ -90,10 +91,17 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
     }
 
     public Definition loadDefinition(String namespace, URL location) throws IOException, WSDLException {
-        Definition definition = definitionsByLocation.get(location);
-        if (definition != null) {
-            // return cached copy
-            return definition;
+        Map<URL, Definition> localCache = definitionsByLocation.get(Thread.currentThread().getContextClassLoader());
+        Definition definition;
+        if (localCache != null) {
+            definition = localCache.get(location);
+            if (definition != null) {
+                // return cached copy
+                return definition;
+            }
+        } else {
+            localCache = new HashMap<URL, Definition>();
+            definitionsByLocation.put(Thread.currentThread().getContextClassLoader(), localCache);
         }
 
         monitor.readingWSDL(namespace, location);
@@ -108,32 +116,44 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         }
 
         monitor.cachingDefinition(definitionNamespace, location);
-        definitionsByLocation.put(location, definition);
-        List<Definition> definitions = definitionsByNamespace.get(definitionNamespace);
+        localCache.put(location, definition);
+        Map<String, List<Definition>> localNamespaceCache = definitionsByNamespace.get(Thread.currentThread().getContextClassLoader());
+        if (localNamespaceCache == null) {
+            localNamespaceCache = new HashMap<String, List<Definition>>();
+            definitionsByNamespace.put(Thread.currentThread().getContextClassLoader(), localNamespaceCache);
+        }
+        List<Definition> definitions = localNamespaceCache.get(definitionNamespace);
         if (definitions == null) {
             definitions = new ArrayList<Definition>();
-            definitionsByNamespace.put(definitionNamespace, definitions);
+            localNamespaceCache.put(definitionNamespace, definitions);
         }
         definitions.add(definition);
 
         return definition;
     }
-    
+
     public List<Definition> getDefinitionsForNamespace(String namespace) {
-        return definitionsByNamespace.get(namespace);
+        Map<String, List<Definition>> localNamespaceCache = definitionsByNamespace.get(Thread.currentThread().getContextClassLoader());
+        if (localNamespaceCache != null) {
+            return localNamespaceCache.get(namespace);
+        }
+        return null;
     }
 
-    
+
     public PortType getPortType(QName name) {
         String namespace = name.getNamespaceURI();
-        List<Definition> definitions = definitionsByNamespace.get(namespace);
-        if (definitions == null) {
-            return null;
-        }
-        for (Definition definition : definitions) {
-            PortType portType = definition.getPortType(name);
-            if (portType != null) {
-                return portType;
+        Map<String, List<Definition>> localNamespaceCache = definitionsByNamespace.get(Thread.currentThread().getContextClassLoader());
+        if (localNamespaceCache != null) {
+            List<Definition> definitions = localNamespaceCache.get(namespace);
+            if (definitions == null) {
+                return null;
+            }
+            for (Definition definition : definitions) {
+                PortType portType = definition.getPortType(name);
+                if (portType != null) {
+                    return portType;
+                }
             }
         }
         return null;
@@ -141,14 +161,18 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
 
     public Service getService(QName name) {
         String namespace = name.getNamespaceURI();
-        List<Definition> definitions = definitionsByNamespace.get(namespace);
-        if (definitions == null) {
-            return null;
-        }
-        for (Definition definition : definitions) {
-            Service service = definition.getService(name);
-            if (service != null) {
-                return service;
+        Map<String, List<Definition>> localNamespaceCache = definitionsByNamespace.get(Thread.currentThread().getContextClassLoader());
+        if (localNamespaceCache != null) {
+            List<Definition> definitions = localNamespaceCache.get(namespace);
+            if (definitions == null) {
+                return null;
+            }
+
+            for (Definition definition : definitions) {
+                Service service = definition.getService(name);
+                if (service != null) {
+                    return service;
+                }
             }
         }
         return null;
@@ -156,20 +180,19 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
 
     public static interface Monitor {
         /**
-         * Monitor event emitted immediately before an attempt is made to
-         * read WSDL for the supplied namespace from the supplied location.
+         * Monitor event emitted immediately before an attempt is made to read WSDL for the supplied namespace
+         * from the supplied location.
          *
          * @param namespace the target namespace expected in the WSDL; may be null
-         * @param location the location where we will attempt to read the WSDL definition from
+         * @param location  the location where we will attempt to read the WSDL definition from
          */
         void readingWSDL(String namespace, URL location);
 
         /**
-         * Monitor event emitted immediately before registering a WSDL definition
-         * in the cache.
+         * Monitor event emitted immediately before registering a WSDL definition in the cache.
          *
          * @param namespace the target namespace for the WSDL
-         * @param location the location where the WSDL definition was read from
+         * @param location  the location where the WSDL definition was read from
          */
         void cachingDefinition(String namespace, URL location);
     }
