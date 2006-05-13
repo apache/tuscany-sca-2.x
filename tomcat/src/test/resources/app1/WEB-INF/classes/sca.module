@@ -22,8 +22,8 @@
     <import.wsdl wsdlLocation="wsdl/helloworld.wsdl"/>
 
     <entryPoint name="HelloWorldService">
-        <interface.wsdl interface="http://helloworldaxis.samples.tuscany.apache.org#HelloWorldServiceImpl"/>
-        <binding.ws port="http://helloworldaxis.samples.tuscany.apache.org#helloworld"/>
+        <interface.wsdl interface="http://helloworldaxis.samples.tuscany.apache.org#wsdl.interface(HelloWorldServiceImpl)"/>
+        <binding.ws port="http://helloworldaxis.samples.tuscany.apache.org#wsdl.endpoint(HelloWorldServiceImplService/helloworld)"/>
         <reference>HelloWorld/HelloWorldService</reference>
     </entryPoint>
 
