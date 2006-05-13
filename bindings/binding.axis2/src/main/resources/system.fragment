@@ -15,23 +15,23 @@
   limitations under the License.
  -->
 <moduleFragment xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
-        xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
+        xmlns:tuscany="http://org.apache.tuscany/xmlns/system/0.9"
 		name="org.apache.tuscany.binding.axis">
 
     <component name="org.apache.tuscany.binding.axis2.builder.ExternalWebServiceBuilder">
-        <system:implementation.system class="org.apache.tuscany.binding.axis2.builder.ExternalWebServiceBuilder"/>
+        <tuscany:implementation.system class="org.apache.tuscany.binding.axis2.builder.ExternalWebServiceBuilder"/>
     </component>
 
     <component name="org.apache.tuscany.binding.axis2.builder.ExternalWebServiceWireBuilder">
-        <system:implementation.system class="org.apache.tuscany.binding.axis2.builder.ExternalWebServiceWireBuilder"/>
+        <tuscany:implementation.system class="org.apache.tuscany.binding.axis2.builder.ExternalWebServiceWireBuilder"/>
     </component>
 
     <component name="org.apache.tuscany.binding.axis2.builder.WebServiceEntryPointBuilder">
-        <system:implementation.system class="org.apache.tuscany.binding.axis2.builder.WebServiceEntryPointBuilder"/>
+        <tuscany:implementation.system class="org.apache.tuscany.binding.axis2.builder.WebServiceEntryPointBuilder"/>
     </component>
 
     <component name="org.apache.tuscany.binding.axis2.loader.WebServiceBindingLoaderr">
-        <system:implementation.system class="org.apache.tuscany.binding.axis2.loader.WebServiceBindingLoader"/>
+        <tuscany:implementation.system class="org.apache.tuscany.binding.axis2.loader.WebServiceBindingLoader"/>
     </component>
 
 </moduleFragment>

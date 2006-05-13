@@ -15,27 +15,27 @@
   limitations under the License.
  -->
 <moduleFragment xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
-        xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
+        xmlns:tuscany="http://org.apache.tuscany/xmlns/system/0.9"
 		name="org.apache.tuscany.container.java">
 
     <component name="org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder">
-        <system:implementation.system class="org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder"/>
+        <tuscany:implementation.system class="org.apache.tuscany.container.java.builder.JavaContextFactoryBuilder"/>
     </component>
     <component name="org.apache.tuscany.core.config.ComponentTypeIntrospector">
-        <system:implementation.system class="org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector"/>
+        <tuscany:implementation.system class="org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector"/>
     </component>
 
 
     <component name="org.apache.tuscany.container.java.builder.JavaTargetWireBuilder">
-        <system:implementation.system class="org.apache.tuscany.container.java.builder.JavaTargetWireBuilder"/>
+        <tuscany:implementation.system class="org.apache.tuscany.container.java.builder.JavaTargetWireBuilder"/>
     </component>
 
     <component name="org.apache.tuscany.container.java.assembly.JavaAssemblyFactory">
-        <system:implementation.system class="org.apache.tuscany.container.java.assembly.impl.JavaAssemblyFactoryImpl"/>
+        <tuscany:implementation.system class="org.apache.tuscany.container.java.assembly.impl.JavaAssemblyFactoryImpl"/>
     </component>
 
     <component name="org.apache.tuscany.container.java.loader.JavaImplementationLoader">
-        <system:implementation.system class="org.apache.tuscany.container.java.loader.JavaImplementationLoader"/>
+        <tuscany:implementation.system class="org.apache.tuscany.container.java.loader.JavaImplementationLoader"/>
     </component>
 
 </moduleFragment>

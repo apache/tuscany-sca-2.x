@@ -15,26 +15,26 @@
   limitations under the License.
  -->
 <moduleFragment xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
-                xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
+                xmlns:tuscany="http://org.apache.tuscany/xmlns/system/0.9"
                 name="org.apache.tuscany.binding.axis">
 
     <component name="org.apache.tuscany.binding.celtix.builder.ExternalWebServiceBuilder">
-        <system:implementation.system
+        <tuscany:implementation.system
                 class="org.apache.tuscany.binding.celtix.builder.ExternalWebServiceBuilder"/>
     </component>
 
     <component name="org.apache.tuscany.binding.celtix.builder.ExternalWebServiceWireBuilder">
-        <system:implementation.system
+        <tuscany:implementation.system
                 class="org.apache.tuscany.binding.celtix.builder.ExternalWebServiceWireBuilder"/>
     </component>
 
     <component name="org.apache.tuscany.binding.celtix.builder.WebServiceEntryPointBuilder">
-        <system:implementation.system
+        <tuscany:implementation.system
                 class="org.apache.tuscany.binding.celtix.builder.WebServiceEntryPointBuilder"/>
     </component>
 
     <component name="org.apache.tuscany.binding.celtix.loader.WebServiceBindingLoaderr">
-        <system:implementation.system
+        <tuscany:implementation.system
                 class="org.apache.tuscany.binding.celtix.loader.WebServiceBindingLoader"/>
     </component>
 

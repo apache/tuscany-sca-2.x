@@ -15,14 +15,14 @@
   limitations under the License.
  -->
 <moduleFragment xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
-        xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
+        xmlns:tuscany="http://org.apache.tuscany/xmlns/system/0.9"
 		name="org.apache.tuscany.binding.jsonrpc">
 
     <component name="org.apache.tuscany.binding.jsonrpc.builder.JSONRPCEntryPointBuilder">
-        <system:implementation.system class="org.apache.tuscany.binding.jsonrpc.builder.JSONRPCEntryPointBuilder"/>
+        <tuscany:implementation.system class="org.apache.tuscany.binding.jsonrpc.builder.JSONRPCEntryPointBuilder"/>
     </component>
 
     <component name="org.apache.tuscany.binding.jsonrpc.loader.JSONRPCBindingLoaderr">
-        <system:implementation.system class="org.apache.tuscany.binding.jsonrpc.loader.JSONRPCBindingLoader"/>
+        <tuscany:implementation.system class="org.apache.tuscany.binding.jsonrpc.loader.JSONRPCBindingLoader"/>
     </component>
 </moduleFragment>

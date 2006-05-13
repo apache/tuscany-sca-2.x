@@ -15,11 +15,11 @@
   limitations under the License.
  -->
 <moduleFragment xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:v="http://www.osoa.org/xmlns/sca/values/0.9"
-        xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
+        xmlns:tuscany="http://org.apache.tuscany/xmlns/system/0.9"
 		name="org.apache.tuscany.databinding.sdo">
 
     <component name="org.apache.tuscany.databinding.sdo.ImportSDOLoader">
-        <system:implementation.system class="org.apache.tuscany.databinding.sdo.ImportSDOLoader"/>
+        <tuscany:implementation.system class="org.apache.tuscany.databinding.sdo.ImportSDOLoader"/>
     </component>
 
 </moduleFragment>

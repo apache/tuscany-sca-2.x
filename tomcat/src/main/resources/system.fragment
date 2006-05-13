@@ -15,17 +15,17 @@
   limitations under the License.
  -->
 <moduleFragment xmlns="http://www.osoa.org/xmlns/sca/0.9"
-        xmlns:system="http://org.apache.tuscany/xmlns/system/0.9"
+        xmlns:tuscany="http://org.apache.tuscany/xmlns/system/0.9"
 		name="org.apache.tuscany.tomcat">
 
     <entryPoint name="org.apache.tuscany.tomcat.TomcatHost">
         <interface.java interface="org.apache.tuscany.tomcat.TomcatHost"/>
-        <system:binding.system/>
+        <tuscany:binding.system/>
         <reference>TomcatHost</reference>
     </entryPoint>
 
     <component name="TomcatHost">
-        <system:implementation.system class="org.apache.tuscany.tomcat.TomcatHost"/>
+        <tuscany:implementation.system class="org.apache.tuscany.tomcat.TomcatHost"/>
     </component>
 
 </moduleFragment>
