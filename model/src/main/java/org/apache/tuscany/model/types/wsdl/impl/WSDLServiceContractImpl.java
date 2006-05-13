@@ -16,22 +16,18 @@
  */
 package org.apache.tuscany.model.types.wsdl.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.wsdl.Input;
-import javax.wsdl.Message;
-import javax.wsdl.Operation;
-import javax.wsdl.Part;
-import javax.wsdl.PortType;
-import javax.xml.namespace.QName;
-
-import org.objectweb.asm.ClassWriter;
 import static org.objectweb.asm.Opcodes.ACC_ABSTRACT;
 import static org.objectweb.asm.Opcodes.ACC_INTERFACE;
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.V1_5;
-import org.objectweb.asm.Type;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.wsdl.Operation;
+import javax.wsdl.Part;
+import javax.wsdl.PortType;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.model.assembly.AssemblyContext;
@@ -39,6 +35,8 @@ import org.apache.tuscany.model.assembly.impl.ServiceContractImpl;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 import org.apache.tuscany.model.util.XMLNameUtil;
 import org.apache.tuscany.sdo.util.SDOUtil;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Type;
 
 import commonj.sdo.Property;
 import commonj.sdo.helper.TypeHelper;
@@ -143,7 +141,11 @@ public class WSDLServiceContractImpl extends ServiceContractImpl implements WSDL
 
             // Generate methods from the WSDL operations
             for (Operation operation : (List<Operation>) portType.getOperations()) {
-                String methodName = XMLNameUtil.getJavaNameFromXMLName(operation.getName(), false);
+                
+                //FIXME Workaround for TUSCANY-170, we will need to make this consistent with the algorithm used by Axis2 WSDL2Java
+                // to generate method names from operations names
+                //String methodName = XMLNameUtil.getJavaNameFromXMLName(operation.getName(), false);
+                String methodName = operation.getName();
                 
                 // FIXME later we may want to wwitch to use the Axis2 WSDL2Java (not to generate the Java source,
                 // just to figure the WSDL to Java mapping)
