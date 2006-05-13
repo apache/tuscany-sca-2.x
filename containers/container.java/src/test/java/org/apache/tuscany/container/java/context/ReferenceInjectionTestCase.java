@@ -30,7 +30,7 @@ public class ReferenceInjectionTestCase extends TestCase {
         ScopeContext<AtomicContext> scope = new ModuleScopeContext(ctx);
         scope.start();
         Map<String,AtomicContext> contexts = MockFactory.createWiredContexts("source",SourceImpl.class, scope,
-                "target",Target.class,TargetImpl.class,members, scope);
+                members, "target",Target.class,TargetImpl.class, scope);
         AtomicContext sourceContext = contexts.get("source");
         Source source = (Source)sourceContext.getService(null);
         Target target = source.getTarget();

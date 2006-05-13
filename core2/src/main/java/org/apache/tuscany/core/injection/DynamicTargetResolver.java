@@ -37,7 +37,7 @@ public class DynamicTargetResolver<T> implements ObjectFactory<T> {
         if (ctx instanceof AtomicContext) {
             return (T) ((AtomicContext) ctx).getService(targetName.getPortName());
         } else if (ctx instanceof ServiceContext) {
-            return (T) ((ServiceContext) ctx).getService();
+            return (T) ctx.getService();
         } else if (ctx instanceof CompositeContext) {
             ServiceContext serviceContext = ((CompositeContext) ctx).getServiceContext(targetName.getPortName());
             if (serviceContext == null) {
@@ -48,7 +48,7 @@ public class DynamicTargetResolver<T> implements ObjectFactory<T> {
             }
             return (T) serviceContext.getService();
         } else if (ctx instanceof ReferenceContext){
-            return (T) ((ReferenceContext) ctx).getService();
+            return (T) ctx.getService();
         }else {
             UnknownTargetTypeException e = new UnknownTargetTypeException(ctx.getClass().getName());
             e.setIdentifier(targetName.getQualifiedName());

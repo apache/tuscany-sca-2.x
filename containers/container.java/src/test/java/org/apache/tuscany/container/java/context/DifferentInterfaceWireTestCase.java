@@ -52,7 +52,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         ScopeContext<AtomicContext> scope = new ModuleScopeContext(ctx);
         scope.start();
         Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class, Target.class, scope,
-                "target", OtherTarget.class, OtherTargetImpl.class, members, scope);
+                members, "target", OtherTarget.class, OtherTargetImpl.class, scope);
         AtomicContext sourceContext = contexts.get("source");
         Source source = (Source) sourceContext.getService(null);
         Target target = source.getTarget();
