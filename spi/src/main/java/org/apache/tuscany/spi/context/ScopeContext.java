@@ -44,7 +44,7 @@ public interface ScopeContext<T extends Context> extends Lifecycle, RuntimeEvent
     /**
      * @throws TargetException
      */
-    public InstanceContext getInstanceContext(T context) throws TargetException;
+    public InstanceWrapper getInstanceContext(T context) throws TargetException;
 
 
 }

@@ -71,8 +71,8 @@
          <system:implementation.system class="org.apache.tuscany.core.message.impl.MessageFactoryImpl"/>
     </component>
 
-    <component name="org.apache.tuscany.spi.wire.WireFactoryFactory">
-         <system:implementation.system class="org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory"/>
+    <component name="org.apache.tuscany.spi.wire.WireFactoryService">
+         <system:implementation.system class="org.apache.tuscany.core.wire.jdk.JDKWireFactoryService"/>
      </component>
 
     <component name="org.apache.tuscany.core.async.work.DefaultWorkManager">

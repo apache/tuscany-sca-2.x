@@ -32,8 +32,8 @@ import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.builder.WireBuilder;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.wire.SourceWireFactory;
-import org.apache.tuscany.spi.wire.TargetWireFactory;
+import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
  * @version $Rev$ $Date$
@@ -106,11 +106,11 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         throw new UnsupportedOperationException();
     }
 
-    public void connect(SourceWireFactory<?> source, TargetWireFactory<?> target) {
+    public void connect(SourceWire<?> source, TargetWire<?> target) {
         throw new UnsupportedOperationException();
     }
 
-    public void completeChain(TargetWireFactory<?> target) {
+    public void completeChain(TargetWire<?> target) {
         throw new UnsupportedOperationException();
     }
 }

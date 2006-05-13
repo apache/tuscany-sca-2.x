@@ -1,26 +1,48 @@
 package org.apache.tuscany.core.context;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.common.ObjectCreationException;
 import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.AtomicContext;
-import org.apache.tuscany.spi.context.InstanceContext;
+import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.TargetException;
 
 /**
+ * Base implementation of an {@link AtomicContext} whose implementation type is a Java class
+ *
  * @version $$Rev$$ $$Date$$
  */
-public abstract class PojoAtomicContext extends AbstractContext implements AtomicContext {
+public abstract class PojoAtomicContext<T> extends AbstractContext<T> implements AtomicContext<T> {
 
     protected ScopeContext<AtomicContext> scopeContext;
     protected boolean eagerInit;
     protected EventInvoker<Object> initInvoker;
     protected EventInvoker<Object> destroyInvoker;
     protected ObjectFactory<?> objectFactory;
+    protected List<Class<?>> serviceInterfaces;
 
-    public PojoAtomicContext(String name, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
+    public PojoAtomicContext(String name, Class<?> serviceInterface, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
+                             EventInvoker<Object> destroyInvoker) {
+        super(name);
+        List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
+        serviceInterfaces.add(serviceInterface);
+        assert (objectFactory != null) : "Object factory was null";
+        if (eagerInit && initInvoker == null) {
+            throw new AssertionError("No intialization method found for eager init implementation");
+        }
+        this.objectFactory = objectFactory;
+        this.eagerInit = eagerInit;
+        this.initInvoker = initInvoker;
+        this.destroyInvoker = destroyInvoker;
+        this.serviceInterfaces = serviceInterfaces;
+    }
+
+    public PojoAtomicContext(String name, List<Class<?>> serviceInterfaces, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
                              EventInvoker<Object> destroyInvoker) {
         super(name);
         assert (objectFactory != null) : "Object factory was null";
@@ -31,6 +53,11 @@ public abstract class PojoAtomicContext extends AbstractContext implements Atomi
         this.eagerInit = eagerInit;
         this.initInvoker = initInvoker;
         this.destroyInvoker = destroyInvoker;
+        this.serviceInterfaces = serviceInterfaces;
+    }
+
+    public List<Class<?>> getServiceInterfaces() {
+        return serviceInterfaces;
     }
 
     public Scope getScope() {
@@ -61,12 +88,13 @@ public abstract class PojoAtomicContext extends AbstractContext implements Atomi
         }
     }
 
-    public Object getTargetInstance() throws TargetException {
-        return scopeContext.getInstance(this);
+    @SuppressWarnings("unchecked")
+    public T getTargetInstance() throws TargetException {
+        return (T)scopeContext.getInstance(this);
     }
 
-    public InstanceContext createInstance() throws ObjectCreationException {
-        InstanceContext ctx = new PojoInstanceContext(this, objectFactory.getInstance());
+    public InstanceWrapper createInstance() throws ObjectCreationException {
+        InstanceWrapper ctx = new PojoInstanceWrapper(this, objectFactory.getInstance());
         ctx.start();
         return ctx;
     }

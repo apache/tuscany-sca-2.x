@@ -16,44 +16,44 @@
  */
 package org.apache.tuscany.spi.context;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.tuscany.common.ObjectCreationException;
 import org.apache.tuscany.model.Scope;
-import org.apache.tuscany.spi.wire.SourceWireFactory;
-import org.apache.tuscany.spi.wire.TargetWireFactory;
 
 /**
  * A runtime entity that manages an atomic (i.e. leaf-type) artifact.
  *
  * @version $Rev$ $Date$
  */
-public interface AtomicContext extends Context {
+public interface AtomicContext<T> extends ComponentContext<T> {
 
     /**
      * Returns the context implementation scope
      */
-    public Scope getScope();
+    Scope getScope();
+
+    /**
+     * Sets the scope context used by this atomic context for instance management
+     */
+    void setScopeContext(ScopeContext<AtomicContext> context);
 
     /**
      * Returns whether the context should be eagerly initialized
      */
-    public boolean isEagerInit();
+    boolean isEagerInit();
 
     /**
      * Notifies the given instance of an initialization event
      *
      * @throws TargetException
      */
-    public void init(Object instance) throws TargetException;
+    void init(Object instance) throws TargetException;
 
     /**
      * Notifies the given instance of a destroy event
      *
      * @throws TargetException
      */
-    public void destroy(Object instance) throws TargetException;
+    void destroy(Object instance) throws TargetException;
 
     /**
      * Returns the target instance associated with the context. A target instance is the actual object a
@@ -61,59 +61,14 @@ public interface AtomicContext extends Context {
      *
      * @throws TargetException
      */
-    public Object getTargetInstance() throws TargetException;
+    Object getTargetInstance() throws TargetException;
 
     /**
      * Creates a new implementation instance, generally used as a callback by a {@link ScopeContext}
      *
      * @throws ObjectCreationException
      */
-    public InstanceContext createInstance() throws ObjectCreationException;
+    InstanceWrapper createInstance() throws ObjectCreationException;
 
-    /**
-     * Adds a target-side wire factory for the given service name. Target-side wire factories contain the
-     * invocation chains associated with the destination service of a wire and are responsible for generating
-     * proxies
-     */
-    public void addTargetWireFactory(TargetWireFactory factory);
-
-    /**
-     * Returns the target-side wire factory associated with the given service name
-     */
-    public TargetWireFactory getTargetWireFactory(String serviceName);
-
-    /**
-     * Returns a collection of target-side wire factories keyed by service name
-     */
-    public Map<String, TargetWireFactory> getTargetWireFactories();
-
-    /**
-     * Adds a source-side wire factory for the given reference. Source-side wire factories contain the
-     * invocation chains for a reference in the implementation associated with the instance context created by
-     * this configuration. Source-side wire factories also produce proxies that are injected on a reference in
-     * a component implementation.
-     *
-     * @param factory
-     */
-    public void addSourceWireFactory(SourceWireFactory factory);
-
-    /**
-     * Adds a set of source-side wire multiplicity factories for the given reference. Source-side wire factories contain
-     * the invocation chains for a reference in the implementation associated with the instance context
-     * created by this configuration. Source-side wire factories also produce proxies that are injected on a
-     * reference in a component implementation.
-     */
-    public void addSourceWireFactories(Class<?> multiplicityClass, List<SourceWireFactory> factories);
-    /**
-     * Returns a collection of source-side wire factories for references. There may 1..n wire factories per
-     * reference.
-     */
-    public List<SourceWireFactory> getSourceWireFactories();
-
-    /**
-     * Called to signal to the configuration that its parent context has been activated and that it shoud
-     * perform any required initialization steps
-     */
-    public void prepare();
 
 }

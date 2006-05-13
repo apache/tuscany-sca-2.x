@@ -25,7 +25,7 @@ import java.util.Map;
 import org.apache.tuscany.core.wire.MessageImpl;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationConfiguration;
+import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
@@ -45,10 +45,10 @@ public class JDKInvocationHandler implements InvocationHandler {
      */
     private Map<Method, ConfigHolder> configuration;
 
-    public JDKInvocationHandler(Map<Method, ? extends InvocationConfiguration> configuration) {
+    public JDKInvocationHandler(Map<Method, ? extends InvocationChain> configuration) {
         assert (configuration != null) : "Configuration not specified";
         this.configuration = new HashMap<Method, ConfigHolder>(configuration.size());
-        for (Map.Entry<Method, ? extends InvocationConfiguration> entry : configuration.entrySet()) {
+        for (Map.Entry<Method, ? extends InvocationChain> entry : configuration.entrySet()) {
             this.configuration.put(entry.getKey(), new ConfigHolder(entry.getValue()));
         }
     }
@@ -64,7 +64,7 @@ public class JDKInvocationHandler implements InvocationHandler {
             e.setIdentifier(method.getName());
             throw e;
         }
-        InvocationConfiguration config = holder.config;
+        InvocationChain config = holder.config;
         if (config != null) {
             headInterceptor = config.getHeadInterceptor();
         }
@@ -121,10 +121,10 @@ public class JDKInvocationHandler implements InvocationHandler {
      */
     private class ConfigHolder {
 
-        InvocationConfiguration config;
+        InvocationChain config;
         TargetInvoker cachedInvoker;
 
-        public ConfigHolder(InvocationConfiguration config) {
+        public ConfigHolder(InvocationChain config) {
             this.config = config;
         }
 

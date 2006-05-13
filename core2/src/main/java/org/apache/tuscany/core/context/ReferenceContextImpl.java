@@ -13,55 +13,51 @@
  */
 package org.apache.tuscany.core.context;
 
-import org.apache.tuscany.common.ObjectFactory;
-import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.context.TargetException;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.Map;
+
+import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
 import org.apache.tuscany.spi.context.ReferenceContext;
+import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
-import org.apache.tuscany.spi.wire.TargetWireFactory;
+import org.apache.tuscany.spi.wire.TargetInvocationChain;
+import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * The default implementation of an external service context
  *
  * @version $Rev$ $Date$
  */
-public class ReferenceContextImpl extends AbstractContext implements ReferenceContext {
+public class ReferenceContextImpl<T> extends AbstractContext<T> implements ReferenceContext<T> {
 
-    private TargetWireFactory<?> targetWireFactory;
-
-    private ObjectFactory targetInstanceFactory;
+    private TargetWire<T> targetWire;
+    private Class<T> referenceInterface;
 
     /**
      * Creates a reference context
      *
-     * @param name the name of the reference context
-     * @param targetWireFactory the factory which creates proxies implementing the configured service interface for the
-     *        reference context. There is always only one proxy factory as an reference context is configured with one
-     *        service
-     * @param targetInstanceFactory the object factory that creates an artifact capabile of communicating over the
-     *        binding transport configured on the reference context. The object factory may implement a caching strategy.
+     * @param name              the name of the reference context
+     * @param targetWire the factory which creates proxies implementing the configured service
+     *                          interface for the reference context. There is always only one proxy factory as
+     *                          an reference context is configured with one service
      */
-    public ReferenceContextImpl(String name, TargetWireFactory targetWireFactory, ObjectFactory targetInstanceFactory) {
+    public ReferenceContextImpl(String name, Class<T> referenceInterface, TargetWire<T> targetWire) {
         super(name);
-        assert (targetWireFactory != null) : "Target proxy factory was null";
-        assert (targetInstanceFactory != null) : "Target instance factory was null";
-        this.targetWireFactory = targetWireFactory;
-        this.targetInstanceFactory = targetInstanceFactory;
+        assert (targetWire != null) : "Target proxy factory was null";
+        assert (referenceInterface != null) : "Reference interface was null";
+        this.targetWire = targetWire;
+        this.referenceInterface = referenceInterface;
     }
 
-    public void start() {
-        lifecycleState = RUNNING;
+    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
+        return null;  // TODO implements
     }
 
-    public void stop() {
-        lifecycleState = STOPPED;
-    }
-
-
-    public Object getInstance(QualifiedName qName) throws TargetException {
+    public T getService() throws TargetException {
         try {
-            return targetWireFactory.createProxy();
-            // TODO do we cache the proxy, (assumes stateful capabilities will be provided in an interceptor)
+            return targetWire.createProxy();
         } catch (ProxyCreationException e) {
             TargetException te = new TargetException(e);
             te.addContextName(getName());
@@ -69,7 +65,14 @@ public class ReferenceContextImpl extends AbstractContext implements ReferenceCo
         }
     }
 
-    public Object getHandler() throws TargetException {
-        return targetInstanceFactory.getInstance();
+    public InvocationHandler getHandler() throws TargetException {
+        Map<Method, TargetInvocationChain> configuration = targetWire.getInvocationChains();
+        assert(configuration != null);
+        return new JDKInvocationHandler(configuration);
     }
+
+    public Class<T> getInterface() {
+        return referenceInterface;
+    }
+
 }

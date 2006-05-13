@@ -18,20 +18,15 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.util.MethodHashMap;
+import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.apache.tuscany.core.wire.SourceInvocationChainImpl;
+import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
 import org.apache.tuscany.core.wire.mock.MockStaticInvoker;
 import org.apache.tuscany.core.wire.mock.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.mock.SimpleTarget;
 import org.apache.tuscany.core.wire.mock.SimpleTargetImpl;
-import org.apache.tuscany.core.wire.SourceInvocationConfigurationImpl;
-import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.TargetInvocationConfigurationImpl;
-import org.apache.tuscany.core.wire.WireSourceConfigurationImpl;
-import org.apache.tuscany.core.wire.WireTargetConfigurationImpl;
-import org.apache.tuscany.spi.wire.SourceInvocationConfiguration;
-import org.apache.tuscany.spi.wire.TargetInvocationConfiguration;
-import org.apache.tuscany.spi.wire.WireSourceConfiguration;
-import org.apache.tuscany.spi.wire.WireTargetConfiguration;
+import org.apache.tuscany.spi.wire.SourceInvocationChain;
+import org.apache.tuscany.spi.wire.TargetInvocationChain;
 
 public class JDKWireFactoryFactoryTestCase extends TestCase {
 
@@ -46,17 +41,17 @@ public class JDKWireFactoryFactoryTestCase extends TestCase {
     }
 
     public void testSourceWireFactory() throws Exception {
-        SourceInvocationConfigurationImpl source = new SourceInvocationConfigurationImpl(hello);
+        SourceInvocationChainImpl source = new SourceInvocationChainImpl(hello);
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addInterceptor(sourceInterceptor);
         source.setTargetInterceptor(new InvokerInterceptor());
         source.setTargetInvoker(new MockStaticInvoker(hello, new SimpleTargetImpl()));
         source.build();
-        Map<Method, SourceInvocationConfiguration> configs = new MethodHashMap<SourceInvocationConfiguration>();
+        Map<Method, SourceInvocationChain> configs = new MethodHashMap<SourceInvocationChain>();
         configs.put(hello, source);
-        WireSourceConfiguration config = new WireSourceConfigurationImpl("foo", new QualifiedName("foo"), configs);
-        JDKSourceWireFactory<SimpleTarget> factory = new JDKSourceWireFactory<SimpleTarget>();
-        factory.setConfiguration(config);
+        JDKSourceWire<SimpleTarget> factory = new JDKSourceWire<SimpleTarget>();
+        factory.setReferenceName("foo");
+        factory.setInvocationChains(configs);
         factory.setBusinessInterface(SimpleTarget.class);
         factory.initialize();
         SimpleTarget instance = factory.createProxy();
@@ -64,17 +59,16 @@ public class JDKWireFactoryFactoryTestCase extends TestCase {
     }
 
     public void testTargetWireFactory() throws Exception {
-        TargetInvocationConfigurationImpl source = new TargetInvocationConfigurationImpl(hello);
+        TargetInvocationChainImpl source = new TargetInvocationChainImpl(hello);
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addInterceptor(sourceInterceptor);
         source.addInterceptor(new InvokerInterceptor());
         source.setTargetInvoker(new MockStaticInvoker(hello, new SimpleTargetImpl()));
         source.build();
-        Map<Method, TargetInvocationConfiguration> configs = new MethodHashMap<TargetInvocationConfiguration>();
+        Map<Method, TargetInvocationChain> configs = new MethodHashMap<TargetInvocationChain>();
         configs.put(hello, source);
-        WireTargetConfiguration config = new WireTargetConfigurationImpl("Foo", configs);
-        JDKTargetWireFactory<SimpleTarget> factory = new JDKTargetWireFactory<SimpleTarget>();
-        factory.setConfiguration(config);
+        JDKTargetWire<SimpleTarget> factory = new JDKTargetWire<SimpleTarget>();
+        factory.setInvocationChains(configs);
         factory.setBusinessInterface(SimpleTarget.class);
         factory.initialize();
         SimpleTarget instance = factory.createProxy();

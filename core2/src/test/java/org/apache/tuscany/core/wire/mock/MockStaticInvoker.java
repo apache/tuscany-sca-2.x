@@ -17,8 +17,9 @@ import java.lang.reflect.Method;
 public class MockStaticInvoker implements TargetInvoker {
 
     private Object instance;
-
     private Method operation;
+    private boolean cacheable;
+
 
     public MockStaticInvoker(Method operation, Object instance) {
         this.operation = operation;
@@ -26,7 +27,11 @@ public class MockStaticInvoker implements TargetInvoker {
     }
 
     public boolean isCacheable() {
-        return true;
+        return cacheable;
+    }
+
+    public void setCacheable(boolean cacheable) {
+       this.cacheable = cacheable;
     }
 
     public Object invokeTarget(Object payload) throws InvocationTargetException {

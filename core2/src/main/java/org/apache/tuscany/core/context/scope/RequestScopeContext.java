@@ -10,7 +10,7 @@ import org.apache.tuscany.core.context.event.RequestEnd;
 import org.apache.tuscany.core.context.event.RequestStart;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.AtomicContext;
-import org.apache.tuscany.spi.context.InstanceContext;
+import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.event.Event;
@@ -22,13 +22,13 @@ import org.apache.tuscany.spi.event.Event;
  */
 public class RequestScopeContext extends AbstractScopeContext<AtomicContext> {
 
-    private final Map<AtomicContext, Map<Thread, InstanceContext>> contexts;
-    private final Map<Thread, List<InstanceContext>> destroyQueues;
+    private final Map<AtomicContext, Map<Thread, InstanceWrapper>> contexts;
+    private final Map<Thread, List<InstanceWrapper>> destroyQueues;
 
     public RequestScopeContext(WorkContext workContext) {
         super("Request Scope", workContext);
-        contexts = new ConcurrentHashMap<AtomicContext, Map<Thread, InstanceContext>>();
-        destroyQueues = new ConcurrentHashMap<Thread, List<InstanceContext>>();
+        contexts = new ConcurrentHashMap<AtomicContext, Map<Thread, InstanceWrapper>>();
+        destroyQueues = new ConcurrentHashMap<Thread, List<InstanceWrapper>>();
     }
 
     public Scope getScope() {
@@ -38,7 +38,7 @@ public class RequestScopeContext extends AbstractScopeContext<AtomicContext> {
     public void onEvent(Event event) {
         checkInit();
         if (event instanceof RequestStart) {
-            for (Map.Entry<AtomicContext, Map<Thread, InstanceContext>> entry : contexts.entrySet()) {
+            for (Map.Entry<AtomicContext, Map<Thread, InstanceWrapper>> entry : contexts.entrySet()) {
                 if (entry.getKey().isEagerInit()) {
                     getInstance(entry.getKey());
                 }
@@ -49,31 +49,34 @@ public class RequestScopeContext extends AbstractScopeContext<AtomicContext> {
     }
 
     public synchronized void start() {
-        if (lifecycleState != UNINITIALIZED) {
-            throw new IllegalStateException("Scope must be in UNINITIALIZED state [" + lifecycleState + "]");
+        if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
+            throw new IllegalStateException("Scope must be in UNINITIALIZED or STOPPED state [" + lifecycleState + "]");
         }
         lifecycleState = RUNNING;
     }
 
     public synchronized void stop() {
-        //TODO stop semantics
+        contexts.clear();
+        synchronized(destroyQueues){
+            destroyQueues.clear();
+        }
         lifecycleState = STOPPED;
     }
 
     public void register(AtomicContext context) {
-        contexts.put(context, new ConcurrentHashMap<Thread, InstanceContext>());
+        contexts.put(context, new ConcurrentHashMap<Thread, InstanceWrapper>());
     }
 
-    public InstanceContext getInstanceContext(AtomicContext context) throws TargetException {
-        Map<Thread, InstanceContext> instanceContextMap = contexts.get(context);
+    public InstanceWrapper getInstanceContext(AtomicContext context) throws TargetException {
+        Map<Thread, InstanceWrapper> instanceContextMap = contexts.get(context);
         assert(instanceContextMap != null):"Atomic context not registered";
-        InstanceContext ctx = instanceContextMap.get(Thread.currentThread());
+        InstanceWrapper ctx = instanceContextMap.get(Thread.currentThread());
         if (ctx == null) {
             ctx = context.createInstance();
             instanceContextMap.put(Thread.currentThread(), ctx);
-            List<InstanceContext> destroyQueue = destroyQueues.get(Thread.currentThread());
+            List<InstanceWrapper> destroyQueue = destroyQueues.get(Thread.currentThread());
             if (destroyQueue == null) {
-                destroyQueue = new ArrayList<InstanceContext>();
+                destroyQueue = new ArrayList<InstanceWrapper>();
                 destroyQueues.put(Thread.currentThread(), destroyQueue);
             }
             synchronized (destroyQueue) {
@@ -84,14 +87,14 @@ public class RequestScopeContext extends AbstractScopeContext<AtomicContext> {
     }
 
     private void shutdownInstances(Thread key) {
-        List<InstanceContext> destroyQueue = destroyQueues.remove(key);
+        List<InstanceWrapper> destroyQueue = destroyQueues.remove(key);
         if (destroyQueue != null && destroyQueue.size() > 0) {
             if (destroyQueue != null) {
                 Thread thread = Thread.currentThread();
-                for (Map<Thread, InstanceContext> map : contexts.values()) {
+                for (Map<Thread, InstanceWrapper> map : contexts.values()) {
                     map.remove(thread);
                 }
-                ListIterator<InstanceContext> iter = destroyQueue.listIterator(destroyQueue.size());
+                ListIterator<InstanceWrapper> iter = destroyQueue.listIterator(destroyQueue.size());
                 synchronized (destroyQueue) {
                     while (iter.hasPrevious()) {
                         try {

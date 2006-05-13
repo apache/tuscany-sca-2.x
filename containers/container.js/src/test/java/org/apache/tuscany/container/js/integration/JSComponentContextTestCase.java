@@ -36,7 +36,7 @@ import org.apache.tuscany.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
 import org.apache.tuscany.core.runtime.RuntimeContext;
 import org.apache.tuscany.core.runtime.RuntimeContextImpl;
-import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
+import org.apache.tuscany.core.wire.jdk.JDKWireFactoryService;
 import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
 import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.model.assembly.Scope;
@@ -53,7 +53,7 @@ public class JSComponentContextTestCase extends TestCase {
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor);
         PolicyBuilderRegistry policyRegistry = new DefaultPolicyBuilderRegistry();
         policyRegistry.registerSourceBuilder(interceptorBuilder);
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryFactory(), policyRegistry);
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryService(), policyRegistry);
         JavaScriptContextFactoryBuilder jsBuilder = new JavaScriptContextFactoryBuilder(wireService);
 
         ContextFactoryBuilderRegistry builderRegistry = BootstrapHelper.bootstrapContextFactoryBuilders(new NullMonitorFactory());

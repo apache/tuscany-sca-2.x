@@ -19,7 +19,7 @@ package org.apache.tuscany.core.util;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-import org.apache.tuscany.spi.wire.InvocationConfiguration;
+import org.apache.tuscany.spi.wire.InvocationChain;
 
 /**
  * A <code>Map</code> implementation that performs a lookup on a collection of methods by method name. This
@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.wire.InvocationConfiguration;
  *
  * @version $Rev$ $Date$
  */
-public class MethodHashMap<T extends InvocationConfiguration> extends HashMap<Method, T> {
+public class MethodHashMap<T extends InvocationChain> extends HashMap<Method, T> {
 
     public MethodHashMap() {
         super();

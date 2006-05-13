@@ -31,11 +31,11 @@ import org.apache.tuscany.spi.event.RuntimeEventListener;
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
-public abstract class AbstractContext extends AbstractLifecycle implements Context {
+public abstract class AbstractContext<T> extends AbstractLifecycle implements Context<T> {
 
-    private CompositeContext parentContext;
-    private Map<EventFilter, List<RuntimeEventListener>> listeners;
-    private static final EventFilter TRUE_FILTER = new TrueFilter();
+    protected CompositeContext parentContext;
+    protected Map<EventFilter, List<RuntimeEventListener>> listeners;
+    protected static final EventFilter TRUE_FILTER = new TrueFilter();
 
     public AbstractContext() {
     }

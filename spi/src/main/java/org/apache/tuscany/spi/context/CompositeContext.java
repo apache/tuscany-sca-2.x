@@ -16,12 +16,16 @@
  */
 package org.apache.tuscany.spi.context;
 
+import java.util.List;
+
+import org.apache.tuscany.spi.event.RuntimeEventListener;
+
 /**
  * A context which contains child component contexts.
  *
  * @version $Rev: 393708 $ $Date: 2006-04-12 21:29:05 -0700 (Wed, 12 Apr 2006) $
  */
-public interface CompositeContext extends Context {
+public interface CompositeContext<T> extends ComponentContext<T>, RuntimeEventListener {
     /**
      * Register a Context as a child of this composite.
      *
@@ -33,4 +37,23 @@ public interface CompositeContext extends Context {
      * Returns the child context associated with a given name
      */
     Context getContext(String name);
+
+    /**
+     * Returns the service contexts contained by the composite
+     */
+    List<ServiceContext> getServiceContexts();
+
+    /**
+     * Returns the service context associated with the given name
+     *
+     * @throws ContextNotFoundException
+     */
+    ServiceContext getServiceContext(String name) throws ContextNotFoundException;
+
+    /**
+     * Returns the reference context contained by the composite
+     */
+    List<ReferenceContext> getReferenceContexts();
+
+
 }

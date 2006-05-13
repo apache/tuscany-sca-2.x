@@ -8,7 +8,7 @@ import org.apache.tuscany.core.context.scope.AbstractScopeContext;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.context.InstanceContext;
+import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.event.Event;
 
@@ -17,9 +17,9 @@ import org.apache.tuscany.spi.event.Event;
  */
 public class MockScopeContext extends AbstractScopeContext<AtomicContext> {
 
-    private Map<Context, InstanceContext> instanceContexts;
+    private Map<Context, InstanceWrapper> instanceContexts;
     private Scope scope;
-    private static final InstanceContext EMPTY = new EmptyContext();
+    private static final InstanceWrapper EMPTY = new EmptyWrapper();
 
     public MockScopeContext() {
         this(null);
@@ -27,7 +27,7 @@ public class MockScopeContext extends AbstractScopeContext<AtomicContext> {
 
     public MockScopeContext(Scope scope) {
         super("Module Scope", null);
-        instanceContexts = new ConcurrentHashMap<Context, InstanceContext>();
+        instanceContexts = new ConcurrentHashMap<Context, InstanceWrapper>();
         this.scope = scope;
     }
 
@@ -35,8 +35,8 @@ public class MockScopeContext extends AbstractScopeContext<AtomicContext> {
         return scope;
     }
 
-    public InstanceContext getInstanceContext(AtomicContext context) throws TargetException {
-        InstanceContext ctx = instanceContexts.get(context);
+    public InstanceWrapper getInstanceContext(AtomicContext context) throws TargetException {
+        InstanceWrapper ctx = instanceContexts.get(context);
         if(ctx == EMPTY){
             ctx = context.createInstance();
             instanceContexts.put(context,ctx);
@@ -53,7 +53,7 @@ public class MockScopeContext extends AbstractScopeContext<AtomicContext> {
     }
 
 
-    private static class EmptyContext extends AbstractLifecycle implements InstanceContext {
+    private static class EmptyWrapper extends AbstractLifecycle implements InstanceWrapper {
         public Object getInstance() {
             return null;
         }

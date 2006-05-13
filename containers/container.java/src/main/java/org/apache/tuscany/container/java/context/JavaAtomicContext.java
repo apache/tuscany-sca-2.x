@@ -27,7 +27,7 @@ import java.util.Map;
 import org.apache.tuscany.common.ObjectCreationException;
 import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.core.context.PojoAtomicContext;
-import org.apache.tuscany.core.context.PojoInstanceContext;
+import org.apache.tuscany.core.context.PojoInstanceWrapper;
 import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
@@ -37,39 +37,39 @@ import org.apache.tuscany.core.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.NoAccessorException;
 import org.apache.tuscany.core.injection.ProxyObjectFactory;
-import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.context.InstanceContext;
+import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.wire.SourceWireFactory;
-import org.apache.tuscany.spi.wire.TargetWireFactory;
+import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.container.java.invocation.ScopedJavaComponentInvoker;
 
 /**
  * Manages Java component implementation instances
  *
  * @version $Rev$ $Date$
  */
-public class JavaAtomicContext extends PojoAtomicContext {
+public class JavaAtomicContext<T> extends PojoAtomicContext<T> {
 
-    private Map<String, TargetWireFactory> targetWireFactories = new HashMap<String, TargetWireFactory>();
-    private List<SourceWireFactory> sourceWireFactories = new ArrayList<SourceWireFactory>();
+    private Map<String, TargetWire> targetWires = new HashMap<String, TargetWire>();
+    private List<SourceWire> sourceWires = new ArrayList<SourceWire>();
     private List<Injector> injectors;
     private Map<String, Member> members;
 
-    public JavaAtomicContext(String name, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
+    public JavaAtomicContext(String name, List<Class<?>> serviceInterfaces, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
                              EventInvoker<Object> destroyInvoker, List<Injector> injectors, Map<String, Member> members) {
-        super(name, objectFactory, eagerInit, initInvoker, destroyInvoker);
-        this.objectFactory = objectFactory;
+        super(name, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker);
         this.injectors = injectors != null ? injectors : new ArrayList<Injector>();
-        this.members = members != null ? members : new HashMap<String,Member>();
+        this.members = members != null ? members : new HashMap<String, Member>();
     }
 
-    public InstanceContext createInstance() throws ObjectCreationException {
+    public InstanceWrapper createInstance() throws ObjectCreationException {
         Object instance = objectFactory.getInstance();
         // inject the instance with properties and references
         for (Injector<Object> injector : injectors) {
             injector.inject(instance);
         }
-        InstanceContext ctx = new PojoInstanceContext(this,instance);
+        InstanceWrapper ctx = new PojoInstanceWrapper(this, instance);
         ctx.start();
         return ctx;
     }
@@ -77,50 +77,54 @@ public class JavaAtomicContext extends PojoAtomicContext {
     public void prepare() {
     }
 
-    public Object getInstance(QualifiedName qName) throws TargetException {
+    public Object getService(String name) throws TargetException {
         return getTargetInstance();
     }
 
-    public void addTargetWireFactory(TargetWireFactory factory) {
-        targetWireFactories.put(factory.getConfiguration().getServiceName(), factory);
+    public T getService() throws TargetException {
+        return getTargetInstance();
     }
 
-    public TargetWireFactory getTargetWireFactory(String serviceName) {
-        return targetWireFactories.get(serviceName);
+    public void addTargetWire(TargetWire wire) {
+        targetWires.put(wire.getServiceName(), wire);
     }
 
-    public Map<String, TargetWireFactory> getTargetWireFactories() {
-        return targetWireFactories;
+    public TargetWire getTargetWire(String serviceName) {
+        return targetWires.get(serviceName);
     }
 
-    public void addSourceWireFactory(SourceWireFactory factory) {
-        String referenceName = factory.getConfiguration().getReferenceName();
+    public Map<String, TargetWire> getTargetWires() {
+        return targetWires;
+    }
+
+    public void addSourceWire(SourceWire wire) {
+        String referenceName = wire.getReferenceName();
         Member member = members.get(referenceName);
         if (member == null) {
             throw new NoAccessorException(referenceName);
         }
-        injectors.add(createInjector(member, factory));
-        sourceWireFactories.add(factory);
+        injectors.add(createInjector(member, wire));
+        sourceWires.add(wire);
     }
 
-    public void addSourceWireFactories(Class<?> multiplicityClass, List<SourceWireFactory> factories) {
-        assert(factories.size() >0): "Wire factories was empty";
-        String referenceName = factories.get(0).getConfiguration().getReferenceName();
+    public void addSourceWires(Class<?> multiplicityClass, List<SourceWire> wires) {
+        assert(wires.size() > 0): "Wire wires was empty";
+        String referenceName = wires.get(0).getReferenceName();
         Member member = members.get(referenceName);
         if (member == null) {
             throw new NoAccessorException(referenceName);
         }
-        injectors.add(createMultiplicityInjector(member, multiplicityClass, factories));
-        sourceWireFactories.addAll(factories);
+        injectors.add(createMultiplicityInjector(member, multiplicityClass, wires));
+        sourceWires.addAll(wires);
     }
 
-    public List<SourceWireFactory> getSourceWireFactories() {
-        return sourceWireFactories;
+    public List<SourceWire> getSourceWires() {
+        return sourceWires;
     }
 
 
-    private Injector createInjector(Member member, SourceWireFactory wireFactory) {
-        ObjectFactory<?> factory = new ProxyObjectFactory(wireFactory);
+    private Injector createInjector(Member member, SourceWire wire) {
+        ObjectFactory<?> factory = new ProxyObjectFactory(wire);
         if (member instanceof Field) {
             return new FieldInjector(((Field) member), factory);
         } else if (member instanceof Method) {
@@ -132,10 +136,10 @@ public class JavaAtomicContext extends PojoAtomicContext {
         }
     }
 
-    private Injector createMultiplicityInjector(Member member, Class<?> interfaceType, List<SourceWireFactory> wireFactories) {
+    private Injector createMultiplicityInjector(Member member, Class<?> interfaceType, List<SourceWire> wireFactories) {
         List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
-        for (SourceWireFactory wireFactory : wireFactories) {
-            factories.add(new ProxyObjectFactory(wireFactory));
+        for (SourceWire wire : wireFactories) {
+            factories.add(new ProxyObjectFactory(wire));
         }
         if (member instanceof Field) {
             Field field = (Field) member;
@@ -157,5 +161,10 @@ public class JavaAtomicContext extends PojoAtomicContext {
             throw e;
         }
     }
+
+    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
+        return new ScopedJavaComponentInvoker(operation, this);
+    }
+
 
 }

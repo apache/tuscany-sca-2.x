@@ -23,8 +23,8 @@ import org.apache.tuscany.model.Component;
 import org.apache.tuscany.model.Implementation;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.wire.SourceWireFactory;
-import org.apache.tuscany.spi.wire.TargetWireFactory;
+import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
  * @version $Rev$ $Date$
@@ -46,7 +46,7 @@ public interface BuilderRegistry {
 
     void register(WireBuilder builder);
 
-    void connect(SourceWireFactory<?> source, TargetWireFactory<?> target);
+    void connect(SourceWire<?> source, TargetWire<?> target);
 
-    void completeChain(TargetWireFactory<?> target);
+    void completeChain(TargetWire<?> target);
 }

@@ -9,6 +9,7 @@ import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.mock.component.ModuleScopeInitDestroyComponent;
 import org.apache.tuscany.core.mock.context.MockCompositeContext;
+import org.apache.tuscany.core.system.context.SystemAtomicContextImpl;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.WorkContext;
@@ -76,6 +77,6 @@ public class BasicModuleScopeTestCase extends TestCase {
     }
 
     private SystemAtomicContext createContext() {
-        return new SystemAtomicContext("foo", factory, false, initInvoker, destroyInvoker);
+        return new SystemAtomicContextImpl("foo", ModuleScopeInitDestroyComponent.class,factory, false, initInvoker, destroyInvoker);
     }
 }

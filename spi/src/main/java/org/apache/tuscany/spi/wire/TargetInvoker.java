@@ -41,6 +41,13 @@ public interface TargetInvoker extends Interceptor, Cloneable{
     public boolean isCacheable();
 
     /**
+     * Sets whether the target service instance may be cached by the invoker. This is a possible optimization
+     * when a wire is configured for a "down-scope" reference, i.e. a reference from a source of a shorter
+     * lifetime to a source of greater lifetime.
+     */
+    public void setCacheable(boolean cacheable);
+
+    /**
      * Implementations must support deep cloning
      */
     public Object clone() throws CloneNotSupportedException;

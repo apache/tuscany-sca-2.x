@@ -14,9 +14,6 @@ import org.apache.tuscany.container.java.mock.components.TargetImpl;
 import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.wire.SourceWireFactory;
-import org.apache.tuscany.spi.wire.TargetWireFactory;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.WorkContext;
@@ -32,18 +29,10 @@ public class ReferenceInjectionTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         ScopeContext<AtomicContext> scope = new ModuleScopeContext(ctx);
         scope.start();
-        JavaAtomicContext targetContext = MockFactory.createJavaAtomicContext("source", TargetImpl.class);
-        TargetWireFactory targetWireFactory = MockFactory.createTargetWireFactory("Target",Target.class);
-        targetContext.addTargetWireFactory(targetWireFactory);
-        JavaAtomicContext sourceContext = MockFactory.createJavaAtomicContext("source", SourceImpl.class, false, null, null, null, members);
-        SourceWireFactory sourceWireFactory = MockFactory.createSourceWireFactory("target", new QualifiedName("target"), Target.class);
-        sourceContext.addSourceWireFactory(sourceWireFactory);
-        scope.register(targetContext);
-        sourceContext.setScopeContext(scope);
-        scope.register(sourceContext);
-        targetContext.setScopeContext(scope);
-        MockFactory.connect(sourceWireFactory,targetWireFactory,targetContext,false);
-        Source source = (Source)sourceContext.getInstance(null);
+        Map<String,AtomicContext> contexts = MockFactory.createWiredContexts("source",SourceImpl.class, scope,
+                "target",Target.class,TargetImpl.class,members, scope);
+        AtomicContext sourceContext = contexts.get("source");
+        Source source = (Source)sourceContext.getService(null);
         Target target = source.getTarget();
         assertTrue(Proxy.isProxyClass(target.getClass()));
 

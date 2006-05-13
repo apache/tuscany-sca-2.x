@@ -12,7 +12,7 @@ import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.context.AtomicContext;
-import org.apache.tuscany.spi.context.InstanceContext;
+import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.event.Event;
@@ -24,15 +24,15 @@ import org.apache.tuscany.spi.event.Event;
  */
 public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
 
-    private final Map<AtomicContext, InstanceContext> instanceContexts;
+    private final Map<AtomicContext, InstanceWrapper> instanceContexts;
     // the queue of instanceContexts to destroy, in the order that their instances were created
-    private final List<InstanceContext> destroyQueue;
-    private static final InstanceContext EMPTY = new EmptyContext();
+    private final List<InstanceWrapper> destroyQueue;
+    private static final InstanceWrapper EMPTY = new EmptyWrapper();
 
     public ModuleScopeContext(WorkContext workContext) {
         super("Module Scope", workContext);
-        instanceContexts = new ConcurrentHashMap<AtomicContext, InstanceContext>();
-        destroyQueue = new ArrayList<InstanceContext>();
+        instanceContexts = new ConcurrentHashMap<AtomicContext, InstanceWrapper>();
+        destroyQueue = new ArrayList<InstanceWrapper>();
     }
 
     public Scope getScope() {
@@ -51,16 +51,19 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
     }
 
     public synchronized void start() {
-        if (lifecycleState != UNINITIALIZED) {
-            throw new IllegalStateException("Scope must be in UNINITIALIZED state [" + lifecycleState + "]");
+        if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
+            throw new IllegalStateException("Scope must be in UNINITIALIZED or STOPPED state [" + lifecycleState + "]");
         }
         lifecycleState = RUNNING;
     }
 
     public synchronized void stop() {
         checkInit();
+        instanceContexts.clear();
+        synchronized (destroyQueue){
+            destroyQueue.clear();
+        }
         lifecycleState = STOPPED;
-        //TODO implement stop semantics
     }
 
 
@@ -73,7 +76,7 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
         }
         synchronized (destroyQueue) {
             // shutdown destroyable instances in reverse instantiation order
-            ListIterator<InstanceContext> iter = destroyQueue.listIterator(destroyQueue.size());
+            ListIterator<InstanceWrapper> iter = destroyQueue.listIterator(destroyQueue.size());
             while (iter.hasPrevious()) {
                 iter.previous().stop();
             }
@@ -87,9 +90,9 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
     }
 
 
-    public InstanceContext getInstanceContext(AtomicContext context) throws TargetException {
+    public InstanceWrapper getInstanceContext(AtomicContext context) throws TargetException {
         checkInit();
-        InstanceContext ctx = instanceContexts.get(context);
+        InstanceWrapper ctx = instanceContexts.get(context);
         if (ctx == EMPTY) {
             ctx = context.createInstance();
             instanceContexts.put(context, ctx);
@@ -101,10 +104,10 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
     }
 
     private void eagerInitContexts() throws CoreRuntimeException {
-        for (Map.Entry<AtomicContext, InstanceContext> entry : instanceContexts.entrySet()) {
+        for (Map.Entry<AtomicContext, InstanceWrapper> entry : instanceContexts.entrySet()) {
             AtomicContext context = entry.getKey();
             if (context.isEagerInit()) {
-                InstanceContext instanceCtx = context.createInstance();
+                InstanceWrapper instanceCtx = context.createInstance();
                 instanceContexts.put(context, instanceCtx);
                 destroyQueue.add(instanceCtx);
             }
@@ -112,7 +115,7 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
 
     }
 
-    private static class EmptyContext extends AbstractLifecycle implements InstanceContext {
+    private static class EmptyWrapper extends AbstractLifecycle implements InstanceWrapper {
         public Object getInstance() {
             return null;
         }

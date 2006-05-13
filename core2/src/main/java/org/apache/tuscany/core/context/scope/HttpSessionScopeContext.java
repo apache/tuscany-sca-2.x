@@ -10,7 +10,7 @@ import org.apache.tuscany.core.context.event.HttpSessionEnd;
 import org.apache.tuscany.core.context.event.HttpSessionStart;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.AtomicContext;
-import org.apache.tuscany.spi.context.InstanceContext;
+import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.event.Event;
@@ -24,13 +24,13 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
 
     public static final Object HTTP_IDENTIFIER = new Object();
 
-    private final Map<AtomicContext, Map<Object, InstanceContext>> contexts;
-    private final Map<Object, List<InstanceContext>> destroyQueues;
+    private final Map<AtomicContext, Map<Object, InstanceWrapper>> contexts;
+    private final Map<Object, List<InstanceWrapper>> destroyQueues;
 
     public HttpSessionScopeContext(WorkContext workContext) {
         super("Session Scope", workContext);
-        contexts = new ConcurrentHashMap<AtomicContext, Map<Object, InstanceContext>>();
-        destroyQueues = new ConcurrentHashMap<Object, List<InstanceContext>>();
+        contexts = new ConcurrentHashMap<AtomicContext, Map<Object, InstanceWrapper>>();
+        destroyQueues = new ConcurrentHashMap<Object, List<InstanceWrapper>>();
     }
 
     public Scope getScope() {
@@ -41,7 +41,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
         checkInit();
         if (event instanceof HttpSessionStart) {
             Object key = ((HttpSessionStart) event).getId();
-            for (Map.Entry<AtomicContext, Map<Object, InstanceContext>> entry : contexts.entrySet()) {
+            for (Map.Entry<AtomicContext, Map<Object, InstanceWrapper>> entry : contexts.entrySet()) {
                 if(entry.getKey().isEagerInit()){
                     getInstance(entry.getKey(),key);
                 }
@@ -52,38 +52,41 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
     }
 
     public synchronized void start() {
-        if (lifecycleState != UNINITIALIZED) {
-            throw new IllegalStateException("Scope must be in UNINITIALIZED state [" + lifecycleState + "]");
+        if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
+            throw new IllegalStateException("Scope must be in UNINITIALIZED or STOPPED state [" + lifecycleState + "]");
         }
         lifecycleState = RUNNING;
     }
 
     public synchronized void stop() {
-        //TODO stop semantics
+        contexts.clear();
+        synchronized(destroyQueues){
+            destroyQueues.clear();
+        }
         lifecycleState = STOPPED;
     }
 
     public void register(AtomicContext context) {
-        contexts.put(context, new ConcurrentHashMap<Object, InstanceContext>());
+        contexts.put(context, new ConcurrentHashMap<Object, InstanceWrapper>());
         context.addListener(this);
 
     }
 
-    public InstanceContext getInstanceContext(AtomicContext context) throws TargetException {
+    public InstanceWrapper getInstanceContext(AtomicContext context) throws TargetException {
         Object key = workContext.getIdentifier(HTTP_IDENTIFIER);
         assert(key != null):"HTTP session key not bound in work context";
         return getInstance(context, key);
     }
 
-    private InstanceContext getInstance(AtomicContext context, Object key) {
-        Map<Object, InstanceContext> contextMap = contexts.get(context);
-        InstanceContext ctx = contextMap.get(key);
+    private InstanceWrapper getInstance(AtomicContext context, Object key) {
+        Map<Object, InstanceWrapper> contextMap = contexts.get(context);
+        InstanceWrapper ctx = contextMap.get(key);
         if (ctx == null) {
             ctx = context.createInstance();
             contextMap.put(key, ctx);
-            List<InstanceContext> destroyQueue = destroyQueues.get(key);
+            List<InstanceWrapper> destroyQueue = destroyQueues.get(key);
             if (destroyQueue == null) {
-                destroyQueue = new ArrayList<InstanceContext>();
+                destroyQueue = new ArrayList<InstanceWrapper>();
                 destroyQueues.put(key, destroyQueue);
             }
             synchronized (destroyQueue) {
@@ -95,12 +98,12 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
     }
 
     private void shutdownInstances(Object key) {
-        List<InstanceContext> destroyQueue = destroyQueues.remove(key);
+        List<InstanceWrapper> destroyQueue = destroyQueues.remove(key);
         if (destroyQueue != null) {
-            for (Map<Object, InstanceContext> map : contexts.values()) {
+            for (Map<Object, InstanceWrapper> map : contexts.values()) {
                 map.remove(key);
             }
-            ListIterator<InstanceContext> iter = destroyQueue.listIterator(destroyQueue.size());
+            ListIterator<InstanceWrapper> iter = destroyQueue.listIterator(destroyQueue.size());
             synchronized (destroyQueue) {
                 while (iter.hasPrevious()) {
                     try {

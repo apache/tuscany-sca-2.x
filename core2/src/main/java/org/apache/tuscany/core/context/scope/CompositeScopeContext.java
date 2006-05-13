@@ -20,7 +20,7 @@ import org.apache.tuscany.core.AbstractLifecycle;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.Lifecycle;
 import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.InstanceContext;
+import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.event.Event;
@@ -46,10 +46,14 @@ public class CompositeScopeContext extends AbstractLifecycle implements ScopeCon
     }
 
     public void start(){
+        if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
+            throw new IllegalStateException("Scope must be in UNINITIALIZED or STOPPED state [" + lifecycleState + "]");
+        }
         lifecycleState = Lifecycle.RUNNING;
     }
 
     public void stop(){
+        contexts.clear();
         lifecycleState = STOPPED;
     }
 
@@ -66,7 +70,7 @@ public class CompositeScopeContext extends AbstractLifecycle implements ScopeCon
         return context; // return the context since it is the instance
     }
 
-    public InstanceContext getInstanceContext(CompositeContext context) throws TargetException {
+    public InstanceWrapper getInstanceContext(CompositeContext context) throws TargetException {
         throw new UnsupportedOperationException();
     }
 

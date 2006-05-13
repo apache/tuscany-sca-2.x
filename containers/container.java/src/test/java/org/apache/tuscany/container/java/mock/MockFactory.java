@@ -3,6 +3,7 @@ package org.apache.tuscany.container.java.mock;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,25 +14,22 @@ import org.apache.tuscany.container.java.invocation.ScopedJavaComponentInvoker;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.MessageChannelImpl;
-import org.apache.tuscany.core.wire.SourceInvocationConfigurationImpl;
-import org.apache.tuscany.core.wire.TargetInvocationConfigurationImpl;
-import org.apache.tuscany.core.wire.WireSourceConfigurationImpl;
-import org.apache.tuscany.core.wire.WireTargetConfigurationImpl;
-import org.apache.tuscany.core.wire.jdk.JDKSourceWireFactory;
-import org.apache.tuscany.core.wire.jdk.JDKTargetWireFactory;
-import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.core.wire.SourceInvocationChainImpl;
+import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
+import org.apache.tuscany.core.wire.jdk.JDKSourceWire;
+import org.apache.tuscany.core.wire.jdk.JDKTargetWire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.context.AtomicContext;
-import org.apache.tuscany.spi.wire.SourceInvocationConfiguration;
-import org.apache.tuscany.spi.wire.SourceWireFactory;
-import org.apache.tuscany.spi.wire.TargetInvocationConfiguration;
+import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.wire.SourceInvocationChain;
+import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.TargetWireFactory;
+import org.apache.tuscany.spi.wire.TargetWire;
 import org.apache.tuscany.spi.wire.WireFactoryInitException;
-import org.apache.tuscany.spi.wire.WireSourceConfiguration;
-import org.apache.tuscany.spi.wire.WireTargetConfiguration;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -45,23 +43,25 @@ public class MockFactory {
 
     public static JavaAtomicContext createJavaAtomicContext(String name, Class<?> clazz, boolean eagerInit, EventInvoker<Object> initInvoker,
                                                             EventInvoker<Object> destroyInvoker, List<Injector> injectors, Map<String, Member> members) throws NoSuchMethodException {
-        return new JavaAtomicContext(name, createObjectFactory(clazz, null), eagerInit, initInvoker, destroyInvoker, injectors, members);
+        List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
+        serviceInterfaces.add(clazz);
+        return new JavaAtomicContext(name, serviceInterfaces, createObjectFactory(clazz, null), eagerInit, initInvoker, destroyInvoker, injectors, members);
     }
 
-    public static TargetWireFactory createTargetWireFactory(String serviceName, Class<?> interfaze) throws WireFactoryInitException {
-        WireTargetConfiguration wireConfiguration = new WireTargetConfigurationImpl(serviceName, createTargetInvocationConfigurations(interfaze));
-        TargetWireFactory wireFactory = new JDKTargetWireFactory();
-        wireFactory.setBusinessInterface(interfaze);
-        wireFactory.setConfiguration(wireConfiguration);
-        wireFactory.initialize();
-        return wireFactory;
+    public static <T> TargetWire<T> createTargetWireFactory(String serviceName, Class<T> interfaze) throws WireFactoryInitException {
+        TargetWire<T> wire = new JDKTargetWire<T>();
+        wire.setBusinessInterface(interfaze);
+        wire.setServiceName(serviceName);
+        wire.setInvocationChains(createTargetInvocationConfigurations(interfaze));
+        wire.initialize();
+        return wire;
     }
 
-    public static Map<Method, TargetInvocationConfiguration> createTargetInvocationConfigurations(Class<?> interfaze) {
-        Map<Method, TargetInvocationConfiguration> invocations = new HashMap<Method, TargetInvocationConfiguration>();
+    public static Map<Method, TargetInvocationChain> createTargetInvocationConfigurations(Class<?> interfaze) {
+        Map<Method, TargetInvocationChain> invocations = new MethodHashMap<TargetInvocationChain>();
         Method[] methods = interfaze.getMethods();
         for (Method method : methods) {
-            TargetInvocationConfiguration iConfig = new TargetInvocationConfigurationImpl(method);
+            TargetInvocationChain iConfig = new TargetInvocationChainImpl(method);
             // add tail interceptor
             iConfig.addInterceptor(new InvokerInterceptor());
             invocations.put(method, iConfig);
@@ -69,26 +69,137 @@ public class MockFactory {
         return invocations;
     }
 
-    public static SourceWireFactory createSourceWireFactory(String refName, QualifiedName targetName, Class<?> interfaze) throws WireFactoryInitException {
-        WireSourceConfiguration wireConfiguration = new WireSourceConfigurationImpl(refName, targetName, createSourceInvocationConfigurations(interfaze));
-        SourceWireFactory wireFactory = new JDKSourceWireFactory();
-        wireFactory.setBusinessInterface(interfaze);
-        wireFactory.setConfiguration(wireConfiguration);
-        wireFactory.initialize();
-        return wireFactory;
+    public static <T> SourceWire<T> createSourceWireFactory(String refName, Class<T> interfaze) throws WireFactoryInitException {
+        SourceWire<T> wire = new JDKSourceWire<T>();
+        wire.setReferenceName(refName);
+        wire.setInvocationChains(createSourceInvocationConfigurations(interfaze));
+        wire.setBusinessInterface(interfaze);
+        wire.initialize();
+        return wire;
     }
 
-    public static void connect(SourceWireFactory<?> sourceFactory, TargetWireFactory<?> targetFactory, AtomicContext targetContext, boolean cacheable) throws Exception {
-        if (targetFactory != null) {
+    /**
+     * Wires two contexts together where the reference interface is the same as target service
+     *
+     * @param sourceName
+     * @param sourceClass
+     * @param sourceScope
+     * @param targetName
+     * @param targetService
+     * @param targetClass
+     * @param members
+     * @param targetScope
+     * @return
+     * @throws Exception
+     */
+    public static Map<String, AtomicContext> createWiredContexts(String sourceName, Class<?> sourceClass,
+                                                                 ScopeContext<AtomicContext> sourceScope,
+                                                                 String targetName, Class<?> targetService, Class<?> targetClass,
+                                                                 Map<String, Member> members, ScopeContext<AtomicContext> targetScope) throws Exception {
+        return createWiredContexts(sourceName, sourceClass, targetService, sourceScope, targetName, targetService, targetClass, members, targetScope);
+
+    }
+
+    /**
+     * Wires two contexts together where the reference interface may be different from the target service
+     *
+     * @param sourceName
+     * @param sourceClass
+     * @param sourceReferenceClass
+     * @param sourceScope
+     * @param targetName
+     * @param targetService
+     * @param targetClass
+     * @param members
+     * @param targetScope
+     * @return
+     * @throws Exception
+     */
+    public static Map<String, AtomicContext> createWiredContexts(String sourceName, Class<?> sourceClass, Class<?> sourceReferenceClass,
+                                                                 ScopeContext<AtomicContext> sourceScope,
+                                                                 String targetName, Class<?> targetService, Class<?> targetClass,
+                                                                 Map<String, Member> members, ScopeContext<AtomicContext> targetScope) throws Exception {
+        JavaAtomicContext targetContext = createJavaAtomicContext(targetName, targetClass);
+        TargetWire targetWire = createTargetWireFactory(targetService.getName().substring(
+                targetService.getName().lastIndexOf('.') + 1), targetService);
+        targetContext.addTargetWire(targetWire);
+
+        JavaAtomicContext sourceContext = createJavaAtomicContext(sourceName, sourceClass, false, null, null, null, members);
+        SourceWire sourceWire = createSourceWireFactory(targetName, sourceReferenceClass);
+        sourceContext.addSourceWire(sourceWire);
+        targetScope.register(targetContext);
+        sourceContext.setScopeContext(sourceScope);
+        sourceScope.register(sourceContext);
+        targetContext.setScopeContext(targetScope);
+        connect(sourceWire, targetWire, targetContext, false);
+        Map<String, AtomicContext> contexts = new HashMap<String, AtomicContext>();
+        contexts.put(sourceName, sourceContext);
+        contexts.put(targetName, targetContext);
+        return contexts;
+    }
+
+
+    /**
+     * Wires two contexts using a multiplicity reference
+     *
+     * @param sourceName
+     * @param sourceClass
+     * @param sourceReferenceClass
+     * @param sourceScope
+     * @param targetName
+     * @param targetService
+     * @param targetClass
+     * @param members
+     * @param targetScope
+     * @return
+     * @throws Exception
+     */
+    public static Map<String, AtomicContext> createWiredMultiplicity(String sourceName, Class<?> sourceClass, Class<?> sourceReferenceClass,
+                                                                     ScopeContext<AtomicContext> sourceScope,
+                                                                     String targetName, Class<?> targetService, Class<?> targetClass,
+                                                                     Map<String, Member> members, ScopeContext<AtomicContext> targetScope) throws Exception {
+        JavaAtomicContext targetContext = createJavaAtomicContext(targetName, targetClass);
+        TargetWire targetWire = createTargetWireFactory(targetService.getName().substring(
+                targetService.getName().lastIndexOf('.') + 1), targetService);
+        targetContext.addTargetWire(targetWire);
+
+        JavaAtomicContext sourceContext = createJavaAtomicContext(sourceName, sourceClass, false, null, null, null, members);
+        SourceWire sourceWire = createSourceWireFactory(targetName, sourceReferenceClass);
+        List<SourceWire> factories = new ArrayList<SourceWire>();
+        factories.add(sourceWire);
+        sourceContext.addSourceWires(sourceReferenceClass, factories);
+        targetScope.register(targetContext);
+        sourceContext.setScopeContext(sourceScope);
+        sourceScope.register(sourceContext);
+        targetContext.setScopeContext(targetScope);
+        connect(sourceWire, targetWire, targetContext, false);
+        Map<String, AtomicContext> contexts = new HashMap<String, AtomicContext>();
+        contexts.put(sourceName, sourceContext);
+        contexts.put(targetName, targetContext);
+        return contexts;
+    }
+
+
+    /**
+     * TODO refactor
+     *
+     * @param sourceWire
+     * @param targetWire
+     * @param targetContext
+     * @param cacheable
+     * @throws Exception
+     */
+    public static void connect(SourceWire<?> sourceWire, TargetWire<?> targetWire, AtomicContext targetContext, boolean cacheable) throws Exception {
+        if (targetWire != null) {
             // if null, the target side has no interceptors or handlers
-            Map<Method, TargetInvocationConfiguration> targetInvocationConfigs = targetFactory.getConfiguration().getInvocationConfigurations();
-            for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getConfiguration()
-                    .getInvocationConfigurations().values()) {
+            Map<Method, TargetInvocationChain> targetInvocationConfigs = targetWire.getInvocationChains();
+            for (SourceInvocationChain sourceInvocationConfig : sourceWire.getInvocationChains().values())
+            {
                 // match wire chains
-                TargetInvocationConfiguration targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig.getMethod());
+                TargetInvocationChain targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig.getMethod());
                 if (targetInvocationConfig == null) {
                     BuilderConfigException e = new BuilderConfigException("Incompatible source and target interface types for reference");
-                    e.setIdentifier(sourceFactory.getConfiguration().getReferenceName());
+                    e.setIdentifier(sourceWire.getReferenceName());
                     throw e;
                 }
                 // if handler is configured, add that
@@ -112,21 +223,22 @@ public class MockFactory {
                 }
             }
 
-            for (SourceInvocationConfiguration sourceInvocationConfig : sourceFactory.getConfiguration().getInvocationConfigurations()
+            for (SourceInvocationChain sourceInvocationConfig : sourceWire.getInvocationChains()
                     .values()) {
                 //FIXME should use target method, not sourceInvocationConfig.getMethod()
-                TargetInvoker invoker = new ScopedJavaComponentInvoker(sourceInvocationConfig.getMethod(), targetContext, cacheable);
+                TargetInvoker invoker = new ScopedJavaComponentInvoker(sourceInvocationConfig.getMethod(), targetContext);
+                invoker.setCacheable(cacheable);
                 sourceInvocationConfig.setTargetInvoker(invoker);
             }
         }
     }
 
 
-    public static Map<Method, SourceInvocationConfiguration> createSourceInvocationConfigurations(Class<?> interfaze) {
-        Map<Method, SourceInvocationConfiguration> invocations = new HashMap<Method, SourceInvocationConfiguration>();
+    public static Map<Method, SourceInvocationChain> createSourceInvocationConfigurations(Class<?> interfaze) {
+        Map<Method, SourceInvocationChain> invocations = new HashMap<Method, SourceInvocationChain>();
         Method[] methods = interfaze.getMethods();
         for (Method method : methods) {
-            invocations.put(method, new SourceInvocationConfigurationImpl(method));
+            invocations.put(method, new SourceInvocationChainImpl(method));
         }
         return invocations;
     }

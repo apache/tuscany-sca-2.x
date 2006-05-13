@@ -9,7 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.tuscany.core.AbstractLifecycle;
 import org.apache.tuscany.core.context.event.filter.TrueFilter;
 import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.context.InstanceContext;
+import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.WorkContext;
@@ -76,7 +76,7 @@ public abstract class AbstractScopeContext<T extends Context> extends AbstractLi
     }
 
     public Object getInstance(T context) throws TargetException {
-        InstanceContext ctx = getInstanceContext(context);
+        InstanceWrapper ctx = getInstanceContext(context);
         if (ctx != null) {
             if (ctx.getLifecycleState() == UNINITIALIZED) {
                 ctx.start();

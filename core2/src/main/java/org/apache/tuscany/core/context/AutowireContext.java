@@ -23,7 +23,7 @@ import org.apache.tuscany.spi.context.CompositeContext;
  *
  * @version $Rev$ $Date$
  */
-public interface AutowireContext extends CompositeContext {
+public interface AutowireContext<S> extends CompositeContext<S> {
 
     /**
      * Invoked by child contexts to return an an autowire target. Resolved targets may be entry points or

@@ -16,8 +16,9 @@
  */
 package org.apache.tuscany.spi.builder;
 
-import org.apache.tuscany.spi.wire.SourceWireFactory;
-import org.apache.tuscany.spi.wire.TargetWireFactory;
+import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.context.Context;
 
 /**
  * Implementations perform the second phase of converting a logical model representing an assembly into a series of
@@ -36,24 +37,24 @@ import org.apache.tuscany.spi.wire.TargetWireFactory;
  *
  * @version $Rev$ $Date$
  */
-public interface WireBuilder {
+public interface WireBuilder<T extends Context> {
 
     /**
      * Connects wire configurations of the source proxy factory to corresponding ones in the target proxy to
      * factory
      *
-     * @param sourceFactory the proxy factory used in constructing the source side of the wire chain
-     * @param targetFactory the proxy factory used in constructing the target side of the wire chain
+     * @param sourceWire the proxy factory used in constructing the source side of the wire chain
+     * @param targetWire the proxy factory used in constructing the target side of the wire chain
      * @throws BuilderConfigException if an error occurs during the wire buildSource process
      */
-    public void connect(SourceWireFactory<?> sourceFactory, TargetWireFactory<?> targetFactory) throws BuilderConfigException;
+    public void connect(SourceWire<?> sourceWire, TargetWire<?> targetWire) throws BuilderConfigException;
 
     /**
      * Finishes processing the target side wire chain.
      *
-     * @param targetFactory the target-side proxy factory
+     * @param targetWire the target-side proxy factory
      * @throws BuilderConfigException if an error occurs during the wire buildSource process
      */
-    public void completeTargetChain(TargetWireFactory<?> targetFactory) throws BuilderConfigException;
+    public void completeTargetChain(TargetWire<?> targetWire, T context) throws BuilderConfigException;
 
 }

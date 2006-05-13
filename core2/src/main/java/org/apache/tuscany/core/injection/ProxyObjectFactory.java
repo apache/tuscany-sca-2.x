@@ -3,7 +3,7 @@ package org.apache.tuscany.core.injection;
 import org.apache.tuscany.common.ObjectCreationException;
 import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
-import org.apache.tuscany.spi.wire.SourceWireFactory;
+import org.apache.tuscany.spi.wire.SourceWire;
 
 /**
  * Uses a proxy factory to return an object instance
@@ -12,9 +12,9 @@ import org.apache.tuscany.spi.wire.SourceWireFactory;
  */
 public class ProxyObjectFactory implements ObjectFactory {
 
-    private SourceWireFactory factory;
+    private SourceWire factory;
 
-    public ProxyObjectFactory(SourceWireFactory factory) {
+    public ProxyObjectFactory(SourceWire factory) {
         this.factory = factory;
     }
 

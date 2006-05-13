@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 public class StaticJavaComponentTargetInvoker extends AbstractJavaComponentInvoker {
 
     private Object instance;
+    private boolean cacheable;
 
     public StaticJavaComponentTargetInvoker(Method operation, Object instance) {
         super(operation);
@@ -39,7 +40,11 @@ public class StaticJavaComponentTargetInvoker extends AbstractJavaComponentInvok
     }
 
     public boolean isCacheable() {
-        return true;
+        return cacheable;
+    }
+
+    public void setCacheable(boolean cacheable) {
+       this.cacheable = cacheable;
     }
 
     public Object clone() throws CloneNotSupportedException {

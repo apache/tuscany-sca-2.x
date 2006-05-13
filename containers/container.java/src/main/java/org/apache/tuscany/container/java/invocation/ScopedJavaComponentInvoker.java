@@ -29,9 +29,7 @@ import org.apache.tuscany.spi.context.TargetException;
 public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
 
     private AtomicContext container;
-
     private Object target;
-
     public boolean cacheable;
 
 
@@ -40,22 +38,19 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
      *
      * @param operation    the operation the invoker is associated with
      * @param scopeContext the scope context the component is resolved in
-     * @param cacheable    Sets whether the target service instance may be cached by the invoker. This is a
-     *                     possible optimization when a wire is configured for a "down-scope" reference, i.e.
-     *                     a reference from a source of a shorter lifetime to a source of greater lifetime.
      */
-    public ScopedJavaComponentInvoker(Method operation, AtomicContext scopeContext, boolean cacheable) {
+    public ScopedJavaComponentInvoker(Method operation, AtomicContext scopeContext) {
         super(operation);
         assert (scopeContext != null) : "No scope scopeContext specified";
         this.container = scopeContext;
-        this.cacheable = cacheable;
     }
 
-    /**
-     * Returns whether the target is cacheable.
-     */
     public boolean isCacheable() {
         return cacheable;
+    }
+
+    public void setCacheable(boolean cacheable) {
+        this.cacheable = cacheable;
     }
 
     /**

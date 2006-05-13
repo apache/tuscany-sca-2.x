@@ -15,7 +15,7 @@ package org.apache.tuscany.core.context.scope;
 
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.AtomicContext;
-import org.apache.tuscany.spi.context.InstanceContext;
+import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.event.Event;
@@ -37,8 +37,8 @@ public class StatelessScopeContext extends AbstractScopeContext<AtomicContext> {
     }
 
     public synchronized void start() {
-        if (lifecycleState != UNINITIALIZED) {
-            throw new IllegalStateException("Scope must be in UNINITIALIZED state [" + lifecycleState + "]");
+        if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
+            throw new IllegalStateException("Scope must be in UNINITIALIZED or STOPPED state [" + lifecycleState + "]");
         }
         lifecycleState = RUNNING;
     }
@@ -48,7 +48,6 @@ public class StatelessScopeContext extends AbstractScopeContext<AtomicContext> {
             throw new IllegalStateException("Scope in wrong state [" + lifecycleState + "]");
         }
         lifecycleState = STOPPED;
-        //TODO stop all contexts
     }
 
     public void onEvent(Event event) {
@@ -58,7 +57,7 @@ public class StatelessScopeContext extends AbstractScopeContext<AtomicContext> {
         checkInit();
     }
 
-    public InstanceContext getInstanceContext(AtomicContext context) throws TargetException {
+    public InstanceWrapper getInstanceContext(AtomicContext context) throws TargetException {
         return context.createInstance();
     }
 

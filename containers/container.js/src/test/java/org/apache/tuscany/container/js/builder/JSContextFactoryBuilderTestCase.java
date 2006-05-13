@@ -15,7 +15,7 @@ import org.apache.tuscany.core.context.QualifiedName;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.impl.EventContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.core.wire.jdk.JDKWireFactoryFactory;
+import org.apache.tuscany.core.wire.jdk.JDKWireFactoryService;
 import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.core.wire.service.WireFactoryService;
 import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
@@ -33,7 +33,7 @@ public class JSContextFactoryBuilderTestCase extends TestCase {
         MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor);
         PolicyBuilderRegistry policyRegistry = new DefaultPolicyBuilderRegistry();
         policyRegistry.registerSourceBuilder(interceptorBuilder);
-        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryFactory(), policyRegistry);
+        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryService(), policyRegistry);
         JavaScriptContextFactoryBuilder jsBuilder = new JavaScriptContextFactoryBuilder(wireService);
 
 

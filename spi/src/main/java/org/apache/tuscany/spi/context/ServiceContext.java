@@ -36,7 +36,7 @@ package org.apache.tuscany.spi.context;
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
-public interface ServiceContext<T extends Class> extends Context {
+public interface ServiceContext<T> extends Context<T> {
 
     /**
      * Returns the handler responsible for flowing a request through the entry point
@@ -47,5 +47,6 @@ public interface ServiceContext<T extends Class> extends Context {
     /**
      * Returns the service interface configured for the service
      */
-    public Class<T> getServiceInterface();
+    public Class<T> getInterface();
+
 }
