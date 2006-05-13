@@ -55,6 +55,7 @@ public final class SDOXMLHelper {
      * @param isWrapped
      * 
      * @return the array of deserialized Java objects
+     * @deprecated TUSCANY-333 use the method that takes a ClassLoader
      */
     public static Object[] toObjects(TypeHelper typeHelper, byte[] xmlBytes, boolean isWrapped) {
         DataObject dataObject = toDataObject(typeHelper, xmlBytes);
@@ -93,6 +94,7 @@ public final class SDOXMLHelper {
      * @param typeNS
      * @param typeName
      * @return a byte array containing the XML
+     * @deprecated TUSCANY-333 use the method that takes a ClassLoader
      */
     public static byte[] toXMLBytes(TypeHelper typeHelper, Object[] os, QName elementQName, boolean isWrapped) {
         DataObject dataObject = toDataObject(typeHelper, os, elementQName, isWrapped);
@@ -106,6 +108,7 @@ public final class SDOXMLHelper {
      * @param typeNS
      * @param typeName
      * @return a byte array containing the XML bytes
+     * @deprecated TUSCANY-333 use the method that takes a ClassLoader
      */
     public static byte[] toXMLbytes(TypeHelper typeHelper, DataObject dataObject, QName elementQName) {
         try {
@@ -127,6 +130,7 @@ public final class SDOXMLHelper {
      * 
      * @param xmlBytes
      * @return a DataObject
+     * @deprecated TUSCANY-333 use the method that takes a ClassLoader
      */
     public static DataObject toDataObject(TypeHelper typeHelper, byte[] xmlBytes) {
         try {
@@ -148,6 +152,7 @@ public final class SDOXMLHelper {
      * @param typeName
      * @param os
      * @return the DataObject
+     * @deprecated TUSCANY-333 use the method that takes a ClassLoader
      */
     public static DataObject toDataObject(TypeHelper typeHelper, Object[] os, QName elementQName, boolean isWrapped) {
         XSDHelper xsdHelper = SDOUtil.createXSDHelper(typeHelper);
@@ -174,5 +179,86 @@ public final class SDOXMLHelper {
             }
         }
     }
+    
+// ---    
 
+    public static DataObject toDataObject(ClassLoader classLoader, TypeHelper typeHelper, Object[] os, QName elementQName, boolean isWrapped) {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            if (tccl != classLoader) {
+                Thread.currentThread().setContextClassLoader(classLoader);
+            }
+
+            return toDataObject(typeHelper, os, elementQName, isWrapped);
+
+        } finally {
+            if (tccl != classLoader) {
+                Thread.currentThread().setContextClassLoader(tccl);
+            }
+        }
+    }
+
+    public static DataObject toDataObject(ClassLoader classLoader, TypeHelper typeHelper, byte[] xmlBytes) {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            if (tccl != classLoader) {
+                Thread.currentThread().setContextClassLoader(classLoader);
+            }
+
+            return toDataObject(typeHelper, xmlBytes);
+
+        } finally {
+            if (tccl != classLoader) {
+                Thread.currentThread().setContextClassLoader(tccl);
+            }
+        }
+    }
+    
+    public static byte[] toXMLbytes(ClassLoader classLoader, TypeHelper typeHelper, DataObject dataObject, QName elementQName) {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            if (tccl != classLoader) {
+                Thread.currentThread().setContextClassLoader(classLoader);
+            }
+
+            return toXMLbytes(typeHelper, dataObject, elementQName);
+
+        } finally {
+            if (tccl != classLoader) {
+                Thread.currentThread().setContextClassLoader(tccl);
+            }
+        }
+    }
+    
+    public static byte[] toXMLBytes(ClassLoader classLoader, TypeHelper typeHelper, Object[] os, QName elementQName, boolean isWrapped) {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            if (tccl != classLoader) {
+                Thread.currentThread().setContextClassLoader(classLoader);
+            }
+
+            return toXMLBytes(typeHelper, os, elementQName, isWrapped);
+
+        } finally {
+            if (tccl != classLoader) {
+                Thread.currentThread().setContextClassLoader(tccl);
+            }
+        }
+    }
+
+    public static Object[] toObjects(ClassLoader classLoader, TypeHelper typeHelper, byte[] xmlBytes, boolean isWrapped) {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            if (tccl != classLoader) {
+                Thread.currentThread().setContextClassLoader(classLoader);
+            }
+
+            return toObjects(typeHelper, xmlBytes, isWrapped);
+
+        } finally {
+            if (tccl != classLoader) {
+                Thread.currentThread().setContextClassLoader(tccl);
+            }
+        }
+    }
 }

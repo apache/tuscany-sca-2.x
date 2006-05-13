@@ -23,7 +23,6 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.binding.axis2.databinding.SDODataBinding;
 import org.apache.tuscany.sdo.util.DataObjectUtil;
 import org.apache.tuscany.sdo.util.SDOUtil;
 
@@ -111,10 +110,10 @@ public class SDODataBindingTestCase extends TestCase {
             url = getClass().getResource("CreditScoreDocLit.wsdl");
             xsdHelper.define(url.openStream(), null);
 
-            this.greetingDB = new SDODataBinding(typeHelper, GREETING_QN, true);
-            this.docLitWrappedDB = new SDODataBinding(typeHelper, DOCLITWRAPPED_QN, true);
+            this.greetingDB = new SDODataBinding(getClass().getClassLoader(),typeHelper, GREETING_QN, true);
+            this.docLitWrappedDB = new SDODataBinding(getClass().getClassLoader(),typeHelper, DOCLITWRAPPED_QN, true);
 
-            this.docLitDB = new SDODataBinding(typeHelper, DOCLIT_QN, false);
+            this.docLitDB = new SDODataBinding(getClass().getClassLoader(),typeHelper, DOCLIT_QN, false);
 
         } finally {
             Thread.currentThread().setContextClassLoader(cl);

@@ -40,10 +40,9 @@ import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.WSDL2AxisServiceBuilder;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
-import org.apache.tuscany.binding.axis2.databinding.DataBinding;
-import org.apache.tuscany.binding.axis2.databinding.SDODataBinding;
 import org.apache.tuscany.binding.axis2.entrypoint.WebServiceEntryPointInOutSyncMessageReceiver;
 import org.apache.tuscany.binding.axis2.entrypoint.WebServiceEntryPointServlet;
+import org.apache.tuscany.binding.axis2.util.SDODataBinding;
 import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 import org.apache.tuscany.core.builder.BuilderConfigException;
@@ -230,6 +229,7 @@ public class WSEntryPointContextFactory extends EntryPointContextFactory {
         axisService.setServiceDescription("Tuscany configured AxisService for EntryPoint: '" + entryPointName + '\'');
 
         TypeHelper typeHelper = wsBinding.getTypeHelper();
+        ClassLoader cl = wsBinding.getResourceLoader().getClassLoader();
 
         Class<?> serviceInterface = entryPointContext.getServiceInterface();
 
@@ -244,9 +244,9 @@ public class WSEntryPointContextFactory extends EntryPointContextFactory {
             QName responseTypeQN = omd.getOutputPart(0).getElementName();
 
             Method operationMethod = getMethod(serviceInterface, operationName);
-            DataBinding dataBinding = new SDODataBinding(typeHelper, responseTypeQN, omd.isDocLitWrapped());
+            SDODataBinding dataBinding = new SDODataBinding(cl, typeHelper, responseTypeQN, omd.isDocLitWrapped());
             WebServiceEntryPointInOutSyncMessageReceiver msgrec = new WebServiceEntryPointInOutSyncMessageReceiver(entryPointProxy, operationMethod,
-                    dataBinding);
+                    dataBinding, cl);
 
             AxisOperation axisOp = axisService.getOperation(operationQN);
             axisOp.setMessageExchangePattern(WSDLConstants.MEP_URI_IN_OUT);

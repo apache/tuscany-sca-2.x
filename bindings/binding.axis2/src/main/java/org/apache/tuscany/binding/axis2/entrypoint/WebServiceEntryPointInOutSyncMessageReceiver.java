@@ -24,8 +24,7 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractInOutSyncMessageReceiver;
-import org.apache.tuscany.binding.axis2.databinding.DataBinding;
-import org.apache.tuscany.binding.axis2.util.ClassLoaderHelper;
+import org.apache.tuscany.binding.axis2.util.SDODataBinding;
 import org.apache.tuscany.core.wire.InvocationRuntimeException;
 
 public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {
@@ -34,12 +33,15 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
 
     protected Method operationMethod;
 
-    protected DataBinding dataBinding;
+    protected SDODataBinding dataBinding;
+    
+    protected ClassLoader classLoader;
 
-    public WebServiceEntryPointInOutSyncMessageReceiver(Object entryPointProxy, Method operationMethod, DataBinding dataBinding) {
+    public WebServiceEntryPointInOutSyncMessageReceiver(Object entryPointProxy, Method operationMethod, SDODataBinding dataBinding, ClassLoader classLoader) {
         this.entryPointProxy = entryPointProxy;
         this.operationMethod = operationMethod;
         this.dataBinding = dataBinding;
+        this.classLoader = classLoader;
     }
 
     @Override
@@ -50,14 +52,17 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
             Object[] request = dataBinding.fromOMElement(requestOM);
             
             Object response;
-            ClassLoader oldCL = ClassLoaderHelper.setApplicationClassLoader();
+            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
             try {
-                
+                if (tccl != classLoader) {
+                    Thread.currentThread().setContextClassLoader(classLoader);
+                }
+
                 response = operationMethod.invoke(entryPointProxy, request);
 
             } finally {
-                if (oldCL != null) {
-                    Thread.currentThread().setContextClassLoader(oldCL);
+                if (tccl != classLoader) {
+                    Thread.currentThread().setContextClassLoader(tccl);
                 }
             }
 

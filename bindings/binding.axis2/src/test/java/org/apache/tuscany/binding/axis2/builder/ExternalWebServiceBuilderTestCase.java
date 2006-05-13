@@ -33,6 +33,7 @@ import org.apache.tuscany.binding.axis2.externalservice.Axis2OperationInvoker;
 import org.apache.tuscany.binding.axis2.externalservice.Axis2ServiceInvoker;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.extension.ExternalServiceContextFactory;
 import org.apache.tuscany.model.assembly.AssemblyContext;
 import org.apache.tuscany.model.assembly.AssemblyInitializationException;
@@ -65,7 +66,7 @@ public class ExternalWebServiceBuilderTestCase extends TestCase {
         Port port = definition.getService(SERVICE_NAME).getPort(PORTNAME);
         WebServicePortMetaData wspmd = new WebServicePortMetaData(definition, port, null, false);
 
-        Map<String, Axis2OperationInvoker> invokers = builder.createOperationInvokers(Foo.class, null, wspmd);
+        Map<String, Axis2OperationInvoker> invokers = builder.createOperationInvokers(Foo.class, null, getClass().getClassLoader(),wspmd);
         assertNotNull(invokers);
         assertEquals(1, invokers.size());
 
@@ -335,8 +336,7 @@ public class ExternalWebServiceBuilderTestCase extends TestCase {
             }
 
             public ResourceLoader getResourceLoader() {
-
-                return null;
+                return new ResourceLoaderImpl(Thread.currentThread().getContextClassLoader());
             }
 
             public void setResourceLoader(ResourceLoader resourceLoader) {

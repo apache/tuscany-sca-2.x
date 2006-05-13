@@ -27,6 +27,8 @@ public class SDOXMLHelperTestCase extends TestCase {
     private DataObject greetingDOB;
 
     private byte[] greetingXML;
+    
+    private ClassLoader appCL;
 
     public static final QName DOCLIT_QN = new QName("http://www.example.org/creditscore/doclit/", "getCreditScoreRequest");
 
@@ -35,13 +37,13 @@ public class SDOXMLHelperTestCase extends TestCase {
     private DataObject nonWrappedDOB;
 
     public void testXMLBytes1() {
-        byte[] xmlBytes = SDOXMLHelper.toXMLbytes(typeHelper, greetingDOB, GREETING_QN);
+        byte[] xmlBytes = SDOXMLHelper.toXMLbytes(appCL, typeHelper, greetingDOB, GREETING_QN);
         assertNotNull(xmlBytes);
         assertTrue(new String(xmlBytes).contains("<helloworldaxis:in0>petra</helloworldaxis:in0>"));
     }
 
     public void testXMLBytes2() {
-        byte[] xmlBytes = SDOXMLHelper.toXMLBytes(typeHelper, new Object[] { GREETING_NAME }, GREETING_QN, true);
+        byte[] xmlBytes = SDOXMLHelper.toXMLBytes(appCL, typeHelper, new Object[] { GREETING_NAME }, GREETING_QN, true);
         assertNotNull(xmlBytes);
         assertTrue(new String(xmlBytes).contains(GREETING_XML));
     }
@@ -54,13 +56,13 @@ public class SDOXMLHelperTestCase extends TestCase {
     // }
 
     public void testToDataObject1() {
-        DataObject dataObject = SDOXMLHelper.toDataObject(typeHelper, greetingXML);
+        DataObject dataObject = SDOXMLHelper.toDataObject(appCL, typeHelper, greetingXML);
         assertNotNull(dataObject);
         assertEquals(GREETING_NAME, dataObject.getString(0));
     }
 
     public void testToDataObject2() {
-        DataObject dataObject = SDOXMLHelper.toDataObject(typeHelper, new Object[] { GREETING_NAME }, GREETING_QN, true);
+        DataObject dataObject = SDOXMLHelper.toDataObject(appCL, typeHelper, new Object[] { GREETING_NAME }, GREETING_QN, true);
         assertNotNull(dataObject);
         assertEquals(GREETING_NAME, dataObject.getString(0));
     }
@@ -75,7 +77,7 @@ public class SDOXMLHelperTestCase extends TestCase {
     // }
 
     public void testToObjects1() {
-        Object[] os = SDOXMLHelper.toObjects(typeHelper, greetingXML, true);
+        Object[] os = SDOXMLHelper.toObjects(appCL, typeHelper, greetingXML, true);
         assertNotNull(os);
         assertEquals(1, os.length);
         assertEquals(GREETING_NAME, os[0]);
@@ -99,15 +101,16 @@ public class SDOXMLHelperTestCase extends TestCase {
         DataObjectUtil.initRuntime();
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
-            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+            appCL = getClass().getClassLoader();
+            Thread.currentThread().setContextClassLoader(appCL);
             typeHelper = SDOUtil.createTypeHelper();
             XSDHelper xsdHelper = SDOUtil.createXSDHelper(typeHelper);
             URL url = getClass().getResource("helloworld.wsdl");
             xsdHelper.define(url.openStream(), null);
             url = getClass().getResource("CreditScoreDocLit.wsdl");
             xsdHelper.define(url.openStream(), null);
-            greetingDOB = SDOXMLHelper.toDataObject(typeHelper, new Object[] { GREETING_NAME }, GREETING_QN, true);
-            greetingXML = SDOXMLHelper.toXMLBytes(typeHelper, new Object[] { GREETING_NAME }, GREETING_QN, true);
+            greetingDOB = SDOXMLHelper.toDataObject(appCL, typeHelper, new Object[] { GREETING_NAME }, GREETING_QN, true);
+            greetingXML = SDOXMLHelper.toXMLBytes(appCL, typeHelper, new Object[] { GREETING_NAME }, GREETING_QN, true);
 
             DataFactory dataFactory = SDOUtil.createDataFactory(typeHelper);
             nonWrappedDOB = dataFactory.create("http://www.example.org/creditscore/doclit/", "Customer");

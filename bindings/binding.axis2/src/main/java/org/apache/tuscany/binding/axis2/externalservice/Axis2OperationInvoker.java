@@ -25,8 +25,7 @@ import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.wsdl.WSDLConstants;
-import org.apache.tuscany.binding.axis2.databinding.DataBinding;
-import org.apache.tuscany.binding.axis2.util.ClassLoaderHelper;
+import org.apache.tuscany.binding.axis2.util.SDODataBinding;
 
 /**
  * Axis2OperationInvoker uses an Axis2 OperationClient to invoke a remote web service
@@ -37,11 +36,11 @@ public class Axis2OperationInvoker {
 
     public Options options;
 
-    public DataBinding dataBinding;
+    public SDODataBinding dataBinding;
 
     private SOAPFactory soapFactory;
 
-    public Axis2OperationInvoker(QName wsdlOperationName, Options options, DataBinding dataBinding, SOAPFactory soapFactory) {
+    public Axis2OperationInvoker(QName wsdlOperationName, Options options, SDODataBinding dataBinding, SOAPFactory soapFactory) {
         this.wsdlOperationName = wsdlOperationName;
         this.options = options;
         this.dataBinding = dataBinding;
@@ -72,14 +71,18 @@ public class Axis2OperationInvoker {
 
         operationClient.addMessageContext(requestMC);
 
-        ClassLoader oldCL = ClassLoaderHelper.setSystemClassLoader();
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        ClassLoader scl = this.getClass().getClassLoader();
         try {
+            if (tccl != scl) {
+                Thread.currentThread().setContextClassLoader(scl);
+            }
 
             operationClient.execute(true);
 
         } finally {
-            if (oldCL != null) {
-                Thread.currentThread().setContextClassLoader(oldCL);
+            if (tccl != scl) {
+                Thread.currentThread().setContextClassLoader(tccl);
             }
         }
 

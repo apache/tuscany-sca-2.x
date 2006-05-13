@@ -35,10 +35,9 @@ import org.apache.axis2.context.MessageContextConstants;
 import org.apache.axis2.description.AxisService;
 import org.apache.tuscany.binding.axis2.assembly.WebServiceBinding;
 import org.apache.tuscany.binding.axis2.config.WSExternalServiceContextFactory;
-import org.apache.tuscany.binding.axis2.databinding.DataBinding;
-import org.apache.tuscany.binding.axis2.databinding.SDODataBinding;
 import org.apache.tuscany.binding.axis2.externalservice.Axis2OperationInvoker;
 import org.apache.tuscany.binding.axis2.externalservice.Axis2ServiceInvoker;
+import org.apache.tuscany.binding.axis2.util.SDODataBinding;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
@@ -72,8 +71,9 @@ public class ExternalWebServiceBuilder extends ExternalServiceBuilderSupport<Web
         ServiceClient serviceClient = createServiceClient(externalService.getName(), wsdlDefinition, wsPortMetaData);
 
         TypeHelper typeHelper = wsBinding.getTypeHelper();
+        ClassLoader cl = wsBinding.getResourceLoader().getClassLoader();
         Class serviceInterface = externalService.getConfiguredService().getPort().getServiceContract().getInterface();
-        Map<String, Axis2OperationInvoker> invokers = createOperationInvokers(serviceInterface, typeHelper, wsPortMetaData);
+        Map<String, Axis2OperationInvoker> invokers = createOperationInvokers(serviceInterface, typeHelper, cl, wsPortMetaData);
 
         Axis2ServiceInvoker axis2Client = new Axis2ServiceInvoker(serviceClient, invokers);
 
@@ -110,7 +110,7 @@ public class ExternalWebServiceBuilder extends ExternalServiceBuilderSupport<Web
     /**
      * Create and configure an Axis2OperationInvoker for each operation in the externalService
      */
-    protected Map<String, Axis2OperationInvoker> createOperationInvokers(Class sc, TypeHelper typeHelper, WebServicePortMetaData wsPortMetaData) {
+    protected Map<String, Axis2OperationInvoker> createOperationInvokers(Class sc, TypeHelper typeHelper, ClassLoader cl, WebServicePortMetaData wsPortMetaData) {
         SOAPFactory soapFactory = OMAbstractFactory.getSOAP11Factory();
         String portTypeNS = wsPortMetaData.getPortTypeName().getNamespaceURI();
         Map<String, Axis2OperationInvoker> invokers = new HashMap<String, Axis2OperationInvoker>();
@@ -121,7 +121,7 @@ public class ExternalWebServiceBuilder extends ExternalServiceBuilderSupport<Web
             WebServiceOperationMetaData operationMetaData = wsPortMetaData.getOperationMetaData(methodName);
             boolean isWrapped = operationMetaData.isDocLitWrapped();
             List<?> sig = operationMetaData.getOperationSignature();
-            DataBinding dataBinding = new SDODataBinding(typeHelper, sig.size() > 0 ? (QName) sig.get(0) : null, isWrapped);
+            SDODataBinding dataBinding = new SDODataBinding(cl, typeHelper, sig.size() > 0 ? (QName) sig.get(0) : null, isWrapped);
 
             Options options = new Options();
             options.setTo(new EndpointReference(wsPortMetaData.getEndpoint()));
