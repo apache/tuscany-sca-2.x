@@ -140,7 +140,7 @@
         <wsdl:part element="account:getAccountReportBare1ComplexResponse" name="getAccountReportBare1ComplexResponse"/>
     </wsdl:message>
 
-    <wsdl:portType name="AccountService">
+    <wsdl:portType name="Account_Service">
         <wsdl:operation name="getAccountReportWrapped0">
             <wsdl:input message="tns:getAccountReportWrapped0Request"/>
             <wsdl:output message="tns:getAccountReportWrapped0Response"/>
@@ -166,7 +166,7 @@
             <wsdl:output message="tns:getAccountReportBare1ComplexResponse"/>
         </wsdl:operation>
     </wsdl:portType>
-    <wsdl:binding name="AccountServiceSOAP" type="tns:AccountService">
+    <wsdl:binding name="AccountServiceSOAP" type="tns:Account_Service">
         <soap:binding style="document"
                       transport="http://schemas.xmlsoap.org/soap/http"/>
         <wsdl:operation name="getAccountReportWrapped0">

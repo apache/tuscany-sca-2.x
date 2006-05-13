@@ -30,6 +30,7 @@ import org.apache.axis2.wsdl.codegen.CodeGenConfiguration;
 import org.apache.axis2.wsdl.codegen.emitter.JavaEmitter;
 import org.apache.axis2.wsdl.codegen.writer.InterfaceWriter;
 import org.apache.axis2.wsdl.databinding.TypeMapper;
+import org.apache.tuscany.model.util.XMLNameUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -192,4 +193,8 @@ public class JavaInterfaceEmitter extends JavaEmitter {
         writeClass(interfaceModel, interfaceWriter);
     }
 
+    protected String makeJavaClassName(String word) {
+        return XMLNameUtil.getJavaNameFromXMLName(word, true);
+    }
+    
 }
