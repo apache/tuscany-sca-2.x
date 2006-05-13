@@ -39,6 +39,8 @@ import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceContract;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 
+import commonj.sdo.helper.TypeHelper;
+
 /**
  * Builds {@link org.apache.tuscany.container.rhino.config.JavaScriptContextFactory}s from a JavaScript component type
  * 
@@ -101,7 +103,9 @@ public class JavaScriptContextFactoryBuilder extends ContextFactoryBuilderSuppor
      * Create the data binding for the component initialized for each operation in the service
      */
     protected E4XDataBinding createDataBinding(JavaScriptImplementation jsImplementation) {
-        E4XDataBinding dataBinding = new E4XDataBinding(jsImplementation.getTypeHelper());
+        ClassLoader classLoader = jsImplementation.getResourceLoader().getClassLoader();
+        TypeHelper typeHelper = jsImplementation.getTypeHelper();
+        E4XDataBinding dataBinding = new E4XDataBinding(classLoader, typeHelper);
         for (Service service : jsImplementation.getComponentType().getServices()) {
             ServiceContract sc = service.getServiceContract();
             if (sc instanceof WSDLServiceContract) {

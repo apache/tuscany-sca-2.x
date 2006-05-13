@@ -37,13 +37,16 @@ import commonj.sdo.helper.TypeHelper;
  */
 public class E4XDataBinding {
 
+    private ClassLoader classLoader;
+
     private TypeHelper typeHelper;
 
     private Map<String, QName> function2ElementMap;
 
     private static final boolean IS_WRAPPED = true;
 
-    public E4XDataBinding(TypeHelper typeHelper) {
+    public E4XDataBinding(ClassLoader classLoader, TypeHelper typeHelper) {
+        this.classLoader = classLoader;
         this.typeHelper = typeHelper;
         this.function2ElementMap = new HashMap<String, QName>();
     }
@@ -56,7 +59,7 @@ public class E4XDataBinding {
      */
     public Object[] toObjects(Scriptable e4xXML) {
         byte[] xmlBytes = e4xXML.toString().getBytes();
-        Object[] os = SDOXMLHelper.toObjects(typeHelper, xmlBytes, IS_WRAPPED);
+        Object[] os = SDOXMLHelper.toObjects(classLoader, typeHelper, xmlBytes, IS_WRAPPED);
         return os;
     }
 
@@ -70,7 +73,7 @@ public class E4XDataBinding {
      */
     public Scriptable toE4X(String functionName, Object[] os, Scriptable scope) {
         QName elementQN = function2ElementMap.get(functionName);
-        byte[] xmlBytes = SDOXMLHelper.toXMLBytes(typeHelper, os, elementQN, IS_WRAPPED);
+        byte[] xmlBytes = SDOXMLHelper.toXMLBytes(classLoader, typeHelper, os, elementQN, IS_WRAPPED);
 
         XmlObject xmlObject;
         try {

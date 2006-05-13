@@ -48,7 +48,7 @@ public class RhinoE4XScriptTestCase extends TestCase {
         URL url = getClass().getResource("helloworld.wsdl");
         xsdHelper.define(url.openStream(), null);
 
-        dataBinding = new E4XDataBinding(th);
+        dataBinding = new E4XDataBinding(getClass().getClassLoader(),th);
         dataBinding.addElementQName("getGreetings", new QName("http://helloworld.samples.tuscany.apache.org", "getGreetings"));
     }
 

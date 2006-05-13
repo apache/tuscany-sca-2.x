@@ -25,10 +25,11 @@ import org.apache.tuscany.container.rhino.context.JavaScriptComponentContext;
 import org.apache.tuscany.container.rhino.rhino.RhinoScript;
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextFactory;
-import org.apache.tuscany.core.context.CompositeContext;
+import org.apache.tuscany.core.builder.ContextResolver;
 import org.apache.tuscany.core.context.AtomicContext;
-import org.apache.tuscany.core.wire.TargetWireFactory;
+import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.wire.SourceWireFactory;
+import org.apache.tuscany.core.wire.TargetWireFactory;
 import org.apache.tuscany.model.assembly.Scope;
 
 /**
@@ -36,11 +37,15 @@ import org.apache.tuscany.model.assembly.Scope;
  * 
  * @version $Rev$ $Date$
  */
-public class JavaScriptContextFactory implements ContextFactory<AtomicContext> {
+public class JavaScriptContextFactory implements ContextFactory<AtomicContext>, ContextResolver {
 
     private Scope scope;
 
     private String name;
+
+    private Map<String, TargetWireFactory> targetProxyFactories = new HashMap<String, TargetWireFactory>();
+
+    private List<SourceWireFactory> sourceProxyFactories = new ArrayList<SourceWireFactory>();
 
     private Map<String, Class> services;
 
@@ -49,9 +54,8 @@ public class JavaScriptContextFactory implements ContextFactory<AtomicContext> {
     private RhinoScript invoker;
 
     private CompositeContext parentContext;
-    
-    public JavaScriptContextFactory(String name, Scope scope, Map<String, Class> services,
-            Map<String, Object> properties, RhinoScript invoker) {
+
+    public JavaScriptContextFactory(String name, Scope scope, Map<String, Class> services, Map<String, Object> properties, RhinoScript invoker) {
         this.name = name;
         this.scope = scope;
         this.services = services;
@@ -60,8 +64,7 @@ public class JavaScriptContextFactory implements ContextFactory<AtomicContext> {
     }
 
     public AtomicContext createContext() throws ContextCreationException {
-        return new JavaScriptComponentContext(name, services, properties, sourceProxyFactories, targetProxyFactories, invoker
-                .copy());
+        return new JavaScriptComponentContext(name, services, properties, sourceProxyFactories, targetProxyFactories, invoker.copy());
     }
 
     public Scope getScope() {
@@ -73,10 +76,8 @@ public class JavaScriptContextFactory implements ContextFactory<AtomicContext> {
     }
 
     public void addProperty(String propertyName, Object value) {
-
+        properties.put(propertyName, value);
     }
-
-    private Map<String, TargetWireFactory> targetProxyFactories = new HashMap<String, TargetWireFactory>();
 
     public void addTargetWireFactory(String serviceName, TargetWireFactory factory) {
         targetProxyFactories.put(serviceName, factory);
@@ -90,14 +91,12 @@ public class JavaScriptContextFactory implements ContextFactory<AtomicContext> {
         return targetProxyFactories;
     }
 
-    private List<SourceWireFactory> sourceProxyFactories = new ArrayList<SourceWireFactory>();
-
     public void addSourceWireFactory(String referenceName, SourceWireFactory factory) {
         sourceProxyFactories.add(factory);
     }
 
-    public void addSourceWireFactories(String referenceName, Class referenceInterface, List<SourceWireFactory> factory, boolean multiplicity) {
-        //TODO implement
+    public void addSourceWireFactories(String referenceName, Class referenceInterface, List<SourceWireFactory> factories, boolean multiplicity) {
+        sourceProxyFactories.addAll(factories);
     }
 
     public List<SourceWireFactory> getSourceWireFactories() {
@@ -108,5 +107,8 @@ public class JavaScriptContextFactory implements ContextFactory<AtomicContext> {
         parentContext = parent;
     }
 
+    public CompositeContext getCurrentContext() {
+        return parentContext;
+    }
 
 }
