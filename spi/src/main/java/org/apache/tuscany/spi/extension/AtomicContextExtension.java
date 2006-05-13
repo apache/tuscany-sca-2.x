@@ -1,5 +1,7 @@
 package org.apache.tuscany.spi.extension;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +26,8 @@ public abstract class AtomicContextExtension implements AtomicContext {
     protected String name;
     protected CompositeContext parent;
     protected int lifecycleState = UNINITIALIZED;
+    protected Map<String, TargetWire> targetWires = new HashMap<String, TargetWire>();
+    protected List<SourceWire> sourceWires = new ArrayList<SourceWire>();
 
     public List getServiceInterfaces() {
         return null;
@@ -35,30 +39,6 @@ public abstract class AtomicContextExtension implements AtomicContext {
         } else {
             return null;
         }
-    }
-
-    public void addTargetWire(TargetWire wire) {
-
-    }
-
-    public TargetWire getTargetWire(String serviceName) {
-        return null;
-    }
-
-    public Map getTargetWires() {
-        return null;
-    }
-
-    public void addSourceWire(SourceWire wire) {
-
-    }
-
-    public List getSourceWires() {
-        return null;
-    }
-
-    public void addSourceWires(Class multiplicityClass, List wires) {
-
     }
 
     public void setScopeContext(ScopeContext context) {
@@ -74,7 +54,7 @@ public abstract class AtomicContextExtension implements AtomicContext {
     }
 
     public void setName(String name) {
-       this.name = name;
+        this.name = name;
     }
 
     public CompositeContext getParent() {
@@ -82,7 +62,7 @@ public abstract class AtomicContextExtension implements AtomicContext {
     }
 
     public void setParent(CompositeContext parent) {
-       this.parent = parent;
+        this.parent = parent;
     }
 
     public void publish(Event object) {
@@ -106,10 +86,40 @@ public abstract class AtomicContextExtension implements AtomicContext {
     }
 
     public void start() throws CoreRuntimeException {
-       lifecycleState = RUNNING;
+        lifecycleState = RUNNING;
     }
 
     public void stop() throws CoreRuntimeException {
-       lifecycleState = STOPPED;
+        lifecycleState = STOPPED;
     }
+
+    public void addTargetWire(TargetWire wire) {
+        targetWires.put(wire.getServiceName(), wire);
+    }
+
+    public TargetWire getTargetWire(String serviceName) {
+        return targetWires.get(serviceName);
+    }
+
+    public Map<String, TargetWire> getTargetWires() {
+        return targetWires;
+    }
+
+    public void addSourceWire(SourceWire wire) {
+        sourceWires.add(wire);
+    }
+
+    public List<SourceWire> getSourceWires() {
+        return sourceWires;
+    }
+
+    public void prepare() {
+
+    }
+
+    public void addSourceWires(Class multiplicityClass, List wires) {
+        // TODO implement
+    }
+
+
 }

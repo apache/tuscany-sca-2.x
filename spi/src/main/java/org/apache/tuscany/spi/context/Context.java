@@ -23,23 +23,23 @@ import org.apache.tuscany.spi.event.EventPublisher;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * An entity that provides an execution context for a runtime artifact or artifacts. A <code>Context</code>
- * may be a composite, managing child contexts or it may be an atomic, i.e. leaf, context.
+ * Provides an execution context for application artifacts derived from an assembly
  *
  * @version $Rev: 396520 $ $Date: 2006-04-24 12:38:07 +0100 (Mon, 24 Apr 2006) $
  */
 public interface Context<T> extends EventPublisher, Lifecycle {
+
     /**
-     * Returns the name of the Context.
+     * Returns the name of the context.
      *
-     * @return the name of the Context
+     * @return the name of the context
      */
     String getName();
 
     /**
-     * Sets the name of the Context.
+     * Sets the name of the context.
      *
-     * @param name the name of the Context
+     * @param name the name of the context
      */
     void setName(String name);
 
@@ -54,18 +54,21 @@ public interface Context<T> extends EventPublisher, Lifecycle {
     void setParent(CompositeContext parent);
 
     /**
-     * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to this context
-     * @param serviceName
-     * @param operation the operation being invoked
-     */
-    TargetInvoker createTargetInvoker(String serviceName, Method operation);
-
-    /**
      * Returns an instance associated with the default service for the context
      *
      * @throws TargetException if an error occurs retrieving the instance
      */
     T getService() throws TargetException;
+
+    /**
+     * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to a service
+     * contained by the context
+     * 
+     * @param serviceName the name of the service
+     * @param operation the operation to invoke
+     */
+    TargetInvoker createTargetInvoker(String serviceName, Method operation);
+
 
 
 }

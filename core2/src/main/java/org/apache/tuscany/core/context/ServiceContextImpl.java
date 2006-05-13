@@ -54,7 +54,7 @@ public class ServiceContextImpl<T extends Class> extends AbstractContext<T> impl
         return proxy;
     }
 
-    public Object getHandler() {
+    public InvocationHandler getHandler() {
         return invocationHandler;
     }
 

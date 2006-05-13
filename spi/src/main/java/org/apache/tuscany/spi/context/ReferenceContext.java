@@ -3,7 +3,7 @@ package org.apache.tuscany.spi.context;
 import java.lang.reflect.InvocationHandler;
 
 /**
- * Manages a bound reference
+ * Manages a reference configured for a binding
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */

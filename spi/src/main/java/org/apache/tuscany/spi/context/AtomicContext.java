@@ -57,7 +57,7 @@ public interface AtomicContext<T> extends ComponentContext<T> {
 
     /**
      * Returns the target instance associated with the context. A target instance is the actual object a
-     * request is dispatched to sans proxy wire chain.
+     * request is dispatched to sans wire chain.
      *
      * @throws TargetException
      */

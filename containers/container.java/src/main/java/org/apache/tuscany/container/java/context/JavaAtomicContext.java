@@ -45,7 +45,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.container.java.invocation.ScopedJavaComponentInvoker;
 
 /**
- * Manages Java component implementation instances
+ * Provides a runtime context for Java component implementations
  *
  * @version $Rev$ $Date$
  */
@@ -63,6 +63,19 @@ public class JavaAtomicContext<T> extends PojoAtomicContext<T> {
         this.members = members != null ? members : new HashMap<String, Member>();
     }
 
+    public Object getService(String name) throws TargetException {
+        // TODO implement proxying
+        return getTargetInstance();
+    }
+
+    public T getService() throws TargetException {
+        if (serviceInterfaces.size() == 1){
+            return getTargetInstance();
+        }else{
+            throw new TargetException("Context must contain exactly one service");
+        }
+    }
+
     public InstanceWrapper createInstance() throws ObjectCreationException {
         Object instance = objectFactory.getInstance();
         // inject the instance with properties and references
@@ -72,17 +85,6 @@ public class JavaAtomicContext<T> extends PojoAtomicContext<T> {
         InstanceWrapper ctx = new PojoInstanceWrapper(this, instance);
         ctx.start();
         return ctx;
-    }
-
-    public void prepare() {
-    }
-
-    public Object getService(String name) throws TargetException {
-        return getTargetInstance();
-    }
-
-    public T getService() throws TargetException {
-        return getTargetInstance();
     }
 
     public void addTargetWire(TargetWire wire) {
@@ -122,6 +124,12 @@ public class JavaAtomicContext<T> extends PojoAtomicContext<T> {
         return sourceWires;
     }
 
+    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
+        return new ScopedJavaComponentInvoker(operation, this);
+    }
+
+    public void prepare() {
+    }
 
     private Injector createInjector(Member member, SourceWire wire) {
         ObjectFactory<?> factory = new ProxyObjectFactory(wire);
@@ -161,10 +169,5 @@ public class JavaAtomicContext<T> extends PojoAtomicContext<T> {
             throw e;
         }
     }
-
-    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
-        return new ScopedJavaComponentInvoker(operation, this);
-    }
-
 
 }

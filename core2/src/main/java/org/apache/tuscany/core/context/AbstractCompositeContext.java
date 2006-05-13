@@ -2,16 +2,14 @@ package org.apache.tuscany.core.context;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.lang.reflect.Member;
 
 import org.apache.tuscany.core.system.context.SystemServiceContext;
-import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.context.AtomicContext;
@@ -243,7 +241,7 @@ public abstract class AbstractCompositeContext<T> extends AbstractContext<T> imp
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>(services.size());
         synchronized (services) {
             for (ServiceContext serviceContext : services) {
-               serviceInterfaces.add(serviceContext.getInterface());
+                serviceInterfaces.add(serviceContext.getInterface());
             }
         }
         return serviceInterfaces;
@@ -251,7 +249,7 @@ public abstract class AbstractCompositeContext<T> extends AbstractContext<T> imp
 
 
     public void addTargetWire(TargetWire wire) {
-        targetWires.put(wire.getServiceName(),wire);
+        targetWires.put(wire.getServiceName(), wire);
     }
 
     public TargetWire getTargetWire(String serviceName) {

@@ -1,21 +1,14 @@
 package org.apache.tuscany.spi.context;
 
+import java.lang.reflect.InvocationHandler;
+
 /**
- * The runtime artifact representing an entry point, <code>ServiceContext</code> manages wire handler
- * instances that expose service operations offered by a component in the parent composite. The wire handler
- * instance is responsible for dispatching the request down an wire chain to the target instance. The wire
- * chain may contain {@link org.apache.tuscany.spi.wire.Interceptor}s and
- * {@link org.apache.tuscany.spi.wire.MessageHandler}s that implement policies or perform mediations on the
- * wire.
- * <p>
- * Service contexts are used by transport binding artifacts to invoke an operation on a service. The transport
- * binding uses an {@link java.lang.reflect.InvocationHandler} instance obtained from the <code>ServiceContext</code>
- * to perform the wire as in:
+ * Manages the context for a service configured for a binding. Bindings uses an {@link java.lang.reflect.InvocationHandler}
+ * to perform an invocation as in:
  *
  * <pre>
  *              CompositeContext compositeContext = ...
- *              ServiceContext ctx = (ServiceContext) compositeContext.getContext(&quot;source&quot;);
- *              Assert.assertNotNull(ctx);
+ *              ServiceContext ctx = compositeContext.getServiceContext(&quot;source&quot;);
  *              InvocationHandler handler = (InvocationHandler) ctx.getHandler();
  *              Object response = handler.invoke(null, operation, new Object[] { param });
  * </pre>
@@ -27,22 +20,21 @@ package org.apache.tuscany.spi.context;
  *
  * <pre>
  *              CompositeContext compositeContext = ...
- *              ServiceContext ctx = (ServiceContext) compositeContext.getContext(&quot;source&quot;);
- *              Assert.assertNotNull(ctx);
- *              HelloWorld proxy = (Helloworld) ctx.getInstance(null); // service name not necessary
+ *              ServiceContext ctx = compositeContext.getServiceContext(&quot;source&quot;);
+ *              HelloWorld proxy = (Helloworld) ctx.getInstance();
  * </pre>
  *
- * The proxy returned will be backed by the entry point wire chain.
+ * The proxy returned will be backed by the econtext wire chain.
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
 public interface ServiceContext<T> extends Context<T> {
 
     /**
-     * Returns the handler responsible for flowing a request through the entry point
+     * Returns the handler responsible for flowing a request through the service context
      * @throws org.apache.tuscany.spi.context.TargetException
      */
-    public Object getHandler() throws TargetException;
+    public InvocationHandler getHandler() throws TargetException;
 
     /**
      * Returns the service interface configured for the service

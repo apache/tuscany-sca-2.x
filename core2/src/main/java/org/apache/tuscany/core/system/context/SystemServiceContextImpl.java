@@ -1,6 +1,7 @@
 package org.apache.tuscany.core.system.context;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationHandler;
 
 import org.apache.tuscany.core.context.AbstractContext;
 import org.apache.tuscany.spi.CoreRuntimeException;
@@ -30,10 +31,6 @@ public class SystemServiceContextImpl<T> extends AbstractContext<T> implements S
         setParent(parent);
     }
 
-    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
-        return null; //TOD implement
-    }
-
     @SuppressWarnings("unchecked")
     public T getService() {
         if (cachedInstance == null) {
@@ -41,7 +38,7 @@ public class SystemServiceContextImpl<T> extends AbstractContext<T> implements S
             if ((ctx instanceof AtomicContext)) {
                 cachedInstance = (T) ((AtomicContext) ctx).getService(target.getPortName());
             } else if ((ctx instanceof ReferenceContext)) {
-                cachedInstance = (T) ((ReferenceContext) ctx).getService();
+                cachedInstance = (T) ctx.getService();
             } else if (ctx == null){
                 TargetNotFoundException e = new TargetNotFoundException(name);
                 e.addContextName(getName());
@@ -57,12 +54,16 @@ public class SystemServiceContextImpl<T> extends AbstractContext<T> implements S
     }
 
 
-    public Object getHandler() {
+    public InvocationHandler getHandler() {
         return null;
     }
 
     public Class<T> getInterface() {
         return interfaze;
+    }
+
+    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
+        return null; //TOD implement
     }
 
 }
