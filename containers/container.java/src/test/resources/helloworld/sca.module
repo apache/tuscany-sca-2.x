@@ -26,7 +26,7 @@
     <import.wsdl wsdlLocation="example.wsdl"/>
 
     <externalService name="external">
-        <interface.wsdl interface="http://www.example.org#HelloWorld"/>
+        <interface.wsdl interface="http://www.example.org#wsdl.interface(HelloWorld)"/>
     </externalService>
 -->
 

@@ -20,7 +20,7 @@
 
     <entryPoint name="AccountService">
         <interface.java interface="org.apache.tuscany.container.java.assembly.tests.bigbank.account.services.account.AccountService"/>
-        <binding.ws port="http://www.bigbank.com/AccountService#AccountServiceSOAP"/>
+        <binding.ws port="http://www.bigbank.com/AccountService#wsdl.endpoint(AccountService/AccountServiceSOAP)"/>
         <reference>AccountServiceComponent</reference>
     </entryPoint>
 
@@ -46,7 +46,7 @@
     <!--
         <externalService name="StockQuoteService">
             <interface.java interface="org.apache.tuscany.container.java.assembly.tests.bigbank.account.services.stockquote"/>
-            <binding.ws port="http://www.quickstockquote.com/StockQuoteService#StockQuoteServiceSOAP"/>
+            <binding.ws port="http://www.quickstockquote.com/StockQuoteService#wsdl.endpoint(StockQuote/StockQuoteServiceSOAP)"/>
         </externalService>
     -->
 
