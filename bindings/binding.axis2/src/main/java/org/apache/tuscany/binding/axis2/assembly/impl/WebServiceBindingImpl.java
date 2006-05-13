@@ -124,10 +124,31 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
         super.initialize(modelContext);
 
         // Get the WSDL port namespace and name
+        // We currently support two syntaxes for specifying a WSDL port:
+        // namespace#portName, this is what we supported in the initial contribution, we will
+        // deprecate this after M1
+        // namespace#wsdl.endpoint(serviceName/portName), this is the WSDL 2.0 syntax
         if (port == null && portURI != null) {
             int h = portURI.indexOf('#');
             String portNamespace = portURI.substring(0, h);
-            String portName = portURI.substring(h + 1);
+            String serviceName;
+            String portName;
+
+            String fragment = portURI.substring(h + 1);
+            if (fragment.startsWith("wsdl.endpoint(") && fragment.endsWith(")")) {
+                fragment = fragment.substring(14, fragment.length()-1);
+                int slash = fragment.indexOf('/');
+                if (slash != -1) {
+                    serviceName = fragment.substring(0, slash);
+                    portName = fragment.substring(slash+1);
+                } else {
+                    serviceName = null;
+                    portName = fragment;
+                }
+            } else {
+                serviceName = null;
+                portName = fragment;
+            }
 
             // Load the WSDL definitions for the given namespace
             List<Definition> definitions = modelContext.getAssemblyLoader().loadDefinitions(portNamespace);
@@ -138,6 +159,8 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
 
                 // Find the port with the given name
                 for (Service service : (Collection<Service>) def.getServices().values()) {
+                    if (serviceName != null && !serviceName.equals(service.getQName().getLocalPart()))
+                        continue;
                     Port prt = service.getPort(portName);
                     if (prt != null) {
                         this.definition = def;
