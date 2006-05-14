@@ -13,13 +13,12 @@
  */
 package org.apache.tuscany.core.injection;
 
-import java.util.List;
-import java.util.Collections;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
-import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.common.ObjectCreationException;
+import org.apache.tuscany.common.ObjectFactory;
 
 /**
  * Creates new instances of a Java class, calling a given set of injectors to configure the instance
@@ -31,26 +30,20 @@ public class PojoObjectFactory<T> implements ObjectFactory<T> {
 
     private static final ObjectFactory[] NO_INIT_PARAM = {};
 
-    private static final List<Injector> NO_SETTER_PARAM = Collections.emptyList();
-
     private final Constructor<T> ctr;
-
     private final ObjectFactory<?>[] initParamsArray;
 
-    private final List<Injector> setters;
-
     public PojoObjectFactory(Constructor<T> ctr) {
-        this(ctr,null,null);
+        this(ctr, null);
     }
 
-    public PojoObjectFactory(Constructor<T> ctr, List<ObjectFactory> initParams, List<Injector> setters) {
+    public PojoObjectFactory(Constructor<T> ctr, List<ObjectFactory> initParams) {
         this.ctr = ctr;
         if (initParams != null && initParams.size() > 0) {
             initParamsArray = initParams.toArray(new ObjectFactory[initParams.size()]);
         } else {
             initParamsArray = NO_INIT_PARAM;
         }
-        this.setters = setters != null ? setters : NO_SETTER_PARAM;
     }
 
     public T getInstance() throws ObjectCreationException {
@@ -61,12 +54,7 @@ public class PojoObjectFactory<T> implements ObjectFactory<T> {
             initargs[i] = objectFactory.getInstance();
         }
         try {
-            T instance = ctr.newInstance(initargs);
-            // interate through the injectors and inject the instance
-            for (Injector<T> setter : setters) {
-                setter.inject(instance);
-            }
-            return instance;
+            return ctr.newInstance(initargs);
         } catch (InstantiationException e) {
             throw new AssertionError("Class is not instantiable [" + ctr.getDeclaringClass().getName() + "]");
         } catch (IllegalAccessException e) {

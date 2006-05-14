@@ -33,7 +33,7 @@ public class StatelessScopeContext extends AbstractScopeContext<AtomicContext> {
     }
 
     public Scope getScope() {
-        return Scope.INSTANCE;
+        return Scope.STATELESS;
     }
 
     public synchronized void start() {

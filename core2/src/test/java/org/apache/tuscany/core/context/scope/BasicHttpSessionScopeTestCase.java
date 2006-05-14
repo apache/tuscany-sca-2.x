@@ -74,7 +74,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        factory = new PojoObjectFactory<SessionScopeInitDestroyComponent>(SessionScopeInitDestroyComponent.class.getConstructor((Class[]) null), null, null);
+        factory = new PojoObjectFactory<SessionScopeInitDestroyComponent>(SessionScopeInitDestroyComponent.class.getConstructor((Class[]) null), null);
         initInvoker = new MethodEventInvoker<Object>(SessionScopeInitDestroyComponent.class.getMethod("init", (Class[]) null));
         destroyInvoker = new MethodEventInvoker<Object>(SessionScopeInitDestroyComponent.class.getMethod("destroy", (Class[]) null));
     }

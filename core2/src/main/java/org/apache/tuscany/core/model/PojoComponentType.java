@@ -9,16 +9,26 @@ import java.util.HashMap;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.model.ComponentType;
+import org.apache.tuscany.model.Scope;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class PojoComponentType extends ComponentType {
 
+    private Scope lifecycleScope = Scope.UNDEFINED;
     private EventInvoker<Object> initInvoker;
     private EventInvoker<Object> destroyInvoker;
     private final List<Injector> injectors = new ArrayList<Injector>();
     private final Map<String,Member> members = new HashMap<String,Member>();
+
+    public Scope getLifecycleScope() {
+        return lifecycleScope;
+    }
+
+    public void setLifecycleScope(Scope lifecycleScope) {
+        this.lifecycleScope = lifecycleScope;
+    }
 
     public EventInvoker<Object> getInitInvoker() {
         return initInvoker;

@@ -17,7 +17,7 @@ public class SystemAtomicContextTestCase extends TestCase {
     EventInvoker<Object> initInvoker;
 
     public void testContextCreationAndInit() throws Exception {
-        ObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor((Class[]) null), null, null);
+        ObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor((Class[]) null), null);
         ScopeContext<AtomicContext> scopeContext = new MockScopeContext();
         SystemAtomicContext context = new SystemAtomicContextImpl("foo",Foo.class,factory,false,initInvoker,null, null);
         context.setScopeContext(scopeContext);

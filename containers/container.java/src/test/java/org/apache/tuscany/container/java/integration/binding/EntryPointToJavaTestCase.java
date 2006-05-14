@@ -13,16 +13,8 @@
  */
 package org.apache.tuscany.container.java.integration.binding;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
-import org.apache.tuscany.core.context.event.HttpSessionEnd;
-import org.apache.tuscany.core.context.event.ModuleStart;
-import org.apache.tuscany.core.context.event.ModuleStop;
-import org.apache.tuscany.core.context.event.RequestEnd;
-import org.apache.tuscany.core.context.event.RequestStart;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 /**
@@ -170,7 +162,7 @@ public class EntryPointToJavaTestCase extends TestCase {
 //        registry.registerTargetBuilder(interceptorBuilder);
 //        runtime.getRootContext().registerModelObject(MockFactory.createCompositeComponent("test.module"));
 //        CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
-//        child.registerModelObject(MockFactory.createModuleWithEntryPoint(Scope.INSTANCE));
+//        child.registerModelObject(MockFactory.createModuleWithEntryPoint(Scope.STATELESS));
 //        child.publish(new ModuleStart(this));
 //        Object id = new Object();
 //        child.publish(new RequestStart(this, id));

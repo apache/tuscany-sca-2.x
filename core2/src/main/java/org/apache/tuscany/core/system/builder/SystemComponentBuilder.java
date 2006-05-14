@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.core.injection.ContextInjector;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.LazyIntraCompositeResolver;
@@ -29,8 +30,9 @@ import org.apache.tuscany.spi.context.Context;
 /**
  * @version $$Rev$$ $$Date$$
  */
-@SuppressWarnings("unchecked")
+//@SuppressWarnings("unchecked")
 public class SystemComponentBuilder implements ComponentBuilder<SystemImplementation> {
+
     public Context build(CompositeContext parent, Component<SystemImplementation> component) throws BuilderConfigException {
         PojoComponentType componentType = component.getImplementation().getComponentType();
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
@@ -50,6 +52,20 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
         ObjectFactory<?> factory = new PojoObjectFactory(constr);
         List<Injector> injectors = new ArrayList<Injector>();
         injectors.addAll(componentType.getInjectors());
+        for (Injector injector : injectors) {
+            if (injector instanceof ContextInjector) {
+                // a context injector is found; iterate and determine if the parent context
+                // implements the interface
+                Class contextType = JavaIntrospectionHelper.introspectGeneric(injector.getClass(), 0);
+                if (contextType.isAssignableFrom(parent.getClass())) {
+                    ((ContextInjector) injector).setContext(parent);
+                } else {
+                    BuilderConfigException e = new BuilderConfigException("Context not found for type");
+                    e.setIdentifier(contextType.getName());
+                    throw e;
+                }
+            }
+        }
         for (ReferenceTarget target : component.getReferenceTargets().values()) {
             LazyIntraCompositeResolver resolver = new LazyIntraCompositeResolver(parent, new QualifiedName(target.getTarget().getPath()));
             Member member = componentType.getReferenceMember(target.getReferenceName());

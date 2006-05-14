@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.container.java.context.JavaAtomicContext;
 import org.apache.tuscany.container.java.model.JavaImplementation;
 import org.apache.tuscany.core.injection.ContextInjector;
@@ -27,16 +28,24 @@ import org.osoa.sca.annotations.Scope;
 public class JavaComponentBuilder implements ComponentBuilder<JavaImplementation> {
 
     public Context build(CompositeContext parent, Component<JavaImplementation> component) throws BuilderConfigException {
-        String name = component.getName();
         PojoComponentType componentType = component.getImplementation().getComponentType();
-        Class<?> clazz = component.getImplementation().getImplementationClass();
-        Constructor<?> ctr;
-        try {
-            ctr = clazz.getConstructor((Class[]) null);
-        } catch (NoSuchMethodException e) {
-            throw new BuilderConfigException(e);
+        List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
+        for (Service service : componentType.getServices().values()) {
+            serviceInterfaces.add(((JavaServiceContract) service.getServiceContract()).getInterfaceClass());
         }
-        List<Injector> injectors = componentType.getInjectors();
+        Constructor<?> constr;
+        try {
+            constr = JavaIntrospectionHelper.getDefaultConstructor(
+                    component.getImplementation().getImplementationClass());
+        } catch (NoSuchMethodException e) {
+            BuilderConfigException bce = new BuilderConfigException("Error building component", e);
+            bce.setIdentifier(component.getName());
+            bce.addContextName(parent.getName());
+            throw bce;
+        }
+        ObjectFactory<?> factory = new PojoObjectFactory(constr);
+        List<Injector> injectors = new ArrayList<Injector>();
+        injectors.addAll(componentType.getInjectors());
         for (Injector injector : injectors) {
             if (injector instanceof ContextInjector) {
                 // a context injector is found; iterate and determine if the parent context
@@ -51,15 +60,9 @@ public class JavaComponentBuilder implements ComponentBuilder<JavaImplementation
                 }
             }
         }
-        List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
-        for (Service service : componentType.getServices().values()) {
-            serviceInterfaces.add(((JavaServiceContract) service.getServiceContract()).getInterfaceClass());
-        }
-        PojoObjectFactory<?> factory = new PojoObjectFactory(ctr, null, componentType.getInjectors());
-        return null;
-        //TODO finish
-//        return new JavaAtomicContext(name, serviceInterfaces, factory, componentType.isEagerInit(), componentType.getInitInvoker(),
-//                componentType.getDestroyInvoker(), injectors, componentType.getMembers());
+        return new JavaAtomicContext(component.getName(), serviceInterfaces, factory,
+                componentType.isEagerInit(), componentType.getInitInvoker(), componentType.getDestroyInvoker(),
+                injectors, componentType.getReferenceMembers());
     }
 
 }

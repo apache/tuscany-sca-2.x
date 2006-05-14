@@ -67,7 +67,7 @@ public class BasicModuleScopeTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        factory = new PojoObjectFactory<ModuleScopeInitDestroyComponent>(ModuleScopeInitDestroyComponent.class.getConstructor((Class[]) null), null, null);
+        factory = new PojoObjectFactory<ModuleScopeInitDestroyComponent>(ModuleScopeInitDestroyComponent.class.getConstructor((Class[]) null), null);
         initInvoker = new MethodEventInvoker<Object>(ModuleScopeInitDestroyComponent.class.getMethod("init", (Class[]) null));
         destroyInvoker = new MethodEventInvoker<Object>(ModuleScopeInitDestroyComponent.class.getMethod("destroy", (Class[]) null));
     }

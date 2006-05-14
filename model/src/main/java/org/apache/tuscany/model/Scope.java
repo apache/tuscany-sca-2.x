@@ -1,15 +1,13 @@
 package org.apache.tuscany.model;
 
 /**
- * The types of scope supported by assemblies.
+ * The default scopes supported by assemblies.
  */
 public enum Scope {
-    // todo define what these are
-    INSTANCE,
+    STATELESS,
     REQUEST,
     SESSION,
     MODULE,
-    AGGREGATE,
     UNDEFINED
 
 }

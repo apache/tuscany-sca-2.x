@@ -118,12 +118,12 @@ public class MockFactory {
      * @param eagerInit      if the component eager initializes
      * @param initInvoker    the invoker for {@link org.osoa.sca.annotations.Init}
      * @param destroyInvoker the invoker for {@link org.osoa.sca.annotations.Destroy}
-     * @param injectors      the injectors responsible for injecting on an instance
+     * @param injectors
      * @throws NoSuchMethodException
      */
     public static SystemAtomicContextImpl createSystemAtomicContext(String name, List<Class<?>> serviceInterfaces, Class<?> clazz, boolean eagerInit, EventInvoker<Object> initInvoker,
                                                                     EventInvoker<Object> destroyInvoker, List<Injector> injectors) throws NoSuchMethodException {
-        return new SystemAtomicContextImpl(name, serviceInterfaces, createObjectFactory(clazz, injectors), eagerInit, initInvoker, destroyInvoker, null);
+        return new SystemAtomicContextImpl(name, serviceInterfaces, createObjectFactory(clazz), eagerInit, initInvoker, destroyInvoker, injectors);
     }
 
     public static <T> TargetWire<T> createTargetWireFactory(String serviceName, Class<T> interfaze) throws WireFactoryInitException {
@@ -148,9 +148,9 @@ public class MockFactory {
     }
 
 
-    private static <T> ObjectFactory<T> createObjectFactory(Class<T> clazz, List<Injector> injectors) throws NoSuchMethodException {
+    private static <T> ObjectFactory<T> createObjectFactory(Class<T> clazz) throws NoSuchMethodException {
         Constructor<T> ctr = clazz.getConstructor((Class<T>[]) null);
-        return new PojoObjectFactory<T>(ctr, null, injectors);
+        return new PojoObjectFactory<T>(ctr);
     }
 
 

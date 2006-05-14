@@ -47,7 +47,7 @@ public class MockFactory {
                                                             EventInvoker<Object> destroyInvoker, List<Injector> injectors, Map<String, Member> members) throws NoSuchMethodException {
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         serviceInterfaces.add(clazz);
-        return new JavaAtomicContext(name, serviceInterfaces, createObjectFactory(clazz, null), eagerInit, initInvoker, destroyInvoker, injectors, members);
+        return new JavaAtomicContext(name, serviceInterfaces, createObjectFactory(clazz), eagerInit, initInvoker, destroyInvoker, injectors, members);
     }
 
     /**
@@ -298,10 +298,9 @@ public class MockFactory {
     }
 
 
-    private static <T> ObjectFactory<T> createObjectFactory
-            (Class<T> clazz, List<Injector> injectors) throws NoSuchMethodException {
+    private static <T> ObjectFactory<T> createObjectFactory(Class<T> clazz) throws NoSuchMethodException {
         Constructor<T> ctr = clazz.getConstructor((Class<T>[]) null);
-        return new PojoObjectFactory<T>(ctr, null, injectors);
+        return new PojoObjectFactory<T>(ctr);
     }
 
 
