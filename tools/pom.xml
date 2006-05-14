@@ -28,13 +28,6 @@
 
     <repositories>
         <repository>
-            <id>jeremy</id>
-            <url>http://people.apache.org/~jboynes/maven2</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
             <id>eclipse.emf</id>
             <url>http://download.eclipse.org/tools/emf/maven2</url>
             <snapshots>
