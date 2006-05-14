@@ -202,7 +202,7 @@ public class MockFactory {
      * @param cacheable
      * @throws Exception
      */
-    public static void connect(SourceWire<?> sourceWire, TargetWire<?> targetWire, AtomicContext targetContext, boolean cacheable) throws Exception {
+    public static void connect(SourceWire<?> sourceWire, TargetWire<?> targetWire, JavaAtomicContext targetContext, boolean cacheable) throws Exception {
         if (targetWire != null) {
             // if null, the target side has no interceptors or handlers
             Map<Method, TargetInvocationChain> targetInvocationConfigs = targetWire.getInvocationChains();

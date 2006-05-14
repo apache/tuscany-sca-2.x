@@ -56,14 +56,6 @@ public interface AtomicContext<T> extends ComponentContext<T> {
     void destroy(Object instance) throws TargetException;
 
     /**
-     * Returns the target instance associated with the context. A target instance is the actual object a
-     * request is dispatched to sans wire chain.
-     *
-     * @throws TargetException
-     */
-    Object getTargetInstance() throws TargetException;
-
-    /**
      * Creates a new implementation instance, generally used as a callback by a {@link ScopeContext}
      *
      * @throws ObjectCreationException

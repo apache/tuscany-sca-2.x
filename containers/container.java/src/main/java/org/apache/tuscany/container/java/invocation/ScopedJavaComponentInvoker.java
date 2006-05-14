@@ -18,17 +18,17 @@ package org.apache.tuscany.container.java.invocation;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.container.java.context.JavaAtomicContext;
 import org.apache.tuscany.spi.context.TargetException;
 
 /**
- * Uses a scope container to resolve an implementation instance based on the current thread context
+ * Uses a scope context to resolve an implementation instance based on the current thread context
  *
  * @version $Rev$ $Date$
  */
 public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
 
-    private AtomicContext container;
+    private JavaAtomicContext context;
     private Object target;
     public boolean cacheable;
 
@@ -36,13 +36,13 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
     /**
      * Creates a new invoker
      *
-     * @param operation    the operation the invoker is associated with
-     * @param scopeContext the scope context the component is resolved in
+     * @param operation the operation the invoker is associated with
+     * @param context   the scope context the component is resolved in
      */
-    public ScopedJavaComponentInvoker(Method operation, AtomicContext scopeContext) {
+    public ScopedJavaComponentInvoker(Method operation, JavaAtomicContext context) {
         super(operation);
-        assert (scopeContext != null) : "No scope scopeContext specified";
-        this.container = scopeContext;
+        assert (context != null) : "No atomic context specified";
+        this.context = context;
     }
 
     public boolean isCacheable() {
@@ -58,10 +58,10 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
      */
     protected Object getInstance() throws TargetException {
         if (!cacheable) {
-            return container.getTargetInstance();
+            return context.getTargetInstance();
         } else {
             if (target == null) {
-                target = container.getTargetInstance();
+                target = context.getTargetInstance();
             }
             return target;
         }
@@ -71,7 +71,7 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
         ScopedJavaComponentInvoker invoker = (ScopedJavaComponentInvoker) super.clone();
         invoker.target = null;
         invoker.cacheable = this.cacheable;
-        invoker.container = this.container;
+        invoker.context = this.context;
         return invoker;
     }
 }

@@ -15,6 +15,7 @@ import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -38,14 +39,16 @@ public class JDKInvocationHandlerTestCase extends TestCase {
     public void testBasicInvoke() throws Throwable {
         Map<Method, InvocationChain> configs = new MethodHashMap<InvocationChain>();
         configs.put(hello, getInvocationHandler(hello));
-        JDKInvocationHandler handler = new JDKInvocationHandler(configs);
+        WireInvocationHandler handler = new JDKInvocationHandler();
+        handler.setConfiguration(configs);
         assertEquals("foo", handler.invoke(null, hello, new Object[] { "foo" }));
     }
 
     public void testErrorInvoke() throws Throwable {
         Map<Method, InvocationChain> configs = new MethodHashMap<InvocationChain>();
         configs.put(hello, getInvocationHandler(hello));
-        JDKInvocationHandler handler = new JDKInvocationHandler(configs);
+        WireInvocationHandler handler = new JDKInvocationHandler();
+        handler.setConfiguration(configs);
         try {
             assertEquals("foo", handler.invoke(null, hello, new Object[] {}));
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -61,7 +64,8 @@ public class JDKInvocationHandlerTestCase extends TestCase {
 
         Map<Method, InvocationChain> configs = new MethodHashMap<InvocationChain>();
         configs.put(hello, source);
-        JDKInvocationHandler handler = new JDKInvocationHandler(configs);
+        WireInvocationHandler handler = new JDKInvocationHandler();
+        handler.setConfiguration(configs);
         try {
             assertEquals("foo", handler.invoke(null, hello, new Object[] {}));
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -77,7 +81,8 @@ public class JDKInvocationHandlerTestCase extends TestCase {
 
         Map<Method, InvocationChainImpl> configs = new MethodHashMap<InvocationChainImpl>();
         configs.put(hello, source);
-        JDKInvocationHandler handler = new JDKInvocationHandler(configs);
+        WireInvocationHandler handler = new JDKInvocationHandler();
+        handler.setConfiguration(configs);
         assertEquals("foo", handler.invoke(null, hello, new Object[] { "foo" }));
     }
 

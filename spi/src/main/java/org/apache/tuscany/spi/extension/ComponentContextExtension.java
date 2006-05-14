@@ -20,6 +20,7 @@ public abstract class ComponentContextExtension<T> extends AbstractContext<T> im
 
     public void addTargetWire(TargetWire wire) {
         targetWires.put(wire.getServiceName(), wire);
+        onTargetWire(wire);
     }
 
     public TargetWire getTargetWire(String serviceName) {
@@ -32,20 +33,25 @@ public abstract class ComponentContextExtension<T> extends AbstractContext<T> im
 
     public void addSourceWire(SourceWire wire) {
         sourceWires.add(wire);
+        onSourceWire(wire);
     }
 
     public List<SourceWire> getSourceWires() {
         return sourceWires;
     }
 
-    public void addSourceWires(Class multiplicityClass, List wires) {
-        // TODO implement
+    public void addSourceWires(Class<?> multiplicityClass, List<SourceWire> wires) {
+        sourceWires.addAll(wires);
+        onSourceWires(multiplicityClass,wires);
     }
-
 
     public void prepare() {
-
     }
-    
+
+    public abstract void onSourceWire(SourceWire wire);
+
+    public abstract void onSourceWires(Class<?> multiplicityClass, List<SourceWire> wires);
+
+    public abstract void onTargetWire(TargetWire wire);
 
 }

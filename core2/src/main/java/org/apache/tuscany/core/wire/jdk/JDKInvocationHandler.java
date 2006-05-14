@@ -16,7 +16,6 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -28,13 +27,14 @@ import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
- * Receives a request from a JDK proxy and dispatches it to a target invoker or source interceptor stack
+ * Receives a request from a proxy and dispatches it to a target invoker or source interceptor stack
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 406016 $ $Date: 2006-05-12 22:45:22 -0700 (Fri, 12 May 2006) $
  */
-public class JDKInvocationHandler implements InvocationHandler {
+public class JDKInvocationHandler implements WireInvocationHandler {
 
     /*
      * an association of an operation to configuration holder. The holder contains the master wire configuration
@@ -45,12 +45,7 @@ public class JDKInvocationHandler implements InvocationHandler {
      */
     private Map<Method, ConfigHolder> configuration;
 
-    public JDKInvocationHandler(Map<Method, ? extends InvocationChain> configuration) {
-        assert (configuration != null) : "Configuration not specified";
-        this.configuration = new HashMap<Method, ConfigHolder>(configuration.size());
-        for (Map.Entry<Method, ? extends InvocationChain> entry : configuration.entrySet()) {
-            this.configuration.put(entry.getKey(), new ConfigHolder(entry.getValue()));
-        }
+    public JDKInvocationHandler() {
     }
 
     /**
@@ -112,6 +107,13 @@ public class JDKInvocationHandler implements InvocationHandler {
                 throw (Throwable) body;
             }
             return body;
+        }
+    }
+
+    public void setConfiguration(Map<Method, ? extends InvocationChain> configuration) {
+        this.configuration = new HashMap<Method, ConfigHolder>(configuration.size());
+        for (Map.Entry<Method, ? extends InvocationChain> entry : configuration.entrySet()) {
+            this.configuration.put(entry.getKey(), new ConfigHolder(entry.getValue()));
         }
     }
 

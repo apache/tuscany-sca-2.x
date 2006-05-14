@@ -7,6 +7,7 @@ import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
  * A mock reference context which returns a singleton
@@ -34,6 +35,10 @@ public class MockReferenceContext<T> extends AbstractContext<T> implements Refer
     }
 
     public InvocationHandler getHandler() throws TargetException {
+        throw new UnsupportedOperationException();
+    }
+
+    public TargetWire getTargetWire() {
         throw new UnsupportedOperationException();
     }
 

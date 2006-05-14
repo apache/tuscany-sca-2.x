@@ -16,23 +16,23 @@
  */
 package org.apache.tuscany.core.wire;
 
-import junit.framework.TestCase;
-import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
-import org.apache.tuscany.core.wire.mock.MockHandler;
-import org.apache.tuscany.core.wire.mock.MockStaticInvoker;
-import org.apache.tuscany.core.wire.mock.MockSyncInterceptor;
-import org.apache.tuscany.core.util.MethodHashMap;
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.SourceInvocationChain;
-
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
+import junit.framework.TestCase;
+import org.apache.tuscany.core.util.MethodHashMap;
+import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
+import org.apache.tuscany.core.wire.mock.MockHandler;
+import org.apache.tuscany.core.wire.mock.MockStaticInvoker;
+import org.apache.tuscany.core.wire.mock.MockSyncInterceptor;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.SourceInvocationChain;
+import org.apache.tuscany.spi.wire.WireInvocationHandler;
+
 /**
  * Tests handling of exceptions thrown during an wire
- * 
+ *
  * @version $Rev: 377006 $ $Date: 2006-02-11 09:41:59 -0800 (Sat, 11 Feb 2006) $
  */
 public class InvocationErrorTestCase extends TestCase {
@@ -58,7 +58,8 @@ public class InvocationErrorTestCase extends TestCase {
     public void testCheckedException() throws Exception {
         Map<Method, InvocationChain> config = new MethodHashMap<InvocationChain>();
         config.put(checkedMethod, getConfiguration(checkedMethod));
-        InvocationHandler handler = new JDKInvocationHandler(config);
+        WireInvocationHandler handler = new JDKInvocationHandler();
+        handler.setConfiguration(config);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{TestBean.class}, handler);
@@ -72,7 +73,8 @@ public class InvocationErrorTestCase extends TestCase {
     public void testRuntimeException() throws Exception {
         Map<Method, InvocationChain> config = new MethodHashMap<InvocationChain>();
         config.put(runtimeMethod, getConfiguration(runtimeMethod));
-        InvocationHandler handler = new JDKInvocationHandler(config);
+        WireInvocationHandler handler = new JDKInvocationHandler();
+        handler.setConfiguration(config);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{TestBean.class}, handler);
@@ -85,7 +87,7 @@ public class InvocationErrorTestCase extends TestCase {
 
     private InvocationChain getConfiguration(Method m) {
         MockStaticInvoker invoker = new MockStaticInvoker(m, new TestBeanImpl());
-        SourceInvocationChain invocationConfiguration=new SourceInvocationChainImpl(m);
+        SourceInvocationChain invocationConfiguration = new SourceInvocationChainImpl(m);
         invocationConfiguration.addInterceptor(new MockSyncInterceptor());
         invocationConfiguration.addRequestHandler(new MockHandler());
         invocationConfiguration.setTargetInvoker(invoker);

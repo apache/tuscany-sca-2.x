@@ -26,7 +26,7 @@ import java.util.Map;
 
 import org.apache.tuscany.common.ObjectCreationException;
 import org.apache.tuscany.common.ObjectFactory;
-import org.apache.tuscany.core.context.PojoAtomicContext;
+import org.apache.tuscany.container.java.invocation.ScopedJavaComponentInvoker;
 import org.apache.tuscany.core.context.PojoInstanceWrapper;
 import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
@@ -37,31 +37,75 @@ import org.apache.tuscany.core.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.NoAccessorException;
 import org.apache.tuscany.core.injection.ProxyObjectFactory;
+import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.extension.AtomicContextExtension;
 import org.apache.tuscany.spi.wire.SourceWire;
-import org.apache.tuscany.spi.wire.TargetWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.container.java.invocation.ScopedJavaComponentInvoker;
+import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
  * Provides a runtime context for Java component implementations
  *
  * @version $Rev$ $Date$
  */
-public class JavaAtomicContext<T> extends PojoAtomicContext<T> {
+public class JavaAtomicContext<T> extends AtomicContextExtension<T> {
 
-    private Map<String, TargetWire> targetWires = new HashMap<String, TargetWire>();
-    private List<SourceWire> sourceWires = new ArrayList<SourceWire>();
     private List<Injector> injectors;
     private Map<String, Member> members;
 
+    protected boolean eagerInit;
+    protected EventInvoker<Object> initInvoker;
+    protected EventInvoker<Object> destroyInvoker;
+    protected ObjectFactory<?> objectFactory;
+    protected List<Class<?>> serviceInterfaces;
+
+
     public JavaAtomicContext(String name, List<Class<?>> serviceInterfaces, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
                              EventInvoker<Object> destroyInvoker, List<Injector> injectors, Map<String, Member> members) {
-        super(name, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker);
+        this.name = name;
         this.injectors = injectors != null ? injectors : new ArrayList<Injector>();
         this.members = members != null ? members : new HashMap<String, Member>();
+        this.objectFactory = objectFactory;
+        this.eagerInit = eagerInit;
+        this.initInvoker = initInvoker;
+        this.destroyInvoker = destroyInvoker;
+        this.serviceInterfaces = serviceInterfaces;
     }
+
+    public List<Class<?>> getServiceInterfaces() {
+        return serviceInterfaces;
+    }
+
+    public Scope getScope() {
+        if (scopeContext == null) {
+            return null;
+        }
+        return scopeContext.getScope();
+    }
+
+    public boolean isEagerInit() {
+        return eagerInit;
+    }
+
+    public void init(Object instance) throws TargetException {
+        if (initInvoker != null) {
+            initInvoker.invokeEvent(instance);
+        }
+    }
+
+    public void destroy(Object instance) throws TargetException {
+        if (destroyInvoker != null) {
+            destroyInvoker.invokeEvent(instance);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public T getTargetInstance() throws TargetException {
+        return (T) scopeContext.getInstance(this);
+    }
+
 
     public Object getService(String name) throws TargetException {
         // TODO implement proxying
@@ -69,9 +113,9 @@ public class JavaAtomicContext<T> extends PojoAtomicContext<T> {
     }
 
     public T getService() throws TargetException {
-        if (serviceInterfaces.size() == 1){
+        if (serviceInterfaces.size() == 1) {
             return getTargetInstance();
-        }else{
+        } else {
             throw new TargetException("Context must contain exactly one service");
         }
     }
@@ -87,29 +131,16 @@ public class JavaAtomicContext<T> extends PojoAtomicContext<T> {
         return ctx;
     }
 
-    public void addTargetWire(TargetWire wire) {
-        targetWires.put(wire.getServiceName(), wire);
-    }
-
-    public TargetWire getTargetWire(String serviceName) {
-        return targetWires.get(serviceName);
-    }
-
-    public Map<String, TargetWire> getTargetWires() {
-        return targetWires;
-    }
-
-    public void addSourceWire(SourceWire wire) {
+    public void onSourceWire(SourceWire wire) {
         String referenceName = wire.getReferenceName();
         Member member = members.get(referenceName);
         if (member == null) {
             throw new NoAccessorException(referenceName);
         }
         injectors.add(createInjector(member, wire));
-        sourceWires.add(wire);
     }
 
-    public void addSourceWires(Class<?> multiplicityClass, List<SourceWire> wires) {
+    public void onSourceWires(Class<?> multiplicityClass, List<SourceWire> wires) {
         assert(wires.size() > 0): "Wire wires was empty";
         String referenceName = wires.get(0).getReferenceName();
         Member member = members.get(referenceName);
@@ -117,11 +148,11 @@ public class JavaAtomicContext<T> extends PojoAtomicContext<T> {
             throw new NoAccessorException(referenceName);
         }
         injectors.add(createMultiplicityInjector(member, multiplicityClass, wires));
-        sourceWires.addAll(wires);
     }
 
-    public List<SourceWire> getSourceWires() {
-        return sourceWires;
+
+    public void onTargetWire(TargetWire wire) {
+
     }
 
     public TargetInvoker createTargetInvoker(String serviceName, Method operation) {

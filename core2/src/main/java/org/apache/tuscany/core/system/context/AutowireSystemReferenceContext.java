@@ -9,6 +9,7 @@ import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
  * The default implementation of an external service context
@@ -44,5 +45,10 @@ public class AutowireSystemReferenceContext<T> extends AbstractContext<T> implem
     public Class<T> getInterface() {
         return referenceInterface;
     }
+
+    public TargetWire getTargetWire() {
+        throw new UnsupportedOperationException();
+    }
+
 
 }

@@ -158,9 +158,9 @@ public class MockFactory {
      * Used for injecting references
      */
     private static class AtomicContextInstanceFactory implements ObjectFactory {
-        private AtomicContext ctx;
+        private SystemAtomicContext ctx;
 
-        public AtomicContextInstanceFactory(AtomicContext ctx) {
+        public AtomicContextInstanceFactory(SystemAtomicContext ctx) {
             this.ctx = ctx;
         }
 

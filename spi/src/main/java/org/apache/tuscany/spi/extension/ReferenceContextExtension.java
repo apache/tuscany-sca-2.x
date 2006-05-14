@@ -11,49 +11,56 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.context;
+package org.apache.tuscany.spi.extension;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
+import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
-import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
  * The default implementation of an external service context
  *
  * @version $Rev$ $Date$
  */
-public class ReferenceContextImpl<T> extends AbstractContext<T> implements ReferenceContext<T> {
+public abstract class ReferenceContextExtension<T> extends AbstractContext<T> implements ReferenceContext<T> {
 
-    private TargetWire<T> targetWire;
-    private Class<T> referenceInterface;
+    protected TargetWire<T> targetWire;
+    protected Class<T> referenceInterface;
+    protected ObjectFactory<WireInvocationHandler> handlerFactory;
 
     /**
      * Creates a reference context
-     *
-     * @param name              the name of the reference context
-     * @param targetWire the factory which creates proxies implementing the configured service
-     *                          interface for the reference context. There is always only one proxy factory as
-     *                          an reference context is configured with one service
      */
-    public ReferenceContextImpl(String name, Class<T> referenceInterface, TargetWire<T> targetWire) {
-        super(name);
-        assert (targetWire != null) : "Target proxy factory was null";
-        assert (referenceInterface != null) : "Reference interface was null";
+    public ReferenceContextExtension() {
+    }
+
+    public void setTargetWire(TargetWire<T> targetWire) {
         this.targetWire = targetWire;
+    }
+
+    public TargetWire getTargetWire() {
+        return targetWire;
+    }
+
+    public Class<T> getInterface() {
+        return referenceInterface;
+    }
+
+    public void setInterface(Class<T> referenceInterface) {
         this.referenceInterface = referenceInterface;
     }
 
-    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
-        return null;  // TODO implements
+    public void setHandlerFactory(ObjectFactory<WireInvocationHandler> handlerFactory) {
+        this.handlerFactory = handlerFactory;
     }
 
     public T getService() throws TargetException {
@@ -69,11 +76,10 @@ public class ReferenceContextImpl<T> extends AbstractContext<T> implements Refer
     public InvocationHandler getHandler() throws TargetException {
         Map<Method, TargetInvocationChain> configuration = targetWire.getInvocationChains();
         assert(configuration != null);
-        return new JDKInvocationHandler(configuration);
+        WireInvocationHandler handler = handlerFactory.getInstance();
+        handler.setConfiguration(configuration);
+        return handler;
     }
 
-    public Class<T> getInterface() {
-        return referenceInterface;
-    }
 
 }
