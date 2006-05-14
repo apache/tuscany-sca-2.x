@@ -45,15 +45,15 @@ public class PojoComponentType extends ComponentType {
         injectors.add(injector);
     }
 
-    public Member getMember(String name) {
+    public Member getReferenceMember(String name) {
         return members.get(name);
     }
 
-    public void setMember(Member member) {
-        members.put(member.getName(),member);
+    public void setReferenceMember(String name, Member member) {
+        members.put(name,member);
     }
 
-    public Map<String,Member> getMembers() {
+    public Map<String,Member> getReferenceMembers() {
         return members;
     }
 

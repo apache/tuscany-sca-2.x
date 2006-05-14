@@ -16,13 +16,13 @@
  */
 package org.apache.tuscany.core.system.model;
 
+import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.model.AtomicImplementation;
-import org.apache.tuscany.model.ComponentType;
 
 /**
  * @version $Rev$ $Date$
  */
-public class SystemImplementation extends AtomicImplementation<ComponentType> {
+public class SystemImplementation extends AtomicImplementation<PojoComponentType> {
     private Class<?> implementationClass;
 
     public Class<?> getImplementationClass() {

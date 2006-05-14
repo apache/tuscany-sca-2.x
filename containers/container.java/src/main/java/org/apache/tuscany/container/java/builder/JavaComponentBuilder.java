@@ -56,8 +56,10 @@ public class JavaComponentBuilder implements ComponentBuilder<JavaImplementation
             serviceInterfaces.add(((JavaServiceContract) service.getServiceContract()).getInterfaceClass());
         }
         PojoObjectFactory<?> factory = new PojoObjectFactory(ctr, null, componentType.getInjectors());
-        return new JavaAtomicContext(name, serviceInterfaces, factory, componentType.isEagerInit(), componentType.getInitInvoker(),
-                componentType.getDestroyInvoker(), injectors, componentType.getMembers());
+        return null;
+        //TODO finish
+//        return new JavaAtomicContext(name, serviceInterfaces, factory, componentType.isEagerInit(), componentType.getInitInvoker(),
+//                componentType.getDestroyInvoker(), injectors, componentType.getMembers());
     }
 
 }
