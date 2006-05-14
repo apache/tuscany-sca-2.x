@@ -19,14 +19,14 @@
     <parent>
         <groupId>org.apache.tuscany.sca.containers</groupId>
         <artifactId>tuscany-sca-containers</artifactId>
-        <version>SNAPSHOT</version>
+        <version>incubating-M1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tuscany-container-rhino</artifactId>
     <name>Tuscany Rhino JavaScript Container</name>
     <description>Tuscany Rhino JavaScript Container</description>
-    <version>SNAPSHOT</version>
+    <version>incubating-M1</version>
 
     <dependencies>
         <dependency>

@@ -18,13 +18,13 @@
     <parent>
         <groupId>org.apache.tuscany</groupId>
         <artifactId>tuscany-sca</artifactId>
-        <version>SNAPSHOT</version>
+        <version>incubating-M1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tuscany-model</artifactId>
     <name>Tuscany Assembly Model</name>
     <description>Data model for the Assembly model defined by the SCA specification.</description>
-    <version>SNAPSHOT</version>
+    <version>incubating-M1</version>
 
     <dependencies>
         <dependency>
@@ -43,13 +43,13 @@
         <dependency>
             <groupId>commonj</groupId>
             <artifactId>sdo-api</artifactId>
-            <version>SNAPSHOT</version>
+            <version>incubating-M1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
-            <version>SNAPSHOT</version>
+            <version>incubating-M1</version>
             <scope>compile</scope>
         </dependency>
 

@@ -19,14 +19,14 @@
     <parent>
         <groupId>org.apache.tuscany.sca.bindings</groupId>
         <artifactId>tuscany-sca-bindings</artifactId>
-        <version>SNAPSHOT</version>
+        <version>incubating-M1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tuscany-binding-celtix</artifactId>
     <name>Tuscany Celtix Binding</name>
     <description>Implementation of the SCA Web Services binding using Celtix.</description>
-    <version>SNAPSHOT</version>
+    <version>incubating-M1</version>
 
     <properties>
         <celtix.version>1.0</celtix.version>

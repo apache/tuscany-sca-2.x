@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.apache.tuscany</groupId>
         <artifactId>tuscany-sca</artifactId>
-        <version>SNAPSHOT</version>
+        <version>incubating-M1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -27,7 +27,7 @@
     <artifactId>tuscany-sca-bindings</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany SCA Bindings</name>
-    <version>SNAPSHOT</version>
+    <version>incubating-M1</version>
 
     <modules>
         <!-- temporary project to download and install the celtix required sun jars.   The jars

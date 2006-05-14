@@ -19,14 +19,14 @@
     <parent>
         <groupId>org.apache.tuscany.sca.bindings</groupId>
         <artifactId>tuscany-sca-bindings</artifactId>
-        <version>SNAPSHOT</version>
+        <version>incubating-M1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tuscany-binding-jsonrpc</artifactId>
     <name>Tuscany JSON-RPC Binding</name>
     <description>Implementation of an SCA JSON-RPC binding</description>
-    <version>SNAPSHOT</version>
+    <version>incubating-M1</version>
 
     <repositories>
         <repository>

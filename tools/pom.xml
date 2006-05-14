@@ -18,13 +18,13 @@
     <parent>
         <groupId>org.apache.tuscany</groupId>
         <artifactId>tuscany-sca</artifactId>
-        <version>SNAPSHOT</version>
+        <version>incubating-M1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tuscany-sca-tools</artifactId>
     <name>Tuscany SCA Tools</name>
     <description>SCA Tools.</description>
-    <version>SNAPSHOT</version>
+    <version>incubating-M1</version>
 
     <repositories>
         <repository>
@@ -40,13 +40,13 @@
         <dependency>
             <groupId>org.apache.tuscany</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
-            <version>SNAPSHOT</version>
+            <version>incubating-M1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany</groupId>
             <artifactId>tuscany-model</artifactId>
-            <version>SNAPSHOT</version>
+            <version>incubating-M1</version>
             <scope>compile</scope>
         </dependency>
 

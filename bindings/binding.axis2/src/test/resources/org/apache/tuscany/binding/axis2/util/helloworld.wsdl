@@ -96,7 +96,7 @@ Built on Jun 14, 2005 (09:15:57 EDT)-->
 
             <!-- Axis Web Service -->
             <!--
-            <wsdlsoap:address location="http://localhost:8081/sample-helloworldaxissvc-SNAPSHOT/services/helloworld"/>
+            <wsdlsoap:address location="http://localhost:8081/sample-helloworldaxissvc-incubating-M1/services/helloworld"/>
             -->
 
         </wsdl:port>

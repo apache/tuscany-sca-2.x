@@ -19,13 +19,13 @@
     <groupId>org.apache.tuscany.sca.bindings</groupId>
     <artifactId>tuscany-sunjars</artifactId>
     <packaging>pom</packaging>
-    <version>SNAPSHOT</version>
+    <version>incubating-M1</version>
     <name>Project to install the Sun jars</name>
 
     <parent>
         <groupId>org.apache.tuscany.sca.bindings</groupId>
         <artifactId>tuscany-sca-bindings</artifactId>
-        <version>SNAPSHOT</version>
+        <version>incubating-M1</version>
     </parent>
 
 
