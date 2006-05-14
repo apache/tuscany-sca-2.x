@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.List;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.container.java.mock.MockFactory;
+import org.apache.tuscany.container.java.mock.MockContextFactory;
 import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
@@ -51,7 +51,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         ScopeContext<AtomicContext> scope = new ModuleScopeContext(ctx);
         scope.start();
-        Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class, Target.class, scope,
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, Target.class, scope,
                 members, "target", OtherTarget.class, OtherTargetImpl.class, scope);
         AtomicContext sourceContext = contexts.get("source");
         Source source = (Source) sourceContext.getService(null);
@@ -69,7 +69,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         ScopeContext<AtomicContext> scope = new ModuleScopeContext(ctx);
         scope.start();
-        Map<String, AtomicContext> contexts = MockFactory.createWiredMultiplicity("source", SourceImpl.class, Target.class, scope,
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredMultiplicity("source", SourceImpl.class, Target.class, scope,
                 "target", OtherTarget.class, OtherTargetImpl.class, members, scope);
         AtomicContext sourceContext = contexts.get("source");
         Source source = (Source) sourceContext.getService(null);

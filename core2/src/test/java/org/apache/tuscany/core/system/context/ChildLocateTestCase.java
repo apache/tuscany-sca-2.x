@@ -1,16 +1,6 @@
 package org.apache.tuscany.core.system.context;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.mock.MockFactory;
-import org.apache.tuscany.core.mock.component.SourceImpl;
-import org.apache.tuscany.core.mock.component.Source;
-import org.apache.tuscany.core.context.event.ModuleStart;
-import org.apache.tuscany.core.context.event.ModuleStop;
-import org.apache.tuscany.core.context.WorkContextImpl;
-import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.spi.context.WorkContext;
-import org.apache.tuscany.spi.context.AtomicContext;
-import org.apache.tuscany.spi.context.CompositeContext;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -26,7 +16,7 @@ public class ChildLocateTestCase extends TestCase {
 //         child1.setParent(parent);
 //         parent.registerContext(child1);
 //         parent.start();
-//         SystemAtomicContext context = MockFactory.createSystemAtomicContext("source", SourceImpl.class);
+//         SystemAtomicContext context = MockContextFactory.createSystemAtomicContext("source", SourceImpl.class);
 //         scopeContext.register(context);
 //         context.setScopeContext(scopeContext);
 //         scopeContext.publish(new ModuleStart(this, parent));
@@ -43,13 +33,13 @@ public class ChildLocateTestCase extends TestCase {
 /////
 
 //        system.start();
-//        Component compositeComponent = MockFactory.createCompositeComponent("system.child");
+//        Component compositeComponent = MockContextFactory.createCompositeComponent("system.child");
 //        system.registerModelObject(compositeComponent);
 //        CompositeContext childContext = (CompositeContext) system.getContext("system.child");
 //        Assert.assertNotNull(childContext);
 //
 //        Component component = factory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
-//        EntryPoint ep = MockFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1", component);
+//        EntryPoint ep = MockContextFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1", component);
 //        childContext.registerModelObject(component);
 //        childContext.registerModelObject(ep);
 //        childContext.publish(new ModuleStart(this));

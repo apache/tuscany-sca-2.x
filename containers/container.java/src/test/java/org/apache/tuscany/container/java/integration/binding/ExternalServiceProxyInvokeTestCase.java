@@ -14,15 +14,15 @@ public class ExternalServiceProxyInvokeTestCase extends TestCase {
      * @throws Throwable
      */
     public void testProxyInvocation() throws Throwable {
-//        RuntimeContext runtime = MockFactory.registerFooBinding(MockFactory.createJavaRuntime());
-//        PolicyBuilderRegistry registry = (PolicyBuilderRegistry) ((CompositeContext) runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD))
-//                .getContext(MockFactory.POLICY_BUILDER_REGISTRY).getInstance(null);
+//        RuntimeContext runtime = MockContextFactory.registerFooBinding(MockContextFactory.createJavaRuntime());
+//        PolicyBuilderRegistry registry = (PolicyBuilderRegistry) ((CompositeContext) runtime.getSystemContext().getContext(MockContextFactory.SYSTEM_CHILD))
+//                .getContext(MockContextFactory.POLICY_BUILDER_REGISTRY).getInstance(null);
 //        MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
 //        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
 //        registry.registerTargetBuilder(interceptorBuilder);
-//        runtime.getRootContext().registerModelObject(MockFactory.createCompositeComponent("test.module"));
+//        runtime.getRootContext().registerModelObject(MockContextFactory.createCompositeComponent("test.module"));
 //        CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
-//        child.registerModelObject(MockFactory.createModuleWithEntryPointToExternalService());
+//        child.registerModelObject(MockContextFactory.createModuleWithEntryPointToExternalService());
 //        child.publish(new ModuleStart(this));
 //        Object id = new Object();
 //        child.publish(new RequestStart(this, id));

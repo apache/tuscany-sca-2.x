@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.container.java.context.JavaAtomicContext;
 import org.apache.tuscany.container.java.invocation.mock.SimpleTarget;
 import org.apache.tuscany.container.java.invocation.mock.SimpleTargetImpl;
-import org.apache.tuscany.container.java.mock.MockFactory;
+import org.apache.tuscany.container.java.mock.MockContextFactory;
 import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.spi.context.AtomicContext;
@@ -51,7 +51,7 @@ public class ScopedPojoInvokerTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         ScopeContext<AtomicContext> scope = new ModuleScopeContext(ctx);
         scope.start();
-        JavaAtomicContext context = MockFactory.createJavaAtomicContext("foo", SimpleTargetImpl.class);
+        JavaAtomicContext context = MockContextFactory.createJavaAtomicContext("foo", SimpleTargetImpl.class);
         scope.register(context);
         context.setScopeContext(scope);
         ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(echoMethod, context);

@@ -3,7 +3,7 @@ package org.apache.tuscany.core.integration.system;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.core.mock.MockFactory;
+import org.apache.tuscany.core.mock.MockContextFactory;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
@@ -23,7 +23,7 @@ public class ServiceContextToAtomicContextTestCase extends TestCase {
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
         SystemCompositeContext context = new SystemCompositeContextImpl();
         scope.start();
-        SystemAtomicContext targetContext = MockFactory.createSystemAtomicContext("target", TargetImpl.class);
+        SystemAtomicContext targetContext = MockContextFactory.createSystemAtomicContext("target", TargetImpl.class);
         context.registerContext(targetContext);
         targetContext.setScopeContext(scope);
         SystemServiceContext<Target> serviceContext = new SystemServiceContextImpl<Target>("service", Target.class, "target", context);

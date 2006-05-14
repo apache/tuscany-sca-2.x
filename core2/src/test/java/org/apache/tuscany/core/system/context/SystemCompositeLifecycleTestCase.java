@@ -7,7 +7,7 @@ import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.core.mock.MockFactory;
+import org.apache.tuscany.core.mock.MockContextFactory;
 import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Source;
 
@@ -32,7 +32,7 @@ public class SystemCompositeLifecycleTestCase extends TestCase {
         scopeContext.start();
         SystemCompositeContext composite = new SystemCompositeContextImpl("foo", null, null);
         composite.start();
-        SystemAtomicContext context = MockFactory.createSystemAtomicContext("source", SourceImpl.class);
+        SystemAtomicContext context = MockContextFactory.createSystemAtomicContext("source", SourceImpl.class);
         scopeContext.register(context);
         context.setScopeContext(scopeContext);
         composite.registerContext(context);

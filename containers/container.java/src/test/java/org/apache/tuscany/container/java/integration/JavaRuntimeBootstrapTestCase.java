@@ -13,7 +13,6 @@
  */
 package org.apache.tuscany.container.java.integration;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 /**
@@ -27,13 +26,13 @@ public class JavaRuntimeBootstrapTestCase extends TestCase {
      * Tests the runtime can be bootstrapped with Java builders and two module-scoped Java-based components can be wired 
      */
     public void testRuntimeBoot() throws Exception{
-//        RuntimeContext runtime = MockFactory.createJavaRuntime();
-//        Context ctx = runtime.getSystemContext().getContext(MockFactory.SYSTEM_CHILD);
+//        RuntimeContext runtime = MockContextFactory.createJavaRuntime();
+//        Context ctx = runtime.getSystemContext().getContext(MockContextFactory.SYSTEM_CHILD);
 //        Assert.assertNotNull(ctx);
-//        runtime.getRootContext().registerModelObject(MockFactory.createCompositeComponent("test"));
+//        runtime.getRootContext().registerModelObject(MockContextFactory.createCompositeComponent("test"));
 //        CompositeContext testCtx = (CompositeContext) runtime.getRootContext().getContext("test");
 //        Assert.assertNotNull(testCtx);
-//        testCtx.registerModelObject(MockFactory.createModule());
+//        testCtx.registerModelObject(MockContextFactory.createModule());
 //        testCtx.publish(new ModuleStart(this));
 //        GenericComponent source = (GenericComponent)testCtx.getContext("source").getInstance(null);
 //        Assert.assertNotNull(source);

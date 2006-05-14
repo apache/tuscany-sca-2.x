@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.context.DuplicateNameException;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
-import org.apache.tuscany.core.mock.MockFactory;
+import org.apache.tuscany.core.mock.MockContextFactory;
 
 /**
  * @version $Rev$ $Date$
@@ -15,8 +15,8 @@ public class DuplicateRegistrationTestCase extends TestCase {
         SystemCompositeContext systemContext = new SystemCompositeContextImpl();
         systemContext.start();
         systemContext.publish(new ModuleStart(this, null));
-        SystemAtomicContext context1 = MockFactory.createSystemAtomicContext("foo", MockComponent.class);
-        SystemAtomicContext context2 = MockFactory.createSystemAtomicContext("foo", MockComponent.class);
+        SystemAtomicContext context1 = MockContextFactory.createSystemAtomicContext("foo", MockComponent.class);
+        SystemAtomicContext context2 = MockContextFactory.createSystemAtomicContext("foo", MockComponent.class);
         systemContext.registerContext(context1);
         try {
             systemContext.registerContext(context2);

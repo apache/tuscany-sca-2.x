@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.container.java.mock.MockFactory;
+import org.apache.tuscany.container.java.mock.MockContextFactory;
 import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
@@ -62,7 +62,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext<AtomicContext> scope = new ModuleScopeContext(ctx);
         scope.start();
 
-        Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class, scope, members, "target", Target.class, TargetImpl.class, scope);
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, scope, members, "target", Target.class, TargetImpl.class, scope);
         scope.onEvent(new ModuleStart(this, null));
         AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
         AtomicContext<Target> targetContext = (AtomicContext<Target>) contexts.get("target");
@@ -88,7 +88,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext<AtomicContext> sessionScope = new HttpSessionScopeContext(ctx);
         sessionScope.start();
 
-        Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 moduleScope, members, "target", Target.class, TargetImpl.class, sessionScope);
         moduleScope.onEvent(new ModuleStart(this, null));
         Object session1 = new Object();
@@ -137,7 +137,7 @@ public class ScopeReferenceTestCase extends TestCase {
         final ScopeContext<AtomicContext> requestScope = new RequestScopeContext(ctx);
         requestScope.start();
 
-        Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 moduleScope, members, "target", Target.class, TargetImpl.class, requestScope);
         moduleScope.onEvent(new ModuleStart(this, null));
         requestScope.onEvent(new RequestStart(this));
@@ -186,7 +186,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext<AtomicContext> statelessScope = new StatelessScopeContext(ctx);
         statelessScope.start();
 
-        Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 moduleScope, members, "target", Target.class, TargetImpl.class, statelessScope);
         moduleScope.onEvent(new ModuleStart(this, null));
 
@@ -218,7 +218,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext<AtomicContext> sessionScope = new HttpSessionScopeContext(ctx);
         sessionScope.start();
 
-        Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 sessionScope, members, "target", Target.class, TargetImpl.class, sessionScope);
 
         Object session1 = new Object();
@@ -267,7 +267,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext<AtomicContext> sessionScope = new HttpSessionScopeContext(ctx);
         sessionScope.start();
 
-        Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 sessionScope, members, "target", Target.class, TargetImpl.class, moduleScope);
         moduleScope.onEvent(new ModuleStart(this, null));
         Object session1 = new Object();
@@ -315,7 +315,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext<AtomicContext> sessionScope = new HttpSessionScopeContext(ctx);
         sessionScope.start();
 
-        Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 sessionScope, members, "target", Target.class, TargetImpl.class, requestScope);
         Object session1 = new Object();
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
@@ -367,7 +367,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext<AtomicContext> statelessScope = new StatelessScopeContext(ctx);
         statelessScope.start();
 
-        Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 sessionScope, members, "target", Target.class, TargetImpl.class, statelessScope);
 
         Object session1 = new Object();
@@ -403,7 +403,7 @@ public class ScopeReferenceTestCase extends TestCase {
         final ScopeContext<AtomicContext> requestScope = new RequestScopeContext(ctx);
         requestScope.start();
 
-        Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 requestScope, members, "target", Target.class, TargetImpl.class, requestScope);
         requestScope.onEvent(new RequestStart(this));
 
@@ -450,7 +450,7 @@ public class ScopeReferenceTestCase extends TestCase {
         moduleScope.start();
         moduleScope.onEvent(new ModuleStart(this, null));
 
-        Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 requestScope, members, "target", Target.class, TargetImpl.class, moduleScope);
         requestScope.onEvent(new RequestStart(this));
 
@@ -503,7 +503,7 @@ public class ScopeReferenceTestCase extends TestCase {
         Object session1 = new Object();
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
-        Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 requestScope, members, "target", Target.class, TargetImpl.class, sessionScope);
 
         final AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
@@ -555,7 +555,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext<AtomicContext> statelessScope = new StatelessScopeContext(ctx);
         statelessScope.start();
 
-        Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 requestScope, members, "target", Target.class, TargetImpl.class, statelessScope);
 
         AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
@@ -587,7 +587,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext<AtomicContext> statelessScope = new StatelessScopeContext(ctx);
         statelessScope.start();
 
-        Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 statelessScope, members, "target", Target.class, TargetImpl.class, statelessScope);
 
         AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
@@ -617,7 +617,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext<AtomicContext> statelessScope = new StatelessScopeContext(ctx);
         statelessScope.start();
 
-        Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 statelessScope, members, "target", Target.class, TargetImpl.class, requestScope);
         requestScope.onEvent(new RequestStart(this));
         AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
@@ -661,7 +661,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext<AtomicContext> sessionScope = new HttpSessionScopeContext(ctx);
         sessionScope.start();
 
-        Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 statelessScope, members, "target", Target.class, TargetImpl.class, sessionScope);
         Object session1 = new Object();
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
@@ -709,7 +709,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext<AtomicContext> moduleScope = new ModuleScopeContext(ctx);
         moduleScope.start();
 
-        Map<String, AtomicContext> contexts = MockFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 statelessScope, members, "target", Target.class, TargetImpl.class, moduleScope);
         moduleScope.onEvent(new ModuleStart(this, null));
         AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");

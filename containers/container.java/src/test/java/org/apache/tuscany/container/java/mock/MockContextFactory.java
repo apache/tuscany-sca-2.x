@@ -36,7 +36,7 @@ import org.apache.tuscany.spi.wire.WireFactoryInitException;
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class MockFactory {
+public class MockContextFactory {
 
     public static JavaAtomicContext createJavaAtomicContext(String name, Class<?> clazz) throws NoSuchMethodException {
         return createJavaAtomicContext(name, clazz, false, null, null, null, null);

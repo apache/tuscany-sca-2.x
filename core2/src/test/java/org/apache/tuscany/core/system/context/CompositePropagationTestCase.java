@@ -10,7 +10,7 @@ import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.mock.MockFactory;
+import org.apache.tuscany.core.mock.MockContextFactory;
 import org.apache.tuscany.core.mock.component.ModuleScopeInitDestroyComponent;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
@@ -40,7 +40,7 @@ public class CompositePropagationTestCase extends TestCase {
         parent.registerContext(child1);
         child1.registerContext(child2);
         parent.start();
-        SystemAtomicContext context = MockFactory.createSystemAtomicContext("source", SourceImpl.class);
+        SystemAtomicContext context = MockContextFactory.createSystemAtomicContext("source", SourceImpl.class);
         scopeContext.register(context);
         context.setScopeContext(scopeContext);
         child2.registerContext(context);
@@ -93,7 +93,7 @@ public class CompositePropagationTestCase extends TestCase {
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(ModuleScopeInitDestroyComponent.class);
-        SystemAtomicContext context = MockFactory.createSystemAtomicContext("source", interfaces,
+        SystemAtomicContext context = MockContextFactory.createSystemAtomicContext("source", interfaces,
                 ModuleScopeInitDestroyComponent.class, false, initInvoker, destroyInvoker, null);
         scopeContext.register(context);
         context.setScopeContext(scopeContext);

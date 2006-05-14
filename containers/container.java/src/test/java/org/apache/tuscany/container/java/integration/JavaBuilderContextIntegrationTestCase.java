@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 //import org.apache.tuscany.container.java.builder.MockInterceptorBuilder;
 //import org.apache.tuscany.container.java.invocation.mock.MockHandler;
 //import org.apache.tuscany.container.java.invocation.mock.MockSyncInterceptor;
-//import org.apache.tuscany.container.java.mock.MockFactory;
+//import org.apache.tuscany.container.java.mock.MockContextFactory;
 //import org.apache.tuscany.container.java.mock.components.GenericComponent;
 //import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 //import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
@@ -76,9 +76,9 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
 //        runtime.addBuilder(new JavaTargetWireBuilder());
 //        runtime.start();
 //        runtime.getRootContext().registerModelObject(
-//                MockFactory.createCompositeComponent("test.module"));
+//                MockContextFactory.createCompositeComponent("test.module"));
 //        CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
-//        child.registerModelObject(MockFactory.createModule());
+//        child.registerModelObject(MockContextFactory.createModule());
 //        child.publish(new ModuleStart(this));
 //        GenericComponent source = (GenericComponent) child.getContext("source").getInstance(null);
 //        Assert.assertNotNull(source);
@@ -106,9 +106,9 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
 //        runtime.addBuilder(new JavaTargetWireBuilder());
 //        runtime.start();
 //        runtime.getRootContext().registerModelObject(
-//                MockFactory.createCompositeComponent("test.module"));
+//                MockContextFactory.createCompositeComponent("test.module"));
 //        CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
-//        child.registerModelObject(MockFactory.createModule());
+//        child.registerModelObject(MockContextFactory.createModule());
 //        child.publish(new ModuleStart(this));
 //        GenericComponent source = (GenericComponent) child.getContext("source").getInstance(null);
 //        Assert.assertNotNull(source);
@@ -139,9 +139,9 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
 //        runtime.addBuilder(new JavaTargetWireBuilder());
 //        runtime.start();
 //        runtime.getRootContext().registerModelObject(
-//                MockFactory.createCompositeComponent("test.module"));
+//                MockContextFactory.createCompositeComponent("test.module"));
 //        CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
-//        child.registerModelObject(MockFactory.createModule());
+//        child.registerModelObject(MockContextFactory.createModule());
 //        child.publish(new ModuleStart(this));
 //        GenericComponent source = (GenericComponent) child.getContext("source").getInstance(null);
 //        Assert.assertNotNull(source);
@@ -170,9 +170,9 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
 //
 //        runtime.start();
 //        runtime.getRootContext().registerModelObject(
-//                MockFactory.createCompositeComponent("test.module"));
+//                MockContextFactory.createCompositeComponent("test.module"));
 //        CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
-//        child.registerModelObject(MockFactory.createModule());
+//        child.registerModelObject(MockContextFactory.createModule());
 //        child.publish(new ModuleStart(this));
 //        GenericComponent source = (GenericComponent) child.getContext("source").getInstance(null);
 //        Assert.assertNotNull(source);

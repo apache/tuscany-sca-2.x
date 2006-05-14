@@ -9,7 +9,7 @@ import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.TargetInstanceResolver;
-import org.apache.tuscany.core.mock.MockFactory;
+import org.apache.tuscany.core.mock.MockContextFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Target;
@@ -39,7 +39,7 @@ public class AtomicContextToReferenceContextTestCase extends TestCase {
         injectors.add(injector);
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
-        SystemAtomicContext sourceContext = MockFactory.createSystemAtomicContext("source", interfaces, SourceImpl.class, injectors);
+        SystemAtomicContext sourceContext = MockContextFactory.createSystemAtomicContext("source", interfaces, SourceImpl.class, injectors);
         context.registerContext(sourceContext);
         sourceContext.setScopeContext(scope);
         context.start();
