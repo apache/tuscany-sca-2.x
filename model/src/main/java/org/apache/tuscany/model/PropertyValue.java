@@ -24,6 +24,7 @@ import org.apache.tuscany.common.ObjectFactory;
 public class PropertyValue<T> extends ModelObject {
     private String name;
     private ObjectFactory<T> valueFactory;
+    private Property<?> property;
 
     public String getName() {
         return name;
@@ -40,4 +41,13 @@ public class PropertyValue<T> extends ModelObject {
     public void setValueFactory(ObjectFactory<T> valueFactory) {
         this.valueFactory = valueFactory;
     }
+
+    public Property<?> getProperty() {
+        return property;
+    }
+
+    public void setProperty(Property<?> property) {
+        this.property = property;
+    }
+
 }

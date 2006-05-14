@@ -17,13 +17,16 @@
 package org.apache.tuscany.model;
 
 import java.net.URI;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ReferenceTarget extends ModelObject {
     private String referenceName;
-    private URI target;
+    private List<URI> targets = new ArrayList<URI>();
+    private Reference reference;
 
     public String getReferenceName() {
         return referenceName;
@@ -33,11 +36,20 @@ public class ReferenceTarget extends ModelObject {
         this.referenceName = referenceName;
     }
 
-    public URI getTarget() {
-        return target;
+    public List<URI> getTargets() {
+        return targets;
     }
 
-    public void setTarget(URI target) {
-        this.target = target;
+    public void addTarget(URI target) {
+       targets.add(target);
     }
+
+    public Reference getReference(){
+        return reference;
+    }
+
+    public void setReference(Reference reference){
+         this.reference = reference;
+    }
+
 }

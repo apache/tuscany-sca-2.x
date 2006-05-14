@@ -45,7 +45,7 @@ public class MultiplicityTestCase extends TestCase {
 //        CompositeContextImpl context = new CompositeContextImpl();
 //        context.setName("system.context");
 //        List<ContextFactoryBuilder>builders = MockFactory.createSystemBuilders();
-//        WireFactoryService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryService(), new DefaultPolicyBuilderRegistry());
+//        WireService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryService(), new DefaultPolicyBuilderRegistry());
 //        builders.add(new JavaContextFactoryBuilder(wireService));
 //        List<WireBuilder> wireBuilders = new ArrayList<WireBuilder>();
 //        wireBuilders.add(new JavaTargetWireBuilder());

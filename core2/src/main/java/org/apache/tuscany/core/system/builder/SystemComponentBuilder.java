@@ -32,7 +32,7 @@ import org.apache.tuscany.spi.context.Context;
  */
 //@SuppressWarnings("unchecked")
 public class SystemComponentBuilder implements ComponentBuilder<SystemImplementation> {
-
+   
     public Context build(CompositeContext parent, Component<SystemImplementation> component) throws BuilderConfigException {
         PojoComponentType componentType = component.getImplementation().getComponentType();
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
@@ -67,7 +67,9 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
             }
         }
         for (ReferenceTarget target : component.getReferenceTargets().values()) {
-            LazyIntraCompositeResolver resolver = new LazyIntraCompositeResolver(parent, new QualifiedName(target.getTarget().getPath()));
+            //FIXME support multiplicity!
+            assert(target.getTargets().size() == 1): "Multiplicity not yet implemented";
+            LazyIntraCompositeResolver resolver = new LazyIntraCompositeResolver(parent, new QualifiedName(target.getTargets().get(0).getPath()));
             Member member = componentType.getReferenceMember(target.getReferenceName());
             if (member == null) {
                 BuilderConfigException e = new BuilderConfigException("Reference not found");

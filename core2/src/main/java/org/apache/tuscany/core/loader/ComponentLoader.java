@@ -107,7 +107,7 @@ public class ComponentLoader extends LoaderSupport {
         ReferenceTarget referenceTarget = new ReferenceTarget();
         referenceTarget.setReferenceName(name);
         try {
-            referenceTarget.setTarget(new URI(target));
+            referenceTarget.addTarget(new URI(target));
         } catch (URISyntaxException e) {
             InvalidReferenceException le = new InvalidReferenceException(e);
             le.setIdentifier(target);

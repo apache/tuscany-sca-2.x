@@ -28,11 +28,11 @@ import org.apache.tuscany.core.wire.mock.SimpleTargetImpl;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
 
-public class JDKWireFactoryFactoryTestCase extends TestCase {
+public class JDKWireFactoryServiceTestCase extends TestCase {
 
     private Method hello;
 
-    public JDKWireFactoryFactoryTestCase(String arg0) {
+    public JDKWireFactoryServiceTestCase(String arg0) {
         super(arg0);
     }
 

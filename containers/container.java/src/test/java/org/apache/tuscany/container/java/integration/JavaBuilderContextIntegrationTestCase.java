@@ -35,7 +35,7 @@ import junit.framework.TestCase;
 //import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 //import org.apache.tuscany.core.wire.jdk.JDKWireFactoryService;
 //import org.apache.tuscany.core.wire.service.DefaultWireFactoryService;
-//import org.apache.tuscany.core.wire.service.WireFactoryService;
+//import org.apache.tuscany.core.wire.service.WireService;
 
 /**
  * Verifies that the composite context implementation and java component builders construct references properly
@@ -67,7 +67,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
 //        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, true);
 //        PolicyBuilderRegistry policyRegistry = new DefaultPolicyBuilderRegistry();
 //        policyRegistry.registerSourceBuilder(interceptorBuilder);
-//        WireFactoryService wireFactory = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryService(), policyRegistry);
+//        WireService wireFactory = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryService(), policyRegistry);
 //        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireFactory);
 //
 //        builderRegistry.register(javaBuilder);
@@ -98,7 +98,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
 //        PolicyBuilderRegistry policyRegistry = new DefaultPolicyBuilderRegistry();
 //        policyRegistry.registerSourceBuilder(interceptorBuilder);
 //        policyRegistry.registerSourceBuilder(handlerBuilder);
-//        WireFactoryService wireFactory = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryService(), policyRegistry);
+//        WireService wireFactory = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryService(), policyRegistry);
 //        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireFactory);
 //
 //        builderRegistry.register(javaBuilder);
@@ -130,7 +130,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
 //        PolicyBuilderRegistry policyRegistry = new DefaultPolicyBuilderRegistry();
 //        policyRegistry.registerSourceBuilder(interceptorBuilder);
 //        policyRegistry.registerSourceBuilder(handlerBuilder);
-//        WireFactoryService wireFactory = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryService(), policyRegistry);
+//        WireService wireFactory = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryService(), policyRegistry);
 //        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireFactory);
 //
 //        builderRegistry.register(javaBuilder);
@@ -160,7 +160,7 @@ public class JavaBuilderContextIntegrationTestCase extends TestCase {
 //        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
 //        PolicyBuilderRegistry policyRegistry = new DefaultPolicyBuilderRegistry();
 //        policyRegistry.registerSourceBuilder(interceptorBuilder);
-//        WireFactoryService wireFactory = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryService(), policyRegistry);
+//        WireService wireFactory = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryService(), policyRegistry);
 //        JavaContextFactoryBuilder javaBuilder = new JavaContextFactoryBuilder(wireFactory);
 //
 //        builderRegistry.register(javaBuilder);
