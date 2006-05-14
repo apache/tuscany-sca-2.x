@@ -22,7 +22,6 @@ import org.apache.catalina.Context;
 import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleListener;
-import org.apache.catalina.Valve;
 import org.apache.catalina.util.StringManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,6 +53,7 @@ public class TuscanyContextListener implements LifecycleListener {
     private final AssemblyModelLoader modelLoader;
     private final RuntimeContext runtime;
     private CompositeContext moduleContext;
+    private TuscanyValve valve;
 
     public TuscanyContextListener(RuntimeContext runtimeContext, AssemblyFactory modelFactory, AssemblyModelLoader modelLoader) {
         this.runtime = runtimeContext;
@@ -98,16 +98,13 @@ public class TuscanyContextListener implements LifecycleListener {
             throw e;
         }
 
-        // hack for TUSCANY-367
-        Valve[] valves = ctx.getPipeline().getValves();
-        for (Valve valve : valves) {
-            if (valve instanceof TuscanyValve){
-                ctx.getPipeline().removeValve(valve);
-            }
-        }
-
         // add a valve to this context's pipeline that will associate the request with the runtime
-        Valve valve = new TuscanyValve(moduleContext);
+        if (valve == null) {
+            valve = new TuscanyValve(moduleContext);
+        } else {
+            valve.setContext(moduleContext);
+            valve.setEnabled(true);
+        }
         ctx.getPipeline().addValve(valve);
         // add the RuntimeContext in as a servlet context parameter
         ServletContext servletContext = ctx.getServletContext();
@@ -144,6 +141,9 @@ public class TuscanyContextListener implements LifecycleListener {
         }
         CompositeContext rootContext = runtime.getRootContext();
         rootContext.removeContext(moduleContext.getName());
+        valve.setEnabled(false);
+        //ctx.getPipeline().removeValve(valve);
+        //valve = null;
         moduleContext.stop();
         moduleContext = null;
         // todo unload module component from runtime

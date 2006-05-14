@@ -46,16 +46,28 @@ public class TuscanyValve extends ValveBase {
 
     private static final ContextBinder BINDER = new ContextBinder();
 
-    private final CompositeContext moduleComponentContext;
+    private CompositeContext moduleComponentContext;
+
+    private boolean enabled = true;
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void setContext(CompositeContext moduleComponentContext) {
+        this.moduleComponentContext = moduleComponentContext;
+    }
 
     public TuscanyValve(CompositeContext moduleComponentContext) {
         this.moduleComponentContext = moduleComponentContext;
     }
 
     public void invoke(Request request, Response response) throws IOException, ServletException {
+        if (!enabled){
+            return;
+        }
         Object oldRequestId = request.getNote(REQUEST_ID);
         ModuleContext oldContext = CurrentModuleContext.getContext();
-
         // bind the current module context to the thread for use by CurrentModuleContext
         BINDER.setContext((ModuleContext) moduleComponentContext);
         try {
