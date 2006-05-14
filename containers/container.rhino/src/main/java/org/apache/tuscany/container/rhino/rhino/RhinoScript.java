@@ -128,13 +128,13 @@ public class RhinoScript implements ExternalServiceInvoker {
      *        the values by using the variable in name.
      * @return the function return value.
      */
-    public Object invoke(String functionName, Object[] arg, Class responseClass, Map contexts) {
+    public Object invoke(String functionName, Object[] args, Class responseClass, Map contexts) {
         Context cx = Context.enter();
         try {
             Function function = getFunction(scriptScope, functionName);
             Scriptable invocationScope = getInvocationScope(cx, contexts);
-            Object[] args = processArgs(functionName, arg, invocationScope);
-            Object jsResponse = function.call(cx, invocationScope, invocationScope, args);
+            Object[] jsArgs = processArgs(functionName, args, invocationScope);
+            Object jsResponse = function.call(cx, invocationScope, invocationScope, jsArgs);
             Object response = processResponse(functionName, jsResponse, responseClass);
             return response;
         } finally {

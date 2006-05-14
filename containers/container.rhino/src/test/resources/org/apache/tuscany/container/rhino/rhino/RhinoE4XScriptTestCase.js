@@ -1,5 +1,5 @@
 
-function getGreetings(inXML) {
+function process(inXML) {
 
    var greeting = "hello " + inXML..*::in0;
    var outXML = 

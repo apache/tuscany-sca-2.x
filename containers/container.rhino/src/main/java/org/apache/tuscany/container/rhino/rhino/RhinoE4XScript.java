@@ -17,6 +17,7 @@ package org.apache.tuscany.container.rhino.rhino;
 
 import java.util.Map;
 
+import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.xml.XMLObject;
 
@@ -62,6 +63,11 @@ public class RhinoE4XScript extends RhinoScript {
         }
     }
 
+    @Override
+    protected Function getFunction(Scriptable scope, String functionName) {
+        return super.getFunction(scope, "process");
+    }
+    
     @Override
     public RhinoE4XScript copy() {
         return new RhinoE4XScript(scriptName, script, scriptScope, dataBinding);
