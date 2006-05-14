@@ -13,7 +13,7 @@
  */
 package org.apache.tuscany.core.context;
 
-import org.apache.tuscany.core.AbstractLifecycle;
+import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;

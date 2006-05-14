@@ -17,14 +17,11 @@ import java.lang.reflect.Method;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.container.java.invocation.mock.SimpleTargetImpl;
-import org.apache.tuscany.core.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.Message;
 
 /**
  * Tests invoking on a different interface from the one actually implemented by the target
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class MediationTestCase extends TestCase {
@@ -37,9 +34,7 @@ public class MediationTestCase extends TestCase {
 
     public void testMediation() throws Exception {
         StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(hello, new SimpleTargetImpl());
-        Message msg = new MessageImpl();
-        msg.setBody("foo");
-        Assert.assertEquals("foo", invoker.invoke(msg).getBody());
+        Assert.assertEquals("foo", invoker.invokeTarget("foo"));
     }
 
     public interface Hello {

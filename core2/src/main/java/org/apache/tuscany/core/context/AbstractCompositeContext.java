@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.tuscany.core.system.context.SystemServiceContext;
 import org.apache.tuscany.spi.CoreRuntimeException;
+import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.CompositeContext;
@@ -126,6 +127,22 @@ public abstract class AbstractCompositeContext<T> extends AbstractContext<T> imp
         return (ServiceContext) ctx;
     }
 
+    public Object getService(String name) throws TargetException {
+        Context context = children.get(name);
+        if (context == null) {
+            TargetNotFoundException e = new TargetNotFoundException(name);
+            e.addContextName(getName());
+            throw e;
+        } else if (context instanceof ServiceContext) {
+            return context.getService();
+        } else {
+            IllegalTargetException e = new IllegalTargetException("Target must be a service");
+            e.setIdentifier(name);
+            e.addContextName(getName());
+            throw e;
+        }
+    }
+
     public List<ReferenceContext> getReferenceContexts() {
         return Collections.unmodifiableList(references);
     }
@@ -218,22 +235,6 @@ public abstract class AbstractCompositeContext<T> extends AbstractContext<T> imp
             }
         } else {
             return null;
-        }
-    }
-
-    public Object getService(String name) throws TargetException {
-        Context context = children.get(name);
-        if (context == null) {
-            TargetNotFoundException e = new TargetNotFoundException(name);
-            e.addContextName(getName());
-            throw e;
-        } else if (context instanceof ServiceContext) {
-            return context.getService();
-        } else {
-            IllegalTargetException e = new IllegalTargetException("Target must be a service");
-            e.setIdentifier(name);
-            e.addContextName(getName());
-            throw e;
         }
     }
 

@@ -20,6 +20,7 @@ import java.util.Map;
 import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;

@@ -16,7 +16,7 @@ package org.apache.tuscany.core.context.scope;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.tuscany.core.AbstractLifecycle;
+import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.Lifecycle;
 import org.apache.tuscany.spi.context.CompositeContext;

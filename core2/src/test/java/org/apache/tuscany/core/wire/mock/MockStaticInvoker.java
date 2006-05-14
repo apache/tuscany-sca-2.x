@@ -1,17 +1,16 @@
 package org.apache.tuscany.core.wire.mock;
 
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.Message;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.TargetInvoker;
+
 /**
- * Caches component instances that do not need to be resolved for every wire, e.g. an wire originating from
- * a lesser scope intended for a target with a wider scope
- * 
+ * Caches component instances that do not need to be resolved for every wire, e.g. an wire originating from a
+ * lesser scope intended for a target with a wider scope
+ *
  * @version $Rev: 377006 $ $Date: 2006-02-11 09:41:59 -0800 (Sat, 11 Feb 2006) $
  */
 public class MockStaticInvoker implements TargetInvoker {
@@ -31,7 +30,7 @@ public class MockStaticInvoker implements TargetInvoker {
     }
 
     public void setCacheable(boolean cacheable) {
-       this.cacheable = cacheable;
+        this.cacheable = cacheable;
     }
 
     public Object invokeTarget(Object payload) throws InvocationTargetException {
@@ -44,18 +43,6 @@ public class MockStaticInvoker implements TargetInvoker {
         } catch (IllegalAccessException e) {
             throw new InvocationRuntimeException(e);
         }
-    }
-
-    public Message invoke(Message msg) {
-        try {
-            Object resp = invokeTarget(msg.getBody());
-            msg.setBody(resp);
-        } catch (InvocationTargetException e) {
-            msg.setBody(e.getCause());
-        } catch (Throwable e) {
-            msg.setBody(e);
-        }
-        return msg;
     }
 
     public void setNext(Interceptor next) {

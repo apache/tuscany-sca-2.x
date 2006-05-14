@@ -19,19 +19,15 @@ package org.apache.tuscany.spi.wire;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Implementations are responsible for resolving a target and performing the actual invocation on it, for example, a
- * service component implementation instance or an external service client.
- * 
+ * Implementations are responsible for resolving a target and performing the actual invocation on it, for
+ * example, a service component implementation instance or an external service client.
+ *
  * @version $Rev: 395162 $ $Date: 2006-04-19 01:07:36 -0700 (Wed, 19 Apr 2006) $
  */
-public interface TargetInvoker extends Interceptor, Cloneable{
+public interface TargetInvoker extends Cloneable {
 
     /**
-     * Responsible for invoking an operation on a target with the given payload
-     * 
-     * @param payload the parameters of the target operation or null
-     * @throws InvocationTargetException if the target operation itself throws an exception. The root cause will be set
-     *         to that exception
+     * Responsible for invoking an operation on a target with the given message
      */
     public Object invokeTarget(Object payload) throws InvocationTargetException;
 

@@ -3,7 +3,7 @@ package org.apache.tuscany.core.mock.context.scope;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.core.AbstractLifecycle;
+import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.core.context.scope.AbstractScopeContext;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.AtomicContext;

@@ -1,8 +1,8 @@
 package org.apache.tuscany.container.java.builder;
 
 import java.lang.reflect.Constructor;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tuscany.container.java.context.JavaAtomicContext;
 import org.apache.tuscany.container.java.model.JavaImplementation;
@@ -12,8 +12,8 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.model.Component;
-import org.apache.tuscany.model.Service;
 import org.apache.tuscany.model.JavaServiceContract;
+import org.apache.tuscany.model.Service;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.context.CompositeContext;
@@ -53,7 +53,7 @@ public class JavaComponentBuilder implements ComponentBuilder<JavaImplementation
         }
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         for (Service service : componentType.getServices().values()) {
-            serviceInterfaces.add(((JavaServiceContract)service.getServiceContract()).getInterfaceClass());
+            serviceInterfaces.add(((JavaServiceContract) service.getServiceContract()).getInterfaceClass());
         }
         PojoObjectFactory<?> factory = new PojoObjectFactory(ctr, null, componentType.getInjectors());
         return new JavaAtomicContext(name, serviceInterfaces, factory, componentType.isEagerInit(), componentType.getInitInvoker(),

@@ -11,6 +11,7 @@ import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.context.AbstractContext;
 
 /**
  * Base implementation of an {@link AtomicContext} whose implementation type is a Java class

@@ -6,7 +6,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.core.AbstractLifecycle;
+import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.model.Scope;

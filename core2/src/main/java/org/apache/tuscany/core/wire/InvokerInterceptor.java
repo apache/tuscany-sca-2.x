@@ -13,6 +13,8 @@
  */
 package org.apache.tuscany.core.wire;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
@@ -36,7 +38,15 @@ public class InvokerInterceptor implements Interceptor {
         if (invoker == null) {
             throw new InvocationRuntimeException("No target invoker specified on message");
         }
-        return invoker.invoke(msg);
+        try {
+            Object resp = invoker.invokeTarget(msg.getBody());
+            msg.setBody(resp);
+        } catch (InvocationTargetException e) {
+            msg.setBody(e.getCause());
+        } catch (Throwable e) {
+            msg.setBody(e);
+        }
+        return msg;
     }
 
     public void setNext(Interceptor next) {

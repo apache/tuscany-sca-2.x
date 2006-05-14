@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
 import org.apache.tuscany.spi.CoreRuntimeException;
+import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.ProxyCreationException;

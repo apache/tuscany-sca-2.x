@@ -11,20 +11,18 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.context;
+package org.apache.tuscany.spi.context;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.tuscany.core.AbstractLifecycle;
-import org.apache.tuscany.core.context.event.filter.TrueFilter;
-import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.Context;
+import org.apache.tuscany.spi.event.TrueFilter;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
+import org.apache.tuscany.spi.AbstractLifecycle;
 
 /**
  * Functionality common to all <code>Context<code> implementations

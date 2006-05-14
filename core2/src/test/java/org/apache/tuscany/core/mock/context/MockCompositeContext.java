@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.core.context.AbstractContext;
+import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;

@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.tuscany.core.AbstractLifecycle;
-import org.apache.tuscany.core.context.event.filter.TrueFilter;
+import org.apache.tuscany.spi.AbstractLifecycle;
+import org.apache.tuscany.spi.event.TrueFilter;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.ScopeContext;

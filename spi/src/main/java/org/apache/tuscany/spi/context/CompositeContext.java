@@ -30,8 +30,9 @@ public interface CompositeContext<T> extends ComponentContext<T>, RuntimeEventLi
      * Register a Context as a child of this composite.
      *
      * @param context the context to add as a child
+     * @throws InvalidContextTypeException
      */
-    void registerContext(Context context);
+    void registerContext(Context context) throws InvalidContextTypeException;
 
     /**
      * Returns the child context associated with a given name

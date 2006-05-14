@@ -3,7 +3,7 @@ package org.apache.tuscany.core.system.context;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationHandler;
 
-import org.apache.tuscany.core.context.AbstractContext;
+import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.wire.TargetInvoker;

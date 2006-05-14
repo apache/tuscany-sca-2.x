@@ -3,7 +3,7 @@ package org.apache.tuscany.core.mock.context;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.context.AbstractContext;
+import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.TargetInvoker;

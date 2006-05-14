@@ -21,16 +21,15 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * Base class for dispatching to a Java based component implementation. Subclasses implement a strategy for resolving
- * implementation instances.
- * 
+ * Base class for dispatching to a Java based component implementation. Subclasses implement a strategy for
+ * resolving implementation instances.
+ *
  * @version $Rev$ $Date$
  */
 public abstract class AbstractJavaComponentInvoker implements TargetInvoker {
@@ -60,18 +59,6 @@ public abstract class AbstractJavaComponentInvoker implements TargetInvoker {
         } catch (IllegalAccessException e) {
             throw new InvocationRuntimeException(e);
         }
-    }
-
-    public Message invoke(Message msg) {
-        try {
-            Object resp = invokeTarget(msg.getBody());
-            msg.setBody(resp);
-        } catch (InvocationTargetException e) {
-            msg.setBody(e.getCause());
-        } catch (Throwable e) {
-            msg.setBody(e);
-        }
-        return msg;
     }
 
     protected abstract Object getInstance() throws TargetException;

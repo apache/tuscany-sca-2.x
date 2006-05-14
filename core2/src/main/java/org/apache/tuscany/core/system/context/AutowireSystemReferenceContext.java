@@ -3,7 +3,7 @@ package org.apache.tuscany.core.system.context;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.context.AbstractContext;
+import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ReferenceContext;
