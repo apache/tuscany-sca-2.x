@@ -123,7 +123,7 @@ public class MockFactory {
      */
     public static SystemAtomicContextImpl createSystemAtomicContext(String name, List<Class<?>> serviceInterfaces, Class<?> clazz, boolean eagerInit, EventInvoker<Object> initInvoker,
                                                                     EventInvoker<Object> destroyInvoker, List<Injector> injectors) throws NoSuchMethodException {
-        return new SystemAtomicContextImpl(name, serviceInterfaces, createObjectFactory(clazz, injectors), eagerInit, initInvoker, destroyInvoker);
+        return new SystemAtomicContextImpl(name, serviceInterfaces, createObjectFactory(clazz, injectors), eagerInit, initInvoker, destroyInvoker, null);
     }
 
     public static <T> TargetWire<T> createTargetWireFactory(String serviceName, Class<T> interfaze) throws WireFactoryInitException {

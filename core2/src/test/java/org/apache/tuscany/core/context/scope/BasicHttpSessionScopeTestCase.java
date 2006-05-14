@@ -84,6 +84,6 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     }
 
     private SystemAtomicContext createContext() {
-        return new SystemAtomicContextImpl("foo", SessionScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker);
+        return new SystemAtomicContextImpl("foo", SessionScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null);
     }
 }

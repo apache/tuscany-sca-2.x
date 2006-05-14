@@ -76,6 +76,6 @@ public class BasicRequestScopeTestCase extends TestCase {
     }
 
     private SystemAtomicContext createContext() {
-        return new SystemAtomicContextImpl("foo", RequestScopeInitDestroyComponent.class,factory, false, initInvoker, destroyInvoker);
+        return new SystemAtomicContextImpl("foo", RequestScopeInitDestroyComponent.class,factory, false, initInvoker, destroyInvoker, null);
     }
 }

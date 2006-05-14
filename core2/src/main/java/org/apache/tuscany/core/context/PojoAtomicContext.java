@@ -6,12 +6,13 @@ import java.util.List;
 import org.apache.tuscany.common.ObjectCreationException;
 import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
+import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.context.AbstractContext;
 
 /**
  * Base implementation of an {@link AtomicContext} whose implementation type is a Java class
@@ -26,9 +27,10 @@ public abstract class PojoAtomicContext<T> extends AbstractContext<T> implements
     protected EventInvoker<Object> destroyInvoker;
     protected ObjectFactory<?> objectFactory;
     protected List<Class<?>> serviceInterfaces;
+    protected List<Injector> injectors;
 
     public PojoAtomicContext(String name, Class<?> serviceInterface, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
-                             EventInvoker<Object> destroyInvoker) {
+                             EventInvoker<Object> destroyInvoker, List<Injector> injectors) {
         super(name);
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         serviceInterfaces.add(serviceInterface);
@@ -41,10 +43,11 @@ public abstract class PojoAtomicContext<T> extends AbstractContext<T> implements
         this.initInvoker = initInvoker;
         this.destroyInvoker = destroyInvoker;
         this.serviceInterfaces = serviceInterfaces;
+        this.injectors = (injectors == null) ? new ArrayList<Injector>() : injectors;
     }
 
     public PojoAtomicContext(String name, List<Class<?>> serviceInterfaces, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
-                             EventInvoker<Object> destroyInvoker) {
+                             EventInvoker<Object> destroyInvoker,List<Injector> injectors) {
         super(name);
         assert (objectFactory != null) : "Object factory was null";
         if (eagerInit && initInvoker == null) {
@@ -55,6 +58,7 @@ public abstract class PojoAtomicContext<T> extends AbstractContext<T> implements
         this.initInvoker = initInvoker;
         this.destroyInvoker = destroyInvoker;
         this.serviceInterfaces = serviceInterfaces;
+        this.injectors = (injectors == null) ? new ArrayList<Injector>() : injectors;
     }
 
     public List<Class<?>> getServiceInterfaces() {
@@ -91,11 +95,16 @@ public abstract class PojoAtomicContext<T> extends AbstractContext<T> implements
 
     @SuppressWarnings("unchecked")
     public T getTargetInstance() throws TargetException {
-        return (T)scopeContext.getInstance(this);
+        return (T) scopeContext.getInstance(this);
     }
 
     public InstanceWrapper createInstance() throws ObjectCreationException {
-        InstanceWrapper ctx = new PojoInstanceWrapper(this, objectFactory.getInstance());
+        Object instance = objectFactory.getInstance();
+        InstanceWrapper ctx = new PojoInstanceWrapper(this, instance);
+        // inject the instance with properties and references
+        for (Injector<Object> injector : injectors) {
+            injector.inject(instance);
+        }
         ctx.start();
         return ctx;
     }
