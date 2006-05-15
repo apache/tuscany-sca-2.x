@@ -26,7 +26,7 @@
     <artifactId>tuscany-sca-plugins</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany SCA Maven Plugins</name>
-    <version>SNAPSHOT</version>
+    <version>incubating-M1</version>
 
     <modules>
         <module>plugin.wsdl2java</module>
