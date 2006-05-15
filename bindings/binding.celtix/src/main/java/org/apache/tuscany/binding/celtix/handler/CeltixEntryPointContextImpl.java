@@ -72,6 +72,7 @@ public class CeltixEntryPointContextImpl extends EntryPointContextImpl
     private WSDLMetaDataCache wsdlCache;
     private ServerBinding serverBinding;
     private Object entryPointProxy;
+    private WebServiceBinding wsBinding;
     
     private Map<QName, ServerDataBindingCallback> opMap = 
         new ConcurrentHashMap<QName, ServerDataBindingCallback>(); 
@@ -90,7 +91,7 @@ public class CeltixEntryPointContextImpl extends EntryPointContextImpl
         super.start();
         
         entryPointProxy = getInstance(null);
-        WebServiceBinding wsBinding = (WebServiceBinding)entry.getBindings().get(0);
+        wsBinding = (WebServiceBinding)entry.getBindings().get(0);
         bus = wsBinding.getBus();
         typeHelper = wsBinding.getTypeHelper();
         Definition wsdlDef = wsBinding.getWSDLDefinition();
@@ -205,13 +206,12 @@ public class CeltixEntryPointContextImpl extends EntryPointContextImpl
         Class<?> serviceInterface = getServiceInterface();
         Method meth = getMethod(serviceInterface, operationName.getLocalPart());
         
-        ServerDataBindingCallback scb = new SCAServerDataBindingCallback(opInfo,
-                                                                         typeHelper,
-                                                                         inout,
-                                                                         meth,
-                                                                         entryPointProxy);
-        // TODO Auto-generated method stub
-        return scb;
+        return new SCAServerDataBindingCallback(opInfo,
+                                                typeHelper,
+                                                wsBinding.getResourceLoader(),
+                                                inout,
+                                                meth,
+                                                entryPointProxy);
     }
     protected Method getMethod(Class<?> serviceInterface, String operationName) {
         // Note: this doesn't support overloaded operations

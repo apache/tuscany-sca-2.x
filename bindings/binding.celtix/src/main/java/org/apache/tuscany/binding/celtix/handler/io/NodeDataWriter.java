@@ -57,7 +57,9 @@ public class NodeDataWriter implements DataWriter<Node> {
     }
 
     public void write(Object obj, QName elName, Node output) {
-        byte bytes[] = SDOXMLHelper.toXMLBytes(callback.getTypeHelper(),
+        byte bytes[] = SDOXMLHelper.toXMLBytes(
+                                callback.getResourceClassLoader(),
+                                callback.getTypeHelper(),
                                 new Object[] {obj},
                                 elName,
                                 false);

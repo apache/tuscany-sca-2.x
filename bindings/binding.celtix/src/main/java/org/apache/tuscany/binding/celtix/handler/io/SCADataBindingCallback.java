@@ -19,6 +19,8 @@ package org.apache.tuscany.binding.celtix.handler.io;
 
 import org.w3c.dom.Node;
 import commonj.sdo.helper.TypeHelper;
+
+import org.apache.tuscany.common.resource.ResourceLoader;
 import org.objectweb.celtix.bindings.DataReader;
 import org.objectweb.celtix.bindings.DataWriter;
 import org.objectweb.celtix.bus.bindings.AbstractWSDLOperationDataBindingCallback;
@@ -29,11 +31,23 @@ public class SCADataBindingCallback extends AbstractWSDLOperationDataBindingCall
     
     protected TypeHelper typeHelper;
     protected boolean hasInOut;
+    protected ResourceLoader loader;
 
-    public SCADataBindingCallback(WSDLOperationInfo op, TypeHelper helper, boolean inout) {
+    public SCADataBindingCallback(WSDLOperationInfo op,
+                                  TypeHelper helper,
+                                  ResourceLoader l,
+                                  boolean inout) {
         super(op);
         typeHelper = helper;
         hasInOut = inout;
+        loader = l;
+    }
+    
+    public ResourceLoader getResourceLoader() {
+        return loader;
+    }
+    public ClassLoader getResourceClassLoader() {
+        return loader.getClassLoader();
     }
 
     public TypeHelper getTypeHelper() {

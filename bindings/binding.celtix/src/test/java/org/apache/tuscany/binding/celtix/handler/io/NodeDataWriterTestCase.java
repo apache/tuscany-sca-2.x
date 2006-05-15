@@ -34,6 +34,7 @@ import commonj.sdo.helper.TypeHelper;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.sdo.helper.XSDHelperImpl;
 import org.apache.tuscany.sdo.util.DataObjectUtil;
 import org.apache.tuscany.sdo.util.SDOUtil;
@@ -76,8 +77,11 @@ public class NodeDataWriterTestCase extends TestCase {
         WSDLMetaDataCache wsdlCache = new WSDLMetaDataCache(definition,
                                                             port);
         
+        
+        ResourceLoaderImpl loader = new ResourceLoaderImpl(getClass().getClassLoader());
         SCADataBindingCallback callback = new SCADataBindingCallback(wsdlCache.getOperationInfo("greetMe"),
                                                                      typeHelper,
+                                                                     loader,
                                                                      false);
         
         DataWriter<Node> writer = callback.createWriter(Node.class);

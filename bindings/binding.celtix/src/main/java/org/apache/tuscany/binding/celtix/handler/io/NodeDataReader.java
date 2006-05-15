@@ -53,7 +53,8 @@ public class NodeDataReader implements DataReader<Node> {
     public Object read(QName name, int idx, Node input) {
         try {
             byte bytes[] = getNodeBytes(input);
-            Object os[] = SDOXMLHelper.toObjects(callback.getTypeHelper(), bytes, false);
+            Object os[] = SDOXMLHelper.toObjects(callback.getResourceClassLoader(),
+                                                 callback.getTypeHelper(), bytes, false);
             return os[0];
         } catch (RuntimeException e) {
             throw e;

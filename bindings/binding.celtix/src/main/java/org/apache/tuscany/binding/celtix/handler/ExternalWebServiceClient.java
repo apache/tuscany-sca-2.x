@@ -57,11 +57,12 @@ public class ExternalWebServiceClient {
     private TypeHelper typeHelper;
     private WSDLMetaDataCache wsdlCache;
     private ClientBinding clientBinding;
+    private WebServiceBinding wsBinding;
 
     
     
     public ExternalWebServiceClient(ExternalService externalService) throws BuilderException {
-        WebServiceBinding wsBinding = (WebServiceBinding)externalService.getBindings().get(0);
+        wsBinding = (WebServiceBinding)externalService.getBindings().get(0);
         bus = wsBinding.getBus();
         typeHelper = wsBinding.getTypeHelper();
         Definition wsdlDef = wsBinding.getWSDLDefinition();
@@ -151,7 +152,9 @@ public class ExternalWebServiceClient {
         objMsgContext.setMessageObjects(realArgs);
 
         boolean isOneway = opInfo.isOneWay();
-        DataBindingCallback callback = new SCADataBindingCallback(opInfo, typeHelper, hasInOut);
+        DataBindingCallback callback = new SCADataBindingCallback(opInfo, typeHelper,
+                                                                  wsBinding.getResourceLoader(),
+                                                                  hasInOut);
 
         try {
             if (isOneway) {

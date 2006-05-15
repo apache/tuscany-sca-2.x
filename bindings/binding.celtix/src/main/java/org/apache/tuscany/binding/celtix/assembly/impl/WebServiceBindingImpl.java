@@ -21,6 +21,7 @@ import java.util.List;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
+import javax.xml.namespace.QName;
 
 import commonj.sdo.helper.TypeHelper;
 import org.apache.tuscany.binding.celtix.assembly.WebServiceBinding;
@@ -125,11 +126,27 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
         if (port == null && portURI != null) {
             int h = portURI.indexOf('#');
             String portNamespace = portURI.substring(0, h);
-            String portName = portURI.substring(h + 1);
+            String serviceName;
+            String portName;
+
+            String fragment = portURI.substring(h + 1);
+            if (fragment.startsWith("wsdl.endpoint(") && fragment.endsWith(")")) {
+                fragment = fragment.substring(14, fragment.length() - 1);
+                int slash = fragment.indexOf('/');
+                if (slash != -1) {
+                    serviceName = fragment.substring(0, slash);
+                    portName = fragment.substring(slash + 1);
+                } else {
+                    serviceName = null;
+                    portName = fragment;
+                }
+            } else {
+                serviceName = null;
+                portName = fragment;
+            }
 
             // Load the WSDL definitions for the given namespace
-            //FIXME pass the current application resource loader
-            List<Definition> definitions = wsdlRegistry.getDefinitionsForNamespace(portNamespace, null);
+            List<Definition> definitions = wsdlRegistry.getDefinitionsForNamespace(portNamespace, resourceLoader);
             if (definitions == null) {
                 throw new IllegalArgumentException("Cannot find WSDL definition for " + portNamespace);
             }
@@ -137,6 +154,12 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
 
                 // Find the port with the given name
                 for (Service serv : (Collection<Service>)def.getServices().values()) {
+                    QName sqn = serv.getQName();
+                    if (serviceName != null
+                        && !serviceName.equals(sqn.getLocalPart())) {
+                        continue;
+                    }
+                    
                     Port p = serv.getPort(portName);
                     if (p != null) {
                         service = serv;

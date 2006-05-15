@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 
 import commonj.sdo.helper.TypeHelper;
 
+import org.apache.tuscany.common.resource.ResourceLoader;
 import org.objectweb.celtix.bindings.ServerDataBindingCallback;
 import org.objectweb.celtix.bus.bindings.WSDLOperationInfo;
 import org.objectweb.celtix.context.ObjectMessageContext;
@@ -31,8 +32,9 @@ public class SCAServerDataBindingCallback extends SCADataBindingCallback
     Object targetObject;
 
     public SCAServerDataBindingCallback(WSDLOperationInfo op, TypeHelper helper,
+                                        ResourceLoader l,
                                         boolean inout, Method meth, Object target) {
-        super(op, helper, inout);
+        super(op, helper, l, inout);
         method = meth;
         targetObject = target;
     }
