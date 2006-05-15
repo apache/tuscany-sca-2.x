@@ -31,15 +31,15 @@
         <module>model</module>
         <module>spi</module>
         <module>core2</module>
-	<module>containers</module>
-<!--
-        <module>bindings</module>
+        <module>containers</module>
+        <!--
         <module>databinding</module>
+        <module>bindings</module>
         <module>containers</module>
         <module>tomcat</module>
         <module>tools</module>
         <module>plugin</module>
--->
+        -->
     </modules>
 
     <build>

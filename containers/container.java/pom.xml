@@ -35,12 +35,6 @@
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.databinding</groupId>
-            <artifactId>tuscany-databinding-sdo</artifactId>
-            <version>${pom.version}</version>
-            <scope>compile</scope>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
