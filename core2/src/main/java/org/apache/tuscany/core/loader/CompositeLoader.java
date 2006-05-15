@@ -30,12 +30,12 @@ import org.apache.tuscany.model.Property;
 import org.apache.tuscany.model.Component;
 import org.apache.tuscany.spi.loader.LoaderContext;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderSupport;
+import org.apache.tuscany.spi.extension.LoaderExtension;
 
 /**
  * @version $Rev$ $Date$
  */
-public class CompositeLoader extends LoaderSupport<CompositeComponentType> {
+public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
     protected QName getXMLType() {
         return AssemblyConstants.COMPOSITE;
     }

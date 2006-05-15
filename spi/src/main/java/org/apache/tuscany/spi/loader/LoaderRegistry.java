@@ -36,7 +36,7 @@ import org.apache.tuscany.model.ModelObject;
  *
  * @version $Rev$ $Date$
  */
-public interface StAXLoaderRegistry {
+public interface LoaderRegistry {
     /**
      * Register a loader. This operation will typically be called by a loader
      * during its initialization.

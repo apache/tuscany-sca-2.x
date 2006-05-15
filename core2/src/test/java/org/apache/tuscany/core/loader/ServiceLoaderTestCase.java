@@ -25,7 +25,7 @@ import org.apache.tuscany.model.Service;
 import org.apache.tuscany.model.ServiceContract;
 import org.apache.tuscany.spi.loader.LoaderContext;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.StAXLoaderRegistry;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
@@ -65,8 +65,8 @@ public class ServiceLoaderTestCase extends MockObjectTestCase {
         super.setUp();
         loader = new ServiceLoader();
         mockReader = mock(XMLStreamReader.class);
-        mockRegistry = mock(StAXLoaderRegistry.class);
-        loader.setRegistry((StAXLoaderRegistry) mockRegistry.proxy());
+        mockRegistry = mock(LoaderRegistry.class);
+        loader.setRegistry((LoaderRegistry) mockRegistry.proxy());
         loaderContext = new LoaderContext(null, null);
     }
 }

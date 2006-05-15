@@ -14,25 +14,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.spi.loader;
+package org.apache.tuscany.spi.extension;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.model.ModelObject;
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.loader.StAXElementLoader;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 
 /**
- * Base class for loader implementations that handles registration.
+ * Support class for extending the Loader mechanism.
  *
  * @version $Rev$ $Date$
  */
-public abstract class LoaderSupport<T extends ModelObject> implements StAXElementLoader<T> {
-    protected StAXLoaderRegistry registry;
+public abstract class LoaderExtension<T extends ModelObject> implements StAXElementLoader<T> {
+    protected LoaderRegistry registry;
 
     @Autowire
-    public void setRegistry(StAXLoaderRegistry registry) {
+    public void setRegistry(LoaderRegistry registry) {
         this.registry = registry;
     }
 

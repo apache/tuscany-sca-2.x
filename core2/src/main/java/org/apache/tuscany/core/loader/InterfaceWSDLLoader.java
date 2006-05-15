@@ -28,12 +28,12 @@ import org.apache.tuscany.model.WSDLServiceContract;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.loader.LoaderContext;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderSupport;
+import org.apache.tuscany.spi.extension.LoaderExtension;
 
 /**
  * @version $Rev$ $Date$
  */
-public class InterfaceWSDLLoader extends LoaderSupport {
+public class InterfaceWSDLLoader extends LoaderExtension {
     private static final String WSDLI = "http://www.w3.org/2006/01/wsdl-instance";
     private static final String WSDLI_LOCATION = "wsdlLocation";
 

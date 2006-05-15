@@ -28,12 +28,12 @@ import org.apache.tuscany.model.Reference;
 import org.apache.tuscany.model.ServiceContract;
 import org.apache.tuscany.spi.loader.LoaderContext;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderSupport;
+import org.apache.tuscany.spi.extension.LoaderExtension;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ReferenceLoader extends LoaderSupport {
+public class ReferenceLoader extends LoaderExtension {
     public QName getXMLType() {
         return AssemblyConstants.REFERENCE;
     }

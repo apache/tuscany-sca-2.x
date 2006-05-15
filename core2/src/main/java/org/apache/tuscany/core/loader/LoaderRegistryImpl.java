@@ -26,13 +26,13 @@ import org.apache.tuscany.model.ModelObject;
 import org.apache.tuscany.spi.loader.LoaderContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.StAXElementLoader;
-import org.apache.tuscany.spi.loader.StAXLoaderRegistry;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class StAXLoaderRegistryImpl implements StAXLoaderRegistry {
+public class LoaderRegistryImpl implements LoaderRegistry {
     private final Map<QName, StAXElementLoader<? extends ModelObject>> loaders = new HashMap<QName, StAXElementLoader<? extends ModelObject>>();
 
     private Monitor monitor;

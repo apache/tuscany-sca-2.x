@@ -33,7 +33,7 @@ import org.jmock.MockObjectTestCase;
  */
 @SuppressWarnings({"CastToIncompatibleInterface"})
 public class StAXLoaderRegistryImplTestCase extends MockObjectTestCase {
-    private StAXLoaderRegistryImpl registry;
+    private LoaderRegistryImpl registry;
     private QName name;
     private Mock mockMonitor;
     private Mock mockLoader;
@@ -77,9 +77,9 @@ public class StAXLoaderRegistryImplTestCase extends MockObjectTestCase {
         super.setUp();
         name = new QName("http://mock", "test");
         loaderContext = new LoaderContext(null, null);
-        registry = new StAXLoaderRegistryImpl();
-        mockMonitor = mock(StAXLoaderRegistryImpl.Monitor.class);
-        registry.setMonitor((StAXLoaderRegistryImpl.Monitor) mockMonitor.proxy());
+        registry = new LoaderRegistryImpl();
+        mockMonitor = mock(LoaderRegistryImpl.Monitor.class);
+        registry.setMonitor((LoaderRegistryImpl.Monitor) mockMonitor.proxy());
 
         mockLoader = mock(StAXElementLoader.class);
         mockReader = mock(XMLStreamReader.class);

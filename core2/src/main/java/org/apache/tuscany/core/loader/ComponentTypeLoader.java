@@ -29,12 +29,12 @@ import org.apache.tuscany.model.Reference;
 import org.apache.tuscany.model.Service;
 import org.apache.tuscany.spi.loader.LoaderContext;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderSupport;
+import org.apache.tuscany.spi.extension.LoaderExtension;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ComponentTypeLoader extends LoaderSupport {
+public class ComponentTypeLoader extends LoaderExtension {
     public QName getXMLType() {
         return AssemblyConstants.COMPONENT_TYPE;
     }

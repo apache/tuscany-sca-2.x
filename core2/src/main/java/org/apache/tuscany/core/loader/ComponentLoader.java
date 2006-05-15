@@ -36,7 +36,7 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.loader.InvalidReferenceException;
 import org.apache.tuscany.spi.loader.LoaderContext;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderSupport;
+import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.MissingImplementationException;
 import org.apache.tuscany.spi.loader.StAXPropertyFactory;
 import org.osoa.sca.annotations.Scope;
@@ -45,7 +45,7 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class ComponentLoader extends LoaderSupport {
+public class ComponentLoader extends LoaderExtension {
     private StAXPropertyFactory defaultPropertyFactory;
 
     @Autowire

@@ -32,7 +32,7 @@ import org.apache.tuscany.core.loader.LoaderContext;
 import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
 import org.apache.tuscany.core.loader.AssemblyConstants;
-import org.apache.tuscany.spi.loader.LoaderSupport;
+import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.annotation.Autowire;
 import static org.apache.tuscany.core.loader.AssemblyConstants.IMPORT_WSDL;
 import org.apache.tuscany.model.assembly.ImportWSDL;
@@ -44,7 +44,7 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class ImportWSDLLoader extends LoaderSupport {
+public class ImportWSDLLoader extends LoaderExtension {
     private WSDLDefinitionRegistry wsdlRegistry;
 
     @Autowire

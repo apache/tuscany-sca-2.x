@@ -19,7 +19,7 @@ package org.apache.tuscany.core.loader.assembly;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.loader.LoaderContext;
-import org.apache.tuscany.spi.loader.LoaderSupport;
+import org.apache.tuscany.spi.extension.LoaderExtension;
 import static org.apache.tuscany.core.loader.AssemblyConstants.EXTERNAL_SERVICE;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.Binding;
@@ -40,7 +40,7 @@ import javax.xml.stream.XMLStreamReader;
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public class ExternalServiceLoader extends LoaderSupport {
+public class ExternalServiceLoader extends LoaderExtension {
     public QName getXMLType() {
         return EXTERNAL_SERVICE;
     }

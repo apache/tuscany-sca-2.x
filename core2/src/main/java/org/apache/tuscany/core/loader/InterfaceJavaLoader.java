@@ -23,12 +23,12 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.model.JavaServiceContract;
 import org.apache.tuscany.spi.loader.LoaderContext;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderSupport;
+import org.apache.tuscany.spi.extension.LoaderExtension;
 
 /**
  * @version $Rev$ $Date$
  */
-public class InterfaceJavaLoader extends LoaderSupport {
+public class InterfaceJavaLoader extends LoaderExtension {
     public QName getXMLType() {
         return AssemblyConstants.INTERFACE_JAVA;
     }
