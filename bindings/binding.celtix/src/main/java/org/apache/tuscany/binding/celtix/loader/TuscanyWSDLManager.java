@@ -18,6 +18,7 @@ package org.apache.tuscany.binding.celtix.loader;
 
 import java.io.IOException;
 import java.net.URL;
+
 import javax.wsdl.Definition;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensionRegistry;
@@ -48,7 +49,8 @@ public class TuscanyWSDLManager implements WSDLManager {
 
     public Definition getDefinition(URL url) throws WSDLException {
         try {
-            return wsdlDefinitionRegistry.loadDefinition(null, url);
+            //FIXME pass the current ResourceLoader 
+            return wsdlDefinitionRegistry.loadDefinition(null, url, null);
         } catch (IOException e) {
             throw new WSDLException(WSDLException.CONFIGURATION_ERROR, e.getMessage());
         }
@@ -58,7 +60,8 @@ public class TuscanyWSDLManager implements WSDLManager {
         try {
             //The namespace is the wsdl targetNamesapce, it is only used
             //when the wsdl is created into cache. we are ok here to set it to null.
-            return wsdlDefinitionRegistry.loadDefinition(null, new URL(url));
+            //FIXME pass the current ResourceLoader
+            return wsdlDefinitionRegistry.loadDefinition(null, new URL(url), null);
         } catch (IOException e) {
             throw new WSDLException(WSDLException.CONFIGURATION_ERROR, e.getMessage());
         }

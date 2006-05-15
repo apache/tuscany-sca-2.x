@@ -39,7 +39,8 @@ public class WebServiceAssemblyFactoryTestCase extends TestCase {
                             List<Definition> wsdlList) {
         EasyMock.reset(new Object[] {reg});
         
-        reg.getDefinitionsForNamespace("http://objectweb.org/hello_world_soap_http");
+        //FIXME pass the current ResourceLoader
+        reg.getDefinitionsForNamespace("http://objectweb.org/hello_world_soap_http", null);
         EasyMock.expectLastCall().andReturn(wsdlList);
         
         EasyMock.replay(new Object[] {reg});

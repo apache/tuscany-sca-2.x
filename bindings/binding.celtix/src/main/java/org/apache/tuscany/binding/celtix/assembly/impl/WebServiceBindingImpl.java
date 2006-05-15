@@ -128,7 +128,8 @@ public class WebServiceBindingImpl extends BindingImpl implements WebServiceBind
             String portName = portURI.substring(h + 1);
 
             // Load the WSDL definitions for the given namespace
-            List<Definition> definitions = wsdlRegistry.getDefinitionsForNamespace(portNamespace);
+            //FIXME pass the current application resource loader
+            List<Definition> definitions = wsdlRegistry.getDefinitionsForNamespace(portNamespace, null);
             if (definitions == null) {
                 throw new IllegalArgumentException("Cannot find WSDL definition for " + portNamespace);
             }
