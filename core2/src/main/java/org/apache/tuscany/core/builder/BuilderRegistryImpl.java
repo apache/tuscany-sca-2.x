@@ -76,26 +76,11 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     public <I extends Implementation<?>> void register(ComponentBuilder<I> builder) {
-       //Class<I> implClass = (Class<I>) recurseInterfaces(builder.getClass());
        Class<I> implClass = JavaIntrospectionHelper.introspectGeneric(builder.getClass(),0);
        if (implClass == null){
           throw new IllegalArgumentException("builder is not generified");
        }
        register(implClass, builder);
-//        Type[] interfaces = builder.getClass().getGenericInterfaces();
-//        for (Type type : interfaces) {
-//            if (! (type instanceof ParameterizedType)) {
-//                continue;
-//            }
-//            ParameterizedType interfaceType = (ParameterizedType) type;
-//            if (!ComponentBuilder.class.equals(interfaceType.getRawType())) {
-//                continue;
-//            }
-//            Class<I> implClass = (Class<I>) interfaceType.getActualTypeArguments()[0];
-//            register(implClass, builder);
-//            return;
-//        }
-//        throw new IllegalArgumentException("builder is not generified");
     }
 
     public <I extends Implementation<?>> void register(Class<I> implClass, ComponentBuilder<I> builder) {

@@ -23,19 +23,24 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.model.ModelObject;
+import org.apache.tuscany.model.Implementation;
 import org.apache.tuscany.spi.loader.LoaderContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.StAXElementLoader;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
+import org.apache.tuscany.spi.loader.ComponentTypeLoader;
 
 /**
  * @version $Rev$ $Date$
  */
 public class LoaderRegistryImpl implements LoaderRegistry {
-    private final Map<QName, StAXElementLoader<? extends ModelObject>> loaders = new HashMap<QName, StAXElementLoader<? extends ModelObject>>();
-
     private Monitor monitor;
+    private final Map<QName, StAXElementLoader<? extends ModelObject>> loaders =
+            new HashMap<QName, StAXElementLoader<? extends ModelObject>>();
+    private final Map<Class<? extends Implementation<?>>, ComponentTypeLoader<? extends Implementation<?>>> componentTypeLoaders =
+            new HashMap<Class<? extends Implementation<?>>, ComponentTypeLoader<? extends Implementation<?>>>();
+
 
     @org.apache.tuscany.spi.annotation.Monitor
     public void setMonitor(Monitor monitor) {
@@ -58,11 +63,18 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         StAXElementLoader<? extends ModelObject> loader = loaders.get(name);
         if (loader == null) {
             throw new UnrecognizedElementException(name);
-        } else {
-            return loader.load(reader, loaderContext);
         }
+        return loader.load(reader, loaderContext);
     }
 
+    public <I extends Implementation> void loadComponentType(I implementation) {
+        Class<I> key = (Class<I>) implementation.getClass();
+        ComponentTypeLoader<I> loader = (ComponentTypeLoader<I>) componentTypeLoaders.get(key);
+        if (loader == null) {
+            throw new UnsupportedOperationException();
+        }
+        loader.load(implementation);
+    }
 
     public static interface Monitor {
         /**

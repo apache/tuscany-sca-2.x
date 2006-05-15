@@ -23,8 +23,8 @@
         <system:implementation.system class="org.apache.tuscany.core.services.wsdl.WSDLDefinitionRegistryImpl"/>
     </component>
 
-    <component name="org.apache.tuscany.core.loader.ComponentTypeLoader">
-        <system:implementation.system class="org.apache.tuscany.core.loader.ComponentTypeLoader"/>
+    <component name="org.apache.tuscany.core.loader.ComponentTypeElementLoader">
+        <system:implementation.system class="org.apache.tuscany.core.loader.ComponentTypeElementLoader"/>
     </component>
 
     <!--

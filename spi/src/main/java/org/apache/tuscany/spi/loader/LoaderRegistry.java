@@ -21,6 +21,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.model.ModelObject;
+import org.apache.tuscany.model.Implementation;
 
 /**
  * Registry for XML loaders that can parse a StAX input stream and return model objects.
@@ -68,4 +69,6 @@ public interface LoaderRegistry {
      * @throws XMLStreamException if there was a problem reading the stream
      */
     ModelObject load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, LoaderException;
+
+    <I extends Implementation> void loadComponentType(I implementation);
 }

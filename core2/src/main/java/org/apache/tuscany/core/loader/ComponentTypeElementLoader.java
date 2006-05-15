@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 /**
  * @version $Rev$ $Date$
  */
-public class ComponentTypeLoader extends LoaderExtension {
+public class ComponentTypeElementLoader extends LoaderExtension {
     public QName getXMLType() {
         return AssemblyConstants.COMPONENT_TYPE;
     }

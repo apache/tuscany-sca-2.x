@@ -42,10 +42,7 @@ public class SystemImplementationLoader extends LoaderExtension {
         String implClass = reader.getAttributeValue(null, "class");
         Class<?> implementationClass = StAXUtil.loadClass(implClass, loaderContext.getClassLoader());
         implementation.setImplementationClass(implementationClass);
-
-        // todo we should allow componentType sidefiles for system implementations
-//        implementation.setComponentType(introspector.introspect(implementationClass));
-
+        registry.loadComponentType(implementation);
         StAXUtil.skipToEndElement(reader);
         return implementation;
     }
