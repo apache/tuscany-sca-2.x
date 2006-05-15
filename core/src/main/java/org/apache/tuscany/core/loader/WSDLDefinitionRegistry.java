@@ -37,11 +37,12 @@ public interface WSDLDefinitionRegistry {
      *
      * @param namespace the expected namespace, or null if any namespace should be allowed
      * @param location  the location to load the definition from
+     * @param resourceLoader the application resource loader
      * @return the loaded Definition
      * @throws IOException   if there was a problem reading the document
      * @throws WSDLException if there was a problem parsing the definition
      */
-    Definition loadDefinition(String namespace, URL location) throws IOException, WSDLException;
+    Definition loadDefinition(String namespace, URL location, ResourceLoader resourceLoader) throws IOException, WSDLException;
 
     /**
      * Load and register a WSDL definition as specified in a WSDL2.0 wsdlLocation attribute.
@@ -58,17 +59,19 @@ public interface WSDLDefinitionRegistry {
      * Returns the PortType with the supplied qualified name, or null if no such port has been defined.
      *
      * @param name the qualified name of the WSDL portType
+     * @param resourceLoader the application resource loader
      * @return the PortType for the supplied name, or null if none has been defined
      */
-    PortType getPortType(QName name);
+    PortType getPortType(QName name, ResourceLoader resourceLoader);
 
     /**
      * Returns the Service with the supplied qualified name, or null if no such service has been defined.
      *
      * @param name the qualified name of the WSDL service
+     * @param resourceLoader the application resource loader
      * @return the Service for the supplied name, or null if none has been defined
      */
-    Service getService(QName name);
+    Service getService(QName name, ResourceLoader resourceLoader);
     
     
     /**
@@ -76,9 +79,10 @@ public interface WSDLDefinitionRegistry {
      * no WSDL documents have been loaded for the given namespace
      * 
      * @param namespace the namespace to lookup
+     * @param resourceLoader the application resource loader
      * @return The list of definitions that have been loaded for the given namespace, or null
      */
-    List<Definition> getDefinitionsForNamespace(String namespace);
+    List<Definition> getDefinitionsForNamespace(String namespace, ResourceLoader resourceLoader);
 
 
     /**

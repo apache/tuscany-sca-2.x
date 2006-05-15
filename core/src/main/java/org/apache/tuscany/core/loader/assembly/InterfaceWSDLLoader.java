@@ -18,6 +18,7 @@ package org.apache.tuscany.core.loader.assembly;
 
 import java.io.IOException;
 
+import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.config.MissingInterfaceException;
 import org.apache.tuscany.core.loader.WSDLDefinitionRegistry;
@@ -56,11 +57,13 @@ public class InterfaceWSDLLoader extends AbstractLoader {
         assert AssemblyConstants.INTERFACE_WSDL.equals(reader.getName());
         WSDLServiceContract serviceContract = factory.createWSDLServiceContract();
         serviceContract.setScope(Scope.INSTANCE);
+        
+        ResourceLoader resourceLoader = loaderContext.getResourceLoader();
 
         String location = reader.getAttributeValue(WSDLI, WSDLI_LOCATION);
         if (location != null) {
             try {
-                wsdlRegistry.loadDefinition(location, loaderContext.getResourceLoader());
+                wsdlRegistry.loadDefinition(location, resourceLoader);
             } catch (IOException e) {
                 throw new MissingInterfaceException(e);
             } catch (WSDLException e) {
@@ -70,18 +73,18 @@ public class InterfaceWSDLLoader extends AbstractLoader {
 
         String portTypeURI = reader.getAttributeValue(null, "interface");
         if (portTypeURI != null) {
-            serviceContract.setPortType(getPortType(portTypeURI));
+            serviceContract.setPortType(getPortType(portTypeURI, resourceLoader));
         }
 
         portTypeURI = reader.getAttributeValue(null, "callbackInterface");
         if (portTypeURI != null) {
-            serviceContract.setCallbackPortType(getPortType(portTypeURI));
+            serviceContract.setCallbackPortType(getPortType(portTypeURI, resourceLoader));
         }
         StAXUtil.skipToEndElement(reader);
         return serviceContract;
     }
 
-    protected PortType getPortType(String uri) throws MissingInterfaceException {
+    protected PortType getPortType(String uri, ResourceLoader resourceLoader) throws MissingInterfaceException {
         
         // We currently support two syntaxes for specifying a WSDL portType:
         // namespace#portTypeName, this is what we supported in the initial contribution, we will
@@ -98,7 +101,7 @@ public class InterfaceWSDLLoader extends AbstractLoader {
             localName = fragment;
         }
         QName qname = new QName(namespace, localName);
-        PortType portType = wsdlRegistry.getPortType(qname);
+        PortType portType = wsdlRegistry.getPortType(qname, resourceLoader);
         if (portType == null) {
             throw new MissingInterfaceException(uri);
         }

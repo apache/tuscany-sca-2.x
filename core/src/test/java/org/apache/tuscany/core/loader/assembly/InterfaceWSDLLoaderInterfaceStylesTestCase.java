@@ -24,6 +24,8 @@ import java.net.URL;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.loader.impl.WSDLDefinitionRegistryImpl;
 import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
 import org.apache.tuscany.sdo.util.SDOUtil;
@@ -35,10 +37,11 @@ import commonj.sdo.helper.XSDHelper;
  */
 public class InterfaceWSDLLoaderInterfaceStylesTestCase extends LoaderTestSupport {
     private WSDLDefinitionRegistryImpl wsdlRegistry;
+    private ResourceLoader resourceLoader;
     private ClassLoader oldCL;
 
     public void testInterface() throws Exception {
-        wsdlRegistry.loadDefinition("http://www.interfacestyles.org", getClass().getResource("interfacestyles.wsdl"));
+        wsdlRegistry.loadDefinition("http://www.interfacestyles.org", getClass().getResource("interfacestyles.wsdl"), resourceLoader);
         String xml = "<interface.wsdl xmlns='http://www.osoa.org/xmlns/sca/0.9' interface='http://www.interfacestyles.org#TestInterfaceStylesService'></interface.wsdl>";
         XMLStreamReader reader = getReader(xml);
         WSDLServiceContract sc = (WSDLServiceContract) registry.load(reader, loaderContext);
@@ -63,12 +66,13 @@ public class InterfaceWSDLLoaderInterfaceStylesTestCase extends LoaderTestSuppor
     protected void setUp() throws Exception {
         oldCL = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+        resourceLoader = new ResourceLoaderImpl(getClass().getClassLoader());
         super.setUp();
         
         wsdlRegistry = new WSDLDefinitionRegistryImpl();
         wsdlRegistry.setMonitor(NULL_MONITOR);
         URL wsdlURL = getClass().getResource("interfacestyles.wsdl");
-        wsdlRegistry.loadDefinition("http://www.interfacestyles.org", wsdlURL);
+        wsdlRegistry.loadDefinition("http://www.interfacestyles.org", wsdlURL, resourceLoader);
         InterfaceWSDLLoader loader = new InterfaceWSDLLoader();
         loader.setWsdlRegistry(wsdlRegistry);
         registerLoader(loader);

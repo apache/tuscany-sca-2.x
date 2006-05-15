@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
+
 import javax.wsdl.Definition;
 import javax.wsdl.PortType;
 import javax.wsdl.Service;
@@ -46,8 +48,8 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
     private final WSDLFactory wsdlFactory;
     private final ExtensionRegistry registry;
 
-    private final Map<URL, Definition> definitionsByLocation = new HashMap<URL, Definition>();
-    private final Map<String, List<Definition>> definitionsByNamespace = new HashMap<String, List<Definition>>();
+    private final Map<ResourceLoader,Map<URL, Definition>> definitionsByLocationByLoader = new WeakHashMap<ResourceLoader,Map<URL, Definition>>();
+    private final Map<ResourceLoader,Map<String, List<Definition>>> definitionsByNamespaceByLoader = new WeakHashMap<ResourceLoader,Map<String, List<Definition>>>();
 
     private Monitor monitor;
 
@@ -86,10 +88,13 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
                 throw new WSDLException(WSDLException.CONFIGURATION_ERROR, "Resource not found: " + uri);
             }
         }
-        return loadDefinition(namespace, url);
+        return loadDefinition(namespace, url, resourceLoader);
     }
 
-    public Definition loadDefinition(String namespace, URL location) throws IOException, WSDLException {
+    public Definition loadDefinition(String namespace, URL location, ResourceLoader resourceLoader) throws IOException, WSDLException {
+        Map<URL, Definition> definitionsByLocation = getDefinitionsByLocation(resourceLoader);
+        Map<String, List<Definition>> definitionsByNamespace = getDefinitionsByNamespace(resourceLoader);
+        
         Definition definition = definitionsByLocation.get(location);
         if (definition != null) {
             // return cached copy
@@ -119,12 +124,13 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         return definition;
     }
 
-    public List<Definition> getDefinitionsForNamespace(String namespace) {
+    public List<Definition> getDefinitionsForNamespace(String namespace, ResourceLoader resourceLoader) {
+        Map<String, List<Definition>> definitionsByNamespace = getDefinitionsByNamespace(resourceLoader);
         return definitionsByNamespace.get(namespace);
     }
 
-
-    public PortType getPortType(QName name) {
+    public PortType getPortType(QName name, ResourceLoader resourceLoader) {
+        Map<String, List<Definition>> definitionsByNamespace = getDefinitionsByNamespace(resourceLoader);
         String namespace = name.getNamespaceURI();
         List<Definition> definitions = definitionsByNamespace.get(namespace);
         if (definitions == null) {
@@ -139,7 +145,8 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         return null;
     }
 
-    public Service getService(QName name) {
+    public Service getService(QName name, ResourceLoader resourceLoader) {
+        Map<String, List<Definition>> definitionsByNamespace = getDefinitionsByNamespace(resourceLoader);
         String namespace = name.getNamespaceURI();
         List<Definition> definitions = definitionsByNamespace.get(namespace);
         if (definitions == null) {
@@ -153,7 +160,25 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         }
         return null;
     }
+    
+    private Map<String, List<Definition>> getDefinitionsByNamespace(ResourceLoader resourceLoader) {
+        Map<String, List<Definition>> map = definitionsByNamespaceByLoader.get(resourceLoader);
+        if (map == null) {
+            map = new HashMap<String, List<Definition>>();
+            definitionsByNamespaceByLoader.put(resourceLoader, map);
+        }
+        return map;
+    }
 
+    private Map<URL, Definition> getDefinitionsByLocation(ResourceLoader resourceLoader) {
+        Map<URL, Definition> map = definitionsByLocationByLoader.get(resourceLoader);
+        if (map == null) {
+            map = new HashMap<URL, Definition>();
+            definitionsByLocationByLoader.put(resourceLoader, map);
+        }
+        return map;
+    }
+    
     public static interface Monitor {
         /**
          * Monitor event emitted immediately before an attempt is made to

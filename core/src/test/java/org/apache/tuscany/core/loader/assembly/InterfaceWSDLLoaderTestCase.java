@@ -21,6 +21,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.common.resource.ResourceLoader;
+import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import static org.apache.tuscany.core.loader.assembly.AssemblyConstants.INTERFACE_WSDL;
 import org.apache.tuscany.core.loader.impl.WSDLDefinitionRegistryImpl;
@@ -31,6 +33,7 @@ import org.apache.tuscany.model.types.wsdl.WSDLServiceContract;
  */
 public class InterfaceWSDLLoaderTestCase extends LoaderTestSupport {
     private WSDLDefinitionRegistryImpl wsdlRegistry;
+    private ResourceLoader resourceLoader;
 
     public void testMinimal() throws XMLStreamException, ConfigurationLoadException {
         String xml = "<interface.wsdl xmlns='http://www.osoa.org/xmlns/sca/0.9'></interface.wsdl>";
@@ -42,7 +45,7 @@ public class InterfaceWSDLLoaderTestCase extends LoaderTestSupport {
     }
 
     public void testInterface() throws Exception {
-        wsdlRegistry.loadDefinition("http://www.example.org", getClass().getResource("example.wsdl"));
+        wsdlRegistry.loadDefinition("http://www.example.org", getClass().getResource("example.wsdl"), resourceLoader);
         String xml = "<interface.wsdl xmlns='http://www.osoa.org/xmlns/sca/0.9' interface='http://www.example.org#HelloWorld'></interface.wsdl>";
         XMLStreamReader reader = getReader(xml);
         WSDLServiceContract sc = (WSDLServiceContract) registry.load(reader, loaderContext);
@@ -52,7 +55,7 @@ public class InterfaceWSDLLoaderTestCase extends LoaderTestSupport {
     }
 
     public void testInterfaceWithLocation() throws Exception {
-        wsdlRegistry.loadDefinition("http://www.example.org", getClass().getResource("example.wsdl"));
+        wsdlRegistry.loadDefinition("http://www.example.org", getClass().getResource("example.wsdl"), resourceLoader);
         String xml = "<interface.wsdl xmlns='http://www.osoa.org/xmlns/sca/0.9' xmlns:wsdli='http://www.w3.org/2006/01/wsdl-instance' " +
                 "wsdli:wsdlLocation='http://www.example.org " + getClass().getResource("example.wsdl") + "' "+
                 "interface='http://www.example.org#HelloWorld'"+
@@ -68,7 +71,8 @@ public class InterfaceWSDLLoaderTestCase extends LoaderTestSupport {
         super.setUp();
         wsdlRegistry = new WSDLDefinitionRegistryImpl();
         wsdlRegistry.setMonitor(NULL_MONITOR);
-        wsdlRegistry.loadDefinition("http://www.example.org", getClass().getResource("example.wsdl"));
+        resourceLoader = new ResourceLoaderImpl(getClass().getClassLoader());
+        wsdlRegistry.loadDefinition("http://www.example.org", getClass().getResource("example.wsdl"), resourceLoader);
         InterfaceWSDLLoader loader = new InterfaceWSDLLoader();
         loader.setWsdlRegistry(wsdlRegistry);
         registerLoader(loader);

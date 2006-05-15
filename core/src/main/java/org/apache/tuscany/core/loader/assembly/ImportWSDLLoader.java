@@ -79,7 +79,7 @@ public class ImportWSDLLoader extends AbstractLoader {
         }
 
         try {
-            definition = wsdlRegistry.loadDefinition(namespace, wsdlURL);
+            definition = wsdlRegistry.loadDefinition(namespace, wsdlURL, resourceLoader);
         } catch (IOException e) {
             SidefileLoadException sfe = new SidefileLoadException(e.getMessage());
             sfe.setResourceURI(location);
