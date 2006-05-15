@@ -15,11 +15,11 @@ public class EPtoExternalServiceTestCase extends TestCase {
      */
     public void testEPtoESInvocation() throws Throwable {
 //        RuntimeContext runtime = MockContextFactory.registerFooBinding(MockContextFactory.createJavaRuntime());
-//        PolicyBuilderRegistry registry = (PolicyBuilderRegistry) ((CompositeContext) runtime.getSystemContext().getContext(MockContextFactory.SYSTEM_CHILD))
+//        PolicyBuilderRegistry builderRegistry = (PolicyBuilderRegistry) ((CompositeContext) runtime.getSystemContext().getContext(MockContextFactory.SYSTEM_CHILD))
 //                .getContext(MockContextFactory.POLICY_BUILDER_REGISTRY).getInstance(null);
 //        MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
 //        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
-//        registry.registerTargetBuilder(interceptorBuilder);
+//        builderRegistry.registerTargetBuilder(interceptorBuilder);
 //        runtime.getRootContext().registerModelObject(MockContextFactory.createCompositeComponent("test.module"));
 //        CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
 //        child.registerModelObject(MockContextFactory.createModuleWithEntryPointToExternalService());

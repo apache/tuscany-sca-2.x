@@ -9,7 +9,7 @@ import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
- * A System registry for policy builders.
+ * A System builderRegistry for policy builders.
  * <p/>
  * Policy builders operate on either a source- or target-side wire and typically are registered by runtime
  * extensions through {@link #registerTargetBuilder} or {@link #registerSourceBuilder}

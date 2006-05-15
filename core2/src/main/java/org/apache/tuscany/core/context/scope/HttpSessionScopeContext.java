@@ -27,6 +27,10 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
     private final Map<AtomicContext, Map<Object, InstanceWrapper>> contexts;
     private final Map<Object, List<InstanceWrapper>> destroyQueues;
 
+    public HttpSessionScopeContext(){
+        this(null);
+    }
+
     public HttpSessionScopeContext(WorkContext workContext) {
         super("Session Scope", workContext);
         contexts = new ConcurrentHashMap<AtomicContext, Map<Object, InstanceWrapper>>();

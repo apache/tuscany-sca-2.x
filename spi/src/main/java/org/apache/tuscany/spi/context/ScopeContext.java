@@ -29,22 +29,35 @@ import org.apache.tuscany.spi.event.RuntimeEventListener;
  */
 public interface ScopeContext<T extends Context> extends Lifecycle, RuntimeEventListener {
 
-    public Scope getScope();
+    /**
+     * Returns the scope value representing the scope context
+     */
+    Scope getScope();
 
-    public void register(T context);
+    /**
+     * Sets the work context used by the scope container
+     */
+    void setWorkContext(WorkContext workContext);
+
+    /**
+     * Registers a context with the scope context
+     */
+    void register(T context);
 
     /**
      * Returns an instance associated with the current context
      *
      * @throws TargetException
      */
-    public Object getInstance(T context) throws TargetException;
+    Object getInstance(T context) throws TargetException;
 
 
     /**
+     * Returns the instance wrapper associated with the current context
+     *
      * @throws TargetException
      */
-    public InstanceWrapper getInstanceContext(T context) throws TargetException;
+    InstanceWrapper getInstanceContext(T context) throws TargetException;
 
 
 }

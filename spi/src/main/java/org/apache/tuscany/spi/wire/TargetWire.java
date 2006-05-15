@@ -24,11 +24,15 @@ import java.util.Map;
 public interface TargetWire<T> {
 
     /**
-     * Prepares the factory. This will typically be called at buildSource time, after bridging source- and target-side invocation chains.
-     *
-     * @throws WireFactoryInitException if an error is encountered during initialization
+     * Returns the name of the target service of the wire
      */
-    void initialize() throws WireFactoryInitException;
+    String getServiceName();
+
+    /**
+     * Sets the name of the target service of the wire
+     */
+    void setServiceName(String name);
+
 
     /**
      * Returns a proxy for a service specified by a reference or target
@@ -56,18 +60,13 @@ public interface TargetWire<T> {
     Class[] getImplementedInterfaces();
 
     /**
-     * Returns the name of the target service specified by the wire
-     */
-    String getServiceName();
-
-    void setServiceName(String name);
-
-    /**
      * Returns the invocation configuration for each operation on a service specified by a reference or a
      * target service.
      */
     Map<Method, TargetInvocationChain> getInvocationChains();
 
-    void setInvocationChains(Map<Method, TargetInvocationChain> chains);
+    void addInvocationChains(Map<Method, TargetInvocationChain> chains);
+
+    void addInvocationChain(Method method, TargetInvocationChain chain);
 
 }

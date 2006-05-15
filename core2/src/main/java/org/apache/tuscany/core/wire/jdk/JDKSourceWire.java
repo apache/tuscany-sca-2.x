@@ -20,7 +20,6 @@ import java.util.Map;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
-import org.apache.tuscany.spi.wire.WireFactoryInitException;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
@@ -31,33 +30,23 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  */
 public class JDKSourceWire<T> implements SourceWire<T> {
 
-    private static final int UNINITIALIZED = 0;
-
-    private static final int INITIALIZED = 1;
-
-    private int state = UNINITIALIZED;
-
-    private Class<T>[] businessInterfaceArray;
-
-    private Map<Method, SourceInvocationChain> methodToInvocationConfig;
+    private Class<T>[] businessInterfaces;
+    private Map<Method, SourceInvocationChain> invocationChains = new MethodHashMap<SourceInvocationChain>();
 
     @SuppressWarnings("unchecked")
     public T createProxy() {
-        if (state != INITIALIZED) {
-            throw new IllegalStateException("Proxy factory not INITIALIZED [" + state + "]");
-        }
         WireInvocationHandler handler = new JDKInvocationHandler();
-        handler.setConfiguration(methodToInvocationConfig);
-        return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaceArray, handler);
+        handler.setConfiguration(invocationChains);
+        return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaces, handler);
     }
 
     @SuppressWarnings("unchecked")
     public void setBusinessInterface(Class<T> interfaze) {
-        businessInterfaceArray = new Class[]{interfaze};
+        businessInterfaces = new Class[]{interfaze};
     }
 
     public Class<T> getBusinessInterface() {
-        return businessInterfaceArray[0];
+        return businessInterfaces[0];
     }
 
     public void addInterface(Class<?> claz) {
@@ -65,31 +54,19 @@ public class JDKSourceWire<T> implements SourceWire<T> {
     }
 
     public Class[] getImplementatedInterfaces() {
-        return businessInterfaceArray;
+        return businessInterfaces;
     }
-
-    public void initialize() throws WireFactoryInitException {
-        if (state != UNINITIALIZED) {
-            throw new IllegalStateException("Proxy factory in wrong state [" + state + "]");
-        }
-        if (invocationChains != null) {
-            methodToInvocationConfig = new MethodHashMap<SourceInvocationChain>(invocationChains.size());
-            for (Map.Entry<Method, SourceInvocationChain> entry : invocationChains.entrySet()) {
-                Method method = entry.getKey();
-                methodToInvocationConfig.put(method, entry.getValue());
-            }
-        }
-        state = INITIALIZED;
-    }
-
-    private Map<Method, SourceInvocationChain> invocationChains;
 
     public Map<Method, SourceInvocationChain> getInvocationChains() {
         return invocationChains;
     }
 
-    public void setInvocationChains(Map<Method, SourceInvocationChain> chains) {
-        invocationChains = chains;
+    public void addInvocationChains(Map<Method, SourceInvocationChain> chains) {
+        invocationChains.putAll(chains);
+    }
+
+    public void addInvocationChain(Method method, SourceInvocationChain chain) {
+        invocationChains.put(method, chain);
     }
 
     public String getReferenceName() {

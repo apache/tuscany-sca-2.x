@@ -20,14 +20,13 @@ import org.apache.tuscany.core.system.context.SystemCompositeContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.WorkContext;
-import org.apache.tuscany.spi.wire.WireFactoryInitException;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class AtomicContextToReferenceContextTestCase extends TestCase {
 
-    public void testWireResolution() throws NoSuchMethodException, WireFactoryInitException {
+    public void testWireResolution() throws NoSuchMethodException{
         WorkContext ctx = new WorkContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
         SystemCompositeContext context = new SystemCompositeContextImpl();

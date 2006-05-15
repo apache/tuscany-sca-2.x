@@ -1,8 +1,6 @@
 package org.apache.tuscany.core.wire.system;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
@@ -15,9 +13,9 @@ import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
 import org.apache.tuscany.spi.wire.WireFactoryService;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.WireService;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
@@ -37,6 +35,10 @@ public class WireServiceImpl implements WireService {
 
     public WireServiceImpl() {
 
+    }
+
+    public WireServiceImpl(WireFactoryService wireFactoryService) {
+        this.wireFactoryService = wireFactoryService;
     }
 
     public WireServiceImpl(WireFactoryService wireFactoryService, PolicyBuilderRegistry registry) {
@@ -66,13 +68,11 @@ public class WireServiceImpl implements WireService {
         wire.setBusinessInterface(interfaze);
         wire.setReferenceName(name);
 
-        Map<Method, SourceInvocationChain> chains = new HashMap<Method, SourceInvocationChain>();
         Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(interfaze);
         for (Method method : javaMethods) {
             SourceInvocationChain chain = new SourceInvocationChainImpl(method);
-            chains.put(method, chain);
+            wire.addInvocationChain(method, chain);
         }
-        wire.setInvocationChains(chains);
         if (policyRegistry != null) {
             // invoke policy builders
             policyRegistry.buildSource(reference, wire);
@@ -87,13 +87,11 @@ public class WireServiceImpl implements WireService {
         wire.setBusinessInterface(interfaze);
         wire.setServiceName(name);
 
-        Map<Method, TargetInvocationChain> chains = new HashMap<Method, TargetInvocationChain>();
         Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(interfaze);
         for (Method method : javaMethods) {
             TargetInvocationChain chain = new TargetInvocationChainImpl(method);
-            chains.put(method, chain);
+            wire.addInvocationChain(method, chain);
         }
-        wire.setInvocationChains(chains);
         if (policyRegistry != null) {
             // invoke policy builders
             policyRegistry.buildTarget(service, wire);

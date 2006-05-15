@@ -60,9 +60,9 @@ public class JavaAtomicContext<T> extends AtomicContextExtension<T> {
     protected EventInvoker<Object> destroyInvoker;
     protected ObjectFactory<?> objectFactory;
     protected List<Class<?>> serviceInterfaces;
+    protected Scope scope;
 
-
-    public JavaAtomicContext(String name, List<Class<?>> serviceInterfaces, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
+    public JavaAtomicContext(String name, List<Class<?>> serviceInterfaces, ObjectFactory<?> objectFactory, Scope scope, boolean eagerInit, EventInvoker<Object> initInvoker,
                              EventInvoker<Object> destroyInvoker, List<Injector> injectors, Map<String, Member> members) {
         this.name = name;
         this.injectors = injectors != null ? injectors : new ArrayList<Injector>();
@@ -72,6 +72,7 @@ public class JavaAtomicContext<T> extends AtomicContextExtension<T> {
         this.initInvoker = initInvoker;
         this.destroyInvoker = destroyInvoker;
         this.serviceInterfaces = serviceInterfaces;
+        this.scope = scope;
     }
 
     public List<Class<?>> getServiceInterfaces() {
@@ -79,10 +80,7 @@ public class JavaAtomicContext<T> extends AtomicContextExtension<T> {
     }
 
     public Scope getScope() {
-        if (scopeContext == null) {
-            return null;
-        }
-        return scopeContext.getScope();
+        return scope;
     }
 
     public boolean isEagerInit() {

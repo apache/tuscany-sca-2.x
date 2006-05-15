@@ -17,58 +17,68 @@ import org.apache.tuscany.spi.context.WorkContext;
 public class ScopeRegistryImpl implements ScopeRegistry {
 
     private final Map<CompositeContext, ScopeContext> moduleScopeCache;
-    private final Map<Scope, ObjectFactory<ScopeContext>> factoryCache;
+    private final Map<Scope, ScopeContext> scopeCache;
+    private final Map<Scope, ObjectFactory<? extends ScopeContext>> factoryCache;
     private final WorkContext workContext;
 
     public ScopeRegistryImpl(WorkContext workContext) {
         assert(workContext != null);
         moduleScopeCache = new ConcurrentHashMap<CompositeContext, ScopeContext>();
-        factoryCache = new ConcurrentHashMap<Scope, ObjectFactory<ScopeContext>>();
+        scopeCache = new ConcurrentHashMap<Scope, ScopeContext>();
+        factoryCache = new ConcurrentHashMap<Scope, ObjectFactory<? extends ScopeContext>>();
         this.workContext = workContext;
     }
 
     public ScopeContext getScopeContext(Scope scope) {
-        CompositeContext remoteContext = workContext.getRemoteContext();
-        assert(remoteContext != null): "Remote composite context next set";
         if (Scope.MODULE == scope) {
+            CompositeContext remoteContext = workContext.getRemoteContext();
+            assert(remoteContext != null): "Remote composite context next set";
             ScopeContext moduleScope = moduleScopeCache.get(remoteContext);
             if (moduleScope == null) {
-                ObjectFactory<ScopeContext> factory = factoryCache.get(scope);
+                ObjectFactory<? extends ScopeContext> factory = factoryCache.get(scope);
                 if (factory == null) {
                     ScopeNotFoundException e = new ScopeNotFoundException("Scope object factor not registered for scope");
                     e.setIdentifier("MODULE");
                     throw e;
                 }
                 moduleScope = factory.getInstance();
+                moduleScope.setWorkContext(workContext);
+                moduleScope.start();
                 moduleScopeCache.put(remoteContext, moduleScope);
             }
             return moduleScope;
-        }
-        ObjectFactory<ScopeContext> factory = factoryCache.get(scope);
-        if (factory == null) {
-            ScopeNotFoundException e = new ScopeNotFoundException("Scope object factor not registered for scope");
-            switch (scope) {
-                case SESSION:
-                    e.setIdentifier("SESSION");
-                    break;
-                case REQUEST:
-                    e.setIdentifier("REQUEST");
-                    break;
-                case STATELESS:
-                    e.setIdentifier("STATELESS");
-                    break;
-                default:
-                    e.setIdentifier("UNKNOWN");
-                    break;
+        } else {
+            ScopeContext context = scopeCache.get(scope);
+            if (context == null) {
+                ObjectFactory<? extends ScopeContext> factory = factoryCache.get(scope);
+                if (factory == null) {
+                    ScopeNotFoundException e = new ScopeNotFoundException("Scope object factory not registered for scope");
+                    switch (scope) {
+                        case SESSION:
+                            e.setIdentifier("SESSION");
+                            break;
+                        case REQUEST:
+                            e.setIdentifier("REQUEST");
+                            break;
+                        case STATELESS:
+                            e.setIdentifier("STATELESS");
+                            break;
+                        default:
+                            e.setIdentifier("UNKNOWN");
+                            break;
+                    }
+                    throw e;
+                }
+                context = factory.getInstance();
+                context.setWorkContext(workContext);
+                context.start();
+                scopeCache.put(scope,context);
             }
-            throw e;
-
+            return context;
         }
-
-        return null;
     }
 
-    public void registerFactory(Scope scope, ObjectFactory<ScopeContext> factory) {
+    public <T extends ScopeContext> void registerFactory(Scope scope, ObjectFactory<T> factory) {
         factoryCache.put(scope, factory);
     }
 

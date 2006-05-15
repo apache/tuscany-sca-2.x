@@ -29,6 +29,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
     protected JavaAtomicContext createContext(CompositeContext parent, Component<JavaImplementation> component)
             throws BuilderConfigException {
         PojoComponentType componentType = component.getImplementation().getComponentType();
+
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         for (Service service : componentType.getServices().values()) {
             serviceInterfaces.add(((JavaServiceContract) service.getServiceContract()).getInterfaceClass());
@@ -58,7 +59,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
                 }
             }
         }
-        return new JavaAtomicContext(component.getName(), serviceInterfaces, factory,
+        return new JavaAtomicContext(component.getName(), serviceInterfaces, factory, componentType.getLifecycleScope(),
                 componentType.isEagerInit(), componentType.getInitInvoker(), componentType.getDestroyInvoker(),
                 injectors, componentType.getReferenceMembers());
     }

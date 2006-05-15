@@ -24,7 +24,6 @@ import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
-import org.apache.tuscany.spi.wire.WireFactoryInitException;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 
@@ -126,12 +125,11 @@ public class MockContextFactory {
         return new SystemAtomicContextImpl(name, serviceInterfaces, createObjectFactory(clazz), eagerInit, initInvoker, destroyInvoker, injectors);
     }
 
-    public static <T> TargetWire<T> createTargetWireFactory(String serviceName, Class<T> interfaze) throws WireFactoryInitException {
+    public static <T> TargetWire<T> createTargetWireFactory(String serviceName, Class<T> interfaze) {
         TargetWire<T> wire = new JDKTargetWire<T>();
         wire.setServiceName(serviceName);
         wire.setBusinessInterface(interfaze);
-        wire.setInvocationChains(createTargetInvocationConfigurations(interfaze));
-        wire.initialize();
+        wire.addInvocationChains(createTargetInvocationConfigurations(interfaze));
         return wire;
     }
 

@@ -23,7 +23,7 @@ public interface ScopeRegistry {
 
     ScopeContext getScopeContext(Scope scope) throws ScopeNotFoundException;
 
-    void registerFactory(Scope scope, ObjectFactory<ScopeContext> factory);
+    <T extends ScopeContext> void registerFactory(Scope scope, ObjectFactory<T> factory);
 
     void deregisterFactory(Scope scope);
 

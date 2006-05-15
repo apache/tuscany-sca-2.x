@@ -14,10 +14,8 @@
 package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.Method;
-import java.util.Map;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.SourceInvocationChainImpl;
 import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
@@ -25,8 +23,6 @@ import org.apache.tuscany.core.wire.mock.MockStaticInvoker;
 import org.apache.tuscany.core.wire.mock.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.mock.SimpleTarget;
 import org.apache.tuscany.core.wire.mock.SimpleTargetImpl;
-import org.apache.tuscany.spi.wire.SourceInvocationChain;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
 
 public class JDKWireFactoryServiceTestCase extends TestCase {
 
@@ -47,13 +43,10 @@ public class JDKWireFactoryServiceTestCase extends TestCase {
         source.setTargetInterceptor(new InvokerInterceptor());
         source.setTargetInvoker(new MockStaticInvoker(hello, new SimpleTargetImpl()));
         source.build();
-        Map<Method, SourceInvocationChain> configs = new MethodHashMap<SourceInvocationChain>();
-        configs.put(hello, source);
         JDKSourceWire<SimpleTarget> factory = new JDKSourceWire<SimpleTarget>();
         factory.setReferenceName("foo");
-        factory.setInvocationChains(configs);
+        factory.addInvocationChain(hello, source);
         factory.setBusinessInterface(SimpleTarget.class);
-        factory.initialize();
         SimpleTarget instance = factory.createProxy();
         assertEquals("foo", instance.hello("foo"));
     }
@@ -65,12 +58,9 @@ public class JDKWireFactoryServiceTestCase extends TestCase {
         source.addInterceptor(new InvokerInterceptor());
         source.setTargetInvoker(new MockStaticInvoker(hello, new SimpleTargetImpl()));
         source.build();
-        Map<Method, TargetInvocationChain> configs = new MethodHashMap<TargetInvocationChain>();
-        configs.put(hello, source);
         JDKTargetWire<SimpleTarget> factory = new JDKTargetWire<SimpleTarget>();
-        factory.setInvocationChains(configs);
+        factory.addInvocationChain(hello, source);
         factory.setBusinessInterface(SimpleTarget.class);
-        factory.initialize();
         SimpleTarget instance = factory.createProxy();
         assertEquals("foo", instance.hello("foo"));
     }

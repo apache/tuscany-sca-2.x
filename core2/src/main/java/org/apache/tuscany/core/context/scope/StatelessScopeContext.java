@@ -27,6 +27,10 @@ import org.apache.tuscany.spi.event.Event;
  */
 public class StatelessScopeContext extends AbstractScopeContext<AtomicContext> {
 
+    public StatelessScopeContext(){
+        this(null);
+    }
+
     public StatelessScopeContext(WorkContext workContext) {
         super("Stateless scope", workContext);
         assert(workContext != null): "Work context was null";

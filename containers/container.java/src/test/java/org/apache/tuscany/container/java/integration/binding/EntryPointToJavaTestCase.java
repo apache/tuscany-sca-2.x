@@ -35,12 +35,12 @@ public class EntryPointToJavaTestCase extends TestCase {
      */
     public void testEPtoJavaModuleScopeInvoke() throws Throwable {
 //        RuntimeContext runtime = MockContextFactory.registerFooBinding(MockContextFactory.createJavaRuntime());
-//        PolicyBuilderRegistry registry = (PolicyBuilderRegistry) ((CompositeContext) runtime.getSystemContext().getContext(MockContextFactory.SYSTEM_CHILD))
+//        PolicyBuilderRegistry builderRegistry = (PolicyBuilderRegistry) ((CompositeContext) runtime.getSystemContext().getContext(MockContextFactory.SYSTEM_CHILD))
 //                .getContext(MockContextFactory.POLICY_BUILDER_REGISTRY).getInstance(null);
 //
 //        MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
 //        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
-//        registry.registerTargetBuilder(interceptorBuilder);
+//        builderRegistry.registerTargetBuilder(interceptorBuilder);
 //        runtime.getRootContext().registerModelObject(MockContextFactory.createCompositeComponent("test.module"));
 //        CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
 //        child.registerModelObject(MockContextFactory.createModuleWithEntryPoint(Scope.MODULE));
@@ -80,11 +80,11 @@ public class EntryPointToJavaTestCase extends TestCase {
      */
     public void testEPtoJavaSessionScopeInvoke() throws Throwable {
 //        RuntimeContext runtime = MockContextFactory.registerFooBinding(MockContextFactory.createJavaRuntime());
-//        PolicyBuilderRegistry registry = (PolicyBuilderRegistry) ((CompositeContext) runtime.getSystemContext().getContext(MockContextFactory.SYSTEM_CHILD))
+//        PolicyBuilderRegistry builderRegistry = (PolicyBuilderRegistry) ((CompositeContext) runtime.getSystemContext().getContext(MockContextFactory.SYSTEM_CHILD))
 //                .getContext(MockContextFactory.POLICY_BUILDER_REGISTRY).getInstance(null);
 //        MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
 //        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
-//        registry.registerTargetBuilder(interceptorBuilder);
+//        builderRegistry.registerTargetBuilder(interceptorBuilder);
 //        runtime.getRootContext().registerModelObject(MockContextFactory.createCompositeComponent("test.module"));
 //        CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
 //        child.registerModelObject(MockContextFactory.createModuleWithEntryPoint(Scope.SESSION));
@@ -155,11 +155,11 @@ public class EntryPointToJavaTestCase extends TestCase {
      */
     public void testEPtoJavaStatelessInvoke() throws Throwable {
 //        RuntimeContext runtime = MockContextFactory.registerFooBinding(MockContextFactory.createJavaRuntime());
-//        PolicyBuilderRegistry registry = (PolicyBuilderRegistry) ((CompositeContext) runtime.getSystemContext().getContext(MockContextFactory.SYSTEM_CHILD))
+//        PolicyBuilderRegistry builderRegistry = (PolicyBuilderRegistry) ((CompositeContext) runtime.getSystemContext().getContext(MockContextFactory.SYSTEM_CHILD))
 //                .getContext(MockContextFactory.POLICY_BUILDER_REGISTRY).getInstance(null);
 //        MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
 //        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
-//        registry.registerTargetBuilder(interceptorBuilder);
+//        builderRegistry.registerTargetBuilder(interceptorBuilder);
 //        runtime.getRootContext().registerModelObject(MockContextFactory.createCompositeComponent("test.module"));
 //        CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
 //        child.registerModelObject(MockContextFactory.createModuleWithEntryPoint(Scope.STATELESS));
@@ -195,11 +195,11 @@ public class EntryPointToJavaTestCase extends TestCase {
 
     public void testEPtoJavaRequestInvoke() throws Throwable {
 //        RuntimeContext runtime = MockContextFactory.registerFooBinding(MockContextFactory.createJavaRuntime());
-//        PolicyBuilderRegistry registry = (PolicyBuilderRegistry) ((CompositeContext) runtime.getSystemContext().getContext(MockContextFactory.SYSTEM_CHILD))
+//        PolicyBuilderRegistry builderRegistry = (PolicyBuilderRegistry) ((CompositeContext) runtime.getSystemContext().getContext(MockContextFactory.SYSTEM_CHILD))
 //                .getContext(MockContextFactory.POLICY_BUILDER_REGISTRY).getInstance(null);
 //        MockSyncInterceptor mockInterceptor = new MockSyncInterceptor();
 //        MockInterceptorBuilder interceptorBuilder = new MockInterceptorBuilder(mockInterceptor, false);
-//        registry.registerTargetBuilder(interceptorBuilder);
+//        builderRegistry.registerTargetBuilder(interceptorBuilder);
 //        runtime.getRootContext().registerModelObject(MockContextFactory.createCompositeComponent("test.module"));
 //        CompositeContext child = (CompositeContext) runtime.getRootContext().getContext("test.module");
 //        child.registerModelObject(MockContextFactory.createModuleWithEntryPoint(Scope.REQUEST));

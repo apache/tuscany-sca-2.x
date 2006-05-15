@@ -24,36 +24,40 @@ import java.util.Map;
 public interface SourceWire<T> {
 
     /**
-     * Prepares the factory. This will typically be called at buildSource time, after bridging source- and target-side invocation chains.
-     *
-     * @throws WireFactoryInitException if an error is encountered during initialization
+     * Returns the name of the source reference
      */
-    public void initialize() throws WireFactoryInitException;
+    String getReferenceName();
+
+    /**
+     * Sets the name of the source reference
+     */
+    void setReferenceName(String name);
+
 
     /**
      * Returns a proxy for a service specified by a reference or target
      */
-    public T createProxy() throws ProxyCreationException;
+    T createProxy() throws ProxyCreationException;
 
     /**
      * Sets the primary interface type generated proxies implement
      */
-    public void setBusinessInterface(Class<T> interfaze);
+    void setBusinessInterface(Class<T> interfaze);
 
     /**
      * Returns the primary interface type implemented by generated proxies
      */
-    public Class<T> getBusinessInterface();
+    Class<T> getBusinessInterface();
 
     /**
      * Adds an interface type generated proxies implement
      */
-    public void addInterface(Class<?> claz);
+    void addInterface(Class<?> claz);
 
     /**
      * Returns an array of all interfaces implemented by generated proxies
      */
-    public Class[] getImplementatedInterfaces();
+    Class[] getImplementatedInterfaces();
 
     /**
      * Returns the invocation configuration for each operation on a service specified by a reference or a
@@ -61,13 +65,8 @@ public interface SourceWire<T> {
      */
     Map<Method, SourceInvocationChain> getInvocationChains();
 
-    void setInvocationChains(Map<Method, SourceInvocationChain> chains);
+    void addInvocationChains(Map<Method, SourceInvocationChain> chains);
 
-    /**
-     * Returns the name of the source reference
-     */
-    String getReferenceName();
-
-    void setReferenceName(String name);
+    void addInvocationChain(Method method, SourceInvocationChain chains);
 
 }

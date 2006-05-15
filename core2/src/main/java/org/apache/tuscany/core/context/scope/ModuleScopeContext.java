@@ -29,6 +29,10 @@ public class ModuleScopeContext extends AbstractScopeContext<AtomicContext> {
     private final List<InstanceWrapper> destroyQueue;
     private static final InstanceWrapper EMPTY = new EmptyWrapper();
 
+    public ModuleScopeContext(){
+        this(null);
+    }
+
     public ModuleScopeContext(WorkContext workContext) {
         super("Module Scope", workContext);
         instanceContexts = new ConcurrentHashMap<AtomicContext, InstanceWrapper>();

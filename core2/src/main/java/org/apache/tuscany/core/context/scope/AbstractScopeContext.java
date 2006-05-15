@@ -34,6 +34,10 @@ public abstract class AbstractScopeContext<T extends Context> extends AbstractLi
         this.workContext = workContext;
     }
 
+    public void setWorkContext(WorkContext workContext) {
+        this.workContext = workContext;
+    }
+
     public void addListener(RuntimeEventListener listener) {
         addListener(TRUE_FILTER, listener);
     }
