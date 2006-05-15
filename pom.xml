@@ -36,6 +36,7 @@
         <module>tomcat</module>
         <module>tools</module>
         <module>plugin</module>
+        <module>plugins</module>
     </modules>
 
     <build>
