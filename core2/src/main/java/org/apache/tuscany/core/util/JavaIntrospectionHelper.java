@@ -438,7 +438,7 @@ public class JavaIntrospectionHelper {
      */
     public static Class introspectGeneric(Class clazz, int pos) {
         assert(clazz != null): "No class specified";
-        Type type = clazz.getClass().getGenericSuperclass();
+        Type type = clazz.getGenericSuperclass();
         if (type instanceof ParameterizedType) {
             Type[] args = ((ParameterizedType) type).getActualTypeArguments();
             if (args.length <= pos) {
@@ -446,7 +446,16 @@ public class JavaIntrospectionHelper {
             }
             return (Class) ((ParameterizedType) type).getActualTypeArguments()[pos];
         } else {
-            throw new AssertionError("Subclasses of " + clazz.getName() + " must be genericized");
+            Type[] interfaces = clazz.getGenericInterfaces();
+            for (Type itype : interfaces) {
+                if (! (itype instanceof ParameterizedType)) {
+                    continue;
+                }
+                ParameterizedType interfaceType = (ParameterizedType) itype;
+                return (Class) interfaceType.getActualTypeArguments()[0];
+            }
+
+            throw new AssertionError(clazz.getName() + " must be genericized");
         }
 
     }

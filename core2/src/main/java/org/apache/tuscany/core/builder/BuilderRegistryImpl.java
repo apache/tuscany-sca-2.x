@@ -25,15 +25,27 @@ import org.apache.tuscany.model.Binding;
 import org.apache.tuscany.model.BoundReference;
 import org.apache.tuscany.model.BoundService;
 import org.apache.tuscany.model.Component;
+import org.apache.tuscany.model.ComponentType;
 import org.apache.tuscany.model.Implementation;
+import org.apache.tuscany.model.Reference;
+import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.model.Service;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.builder.WireBuilder;
+import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
+import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.context.ScopeRegistry;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
  * @version $Rev$ $Date$
@@ -42,21 +54,48 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     private final Map<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>> componentBuilders = new HashMap<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>();
     private final Map<Class<? extends Binding>, BindingBuilder<? extends Binding>> bindingBuilders = new HashMap<Class<? extends Binding>, BindingBuilder<? extends Binding>>();
 
+    protected WireService wireService;
+    protected ScopeRegistry scopeRegistry;
+
+    public BuilderRegistryImpl() {
+    }
+
+    public BuilderRegistryImpl(WireService wireService, ScopeRegistry scopeRegistry) {
+        this.wireService = wireService;
+        this.scopeRegistry = scopeRegistry;
+    }
+
+    @Autowire
+    public void setWireService(WireService wireService) {
+        this.wireService = wireService;
+    }
+
+    @Autowire
+    public void setScopeRegistry(ScopeRegistry scopeRegistry) {
+        this.scopeRegistry = scopeRegistry;
+    }
+
     public <I extends Implementation<?>> void register(ComponentBuilder<I> builder) {
-        Type[] interfaces = builder.getClass().getGenericInterfaces();
-        for (Type type : interfaces) {
-            if (! (type instanceof ParameterizedType)) {
-                continue;
-            }
-            ParameterizedType interfaceType = (ParameterizedType) type;
-            if (!ComponentBuilder.class.equals(interfaceType.getRawType())) {
-                continue;
-            }
-            Class<I> implClass = (Class<I>) interfaceType.getActualTypeArguments()[0];
-            register(implClass, builder);
-            return;
-        }
-        throw new IllegalArgumentException("builder is not generified");
+       //Class<I> implClass = (Class<I>) recurseInterfaces(builder.getClass());
+       Class<I> implClass = JavaIntrospectionHelper.introspectGeneric(builder.getClass(),0);
+       if (implClass == null){
+          throw new IllegalArgumentException("builder is not generified");
+       }
+       register(implClass, builder);
+//        Type[] interfaces = builder.getClass().getGenericInterfaces();
+//        for (Type type : interfaces) {
+//            if (! (type instanceof ParameterizedType)) {
+//                continue;
+//            }
+//            ParameterizedType interfaceType = (ParameterizedType) type;
+//            if (!ComponentBuilder.class.equals(interfaceType.getRawType())) {
+//                continue;
+//            }
+//            Class<I> implClass = (Class<I>) interfaceType.getActualTypeArguments()[0];
+//            register(implClass, builder);
+//            return;
+//        }
+//        throw new IllegalArgumentException("builder is not generified");
     }
 
     public <I extends Implementation<?>> void register(Class<I> implClass, ComponentBuilder<I> builder) {
@@ -66,7 +105,34 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     public <I extends Implementation<?>> Context build(CompositeContext parent, Component<I> component) {
         Class<I> implClass = (Class<I>) component.getImplementation().getClass();
         ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>) componentBuilders.get(implClass);
-        return componentBuilder.build(parent, component);
+
+        ComponentContext context = componentBuilder.build(parent, component);
+        ComponentType componentType = component.getImplementation().getComponentType();
+        assert(componentType != null): "Component type must be set";
+        // create target wires
+        for (Service service : componentType.getServices().values()) {
+            TargetWire wire = wireService.createTargetWire(service);
+            context.addTargetWire(wire);
+        }
+        // create source wires
+        for (Reference reference : componentType.getReferences().values()) {
+            SourceWire wire = wireService.createSourceWire(reference);
+            context.addSourceWire(wire);
+        }
+        if (context instanceof AtomicContext) {
+            AtomicContext ctx = (AtomicContext) context;
+            Scope scope = ctx.getScope();
+            if (scope == null) {
+                scope = Scope.STATELESS;
+            }
+            ScopeContext scopeContext = scopeRegistry.getScopeContext(scope);
+            if (scopeContext == null) {
+                throw new BuilderConfigException("Scope context not registered for scope " + scope);
+            }
+            ctx.setScopeContext(scopeContext);
+            scopeContext.register(ctx);
+        }
+        return context;
     }
 
     public <B extends Binding> void register(BindingBuilder<B> builder) {

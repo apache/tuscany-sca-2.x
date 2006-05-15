@@ -18,12 +18,12 @@ package org.apache.tuscany.spi.builder;
 
 import org.apache.tuscany.model.Component;
 import org.apache.tuscany.model.Implementation;
+import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.Context;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface ComponentBuilder<I extends Implementation<?>> {
-    Context build(CompositeContext parent, Component<I> component) throws BuilderConfigException;
+    ComponentContext build(CompositeContext parent, Component<I> component) throws BuilderConfigException;
 }

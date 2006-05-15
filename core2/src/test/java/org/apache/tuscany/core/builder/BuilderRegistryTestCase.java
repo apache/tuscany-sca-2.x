@@ -19,9 +19,10 @@ package org.apache.tuscany.core.builder;
 import junit.framework.TestCase;
 import org.apache.tuscany.model.Component;
 import org.apache.tuscany.model.CompositeImplementation;
+import org.apache.tuscany.model.CompositeComponentType;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
+import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.Context;
 
 /**
  * @version $Rev$ $Date$
@@ -33,6 +34,7 @@ public class BuilderRegistryTestCase extends TestCase {
         GenerifiedBuilder builder = new GenerifiedBuilder();
         registry.register(builder);
         Component<CompositeImplementation> component = new Component(new CompositeImplementation());
+        component.getImplementation().setComponentType(new CompositeComponentType());
         registry.build(null, component);
     }
 
@@ -40,6 +42,7 @@ public class BuilderRegistryTestCase extends TestCase {
         RawBuilder builder = new RawBuilder();
         registry.register(CompositeImplementation.class, builder);
         Component<CompositeImplementation> component = new Component(new CompositeImplementation());
+        component.getImplementation().setComponentType(new CompositeComponentType());
         registry.build(null, component);
     }
 
@@ -49,14 +52,14 @@ public class BuilderRegistryTestCase extends TestCase {
     }
 
     public static class GenerifiedBuilder implements ComponentBuilder<CompositeImplementation> {
-        public Context build(CompositeContext parent, Component<CompositeImplementation> component) {
+        public ComponentContext build(CompositeContext parent, Component<CompositeImplementation> component) {
             return null;
         }
     }
 
     @SuppressWarnings({"RawUseOfParameterizedType"})
     public static class RawBuilder implements ComponentBuilder {
-        public Context build(CompositeContext parent, Component component) {
+        public ComponentContext build(CompositeContext parent, Component component) {
             return null;
         }
     }

@@ -26,7 +26,7 @@ import org.osoa.sca.annotations.Scope;
 @Scope("MODULE")
 public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplementation> {
 
-    protected JavaAtomicContext createContext(CompositeContext parent, Component<JavaImplementation> component)
+    public JavaAtomicContext build(CompositeContext parent, Component<JavaImplementation> component)
             throws BuilderConfigException {
         PojoComponentType componentType = component.getImplementation().getComponentType();
 

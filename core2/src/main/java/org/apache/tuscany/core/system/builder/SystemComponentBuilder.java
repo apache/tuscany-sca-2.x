@@ -24,16 +24,16 @@ import org.apache.tuscany.model.Service;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
+import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.Context;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 //@SuppressWarnings("unchecked")
 public class SystemComponentBuilder implements ComponentBuilder<SystemImplementation> {
-   
-    public Context build(CompositeContext parent, Component<SystemImplementation> component) throws BuilderConfigException {
+
+    public ComponentContext build(CompositeContext parent, Component<SystemImplementation> component) throws BuilderConfigException {
         PojoComponentType componentType = component.getImplementation().getComponentType();
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         for (Service service : componentType.getServices().values()) {

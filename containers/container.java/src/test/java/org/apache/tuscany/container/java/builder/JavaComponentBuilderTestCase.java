@@ -13,6 +13,7 @@ import org.apache.tuscany.core.context.scope.ScopeRegistryImpl;
 import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.wire.jdk.JDKWireFactoryService;
 import org.apache.tuscany.core.wire.system.WireServiceImpl;
+import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.model.Component;
 import org.apache.tuscany.model.JavaServiceContract;
 import org.apache.tuscany.model.Scope;
@@ -22,6 +23,7 @@ import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ScopeRegistry;
 import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.builder.BuilderRegistry;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -53,10 +55,12 @@ public class JavaComponentBuilderTestCase extends TestCase {
         sourceImpl.setImplementationClass(SourceImpl.class);
         Component<JavaImplementation> sourceComponent = new Component<JavaImplementation>(sourceImpl);
 
+        BuilderRegistry builderRegistry = new BuilderRegistryImpl(wireService,scopeRegistry);
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        builder.setWireService(wireService);
-        builder.setScopeRegistry(scopeRegistry);
-        JavaAtomicContext<Source> ctx = (JavaAtomicContext<Source>) builder.build(parent, sourceComponent);
+        builderRegistry.register(builder);
+        JavaAtomicContext<Source> ctx = (JavaAtomicContext<Source>) builderRegistry.build(parent, sourceComponent);
+
+
         ctx.start();
         Source source = ctx.getService();
         assertNotNull(source);
