@@ -8,6 +8,7 @@ public enum Scope {
     REQUEST,
     SESSION,
     MODULE,
+    APPLICATION,
     UNDEFINED
 
 }

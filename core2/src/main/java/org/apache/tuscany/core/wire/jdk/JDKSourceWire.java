@@ -21,6 +21,7 @@ import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.QualifiedName;
 
 /**
  * Creates proxies that are injected on references using JDK dynamic proxy facilities and front a wire. The
@@ -32,6 +33,8 @@ public class JDKSourceWire<T> implements SourceWire<T> {
 
     private Class<T>[] businessInterfaces;
     private Map<Method, SourceInvocationChain> invocationChains = new MethodHashMap<SourceInvocationChain>();
+    private String referenceName;
+    private QualifiedName targetName;
 
     @SuppressWarnings("unchecked")
     public T createProxy() {
@@ -77,5 +80,12 @@ public class JDKSourceWire<T> implements SourceWire<T> {
         this.referenceName = referenceName;
     }
 
-    private String referenceName;
+    public QualifiedName getTargetName() {
+        return targetName;
+    }
+
+    public void setTargetName(QualifiedName targetName) {
+        this.targetName = targetName;
+    }
+
 }

@@ -33,7 +33,7 @@ public class MediationTestCase extends TestCase {
     }
 
     public void testMediation() throws Exception {
-        StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(hello, new SimpleTargetImpl());
+        StaticJavaTargetTargetInvoker invoker = new StaticJavaTargetTargetInvoker(hello, new SimpleTargetImpl());
         Assert.assertEquals("foo", invoker.invokeTarget("foo"));
     }
 

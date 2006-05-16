@@ -55,7 +55,7 @@ public class ScopedPojoInvokerTestCase extends TestCase {
         JavaAtomicContext context = MockContextFactory.createJavaAtomicContext("foo", SimpleTargetImpl.class, Scope.MODULE);
         scope.register(context);
         context.setScopeContext(scope);
-        ScopedJavaComponentInvoker invoker = new ScopedJavaComponentInvoker(echoMethod, context);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, context);
         invoker.setCacheable(false);
         Object ret = invoker.invokeTarget("foo");
         assertEquals("foo", ret);

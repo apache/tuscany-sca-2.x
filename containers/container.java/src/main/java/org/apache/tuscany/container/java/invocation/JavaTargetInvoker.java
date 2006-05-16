@@ -26,7 +26,7 @@ import org.apache.tuscany.spi.context.TargetException;
  *
  * @version $Rev$ $Date$
  */
-public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
+public class JavaTargetInvoker extends AbstractJavaTargetInvoker {
 
     private JavaAtomicContext context;
     private Object target;
@@ -39,7 +39,7 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
      * @param operation the operation the invoker is associated with
      * @param context   the scope context the component is resolved in
      */
-    public ScopedJavaComponentInvoker(Method operation, JavaAtomicContext context) {
+    public JavaTargetInvoker(Method operation, JavaAtomicContext context) {
         super(operation);
         assert (context != null) : "No atomic context specified";
         this.context = context;
@@ -68,7 +68,7 @@ public class ScopedJavaComponentInvoker extends AbstractJavaComponentInvoker {
     }
 
     public Object clone() throws CloneNotSupportedException {
-        ScopedJavaComponentInvoker invoker = (ScopedJavaComponentInvoker) super.clone();
+        JavaTargetInvoker invoker = (JavaTargetInvoker) super.clone();
         invoker.target = null;
         invoker.cacheable = this.cacheable;
         invoker.context = this.context;

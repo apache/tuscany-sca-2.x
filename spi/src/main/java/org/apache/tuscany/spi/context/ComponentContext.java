@@ -26,21 +26,6 @@ public interface ComponentContext<T> extends Context<T> {
      */
     List<Class<?>>getServiceInterfaces();
 
-    /**
-     * Adds a target-side wire. Target-side wire factories contain the invocation chains associated with the
-     * destination service of a wire
-     */
-    void addTargetWire(TargetWire wire);
-
-    /**
-     * Returns the target-side wire associated with the given service name
-     */
-    TargetWire getTargetWire(String serviceName);
-
-    /**
-     * Returns a collection of target-side wires keyed by service name
-     */
-    Map<String, TargetWire> getTargetWires();
 
     /**
      * Adds a source-side wire for the given reference. Source-side wires contain the invocation chains for a
@@ -59,6 +44,22 @@ public interface ComponentContext<T> extends Context<T> {
      * Returns a collection of source-side wires for references. There may 1..n wires per reference.
      */
     List<SourceWire> getSourceWires();
+
+    /**
+     * Adds a target-side wire. Target-side wire factories contain the invocation chains associated with the
+     * destination service of a wire
+     */
+    void addTargetWire(TargetWire wire);
+
+    /**
+     * Returns the target-side wire associated with the given service name
+     */
+    TargetWire getTargetWire(String serviceName);
+
+    /**
+     * Returns a collection of target-side wires keyed by service name
+     */
+    Map<String, TargetWire> getTargetWires();
 
     /**
      * Called to signal to the configuration that its parent context has been activated and that it shoud

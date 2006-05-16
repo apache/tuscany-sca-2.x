@@ -18,8 +18,7 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  */
 public abstract class ServiceContextExtension<T> extends AbstractContext<T> implements ServiceContext<T> {
 
-    private SourceWire<T> sourceWire;
-
+    protected SourceWire<T> sourceWire;
     protected ObjectFactory<WireInvocationHandler> handlerFactory;
     // a proxy implementing the service exposed by the context backed by the invocation handler
     private T proxy;
@@ -30,8 +29,12 @@ public abstract class ServiceContextExtension<T> extends AbstractContext<T> impl
     public ServiceContextExtension() throws CoreRuntimeException {
     }
 
-    public void setSourceWire(SourceWire<T> sourceWire) {
-        this.sourceWire = sourceWire;
+    public SourceWire<T> getSourceWire() {
+        return sourceWire;
+    }
+
+    public void setSourceWire(SourceWire<T> wire) {
+        sourceWire = wire;
     }
 
     public void setHandlerFactory(ObjectFactory<WireInvocationHandler> handlerFactory) {

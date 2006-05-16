@@ -2,6 +2,9 @@ package org.apache.tuscany.spi.context;
 
 import java.lang.reflect.InvocationHandler;
 
+import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.SourceWire;
+
 /**
  * Manages the context for a service configured for a binding. Bindings uses an {@link java.lang.reflect.InvocationHandler}
  * to perform an invocation as in:
@@ -40,5 +43,10 @@ public interface ServiceContext<T> extends Context<T> {
      * Returns the service interface configured for the service
      */
     public Class<T> getInterface();
+
+    public SourceWire<T> getSourceWire();
+
+    public void setSourceWire(SourceWire<T> wire);
+
 
 }

@@ -2,6 +2,7 @@ package org.apache.tuscany.core.system.context;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.core.context.AutowireContext;
@@ -51,4 +52,15 @@ public class AutowireSystemReferenceContext<T> extends AbstractContext<T> implem
     }
 
 
+    public void addTargetWire(TargetWire wire) {
+        throw new UnsupportedOperationException();
+    }
+
+    public TargetWire getTargetWire(String serviceName) {
+        throw new UnsupportedOperationException();
+    }
+
+    public Map<String, TargetWire> getTargetWires() {
+        throw new UnsupportedOperationException();
+    }
 }

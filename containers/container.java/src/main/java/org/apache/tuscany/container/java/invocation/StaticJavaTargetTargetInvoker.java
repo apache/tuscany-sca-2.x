@@ -24,12 +24,12 @@ import java.lang.reflect.Method;
  * 
  * @version $Rev$ $Date$
  */
-public class StaticJavaComponentTargetInvoker extends AbstractJavaComponentInvoker {
+public class StaticJavaTargetTargetInvoker extends AbstractJavaTargetInvoker {
 
     private Object instance;
     private boolean cacheable;
 
-    public StaticJavaComponentTargetInvoker(Method operation, Object instance) {
+    public StaticJavaTargetTargetInvoker(Method operation, Object instance) {
         super(operation);
         assert (instance != null) : "Instance cannot be null";
         this.instance = instance;
@@ -48,7 +48,7 @@ public class StaticJavaComponentTargetInvoker extends AbstractJavaComponentInvok
     }
 
     public Object clone() throws CloneNotSupportedException {
-        StaticJavaComponentTargetInvoker invoker = (StaticJavaComponentTargetInvoker) super.clone();
+        StaticJavaTargetTargetInvoker invoker = (StaticJavaTargetTargetInvoker) super.clone();
         invoker.instance = null;
         return invoker;
     }

@@ -54,14 +54,14 @@ public class StaticPojoInvokerTestCase extends TestCase {
 
     public void testObjectInvoke() throws Throwable {
         TestBean bean = new TestBean();
-        StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(echoMethod, bean);
+        StaticJavaTargetTargetInvoker invoker = new StaticJavaTargetTargetInvoker(echoMethod, bean);
         Object ret = invoker.invokeTarget("foo");
         Assert.assertEquals("foo", ret);
     }
 
     public void testArrayInvoke() throws Throwable {
         TestBean bean = new TestBean();
-        StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(arrayMethod, bean);
+        StaticJavaTargetTargetInvoker invoker = new StaticJavaTargetTargetInvoker(arrayMethod, bean);
         String[] args = new String[]{"foo", "bar"};
         Object ret = invoker.invokeTarget(new Object[]{args});
         String[] retA = (String[]) ret;
@@ -73,7 +73,7 @@ public class StaticPojoInvokerTestCase extends TestCase {
 
     public void testNullInvoke() throws Throwable {
         TestBean bean = new TestBean();
-        StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(nullParamMethod, bean);
+        StaticJavaTargetTargetInvoker invoker = new StaticJavaTargetTargetInvoker(nullParamMethod, bean);
         Object ret = invoker.invokeTarget(null);
         String retS = (String) ret;
         Assert.assertEquals("foo", retS);
@@ -81,7 +81,7 @@ public class StaticPojoInvokerTestCase extends TestCase {
 
     public void testPrimitiveInvoke() throws Throwable {
         TestBean bean = new TestBean();
-        StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(primitiveMethod, bean);
+        StaticJavaTargetTargetInvoker invoker = new StaticJavaTargetTargetInvoker(primitiveMethod, bean);
         Object ret = invoker.invokeTarget(new Integer[]{1});
         Integer retI = (Integer) ret;
         Assert.assertEquals(1, retI.intValue());
@@ -89,7 +89,7 @@ public class StaticPojoInvokerTestCase extends TestCase {
 
     public void testInvokeCheckedException() throws Throwable {
         TestBean bean = new TestBean();
-        StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(checkedMethod, bean);
+        StaticJavaTargetTargetInvoker invoker = new StaticJavaTargetTargetInvoker(checkedMethod, bean);
         try {
             invoker.invokeTarget(null);
         } catch (InvocationTargetException e) {
@@ -103,7 +103,7 @@ public class StaticPojoInvokerTestCase extends TestCase {
 
     public void testInvokeRuntimeException() throws Throwable {
         TestBean bean = new TestBean();
-        StaticJavaComponentTargetInvoker invoker = new StaticJavaComponentTargetInvoker(runtimeMethod, bean);
+        StaticJavaTargetTargetInvoker invoker = new StaticJavaTargetTargetInvoker(runtimeMethod, bean);
         try {
             invoker.invokeTarget(null);
         } catch (InvocationTargetException e) {

@@ -24,6 +24,6 @@ public interface ReferenceContext<T> extends Context<T> {
      */
     public InvocationHandler getHandler() throws TargetException;
 
-    public TargetWire getTargetWire();
+    public TargetWire<T> getTargetWire();
 
 }

@@ -47,7 +47,7 @@ public abstract class ReferenceContextExtension<T> extends AbstractContext<T> im
         this.targetWire = targetWire;
     }
 
-    public TargetWire getTargetWire() {
+    public TargetWire<T> getTargetWire() {
         return targetWire;
     }
 

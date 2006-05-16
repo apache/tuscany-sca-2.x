@@ -32,11 +32,11 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractJavaComponentInvoker implements TargetInvoker {
+public abstract class AbstractJavaTargetInvoker implements TargetInvoker {
 
     protected Method operation;
 
-    public AbstractJavaComponentInvoker(Method operation) {
+    public AbstractJavaTargetInvoker(Method operation) {
         assert (operation != null) : "Operation method cannot be null";
         this.operation = operation;
     }
@@ -70,7 +70,7 @@ public abstract class AbstractJavaComponentInvoker implements TargetInvoker {
     @Override
     public Object clone() throws CloneNotSupportedException {
         try {
-            AbstractJavaComponentInvoker clone = (AbstractJavaComponentInvoker) super.clone();
+            AbstractJavaTargetInvoker clone = (AbstractJavaTargetInvoker) super.clone();
             clone.operation = this.operation;
             return clone;
         } catch (CloneNotSupportedException e) {

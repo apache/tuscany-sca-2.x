@@ -23,21 +23,18 @@ import org.apache.tuscany.spi.context.Context;
 /**
  * Implementations perform the second phase of converting a logical model representing an assembly into a series of
  * runtime or executable artifacts. Specifically, they are responsible for finalizing target-side proxy factories and
- * bridging {@link org.apache.tuscany.core.wire.InvocationConfiguration}s held by source- and target-side proxy
+ * bridging {@link org.apache.tuscany.spi.wire.InvocationChain}s held by source- and target-side proxy
  * factories. <code>WireBuilder</code>s generally operate by target implementation type. In other words, for a wire
  * from a Java source to a JavaScript target, the Javascript <code>WireBuilder</code> will complete the wire. This is
- * necessary as a <code>WireBuilder</code> must set a {@link org.apache.tuscany.core.wire.TargetInvoker} that is
+ * necessary as a <code>WireBuilder</code> must set a {@link org.apache.tuscany.spi.wire.TargetInvoker} that is
  * responsible for dispatching to an implementation on the source side of the wire.
- * <p/>
- * Runtimes are generally configured with a {@link org.apache.tuscany.core.builder.impl.DefaultWireBuilder} as a
- * top-most wire builder, which delegates to other builders wired to it as part of a system configuration.
  * <p/>
  * Wire builders may optimize the wire chains based on certain characteristics of th wire, such as source and
  * target scopes.
  *
  * @version $Rev$ $Date$
  */
-public interface WireBuilder<T extends Context> {
+public interface WireBuilder<T extends Context<?>> {
 
     /**
      * Connects wire configurations of the source proxy factory to corresponding ones in the target proxy to
@@ -47,7 +44,7 @@ public interface WireBuilder<T extends Context> {
      * @param targetWire the proxy factory used in constructing the target side of the wire chain
      * @throws BuilderConfigException if an error occurs during the wire buildSource process
      */
-    public void connect(SourceWire<?> sourceWire, TargetWire<?> targetWire) throws BuilderConfigException;
+    public void connect(SourceWire<?> sourceWire, TargetWire<?> targetWire,T context) throws BuilderConfigException;
 
     /**
      * Finishes processing the target side wire chain.

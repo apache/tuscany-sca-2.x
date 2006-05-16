@@ -16,6 +16,8 @@ package org.apache.tuscany.spi.wire;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.apache.tuscany.spi.QualifiedName;
+
 /**
  * Implementations are responsible for managing the source side of a wire.
  *
@@ -32,6 +34,16 @@ public interface SourceWire<T> {
      * Sets the name of the source reference
      */
     void setReferenceName(String name);
+
+    /**
+     * Returns the name of the target
+     */
+    QualifiedName getTargetName();
+
+    /**
+     * Sets the name of the target
+     */
+    void setTargetName(QualifiedName name);
 
 
     /**

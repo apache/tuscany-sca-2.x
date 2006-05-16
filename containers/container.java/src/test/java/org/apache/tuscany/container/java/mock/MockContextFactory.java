@@ -10,7 +10,7 @@ import java.util.Map;
 
 import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.container.java.context.JavaAtomicContext;
-import org.apache.tuscany.container.java.invocation.ScopedJavaComponentInvoker;
+import org.apache.tuscany.container.java.invocation.JavaTargetInvoker;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
@@ -236,7 +236,7 @@ public class MockContextFactory {
             for (SourceInvocationChain sourceInvocationConfig : sourceWire.getInvocationChains()
                     .values()) {
                 //FIXME should use target method, not sourceInvocationConfig.getMethod()
-                TargetInvoker invoker = new ScopedJavaComponentInvoker(sourceInvocationConfig.getMethod(), targetContext);
+                TargetInvoker invoker = new JavaTargetInvoker(sourceInvocationConfig.getMethod(), targetContext);
                 invoker.setCacheable(cacheable);
                 sourceInvocationConfig.setTargetInvoker(invoker);
             }

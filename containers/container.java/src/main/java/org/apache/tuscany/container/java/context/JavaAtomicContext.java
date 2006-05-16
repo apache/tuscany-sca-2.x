@@ -26,7 +26,7 @@ import java.util.Map;
 
 import org.apache.tuscany.common.ObjectCreationException;
 import org.apache.tuscany.common.ObjectFactory;
-import org.apache.tuscany.container.java.invocation.ScopedJavaComponentInvoker;
+import org.apache.tuscany.container.java.invocation.JavaTargetInvoker;
 import org.apache.tuscany.core.context.PojoInstanceWrapper;
 import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
@@ -154,7 +154,7 @@ public class JavaAtomicContext<T> extends AtomicContextExtension<T> {
     }
 
     public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
-        return new ScopedJavaComponentInvoker(operation, this);
+        return new JavaTargetInvoker(operation, this);
     }
 
     public void prepare() {

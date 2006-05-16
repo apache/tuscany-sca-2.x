@@ -21,10 +21,11 @@ import org.apache.tuscany.model.BoundReference;
 import org.apache.tuscany.model.BoundService;
 import org.apache.tuscany.model.Component;
 import org.apache.tuscany.model.Implementation;
+import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.wire.SourceWire;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.context.ReferenceContext;
+import org.apache.tuscany.spi.context.ServiceContext;
 
 /**
  * @version $Rev$ $Date$
@@ -44,9 +45,15 @@ public interface BuilderRegistry {
 
     <B extends Binding> Context build(CompositeContext parent, BoundReference<B> boundReference);
 
-    void register(WireBuilder builder);
+    <C extends Context<?>> void register(WireBuilder<C> builder);
 
-    void connect(SourceWire<?> source, TargetWire<?> target);
+    //FIXME these methods don't really belong here so we need to refactor
+    //<T extends Class> void connect(ServiceContext<T> source, ComponentContext<T> target);
 
-    void completeChain(TargetWire<?> target);
+    //<T extends Class> void connect(ServiceContext<T> source, ReferenceContext<T> target);
+
+    <T extends Class> void connect(Context<T> source, CompositeContext parent);
+
+
+    void completeChain(Context<?> target);
 }

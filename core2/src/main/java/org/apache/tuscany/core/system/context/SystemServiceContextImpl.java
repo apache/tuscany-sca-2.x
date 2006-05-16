@@ -1,18 +1,19 @@
 package org.apache.tuscany.core.system.context;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.context.IllegalTargetException;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.TargetNotFoundException;
+import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -39,11 +40,11 @@ public class SystemServiceContextImpl<T> extends AbstractContext<T> implements S
                 cachedInstance = (T) ((AtomicContext) ctx).getService(target.getPortName());
             } else if ((ctx instanceof ReferenceContext)) {
                 cachedInstance = (T) ctx.getService();
-            } else if (ctx == null){
+            } else if (ctx == null) {
                 TargetNotFoundException e = new TargetNotFoundException(name);
                 e.addContextName(getName());
                 throw e;
-            }else {
+            } else {
                 IllegalTargetException e = new IllegalTargetException("Reference target must be a component or reference context");
                 e.setIdentifier(name);
                 e.addContextName(getName());
@@ -62,8 +63,17 @@ public class SystemServiceContextImpl<T> extends AbstractContext<T> implements S
         return interfaze;
     }
 
-    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
-        return null; //TOD implement
+    public SourceWire<T> getSourceWire() {
+        throw new UnsupportedOperationException();
     }
+
+    public void setSourceWire(SourceWire<T> wire) {
+        throw new UnsupportedOperationException();
+    }
+
+    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
+        throw new UnsupportedOperationException();
+    }
+
 
 }

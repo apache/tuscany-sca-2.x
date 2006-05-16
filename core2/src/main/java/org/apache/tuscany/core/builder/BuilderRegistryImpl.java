@@ -16,11 +16,15 @@
  */
 package org.apache.tuscany.core.builder;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.apache.tuscany.core.wire.MessageChannelImpl;
 import org.apache.tuscany.model.Binding;
 import org.apache.tuscany.model.BoundReference;
 import org.apache.tuscany.model.BoundService;
@@ -30,6 +34,7 @@ import org.apache.tuscany.model.Implementation;
 import org.apache.tuscany.model.Reference;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.model.Service;
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -40,12 +45,16 @@ import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
+import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.ScopeRegistry;
+import org.apache.tuscany.spi.context.ServiceContext;
+import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.TargetInvocationChain;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.TargetWire;
 import org.apache.tuscany.spi.wire.WireService;
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
  * @version $Rev$ $Date$
@@ -53,6 +62,7 @@ import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 public class BuilderRegistryImpl implements BuilderRegistry {
     private final Map<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>> componentBuilders = new HashMap<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>();
     private final Map<Class<? extends Binding>, BindingBuilder<? extends Binding>> bindingBuilders = new HashMap<Class<? extends Binding>, BindingBuilder<? extends Binding>>();
+    private final Map<Class<? extends Context<?>>, WireBuilder<? extends Context<?>>> wireBuilders = new HashMap<Class<? extends Context<?>>, WireBuilder<? extends Context<?>>>();
 
     protected WireService wireService;
     protected ScopeRegistry scopeRegistry;
@@ -76,11 +86,11 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     public <I extends Implementation<?>> void register(ComponentBuilder<I> builder) {
-       Class<I> implClass = JavaIntrospectionHelper.introspectGeneric(builder.getClass(),0);
-       if (implClass == null){
-          throw new IllegalArgumentException("builder is not generified");
-       }
-       register(implClass, builder);
+        Class<I> implClass = JavaIntrospectionHelper.introspectGeneric(builder.getClass(), 0);
+        if (implClass == null) {
+            throw new IllegalArgumentException("builder is not generified");
+        }
+        register(implClass, builder);
     }
 
     public <I extends Implementation<?>> void register(Class<I> implClass, ComponentBuilder<I> builder) {
@@ -153,15 +163,121 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         return bindingBuilder.build(parent, boundReference);
     }
 
-    public void register(WireBuilder builder) {
-        throw new UnsupportedOperationException();
+    public <C extends Context<?>> void register(WireBuilder<C> builder) {
+        Class<C> implClass = JavaIntrospectionHelper.introspectGeneric(builder.getClass(), 0);
+        if (implClass == null) {
+            throw new IllegalArgumentException("builder is not generified");
+        }
+        register(implClass, builder);
     }
 
-    public void connect(SourceWire<?> source, TargetWire<?> target) {
-        throw new UnsupportedOperationException();
+    public <C extends Context<?>> void register(Class<C> implClass, WireBuilder<C> builder) {
+        wireBuilders.put(implClass, builder);
     }
 
-    public void completeChain(TargetWire<?> target) {
-        throw new UnsupportedOperationException();
+    public <T extends Class> void connect(Context<T> source, CompositeContext parent) {
+        if (source instanceof ComponentContext) {
+            ComponentContext<T> sourceContext = (ComponentContext<T>) source;
+            for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
+                try {
+                    connect(sourceWire, parent);
+                } catch (BuilderConfigException e) {
+                    e.addContextName(sourceContext.getName());
+                    e.addContextName(parent.getName());
+                    throw e;
+                }
+            }
+        } else if (source instanceof ServiceContext) {
+            ServiceContext<T> sourceContext = (ServiceContext<T>) source;
+            SourceWire<T> sourceWire = sourceContext.getSourceWire();
+            try {
+                connect(sourceWire, parent);
+            } catch (BuilderConfigException e) {
+                e.addContextName(sourceContext.getName());
+                e.addContextName(parent.getName());
+                throw e;
+            }
+        } else {
+            BuilderConfigException e = new BuilderConfigException("Invalid source context type");
+            e.setIdentifier(source.getName());
+            e.addContextName(parent.getName());
+            throw e;
+        }
+    }
+
+    private void connect(SourceWire sourceWire, CompositeContext parent) throws BuilderConfigException {
+        QualifiedName targetName = sourceWire.getTargetName();
+        Context<?> target = parent.getContext(targetName.getPartName());
+        if (target == null) {
+            BuilderConfigException e = new BuilderConfigException("Target not found for reference" + sourceWire.getReferenceName());
+            e.setIdentifier(targetName.getQualifiedName());
+            throw e;
+        }
+        TargetWire<?> targetWire;
+        if (target instanceof ComponentContext) {
+            targetWire = ((ComponentContext<?>) target).getTargetWires().get(targetName.getPortName());
+            if (targetWire == null) {
+                BuilderConfigException e = new BuilderConfigException("Target service not found for reference" + sourceWire.getReferenceName());
+                e.setIdentifier(targetName.getPortName());
+                throw e;
+            }
+            connect(sourceWire, targetWire, target);
+        } else if (target instanceof ReferenceContext) {
+            targetWire = ((ReferenceContext<?>) target).getTargetWire();
+            assert(targetWire != null);
+            connect(sourceWire, targetWire,target);
+        } else {
+            BuilderConfigException e = new BuilderConfigException("Invalid wire target type for reference " + sourceWire.getReferenceName());
+            e.setIdentifier(targetName.getQualifiedName());
+        }
+
+
+    }
+
+    private void connect(SourceWire<?> source, TargetWire<?> targetWire, Context<?> target) {
+        // if null, the targetWire side has no interceptors or handlers
+        Map<Method, TargetInvocationChain> targetInvocationConfigs = targetWire.getInvocationChains();
+        for (SourceInvocationChain sourceInvocationConfig : source.getInvocationChains().values()) {
+            // match wire chains
+            TargetInvocationChain targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig.getMethod());
+            if (targetInvocationConfig == null) {
+                BuilderConfigException e = new BuilderConfigException("Incompatible source and targetWire interface types for reference");
+                e.setIdentifier(source.getReferenceName());
+                throw e;
+            }
+            // if handler is configured, add that
+            if (targetInvocationConfig.getRequestHandlers() != null) {
+                sourceInvocationConfig.setTargetRequestChannel(new MessageChannelImpl(targetInvocationConfig
+                        .getRequestHandlers()));
+                sourceInvocationConfig.setTargetResponseChannel(new MessageChannelImpl(targetInvocationConfig
+                        .getResponseHandlers()));
+            } else {
+                // no handlers, just connect interceptors
+                if (targetInvocationConfig.getHeadInterceptor() == null) {
+                    BuilderConfigException e = new BuilderConfigException("No targetWire handler or interceptor for operation");
+                    e.setIdentifier(targetInvocationConfig.getMethod().getName());
+                    throw e;
+                }
+                if (!(sourceInvocationConfig.getTailInterceptor() instanceof InvokerInterceptor && targetInvocationConfig
+                        .getHeadInterceptor() instanceof InvokerInterceptor)) {
+                    // check that we do not have the case where the only interceptors are invokers since we just need one
+                    sourceInvocationConfig.setTargetInterceptor(targetInvocationConfig.getHeadInterceptor());
+                }
+            }
+        }
+
+        for (SourceInvocationChain chain : source.getInvocationChains()
+                .values()) {
+            TargetInvoker invoker = target.createTargetInvoker(targetWire.getServiceName(), chain.getMethod());
+            // TODO fix cacheable attrivute
+            //invoker.setCacheable(cacheable);
+            chain.setTargetInvoker(invoker);
+        }
+
+    }
+
+
+    public void completeChain(Context<?> target) {
+
     }
 }
