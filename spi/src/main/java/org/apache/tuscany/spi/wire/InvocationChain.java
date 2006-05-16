@@ -7,12 +7,10 @@ import java.util.List;
  * Contains a source- or target-side invocation pipeline for a service operation. The runtime framework
  * creates invocation chains on a per-operation, per-service basis. Further, invocation chains are further
  * distinguished by being part of the source or target sides of a wire. Chains are "bridged" together by the
- * runtime by a set of {@link org.apache.tuscany.spi.builder.WireBuilder}s with the source-side holding
- * references to the target.
+ * runtime with the source-side holding references to the target.
  * <p/>
- * <code>InvocationChain</code>s are managed by {@link SourceWire}s and {@link
- * TargetWire}s, which are used by wire factories to
- * buildSource wires and proxies.
+ * <code>InvocationChain</code>s are managed by {@link SourceWire}s and {@link TargetWire}s, which are used by
+ * wire factories to buildSource wires and proxies.
  * <p/>
  * Invocation configurations must contain at least one interceptor and may have 0 to N handlers. Handlers
  * process a wire request or response in a one-way fashion. A typical wire sequence where interceptors and
@@ -60,7 +58,6 @@ import java.util.List;
  * pipeline.
  *
  * @version $Rev: 396284 $ $Date: 2006-04-23 08:27:42 -0700 (Sun, 23 Apr 2006) $
- * @see org.apache.tuscany.spi.builder.WireBuilder
  * @see TargetInvoker
  */
 public interface InvocationChain {

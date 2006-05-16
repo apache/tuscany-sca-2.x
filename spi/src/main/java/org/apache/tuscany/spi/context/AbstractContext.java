@@ -98,4 +98,7 @@ public abstract class AbstractContext<T> extends AbstractLifecycle implements Co
         return listeners;
     }
 
+    public void prepare() {
+
+    }
 }

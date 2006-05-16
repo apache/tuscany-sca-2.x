@@ -8,6 +8,7 @@ import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
+import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
@@ -65,4 +66,9 @@ public abstract class ServiceContextExtension<T> extends AbstractContext<T> impl
         return sourceWire.getBusinessInterface();
     }
 
+    public void prepare() {
+        for (SourceInvocationChain chain : sourceWire.getInvocationChains().values()) {
+            chain.setTargetInvoker(createTargetInvoker(sourceWire.getReferenceName(), chain.getMethod()));
+        }
+    }
 }

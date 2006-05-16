@@ -40,7 +40,6 @@ import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
-import org.apache.tuscany.spi.builder.WireBuilder;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
@@ -62,7 +61,6 @@ import org.apache.tuscany.spi.wire.WireService;
 public class BuilderRegistryImpl implements BuilderRegistry {
     private final Map<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>> componentBuilders = new HashMap<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>();
     private final Map<Class<? extends Binding>, BindingBuilder<? extends Binding>> bindingBuilders = new HashMap<Class<? extends Binding>, BindingBuilder<? extends Binding>>();
-    private final Map<Class<? extends Context<?>>, WireBuilder<? extends Context<?>>> wireBuilders = new HashMap<Class<? extends Context<?>>, WireBuilder<? extends Context<?>>>();
 
     protected WireService wireService;
     protected ScopeRegistry scopeRegistry;
@@ -163,18 +161,6 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         return bindingBuilder.build(parent, boundReference);
     }
 
-    public <C extends Context<?>> void register(WireBuilder<C> builder) {
-        Class<C> implClass = JavaIntrospectionHelper.introspectGeneric(builder.getClass(), 0);
-        if (implClass == null) {
-            throw new IllegalArgumentException("builder is not generified");
-        }
-        register(implClass, builder);
-    }
-
-    public <C extends Context<?>> void register(Class<C> implClass, WireBuilder<C> builder) {
-        wireBuilders.put(implClass, builder);
-    }
-
     public <T extends Class> void connect(Context<T> source, CompositeContext parent) {
         if (source instanceof ComponentContext) {
             ComponentContext<T> sourceContext = (ComponentContext<T>) source;
@@ -225,7 +211,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         } else if (target instanceof ReferenceContext) {
             targetWire = ((ReferenceContext<?>) target).getTargetWire();
             assert(targetWire != null);
-            connect(sourceWire, targetWire,target);
+            connect(sourceWire, targetWire, target);
         } else {
             BuilderConfigException e = new BuilderConfigException("Invalid wire target type for reference " + sourceWire.getReferenceName());
             e.setIdentifier(targetName.getQualifiedName());
@@ -276,8 +262,4 @@ public class BuilderRegistryImpl implements BuilderRegistry {
 
     }
 
-
-    public void completeChain(Context<?> target) {
-
-    }
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
@@ -42,10 +43,15 @@ public abstract class ComponentContextExtension<T> extends AbstractContext<T> im
 
     public void addSourceWires(Class<?> multiplicityClass, List<SourceWire> wires) {
         sourceWires.addAll(wires);
-        onSourceWires(multiplicityClass,wires);
+        onSourceWires(multiplicityClass, wires);
     }
 
     public void prepare() {
+        for (TargetWire<T> targetWire : targetWires.values()) {
+            for (TargetInvocationChain chain : targetWire.getInvocationChains().values()) {
+                chain.setTargetInvoker(createTargetInvoker(targetWire.getServiceName(), chain.getMethod()));
+            }
+        }
     }
 
     public abstract void onSourceWire(SourceWire wire);

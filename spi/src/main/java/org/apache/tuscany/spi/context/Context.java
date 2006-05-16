@@ -69,6 +69,10 @@ public interface Context<T> extends EventPublisher, Lifecycle {
      */
     TargetInvoker createTargetInvoker(String serviceName, Method operation);
 
-
+    /**
+     * Called to signal to the configuration that its parent context has been activated and that it shoud
+     * perform any required initialization steps
+     */
+    void prepare();
 
 }

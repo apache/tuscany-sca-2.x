@@ -39,7 +39,7 @@ public class MockReferenceContext<T> extends AbstractContext<T> implements Refer
         throw new UnsupportedOperationException();
     }
 
-    public TargetWire getTargetWire() {
+    public TargetWire<T> getTargetWire() {
         throw new UnsupportedOperationException();
     }
 
