@@ -49,7 +49,12 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
         try {
 
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
-            Object[] request = dataBinding.fromOMElement(requestOM);
+            Object[] request;
+            if (requestOM != null) {
+                request = dataBinding.fromOMElement(requestOM);
+            } else {
+            	request = new Object[0];
+            }
             
             Object response;
             ClassLoader tccl = Thread.currentThread().getContextClassLoader();
@@ -66,10 +71,14 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
                 }
             }
 
-            OMElement responseOM = dataBinding.toOMElement(new Object[] { response });
-
             SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
-            soapEnvelope.getBody().addChild(responseOM);
+
+            OMElement responseOM = null;
+            if (response != null) {
+                responseOM = dataBinding.toOMElement(new Object[] { response });
+                soapEnvelope.getBody().addChild(responseOM);
+            }
+
             outMC.setEnvelope(soapEnvelope);
             outMC.getOperationContext().setProperty(Constants.RESPONSE_WRITTEN, Constants.VALUE_TRUE);
 
