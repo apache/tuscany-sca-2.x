@@ -72,7 +72,7 @@
     <wsdl:service name="AccountService">
         <wsdl:port binding="tns:AccountServiceSOAP"
                    name="AccountServiceSOAP">
-            <soap:address location="http://localhost:8080/tuscany-container-java-incubating-M1/services/AccountService"/>
+            <soap:address location="http://localhost:8080/tuscany-container-java/services/AccountService"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>
