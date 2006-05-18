@@ -71,13 +71,16 @@ public class WSDL2JavaGenerator {
             return;
         }
 
+        String portName = null;
         String targetDirectory = null;
         String wsdlJavaPackage = null;
         String xsdJavaPackage = null;
 
         int index = 0;
         for (; index < args.length && args[index].startsWith("-"); ++index) {
-            if (args[index].equalsIgnoreCase("-targetDirectory")) {
+            if (args[index].equalsIgnoreCase("-port")) {
+                portName = args[++index];
+            } else if (args[index].equalsIgnoreCase("-targetDirectory")) {
                 targetDirectory = args[++index];
             } else if (args[index].equalsIgnoreCase("-javaPackage")) {
                 wsdlJavaPackage = args[++index];
@@ -95,7 +98,7 @@ public class WSDL2JavaGenerator {
             return;
         }
 
-        generateFromWSDL(wsdlFileName, targetDirectory, wsdlJavaPackage, xsdJavaPackage, 0);
+        generateFromWSDL(wsdlFileName, portName!=null? new String[]{portName}:null, targetDirectory, wsdlJavaPackage, xsdJavaPackage, 0);
 
     }
 
