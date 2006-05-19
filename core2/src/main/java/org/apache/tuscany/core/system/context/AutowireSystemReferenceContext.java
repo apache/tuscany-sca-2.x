@@ -47,7 +47,7 @@ public class AutowireSystemReferenceContext<T> extends AbstractContext<T> implem
         return referenceInterface;
     }
 
-    public TargetWire getTargetWire() {
+    public TargetWire<T> getTargetWire() {
         throw new UnsupportedOperationException();
     }
 

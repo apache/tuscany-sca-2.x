@@ -2,6 +2,9 @@ package org.apache.tuscany.core.integration.system;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.lang.reflect.Member;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.context.WorkContextImpl;
@@ -9,6 +12,7 @@ import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.TargetInstanceResolver;
+import org.apache.tuscany.core.injection.IntraCompositeResolver;
 import org.apache.tuscany.core.mock.MockContextFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
@@ -18,8 +22,10 @@ import org.apache.tuscany.core.mock.context.MockReferenceContext;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
+import org.apache.tuscany.core.system.wire.SystemSourceWire;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.QualifiedName;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -33,12 +39,12 @@ public class AtomicContextToReferenceContextTestCase extends TestCase {
         scope.start();
         ReferenceContext<Target> serviceContext = new MockReferenceContext<Target>("service", Target.class, new TargetImpl());
         context.registerContext(serviceContext);
-        List<Injector> injectors = new ArrayList<Injector>();
-        MethodInjector injector = new MethodInjector(SourceImpl.class.getMethod("setTarget", Target.class), new TargetInstanceResolver<Target>(serviceContext));
-        injectors.add(injector);
+        Map<String, Member> members = new HashMap<String,Member>();
+        members.put("setTarget",SourceImpl.class.getMethod("setTarget", Target.class));
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
-        SystemAtomicContext sourceContext = MockContextFactory.createSystemAtomicContext("source", interfaces, SourceImpl.class, injectors);
+        SystemAtomicContext sourceContext = MockContextFactory.createSystemAtomicContext("source", interfaces, SourceImpl.class, null,members);
+        sourceContext.addSourceWire(new SystemSourceWire("setTarget",new QualifiedName("service"),Target.class, new IntraCompositeResolver(serviceContext,"")));
         context.registerContext(sourceContext);
         sourceContext.setScopeContext(scope);
         context.start();

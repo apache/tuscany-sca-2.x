@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.tuscany.core.system.context.SystemServiceContext;
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
@@ -190,6 +190,29 @@ public abstract class AbstractCompositeContext<T> extends AbstractContext<T> imp
         assert (componentName != null) : "Name was null";
         return children.get(componentName);
     }
+
+//    public <T> T resolve(QualifiedName name, Class<T> serviceType) {
+//        Context context = children.get(name.getPartName());
+//        if (context instanceof ComponentContext) {
+//            return serviceType.cast(((ComponentContext) context).getService(name.getPortName()));
+//        } else {
+//            Object o = context.getService();
+//            if (o == null) {
+//                CompositeContext<?> parent = getParent();
+//                if (parent == null){
+//                    throw new TargetNotFoundException(name.getQualifiedName());
+//                }
+//                return parent.resolve(name,serviceType);
+//            } else if (!(serviceType.isAssignableFrom(o.getClass()))) {
+//                InvalidServiceTypeException e = new InvalidServiceTypeException("Service implements a different interface");
+//                e.setIdentifier(serviceType.getName());
+//                e.addContextName(context.getName());
+//                e.addContextName(getName());
+//                throw e;
+//            }
+//            return serviceType.cast(o);
+//        }
+//    }
 
     public <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException {
         if (AutowireContext.class.equals(instanceInterface)) {

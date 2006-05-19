@@ -19,6 +19,7 @@ package org.apache.tuscany.spi.context;
 import java.util.List;
 
 import org.apache.tuscany.spi.event.RuntimeEventListener;
+import org.apache.tuscany.spi.QualifiedName;
 
 /**
  * A context which contains child component contexts.
@@ -55,6 +56,5 @@ public interface CompositeContext<T> extends ComponentContext<T>, RuntimeEventLi
      * Returns the reference context contained by the composite
      */
     List<ReferenceContext> getReferenceContexts();
-
 
 }

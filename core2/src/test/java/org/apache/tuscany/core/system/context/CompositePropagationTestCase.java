@@ -94,7 +94,7 @@ public class CompositePropagationTestCase extends TestCase {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(ModuleScopeInitDestroyComponent.class);
         SystemAtomicContext context = MockContextFactory.createSystemAtomicContext("source", interfaces,
-                ModuleScopeInitDestroyComponent.class, false, initInvoker, destroyInvoker, null);
+                ModuleScopeInitDestroyComponent.class, false, initInvoker, destroyInvoker, null,null);
         scopeContext.register(context);
         context.setScopeContext(scopeContext);
         child2.registerContext(context);

@@ -56,7 +56,7 @@ public class JDKSourceWire<T> implements SourceWire<T> {
         throw new UnsupportedOperationException("Additional proxy interfaces not yet supported");
     }
 
-    public Class[] getImplementatedInterfaces() {
+    public Class[] getImplementedInterfaces() {
         return businessInterfaces;
     }
 

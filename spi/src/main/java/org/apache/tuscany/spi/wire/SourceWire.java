@@ -69,7 +69,7 @@ public interface SourceWire<T> {
     /**
      * Returns an array of all interfaces implemented by generated proxies
      */
-    Class[] getImplementatedInterfaces();
+    Class[] getImplementedInterfaces();
 
     /**
      * Returns the invocation configuration for each operation on a service specified by a reference or a

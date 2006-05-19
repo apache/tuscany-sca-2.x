@@ -1,25 +1,27 @@
 package org.apache.tuscany.core.mock;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.common.ObjectCreationException;
 import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
+import org.apache.tuscany.core.injection.IntraCompositeResolver;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.core.system.context.SystemAtomicContextImpl;
+import org.apache.tuscany.core.system.wire.SystemSourceWire;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
 import org.apache.tuscany.core.wire.jdk.JDKTargetWire;
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
@@ -73,10 +75,16 @@ public class MockContextFactory {
         if (setter == null) {
             throw new IllegalArgumentException("No setter found on source for target");
         }
-        MethodInjector injector = new MethodInjector(setter, new AtomicContextInstanceFactory(targetCtx));
-        List<Injector> injectors = new ArrayList<Injector>();
-        injectors.add(injector);
-        SystemAtomicContext sourceCtx = createSystemAtomicContext(source, sourceInterfaces, sourceClass, injectors);//, sourceEager, sourceInitInvoker, sourceDestroyInvoker, injectors);
+
+//        MethodInjector injector = new MethodInjector(setter, new AtomicContextInstanceFactory(targetCtx));
+//        List<Injector> injectors = new ArrayList<Injector>();
+//        injectors.add(injector);
+        Map<String, Member> members = new HashMap<String, Member>();
+        members.put(setter.getName(), setter);
+        SystemAtomicContext sourceCtx = createSystemAtomicContext(source, sourceInterfaces, sourceClass, null, members);//, sourceEager, sourceInitInvoker, sourceDestroyInvoker, injectors);
+        QualifiedName targetName = new QualifiedName(target);
+        SystemSourceWire wire = new SystemSourceWire(setter.getName(), targetName, targetClass, new IntraCompositeResolver(targetCtx, targetName.getPortName()));
+        sourceCtx.addSourceWire(wire);
         sourceCtx.setScopeContext(sourceScopeCtx);
         contexts.put(source, sourceCtx);
         contexts.put(target, targetCtx);
@@ -87,11 +95,11 @@ public class MockContextFactory {
     public static SystemAtomicContext createSystemAtomicContext(String name, Class<?> clazz) throws NoSuchMethodException {
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         serviceInterfaces.add(clazz);
-        return createSystemAtomicContext(name, serviceInterfaces, clazz, null);
+        return createSystemAtomicContext(name, serviceInterfaces, clazz, null, null);
     }
 
     public static SystemAtomicContext createSystemAtomicContext(String name, List<Class<?>> serviceInterfaces,
-                                                                Class<?> clazz, List<Injector> injectors) throws NoSuchMethodException {
+                                                                Class<?> clazz, List<Injector> injectors, Map<String, Member> members) throws NoSuchMethodException {
         Method[] methods = clazz.getMethods();
         EventInvoker<Object> initInvoker = null;
         EventInvoker<Object> destroyInvoker = null;
@@ -106,7 +114,7 @@ public class MockContextFactory {
                 destroyInvoker = new MethodEventInvoker<Object>(method);
             }
         }
-        return createSystemAtomicContext(name, serviceInterfaces, clazz, eager, initInvoker, destroyInvoker, injectors);
+        return createSystemAtomicContext(name, serviceInterfaces, clazz, eager, initInvoker, destroyInvoker, injectors, members);
     }
 
     /**
@@ -121,8 +129,8 @@ public class MockContextFactory {
      * @throws NoSuchMethodException
      */
     public static SystemAtomicContextImpl createSystemAtomicContext(String name, List<Class<?>> serviceInterfaces, Class<?> clazz, boolean eagerInit, EventInvoker<Object> initInvoker,
-                                                                    EventInvoker<Object> destroyInvoker, List<Injector> injectors) throws NoSuchMethodException {
-        return new SystemAtomicContextImpl(name, serviceInterfaces, createObjectFactory(clazz), eagerInit, initInvoker, destroyInvoker, injectors);
+                                                                    EventInvoker<Object> destroyInvoker, List<Injector> injectors, Map<String, Member> members) throws NoSuchMethodException {
+        return new SystemAtomicContextImpl(name, serviceInterfaces, createObjectFactory(clazz), eagerInit, initInvoker, destroyInvoker, injectors, members);
     }
 
     public static <T> TargetWire<T> createTargetWireFactory(String serviceName, Class<T> interfaze) {
@@ -151,20 +159,19 @@ public class MockContextFactory {
         return new PojoObjectFactory<T>(ctr);
     }
 
-
-    /**
-     * Used for injecting references
-     */
-    private static class AtomicContextInstanceFactory implements ObjectFactory {
-        private SystemAtomicContext ctx;
-
-        public AtomicContextInstanceFactory(SystemAtomicContext ctx) {
-            this.ctx = ctx;
-        }
-
-        public Object getInstance() throws ObjectCreationException {
-            return ctx.getTargetInstance();
-        }
-    }
+//    /**
+//     * Used for injecting references
+//     */
+//    private static class AtomicContextInstanceFactory implements ObjectFactory {
+//        private SystemAtomicContext ctx;
+//
+//        public AtomicContextInstanceFactory(SystemAtomicContext ctx) {
+//            this.ctx = ctx;
+//        }
+//
+//        public Object getInstance() throws ObjectCreationException {
+//            return ctx.getTargetInstance();
+//        }
+//    }
 
 }

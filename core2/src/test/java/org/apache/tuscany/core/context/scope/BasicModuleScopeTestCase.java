@@ -77,6 +77,6 @@ public class BasicModuleScopeTestCase extends TestCase {
     }
 
     private SystemAtomicContext createContext() {
-        return new SystemAtomicContextImpl("foo", ModuleScopeInitDestroyComponent.class,factory, false, initInvoker, destroyInvoker, null);
+        return new SystemAtomicContextImpl("foo", ModuleScopeInitDestroyComponent.class,factory, false, initInvoker, destroyInvoker, null,null);
     }
 }

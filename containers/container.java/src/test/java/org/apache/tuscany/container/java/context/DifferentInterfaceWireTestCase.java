@@ -44,8 +44,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
 
 
     public void testDifferentInterfaceInjection() throws Exception {
-        Map<String, Member> members;
-        members = new HashMap<String, Member>();
+        Map<String, Member> members = new HashMap<String, Member>();
         Method m = SourceImpl.class.getMethod("setTarget", Target.class);
         members.put("target", m);
         WorkContext ctx = new WorkContextImpl();
@@ -62,8 +61,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
     }
 
     public void testDifferentInterfaceMultiplicityInjection() throws Exception {
-        Map<String, Member> members;
-        members = new HashMap<String, Member>();
+        Map<String, Member> members = new HashMap<String, Member>();
         Method m = SourceImpl.class.getMethod("setTargets", List.class);
         members.put("target", m);
         WorkContext ctx = new WorkContextImpl();

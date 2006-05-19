@@ -54,10 +54,10 @@ public abstract class ComponentContextExtension<T> extends AbstractContext<T> im
         }
     }
 
-    public abstract void onSourceWire(SourceWire wire);
+    public void onSourceWire(SourceWire wire){}
 
-    public abstract void onSourceWires(Class<?> multiplicityClass, List<SourceWire> wires);
+    public void onSourceWires(Class<?> multiplicityClass, List<SourceWire> wires){}
 
-    public abstract void onTargetWire(TargetWire wire);
+    public void onTargetWire(TargetWire wire){}
 
 }

@@ -83,11 +83,11 @@ public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext>
     }
 
     private InstanceWrapper getInstance(AtomicContext context, Object key) {
-        Map<Object, InstanceWrapper> contextMap = contexts.get(context);
-        InstanceWrapper ctx = contextMap.get(key);
+        Map<Object, InstanceWrapper> wrappers = contexts.get(context);
+        InstanceWrapper ctx = wrappers.get(key);
         if (ctx == null) {
             ctx = context.createInstance();
-            contextMap.put(key, ctx);
+            wrappers.put(key, ctx);
             List<InstanceWrapper> destroyQueue = destroyQueues.get(key);
             if (destroyQueue == null) {
                 destroyQueue = new ArrayList<InstanceWrapper>();

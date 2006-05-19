@@ -1,22 +1,21 @@
 package org.apache.tuscany.core.system.builder;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.core.injection.ContextInjector;
-import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.core.injection.LazyIntraCompositeResolver;
-import org.apache.tuscany.core.injection.MethodInjector;
+import org.apache.tuscany.core.injection.IntraCompositeResolver;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.model.PojoComponentType;
+import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.core.system.context.SystemAtomicContextImpl;
 import org.apache.tuscany.core.system.model.SystemImplementation;
+import org.apache.tuscany.core.system.wire.SystemSourceWire;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.model.Component;
 import org.apache.tuscany.model.ReferenceTarget;
@@ -26,6 +25,7 @@ import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.Context;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -52,6 +52,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
         ObjectFactory<?> factory = new PojoObjectFactory(constr);
         List<Injector> injectors = new ArrayList<Injector>();
         injectors.addAll(componentType.getInjectors());
+        Map<String, Member> members = componentType.getReferenceMembers();
         for (Injector injector : injectors) {
             if (injector instanceof ContextInjector) {
                 // a context injector is found; iterate and determine if the parent context
@@ -66,24 +67,28 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
                 }
             }
         }
+        SystemAtomicContext systemContext = new SystemAtomicContextImpl(component.getName(), serviceInterfaces, factory,
+                componentType.isEagerInit(), componentType.getInitInvoker(), componentType.getDestroyInvoker(), injectors, members);
+
         for (ReferenceTarget target : component.getReferenceTargets().values()) {
-            //FIXME support multiplicity!
-            assert(target.getTargets().size() == 1): "Multiplicity not yet implemented";
-            LazyIntraCompositeResolver resolver = new LazyIntraCompositeResolver(parent, new QualifiedName(target.getTargets().get(0).getPath()));
-            Member member = componentType.getReferenceMember(target.getReferenceName());
+            String referenceName = target.getReferenceName();
+            Class interfaze = target.getReference().getServiceContract().getInteface();
+            Member member = componentType.getReferenceMember(referenceName);
             if (member == null) {
                 BuilderConfigException e = new BuilderConfigException("Reference not found");
                 e.setIdentifier(target.getReferenceName());
                 e.addContextName(component.getName());
                 e.addContextName(parent.getName());
                 throw e;
-            } else if (member instanceof Field) {
-                injectors.add(new FieldInjector((Field) member, resolver));
-            } else if (member instanceof Method) {
-                injectors.add(new MethodInjector((Method) member, resolver));
             }
+            //FIXME support multiplicity!
+            assert(target.getTargets().size() == 1): "Multiplicity not yet implemented";
+            QualifiedName targetName = new QualifiedName(target.getTargets().get(0).getPath());
+            Context targetContext = parent.getContext(targetName.getPartName());
+            IntraCompositeResolver resolver = new IntraCompositeResolver(targetContext, targetName.getPortName());
+            SystemSourceWire wire = new SystemSourceWire(referenceName, targetName, interfaze, resolver);
+            systemContext.addSourceWire(wire);
         }
-        return new SystemAtomicContextImpl(component.getName(), serviceInterfaces, factory,
-                componentType.isEagerInit(), componentType.getInitInvoker(), componentType.getDestroyInvoker(), injectors);
+        return systemContext;
     }
 }

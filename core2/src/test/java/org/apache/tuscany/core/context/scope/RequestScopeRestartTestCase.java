@@ -25,7 +25,7 @@ public class RequestScopeRestartTestCase extends TestCase {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(RequestScopeRestartTestCase.InitDestroyOnce.class);
         SystemAtomicContext context = MockContextFactory.createSystemAtomicContext("InitDestroy", interfaces,
-                RequestScopeRestartTestCase.InitDestroyOnce.class, false, initInvoker, destroyInvoker, null);
+                RequestScopeRestartTestCase.InitDestroyOnce.class, false, initInvoker, destroyInvoker, null,null);
         context.setScopeContext(scope);
         context.start();
 

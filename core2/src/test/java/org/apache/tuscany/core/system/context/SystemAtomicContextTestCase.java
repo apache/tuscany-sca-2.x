@@ -19,7 +19,7 @@ public class SystemAtomicContextTestCase extends TestCase {
     public void testContextCreationAndInit() throws Exception {
         ObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor((Class[]) null), null);
         ScopeContext<AtomicContext> scopeContext = new MockScopeContext();
-        SystemAtomicContext context = new SystemAtomicContextImpl("foo",Foo.class,factory,false,initInvoker,null, null);
+        SystemAtomicContext context = new SystemAtomicContextImpl("foo",Foo.class,factory,false,initInvoker,null, null,null);
         context.setScopeContext(scopeContext);
         Foo instance = (Foo) context.getService(null);
         assertNotNull(instance);

@@ -27,7 +27,7 @@ public class AutowireTestCase extends TestCase {
         interfaces.add(Source.class);
         interfaces.add(Source2.class);
         SystemAtomicContext context = MockContextFactory.createSystemAtomicContext("source", interfaces,
-                SourceImpl.class, false, null, null, null);
+                SourceImpl.class, false, null, null, null,null);
         scopeContext.register(context);
         context.setScopeContext(scopeContext);
         parent.registerContext(context);
@@ -49,7 +49,7 @@ public class AutowireTestCase extends TestCase {
         interfaces.add(Source.class);
         interfaces.add(Source2.class);
         SystemAtomicContext context = MockContextFactory.createSystemAtomicContext("source", interfaces,
-                SourceImpl.class, false, null, null, null);
+                SourceImpl.class, false, null, null, null,null);
         scopeContext.register(context);
         context.setScopeContext(scopeContext);
         SystemServiceContext<Source> serviceContext = new SystemServiceContextImpl<Source>("sourceService", Source.class, "source", parent);
