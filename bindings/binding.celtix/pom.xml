@@ -14,7 +14,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  -->
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
         <groupId>org.apache.tuscany.sca.bindings</groupId>
@@ -30,7 +32,8 @@
 
     <properties>
         <celtix.version>1.0</celtix.version>
-        <compiler.flags>-Xlint:unchecked,deprecation,fallthrough,finally</compiler.flags>
+        <checkstyle.properties>checkstyle.severity=error</checkstyle.properties>
+        <sourcechecks.force>true</sourcechecks.force>
     </properties>
     <repositories>
         <repository>
@@ -74,6 +77,8 @@
         </dependency>
 									
 
+
+
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
@@ -93,55 +98,31 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                    <showDeprecation>true</showDeprecation>
-                    <compilerArgument>${compile.flags}</compilerArgument>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>process-sources</id>
-                        <phase>process-sources</phase>
-                        <configuration>
-                            <configLocation>${basedir}/checkstyle.xml</configLocation>
-                            <consoleOutput>true</consoleOutput>
-                            <failsOnError>true</failsOnError>
-                        </configuration>
-                        <goals>
-                            <goal>checkstyle</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
-            <!-- This won't work until 2.0 of PMD plugin is released
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
+                <configuration>
+                    <rulesets>
+                        <ruleset>${basedir}/.ruleset</ruleset>
+                    </rulesets>
+                    <linkXRef>false</linkXRef>
+
+                    <targetJdk>1.5</targetJdk>
+                </configuration>
                 <executions>
                     <execution>
                         <id>process-sources</id>
                         <phase>process-sources</phase>
-                        <configuration>
-                            <targetJdk>1.5</targetJdk>
-                            <rulesets>
-                                <ruleset>.ruleset</ruleset>
-                            </rulesets>
-                            <failOnViolation>true</failOnViolation>
-                        </configuration>
                         <goals>
                             <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
-            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-eclipse-plugin</artifactId>
