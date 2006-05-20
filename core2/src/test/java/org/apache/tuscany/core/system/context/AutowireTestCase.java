@@ -57,7 +57,7 @@ public class AutowireTestCase extends TestCase {
         context.setScopeContext(scopeContext);
 
         TargetWire<Source> targetWire = new SystemTargetWire<Source>(Source.class, context);
-        SourceWire<Source> wire = new SystemSourceWire<Source>("sourceService", new QualifiedName("source"), Source.class);    //String referenceName, QualifiedName targetName, Class<T> businessInterface
+        SourceWire<Source> wire = new SystemSourceWire<Source>("sourceService", new QualifiedName("source"), Source.class);
         wire.setTargetWire(targetWire);
 
         SystemServiceContext<Source> serviceContext = new SystemServiceContextImpl<Source>("sourceService", Source.class, wire, parent);

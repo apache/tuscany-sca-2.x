@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.wire.ProxyCreationException;
+import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetWire;
@@ -41,11 +41,11 @@ public class SystemSourceWire<T> implements SourceWire<T> {
         this.targetName = targetName;
     }
 
-    public T createProxy() throws ProxyCreationException {
+    public T getTargetService() throws TargetException {
         if (targetWire == null) {
-            throw new ProxyCreationException("Target wire not set on source wire");
+            throw new TargetException("Target wire not set on source wire");
         }
-        return targetWire.createProxy();
+        return targetWire.getTargetService();
     }
 
     public Class<T> getBusinessInterface() {

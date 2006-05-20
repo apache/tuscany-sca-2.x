@@ -16,6 +16,8 @@ package org.apache.tuscany.spi.wire;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.apache.tuscany.spi.context.TargetException;
+
 /**
  * Implementations are responsible for managing the target side of a wire
  *
@@ -35,9 +37,9 @@ public interface TargetWire<T> {
 
 
     /**
-     * Returns a proxy for a service specified by a reference or target
+     * Returns a proxy or the target instance for this wire
      */
-    T createProxy() throws ProxyCreationException;
+    T getTargetService() throws TargetException;
 
     /**
      * Sets the primary interface type generated proxies implement

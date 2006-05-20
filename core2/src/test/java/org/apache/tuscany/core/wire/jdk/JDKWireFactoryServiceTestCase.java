@@ -47,7 +47,7 @@ public class JDKWireFactoryServiceTestCase extends TestCase {
         factory.setReferenceName("foo");
         factory.addInvocationChain(hello, source);
         factory.setBusinessInterface(SimpleTarget.class);
-        SimpleTarget instance = factory.createProxy();
+        SimpleTarget instance = factory.getTargetService();
         assertEquals("foo", instance.hello("foo"));
     }
 
@@ -61,7 +61,7 @@ public class JDKWireFactoryServiceTestCase extends TestCase {
         JDKTargetWire<SimpleTarget> factory = new JDKTargetWire<SimpleTarget>();
         factory.addInvocationChain(hello, source);
         factory.setBusinessInterface(SimpleTarget.class);
-        SimpleTarget instance = factory.createProxy();
+        SimpleTarget instance = factory.getTargetService();
         assertEquals("foo", instance.hello("foo"));
     }
 }

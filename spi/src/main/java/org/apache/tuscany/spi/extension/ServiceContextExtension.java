@@ -7,7 +7,6 @@ import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
@@ -50,13 +49,9 @@ public abstract class ServiceContextExtension<T> extends AbstractContext<T> impl
 
     public T getService() throws TargetException {
         if (proxy == null) {
-            try {
-                proxy = sourceWire.createProxy();
-            } catch (ProxyCreationException e) {
-                TargetException te = new TargetException(e);
-                te.addContextName(getName());
-                throw te;
-            }
+            proxy = sourceWire.getTargetService();
+
+
         }
         return proxy;
     }

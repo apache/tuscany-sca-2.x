@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.ReferenceContext;
-import org.apache.tuscany.spi.wire.ProxyCreationException;
+import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
@@ -45,7 +45,7 @@ public class SystemTargetWire<T> implements TargetWire<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public T createProxy() throws ProxyCreationException {
+    public T getTargetService() throws TargetException {
         if (referenceContext != null) {
             return referenceContext.getService();
         } else {

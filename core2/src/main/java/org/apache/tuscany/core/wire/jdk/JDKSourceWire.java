@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.wire.ProxyCreationException;
+import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetWire;
@@ -40,10 +40,10 @@ public class JDKSourceWire<T> implements SourceWire<T> {
     private TargetWire<T> targetWire;
 
     @SuppressWarnings("unchecked")
-    public T createProxy() throws ProxyCreationException {
+    public T getTargetService() throws TargetException {
         if (targetWire != null) {
             // optimized, no interceptors or handlers on either end
-            return targetWire.createProxy();
+            return targetWire.getTargetService();
         }
         WireInvocationHandler handler = new JDKInvocationHandler();
         handler.setConfiguration(invocationChains);

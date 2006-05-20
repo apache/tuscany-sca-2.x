@@ -18,14 +18,13 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
-import org.apache.tuscany.model.Scope;
 
 /**
  * The default implementation of an external service context
@@ -69,13 +68,7 @@ public abstract class ReferenceContextExtension<T> extends AbstractContext<T> im
     }
 
     public T getService() throws TargetException {
-        try {
-            return targetWire.createProxy();
-        } catch (ProxyCreationException e) {
-            TargetException te = new TargetException(e);
-            te.addContextName(getName());
-            throw te;
-        }
+        return targetWire.getTargetService();
     }
 
     public InvocationHandler getHandler() throws TargetException {

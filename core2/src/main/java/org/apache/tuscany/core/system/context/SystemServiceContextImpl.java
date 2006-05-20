@@ -7,8 +7,6 @@ import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
@@ -33,11 +31,9 @@ public class SystemServiceContextImpl<T> extends AbstractContext<T> implements S
 
     @SuppressWarnings("unchecked")
     public T getService() {
-        try {
-            return wire.createProxy();
-        } catch (ProxyCreationException e) {
-            throw new TargetException(e);
-        }
+        return wire.getTargetService();
+
+
 //        if (cachedInstance == null) {
 //            Context ctx = getParent().getContext(target.getPartName());
 //            if ((ctx instanceof AtomicContext)) {

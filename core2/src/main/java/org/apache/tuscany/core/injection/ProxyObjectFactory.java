@@ -2,7 +2,6 @@ package org.apache.tuscany.core.injection;
 
 import org.apache.tuscany.common.ObjectCreationException;
 import org.apache.tuscany.common.ObjectFactory;
-import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.SourceWire;
 
 /**
@@ -19,11 +18,9 @@ public class ProxyObjectFactory implements ObjectFactory {
     }
 
     public Object getInstance() throws ObjectCreationException {
-        try {
-            return factory.createProxy();
-        } catch (ProxyCreationException e) {
-            throw new ObjectCreationException(e);
-        }
+        return factory.getTargetService();
+
+
     }
 
 }

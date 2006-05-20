@@ -8,6 +8,7 @@ import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.context.TargetException;
 
 /**
  * Creates proxies that are returned to non-SCA clients using JDK dynamic proxy facilities and front a wire.
@@ -23,7 +24,7 @@ public class JDKTargetWire<T> implements TargetWire<T> {
     private String serviceName;
 
     @SuppressWarnings("unchecked")
-    public T createProxy() {
+    public T getTargetService() throws TargetException {
         WireInvocationHandler handler = new JDKInvocationHandler();
         handler.setConfiguration(invocationChains);
         return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaces, handler);
