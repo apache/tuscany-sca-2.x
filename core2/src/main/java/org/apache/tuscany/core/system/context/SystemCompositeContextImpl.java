@@ -27,13 +27,12 @@ public class SystemCompositeContextImpl<S> extends AbstractCompositeContext<S> i
         super(name, parent, autowireContext);
     }
 
-    public void registerJavaObject(String componentName, Class<?> service, Object instance) throws ObjectRegistrationException {
-        SystemAtomicContext<Object> context = new SystemSingletonAtomicContext<Object>(componentName, service, instance);
-        registerContext(context);
+    public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance) throws ObjectRegistrationException {
+        registerContext(new SystemSingletonAtomicContext<S>(name, service, instance));
     }
 
     public <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException {
-        if (CompositeContext.class.equals(instanceInterface)) {
+        if (instanceInterface.isAssignableFrom(CompositeContext.class)) {
             return instanceInterface.cast(this);
         } else {
             return super.resolveInstance(instanceInterface);

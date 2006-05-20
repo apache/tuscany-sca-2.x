@@ -14,9 +14,9 @@ public interface SystemCompositeContext<T> extends AutowireContext<T> {
      * code to create the initial configuration components.
      *
      * @param name     the name of the resulting component
-     * @param service
+     * @param service  the service interface the component should expose
      * @param instance the Object that will become the component's implementation
      * @throws ObjectRegistrationException
      */
-    void registerJavaObject(String name, Class<?> service, Object instance) throws ObjectRegistrationException;
+    <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance) throws ObjectRegistrationException;
 }
