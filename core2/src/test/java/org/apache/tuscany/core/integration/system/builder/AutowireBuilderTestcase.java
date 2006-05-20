@@ -3,7 +3,6 @@ package org.apache.tuscany.core.integration.system.builder;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.context.WorkContextImpl;
-import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
@@ -20,16 +19,16 @@ import org.apache.tuscany.model.BoundReference;
 import org.apache.tuscany.model.Component;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.WorkContext;
-import org.apache.tuscany.spi.context.ReferenceContext;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class AutowireBuilderTestcase extends TestCase {
 
-    public void testComponentToAutowireReference() throws Exception {
+    public void testComponentToReference() throws Exception {
         WorkContext work = new WorkContextImpl();
         ScopeContext scope = new ModuleScopeContext(work);
         scope.start();
@@ -40,7 +39,7 @@ public class AutowireBuilderTestcase extends TestCase {
 
         SystemCompositeContext grandParent = new SystemCompositeContextImpl();
         grandParent.setName("grandparent");
-        SystemCompositeContext parent = new SystemCompositeContextImpl("parent",grandParent,grandParent);
+        SystemCompositeContext parent = new SystemCompositeContextImpl("parent", grandParent, grandParent);
 
         Component<SystemImplementation> targetComponent = MockComponentFactory.createTarget();
         AtomicContext targetComponentContext = (AtomicContext) componentBuilder.build(parent, targetComponent);
@@ -59,7 +58,6 @@ public class AutowireBuilderTestcase extends TestCase {
         parent.registerContext(targetContext);
 
         registry.connect(sourceContext, parent);
-        //registry.connect(targetContext, parent);
 
         grandParent.start();
         scope.onEvent(new ModuleStart(this, parent));
@@ -68,8 +66,44 @@ public class AutowireBuilderTestcase extends TestCase {
         Target target = (Target) parent.getContext("target").getService();
         assertNotNull(target);
         assertSame(target, source.getTarget());
+        assertSame(target, grandParent.getContext("target").getService());
         scope.onEvent(new ModuleStop(this, parent));
         grandParent.stop();
         scope.stop();
     }
+
+    public void testComponentToComponent() throws Exception {
+        WorkContext work = new WorkContextImpl();
+        ScopeContext scope = new ModuleScopeContext(work);
+        scope.start();
+
+        SystemComponentBuilder componentBuilder = new SystemComponentBuilder();
+
+        SystemCompositeContext parent = new SystemCompositeContextImpl();
+
+        Component<SystemImplementation> targetComponent = MockComponentFactory.createTarget();
+        AtomicContext targetComponentContext = (AtomicContext) componentBuilder.build(parent, targetComponent);
+        targetComponentContext.setScopeContext(scope);
+        parent.registerContext(targetComponentContext);
+        Component<SystemImplementation> sourceComponent = MockComponentFactory.createSourceWithTargetAutowire();
+
+
+        AtomicContext sourceContext = (AtomicContext) componentBuilder.build(parent, sourceComponent);
+        sourceContext.setScopeContext(scope);
+        parent.registerContext(sourceContext);
+
+
+        parent.start();
+        scope.onEvent(new ModuleStart(this, parent));
+        Source source = (Source) parent.getContext("source").getService();
+        assertNotNull(source);
+        Target target = (Target) parent.getContext("target").getService();
+        assertNotNull(target);
+        assertSame(target, source.getTarget());
+        scope.onEvent(new ModuleStop(this, parent));
+        parent.stop();
+        scope.stop();
+    }
+
+
 }

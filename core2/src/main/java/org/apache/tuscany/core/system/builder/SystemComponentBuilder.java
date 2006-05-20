@@ -16,7 +16,10 @@ import org.apache.tuscany.core.system.context.SystemAtomicContextImpl;
 import org.apache.tuscany.core.system.model.SystemImplementation;
 import org.apache.tuscany.core.system.wire.SystemSourceWire;
 import org.apache.tuscany.core.system.wire.SystemTargetWire;
+import org.apache.tuscany.core.system.wire.SystemTargetAutowire;
+import org.apache.tuscany.core.system.wire.SystemSourceAutowire;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.model.Component;
 import org.apache.tuscany.model.ReferenceTarget;
 import org.apache.tuscany.model.Service;
@@ -25,6 +28,7 @@ import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.wire.SourceWire;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -32,6 +36,8 @@ import org.apache.tuscany.spi.context.CompositeContext;
 public class SystemComponentBuilder implements ComponentBuilder<SystemImplementation> {
 
     public ComponentContext build(CompositeContext parent, Component<SystemImplementation> component) throws BuilderConfigException {
+        assert(parent instanceof AutowireContext): "Parent must implement "+ AutowireContext.class.getName();
+        AutowireContext autowireContext = (AutowireContext)parent;
         PojoComponentType componentType = component.getImplementation().getComponentType();
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         for (Service service : componentType.getServices().values()) {
@@ -70,7 +76,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
 
         for (Service service : component.getImplementation().getComponentType().getServices().values()) {
             Class interfaze = service.getServiceContract().getInterface();
-            SystemTargetWire wire = new SystemTargetWire(service.getName(),interfaze,systemContext);
+            SystemTargetWire wire = new SystemTargetWire(service.getName(), interfaze, systemContext);
             systemContext.addTargetWire(wire);
         }
         for (ReferenceTarget target : component.getReferenceTargets().values()) {
@@ -84,10 +90,15 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
                 e.addContextName(parent.getName());
                 throw e;
             }
-            //FIXME support multiplicity!
-            assert(target.getTargets().size() == 1): "Multiplicity not yet implemented";
-            QualifiedName targetName = new QualifiedName(target.getTargets().get(0).getPath());
-            SystemSourceWire<?> wire = new SystemSourceWire(referenceName, targetName, interfaze);
+            SourceWire<?> wire;
+            if (target.getReference().isAutowire()) {
+                wire = new SystemSourceAutowire(referenceName,interfaze,autowireContext);
+            } else {
+                //FIXME support multiplicity!
+                assert(target.getTargets().size() == 1): "Multiplicity not yet implemented";
+                QualifiedName targetName = new QualifiedName(target.getTargets().get(0).getPath());
+                wire = new SystemSourceWire(referenceName, targetName, interfaze);
+            }
             systemContext.addSourceWire(wire);
         }
         return systemContext;

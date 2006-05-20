@@ -23,6 +23,7 @@ public class Reference extends ModelObject {
     private String name;
     private ServiceContract serviceContract;
     private Multiplicity multiplicity;
+    private boolean autowire;
 
     public String getName() {
         return name;
@@ -46,5 +47,13 @@ public class Reference extends ModelObject {
 
     public void setMultiplicity(Multiplicity multiplicity) {
         this.multiplicity = multiplicity;
+    }
+
+    public boolean isAutowire() {
+        return autowire;
+    }
+
+    public void setAutowire(boolean autowire) {
+        this.autowire = autowire;
     }
 }

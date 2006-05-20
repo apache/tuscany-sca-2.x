@@ -59,6 +59,37 @@ public class MockComponentFactory {
     }
 
     /**
+     * Creates a component named "source" with an autowire reference to {@link Target}
+     */
+    public static Component<SystemImplementation> createSourceWithTargetAutowire() {
+        SystemImplementation impl = new SystemImplementation();
+        PojoComponentType componentType = new PojoComponentType();
+        componentType.setLifecycleScope(Scope.MODULE);
+        Reference reference = new Reference();
+        reference.setName("target");
+        reference.setAutowire(true);
+        ServiceContract contract = new JavaServiceContract();
+        contract.setInterfaze(Target.class);
+        reference.setServiceContract(contract);
+        componentType.add(reference);
+        try {
+            componentType.addReferenceMember("target", SourceImpl.class.getMethod("setTarget", Target.class));
+        } catch (NoSuchMethodException e) {
+            throw new AssertionError(e);
+        }
+        impl.setComponentType(componentType);
+        impl.setImplementationClass(SourceImpl.class);
+        Component<SystemImplementation> sourceComponent = new Component<SystemImplementation>(impl);
+        sourceComponent.setName("source");
+
+        ReferenceTarget referenceTarget = new ReferenceTarget();
+        referenceTarget.setReference(reference);
+        referenceTarget.setReferenceName("target");
+        sourceComponent.add(referenceTarget);
+        return sourceComponent;
+    }
+
+    /**
      * Creates a component named "target" with a service named "Target"
      */
     public static Component<SystemImplementation> createTarget() {

@@ -25,6 +25,7 @@ import java.util.Map;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.MessageChannelImpl;
+import org.apache.tuscany.core.wire.SourceAutowire;
 import org.apache.tuscany.model.Binding;
 import org.apache.tuscany.model.BoundReference;
 import org.apache.tuscany.model.BoundService;
@@ -165,6 +166,9 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         if (source instanceof ComponentContext) {
             ComponentContext<T> sourceContext = (ComponentContext<T>) source;
             for (SourceWire<T> sourceWire : sourceContext.getSourceWires()) {
+                if (sourceWire instanceof SourceAutowire){
+                    continue;
+                }
                 try {
                     connect(sourceWire, parent, sourceContext.getScope());
                 } catch (BuilderConfigException e) {
