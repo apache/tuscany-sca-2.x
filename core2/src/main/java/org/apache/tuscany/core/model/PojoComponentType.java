@@ -59,7 +59,7 @@ public class PojoComponentType extends ComponentType {
         return members.get(name);
     }
 
-    public void setReferenceMember(String name, Member member) {
+    public void addReferenceMember(String name, Member member) {
         members.put(name,member);
     }
 

@@ -15,6 +15,7 @@ import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.core.system.context.SystemAtomicContextImpl;
 import org.apache.tuscany.core.system.model.SystemImplementation;
 import org.apache.tuscany.core.system.wire.SystemSourceWire;
+import org.apache.tuscany.core.system.wire.SystemTargetWire;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.model.Component;
 import org.apache.tuscany.model.ReferenceTarget;
@@ -67,6 +68,11 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
         SystemAtomicContext systemContext = new SystemAtomicContextImpl(component.getName(), serviceInterfaces, factory,
                 componentType.isEagerInit(), componentType.getInitInvoker(), componentType.getDestroyInvoker(), injectors, members);
 
+        for (Service service : component.getImplementation().getComponentType().getServices().values()) {
+            Class interfaze = service.getServiceContract().getInterface();
+            SystemTargetWire wire = new SystemTargetWire(service.getName(),interfaze,systemContext);
+            systemContext.addTargetWire(wire);
+        }
         for (ReferenceTarget target : component.getReferenceTargets().values()) {
             String referenceName = target.getReferenceName();
             Class interfaze = target.getReference().getServiceContract().getInterface();

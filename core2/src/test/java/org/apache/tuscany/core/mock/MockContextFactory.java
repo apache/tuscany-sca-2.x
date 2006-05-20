@@ -34,6 +34,9 @@ import org.osoa.sca.annotations.Init;
  */
 public class MockContextFactory {
 
+    private MockContextFactory() {
+    }
+
     public static Map<String, AtomicContext> createWiredContexts(String source, Class<?> sourceClass, ScopeContext sourceScopeCtx,
                                                                  String target, Class<?> targetClass, ScopeContext targetScopeCtx) throws NoSuchMethodException {
         List<Class<?>> sourceClasses = new ArrayList<Class<?>>();

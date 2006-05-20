@@ -11,6 +11,7 @@ import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.model.Scope;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -21,11 +22,13 @@ public class SystemAtomicContextImpl<T> extends PojoAtomicContext<T> implements 
     public SystemAtomicContextImpl(String name, Class<?> serviceInterface, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
                                    EventInvoker<Object> destroyInvoker, List<Injector> injectors, Map<String, Member> members) {
         super(name, serviceInterface, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members);
+        scope = Scope.MODULE;
     }
 
     public SystemAtomicContextImpl(String name, List<Class<?>> serviceInterfaces, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
                                    EventInvoker<Object> destroyInvoker, List<Injector> injectors,Map<String, Member> members) {
         super(name, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members);
+        scope = Scope.MODULE;
     }
 
     @SuppressWarnings("unchecked")

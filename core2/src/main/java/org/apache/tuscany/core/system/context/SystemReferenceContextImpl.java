@@ -21,7 +21,7 @@ public class SystemReferenceContextImpl<T> extends ReferenceContextExtension<T> 
     }
 
     public T getService() throws TargetException {
-        return referenceInterface.cast(targetWire);
+        return referenceInterface.cast(targetWire.getTargetService());
     }
 
     public InvocationHandler getHandler() throws TargetException {

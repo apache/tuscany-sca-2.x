@@ -191,33 +191,9 @@ public abstract class AbstractCompositeContext<T> extends AbstractContext<T> imp
     }
 
     public Context getContext(String componentName) {
-        checkInit();
         assert (componentName != null) : "Name was null";
         return children.get(componentName);
     }
-
-//    public <T> T resolve(QualifiedName name, Class<T> serviceType) {
-//        Context context = children.get(name.getPartName());
-//        if (context instanceof ComponentContext) {
-//            return serviceType.cast(((ComponentContext) context).getService(name.getPortName()));
-//        } else {
-//            Object o = context.getService();
-//            if (o == null) {
-//                CompositeContext<?> parent = getParent();
-//                if (parent == null){
-//                    throw new TargetNotFoundException(name.getQualifiedName());
-//                }
-//                return parent.resolve(name,serviceType);
-//            } else if (!(serviceType.isAssignableFrom(o.getClass()))) {
-//                InvalidServiceTypeException e = new InvalidServiceTypeException("Service implements a different interface");
-//                e.setIdentifier(serviceType.getName());
-//                e.addContextName(context.getName());
-//                e.addContextName(getName());
-//                throw e;
-//            }
-//            return serviceType.cast(o);
-//        }
-//    }
 
     public <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException {
         if (AutowireContext.class.equals(instanceInterface)) {
@@ -355,7 +331,7 @@ public abstract class AbstractCompositeContext<T> extends AbstractContext<T> imp
                 /* block until the module has initialized */
                 boolean success = initializeLatch.await(AbstractCompositeContext.DEFAULT_WAIT, TimeUnit.MILLISECONDS);
                 if (!success) {
-                    throw new ContextInitException("Timeout waiting for module context to initialize");
+                    throw new ContextInitException("Timeout waiting for context to initialize");
                 }
             } catch (InterruptedException e) { // should not happen
             }

@@ -192,6 +192,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     private <T extends Class> void connect(SourceWire<T> sourceWire, CompositeContext parent, Scope sourceScope) throws BuilderConfigException {
+        assert(sourceScope != null): "Source scope was null";
         QualifiedName targetName = sourceWire.getTargetName();
         Context<?> target = parent.getContext(targetName.getPartName());
         if (target == null) {

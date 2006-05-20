@@ -27,10 +27,11 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
     }
 
     public Context build(CompositeContext parent, BoundReference<SystemBinding> boundReference) {
-        assert(parent instanceof AutowireContext): "Parent must implement " + AutowireContext.class.getName();
+        assert(parent.getParent() instanceof AutowireContext):"Grandparent not an instance of "+AutowireContext.class.getName();
+        AutowireContext autowireContext = (AutowireContext)parent.getParent();
         Class<?> interfaze = boundReference.getServiceContract().getInterface();
         SystemReferenceContextImpl ctx = new SystemReferenceContextImpl(boundReference.getName(), interfaze, parent);
-        TargetWire<?> wire = new SystemTargetAutowire(interfaze, (AutowireContext) parent);
+        TargetWire<?> wire = new SystemTargetAutowire(interfaze, autowireContext);
         ctx.setTargetWire(wire);
         return ctx;
     }

@@ -43,7 +43,7 @@ public class SystemSourceWire<T> implements SourceWire<T> {
 
     public T getTargetService() throws TargetException {
         if (targetWire == null) {
-            throw new TargetException("Target wire not set on source wire");
+            throw new TargetException("Target wire not connected to source wire");
         }
         return targetWire.getTargetService();
     }

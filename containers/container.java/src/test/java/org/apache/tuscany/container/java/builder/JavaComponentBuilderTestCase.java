@@ -41,7 +41,7 @@ public class JavaComponentBuilderTestCase extends TestCase {
 
         PojoComponentType sourceType = new PojoComponentType();
         sourceType.setLifecycleScope(Scope.MODULE);
-        sourceType.setReferenceMember("target", SourceImpl.class.getMethod("setTarget", Target.class));
+        sourceType.addReferenceMember("target", SourceImpl.class.getMethod("setTarget", Target.class));
 
         ServiceContract sourceContract = new JavaServiceContract();
         sourceContract.setInterfaze(Source.class);
