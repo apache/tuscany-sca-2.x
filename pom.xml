@@ -32,6 +32,8 @@
         <module>spi</module>
         <module>core2</module>
         <module>containers</module>
+        <module>commands/launcher</module>
+        <module>runtime/standalone</module>
         <!--
         <module>databinding</module>
         <module>bindings</module>
