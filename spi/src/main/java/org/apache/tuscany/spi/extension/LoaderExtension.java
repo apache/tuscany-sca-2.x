@@ -20,8 +20,8 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.model.ModelObject;
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.loader.StAXElementLoader;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.StAXElementLoader;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 

@@ -16,8 +16,8 @@
  */
 package org.apache.tuscany.spi.loader;
 
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.model.ModelObject;
 

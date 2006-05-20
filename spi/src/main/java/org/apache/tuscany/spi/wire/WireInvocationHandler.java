@@ -1,7 +1,7 @@
 package org.apache.tuscany.spi.wire;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 /**

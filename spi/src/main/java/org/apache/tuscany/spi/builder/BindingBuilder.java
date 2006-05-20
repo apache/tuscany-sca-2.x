@@ -17,10 +17,10 @@
 package org.apache.tuscany.spi.builder;
 
 import org.apache.tuscany.model.Binding;
-import org.apache.tuscany.model.BoundService;
 import org.apache.tuscany.model.BoundReference;
-import org.apache.tuscany.spi.context.Context;
+import org.apache.tuscany.model.BoundService;
 import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.Context;
 
 /**
  * @version $Rev$ $Date$

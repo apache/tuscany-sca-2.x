@@ -1,11 +1,8 @@
 package org.apache.tuscany.spi.policy;
 
-import java.util.List;
-
-import org.apache.tuscany.model.ReferenceTarget;
 import org.apache.tuscany.model.Reference;
-import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.wire.SourceWire;
 
 /**
  * Implementations contribute {@link org.apache.tuscany.spi.wire.Interceptor}s or {@link

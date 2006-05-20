@@ -4,15 +4,15 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
  * The default implementation of an service context

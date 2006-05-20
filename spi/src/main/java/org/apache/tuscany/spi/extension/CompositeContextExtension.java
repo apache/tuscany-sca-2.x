@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.context.ContextNotFoundException;
@@ -16,7 +17,6 @@ import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.TargetNotFoundException;
 import org.apache.tuscany.spi.event.Event;
-import org.apache.tuscany.model.Scope;
 
 /**
  * @version $$Rev$$ $$Date$$
