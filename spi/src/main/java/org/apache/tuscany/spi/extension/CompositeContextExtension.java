@@ -21,11 +21,11 @@ import org.apache.tuscany.spi.event.Event;
 /**
  * @version $$Rev$$ $$Date$$
  */
-public abstract class CompositeContextExtension<T> extends ComponentContextExtension implements CompositeContext {
+public abstract class CompositeContextExtension<T> extends ComponentContextExtension<T> implements CompositeContext<T> {
 
-    protected Map<String, Context> children = new ConcurrentHashMap<String, Context>();
+    protected final Map<String, Context> children = new ConcurrentHashMap<String, Context>();
     protected final List<ServiceContext> services = new ArrayList<ServiceContext>();
-    protected List<ReferenceContext> references = new ArrayList<ReferenceContext>();
+    protected final List<ReferenceContext> references = new ArrayList<ReferenceContext>();
 
     public void registerContext(Context context) {
         assert(context != null): "Context was null";
@@ -44,6 +44,7 @@ public abstract class CompositeContextExtension<T> extends ComponentContextExten
     }
 
     public Context getContext(String name) {
+        assert (name != null) : "Name was null";
         return children.get(name);
     }
 
@@ -91,7 +92,7 @@ public abstract class CompositeContextExtension<T> extends ComponentContextExten
         }
     }
 
-    public List getServiceInterfaces() {
+    public List<Class<?>> getServiceInterfaces() {
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>(services.size());
         synchronized (services) {
             for (ServiceContext serviceContext : services) {

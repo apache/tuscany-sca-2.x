@@ -1,8 +1,5 @@
 package org.apache.tuscany.core.context;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,20 +9,14 @@ import java.util.concurrent.TimeUnit;
 import org.apache.tuscany.core.system.context.SystemServiceContext;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.context.ContextNotFoundException;
 import org.apache.tuscany.spi.context.IllegalTargetException;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.ServiceContext;
-import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.context.TargetNotFoundException;
 import org.apache.tuscany.spi.event.Event;
-import org.apache.tuscany.spi.wire.SourceWire;
-import org.apache.tuscany.spi.wire.TargetWire;
-import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.extension.CompositeContextExtension;
 
 /**
  * The base implementation of a composite context
@@ -33,7 +24,7 @@ import org.apache.tuscany.model.Scope;
  * @version $Rev: 399348 $ $Date: 2006-05-03 09:33:22 -0700 (Wed, 03 May 2006) $
  */
 @SuppressWarnings({"FieldAccessedSynchronizedAndUnsynchronized", "RawUseOfParameterizedType", "NonPrivateFieldAccessedInSynchronizedContext"})
-public abstract class AbstractCompositeContext<T> extends AbstractContext<T> implements AutowireContext<T> {
+public abstract class AbstractCompositeContext<T> extends CompositeContextExtension<T> implements AutowireContext<T> {
 
     public static final int DEFAULT_WAIT = 1000 * 60;
 
@@ -45,25 +36,17 @@ public abstract class AbstractCompositeContext<T> extends AbstractContext<T> imp
     // Indicates whether the module context has been initialized
     protected boolean initialized;
 
-    // collection of all child contexts in the composite
-    protected final Map<String, Context> children = new ConcurrentHashMap<String, Context>();
-    protected final List<ServiceContext> services = new ArrayList<ServiceContext>();
-    protected final List<ReferenceContext> references = new ArrayList<ReferenceContext>();
-
     // a mapping of service type to component name
     protected final Map<Class, Context> autowireInternal = new ConcurrentHashMap<Class, Context>();
     protected final Map<Class, SystemServiceContext> autowireExternal = new ConcurrentHashMap<Class, SystemServiceContext>();
 
     protected AutowireContext<?> autowireContext;
 
-    protected Map<String, TargetWire> targetWires = new HashMap<String, TargetWire>();
-    protected List<SourceWire> sourceWires = new ArrayList<SourceWire>();
-
     public AbstractCompositeContext() {
     }
 
     public AbstractCompositeContext(String name, CompositeContext parent, AutowireContext autowireContext) {
-        super(name);
+        this.name = name;
         this.parentContext = parent;
         this.autowireContext = autowireContext;
     }
@@ -71,10 +54,6 @@ public abstract class AbstractCompositeContext<T> extends AbstractContext<T> imp
     @Autowire
     public void setAutowireContext(AutowireContext context) {
         autowireContext = context;
-    }
-
-    public Scope getScope() {
-        return Scope.COMPOSITE;
     }
 
     public void start() {
@@ -110,46 +89,6 @@ public abstract class AbstractCompositeContext<T> extends AbstractContext<T> imp
         // allow initialized to be called
         initializeLatch.countDown();
         lifecycleState = STOPPED;
-    }
-
-    public List<ServiceContext> getServiceContexts() {
-        return Collections.unmodifiableList(services);
-    }
-
-    public ServiceContext getServiceContext(String name) {
-        Context ctx = children.get(name);
-        if (ctx == null) {
-            ContextNotFoundException e = new ContextNotFoundException("Service context not found");
-            e.setIdentifier(name);
-            e.addContextName(getName());
-            throw e;
-        } else if (!(ctx instanceof ServiceContext)) {
-            ContextNotFoundException e = new ContextNotFoundException("Context not a service context");
-            e.setIdentifier(name);
-            e.addContextName(getName());
-            throw e;
-        }
-        return (ServiceContext) ctx;
-    }
-
-    public Object getService(String name) throws TargetException {
-        Context context = children.get(name);
-        if (context == null) {
-            TargetNotFoundException e = new TargetNotFoundException(name);
-            e.addContextName(getName());
-            throw e;
-        } else if (context instanceof ServiceContext) {
-            return context.getService();
-        } else {
-            IllegalTargetException e = new IllegalTargetException("Target must be a service");
-            e.setIdentifier(name);
-            e.addContextName(getName());
-            throw e;
-        }
-    }
-
-    public List<ReferenceContext> getReferenceContexts() {
-        return Collections.unmodifiableList(references);
     }
 
     public void registerContext(Context child) {
@@ -188,11 +127,6 @@ public abstract class AbstractCompositeContext<T> extends AbstractContext<T> imp
     public void publish(Event event) {
         checkInit();
         super.publish(event);
-    }
-
-    public Context getContext(String componentName) {
-        assert (componentName != null) : "Name was null";
-        return children.get(componentName);
     }
 
     public <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException {
@@ -240,45 +174,6 @@ public abstract class AbstractCompositeContext<T> extends AbstractContext<T> imp
         } else {
             return null;
         }
-    }
-
-    public List<Class<?>> getServiceInterfaces() {
-        List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>(services.size());
-        synchronized (services) {
-            for (ServiceContext serviceContext : services) {
-                serviceInterfaces.add(serviceContext.getInterface());
-            }
-        }
-        return serviceInterfaces;
-    }
-
-
-    public void addTargetWire(TargetWire wire) {
-        targetWires.put(wire.getServiceName(), wire);
-    }
-
-    public TargetWire getTargetWire(String serviceName) {
-        return targetWires.get(serviceName);
-    }
-
-    public Map<String, TargetWire> getTargetWires() {
-        return targetWires;
-    }
-
-    public void addSourceWire(SourceWire wire) {
-        sourceWires.add(wire);
-    }
-
-    public List<SourceWire> getSourceWires() {
-        return sourceWires;
-    }
-
-    public void prepare() {
-
-    }
-
-    public void addSourceWires(Class multiplicityClass, List wires) {
-        // TODO implement
     }
 
     protected void registerAutowireExternal(Class<?> interfaze, SystemServiceContext context) {
@@ -337,9 +232,5 @@ public abstract class AbstractCompositeContext<T> extends AbstractContext<T> imp
             }
         }
 
-    }
-
-    public T getService() throws TargetException {
-        return null;
     }
 }

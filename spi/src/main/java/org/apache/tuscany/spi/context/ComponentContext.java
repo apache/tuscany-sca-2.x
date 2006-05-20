@@ -24,7 +24,7 @@ public interface ComponentContext<T> extends Context<T> {
     /**
      * Returns the service interfaces implemented by the context
      */
-    List<Class<?>>getServiceInterfaces();
+    List<Class<?>> getServiceInterfaces();
 
 
     /**
