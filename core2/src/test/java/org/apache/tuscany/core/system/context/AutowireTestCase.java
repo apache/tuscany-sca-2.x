@@ -9,10 +9,10 @@ import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.mock.MockContextFactory;
 import org.apache.tuscany.core.mock.context.MockReferenceContext;
+import org.apache.tuscany.core.mock.context.MockTargetWire;
 import org.apache.tuscany.core.system.wire.SystemSourceWire;
 import org.apache.tuscany.core.system.wire.SystemTargetWire;
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetWire;
@@ -76,8 +76,9 @@ public class AutowireTestCase extends TestCase {
         scopeContext.start();
         SystemCompositeContext<?> parent = new SystemCompositeContextImpl("parent", null, null);
         parent.start();
-        ReferenceContext<Source> referenceContext = new MockReferenceContext<Source>(
-                "sourceReference", Source.class, new SourceImpl());
+        MockReferenceContext<Source> referenceContext = new MockReferenceContext<Source>("sourceReference", Source.class);
+        TargetWire<Source> wire = new MockTargetWire<Source>(Source.class, new SourceImpl());
+        referenceContext.setTargetWire(wire);
         parent.registerContext(referenceContext);
         scopeContext.publish(new ModuleStart(this, parent));
         Source source = parent.resolveInstance(Source.class);

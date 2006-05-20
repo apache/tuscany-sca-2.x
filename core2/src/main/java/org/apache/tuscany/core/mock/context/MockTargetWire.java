@@ -1,10 +1,9 @@
-package org.apache.tuscany.core.system.wire;
+package org.apache.tuscany.core.mock.context;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
-import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
@@ -12,20 +11,14 @@ import org.apache.tuscany.spi.wire.TargetWire;
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class SystemTargetWire<T> implements TargetWire<T> {
+public class MockTargetWire<T> implements TargetWire<T> {
     private String serviceName;
     private Class<T> businessInterface;
-    private ComponentContext<?> componentContext;
+    private T target;
 
-    public SystemTargetWire(String serviceName, Class<T> businessInterface, ComponentContext<?> target) {
-        this.serviceName = serviceName;
+    public MockTargetWire(Class<T> businessInterface, T target) {
         this.businessInterface = businessInterface;
-        this.componentContext = target;
-    }
-
-    public SystemTargetWire(Class<T> businessInterface, ComponentContext<?> target) {
-        this.businessInterface = businessInterface;
-        this.componentContext = target;
+        this.target = target;
     }
 
     public String getServiceName() {
@@ -38,7 +31,7 @@ public class SystemTargetWire<T> implements TargetWire<T> {
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
-        return (T) componentContext.getService(serviceName);
+        return target;
     }
 
     public Class<T> getBusinessInterface() {

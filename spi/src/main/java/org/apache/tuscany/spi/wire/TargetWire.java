@@ -35,7 +35,6 @@ public interface TargetWire<T> {
      */
     void setServiceName(String name);
 
-
     /**
      * Returns a proxy or the target instance for this wire
      */

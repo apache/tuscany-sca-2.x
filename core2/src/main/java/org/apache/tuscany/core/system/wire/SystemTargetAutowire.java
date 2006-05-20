@@ -1,44 +1,25 @@
 package org.apache.tuscany.core.system.wire;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.Map;
+import java.util.Collections;
 
-import org.apache.tuscany.spi.context.ComponentContext;
-import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.TargetInvocationChain;
+import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.core.context.AutowireContext;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class SystemTargetWire<T> implements TargetWire<T> {
-    private String serviceName;
+public class SystemTargetAutowire<T> implements TargetWire<T> {
+
     private Class<T> businessInterface;
-    private ComponentContext<?> componentContext;
+    private AutowireContext<?> context;
 
-    public SystemTargetWire(String serviceName, Class<T> businessInterface, ComponentContext<?> target) {
-        this.serviceName = serviceName;
+    public SystemTargetAutowire(Class<T> businessInterface,AutowireContext context) {
         this.businessInterface = businessInterface;
-        this.componentContext = target;
-    }
-
-    public SystemTargetWire(Class<T> businessInterface, ComponentContext<?> target) {
-        this.businessInterface = businessInterface;
-        this.componentContext = target;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
-    @SuppressWarnings("unchecked")
-    public T getTargetService() throws TargetException {
-        return (T) componentContext.getService(serviceName);
+        this.context = context;
     }
 
     public Class<T> getBusinessInterface() {
@@ -47,6 +28,17 @@ public class SystemTargetWire<T> implements TargetWire<T> {
 
     public void setBusinessInterface(Class<T> businessInterface) {
         this.businessInterface = businessInterface;
+    }
+
+    public String getServiceName() {
+        return null;
+    }
+
+    public void setServiceName(String serviceName) {
+    }
+
+    public T getTargetService() throws TargetException {
+        return context.resolveInstance(businessInterface);
     }
 
     public Class[] getImplementedInterfaces() {
@@ -68,6 +60,4 @@ public class SystemTargetWire<T> implements TargetWire<T> {
     public void addInterface(Class claz) {
         throw new UnsupportedOperationException();
     }
-
-
 }

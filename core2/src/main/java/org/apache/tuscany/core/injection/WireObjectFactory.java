@@ -5,15 +5,15 @@ import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.spi.wire.SourceWire;
 
 /**
- * Uses a proxy factory to return an object instance
+ * Uses a wire to return an object instance
  *
  * @version $Rev$ $Date$
  */
-public class ProxyObjectFactory implements ObjectFactory {
+public class WireObjectFactory implements ObjectFactory {
 
     private SourceWire factory;
 
-    public ProxyObjectFactory(SourceWire factory) {
+    public WireObjectFactory(SourceWire factory) {
         this.factory = factory;
     }
 

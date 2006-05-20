@@ -1,10 +1,11 @@
 package org.apache.tuscany.core.system.builder;
 
-import org.apache.tuscany.core.system.context.AutowireReferenceContextImpl;
-import org.apache.tuscany.core.system.context.SystemServiceContext;
+import org.apache.tuscany.core.context.AutowireContext;
+import org.apache.tuscany.core.system.context.SystemReferenceContextImpl;
 import org.apache.tuscany.core.system.context.SystemServiceContextImpl;
 import org.apache.tuscany.core.system.model.SystemBinding;
-import org.apache.tuscany.core.system.wire.SystemTargetWire;
+import org.apache.tuscany.core.system.wire.SystemSourceWire;
+import org.apache.tuscany.core.system.wire.SystemTargetAutowire;
 import org.apache.tuscany.model.BoundReference;
 import org.apache.tuscany.model.BoundService;
 import org.apache.tuscany.spi.QualifiedName;
@@ -20,17 +21,16 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
 
     public Context build(CompositeContext parent, BoundService<SystemBinding> boundService) {
         Class<?> interfaze = boundService.getServiceContract().getInterface();
-        String targetName = boundService.getTarget().getPath();
-//        SystemServiceContext context = new SystemServiceContextImpl(boundService.getName(),interfaze,
-//                targetName,parent);
-
-        return null;
+        QualifiedName targetName = new QualifiedName(boundService.getTarget().getPath());
+        SystemSourceWire<?> wire = new SystemSourceWire(boundService.getName(), targetName, interfaze);
+        return new SystemServiceContextImpl(boundService.getName(), interfaze, wire, parent);
     }
 
     public Context build(CompositeContext parent, BoundReference<SystemBinding> boundReference) {
+        assert(parent instanceof AutowireContext): "Parent must implement " + AutowireContext.class.getName();
         Class<?> interfaze = boundReference.getServiceContract().getInterface();
-        AutowireReferenceContextImpl ctx = new AutowireReferenceContextImpl(boundReference.getName(), interfaze, parent);
-        TargetWire<?> wire = new SystemTargetWire(interfaze, ctx);
+        SystemReferenceContextImpl ctx = new SystemReferenceContextImpl(boundReference.getName(), interfaze, parent);
+        TargetWire<?> wire = new SystemTargetAutowire(interfaze, (AutowireContext) parent);
         ctx.setTargetWire(wire);
         return ctx;
     }

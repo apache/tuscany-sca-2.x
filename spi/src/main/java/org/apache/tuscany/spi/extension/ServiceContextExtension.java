@@ -1,6 +1,7 @@
 package org.apache.tuscany.spi.extension;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.spi.CoreRuntimeException;
@@ -10,6 +11,7 @@ import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.model.Scope;
 
 /**
@@ -21,8 +23,8 @@ public abstract class ServiceContextExtension<T> extends AbstractContext<T> impl
 
     protected SourceWire<T> sourceWire;
     protected ObjectFactory<WireInvocationHandler> handlerFactory;
-    // a proxy implementing the service exposed by the context backed by the invocation handler
-    private T proxy;
+    // a target implementing the service exposed by the context backed by the invocation handler
+    private T target;
 
     /**
      * Creates a new service context
@@ -48,12 +50,10 @@ public abstract class ServiceContextExtension<T> extends AbstractContext<T> impl
 
 
     public T getService() throws TargetException {
-        if (proxy == null) {
-            proxy = sourceWire.getTargetService();
-
-
+        if (target == null) {
+            target = sourceWire.getTargetService();
         }
-        return proxy;
+        return target;
     }
 
     public InvocationHandler getHandler() {
@@ -71,4 +71,9 @@ public abstract class ServiceContextExtension<T> extends AbstractContext<T> impl
             chain.setTargetInvoker(createTargetInvoker(sourceWire.getReferenceName(), chain.getMethod()));
         }
     }
+
+    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
+        throw new UnsupportedOperationException();
+    }
+
 }

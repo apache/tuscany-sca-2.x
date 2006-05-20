@@ -32,26 +32,6 @@ public class SystemServiceContextImpl<T> extends AbstractContext<T> implements S
     @SuppressWarnings("unchecked")
     public T getService() {
         return wire.getTargetService();
-
-
-//        if (cachedInstance == null) {
-//            Context ctx = getParent().getContext(target.getPartName());
-//            if ((ctx instanceof AtomicContext)) {
-//                cachedInstance = (T) ((AtomicContext) ctx).getService(target.getPortName());
-//            } else if ((ctx instanceof ReferenceContext)) {
-//                cachedInstance = (T) ctx.getService();
-//            } else if (ctx == null) {
-//                TargetNotFoundException e = new TargetNotFoundException(name);
-//                e.addContextName(getName());
-//                throw e;
-//            } else {
-//                IllegalTargetException e = new IllegalTargetException("Reference target must be a component or reference context");
-//                e.setIdentifier(name);
-//                e.addContextName(getName());
-//                throw e;
-//            }
-//        }
-//        return cachedInstance;
     }
 
 
@@ -64,11 +44,11 @@ public class SystemServiceContextImpl<T> extends AbstractContext<T> implements S
     }
 
     public SourceWire<T> getSourceWire() {
-        throw new UnsupportedOperationException();
+        return wire;
     }
 
     public void setSourceWire(SourceWire<T> wire) {
-        throw new UnsupportedOperationException();
+        this.wire = wire;
     }
 
     public TargetInvoker createTargetInvoker(String serviceName, Method operation) {

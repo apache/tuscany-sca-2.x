@@ -17,7 +17,7 @@ import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.InvalidAccessorException;
 import org.apache.tuscany.core.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.MethodInjector;
-import org.apache.tuscany.core.injection.ProxyObjectFactory;
+import org.apache.tuscany.core.injection.WireObjectFactory;
 import org.apache.tuscany.core.injection.NoAccessorException;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
@@ -131,7 +131,7 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
     }
 
     protected Injector createInjector(Member member, SourceWire wire) {
-        ObjectFactory<?> factory = new ProxyObjectFactory(wire);
+        ObjectFactory<?> factory = new WireObjectFactory(wire);
         if (member instanceof Field) {
             return new FieldInjector(((Field) member), factory);
         } else if (member instanceof Method) {
@@ -146,7 +146,7 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
     protected Injector createMultiplicityInjector(Member member, Class<?> interfaceType, List<SourceWire> wireFactories) {
         List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
         for (SourceWire wire : wireFactories) {
-            factories.add(new ProxyObjectFactory(wire));
+            factories.add(new WireObjectFactory(wire));
         }
         if (member instanceof Field) {
             Field field = (Field) member;

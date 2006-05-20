@@ -287,11 +287,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             return true;
         } else if (pReferrer == Scope.SESSION && pReferee == Scope.COMPOSITE) {
             return true;
-        } else if (pReferrer == Scope.MODULE && pReferee == Scope.COMPOSITE) {
-            return true;
-        } else {
-            return false;
-        }
+        } else return pReferrer == Scope.MODULE && pReferee == Scope.COMPOSITE;
     }
 
 }
