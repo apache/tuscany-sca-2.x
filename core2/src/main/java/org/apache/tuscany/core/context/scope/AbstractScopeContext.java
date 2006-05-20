@@ -7,8 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.spi.AbstractLifecycle;
-import org.apache.tuscany.spi.event.TrueFilter;
-import org.apache.tuscany.spi.context.Context;
+import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.TargetException;
@@ -16,13 +15,14 @@ import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
+import org.apache.tuscany.spi.event.TrueFilter;
 
 /**
  * Implements functionality common to scope contexts.
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
-public abstract class AbstractScopeContext<T extends Context> extends AbstractLifecycle implements ScopeContext<T> {
+public abstract class AbstractScopeContext extends AbstractLifecycle implements ScopeContext {
 
     // The event context the scope container is associated with
     protected WorkContext workContext;
@@ -79,7 +79,7 @@ public abstract class AbstractScopeContext<T extends Context> extends AbstractLi
         }
     }
 
-    public Object getInstance(T context) throws TargetException {
+    public Object getInstance(AtomicContext context) throws TargetException {
         InstanceWrapper ctx = getInstanceContext(context);
         if (ctx != null) {
             if (ctx.getLifecycleState() == UNINITIALIZED) {

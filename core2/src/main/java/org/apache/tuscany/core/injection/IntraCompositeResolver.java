@@ -8,6 +8,9 @@ import org.apache.tuscany.spi.context.IllegalTargetException;
 import org.apache.tuscany.spi.context.ReferenceContext;
 
 /**
+ * Resolves a target within the same composite as a source. The target may be an atomic context, a service
+ * offered by a child composite, or a reference.
+ * 
  * @version $$Rev$$ $$Date$$
  */
 public class IntraCompositeResolver<T> implements ObjectFactory<T> {

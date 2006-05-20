@@ -11,12 +11,12 @@ import java.util.Map;
 import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.core.injection.IntraCompositeResolver;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.core.system.context.SystemAtomicContextImpl;
 import org.apache.tuscany.core.system.wire.SystemSourceWire;
+import org.apache.tuscany.core.system.wire.SystemTargetWire;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
@@ -34,8 +34,8 @@ import org.osoa.sca.annotations.Init;
  */
 public class MockContextFactory {
 
-    public static Map<String, AtomicContext> createWiredContexts(String source, Class<?> sourceClass, ScopeContext<AtomicContext> sourceScopeCtx,
-                                                                 String target, Class<?> targetClass, ScopeContext<AtomicContext> targetScopeCtx) throws NoSuchMethodException {
+    public static Map<String, AtomicContext> createWiredContexts(String source, Class<?> sourceClass, ScopeContext sourceScopeCtx,
+                                                                 String target, Class<?> targetClass, ScopeContext targetScopeCtx) throws NoSuchMethodException {
         List<Class<?>> sourceClasses = new ArrayList<Class<?>>();
         sourceClasses.add(sourceClass);
         return createWiredContexts(source, sourceClasses, sourceClass, sourceScopeCtx, target, targetClass, targetScopeCtx);
@@ -48,8 +48,8 @@ public class MockContextFactory {
      *
      * @throws NoSuchMethodException
      */
-    public static Map<String, AtomicContext> createWiredContexts(String source, List<Class<?>> sourceInterfaces, Class<?> sourceClass, ScopeContext<AtomicContext> sourceScopeCtx,
-                                                                 String target, Class<?> targetClass, ScopeContext<AtomicContext> targetScopeCtx) throws NoSuchMethodException {
+    public static Map<String, AtomicContext> createWiredContexts(String source, List<Class<?>> sourceInterfaces, Class<?> sourceClass, ScopeContext sourceScopeCtx,
+                                                                 String target, Class<?> targetClass, ScopeContext targetScopeCtx) throws NoSuchMethodException {
 
         Map<String, AtomicContext> contexts = new HashMap<String, AtomicContext>();
         SystemAtomicContext targetCtx = createSystemAtomicContext(target, targetClass);//, targetEager, targetInitInvoker, targetDestroyInvoker, null);
@@ -76,14 +76,14 @@ public class MockContextFactory {
             throw new IllegalArgumentException("No setter found on source for target");
         }
 
-//        MethodInjector injector = new MethodInjector(setter, new AtomicContextInstanceFactory(targetCtx));
-//        List<Injector> injectors = new ArrayList<Injector>();
-//        injectors.add(injector);
         Map<String, Member> members = new HashMap<String, Member>();
         members.put(setter.getName(), setter);
         SystemAtomicContext sourceCtx = createSystemAtomicContext(source, sourceInterfaces, sourceClass, null, members);//, sourceEager, sourceInitInvoker, sourceDestroyInvoker, injectors);
         QualifiedName targetName = new QualifiedName(target);
-        SystemSourceWire wire = new SystemSourceWire(setter.getName(), targetName, targetClass, new IntraCompositeResolver(targetCtx, targetName.getPortName()));
+        SystemSourceWire wire = new SystemSourceWire(setter.getName(), targetName, targetClass);
+        TargetWire targetWire = new SystemTargetWire(targetName.getPortName(), targetClass, targetCtx);
+        wire.setTargetWire(targetWire);
+
         sourceCtx.addSourceWire(wire);
         sourceCtx.setScopeContext(sourceScopeCtx);
         contexts.put(source, sourceCtx);
@@ -91,11 +91,14 @@ public class MockContextFactory {
         return contexts;
     }
 
-
     public static SystemAtomicContext createSystemAtomicContext(String name, Class<?> clazz) throws NoSuchMethodException {
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         serviceInterfaces.add(clazz);
-        return createSystemAtomicContext(name, serviceInterfaces, clazz, null, null);
+        return createSystemAtomicContext(name, serviceInterfaces, clazz);
+    }
+
+    public static SystemAtomicContext createSystemAtomicContext(String name, List<Class<?>> interfaces, Class<?> clazz) throws NoSuchMethodException {
+        return createSystemAtomicContext(name, interfaces, clazz, null, null);
     }
 
     public static SystemAtomicContext createSystemAtomicContext(String name, List<Class<?>> serviceInterfaces,
@@ -158,20 +161,5 @@ public class MockContextFactory {
         Constructor<T> ctr = clazz.getConstructor((Class<T>[]) null);
         return new PojoObjectFactory<T>(ctr);
     }
-
-//    /**
-//     * Used for injecting references
-//     */
-//    private static class AtomicContextInstanceFactory implements ObjectFactory {
-//        private SystemAtomicContext ctx;
-//
-//        public AtomicContextInstanceFactory(SystemAtomicContext ctx) {
-//            this.ctx = ctx;
-//        }
-//
-//        public Object getInstance() throws ObjectCreationException {
-//            return ctx.getTargetInstance();
-//        }
-//    }
 
 }

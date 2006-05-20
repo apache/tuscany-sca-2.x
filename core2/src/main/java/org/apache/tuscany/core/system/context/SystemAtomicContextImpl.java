@@ -33,9 +33,6 @@ public class SystemAtomicContextImpl<T> extends PojoAtomicContext<T> implements 
         return (T) scopeContext.getInstance(this);
     }
 
-    public void prepare() {
-    }
-
     public Object getService(String name) throws TargetException {
         return getTargetInstance();
     }
@@ -47,5 +44,10 @@ public class SystemAtomicContextImpl<T> extends PojoAtomicContext<T> implements 
     public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
         throw new UnsupportedOperationException();
     }
+
+    public void prepare() {
+        // overrid and do nothing since system services do not proxy
+    }
+
 
 }

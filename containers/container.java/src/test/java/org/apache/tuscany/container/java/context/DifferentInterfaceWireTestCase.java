@@ -48,7 +48,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         Method m = SourceImpl.class.getMethod("setTarget", Target.class);
         members.put("target", m);
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext<AtomicContext> scope = new ModuleScopeContext(ctx);
+        ScopeContext scope = new ModuleScopeContext(ctx);
         scope.start();
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, Target.class, scope,
                 members, "target", OtherTarget.class, OtherTargetImpl.class, scope);
@@ -65,7 +65,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         Method m = SourceImpl.class.getMethod("setTargets", List.class);
         members.put("target", m);
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext<AtomicContext> scope = new ModuleScopeContext(ctx);
+        ScopeContext scope = new ModuleScopeContext(ctx);
         scope.start();
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredMultiplicity("source", SourceImpl.class, Target.class, scope,
                 "target", OtherTarget.class, OtherTargetImpl.class, members, scope);

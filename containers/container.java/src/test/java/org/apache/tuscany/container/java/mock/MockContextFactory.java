@@ -65,9 +65,9 @@ public class MockContextFactory {
      * @throws Exception
      */
     public static Map<String, AtomicContext> createWiredContexts(String sourceName, Class<?> sourceClass,
-                                                                 ScopeContext<AtomicContext> sourceScope,
+                                                                 ScopeContext sourceScope,
                                                                  Map<String, Member> members, String targetName, Class<?> targetService, Class<?> targetClass,
-                                                                 ScopeContext<AtomicContext> targetScope) throws Exception {
+                                                                 ScopeContext targetScope) throws Exception {
         return createWiredContexts(sourceName, sourceClass, targetService, sourceScope, members, targetName, targetService, targetClass, targetScope);
 
     }
@@ -88,22 +88,22 @@ public class MockContextFactory {
      * @throws Exception
      */
     public static Map<String, AtomicContext> createWiredContexts(String sourceName, Class<?> sourceClass, Class<?> sourceReferenceClass,
-                                                                 ScopeContext<AtomicContext> sourceScope,
+                                                                 ScopeContext sourceScope,
                                                                  Map<String, Member> members, String targetName,
                                                                  Class<?> targetService, Class<?> targetClass,
-                                                                 ScopeContext<AtomicContext> targetScope) throws Exception {
+                                                                 ScopeContext targetScope) throws Exception {
         return createWiredContexts(sourceName, sourceClass, sourceReferenceClass, sourceScope, null, null, null, members, targetName, targetService,
                 targetClass, targetScope, null, null, null);
     }
 
     public static Map<String, AtomicContext> createWiredContexts(String sourceName, Class<?> sourceClass, Class<?> sourceReferenceClass,
-                                                                 ScopeContext<AtomicContext> sourceScope,
+                                                                 ScopeContext sourceScope,
                                                                  Interceptor sourceHeadInterceptor,
                                                                  MessageHandler sourceHeadRequestHandler,
                                                                  MessageHandler sourceHeadResponseHandler,
                                                                  Map<String, Member> members,
                                                                  String targetName, Class<?> targetService, Class<?> targetClass,
-                                                                 ScopeContext<AtomicContext> targetScope,
+                                                                 ScopeContext targetScope,
                                                                  Interceptor targetHeadInterceptor,
                                                                  MessageHandler targetRequestHeadHandler,
                                                                  MessageHandler targetResponseHeadHandler) throws Exception {
@@ -143,9 +143,9 @@ public class MockContextFactory {
      * @throws Exception
      */
     public static Map<String, AtomicContext> createWiredMultiplicity(String sourceName, Class<?> sourceClass, Class<?> sourceReferenceClass,
-                                                                     ScopeContext<AtomicContext> sourceScope,
+                                                                     ScopeContext sourceScope,
                                                                      String targetName, Class<?> targetService, Class<?> targetClass,
-                                                                     Map<String, Member> members, ScopeContext<AtomicContext> targetScope) throws Exception {
+                                                                     Map<String, Member> members, ScopeContext targetScope) throws Exception {
         JavaAtomicContext targetContext = createJavaAtomicContext(targetName, targetClass,targetScope.getScope());
         TargetWire targetWire = createTargetWire(targetService.getName().substring(
                 targetService.getName().lastIndexOf('.') + 1), targetService, null, null, null);

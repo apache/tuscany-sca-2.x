@@ -11,7 +11,12 @@ import org.apache.tuscany.core.system.context.SystemCompositeContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.context.SystemServiceContext;
 import org.apache.tuscany.core.system.context.SystemServiceContextImpl;
+import org.apache.tuscany.core.system.wire.SystemSourceWire;
+import org.apache.tuscany.core.system.wire.SystemTargetWire;
 import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.QualifiedName;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -26,7 +31,10 @@ public class ServiceContextToAtomicContextTestCase extends TestCase {
         SystemAtomicContext targetContext = MockContextFactory.createSystemAtomicContext("target", TargetImpl.class);
         context.registerContext(targetContext);
         targetContext.setScopeContext(scope);
-        SystemServiceContext<Target> serviceContext = new SystemServiceContextImpl<Target>("service", Target.class, "target", context);
+        TargetWire<Target> targetWire = new SystemTargetWire<Target>(Target.class,targetContext);
+        SourceWire<Target> wire = new SystemSourceWire<Target>("service",new QualifiedName("target"),Target.class);    //String referenceName, QualifiedName targetName, Class<T> businessInterface
+        wire.setTargetWire(targetWire);
+        SystemServiceContext<Target> serviceContext = new SystemServiceContextImpl<Target>("service", Target.class, wire, context);
         context.registerContext(serviceContext);
         context.start();
         SystemServiceContext serviceContext2 = (SystemServiceContext) context.getContext("service");

@@ -1,20 +1,19 @@
 package org.apache.tuscany.core.system.context;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.lang.reflect.Method;
 
 import org.apache.tuscany.common.ObjectCreationException;
-import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.model.Scope;
-import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.SourceWire;
-import org.apache.tuscany.spi.wire.TargetWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
  * An {@link org.apache.tuscany.spi.context.AtomicContext} used when registering objects directly into a
@@ -42,7 +41,7 @@ public class SystemSingletonAtomicContext<T> extends AbstractContext<T> implemen
         return Scope.MODULE;
     }
 
-    public void setScopeContext(ScopeContext<AtomicContext> context) {
+    public void setScopeContext(ScopeContext context) {
         // do nothing
     }
 
@@ -102,7 +101,7 @@ public class SystemSingletonAtomicContext<T> extends AbstractContext<T> implemen
     }
 
 
-    public TargetInvoker createTargetInvoker(String serviceName, Method operation){
+    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
         throw new UnsupportedOperationException();
     }
 }

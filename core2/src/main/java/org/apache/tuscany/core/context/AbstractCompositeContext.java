@@ -25,6 +25,7 @@ import org.apache.tuscany.spi.context.TargetNotFoundException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.model.Scope;
 
 /**
  * The base implementation of a composite context
@@ -70,6 +71,10 @@ public abstract class AbstractCompositeContext<T> extends AbstractContext<T> imp
     @Autowire
     public void setAutowireContext(AutowireContext context) {
         autowireContext = context;
+    }
+
+    public Scope getScope() {
+        return Scope.COMPOSITE;
     }
 
     public void start() {

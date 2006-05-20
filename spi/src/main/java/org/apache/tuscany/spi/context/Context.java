@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.spi.Lifecycle;
 import org.apache.tuscany.spi.event.EventPublisher;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.model.Scope;
 
 /**
  * Provides an execution context for application artifacts derived from an assembly
@@ -53,6 +54,8 @@ public interface Context<T> extends EventPublisher, Lifecycle {
      */
     void setParent(CompositeContext parent);
 
+    Scope getScope();
+    
     /**
      * Returns an instance associated with the default service for the context
      *

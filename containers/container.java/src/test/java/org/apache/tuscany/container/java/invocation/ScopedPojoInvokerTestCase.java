@@ -50,7 +50,7 @@ public class ScopedPojoInvokerTestCase extends TestCase {
 
     public void testScopedInvoke() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext<AtomicContext> scope = new ModuleScopeContext(ctx);
+        ScopeContext scope = new ModuleScopeContext(ctx);
         scope.start();
         JavaAtomicContext context = MockContextFactory.createJavaAtomicContext("foo", SimpleTargetImpl.class, Scope.MODULE);
         scope.register(context);

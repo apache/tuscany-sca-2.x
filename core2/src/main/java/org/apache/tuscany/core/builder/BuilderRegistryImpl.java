@@ -164,9 +164,9 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     public <T extends Class> void connect(Context<T> source, CompositeContext parent) {
         if (source instanceof ComponentContext) {
             ComponentContext<T> sourceContext = (ComponentContext<T>) source;
-            for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
+            for (SourceWire<T> sourceWire : sourceContext.getSourceWires()) {
                 try {
-                    connect(sourceWire, parent);
+                    connect(sourceWire, parent, sourceContext.getScope());
                 } catch (BuilderConfigException e) {
                     e.addContextName(sourceContext.getName());
                     e.addContextName(parent.getName());
@@ -177,7 +177,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             ServiceContext<T> sourceContext = (ServiceContext<T>) source;
             SourceWire<T> sourceWire = sourceContext.getSourceWire();
             try {
-                connect(sourceWire, parent);
+                connect(sourceWire, parent, sourceContext.getScope());
             } catch (BuilderConfigException e) {
                 e.addContextName(sourceContext.getName());
                 e.addContextName(parent.getName());
@@ -191,7 +191,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         }
     }
 
-    private void connect(SourceWire sourceWire, CompositeContext parent) throws BuilderConfigException {
+    private <T extends Class> void connect(SourceWire<T> sourceWire, CompositeContext parent, Scope sourceScope) throws BuilderConfigException {
         QualifiedName targetName = sourceWire.getTargetName();
         Context<?> target = parent.getContext(targetName.getPartName());
         if (target == null) {
@@ -199,19 +199,20 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             e.setIdentifier(targetName.getQualifiedName());
             throw e;
         }
-        TargetWire<?> targetWire;
+        TargetWire<T> targetWire;
         if (target instanceof ComponentContext) {
-            targetWire = ((ComponentContext<?>) target).getTargetWires().get(targetName.getPortName());
+            ComponentContext<?> targetContext = (ComponentContext<?>) target;
+            targetWire = targetContext.getTargetWires().get(targetName.getPortName());
             if (targetWire == null) {
                 BuilderConfigException e = new BuilderConfigException("Target service not found for reference" + sourceWire.getReferenceName());
                 e.setIdentifier(targetName.getPortName());
                 throw e;
             }
-            connect(sourceWire, targetWire, target);
+            connect(sourceWire, targetWire, target, isOptimizable(sourceScope, targetContext.getScope()));
         } else if (target instanceof ReferenceContext) {
-            targetWire = ((ReferenceContext<?>) target).getTargetWire();
+            targetWire = ((ReferenceContext<T>) target).getTargetWire();
             assert(targetWire != null);
-            connect(sourceWire, targetWire, target);
+            connect(sourceWire, targetWire, target, isOptimizable(sourceScope, target.getScope()));
         } else {
             BuilderConfigException e = new BuilderConfigException("Invalid wire target type for reference " + sourceWire.getReferenceName());
             e.setIdentifier(targetName.getQualifiedName());
@@ -220,9 +221,13 @@ public class BuilderRegistryImpl implements BuilderRegistry {
 
     }
 
-    private void connect(SourceWire<?> source, TargetWire<?> targetWire, Context<?> target) {
-        // if null, the targetWire side has no interceptors or handlers
+    private <T extends Class> void connect(SourceWire<T> source, TargetWire<T> targetWire, Context<?> target, boolean optimizable) {
         Map<Method, TargetInvocationChain> targetInvocationConfigs = targetWire.getInvocationChains();
+        // perform optimization, if possible
+        if (optimizable && source.getInvocationChains().isEmpty() && targetInvocationConfigs.isEmpty()) {
+            source.setTargetWire(targetWire);
+            return;
+        }
         for (SourceInvocationChain sourceInvocationConfig : source.getInvocationChains().values()) {
             // match wire chains
             TargetInvocationChain targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig.getMethod());
@@ -260,6 +265,33 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             chain.setTargetInvoker(invoker);
         }
 
+    }
+
+    private boolean isOptimizable(Scope pReferrer, Scope pReferee) {
+        if (pReferrer == Scope.UNDEFINED || pReferee == Scope.UNDEFINED) {
+            return false;
+        }
+        if (pReferee == pReferrer) {
+            return true;
+        } else if (pReferrer == Scope.STATELESS) {
+            return true;
+        } else if (pReferee == Scope.STATELESS) {
+            return true;
+        } else if (pReferrer == Scope.REQUEST && pReferee == Scope.SESSION) {
+            return true;
+        } else if (pReferrer == Scope.REQUEST && pReferee == Scope.MODULE) {
+            return true;
+        } else if (pReferrer == Scope.REQUEST && pReferee == Scope.COMPOSITE) {
+            return true;
+        } else if (pReferrer == Scope.SESSION && pReferee == Scope.MODULE) {
+            return true;
+        } else if (pReferrer == Scope.SESSION && pReferee == Scope.COMPOSITE) {
+            return true;
+        } else if (pReferrer == Scope.MODULE && pReferee == Scope.COMPOSITE) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

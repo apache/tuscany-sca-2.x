@@ -18,10 +18,12 @@ import java.lang.reflect.Proxy;
 import java.util.Map;
 
 import org.apache.tuscany.core.util.MethodHashMap;
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.TargetWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
-import org.apache.tuscany.spi.QualifiedName;
 
 /**
  * Creates proxies that are injected on references using JDK dynamic proxy facilities and front a wire. The
@@ -35,9 +37,14 @@ public class JDKSourceWire<T> implements SourceWire<T> {
     private Map<Method, SourceInvocationChain> invocationChains = new MethodHashMap<SourceInvocationChain>();
     private String referenceName;
     private QualifiedName targetName;
+    private TargetWire<T> targetWire;
 
     @SuppressWarnings("unchecked")
-    public T createProxy() {
+    public T createProxy() throws ProxyCreationException {
+        if (targetWire != null) {
+            // optimized, no interceptors or handlers on either end
+            return targetWire.createProxy();
+        }
         WireInvocationHandler handler = new JDKInvocationHandler();
         handler.setConfiguration(invocationChains);
         return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaces, handler);
@@ -88,4 +95,7 @@ public class JDKSourceWire<T> implements SourceWire<T> {
         this.targetName = targetName;
     }
 
+    public void setTargetWire(TargetWire<T> wire) {
+        targetWire = wire;
+    }
 }

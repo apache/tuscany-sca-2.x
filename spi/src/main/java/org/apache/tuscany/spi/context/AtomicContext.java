@@ -17,7 +17,6 @@
 package org.apache.tuscany.spi.context;
 
 import org.apache.tuscany.common.ObjectCreationException;
-import org.apache.tuscany.model.Scope;
 
 /**
  * A runtime entity that manages an atomic (i.e. leaf-type) artifact.
@@ -27,14 +26,9 @@ import org.apache.tuscany.model.Scope;
 public interface AtomicContext<T> extends ComponentContext<T> {
 
     /**
-     * Returns the context implementation scope
-     */
-    Scope getScope();
-
-    /**
      * Sets the scope context used by this atomic context for instance management
      */
-    void setScopeContext(ScopeContext<AtomicContext> context);
+    void setScopeContext(ScopeContext context);
 
     /**
      * Returns whether the context should be eagerly initialized

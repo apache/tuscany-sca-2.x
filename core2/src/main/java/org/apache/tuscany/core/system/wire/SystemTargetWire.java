@@ -1,27 +1,39 @@
 package org.apache.tuscany.core.system.wire;
 
-import java.util.Map;
-import java.util.Collections;
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Map;
 
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.context.ComponentContext;
+import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
-import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.spi.wire.TargetInvocationChain;
+import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class SystemTargetWire implements TargetWire {
+public class SystemTargetWire<T> implements TargetWire<T> {
     private String serviceName;
-    private Class businessInterface;
-    private ObjectFactory factory;
+    private Class<T> businessInterface;
+    private ReferenceContext<T> referenceContext;
+    private ComponentContext<?> componentContext;
 
-    public SystemTargetWire(String serviceName, Class businessInterface, ObjectFactory factory) {
+    public SystemTargetWire(Class<T> businessInterface, ReferenceContext<T> target) {
+        this.businessInterface = businessInterface;
+        this.referenceContext = target;
+    }
+
+    public SystemTargetWire(String serviceName, Class<T> businessInterface, ComponentContext<?> target) {
         this.serviceName = serviceName;
         this.businessInterface = businessInterface;
-        this.factory = factory;
+        this.componentContext = target;
+    }
+
+    public SystemTargetWire(Class<T> businessInterface, ComponentContext<?> target) {
+        this.businessInterface = businessInterface;
+        this.componentContext = target;
     }
 
     public String getServiceName() {
@@ -32,16 +44,20 @@ public class SystemTargetWire implements TargetWire {
         this.serviceName = serviceName;
     }
 
-     public Object createProxy() throws ProxyCreationException {
-         return factory.getInstance();
+    @SuppressWarnings("unchecked")
+    public T createProxy() throws ProxyCreationException {
+        if (referenceContext != null) {
+            return referenceContext.getService();
+        } else {
+            return (T)componentContext.getService(serviceName);
+        }
     }
 
-    public Class getBusinessInterface() {
+    public Class<T> getBusinessInterface() {
         return businessInterface;
     }
 
-
-    public void setBusinessInterface(Class businessInterface) {
+    public void setBusinessInterface(Class<T> businessInterface) {
         this.businessInterface = businessInterface;
     }
 
@@ -49,7 +65,7 @@ public class SystemTargetWire implements TargetWire {
         return new Class[0];
     }
 
-    public Map getInvocationChains() {
+    public Map<Method, TargetInvocationChain> getInvocationChains() {
         return Collections.emptyMap();
     }
 

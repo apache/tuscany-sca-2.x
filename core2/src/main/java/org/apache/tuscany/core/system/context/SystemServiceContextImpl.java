@@ -3,15 +3,12 @@ package org.apache.tuscany.core.system.context;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.AbstractContext;
-import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.context.IllegalTargetException;
-import org.apache.tuscany.spi.context.ReferenceContext;
-import org.apache.tuscany.spi.context.TargetNotFoundException;
+import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
@@ -20,38 +17,45 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public class SystemServiceContextImpl<T> extends AbstractContext<T> implements SystemServiceContext<T> {
 
-    // a reference to the component's implementation instance exposed by the entry point
-    private T cachedInstance;
     private Class<T> interfaze;
-    private QualifiedName target;
+    private SourceWire<T> wire;
 
-    public SystemServiceContextImpl(String name, Class<T> interfaze, String targetName, CompositeContext parent) throws CoreRuntimeException {
+    public SystemServiceContextImpl(String name, Class<T> interfaze, SourceWire<T> wire, CompositeContext parent) throws CoreRuntimeException {
         super(name);
         this.interfaze = interfaze;
-        target = new QualifiedName(targetName);
-        setParent(parent);
+        this.parentContext = parent;
+        this.wire = wire;
+    }
+
+    public Scope getScope() {
+        return Scope.COMPOSITE;
     }
 
     @SuppressWarnings("unchecked")
     public T getService() {
-        if (cachedInstance == null) {
-            Context ctx = getParent().getContext(target.getPartName());
-            if ((ctx instanceof AtomicContext)) {
-                cachedInstance = (T) ((AtomicContext) ctx).getService(target.getPortName());
-            } else if ((ctx instanceof ReferenceContext)) {
-                cachedInstance = (T) ctx.getService();
-            } else if (ctx == null) {
-                TargetNotFoundException e = new TargetNotFoundException(name);
-                e.addContextName(getName());
-                throw e;
-            } else {
-                IllegalTargetException e = new IllegalTargetException("Reference target must be a component or reference context");
-                e.setIdentifier(name);
-                e.addContextName(getName());
-                throw e;
-            }
+        try {
+            return wire.createProxy();
+        } catch (ProxyCreationException e) {
+            throw new TargetException(e);
         }
-        return cachedInstance;
+//        if (cachedInstance == null) {
+//            Context ctx = getParent().getContext(target.getPartName());
+//            if ((ctx instanceof AtomicContext)) {
+//                cachedInstance = (T) ((AtomicContext) ctx).getService(target.getPortName());
+//            } else if ((ctx instanceof ReferenceContext)) {
+//                cachedInstance = (T) ctx.getService();
+//            } else if (ctx == null) {
+//                TargetNotFoundException e = new TargetNotFoundException(name);
+//                e.addContextName(getName());
+//                throw e;
+//            } else {
+//                IllegalTargetException e = new IllegalTargetException("Reference target must be a component or reference context");
+//                e.setIdentifier(name);
+//                e.addContextName(getName());
+//                throw e;
+//            }
+//        }
+//        return cachedInstance;
     }
 
 

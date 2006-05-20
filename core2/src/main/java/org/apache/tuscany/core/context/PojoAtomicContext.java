@@ -40,7 +40,6 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
     protected List<Injector> injectors;
     protected Map<String, Member> members;
 
-
     public PojoAtomicContext(String name, Class<?> serviceInterface, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
                              EventInvoker<Object> destroyInvoker, List<Injector> injectors, Map<String, Member> members) {
         assert (objectFactory != null) : "Object factory was null";
@@ -50,11 +49,11 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
         this.name = name;
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         serviceInterfaces.add(serviceInterface);
+        this.serviceInterfaces = serviceInterfaces;
         this.objectFactory = objectFactory;
         this.eagerInit = eagerInit;
         this.initInvoker = initInvoker;
         this.destroyInvoker = destroyInvoker;
-        this.serviceInterfaces = serviceInterfaces;
         this.injectors = (injectors == null) ? new ArrayList<Injector>() : injectors;
         this.members = members != null ? members : new HashMap<String, Member>();
 

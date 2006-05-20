@@ -81,4 +81,8 @@ public interface SourceWire<T> {
 
     void addInvocationChain(Method method, SourceInvocationChain chains);
 
+    /**
+     * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end
+     */
+    void setTargetWire(TargetWire<T> wire);
 }

@@ -15,7 +15,7 @@ import org.apache.tuscany.spi.event.Event;
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class MockScopeContext extends AbstractScopeContext<AtomicContext> {
+public class MockScopeContext extends AbstractScopeContext {
 
     private Map<Context, InstanceWrapper> instanceContexts;
     private Scope scope;

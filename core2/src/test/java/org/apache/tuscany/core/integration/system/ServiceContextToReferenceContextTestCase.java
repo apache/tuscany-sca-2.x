@@ -10,8 +10,13 @@ import org.apache.tuscany.core.system.context.SystemCompositeContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.context.SystemServiceContext;
 import org.apache.tuscany.core.system.context.SystemServiceContextImpl;
+import org.apache.tuscany.core.system.wire.SystemTargetWire;
+import org.apache.tuscany.core.system.wire.SystemSourceWire;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.QualifiedName;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -25,7 +30,10 @@ public class ServiceContextToReferenceContextTestCase extends TestCase {
         scope.start();
         ReferenceContext<Target> referenceContext = new MockReferenceContext<Target>("reference", Target.class, new TargetImpl());
         context.registerContext(referenceContext);
-        SystemServiceContext<Target> serviceContext = new SystemServiceContextImpl<Target>("service", Target.class, "reference", context);
+        TargetWire<Target> targetWire = new SystemTargetWire<Target>(Target.class,referenceContext);
+        SourceWire<Target> wire = new SystemSourceWire<Target>("service",new QualifiedName("reference"),Target.class);    //String referenceName, QualifiedName targetName, Class<T> businessInterface
+        wire.setTargetWire(targetWire);
+        SystemServiceContext<Target> serviceContext = new SystemServiceContextImpl<Target>("service", Target.class, wire, context);
         context.registerContext(serviceContext);
         context.start();
         SystemServiceContext serviceContext2 = (SystemServiceContext) context.getContext("service");

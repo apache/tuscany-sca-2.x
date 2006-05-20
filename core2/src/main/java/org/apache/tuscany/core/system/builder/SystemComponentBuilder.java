@@ -9,7 +9,6 @@ import java.util.Map;
 import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.core.injection.ContextInjector;
 import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.core.injection.IntraCompositeResolver;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
@@ -25,19 +24,17 @@ import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.Context;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-//@SuppressWarnings("unchecked")
 public class SystemComponentBuilder implements ComponentBuilder<SystemImplementation> {
 
     public ComponentContext build(CompositeContext parent, Component<SystemImplementation> component) throws BuilderConfigException {
         PojoComponentType componentType = component.getImplementation().getComponentType();
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         for (Service service : componentType.getServices().values()) {
-            serviceInterfaces.add(service.getServiceContract().getInteface());
+            serviceInterfaces.add(service.getServiceContract().getInterface());
         }
         Constructor<?> constr;
         try {
@@ -72,7 +69,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
 
         for (ReferenceTarget target : component.getReferenceTargets().values()) {
             String referenceName = target.getReferenceName();
-            Class interfaze = target.getReference().getServiceContract().getInteface();
+            Class interfaze = target.getReference().getServiceContract().getInterface();
             Member member = componentType.getReferenceMember(referenceName);
             if (member == null) {
                 BuilderConfigException e = new BuilderConfigException("Reference not found");
@@ -84,9 +81,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
             //FIXME support multiplicity!
             assert(target.getTargets().size() == 1): "Multiplicity not yet implemented";
             QualifiedName targetName = new QualifiedName(target.getTargets().get(0).getPath());
-            Context targetContext = parent.getContext(targetName.getPartName());
-            IntraCompositeResolver resolver = new IntraCompositeResolver(targetContext, targetName.getPortName());
-            SystemSourceWire wire = new SystemSourceWire(referenceName, targetName, interfaze, resolver);
+            SystemSourceWire<?> wire = new SystemSourceWire(referenceName, targetName, interfaze);
             systemContext.addSourceWire(wire);
         }
         return systemContext;

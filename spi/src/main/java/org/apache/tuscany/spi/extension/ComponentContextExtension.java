@@ -19,6 +19,9 @@ public abstract class ComponentContextExtension<T> extends AbstractContext<T> im
     protected Map<String, TargetWire> targetWires = new HashMap<String, TargetWire>();
     protected List<SourceWire> sourceWires = new ArrayList<SourceWire>();
 
+    protected ComponentContextExtension() {
+    }
+
     public void addTargetWire(TargetWire wire) {
         targetWires.put(wire.getServiceName(), wire);
         onTargetWire(wire);

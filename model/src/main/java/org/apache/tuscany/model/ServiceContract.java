@@ -21,14 +21,14 @@ package org.apache.tuscany.model;
  */
 public abstract class ServiceContract extends ModelObject {
     private InteractionScope interactionScope;
-    private Class<?> intefaze;
+    private Class<?> interfaze;
 
-    public Class<?> getInteface() {
-        return intefaze;
+    public Class<?> getInterface() {
+        return interfaze;
     }
 
-    public void setIntefaze(Class<?> intefaze) {
-        this.intefaze = intefaze;
+    public void setInterfaze(Class<?> interfaze) {
+        this.interfaze = interfaze;
     }
 
     public InteractionScope getInteractionScope() {

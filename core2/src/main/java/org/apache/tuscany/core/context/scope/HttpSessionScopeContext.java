@@ -20,7 +20,7 @@ import org.apache.tuscany.spi.event.Event;
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
-public class HttpSessionScopeContext extends AbstractScopeContext<AtomicContext> {
+public class HttpSessionScopeContext extends AbstractScopeContext {
 
     public static final Object HTTP_IDENTIFIER = new Object();
 

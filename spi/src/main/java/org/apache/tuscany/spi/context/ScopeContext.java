@@ -27,7 +27,7 @@ import org.apache.tuscany.spi.event.RuntimeEventListener;
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  * @see Context
  */
-public interface ScopeContext<T extends Context> extends Lifecycle, RuntimeEventListener {
+public interface ScopeContext extends Lifecycle, RuntimeEventListener {
 
     /**
      * Returns the scope value representing the scope context
@@ -42,14 +42,14 @@ public interface ScopeContext<T extends Context> extends Lifecycle, RuntimeEvent
     /**
      * Registers a context with the scope context
      */
-    void register(T context);
+    void register(AtomicContext context);
 
     /**
      * Returns an instance associated with the current context
      *
      * @throws TargetException
      */
-    Object getInstance(T context) throws TargetException;
+    Object getInstance(AtomicContext context) throws TargetException;
 
 
     /**
@@ -57,7 +57,7 @@ public interface ScopeContext<T extends Context> extends Lifecycle, RuntimeEvent
      *
      * @throws TargetException
      */
-    InstanceWrapper getInstanceContext(T context) throws TargetException;
+    InstanceWrapper getInstanceContext(AtomicContext context) throws TargetException;
 
 
 }

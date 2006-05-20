@@ -16,6 +16,7 @@ import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.TargetNotFoundException;
 import org.apache.tuscany.spi.event.Event;
+import org.apache.tuscany.model.Scope;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -36,6 +37,10 @@ public abstract class CompositeContextExtension<T> extends ComponentContextExten
             e.addContextName(getName());
             throw e;
         }
+    }
+
+    public Scope getScope() {
+        return Scope.COMPOSITE;
     }
 
     public Context getContext(String name) {

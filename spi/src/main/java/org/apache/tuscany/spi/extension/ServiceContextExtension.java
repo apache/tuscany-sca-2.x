@@ -11,6 +11,7 @@ import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.model.Scope;
 
 /**
  * The default implementation of an service context
@@ -28,6 +29,10 @@ public abstract class ServiceContextExtension<T> extends AbstractContext<T> impl
      * Creates a new service context
      */
     public ServiceContextExtension() throws CoreRuntimeException {
+    }
+
+    public Scope getScope() {
+        return Scope.COMPOSITE;
     }
 
     public SourceWire<T> getSourceWire() {

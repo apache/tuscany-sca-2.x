@@ -25,6 +25,7 @@ import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.model.Scope;
 
 /**
  * The default implementation of an external service context
@@ -41,6 +42,10 @@ public abstract class ReferenceContextExtension<T> extends AbstractContext<T> im
      * Creates a reference context
      */
     public ReferenceContextExtension() {
+    }
+
+    public Scope getScope() {
+        return Scope.COMPOSITE;
     }
 
     public void setTargetWire(TargetWire<T> targetWire) {

@@ -9,6 +9,7 @@ import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.model.Scope;
 
 /**
  * A mock reference context which returns a singleton
@@ -29,6 +30,10 @@ public class MockReferenceContext<T> extends AbstractContext<T> implements Refer
 
     public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
         throw new UnsupportedOperationException();
+    }
+
+    public Scope getScope() {
+        return Scope.COMPOSITE;
     }
 
     public T getService() throws TargetException {

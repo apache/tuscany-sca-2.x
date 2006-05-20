@@ -59,7 +59,7 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testModuleToModule() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext<AtomicContext> scope = new ModuleScopeContext(ctx);
+        ScopeContext scope = new ModuleScopeContext(ctx);
         scope.start();
 
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, scope, members, "target", Target.class, TargetImpl.class, scope);
@@ -83,9 +83,9 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testModuleToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext<AtomicContext> moduleScope = new ModuleScopeContext(ctx);
+        ScopeContext moduleScope = new ModuleScopeContext(ctx);
         moduleScope.start();
-        ScopeContext<AtomicContext> sessionScope = new HttpSessionScopeContext(ctx);
+        ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
         sessionScope.start();
 
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -132,9 +132,9 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testModuleToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext<AtomicContext> moduleScope = new ModuleScopeContext(ctx);
+        ScopeContext moduleScope = new ModuleScopeContext(ctx);
         moduleScope.start();
-        final ScopeContext<AtomicContext> requestScope = new RequestScopeContext(ctx);
+        final ScopeContext requestScope = new RequestScopeContext(ctx);
         requestScope.start();
 
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -181,9 +181,9 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testModuleToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext<AtomicContext> moduleScope = new ModuleScopeContext(ctx);
+        ScopeContext moduleScope = new ModuleScopeContext(ctx);
         moduleScope.start();
-        ScopeContext<AtomicContext> statelessScope = new StatelessScopeContext(ctx);
+        ScopeContext statelessScope = new StatelessScopeContext(ctx);
         statelessScope.start();
 
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -215,7 +215,7 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testSessionToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext<AtomicContext> sessionScope = new HttpSessionScopeContext(ctx);
+        ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
         sessionScope.start();
 
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -262,9 +262,9 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testSessionToModule() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext<AtomicContext> moduleScope = new ModuleScopeContext(ctx);
+        ScopeContext moduleScope = new ModuleScopeContext(ctx);
         moduleScope.start();
-        ScopeContext<AtomicContext> sessionScope = new HttpSessionScopeContext(ctx);
+        ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
         sessionScope.start();
 
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -310,9 +310,9 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testSessionToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        final ScopeContext<AtomicContext> requestScope = new RequestScopeContext(ctx);
+        final ScopeContext requestScope = new RequestScopeContext(ctx);
         requestScope.start();
-        ScopeContext<AtomicContext> sessionScope = new HttpSessionScopeContext(ctx);
+        ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
         sessionScope.start();
 
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -362,9 +362,9 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testSessionToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext<AtomicContext> sessionScope = new HttpSessionScopeContext(ctx);
+        ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
         sessionScope.start();
-        ScopeContext<AtomicContext> statelessScope = new StatelessScopeContext(ctx);
+        ScopeContext statelessScope = new StatelessScopeContext(ctx);
         statelessScope.start();
 
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -400,7 +400,7 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testRequestToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        final ScopeContext<AtomicContext> requestScope = new RequestScopeContext(ctx);
+        final ScopeContext requestScope = new RequestScopeContext(ctx);
         requestScope.start();
 
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -444,8 +444,8 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testRequestToModule() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        final ScopeContext<AtomicContext> requestScope = new RequestScopeContext(ctx);
-        final ScopeContext<AtomicContext> moduleScope = new ModuleScopeContext(ctx);
+        final ScopeContext requestScope = new RequestScopeContext(ctx);
+        final ScopeContext moduleScope = new ModuleScopeContext(ctx);
         requestScope.start();
         moduleScope.start();
         moduleScope.onEvent(new ModuleStart(this, null));
@@ -495,8 +495,8 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testRequestToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        final ScopeContext<AtomicContext> requestScope = new RequestScopeContext(ctx);
-        final ScopeContext<AtomicContext> sessionScope = new HttpSessionScopeContext(ctx);
+        final ScopeContext requestScope = new RequestScopeContext(ctx);
+        final ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
         requestScope.start();
         sessionScope.start();
 
@@ -550,9 +550,9 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testRequestToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext<AtomicContext> requestScope = new RequestScopeContext(ctx);
+        ScopeContext requestScope = new RequestScopeContext(ctx);
         requestScope.start();
-        ScopeContext<AtomicContext> statelessScope = new StatelessScopeContext(ctx);
+        ScopeContext statelessScope = new StatelessScopeContext(ctx);
         statelessScope.start();
 
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -584,7 +584,7 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testStatelessToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext<AtomicContext> statelessScope = new StatelessScopeContext(ctx);
+        ScopeContext statelessScope = new StatelessScopeContext(ctx);
         statelessScope.start();
 
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -612,9 +612,9 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testStatelessToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        final ScopeContext<AtomicContext> requestScope = new RequestScopeContext(ctx);
+        final ScopeContext requestScope = new RequestScopeContext(ctx);
         requestScope.start();
-        ScopeContext<AtomicContext> statelessScope = new StatelessScopeContext(ctx);
+        ScopeContext statelessScope = new StatelessScopeContext(ctx);
         statelessScope.start();
 
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -656,9 +656,9 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testStatelessToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext<AtomicContext> statelessScope = new StatelessScopeContext(ctx);
+        ScopeContext statelessScope = new StatelessScopeContext(ctx);
         statelessScope.start();
-        ScopeContext<AtomicContext> sessionScope = new HttpSessionScopeContext(ctx);
+        ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
         sessionScope.start();
 
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -704,9 +704,9 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testStatelessToModule() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext<AtomicContext> statelessScope = new StatelessScopeContext(ctx);
+        ScopeContext statelessScope = new StatelessScopeContext(ctx);
         statelessScope.start();
-        ScopeContext<AtomicContext> moduleScope = new ModuleScopeContext(ctx);
+        ScopeContext moduleScope = new ModuleScopeContext(ctx);
         moduleScope.start();
 
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,

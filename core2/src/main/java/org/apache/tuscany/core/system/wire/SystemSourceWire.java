@@ -4,26 +4,25 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
-import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class SystemSourceWire implements SourceWire {
+public class SystemSourceWire<T> implements SourceWire<T> {
     private String referenceName;
     private QualifiedName targetName;
-    private Class businessInterface;
-    private ObjectFactory factory;
+    private Class<T> businessInterface;
+    private TargetWire<T> targetWire;
 
-    public SystemSourceWire(String referenceName, QualifiedName targetName, Class businessInterface, ObjectFactory factory) {
+    public SystemSourceWire(String referenceName, QualifiedName targetName, Class<T> businessInterface) {
         this.referenceName = referenceName;
         this.targetName = targetName;
         this.businessInterface = businessInterface;
-        this.factory = factory;
     }
 
     public String getReferenceName() {
@@ -42,15 +41,18 @@ public class SystemSourceWire implements SourceWire {
         this.targetName = targetName;
     }
 
-    public Object createProxy() throws ProxyCreationException {
-        return factory.getInstance();
+    public T createProxy() throws ProxyCreationException {
+        if (targetWire == null) {
+            throw new ProxyCreationException("Target wire not set on source wire");
+        }
+        return targetWire.createProxy();
     }
 
-    public Class getBusinessInterface() {
+    public Class<T> getBusinessInterface() {
         return businessInterface;
     }
 
-    public void setBusinessInterface(Class businessInterface) {
+    public void setBusinessInterface(Class<T> businessInterface) {
         this.businessInterface = businessInterface;
     }
 
@@ -58,7 +60,7 @@ public class SystemSourceWire implements SourceWire {
         return new Class[0];
     }
 
-    public Map getInvocationChains() {
+    public Map<Method, SourceInvocationChain> getInvocationChains() {
         return Collections.emptyMap();
     }
 
@@ -72,6 +74,10 @@ public class SystemSourceWire implements SourceWire {
 
     public void addInterface(Class claz) {
         throw new UnsupportedOperationException();
+    }
+
+    public void setTargetWire(TargetWire<T> wire) {
+        targetWire = wire;
     }
 
 }

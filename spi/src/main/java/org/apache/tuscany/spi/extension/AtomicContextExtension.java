@@ -10,14 +10,17 @@ import org.apache.tuscany.spi.context.TargetException;
  */
 public abstract class AtomicContextExtension<T> extends ComponentContextExtension<T> implements AtomicContext<T> {
 
-    protected ScopeContext<AtomicContext> scopeContext;
+    protected ScopeContext scopeContext;
     protected Scope scope;
+
+    protected AtomicContextExtension() {
+    }
 
     public Scope getScope() {
         return scope;
     }
 
-    public void setScopeContext(ScopeContext<AtomicContext> context) {
+    public void setScopeContext(ScopeContext context) {
         scopeContext = context;
         context.register(this);
     }

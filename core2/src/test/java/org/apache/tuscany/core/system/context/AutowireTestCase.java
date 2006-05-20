@@ -9,8 +9,13 @@ import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.mock.MockContextFactory;
 import org.apache.tuscany.core.mock.context.MockReferenceContext;
+import org.apache.tuscany.core.system.wire.SystemSourceWire;
+import org.apache.tuscany.core.system.wire.SystemTargetWire;
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -26,8 +31,7 @@ public class AutowireTestCase extends TestCase {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
         interfaces.add(Source2.class);
-        SystemAtomicContext context = MockContextFactory.createSystemAtomicContext("source", interfaces,
-                SourceImpl.class, false, null, null, null,null);
+        SystemAtomicContext context = MockContextFactory.createSystemAtomicContext("source", interfaces, SourceImpl.class);
         scopeContext.register(context);
         context.setScopeContext(scopeContext);
         parent.registerContext(context);
@@ -48,11 +52,15 @@ public class AutowireTestCase extends TestCase {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
         interfaces.add(Source2.class);
-        SystemAtomicContext context = MockContextFactory.createSystemAtomicContext("source", interfaces,
-                SourceImpl.class, false, null, null, null,null);
+        SystemAtomicContext context = MockContextFactory.createSystemAtomicContext("source", interfaces, SourceImpl.class);
         scopeContext.register(context);
         context.setScopeContext(scopeContext);
-        SystemServiceContext<Source> serviceContext = new SystemServiceContextImpl<Source>("sourceService", Source.class, "source", parent);
+
+        TargetWire<Source> targetWire = new SystemTargetWire<Source>(Source.class, context);
+        SourceWire<Source> wire = new SystemSourceWire<Source>("sourceService", new QualifiedName("source"), Source.class);    //String referenceName, QualifiedName targetName, Class<T> businessInterface
+        wire.setTargetWire(targetWire);
+
+        SystemServiceContext<Source> serviceContext = new SystemServiceContextImpl<Source>("sourceService", Source.class, wire, parent);
         parent.registerContext(serviceContext);
         parent.registerContext(context);
         scopeContext.publish(new ModuleStart(this, parent));

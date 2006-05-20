@@ -17,11 +17,16 @@ import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.model.Scope;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class MockCompositeContext<T> extends AbstractContext<T> implements CompositeContext<T> {
+
+    public Scope getScope() {
+        return Scope.COMPOSITE;
+    }
 
     public Object getInstance(QualifiedName qName) throws TargetException {
         throw new UnsupportedOperationException();
