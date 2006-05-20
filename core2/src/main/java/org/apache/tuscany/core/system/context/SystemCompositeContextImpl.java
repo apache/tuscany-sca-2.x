@@ -28,7 +28,7 @@ public class SystemCompositeContextImpl<S> extends AbstractCompositeContext<S> i
     }
 
     public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance) throws ObjectRegistrationException {
-        registerContext(new SystemSingletonAtomicContext<S>(name, service, instance));
+        registerContext(new SystemSingletonAtomicContext<S, I>(name, service, instance));
     }
 
     public <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException {

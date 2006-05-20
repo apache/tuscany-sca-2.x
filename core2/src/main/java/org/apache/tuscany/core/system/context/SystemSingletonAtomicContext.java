@@ -21,19 +21,19 @@ import org.apache.tuscany.spi.wire.TargetWire;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemSingletonAtomicContext<T> extends AbstractContext<T> implements SystemAtomicContext<T> {
+public class SystemSingletonAtomicContext<S, T extends S> extends AbstractContext<S> implements SystemAtomicContext<S> {
 
     private T instance;
     private List<Class<?>> serviceInterfaces;
 
-    public SystemSingletonAtomicContext(String name, Class<?> serviceInterface, T instance) {
+    public SystemSingletonAtomicContext(String name, Class<S> serviceInterface, T instance) {
         super(name);
         this.instance = instance;
-        serviceInterfaces = new ArrayList<Class<?>>();
+        serviceInterfaces = new ArrayList<Class<?>>(1);
         serviceInterfaces.add(serviceInterface);
     }
 
-    public List<Class<?>>getServiceInterfaces() {
+    public List<Class<?>> getServiceInterfaces() {
         return serviceInterfaces;
     }
 
@@ -60,7 +60,7 @@ public class SystemSingletonAtomicContext<T> extends AbstractContext<T> implemen
         return getTargetInstance();
     }
 
-    public T getService() throws TargetException {
+    public S getService() throws TargetException {
         return getTargetInstance();
     }
 
