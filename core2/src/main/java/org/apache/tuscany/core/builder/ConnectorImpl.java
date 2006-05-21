@@ -62,6 +62,7 @@ public class ConnectorImpl implements Connector {
     @SuppressWarnings("unchecked")
     private <T> void connect(SourceWire<T> sourceWire, CompositeContext<?> parent, Scope sourceScope) throws BuilderConfigException {
         assert(sourceScope != null): "Source scope was null";
+        assert(sourceWire.getTargetName() != null): "Wire target name was null";
         QualifiedName targetName = sourceWire.getTargetName();
         Context<?> target = parent.getContext(targetName.getPartName());
         if (target == null) {
@@ -74,7 +75,7 @@ public class ConnectorImpl implements Connector {
             ComponentContext<?> targetContext = (ComponentContext<?>) target;
             targetWire = targetContext.getTargetWires().get(targetName.getPortName());
             if (targetWire == null) {
-                BuilderConfigException e = new BuilderConfigException("Target service not found for reference" + sourceWire.getReferenceName());
+                BuilderConfigException e = new BuilderConfigException("Target service not found for reference " + sourceWire.getReferenceName());
                 e.setIdentifier(targetName.getPortName());
                 throw e;
             }

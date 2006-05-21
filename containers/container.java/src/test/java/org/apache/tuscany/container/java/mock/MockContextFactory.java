@@ -39,14 +39,19 @@ import org.apache.tuscany.spi.wire.TargetWire;
 public class MockContextFactory {
 
     public static JavaAtomicContext createJavaAtomicContext(String name, Class<?> clazz, Scope scope) throws NoSuchMethodException {
-        return createJavaAtomicContext(name, clazz, scope, false, null, null, null, null);
+        return createJavaAtomicContext(name, clazz, clazz, scope, false, null, null, null, null);
 
     }
 
-    public static JavaAtomicContext createJavaAtomicContext(String name, Class<?> clazz, Scope scope, boolean eagerInit, EventInvoker<Object> initInvoker,
+    public static JavaAtomicContext createJavaAtomicContext(String name, Class<?> clazz, Class<?> service, Scope scope) throws NoSuchMethodException {
+        return createJavaAtomicContext(name, clazz, service, scope, false, null, null, null, null);
+
+    }
+
+    public static JavaAtomicContext createJavaAtomicContext(String name, Class<?> clazz, Class<?> service,Scope scope, boolean eagerInit, EventInvoker<Object> initInvoker,
                                                             EventInvoker<Object> destroyInvoker, List<Injector> injectors, Map<String, Member> members) throws NoSuchMethodException {
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
-        serviceInterfaces.add(clazz);
+        serviceInterfaces.add(service);
         return new JavaAtomicContext(name, serviceInterfaces, createObjectFactory(clazz), scope, eagerInit, initInvoker, destroyInvoker, injectors, members);
     }
 
@@ -74,18 +79,6 @@ public class MockContextFactory {
 
     /**
      * Wires two contexts together where the reference interface may be different from the target service
-     *
-     * @param sourceName
-     * @param sourceClass
-     * @param sourceReferenceClass
-     * @param sourceScope
-     * @param members
-     * @param targetName
-     * @param targetService
-     * @param targetClass
-     * @param targetScope
-     * @return
-     * @throws Exception
      */
     public static Map<String, AtomicContext> createWiredContexts(String sourceName, Class<?> sourceClass, Class<?> sourceReferenceClass,
                                                                  ScopeContext sourceScope,
@@ -112,7 +105,7 @@ public class MockContextFactory {
                 targetService.getName().lastIndexOf('.') + 1), targetService, targetHeadInterceptor, targetRequestHeadHandler, targetResponseHeadHandler);
         targetContext.addTargetWire(targetWire);
 
-        JavaAtomicContext sourceContext = createJavaAtomicContext(sourceName, sourceClass, sourceScope.getScope(), false, null, null, null, members);
+        JavaAtomicContext sourceContext = createJavaAtomicContext(sourceName, sourceClass, sourceClass, sourceScope.getScope(), false, null, null, null, members);
         SourceWire sourceWire = createSourceWire(targetName, sourceReferenceClass, sourceHeadInterceptor,
                 sourceHeadRequestHandler, sourceHeadResponseHandler);
         sourceContext.addSourceWire(sourceWire);
@@ -152,7 +145,7 @@ public class MockContextFactory {
                 targetService.getName().lastIndexOf('.') + 1), targetService, null, null, null);
         targetContext.addTargetWire(targetWire);
 
-        JavaAtomicContext sourceContext = createJavaAtomicContext(sourceName, sourceClass, sourceScope.getScope(), false, null, null, null, members);
+        JavaAtomicContext sourceContext = createJavaAtomicContext(sourceName, sourceClass, sourceClass, sourceScope.getScope(), false, null, null, null, members);
         SourceWire sourceWire = createSourceWire(targetName, sourceReferenceClass, null, null, null);
         List<SourceWire> factories = new ArrayList<SourceWire>();
         factories.add(sourceWire);
@@ -166,6 +159,10 @@ public class MockContextFactory {
         contexts.put(sourceName, sourceContext);
         contexts.put(targetName, targetContext);
         return contexts;
+    }
+
+    public static <T> TargetWire<T> createTargetWire(String serviceName, Class<T> interfaze) {
+        return createTargetWire(serviceName,interfaze,null,null,null);
     }
 
     public static <T> TargetWire<T> createTargetWire(String serviceName, Class<T> interfaze,
@@ -191,10 +188,16 @@ public class MockContextFactory {
         return wire;
     }
 
+    public static <T> SourceWire<T> createSourceWire(String refName, Class<T> interfaze) {
+        SourceWire<T> wire = new JDKSourceWire<T>();
+        wire.setReferenceName(refName);
+        wire.addInvocationChains(createSourceInvocationChains(interfaze));
+        wire.setBusinessInterface(interfaze);
+        return wire;
+    }
+
 
     /**
-     * TODO refactor
-     *
      * @param sourceWire
      * @param targetWire
      * @param targetContext

@@ -471,8 +471,8 @@ public class ScopeReferenceTestCase extends TestCase {
                 requestScope.onEvent(new RequestStart(this));
                 Source source2 = sourceContext.getService();
                 Target target2 = targetContext.getService();
-                assertTrue("foo".equals(target2.getString()));
-                assertTrue("foo".equals(source2.getTarget().getString()));
+                assertEquals("foo",target2.getString());
+                assertEquals("foo",source2.getTarget().getString());
                 source2.getTarget().setString("bar");
                 assertEquals("bar", target2.getString());
                 assertEquals("bar", source2.getTarget().getString());
@@ -524,8 +524,8 @@ public class ScopeReferenceTestCase extends TestCase {
                 requestScope.onEvent(new RequestStart(this));
                 Source source2 = sourceContext.getService();
                 Target target2 = targetContext.getService();
-                assertTrue("foo".equals(target2.getString()));
-                assertTrue("foo".equals(source2.getTarget().getString()));
+                assertEquals("foo",target2.getString());
+                assertEquals("foo",source2.getTarget().getString());
                 source2.getTarget().setString("bar");
                 assertEquals("bar", target2.getString());
                 assertEquals("bar", source2.getTarget().getString());
@@ -728,9 +728,9 @@ public class ScopeReferenceTestCase extends TestCase {
         moduleScope.onEvent(new HttpSessionStart(this, session2));
 
         Target target2 = targetContext.getService();
-        assertTrue("foo".equals(target2.getString()));
+        assertEquals("foo",target2.getString());
 
-        assertTrue("foo".equals(source.getTarget().getString()));
+        assertEquals("foo",source.getTarget().getString());
         source.getTarget().setString("bar");
         assertEquals("bar", target2.getString());
         assertEquals("bar", source.getTarget().getString());
