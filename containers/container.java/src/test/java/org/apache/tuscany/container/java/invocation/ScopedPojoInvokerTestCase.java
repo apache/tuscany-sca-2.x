@@ -21,15 +21,14 @@ import java.lang.reflect.Method;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.container.java.context.JavaAtomicContext;
-import org.apache.tuscany.container.java.invocation.mock.SimpleTarget;
-import org.apache.tuscany.container.java.invocation.mock.SimpleTargetImpl;
+import org.apache.tuscany.container.java.mock.components.SimpleTarget;
+import org.apache.tuscany.container.java.mock.components.SimpleTargetImpl;
 import org.apache.tuscany.container.java.mock.MockContextFactory;
 import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.WorkContext;
-import org.apache.tuscany.model.Scope;
 
 public class ScopedPojoInvokerTestCase extends TestCase {
 

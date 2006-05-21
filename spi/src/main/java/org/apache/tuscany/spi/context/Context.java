@@ -29,15 +29,11 @@ public interface Context<T> extends EventPublisher, Lifecycle {
 
     /**
      * Returns the name of the context.
-     *
-     * @return the name of the context
      */
     String getName();
 
     /**
      * Sets the name of the context.
-     *
-     * @param name the name of the context
      */
     void setName(String name);
 
@@ -51,6 +47,9 @@ public interface Context<T> extends EventPublisher, Lifecycle {
      */
     void setParent(CompositeContext parent);
 
+    /**
+     * Returns the context scope
+     */
     Scope getScope();
 
     /**

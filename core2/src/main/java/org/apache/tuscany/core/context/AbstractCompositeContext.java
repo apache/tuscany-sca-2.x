@@ -185,7 +185,7 @@ public abstract class AbstractCompositeContext<T> extends CompositeContextExtens
     }
 
     protected void registerAutowireInternal(Class<?> interfaze, Context context) {
-        assert interfaze != null;
+        assert interfaze != null: "Interface was null";
         if (autowireInternal.containsKey(interfaze)) {
             return;
         }

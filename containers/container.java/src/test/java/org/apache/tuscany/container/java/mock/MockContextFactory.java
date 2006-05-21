@@ -38,17 +38,17 @@ import org.apache.tuscany.spi.wire.TargetWire;
  */
 public class MockContextFactory {
 
-    public static JavaAtomicContext createJavaAtomicContext(String name, Class<?> clazz, Scope scope) throws NoSuchMethodException {
+    public static JavaAtomicContext<?> createJavaAtomicContext(String name, Class<?> clazz, Scope scope) throws NoSuchMethodException {
         return createJavaAtomicContext(name, clazz, clazz, scope, false, null, null, null, null);
 
     }
 
-    public static JavaAtomicContext createJavaAtomicContext(String name, Class<?> clazz, Class<?> service, Scope scope) throws NoSuchMethodException {
+    public static JavaAtomicContext<?> createJavaAtomicContext(String name, Class<?> clazz, Class<?> service, Scope scope) throws NoSuchMethodException {
         return createJavaAtomicContext(name, clazz, service, scope, false, null, null, null, null);
 
     }
 
-    public static JavaAtomicContext createJavaAtomicContext(String name, Class<?> clazz, Class<?> service,Scope scope, boolean eagerInit, EventInvoker<Object> initInvoker,
+    public static JavaAtomicContext<?> createJavaAtomicContext(String name, Class<?> clazz, Class<?> service,Scope scope, boolean eagerInit, EventInvoker<Object> initInvoker,
                                                             EventInvoker<Object> destroyInvoker, List<Injector> injectors, Map<String, Member> members) throws NoSuchMethodException {
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         serviceInterfaces.add(service);

@@ -94,8 +94,6 @@ public class ConnectorImpl implements Connector {
             BuilderConfigException e = new BuilderConfigException("Invalid wire target type for reference " + sourceWire.getReferenceName());
             e.setIdentifier(targetName.getQualifiedName());
         }
-
-
     }
 
     private <T>  void connect(SourceWire<T> source, TargetWire<T> targetWire, Context<?> target, boolean optimizable) {

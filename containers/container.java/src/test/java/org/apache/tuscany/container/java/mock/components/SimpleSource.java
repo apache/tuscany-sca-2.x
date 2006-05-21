@@ -14,26 +14,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.java.invocation.mock;
+package org.apache.tuscany.container.java.mock.components;
 
-public class SimpleTargetImpl implements SimpleTarget {
+public interface SimpleSource {
 
-    public SimpleTargetImpl() {
-        super();
-    }
+    public String invokeHello() throws Exception;
 
-    public String hello(String message) throws Exception {
-        return message;
-    }
-
-    public String goodbye(String message) throws Exception {
-        return message;
-    }
-
-    public String echo(String message) throws Exception {
-        return message;
-    }
-
-
+    public String invokeGoodbye() throws Exception;
 }
 
