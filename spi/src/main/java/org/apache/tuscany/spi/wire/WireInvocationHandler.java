@@ -9,5 +9,5 @@ import java.util.Map;
  */
 public interface WireInvocationHandler extends InvocationHandler {
 
-    void setConfiguration(Map<Method, ? extends InvocationChain> configuration);
+    void setChains(Map<Method, ? extends InvocationChain> chains);
 }

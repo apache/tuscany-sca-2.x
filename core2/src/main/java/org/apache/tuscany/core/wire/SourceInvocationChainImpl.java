@@ -14,6 +14,7 @@
 package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -63,13 +64,18 @@ public class SourceInvocationChainImpl extends InvocationChainImpl implements So
     }
 
     public void build() {
-        if (requestHandlers != null && targetInterceptorChainHead != null) {
+        if ((requestHandlers != null || responseHandlers != null) && targetInterceptorChainHead != null) {
             // on target-side, connect existing handlers and interceptors
             MessageHandler messageDispatcher = new MessageDispatcher(targetInterceptorChainHead);
+            if (requestHandlers == null) {
+                // case where there is only a response handler
+                requestHandlers = new ArrayList<MessageHandler>();
+            }
+
             requestHandlers.add(messageDispatcher);
         }
 
-        if (requestHandlers != null) {
+        if (requestHandlers != null || responseHandlers != null) {
             MessageChannel requestChannel = new MessageChannelImpl(requestHandlers);
             MessageChannel responseChannel = new MessageChannelImpl(responseHandlers);
             Interceptor channelInterceptor = new RequestResponseInterceptor(requestChannel, targetRequestChannel,

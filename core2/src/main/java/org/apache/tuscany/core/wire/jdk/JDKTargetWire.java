@@ -26,7 +26,7 @@ public class JDKTargetWire<T> implements TargetWire<T> {
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
         WireInvocationHandler handler = new JDKInvocationHandler();
-        handler.setConfiguration(invocationChains);
+        handler.setChains(invocationChains);
         return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaces, handler);
     }
 

@@ -46,7 +46,7 @@ public class JDKSourceWire<T> implements SourceWire<T> {
             return targetWire.getTargetService();
         }
         WireInvocationHandler handler = new JDKInvocationHandler();
-        handler.setConfiguration(invocationChains);
+        handler.setChains(invocationChains);
         return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaces, handler);
     }
 

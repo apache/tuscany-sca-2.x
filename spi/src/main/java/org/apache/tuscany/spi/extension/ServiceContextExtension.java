@@ -62,7 +62,7 @@ public class ServiceContextExtension<T> extends AbstractContext<T> implements Se
 
     public InvocationHandler getHandler() {
         WireInvocationHandler invocationHandler = handlerFactory.getInstance();
-        invocationHandler.setConfiguration(sourceWire.getInvocationChains());
+        invocationHandler.setChains(sourceWire.getInvocationChains());
         return invocationHandler;
     }
 

@@ -59,7 +59,7 @@ public class InvocationErrorTestCase extends TestCase {
         Map<Method, InvocationChain> config = new MethodHashMap<InvocationChain>();
         config.put(checkedMethod, getConfiguration(checkedMethod));
         WireInvocationHandler handler = new JDKInvocationHandler();
-        handler.setConfiguration(config);
+        handler.setChains(config);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{TestBean.class}, handler);
@@ -74,7 +74,7 @@ public class InvocationErrorTestCase extends TestCase {
         Map<Method, InvocationChain> config = new MethodHashMap<InvocationChain>();
         config.put(runtimeMethod, getConfiguration(runtimeMethod));
         WireInvocationHandler handler = new JDKInvocationHandler();
-        handler.setConfiguration(config);
+        handler.setChains(config);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{TestBean.class}, handler);

@@ -75,7 +75,7 @@ public abstract class ReferenceContextExtension<T> extends AbstractContext<T> im
         Map<Method, TargetInvocationChain> configuration = targetWire.getInvocationChains();
         assert(configuration != null);
         WireInvocationHandler handler = handlerFactory.getInstance();
-        handler.setConfiguration(configuration);
+        handler.setChains(configuration);
         return handler;
     }
 

@@ -40,7 +40,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         Map<Method, InvocationChain> configs = new MethodHashMap<InvocationChain>();
         configs.put(hello, getInvocationHandler(hello));
         WireInvocationHandler handler = new JDKInvocationHandler();
-        handler.setConfiguration(configs);
+        handler.setChains(configs);
         assertEquals("foo", handler.invoke(null, hello, new Object[] { "foo" }));
     }
 
@@ -48,7 +48,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         Map<Method, InvocationChain> configs = new MethodHashMap<InvocationChain>();
         configs.put(hello, getInvocationHandler(hello));
         WireInvocationHandler handler = new JDKInvocationHandler();
-        handler.setConfiguration(configs);
+        handler.setChains(configs);
         try {
             assertEquals("foo", handler.invoke(null, hello, new Object[] {}));
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -65,7 +65,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         Map<Method, InvocationChain> configs = new MethodHashMap<InvocationChain>();
         configs.put(hello, source);
         WireInvocationHandler handler = new JDKInvocationHandler();
-        handler.setConfiguration(configs);
+        handler.setChains(configs);
         try {
             assertEquals("foo", handler.invoke(null, hello, new Object[] {}));
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -82,7 +82,7 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         Map<Method, InvocationChainImpl> configs = new MethodHashMap<InvocationChainImpl>();
         configs.put(hello, source);
         WireInvocationHandler handler = new JDKInvocationHandler();
-        handler.setConfiguration(configs);
+        handler.setChains(configs);
         assertEquals("foo", handler.invoke(null, hello, new Object[] { "foo" }));
     }
 

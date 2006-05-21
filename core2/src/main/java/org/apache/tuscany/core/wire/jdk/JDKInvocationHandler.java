@@ -37,13 +37,13 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
 public class JDKInvocationHandler implements WireInvocationHandler {
 
     /*
-     * an association of an operation to configuration holder. The holder contains the master wire configuration
-     * and a locale clone of the master TargetInvoker. TargetInvokers will be cloned by the handler and placed in the
+     * an association of an operation to chain holder. The holder contains the master wire chain
+     * and a local clone of the master TargetInvoker. TargetInvokers will be cloned by the handler and placed in the
      * holder if they are cacheable. This allows optimizations such as avoiding target resolution when a source refers
      * to a target of greater scope since the target reference can be maintained by the invoker. When a target invoker
-     * is not cacheable, the master associated with the wire configuration will be used.
+     * is not cacheable, the master associated with the wire chains will be used.
      */
-    private Map<Method, ConfigHolder> configuration;
+    private Map<Method, ChainHolder> chains;
 
     public JDKInvocationHandler() {
     }
@@ -53,13 +53,13 @@ public class JDKInvocationHandler implements WireInvocationHandler {
      */
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Interceptor headInterceptor = null;
-        ConfigHolder holder = configuration.get(method);
+        ChainHolder holder = chains.get(method);
         if (holder == null) {
             TargetException e = new TargetException("Operation not configured");
             e.setIdentifier(method.getName());
             throw e;
         }
-        InvocationChain config = holder.config;
+        InvocationChain config = holder.chain;
         if (config != null) {
             headInterceptor = config.getHeadInterceptor();
         }
@@ -101,7 +101,6 @@ public class JDKInvocationHandler implements WireInvocationHandler {
             msg.setBody(args);
             // dispatch the wire down the chain and get the response
             Message resp = headInterceptor.invoke(msg);
-
             Object body = resp.getBody();
             if (body instanceof Throwable) {
                 throw (Throwable) body;
@@ -110,24 +109,24 @@ public class JDKInvocationHandler implements WireInvocationHandler {
         }
     }
 
-    public void setConfiguration(Map<Method, ? extends InvocationChain> configuration) {
-        this.configuration = new HashMap<Method, ConfigHolder>(configuration.size());
-        for (Map.Entry<Method, ? extends InvocationChain> entry : configuration.entrySet()) {
-            this.configuration.put(entry.getKey(), new ConfigHolder(entry.getValue()));
+    public void setChains(Map<Method, ? extends InvocationChain> invocationChains) {
+        this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
+        for (Map.Entry<Method, ? extends InvocationChain> entry : invocationChains.entrySet()) {
+            this.chains.put(entry.getKey(), new ChainHolder(entry.getValue()));
         }
     }
 
     /**
-     * A holder used to associate an wire configuration with a local copy of a target invoker that was
-     * previously cloned from the configuration master
+     * A holder used to associate an wire chain with a local copy of a target invoker that was
+     * previously cloned from the chain master
      */
-    private class ConfigHolder {
+    private class ChainHolder {
 
-        InvocationChain config;
+        InvocationChain chain;
         TargetInvoker cachedInvoker;
 
-        public ConfigHolder(InvocationChain config) {
-            this.config = config;
+        public ChainHolder(InvocationChain config) {
+            this.chain = config;
         }
 
     }

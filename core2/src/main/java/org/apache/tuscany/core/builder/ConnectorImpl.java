@@ -115,7 +115,7 @@ public class ConnectorImpl implements Connector {
                 throw e;
             }
             // if handler is configured, add that
-            if (targetChain.getRequestHandlers() != null) {
+            if (targetChain.getRequestHandlers() != null || targetChain.getResponseHandlers() != null) {
                 sourceChain.setTargetRequestChannel(new MessageChannelImpl(targetChain
                         .getRequestHandlers()));
                 sourceChain.setTargetResponseChannel(new MessageChannelImpl(targetChain
