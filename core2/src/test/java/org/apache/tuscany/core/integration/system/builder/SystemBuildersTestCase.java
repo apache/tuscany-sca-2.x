@@ -48,9 +48,9 @@ public class SystemBuildersTestCase extends TestCase {
         Component<SystemImplementation> targetComponent = MockComponentFactory.createTarget();
         Component<SystemImplementation> sourceComponent = MockComponentFactory.createSourceWithTargetReference();
 
-        AtomicContext sourceContext = (AtomicContext) builder.build(parent, sourceComponent);
+        AtomicContext<?> sourceContext = (AtomicContext) builder.build(parent, sourceComponent);
         sourceContext.setScopeContext(scope);
-        AtomicContext targetContext = (AtomicContext) builder.build(parent, targetComponent);
+        AtomicContext<?> targetContext = (AtomicContext) builder.build(parent, targetComponent);
         targetContext.setScopeContext(scope);
 
         parent.registerContext(sourceContext);
@@ -95,7 +95,7 @@ public class SystemBuildersTestCase extends TestCase {
         BoundReference<SystemBinding> targetReference = MockComponentFactory.createBoundReference();
         Component<SystemImplementation> sourceComponent = MockComponentFactory.createSourceWithTargetReference();
 
-        AtomicContext sourceContext = (AtomicContext) builder.build(parent, sourceComponent);
+        AtomicContext<?> sourceContext = (AtomicContext) builder.build(parent, sourceComponent);
         sourceContext.setScopeContext(scope);
         ReferenceContext targetContext = (ReferenceContext) bindingBuilder.build(parent, targetReference);
 
@@ -133,9 +133,9 @@ public class SystemBuildersTestCase extends TestCase {
         BoundService<SystemBinding> service =  MockComponentFactory.createBoundService();
         Component<SystemImplementation> component = MockComponentFactory.createTarget();
 
-        AtomicContext sourceContext = (AtomicContext) builder.build(parent, component);
+        AtomicContext<?> sourceContext = (AtomicContext) builder.build(parent, component);
         sourceContext.setScopeContext(scope);
-        ServiceContext serviceContext = (ServiceContext) bindingBuilder.build(parent, service);
+        ServiceContext<?> serviceContext = (ServiceContext) bindingBuilder.build(parent, service);
 
         parent.registerContext(sourceContext);
         parent.registerContext(serviceContext);
@@ -178,11 +178,10 @@ public class SystemBuildersTestCase extends TestCase {
         grandParent.registerContext(targetComponentContext);
 
         BoundReference<SystemBinding> reference = MockComponentFactory.createBoundReference();
-
         BoundService<SystemBinding> service =  MockComponentFactory.createBoundService();
 
-        ReferenceContext referenceContext = (ReferenceContext) bindingBuilder.build(parent, reference);
-        ServiceContext serviceContext = (ServiceContext) bindingBuilder.build(parent, service);
+        ReferenceContext<?> referenceContext = (ReferenceContext) bindingBuilder.build(parent, reference);
+        ServiceContext<?> serviceContext = (ServiceContext) bindingBuilder.build(parent, service);
 
         parent.registerContext(referenceContext);
         parent.registerContext(serviceContext);

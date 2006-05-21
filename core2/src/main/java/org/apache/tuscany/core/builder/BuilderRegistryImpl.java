@@ -74,8 +74,9 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         this.scopeRegistry = scopeRegistry;
     }
 
+    @SuppressWarnings("unchecked")
     public <I extends Implementation<?>> void register(ComponentBuilder<I> builder) {
-        Class<I> implClass = JavaIntrospectionHelper.introspectGeneric(builder.getClass(), 0);
+        Class<I> implClass = (Class<I>)JavaIntrospectionHelper.introspectGeneric(builder.getClass(), 0);
         if (implClass == null) {
             throw new IllegalArgumentException("builder is not generified");
         }
@@ -86,6 +87,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         componentBuilders.put(implClass, builder);
     }
 
+    @SuppressWarnings("unchecked")
     public <I extends Implementation<?>> Context build(CompositeContext parent, Component<I> component) {
         Class<I> implClass = (Class<I>) component.getImplementation().getClass();
         ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>) componentBuilders.get(implClass);
@@ -140,12 +142,14 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         bindingBuilders.put(implClass, builder);
     }
 
+    @SuppressWarnings("unchecked")
     public <B extends Binding> Context build(CompositeContext parent, BoundService<B> boundService) {
         Class<B> bindingClass = (Class<B>) boundService.getBinding().getClass();
         BindingBuilder<B> bindingBuilder = (BindingBuilder<B>) bindingBuilders.get(bindingClass);
         return bindingBuilder.build(parent, boundService);
     }
 
+    @SuppressWarnings("unchecked")
     public <B extends Binding> Context build(CompositeContext parent, BoundReference<B> boundReference) {
         Class<B> bindingClass = (Class<B>) boundReference.getBinding().getClass();
         BindingBuilder<B> bindingBuilder = (BindingBuilder<B>) bindingBuilders.get(bindingClass);

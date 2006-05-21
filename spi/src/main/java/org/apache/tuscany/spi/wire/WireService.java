@@ -18,7 +18,7 @@ public interface WireService {
      * @param reference the reference to create the wire factory for
      * @throws BuilderConfigException
      */
-    public SourceWire createSourceWire(Reference reference) throws BuilderConfigException;
+    SourceWire createSourceWire(Reference reference) throws BuilderConfigException;
 
     /**
      * Creates a target-side wire for a service implementing a given interface
@@ -26,6 +26,6 @@ public interface WireService {
      * @param service the service to create the wire factory for
      * @throws BuilderConfigException
      */
-    public TargetWire createTargetWire(Service service) throws BuilderConfigException;
+    TargetWire createTargetWire(Service service) throws BuilderConfigException;
 
 }

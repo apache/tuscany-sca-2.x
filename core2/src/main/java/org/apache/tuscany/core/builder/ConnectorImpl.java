@@ -25,10 +25,10 @@ import org.apache.tuscany.spi.wire.TargetWire;
  */
 public class ConnectorImpl implements Connector {
 
-    public void connect(Context<?> source, CompositeContext parent) {
+    public <T> void connect(Context<T> source, CompositeContext parent) {
         if (source instanceof ComponentContext) {
-            ComponentContext<?> sourceContext = (ComponentContext) source;
-            for (SourceWire sourceWire : sourceContext.getSourceWires()) {
+            ComponentContext<T> sourceContext = (ComponentContext<T>) source;
+            for (SourceWire<T> sourceWire : sourceContext.getSourceWires()) {
                 if (sourceWire instanceof SourceAutowire) {
                     continue;
                 }
@@ -41,8 +41,8 @@ public class ConnectorImpl implements Connector {
                 }
             }
         } else if (source instanceof ServiceContext) {
-            ServiceContext sourceContext = (ServiceContext) source;
-            SourceWire sourceWire = sourceContext.getSourceWire();
+            ServiceContext<T> sourceContext = (ServiceContext<T>) source;
+            SourceWire<T> sourceWire = sourceContext.getSourceWire();
             try {
                 connect(sourceWire, parent, sourceContext.getScope());
             } catch (BuilderConfigException e) {
@@ -58,7 +58,8 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    private void connect(SourceWire<?> sourceWire, CompositeContext parent, Scope sourceScope) throws BuilderConfigException {
+    @SuppressWarnings("unchecked")
+    private <T> void connect(SourceWire<T> sourceWire, CompositeContext<?> parent, Scope sourceScope) throws BuilderConfigException {
         assert(sourceScope != null): "Source scope was null";
         QualifiedName targetName = sourceWire.getTargetName();
         Context<?> target = parent.getContext(targetName.getPartName());
@@ -76,11 +77,17 @@ public class ConnectorImpl implements Connector {
                 e.setIdentifier(targetName.getPortName());
                 throw e;
             }
-            connect(sourceWire, targetWire, target, isOptimizable(sourceScope, targetContext.getScope()));
+            if (!sourceWire.getBusinessInterface().isAssignableFrom(targetWire.getBusinessInterface())){
+               throw new BuilderConfigException("Incompatible source and target interfaces");
+            }
+            connect(sourceWire, (TargetWire<T>)targetWire, target, isOptimizable(sourceScope, targetContext.getScope()));
         } else if (target instanceof ReferenceContext) {
-            targetWire = ((ReferenceContext) target).getTargetWire();
+            targetWire = ((ReferenceContext)target).getTargetWire();
             assert(targetWire != null);
-            connect(sourceWire, targetWire, target, isOptimizable(sourceScope, target.getScope()));
+            if (!sourceWire.getBusinessInterface().isAssignableFrom(targetWire.getBusinessInterface())){
+               throw new BuilderConfigException("Incompatible source and target interfaces");
+            }
+            connect(sourceWire, (TargetWire<T>)targetWire, target, isOptimizable(sourceScope, target.getScope()));
         } else {
             BuilderConfigException e = new BuilderConfigException("Invalid wire target type for reference " + sourceWire.getReferenceName());
             e.setIdentifier(targetName.getQualifiedName());
@@ -89,7 +96,7 @@ public class ConnectorImpl implements Connector {
 
     }
 
-    private void connect(SourceWire<?> source, TargetWire targetWire, Context<?> target, boolean optimizable) {
+    private <T>  void connect(SourceWire<T> source, TargetWire<T> targetWire, Context<?> target, boolean optimizable) {
         Map<Method, TargetInvocationChain> targetInvocationConfigs = targetWire.getInvocationChains();
         // perform optimization, if possible
         if (optimizable && source.getInvocationChains().isEmpty() && targetInvocationConfigs.isEmpty()) {

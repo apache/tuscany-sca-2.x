@@ -436,7 +436,7 @@ public class JavaIntrospectionHelper {
      * <p/>
      * will return Baz.
      */
-    public static Class introspectGeneric(Class clazz, int pos) {
+    public static Class introspectGeneric(Class<?> clazz, int pos) {
         assert(clazz != null): "No class specified";
         Type type = clazz.getGenericSuperclass();
         if (type instanceof ParameterizedType) {

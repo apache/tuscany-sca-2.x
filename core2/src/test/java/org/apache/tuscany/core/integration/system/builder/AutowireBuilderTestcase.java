@@ -56,7 +56,7 @@ public class AutowireBuilderTestcase extends TestCase {
         Component<SystemImplementation> sourceComponent = MockComponentFactory.createSourceWithTargetReference();
 
 
-        AtomicContext sourceContext = (AtomicContext) componentBuilder.build(parent, sourceComponent);
+        AtomicContext<?> sourceContext = (AtomicContext) componentBuilder.build(parent, sourceComponent);
         sourceContext.setScopeContext(scope);
         parent.registerContext(sourceContext);
 

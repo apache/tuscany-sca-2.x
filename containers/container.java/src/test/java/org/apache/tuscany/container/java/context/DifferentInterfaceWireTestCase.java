@@ -41,8 +41,6 @@ import org.apache.tuscany.spi.context.WorkContext;
  */
 public class DifferentInterfaceWireTestCase extends TestCase {
 
-
-
     public void testDifferentInterfaceInjection() throws Exception {
         Map<String, Member> members = new HashMap<String, Member>();
         Method m = SourceImpl.class.getMethod("setTarget", Target.class);

@@ -8,6 +8,6 @@ import org.apache.tuscany.spi.context.CompositeContext;
  */
 public interface Connector {
 
-    void connect(Context<?> source, CompositeContext parent);
+    <T> void connect(Context<T> source, CompositeContext parent);
 
 }
