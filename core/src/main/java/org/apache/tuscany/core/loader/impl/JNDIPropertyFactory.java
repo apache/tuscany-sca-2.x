@@ -23,7 +23,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.tuscany.core.loader.StAXPropertyFactory;
-import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.injection.JNDIObjectFactory;
 import org.apache.tuscany.model.assembly.Property;

@@ -1,7 +1,7 @@
 package org.apache.tuscany.core.context.scope;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.injection.EventInvoker;

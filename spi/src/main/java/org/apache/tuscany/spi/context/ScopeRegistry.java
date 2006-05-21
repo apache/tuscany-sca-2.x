@@ -13,7 +13,7 @@
  */
 package org.apache.tuscany.spi.context;
 
-import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.model.Scope;
 
 /**

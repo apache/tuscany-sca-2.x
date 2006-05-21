@@ -1,6 +1,6 @@
 package org.apache.tuscany.core.context;
 
-import org.apache.tuscany.common.TuscanyRuntimeException;
+import org.apache.tuscany.spi.TuscanyRuntimeException;
 
 /**
  * The root exception for the runtime package. Exceptions occurring in the runtime are generally non-recoverable

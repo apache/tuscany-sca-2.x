@@ -13,8 +13,8 @@
  */
 package org.apache.tuscany.core.runtime;
 
-import org.apache.tuscany.common.TuscanyException;
-import org.apache.tuscany.common.TuscanyRuntimeException;
+import org.apache.tuscany.spi.TuscanyException;
+import org.apache.tuscany.spi.TuscanyRuntimeException;
 
 
 /**
@@ -27,6 +27,6 @@ public interface RuntimeMonitor {
     public void log(TuscanyRuntimeException e);
 
     public void log(TuscanyException e);
-    
+
 }
 

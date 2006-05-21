@@ -17,7 +17,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.ReferenceContext;

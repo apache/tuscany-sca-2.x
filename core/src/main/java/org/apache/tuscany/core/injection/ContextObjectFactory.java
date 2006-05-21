@@ -1,7 +1,7 @@
 package org.apache.tuscany.core.injection;
 
 import org.apache.tuscany.core.builder.ContextResolver;
-import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.core.context.CompositeContext;
 
 /**
@@ -10,7 +10,7 @@ import org.apache.tuscany.core.context.CompositeContext;
  * @version $Rev: 380903 $ $Date: 2006-02-25 00:53:26 -0800 (Sat, 25 Feb 2006) $
  */
 public class ContextObjectFactory implements ObjectFactory<CompositeContext> {
-    
+
     private final ContextResolver resolver;
 
     public ContextObjectFactory(ContextResolver resolver) {

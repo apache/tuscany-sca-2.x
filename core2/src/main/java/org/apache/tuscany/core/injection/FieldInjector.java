@@ -2,11 +2,11 @@ package org.apache.tuscany.core.injection;
 
 import java.lang.reflect.Field;
 
-import org.apache.tuscany.common.ObjectFactory;
-import org.apache.tuscany.common.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.ObjectCreationException;
 
 /**
- * Injects a value created by an {@link org.apache.tuscany.common.ObjectFactory} on a given field
+ * Injects a value created by an {@link org.apache.tuscany.spi.ObjectFactory} on a given field
  *
  * @version $Rev: 399488 $ $Date: 2006-05-03 16:20:27 -0700 (Wed, 03 May 2006) $
  */

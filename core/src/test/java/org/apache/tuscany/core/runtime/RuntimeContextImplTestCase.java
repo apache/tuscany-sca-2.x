@@ -17,8 +17,8 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.osoa.sca.ServiceUnavailableException;
 
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
-import org.apache.tuscany.common.monitor.MonitorFactory;
+import org.apache.tuscany.core.monitor.impl.NullMonitorFactory;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.client.BootstrapHelper;

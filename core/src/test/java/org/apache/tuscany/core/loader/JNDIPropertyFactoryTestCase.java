@@ -33,7 +33,7 @@ import javax.naming.spi.InitialContextFactory;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.core.config.ConfigurationLoadException;
 import org.apache.tuscany.core.loader.impl.JNDIPropertyFactory;
 import org.apache.tuscany.model.assembly.AssemblyFactory;

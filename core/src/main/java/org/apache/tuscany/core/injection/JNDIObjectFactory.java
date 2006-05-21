@@ -19,8 +19,8 @@ package org.apache.tuscany.core.injection;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
-import org.apache.tuscany.common.ObjectFactory;
-import org.apache.tuscany.common.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.ObjectCreationException;
 
 /**
  * An implementation of ObjectFactory that creates instances

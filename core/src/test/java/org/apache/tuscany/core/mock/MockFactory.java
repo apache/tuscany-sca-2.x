@@ -49,7 +49,7 @@ import org.apache.tuscany.model.assembly.Scope;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.impl.AssemblyContextImpl;
 import org.apache.tuscany.model.types.java.JavaServiceContract;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
+import org.apache.tuscany.core.monitor.impl.NullMonitorFactory;
 
 /**
  * Generates test components, modules, and runtime artifacts

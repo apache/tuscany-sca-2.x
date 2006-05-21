@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.core.config;
 
-import org.apache.tuscany.common.TuscanyException;
+import org.apache.tuscany.spi.TuscanyException;
 
 
 /**

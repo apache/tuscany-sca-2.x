@@ -20,9 +20,9 @@ import org.osoa.sca.ModuleContext;
 import org.osoa.sca.SCA;
 import org.osoa.sca.ServiceRuntimeException;
 
-import org.apache.tuscany.common.monitor.LogLevel;
-import org.apache.tuscany.common.monitor.MonitorFactory;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
+import org.apache.tuscany.spi.monitor.LogLevel;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
+import org.apache.tuscany.core.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.config.ConfigurationException;
@@ -61,7 +61,7 @@ public class TuscanyRuntime extends SCA {
      * @param name the name of the module component
      * @param uri  the URI to assign to the module component
      * @throws ConfigurationException if there was a problem loading the SCA configuration
-     * @see TuscanyRuntime#TuscanyRuntime(String, String, org.apache.tuscany.common.monitor.MonitorFactory)
+     * @see TuscanyRuntime#TuscanyRuntime(String, String, org.apache.tuscany.spi.monitor.MonitorFactory)
      */
     public TuscanyRuntime(String name, String uri) throws ConfigurationException {
         this(name, uri, new NullMonitorFactory());

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.container.java.context.JavaAtomicContext;
 import org.apache.tuscany.container.java.invocation.JavaTargetInvoker;
 import org.apache.tuscany.core.injection.EventInvoker;

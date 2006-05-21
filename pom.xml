@@ -27,8 +27,6 @@
     <version>SNAPSHOT</version>
 
     <modules>
-        <module>common</module>
-        <module>model</module>
         <module>spi</module>
         <module>core2</module>
         <module>containers</module>

@@ -3,8 +3,8 @@ package org.apache.tuscany.core.injection;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.apache.tuscany.common.ObjectCreationException;
-import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
 
 /**
  * Resolves targets configured in a multiplicity by delegating to object factories and returning an

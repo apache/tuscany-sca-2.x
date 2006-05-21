@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.tuscany.common.monitor.MonitorFactory;
-import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.annotation.Autowire;

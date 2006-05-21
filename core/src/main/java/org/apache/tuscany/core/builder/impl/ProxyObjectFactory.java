@@ -13,8 +13,8 @@
  */
 package org.apache.tuscany.core.builder.impl;
 
-import org.apache.tuscany.common.ObjectFactory;
-import org.apache.tuscany.common.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.WireFactory;
 

@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.spi.context;
 
-import org.apache.tuscany.common.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectCreationException;
 
 /**
  * A runtime entity that manages an atomic (i.e. leaf-type) artifact.

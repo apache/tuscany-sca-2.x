@@ -3,11 +3,11 @@ package org.apache.tuscany.core.injection;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.tuscany.common.ObjectCreationException;
-import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
 
 /**
- * Injects a value created by an {@link org.apache.tuscany.common.ObjectFactory} using a given method
+ * Injects a value created by an {@link org.apache.tuscany.spi.ObjectFactory} using a given method
  * @version $Rev: 399488 $ $Date: 2006-05-03 16:20:27 -0700 (Wed, 03 May 2006) $
  */
 public class MethodInjector<T> implements Injector<T> {

@@ -27,8 +27,8 @@ import org.apache.tuscany.core.runtime.RuntimeContextImpl;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.impl.DefaultWireBuilder;
 import org.apache.tuscany.core.client.BootstrapHelper;
-import org.apache.tuscany.common.monitor.MonitorFactory;
-import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
+import org.apache.tuscany.core.monitor.impl.NullMonitorFactory;
 
 /**
  * @version $Rev$ $Date$

@@ -19,7 +19,7 @@ package org.apache.tuscany.core.system.builder;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.common.monitor.MonitorFactory;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.context.CompositeContext;
 import org.apache.tuscany.core.context.Context;

@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import org.apache.tuscany.common.TuscanyException;
+import org.apache.tuscany.spi.TuscanyException;
 
 /**
  * Denotes a top-level exception dealing with a wire

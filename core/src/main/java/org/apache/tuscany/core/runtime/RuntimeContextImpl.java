@@ -13,7 +13,7 @@
  */
 package org.apache.tuscany.core.runtime;
 
-import org.apache.tuscany.common.monitor.MonitorFactory;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.core.builder.ContextFactoryBuilderRegistry;
 import org.apache.tuscany.core.builder.HierarchicalWireBuilder;

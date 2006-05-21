@@ -1,6 +1,6 @@
 package org.apache.tuscany.core.system.config;
 
-import org.apache.tuscany.common.TuscanyRuntimeException;
+import org.apache.tuscany.spi.TuscanyRuntimeException;
 import org.apache.tuscany.core.builder.ContextCreationException;
 import org.apache.tuscany.core.builder.ContextFactory;
 import org.apache.tuscany.core.builder.ContextResolver;
@@ -24,7 +24,7 @@ import java.util.Map;
  * A <code>ContextFactory</code> that handles system component implementation types, which may be either simple, leaf
  * types or an composites.
  * <p>
- * For composite types, this factory delegates to an {@link org.apache.tuscany.common.ObjectFactory} to create an
+ * For composite types, this factory delegates to an {@link org.apache.tuscany.spi.ObjectFactory} to create an
  * instance of the composite implementation and perform injection of configuration and references. Once an composite
  * instance is created, the factory will register the composite's children. This process may be done recursively in a
  * lazy fashion, descending down an composite hierarchy as a child composite is instantiated.

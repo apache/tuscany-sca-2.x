@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.stream.XMLInputFactory;
 
-import org.apache.tuscany.common.monitor.MonitorFactory;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
 import org.apache.tuscany.common.resource.ResourceLoader;
 import org.apache.tuscany.common.resource.impl.ResourceLoaderImpl;
 import org.apache.tuscany.core.builder.ContextFactoryBuilder;

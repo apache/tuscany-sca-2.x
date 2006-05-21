@@ -27,6 +27,7 @@ import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.context.EventContext;
 import org.apache.tuscany.core.context.EventException;
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.TuscanyRuntimeException;
 import org.apache.tuscany.spi.wire.WireFactory;
 import org.apache.tuscany.core.context.ScopeAwareContext;
 import org.apache.tuscany.core.context.ScopeContext;
@@ -63,7 +64,6 @@ import org.apache.tuscany.model.assembly.ModuleComponent;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.AssemblyObject;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
-import org.apache.tuscany.common.TuscanyRuntimeException;
 
 import java.util.ArrayList;
 import java.util.Collections;
