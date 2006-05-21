@@ -32,6 +32,7 @@ public class JavaComponentBuilderTestCase extends TestCase {
 
     private WireService wireService;
 
+    @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
         CompositeContext parent = new CompositeContextImpl();
         WorkContext workContext = new WorkContextImpl();

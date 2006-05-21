@@ -1,4 +1,4 @@
-package org.apache.tuscany.core.integration.system;
+package org.apache.tuscany.core.integration.system.context;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.context.WorkContextImpl;

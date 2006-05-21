@@ -21,6 +21,7 @@ import org.apache.tuscany.core.wire.SourceInvocationChainImpl;
 import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
 import org.apache.tuscany.core.wire.jdk.JDKSourceWire;
 import org.apache.tuscany.core.wire.jdk.JDKTargetWire;
+import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ScopeContext;
@@ -31,7 +32,6 @@ import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.TargetWire;
-import org.apache.tuscany.model.Scope;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -43,7 +43,7 @@ public class MockContextFactory {
 
     }
 
-    public static JavaAtomicContext createJavaAtomicContext(String name, Class<?> clazz, Scope scope,boolean eagerInit, EventInvoker<Object> initInvoker,
+    public static JavaAtomicContext createJavaAtomicContext(String name, Class<?> clazz, Scope scope, boolean eagerInit, EventInvoker<Object> initInvoker,
                                                             EventInvoker<Object> destroyInvoker, List<Injector> injectors, Map<String, Member> members) throws NoSuchMethodException {
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         serviceInterfaces.add(clazz);
@@ -127,6 +127,7 @@ public class MockContextFactory {
         return contexts;
     }
 
+
     /**
      * Wires two contexts using a multiplicity reference
      *
@@ -146,7 +147,7 @@ public class MockContextFactory {
                                                                      ScopeContext sourceScope,
                                                                      String targetName, Class<?> targetService, Class<?> targetClass,
                                                                      Map<String, Member> members, ScopeContext targetScope) throws Exception {
-        JavaAtomicContext targetContext = createJavaAtomicContext(targetName, targetClass,targetScope.getScope());
+        JavaAtomicContext targetContext = createJavaAtomicContext(targetName, targetClass, targetScope.getScope());
         TargetWire targetWire = createTargetWire(targetService.getName().substring(
                 targetService.getName().lastIndexOf('.') + 1), targetService, null, null, null);
         targetContext.addTargetWire(targetWire);
