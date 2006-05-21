@@ -53,6 +53,7 @@ public abstract class ComponentContextExtension<T> extends AbstractContext<T> im
         for (TargetWire<T> targetWire : targetWires.values()) {
             for (TargetInvocationChain chain : targetWire.getInvocationChains().values()) {
                 chain.setTargetInvoker(createTargetInvoker(targetWire.getServiceName(), chain.getMethod()));
+                chain.build();
             }
         }
     }

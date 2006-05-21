@@ -14,15 +14,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.wire.mock;
+package org.apache.tuscany.core.mock.wire;
 
-public interface SimpleTarget {
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.Message;
 
-    public String hello(String message) throws Exception;
+public class MockSyncInterceptor implements Interceptor {
 
-    public String goodbye(String message) throws Exception;
+    private int count;
 
-    public String echo(String message) throws Exception;
+    private Interceptor next;
 
+    public MockSyncInterceptor() {
+    }
+
+    public Message invoke(Message msg) {
+        ++count;
+        //System.out.println("Invoking interceptor");
+        return next.invoke(msg);
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setNext(Interceptor next) {
+        this.next=next;
+    }
 }
 

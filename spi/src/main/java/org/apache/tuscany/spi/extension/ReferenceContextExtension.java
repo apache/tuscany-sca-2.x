@@ -82,6 +82,7 @@ public abstract class ReferenceContextExtension<T> extends AbstractContext<T> im
     public void prepare() {
         for (TargetInvocationChain chain : targetWire.getInvocationChains().values()) {
             chain.setTargetInvoker(createTargetInvoker(targetWire.getServiceName(), chain.getMethod()));
+            chain.build();
         }
     }
 

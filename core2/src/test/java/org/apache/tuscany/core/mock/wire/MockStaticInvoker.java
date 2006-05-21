@@ -1,4 +1,4 @@
-package org.apache.tuscany.core.wire.mock;
+package org.apache.tuscany.core.mock.wire;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

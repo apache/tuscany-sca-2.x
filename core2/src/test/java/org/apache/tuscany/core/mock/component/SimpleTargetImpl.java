@@ -14,12 +14,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.wire.mock;
+package org.apache.tuscany.core.mock.component;
 
-public interface SimpleSource {
+public class SimpleTargetImpl implements SimpleTarget {
 
-    public void invokeHello() throws Exception;
+    public SimpleTargetImpl() {
+        super();
+    }
 
-    public void invokeGoodbye() throws Exception;
+    public String hello(String message) throws Exception {
+        return message;
+    }
+
+    public String goodbye(String message) throws Exception {
+        return message;
+    }
+
+    public String echo(String message) throws Exception {
+        return message;
+    }
+
+
 }
 

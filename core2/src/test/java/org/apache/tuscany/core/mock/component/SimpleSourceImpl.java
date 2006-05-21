@@ -14,22 +14,33 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.wire.mock;
+package org.apache.tuscany.core.mock.component;
 
 public class SimpleSourceImpl implements SimpleSource {
 
-    private SimpleTarget proxy;
+    private SimpleTarget target;
+
+    public SimpleSourceImpl() {
+    }
 
     public SimpleSourceImpl(SimpleTarget proxy) {
-        this.proxy = proxy;
+        this.target = proxy;
     }
 
     public void invokeHello() throws Exception {
-        proxy.hello("hello");
+        target.hello("hello");
     }
 
     public void invokeGoodbye() throws Exception {
-        proxy.goodbye("hello");
+        target.goodbye("hello");
+    }
+
+    public SimpleTarget getTarget() {
+        return target;
+    }
+
+    public void setTarget(SimpleTarget target) {
+        this.target = target;
     }
 
 }

@@ -16,11 +16,11 @@ package org.apache.tuscany.core.wire;
 import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.wire.mock.MockHandler;
-import org.apache.tuscany.core.wire.mock.MockStaticInvoker;
-import org.apache.tuscany.core.wire.mock.MockSyncInterceptor;
-import org.apache.tuscany.core.wire.mock.SimpleTarget;
-import org.apache.tuscany.core.wire.mock.SimpleTargetImpl;
+import org.apache.tuscany.core.mock.wire.MockHandler;
+import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
+import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
+import org.apache.tuscany.core.mock.component.SimpleTarget;
+import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;

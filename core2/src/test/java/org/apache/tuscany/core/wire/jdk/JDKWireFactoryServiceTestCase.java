@@ -19,10 +19,10 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.SourceInvocationChainImpl;
 import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
-import org.apache.tuscany.core.wire.mock.MockStaticInvoker;
-import org.apache.tuscany.core.wire.mock.MockSyncInterceptor;
-import org.apache.tuscany.core.wire.mock.SimpleTarget;
-import org.apache.tuscany.core.wire.mock.SimpleTargetImpl;
+import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
+import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
+import org.apache.tuscany.core.mock.component.SimpleTarget;
+import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 
 public class JDKWireFactoryServiceTestCase extends TestCase {
 

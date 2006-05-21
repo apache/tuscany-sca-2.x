@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.apache.tuscany.core.wire.mock.SimpleTargetImpl;
+import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 
 /**
  * Tests invoking on a different interface from the one actually implemented by the target

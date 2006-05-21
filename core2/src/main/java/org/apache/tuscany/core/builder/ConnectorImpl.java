@@ -96,40 +96,44 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    private <T>  void connect(SourceWire<T> source, TargetWire<T> targetWire, Context<?> target, boolean optimizable) {
+    /**
+     * Default access set for unit testing
+     */
+    <T> void connect(SourceWire<T> source, TargetWire<T> targetWire, Context<?> target, boolean optimizable) {
         Map<Method, TargetInvocationChain> targetInvocationConfigs = targetWire.getInvocationChains();
         // perform optimization, if possible
         if (optimizable && source.getInvocationChains().isEmpty() && targetInvocationConfigs.isEmpty()) {
             source.setTargetWire(targetWire);
             return;
         }
-        for (SourceInvocationChain sourceInvocationConfig : source.getInvocationChains().values()) {
+        for (SourceInvocationChain sourceChain : source.getInvocationChains().values()) {
             // match wire chains
-            TargetInvocationChain targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig.getMethod());
-            if (targetInvocationConfig == null) {
-                BuilderConfigException e = new BuilderConfigException("Incompatible source and targetWire interface types for reference");
+            TargetInvocationChain targetChain = targetInvocationConfigs.get(sourceChain.getMethod());
+            if (targetChain == null) {
+                BuilderConfigException e = new BuilderConfigException("Incompatible source and target chain interfaces for reference");
                 e.setIdentifier(source.getReferenceName());
                 throw e;
             }
             // if handler is configured, add that
-            if (targetInvocationConfig.getRequestHandlers() != null) {
-                sourceInvocationConfig.setTargetRequestChannel(new MessageChannelImpl(targetInvocationConfig
+            if (targetChain.getRequestHandlers() != null) {
+                sourceChain.setTargetRequestChannel(new MessageChannelImpl(targetChain
                         .getRequestHandlers()));
-                sourceInvocationConfig.setTargetResponseChannel(new MessageChannelImpl(targetInvocationConfig
+                sourceChain.setTargetResponseChannel(new MessageChannelImpl(targetChain
                         .getResponseHandlers()));
             } else {
                 // no handlers, just connect interceptors
-                if (targetInvocationConfig.getHeadInterceptor() == null) {
-                    BuilderConfigException e = new BuilderConfigException("No targetWire handler or interceptor for operation");
-                    e.setIdentifier(targetInvocationConfig.getMethod().getName());
+                if (targetChain.getHeadInterceptor() == null) {
+                    BuilderConfigException e = new BuilderConfigException("No chain handler or interceptor for operation");
+                    e.setIdentifier(targetChain.getMethod().getName());
                     throw e;
                 }
-                if (!(sourceInvocationConfig.getTailInterceptor() instanceof InvokerInterceptor && targetInvocationConfig
+                if (!(sourceChain.getTailInterceptor() instanceof InvokerInterceptor && targetChain
                         .getHeadInterceptor() instanceof InvokerInterceptor)) {
                     // check that we do not have the case where the only interceptors are invokers since we just need one
-                    sourceInvocationConfig.setTargetInterceptor(targetInvocationConfig.getHeadInterceptor());
+                    sourceChain.setTargetInterceptor(targetChain.getHeadInterceptor());
                 }
             }
+            sourceChain.build();
         }
 
         if (target instanceof ReferenceContext){
@@ -151,7 +155,7 @@ public class ConnectorImpl implements Connector {
     private void attachInvoker(String serviceName, Collection<SourceInvocationChain> chains, ReferenceContext<?> target){
         for (SourceInvocationChain chain : chains) {
             TargetInvoker invoker = target.createTargetInvoker(serviceName, chain.getMethod());
-            // TODO fix cacheable attrivute
+            // TODO fix cacheable attribute
             //invoker.setCacheable(cacheable);
             chain.setTargetInvoker(invoker);
         }
