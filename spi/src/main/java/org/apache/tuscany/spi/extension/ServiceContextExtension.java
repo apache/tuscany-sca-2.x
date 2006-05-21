@@ -1,7 +1,6 @@
 package org.apache.tuscany.spi.extension;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 
 import org.apache.tuscany.common.ObjectFactory;
 import org.apache.tuscany.model.Scope;
@@ -9,9 +8,8 @@ import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.wire.SourceInvocationChain;
+import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.wire.SourceWire;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
@@ -19,11 +17,17 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
-public abstract class ServiceContextExtension<T> extends AbstractContext<T> implements ServiceContext<T> {
+public class ServiceContextExtension<T> extends AbstractContext<T> implements ServiceContext<T> {
 
     protected SourceWire<T> sourceWire;
     protected ObjectFactory<WireInvocationHandler> handlerFactory;
     private T target;
+
+    public ServiceContextExtension(String name, SourceWire<T> wire, CompositeContext parent) throws CoreRuntimeException {
+        this.name = name;
+        this.parentContext = parent;
+        this.sourceWire = wire;
+    }
 
     /**
      * Creates a new service context
@@ -64,16 +68,6 @@ public abstract class ServiceContextExtension<T> extends AbstractContext<T> impl
 
     public Class<T> getInterface() {
         return sourceWire.getBusinessInterface();
-    }
-
-    public void prepare() {
-        for (SourceInvocationChain chain : sourceWire.getInvocationChains().values()) {
-            chain.setTargetInvoker(createTargetInvoker(sourceWire.getReferenceName(), chain.getMethod()));
-        }
-    }
-
-    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
-        throw new UnsupportedOperationException();
     }
 
 }

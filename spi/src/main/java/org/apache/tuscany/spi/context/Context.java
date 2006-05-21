@@ -55,22 +55,13 @@ public interface Context<T> extends EventPublisher, Lifecycle {
     void setParent(CompositeContext parent);
 
     Scope getScope();
-    
+
     /**
      * Returns an instance associated with the default service for the context
      *
      * @throws TargetException if an error occurs retrieving the instance
      */
     T getService() throws TargetException;
-
-    /**
-     * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to a service
-     * contained by the context
-     * 
-     * @param serviceName the name of the service
-     * @param operation the operation to invoke
-     */
-    TargetInvoker createTargetInvoker(String serviceName, Method operation);
 
     /**
      * Called to signal to the configuration that its parent context has been activated and that it shoud

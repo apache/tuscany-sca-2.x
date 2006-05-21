@@ -2,9 +2,11 @@ package org.apache.tuscany.spi.context;
 
 import java.util.List;
 import java.util.Map;
+import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Provides a runtime context for application artifacts configured as components
@@ -60,5 +62,15 @@ public interface ComponentContext<T> extends Context<T> {
      * Returns a collection of target-side wires keyed by service name
      */
     Map<String, TargetWire> getTargetWires();
+
+    /**
+     * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to a service
+     * contained by the context
+     *
+     * @param serviceName the name of the service
+     * @param operation the operation to invoke
+     */
+    TargetInvoker createTargetInvoker(String serviceName, Method operation);
+
 
 }

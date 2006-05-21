@@ -2,6 +2,7 @@ package org.apache.tuscany.core.builder;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Collection;
 
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.MessageChannelImpl;
@@ -132,14 +133,29 @@ public class ConnectorImpl implements Connector {
             }
         }
 
-        for (SourceInvocationChain chain : source.getInvocationChains()
-                .values()) {
-            TargetInvoker invoker = target.createTargetInvoker(targetWire.getServiceName(), chain.getMethod());
+        if (target instanceof ReferenceContext){
+            attachInvoker(targetWire.getServiceName(),source.getInvocationChains().values(),(ReferenceContext)target);
+        }else{
+            attachInvoker(targetWire.getServiceName(),source.getInvocationChains().values(),(ComponentContext)target);
+        }
+    }
+
+    private void attachInvoker(String serviceName, Collection<SourceInvocationChain> chains, ComponentContext<?> target){
+        for (SourceInvocationChain chain : chains) {
+            TargetInvoker invoker = target.createTargetInvoker(serviceName, chain.getMethod());
             // TODO fix cacheable attrivute
             //invoker.setCacheable(cacheable);
             chain.setTargetInvoker(invoker);
         }
+    }
 
+    private void attachInvoker(String serviceName, Collection<SourceInvocationChain> chains, ReferenceContext<?> target){
+        for (SourceInvocationChain chain : chains) {
+            TargetInvoker invoker = target.createTargetInvoker(serviceName, chain.getMethod());
+            // TODO fix cacheable attrivute
+            //invoker.setCacheable(cacheable);
+            chain.setTargetInvoker(invoker);
+        }
     }
 
     private boolean isOptimizable(Scope pReferrer, Scope pReferee) {
