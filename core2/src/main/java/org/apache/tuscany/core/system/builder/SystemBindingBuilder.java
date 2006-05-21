@@ -23,7 +23,7 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
         Class<?> interfaze = boundService.getServiceContract().getInterface();
         QualifiedName targetName = new QualifiedName(boundService.getTarget().getPath());
         SystemSourceWire<?> wire = new SystemSourceWire(boundService.getName(), targetName, interfaze);
-        return new SystemServiceContextImpl(boundService.getName(), interfaze, wire, parent);
+        return new SystemServiceContextImpl(boundService.getName(), wire, parent);
     }
 
     public Context build(CompositeContext parent, BoundReference<SystemBinding> boundReference) {

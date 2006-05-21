@@ -49,7 +49,7 @@ public class SystemAtomicContextImpl<T> extends PojoAtomicContext<T> implements 
     }
 
     public void prepare() {
-        // overrid and do nothing since system services do not proxy
+        // override and do nothing since system services do not proxy
     }
 
 

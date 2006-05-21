@@ -60,7 +60,7 @@ public class AutowireTestCase extends TestCase {
         SourceWire<Source> wire = new SystemSourceWire<Source>("sourceService", new QualifiedName("source"), Source.class);
         wire.setTargetWire(targetWire);
 
-        SystemServiceContext<Source> serviceContext = new SystemServiceContextImpl<Source>("sourceService", Source.class, wire, parent);
+        SystemServiceContext<Source> serviceContext = new SystemServiceContextImpl<Source>("sourceService", wire, parent);
         parent.registerContext(serviceContext);
         parent.registerContext(context);
         scopeContext.publish(new ModuleStart(this, parent));

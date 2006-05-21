@@ -23,7 +23,6 @@ public abstract class ServiceContextExtension<T> extends AbstractContext<T> impl
 
     protected SourceWire<T> sourceWire;
     protected ObjectFactory<WireInvocationHandler> handlerFactory;
-    // a target implementing the service exposed by the context backed by the invocation handler
     private T target;
 
     /**
@@ -41,6 +40,7 @@ public abstract class ServiceContextExtension<T> extends AbstractContext<T> impl
     }
 
     public void setSourceWire(SourceWire<T> wire) {
+        target = null;
         sourceWire = wire;
     }
 

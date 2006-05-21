@@ -33,7 +33,7 @@ public class ServiceContextToReferenceContextTestCase extends TestCase {
         TargetWire<Target> targetWire = new MockTargetWire<Target>(Target.class, new TargetImpl());
         SourceWire<Target> wire = new SystemSourceWire<Target>("service", new QualifiedName("reference"), Target.class);    //String referenceName, QualifiedName targetName, Class<T> businessInterface
         wire.setTargetWire(targetWire);
-        SystemServiceContext<Target> serviceContext = new SystemServiceContextImpl<Target>("service", Target.class, wire, context);
+        SystemServiceContext<Target> serviceContext = new SystemServiceContextImpl<Target>("service", wire, context);
         context.registerContext(serviceContext);
         context.start();
         SystemServiceContext serviceContext2 = (SystemServiceContext) context.getContext("service");

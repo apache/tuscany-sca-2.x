@@ -34,7 +34,7 @@ public class ServiceContextToAtomicContextTestCase extends TestCase {
         TargetWire<Target> targetWire = new SystemTargetWire<Target>(Target.class,targetContext);
         SourceWire<Target> wire = new SystemSourceWire<Target>("service",new QualifiedName("target"),Target.class);    //String referenceName, QualifiedName targetName, Class<T> businessInterface
         wire.setTargetWire(targetWire);
-        SystemServiceContext<Target> serviceContext = new SystemServiceContextImpl<Target>("service", Target.class, wire, context);
+        SystemServiceContext<Target> serviceContext = new SystemServiceContextImpl<Target>("service", wire, context);
         context.registerContext(serviceContext);
         context.start();
         SystemServiceContext serviceContext2 = (SystemServiceContext) context.getContext("service");

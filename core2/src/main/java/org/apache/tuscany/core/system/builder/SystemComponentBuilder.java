@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.common.ObjectFactory;
+import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.injection.ContextInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
@@ -14,12 +15,10 @@ import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.core.system.context.SystemAtomicContextImpl;
 import org.apache.tuscany.core.system.model.SystemImplementation;
+import org.apache.tuscany.core.system.wire.SystemSourceAutowire;
 import org.apache.tuscany.core.system.wire.SystemSourceWire;
 import org.apache.tuscany.core.system.wire.SystemTargetWire;
-import org.apache.tuscany.core.system.wire.SystemTargetAutowire;
-import org.apache.tuscany.core.system.wire.SystemSourceAutowire;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
-import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.model.Component;
 import org.apache.tuscany.model.ReferenceTarget;
 import org.apache.tuscany.model.Service;
@@ -36,8 +35,8 @@ import org.apache.tuscany.spi.wire.SourceWire;
 public class SystemComponentBuilder implements ComponentBuilder<SystemImplementation> {
 
     public ComponentContext build(CompositeContext parent, Component<SystemImplementation> component) throws BuilderConfigException {
-        assert(parent instanceof AutowireContext): "Parent must implement "+ AutowireContext.class.getName();
-        AutowireContext autowireContext = (AutowireContext)parent;
+        assert(parent instanceof AutowireContext): "Parent must implement " + AutowireContext.class.getName();
+        AutowireContext autowireContext = (AutowireContext) parent;
         PojoComponentType componentType = component.getImplementation().getComponentType();
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         for (Service service : componentType.getServices().values()) {
@@ -45,8 +44,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
         }
         Constructor<?> constr;
         try {
-            constr = JavaIntrospectionHelper.getDefaultConstructor(
-                    component.getImplementation().getImplementationClass());
+            constr = JavaIntrospectionHelper.getDefaultConstructor(component.getImplementation().getImplementationClass());
         } catch (NoSuchMethodException e) {
             BuilderConfigException bce = new BuilderConfigException("Error building component", e);
             bce.setIdentifier(component.getName());
@@ -59,8 +57,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
         Map<String, Member> members = componentType.getReferenceMembers();
         for (Injector injector : injectors) {
             if (injector instanceof ContextInjector) {
-                // a context injector is found; iterate and determine if the parent context
-                // implements the interface
+                // a context injector is found; determine if the parent context implements the interface
                 Class contextType = JavaIntrospectionHelper.introspectGeneric(injector.getClass(), 0);
                 if (contextType.isAssignableFrom(parent.getClass())) {
                     ((ContextInjector) injector).setContext(parent);
@@ -92,7 +89,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
             }
             SourceWire<?> wire;
             if (target.getReference().isAutowire()) {
-                wire = new SystemSourceAutowire(referenceName,interfaze,autowireContext);
+                wire = new SystemSourceAutowire(referenceName, interfaze, autowireContext);
             } else {
                 //FIXME support multiplicity!
                 assert(target.getTargets().size() == 1): "Multiplicity not yet implemented";
