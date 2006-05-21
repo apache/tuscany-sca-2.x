@@ -16,12 +16,9 @@
  */
 package org.apache.tuscany.spi.context;
 
-import java.lang.reflect.Method;
-
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.Lifecycle;
 import org.apache.tuscany.spi.event.EventPublisher;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Provides an execution context for application artifacts derived from an assembly
