@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.apache.tuscany.container.java.invocation.mock;
+package org.apache.tuscany.container.java.mock.wire;
 
 import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.Message;

@@ -10,7 +10,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.container.java.context.JavaAtomicContext;
-import org.apache.tuscany.container.java.invocation.JavaTargetInvoker;
+import org.apache.tuscany.container.java.wire.JavaTargetInvoker;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;

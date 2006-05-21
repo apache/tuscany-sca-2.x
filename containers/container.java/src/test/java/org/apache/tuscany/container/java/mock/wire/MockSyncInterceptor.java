@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.java.invocation.mock;
+package org.apache.tuscany.container.java.mock.wire;
 
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;

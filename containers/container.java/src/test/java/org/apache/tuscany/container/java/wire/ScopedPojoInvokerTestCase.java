@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.java.invocation;
+package org.apache.tuscany.container.java.wire;
 
 import java.lang.reflect.Method;
 
@@ -24,6 +24,7 @@ import org.apache.tuscany.container.java.context.JavaAtomicContext;
 import org.apache.tuscany.container.java.mock.components.SimpleTarget;
 import org.apache.tuscany.container.java.mock.components.SimpleTargetImpl;
 import org.apache.tuscany.container.java.mock.MockContextFactory;
+import org.apache.tuscany.container.java.wire.JavaTargetInvoker;
 import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.model.Scope;
