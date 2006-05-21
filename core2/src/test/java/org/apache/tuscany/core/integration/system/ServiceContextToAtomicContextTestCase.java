@@ -19,6 +19,8 @@ import org.apache.tuscany.spi.wire.TargetWire;
 import org.apache.tuscany.spi.QualifiedName;
 
 /**
+ * Tests a wire from a service context to an atomic context
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class ServiceContextToAtomicContextTestCase extends TestCase {

@@ -155,6 +155,9 @@ public class ConnectorImpl implements Connector {
             return true;
         } else if (pReferrer == Scope.SESSION && pReferee == Scope.COMPOSITE) {
             return true;
+        } else if (pReferrer == Scope.COMPOSITE && pReferee == Scope.MODULE) {
+            // case where a service context points to a module scoped component
+            return true;
         } else return pReferrer == Scope.MODULE && pReferee == Scope.COMPOSITE;
     }
 

@@ -19,6 +19,8 @@ import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
+ * Tests wiring from a service context directly to an atomic context
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class ServiceContextToReferenceContextTestCase extends TestCase {

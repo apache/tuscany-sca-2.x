@@ -10,12 +10,12 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.mock.MockContextFactory;
-import org.apache.tuscany.core.mock.context.MockTargetWire;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.apache.tuscany.core.mock.context.MockReferenceContext;
+import org.apache.tuscany.core.mock.context.MockTargetWire;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
@@ -26,6 +26,8 @@ import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
+ * Tests wireing from an atomic context to a reference context
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class AtomicContextToReferenceContextTestCase extends TestCase {

@@ -18,10 +18,15 @@ import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
+ * Performs basic autowiring tests to composite artifacts
  * @version $$Rev$$ $$Date$$
  */
 public class AutowireTestCase extends TestCase {
 
+    /**
+     * Tests autowiring to an atomic context
+     * @throws Exception
+     */
     public void testAtomicAutowire() throws Exception {
         WorkContext workContext = new WorkContextImpl();
         ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
@@ -43,6 +48,9 @@ public class AutowireTestCase extends TestCase {
         assertNull(parent.resolveExternalInstance(Source.class));
     }
 
+    /**
+     * Tests autowiring to a service context which is wired to an atomic context.
+     */
     public void testServiceAutowire() throws Exception {
         WorkContext workContext = new WorkContextImpl();
         ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
@@ -70,6 +78,9 @@ public class AutowireTestCase extends TestCase {
         assertNull(source2);
     }
 
+    /**
+     * Tests autowiring to a reference
+     */
     public void testReferenceAutowire() throws Exception {
         WorkContext workContext = new WorkContextImpl();
         ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
@@ -77,6 +88,7 @@ public class AutowireTestCase extends TestCase {
         SystemCompositeContext<?> parent = new SystemCompositeContextImpl("parent", null, null);
         parent.start();
         MockReferenceContext<Source> referenceContext = new MockReferenceContext<Source>("sourceReference", Source.class);
+        // create a mock wire for the reference which just holds a pre-instantiated target
         TargetWire<Source> wire = new MockTargetWire<Source>(Source.class, new SourceImpl());
         referenceContext.setTargetWire(wire);
         parent.registerContext(referenceContext);

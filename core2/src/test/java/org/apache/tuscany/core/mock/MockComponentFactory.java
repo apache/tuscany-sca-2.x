@@ -10,13 +10,14 @@ import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.model.SystemImplementation;
 import org.apache.tuscany.model.BoundReference;
+import org.apache.tuscany.model.BoundService;
 import org.apache.tuscany.model.Component;
 import org.apache.tuscany.model.JavaServiceContract;
 import org.apache.tuscany.model.Reference;
 import org.apache.tuscany.model.ReferenceTarget;
+import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.model.Service;
 import org.apache.tuscany.model.ServiceContract;
-import org.apache.tuscany.model.Scope;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -110,7 +111,7 @@ public class MockComponentFactory {
     }
 
 
-    public static BoundReference<SystemBinding> createTargetReference() {
+    public static BoundReference<SystemBinding> createBoundReference() {
         SystemBinding binding = new SystemBinding();
         BoundReference<SystemBinding> reference = new BoundReference<SystemBinding>();
         reference.setBinding(binding);
@@ -120,4 +121,26 @@ public class MockComponentFactory {
         reference.setServiceContract(contract);
         return reference;
     }
+
+    /**
+     * Creates a bound service with the name "service" that is configured to be wired to a target named
+     * "target/Target"
+     */
+    public static BoundService<SystemBinding> createBoundService() {
+        SystemBinding binding = new SystemBinding();
+        BoundService<SystemBinding> service = new BoundService<SystemBinding>();
+        service.setBinding(binding);
+        service.setName("service");
+        ServiceContract contract = new JavaServiceContract();
+        contract.setInterfaze(Target.class);
+        service.setServiceContract(contract);
+        try {
+            service.setTarget(new URI("target/Target"));
+        } catch (URISyntaxException e) {
+            throw new AssertionError(e);
+        }
+        return service;
+    }
+
+
 }

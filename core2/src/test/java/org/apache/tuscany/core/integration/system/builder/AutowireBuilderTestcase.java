@@ -24,10 +24,16 @@ import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.WorkContext;
 
 /**
+ * Validates that system builders create autowired contexts from a set of model objects
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class AutowireBuilderTestcase extends TestCase {
 
+    /**
+     * Validates wiring from a component to a reference which is autowired to a component in the grandparent
+     * composite
+     */
     public void testComponentToReference() throws Exception {
         WorkContext work = new WorkContextImpl();
         ScopeContext scope = new ModuleScopeContext(work);
@@ -46,7 +52,7 @@ public class AutowireBuilderTestcase extends TestCase {
         targetComponentContext.setScopeContext(scope);
         grandParent.registerContext(targetComponentContext);
 
-        BoundReference<SystemBinding> targetReference = MockComponentFactory.createTargetReference();
+        BoundReference<SystemBinding> targetReference = MockComponentFactory.createBoundReference();
         Component<SystemImplementation> sourceComponent = MockComponentFactory.createSourceWithTargetReference();
 
 
@@ -72,6 +78,10 @@ public class AutowireBuilderTestcase extends TestCase {
         scope.stop();
     }
 
+
+    /**
+     * Validates autowiring from a component to another component in the same composite
+     */
     public void testComponentToComponent() throws Exception {
         WorkContext work = new WorkContextImpl();
         ScopeContext scope = new ModuleScopeContext(work);
