@@ -29,6 +29,12 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany</groupId>
+            <artifactId>tuscany-core</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany</groupId>
             <artifactId>launcher</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
