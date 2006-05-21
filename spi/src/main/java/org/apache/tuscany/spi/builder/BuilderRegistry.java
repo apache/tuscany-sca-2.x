@@ -41,7 +41,4 @@ public interface BuilderRegistry {
     <B extends Binding> Context build(CompositeContext parent, BoundService<B> boundService);
 
     <B extends Binding> Context build(CompositeContext parent, BoundReference<B> boundReference);
-
-    //FIXME method below probably don't belong here
-    <T extends Class> void connect(Context<T> source, CompositeContext parent);
 }

@@ -1,7 +1,8 @@
 package org.apache.tuscany.core.integration.system.builder;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.builder.BuilderRegistryImpl;
+import org.apache.tuscany.core.builder.Connector;
+import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
@@ -14,7 +15,6 @@ import org.apache.tuscany.core.system.context.SystemCompositeContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.model.SystemImplementation;
 import org.apache.tuscany.model.Component;
-import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.WorkContext;
@@ -29,7 +29,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
         ScopeContext scope = new ModuleScopeContext(work);
         scope.start();
 
-        BuilderRegistry registry = new BuilderRegistryImpl();
+        Connector connector = new ConnectorImpl();
         SystemComponentBuilder builder = new SystemComponentBuilder();
 
         SystemCompositeContext parent = new SystemCompositeContextImpl();
@@ -45,8 +45,8 @@ public class SystemComponentBuilderTestCase extends TestCase {
         parent.registerContext(sourceContext);
         parent.registerContext(targetContext);
 
-        registry.connect(sourceContext, parent);
-        registry.connect(targetContext, parent);
+        connector.connect(sourceContext, parent);
+        connector.connect(targetContext, parent);
         parent.start();
         scope.onEvent(new ModuleStart(this, parent));
         Source source = (Source) parent.getContext("source").getService();

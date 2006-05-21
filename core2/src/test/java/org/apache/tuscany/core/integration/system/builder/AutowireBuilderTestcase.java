@@ -1,7 +1,8 @@
 package org.apache.tuscany.core.integration.system.builder;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.builder.BuilderRegistryImpl;
+import org.apache.tuscany.core.builder.Connector;
+import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
@@ -17,7 +18,6 @@ import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.model.SystemImplementation;
 import org.apache.tuscany.model.BoundReference;
 import org.apache.tuscany.model.Component;
-import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.ScopeContext;
@@ -33,7 +33,7 @@ public class AutowireBuilderTestcase extends TestCase {
         ScopeContext scope = new ModuleScopeContext(work);
         scope.start();
 
-        BuilderRegistry registry = new BuilderRegistryImpl();
+        Connector connector = new ConnectorImpl();
         SystemComponentBuilder componentBuilder = new SystemComponentBuilder();
         SystemBindingBuilder bindingBuilder = new SystemBindingBuilder();
 
@@ -57,7 +57,7 @@ public class AutowireBuilderTestcase extends TestCase {
         ReferenceContext targetContext = (ReferenceContext) bindingBuilder.build(parent, targetReference);
         parent.registerContext(targetContext);
 
-        registry.connect(sourceContext, parent);
+        connector.connect(sourceContext, parent);
 
         grandParent.start();
         scope.onEvent(new ModuleStart(this, parent));
@@ -87,11 +87,9 @@ public class AutowireBuilderTestcase extends TestCase {
         parent.registerContext(targetComponentContext);
         Component<SystemImplementation> sourceComponent = MockComponentFactory.createSourceWithTargetAutowire();
 
-
         AtomicContext sourceContext = (AtomicContext) componentBuilder.build(parent, sourceComponent);
         sourceContext.setScopeContext(scope);
         parent.registerContext(sourceContext);
-
 
         parent.start();
         scope.onEvent(new ModuleStart(this, parent));
