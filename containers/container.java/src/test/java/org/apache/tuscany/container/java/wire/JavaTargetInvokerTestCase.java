@@ -31,15 +31,15 @@ import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.WorkContext;
 
-public class ScopedPojoInvokerTestCase extends TestCase {
+public class JavaTargetInvokerTestCase extends TestCase {
 
     private Method echoMethod;
 
-    public ScopedPojoInvokerTestCase() {
+    public JavaTargetInvokerTestCase() {
         super();
     }
 
-    public ScopedPojoInvokerTestCase(String arg0) {
+    public JavaTargetInvokerTestCase(String arg0) {
         super(arg0);
     }
 

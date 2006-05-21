@@ -14,15 +14,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.java.wire;
+package org.apache.tuscany.core.wire.jdk;
 
+import static java.lang.Integer.TYPE;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import static java.lang.Integer.*;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.apache.tuscany.container.java.wire.StaticJavaTargetTargetInvoker;
 
 public class StaticPojoInvokerTestCase extends TestCase {
 
@@ -55,14 +54,14 @@ public class StaticPojoInvokerTestCase extends TestCase {
 
     public void testObjectInvoke() throws Throwable {
         TestBean bean = new TestBean();
-        StaticJavaTargetTargetInvoker invoker = new StaticJavaTargetTargetInvoker(echoMethod, bean);
+        StaticPojoTargetInvoker invoker = new StaticPojoTargetInvoker(echoMethod, bean);
         Object ret = invoker.invokeTarget("foo");
         Assert.assertEquals("foo", ret);
     }
 
     public void testArrayInvoke() throws Throwable {
         TestBean bean = new TestBean();
-        StaticJavaTargetTargetInvoker invoker = new StaticJavaTargetTargetInvoker(arrayMethod, bean);
+        StaticPojoTargetInvoker invoker = new StaticPojoTargetInvoker(arrayMethod, bean);
         String[] args = new String[]{"foo", "bar"};
         Object ret = invoker.invokeTarget(new Object[]{args});
         String[] retA = (String[]) ret;
@@ -74,7 +73,7 @@ public class StaticPojoInvokerTestCase extends TestCase {
 
     public void testNullInvoke() throws Throwable {
         TestBean bean = new TestBean();
-        StaticJavaTargetTargetInvoker invoker = new StaticJavaTargetTargetInvoker(nullParamMethod, bean);
+        StaticPojoTargetInvoker invoker = new StaticPojoTargetInvoker(nullParamMethod, bean);
         Object ret = invoker.invokeTarget(null);
         String retS = (String) ret;
         Assert.assertEquals("foo", retS);
@@ -82,7 +81,7 @@ public class StaticPojoInvokerTestCase extends TestCase {
 
     public void testPrimitiveInvoke() throws Throwable {
         TestBean bean = new TestBean();
-        StaticJavaTargetTargetInvoker invoker = new StaticJavaTargetTargetInvoker(primitiveMethod, bean);
+        StaticPojoTargetInvoker invoker = new StaticPojoTargetInvoker(primitiveMethod, bean);
         Object ret = invoker.invokeTarget(new Integer[]{1});
         Integer retI = (Integer) ret;
         Assert.assertEquals(1, retI.intValue());
@@ -90,7 +89,7 @@ public class StaticPojoInvokerTestCase extends TestCase {
 
     public void testInvokeCheckedException() throws Throwable {
         TestBean bean = new TestBean();
-        StaticJavaTargetTargetInvoker invoker = new StaticJavaTargetTargetInvoker(checkedMethod, bean);
+        StaticPojoTargetInvoker invoker = new StaticPojoTargetInvoker(checkedMethod, bean);
         try {
             invoker.invokeTarget(null);
         } catch (InvocationTargetException e) {
@@ -104,7 +103,7 @@ public class StaticPojoInvokerTestCase extends TestCase {
 
     public void testInvokeRuntimeException() throws Throwable {
         TestBean bean = new TestBean();
-        StaticJavaTargetTargetInvoker invoker = new StaticJavaTargetTargetInvoker(runtimeMethod, bean);
+        StaticPojoTargetInvoker invoker = new StaticPojoTargetInvoker(runtimeMethod, bean);
         try {
             invoker.invokeTarget(null);
         } catch (InvocationTargetException e) {

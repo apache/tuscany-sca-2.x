@@ -19,15 +19,15 @@ package org.apache.tuscany.container.java.wire;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.container.java.context.JavaAtomicContext;
-import org.apache.tuscany.container.java.wire.AbstractJavaTargetInvoker;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.core.wire.jdk.PojoTargetInvoker;
 
 /**
  * Uses a scope context to resolve an implementation instance based on the current thread context
  *
  * @version $Rev$ $Date$
  */
-public class JavaTargetInvoker extends AbstractJavaTargetInvoker {
+public class JavaTargetInvoker extends PojoTargetInvoker {
 
     private JavaAtomicContext context;
     private Object target;
@@ -68,7 +68,7 @@ public class JavaTargetInvoker extends AbstractJavaTargetInvoker {
         }
     }
 
-    public Object clone() throws CloneNotSupportedException {
+    public JavaTargetInvoker clone() throws CloneNotSupportedException {
         JavaTargetInvoker invoker = (JavaTargetInvoker) super.clone();
         invoker.target = null;
         invoker.cacheable = this.cacheable;

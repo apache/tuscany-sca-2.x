@@ -14,24 +14,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.java.wire;
+package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.container.java.wire.AbstractJavaTargetInvoker;
+import org.apache.tuscany.core.wire.jdk.PojoTargetInvoker;
 
 /**
- * Caches component instances that do not need to be resolved for every wire, e.g. an wire originating from
- * a lesser scope intended for a target with a wider scope
- * 
+ * Caches component instances that do not need to be resolved for every wire, e.g. an wire originating from a
+ * lesser scope intended for a target with a wider scope
+ *
  * @version $Rev$ $Date$
  */
-public class StaticJavaTargetTargetInvoker extends AbstractJavaTargetInvoker {
+public class StaticPojoTargetInvoker extends PojoTargetInvoker {
 
     private Object instance;
     private boolean cacheable;
 
-    public StaticJavaTargetTargetInvoker(Method operation, Object instance) {
+    public StaticPojoTargetInvoker(Method operation, Object instance) {
         super(operation);
         assert (instance != null) : "Instance cannot be null";
         this.instance = instance;
@@ -46,11 +46,11 @@ public class StaticJavaTargetTargetInvoker extends AbstractJavaTargetInvoker {
     }
 
     public void setCacheable(boolean cacheable) {
-       this.cacheable = cacheable;
+        this.cacheable = cacheable;
     }
 
-    public Object clone() throws CloneNotSupportedException {
-        StaticJavaTargetTargetInvoker invoker = (StaticJavaTargetTargetInvoker) super.clone();
+    public StaticPojoTargetInvoker clone() throws CloneNotSupportedException {
+        StaticPojoTargetInvoker invoker = (StaticPojoTargetInvoker) super.clone();
         invoker.instance = null;
         return invoker;
     }

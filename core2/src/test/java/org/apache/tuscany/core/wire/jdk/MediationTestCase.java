@@ -11,14 +11,13 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.container.java.wire;
+package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.Method;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.apache.tuscany.container.java.mock.components.SimpleTargetImpl;
-import org.apache.tuscany.container.java.wire.StaticJavaTargetTargetInvoker;
+import org.apache.tuscany.core.wire.mock.SimpleTargetImpl;
 
 /**
  * Tests invoking on a different interface from the one actually implemented by the target
@@ -34,7 +33,7 @@ public class MediationTestCase extends TestCase {
     }
 
     public void testMediation() throws Exception {
-        StaticJavaTargetTargetInvoker invoker = new StaticJavaTargetTargetInvoker(hello, new SimpleTargetImpl());
+        StaticPojoTargetInvoker invoker = new StaticPojoTargetInvoker(hello, new SimpleTargetImpl());
         Assert.assertEquals("foo", invoker.invokeTarget("foo"));
     }
 
