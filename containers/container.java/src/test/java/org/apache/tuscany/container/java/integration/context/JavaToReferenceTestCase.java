@@ -114,12 +114,11 @@ public class JavaToReferenceTestCase extends TestCase {
 
         Map<String, Member> members = new HashMap<String, Member>();
         members.put("target", SimpleSourceImpl.class.getMethod("setTarget", SimpleTarget.class));
-        JavaAtomicContext<?> sourceContext = MockContextFactory.createJavaAtomicContext("source", SimpleSourceImpl.class, SimpleSource.class,
+        JavaAtomicContext<?> sourceContext = MockContextFactory.createJavaAtomicContext("source", parent, SimpleSourceImpl.class, SimpleSource.class,
                 scope.getScope(), false, null, null, null, members);
         SourceWire<SimpleTarget> sourceWire = MockContextFactory.createSourceWire("target", SimpleTarget.class);
         sourceWire.setTargetName(new QualifiedName("target/Target"));
         sourceContext.addSourceWire(sourceWire);
-        sourceContext.setParent(parent);
         sourceContext.setScopeContext(scope);
         TargetWire targetWire = MockContextFactory.createTargetWire("Target", SimpleTarget.class);
         MockReferenceContext referenceContext = new MockReferenceContext("target", parent, targetWire);

@@ -76,11 +76,13 @@ public abstract class AbstractCompositeContext<T> extends CompositeContextExtens
         // need to block a start until reset is complete
         initializeLatch = new CountDownLatch(2);
         lifecycleState = STOPPING;
+/*
         children.clear();
         services.clear();
         references.clear();
         autowireInternal.clear();
         autowireExternal.clear();
+*/
         initialized = false;
         // allow initialized to be called
         initializeLatch.countDown();

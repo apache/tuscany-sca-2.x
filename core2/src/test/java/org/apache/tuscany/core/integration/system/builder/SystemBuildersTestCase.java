@@ -49,10 +49,8 @@ public class SystemBuildersTestCase extends TestCase {
         Component<SystemImplementation> sourceComponent = MockComponentFactory.createSourceWithTargetReference();
 
         AtomicContext<?> sourceContext = (AtomicContext) builder.build(parent, sourceComponent);
-        sourceContext.setParent(parent);
         sourceContext.setScopeContext(scope);
         AtomicContext<?> targetContext = (AtomicContext) builder.build(parent, targetComponent);
-        targetContext.setParent(parent);
         targetContext.setScopeContext(scope);
 
         parent.registerContext(sourceContext);
@@ -91,7 +89,6 @@ public class SystemBuildersTestCase extends TestCase {
         // create a context in the grandparent that the reference will be autowired to
         Component<SystemImplementation> targetComponent = MockComponentFactory.createTarget();
         AtomicContext targetComponentContext = (AtomicContext) builder.build(parent, targetComponent);
-        targetComponentContext.setParent(parent);
         targetComponentContext.setScopeContext(scope);
         grandParent.registerContext(targetComponentContext);
 
@@ -99,7 +96,6 @@ public class SystemBuildersTestCase extends TestCase {
         Component<SystemImplementation> sourceComponent = MockComponentFactory.createSourceWithTargetReference();
 
         AtomicContext<?> sourceContext = (AtomicContext) builder.build(parent, sourceComponent);
-        sourceContext.setParent(parent);
         sourceContext.setScopeContext(scope);
         ReferenceContext targetContext = (ReferenceContext) bindingBuilder.build(parent, targetReference);
 
@@ -138,7 +134,6 @@ public class SystemBuildersTestCase extends TestCase {
         Component<SystemImplementation> component = MockComponentFactory.createTarget();
 
         AtomicContext<?> sourceContext = (AtomicContext) builder.build(parent, component);
-        sourceContext.setParent(parent);
         sourceContext.setScopeContext(scope);
         ServiceContext<?> serviceContext = (ServiceContext) bindingBuilder.build(parent, service);
 
@@ -179,7 +174,6 @@ public class SystemBuildersTestCase extends TestCase {
         // create a context in the grandparent that the reference will be autowired to
         Component<SystemImplementation> targetComponent = MockComponentFactory.createTarget();
         AtomicContext targetComponentContext = (AtomicContext) builder.build(parent, targetComponent);
-        targetComponentContext.setParent(parent);
         targetComponentContext.setScopeContext(scope);
         grandParent.registerContext(targetComponentContext);
 

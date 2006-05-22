@@ -43,11 +43,6 @@ public interface Context<T> extends EventPublisher, Lifecycle {
     CompositeContext getParent();
 
     /**
-     * Sets the parent context
-     */
-    void setParent(CompositeContext parent);
-
-    /**
      * Returns the context scope
      */
     Scope getScope();

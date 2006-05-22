@@ -31,21 +31,17 @@ import org.apache.tuscany.spi.event.TrueFilter;
  */
 public abstract class AbstractContext<T> extends AbstractLifecycle implements Context<T> {
 
-    protected CompositeContext parentContext;
+    private final CompositeContext parent;
     protected Map<EventFilter, List<RuntimeEventListener>> listeners;
     protected static final EventFilter TRUE_FILTER = new TrueFilter();
 
     public AbstractContext(String name, CompositeContext<?> parent) {
         super(name);
-        parentContext = parent;
+        this.parent = parent;
     }
 
     public CompositeContext getParent() {
-        return parentContext;
-    }
-
-    public void setParent(CompositeContext parent) {
-        parentContext = parent;
+        return parent;
     }
 
     public void addListener(RuntimeEventListener listener) {

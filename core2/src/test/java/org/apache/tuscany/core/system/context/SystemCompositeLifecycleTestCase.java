@@ -46,7 +46,6 @@ public class SystemCompositeLifecycleTestCase extends TestCase {
 
         scopeContext.start();
         composite.start();
-        composite.registerContext(context);
         scopeContext.publish(new ModuleStart(this, composite));
         ctx = (AtomicContext) composite.getContext("source");
         Source source2 = (Source) ctx.getService();

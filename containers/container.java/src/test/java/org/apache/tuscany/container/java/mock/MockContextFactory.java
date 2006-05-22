@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.container.java.context.JavaAtomicContext;
 import org.apache.tuscany.container.java.wire.JavaTargetInvoker;
 import org.apache.tuscany.core.injection.EventInvoker;
@@ -22,9 +21,11 @@ import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
 import org.apache.tuscany.core.wire.jdk.JDKSourceWire;
 import org.apache.tuscany.core.wire.jdk.JDKTargetWire;
 import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
@@ -39,20 +40,29 @@ import org.apache.tuscany.spi.wire.TargetWire;
 public class MockContextFactory {
 
     public static JavaAtomicContext<?> createJavaAtomicContext(String name, Class<?> clazz, Scope scope) throws NoSuchMethodException {
-        return createJavaAtomicContext(name, clazz, clazz, scope, false, null, null, null, null);
+        return createJavaAtomicContext(name, null, clazz, clazz, scope, false, null, null, null, null);
 
     }
 
     public static JavaAtomicContext<?> createJavaAtomicContext(String name, Class<?> clazz, Class<?> service, Scope scope) throws NoSuchMethodException {
-        return createJavaAtomicContext(name, clazz, service, scope, false, null, null, null, null);
+        return createJavaAtomicContext(name, null, clazz, service, scope, false, null, null, null, null);
 
     }
 
-    public static JavaAtomicContext<?> createJavaAtomicContext(String name, Class<?> clazz, Class<?> service,Scope scope, boolean eagerInit, EventInvoker<Object> initInvoker,
-                                                            EventInvoker<Object> destroyInvoker, List<Injector> injectors, Map<String, Member> members) throws NoSuchMethodException {
+    public static JavaAtomicContext<?> createJavaAtomicContext(String name,
+                                                               CompositeContext<?> parent,
+                                                               Class<?> clazz,
+                                                               Class<?> service,
+                                                               Scope scope,
+                                                               boolean eagerInit,
+                                                               EventInvoker<Object> initInvoker,
+                                                               EventInvoker<Object> destroyInvoker,
+                                                               List<Injector> injectors,
+                                                               Map<String, Member> members)
+            throws NoSuchMethodException {
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         serviceInterfaces.add(service);
-        return new JavaAtomicContext(name, serviceInterfaces, createObjectFactory(clazz), scope, eagerInit, initInvoker, destroyInvoker, injectors, members);
+        return new JavaAtomicContext(name, parent, serviceInterfaces, createObjectFactory(clazz), scope, eagerInit, initInvoker, destroyInvoker, injectors, members);
     }
 
     /**
@@ -105,7 +115,7 @@ public class MockContextFactory {
                 targetService.getName().lastIndexOf('.') + 1), targetService, targetHeadInterceptor, targetRequestHeadHandler, targetResponseHeadHandler);
         targetContext.addTargetWire(targetWire);
 
-        JavaAtomicContext sourceContext = createJavaAtomicContext(sourceName, sourceClass, sourceClass, sourceScope.getScope(), false, null, null, null, members);
+        JavaAtomicContext sourceContext = createJavaAtomicContext(sourceName, null, sourceClass, sourceClass, sourceScope.getScope(), false, null, null, null, members);
         SourceWire sourceWire = createSourceWire(targetName, sourceReferenceClass, sourceHeadInterceptor,
                 sourceHeadRequestHandler, sourceHeadResponseHandler);
         sourceContext.addSourceWire(sourceWire);
@@ -145,7 +155,7 @@ public class MockContextFactory {
                 targetService.getName().lastIndexOf('.') + 1), targetService, null, null, null);
         targetContext.addTargetWire(targetWire);
 
-        JavaAtomicContext sourceContext = createJavaAtomicContext(sourceName, sourceClass, sourceClass, sourceScope.getScope(), false, null, null, null, members);
+        JavaAtomicContext sourceContext = createJavaAtomicContext(sourceName, null, sourceClass, sourceClass, sourceScope.getScope(), false, null, null, null, members);
         SourceWire sourceWire = createSourceWire(targetName, sourceReferenceClass, null, null, null);
         List<SourceWire> factories = new ArrayList<SourceWire>();
         factories.add(sourceWire);
@@ -162,7 +172,7 @@ public class MockContextFactory {
     }
 
     public static <T> TargetWire<T> createTargetWire(String serviceName, Class<T> interfaze) {
-        return createTargetWire(serviceName,interfaze,null,null,null);
+        return createTargetWire(serviceName, interfaze, null, null, null);
     }
 
     public static <T> TargetWire<T> createTargetWire(String serviceName, Class<T> interfaze,

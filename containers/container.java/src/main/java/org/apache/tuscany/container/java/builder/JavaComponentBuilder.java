@@ -59,7 +59,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
                 }
             }
         }
-        return new JavaAtomicContext(component.getName(), serviceInterfaces, factory, componentType.getLifecycleScope(),
+        return new JavaAtomicContext(component.getName(), parent, serviceInterfaces, factory, componentType.getLifecycleScope(),
                 componentType.isEagerInit(), componentType.getInitInvoker(), componentType.getDestroyInvoker(),
                 injectors, componentType.getReferenceMembers());
     }
