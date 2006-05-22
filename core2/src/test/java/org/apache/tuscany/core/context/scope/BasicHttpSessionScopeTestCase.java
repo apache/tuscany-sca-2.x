@@ -25,7 +25,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     public void testLifecycleManagement() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        CompositeContext currentModule = new MockCompositeContext();
+        CompositeContext currentModule = new MockCompositeContext(null, null);
         HttpSessionScopeContext scopeContext = new HttpSessionScopeContext(workContext);
         scopeContext.start();
         SystemAtomicContext atomicContext = createContext();
@@ -46,7 +46,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     public void testSessionIsolation() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        CompositeContext currentModule = new MockCompositeContext();
+        CompositeContext currentModule = new MockCompositeContext(null, null);
         HttpSessionScopeContext scopeContext = new HttpSessionScopeContext(workContext);
         scopeContext.start();
 
@@ -84,6 +84,6 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     }
 
     private SystemAtomicContext createContext() {
-        return new SystemAtomicContextImpl("foo", SessionScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null,null);
+        return new SystemAtomicContextImpl("foo", null, SessionScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null,null);
     }
 }

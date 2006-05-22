@@ -14,10 +14,9 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 public class SystemReferenceContextImpl<T> extends ReferenceContextExtension<T> implements SystemReferenceContext<T> {
 
     public SystemReferenceContextImpl(String name, Class<T> referenceInterface, CompositeContext parent) {
+        super(name, parent);
         assert (referenceInterface != null) : "Reference interface was null";
-        this.name = name;
         this.referenceInterface = referenceInterface;
-        parentContext = parent;
     }
 
     public T getService() throws TargetException {

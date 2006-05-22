@@ -7,14 +7,15 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.spi.extension.ReferenceContextExtension;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.context.CompositeContext;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class MockReferenceContext extends ReferenceContextExtension {
 
-    public MockReferenceContext(String name, TargetWire<?> wire) {
-        this.name = name;
+    public MockReferenceContext(String name, CompositeContext<?> parent, TargetWire<?> wire) {
+        super(name, parent);
         this.targetWire = wire;
         this.referenceInterface = wire.getBusinessInterface();
     }

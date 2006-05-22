@@ -20,7 +20,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 public class SystemCompositeContextImpl<S> extends AbstractCompositeContext<S> implements SystemCompositeContext<S> {
 
     public SystemCompositeContextImpl() {
-        super();
+        this(null, null, null);
     }
 
     public SystemCompositeContextImpl(String name, CompositeContext parent, AutowireContext autowireContext) {
@@ -28,7 +28,7 @@ public class SystemCompositeContextImpl<S> extends AbstractCompositeContext<S> i
     }
 
     public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance) throws ObjectRegistrationException {
-        registerContext(new SystemSingletonAtomicContext<S, I>(name, service, instance));
+        registerContext(new SystemSingletonAtomicContext<S, I>(name, this, service, instance));
     }
 
     public <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException {

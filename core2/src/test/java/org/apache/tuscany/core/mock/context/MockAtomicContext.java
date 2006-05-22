@@ -19,7 +19,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 public class MockAtomicContext<T> extends PojoAtomicContext<T> {
 
     public MockAtomicContext(String name, List<Class<?>> serviceInterfaces, ObjectFactory<?> objectFactory, Scope scope, Map<String, Member> members) {
-        super(name, serviceInterfaces, objectFactory, false, null, null, null, members);
+        super(name, null, serviceInterfaces, objectFactory, false, null, null, null, members);
         this.scope = scope;
     }
 

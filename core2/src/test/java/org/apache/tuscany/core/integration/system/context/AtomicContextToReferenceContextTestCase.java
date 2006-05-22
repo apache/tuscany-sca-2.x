@@ -37,7 +37,7 @@ public class AtomicContextToReferenceContextTestCase extends TestCase {
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
         SystemCompositeContext context = new SystemCompositeContextImpl();
         scope.start();
-        MockReferenceContext<Target> serviceContext = new MockReferenceContext<Target>("service", Target.class);
+        MockReferenceContext<Target> serviceContext = new MockReferenceContext<Target>("service", context, Target.class);
         TargetWire<Target> targetWire = new MockTargetWire<Target>(Target.class, new TargetImpl());
         serviceContext.setTargetWire(targetWire);
         context.registerContext(serviceContext);

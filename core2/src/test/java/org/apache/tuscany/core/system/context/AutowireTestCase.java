@@ -87,7 +87,7 @@ public class AutowireTestCase extends TestCase {
         scopeContext.start();
         SystemCompositeContext<?> parent = new SystemCompositeContextImpl("parent", null, null);
         parent.start();
-        MockReferenceContext<Source> referenceContext = new MockReferenceContext<Source>("sourceReference", Source.class);
+        MockReferenceContext<Source> referenceContext = new MockReferenceContext<Source>("sourceReference", parent, Source.class);
         // create a mock wire for the reference which just holds a pre-instantiated target
         TargetWire<Source> wire = new MockTargetWire<Source>(Source.class, new SourceImpl());
         referenceContext.setTargetWire(wire);

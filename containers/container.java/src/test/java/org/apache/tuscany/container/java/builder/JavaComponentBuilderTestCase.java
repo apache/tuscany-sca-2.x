@@ -34,7 +34,7 @@ public class JavaComponentBuilderTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
-        CompositeContext parent = new CompositeContextImpl();
+        CompositeContext parent = new CompositeContextImpl(null, null, null);
         WorkContext workContext = new WorkContextImpl();
         workContext.setRemoteContext(parent);
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl(workContext);

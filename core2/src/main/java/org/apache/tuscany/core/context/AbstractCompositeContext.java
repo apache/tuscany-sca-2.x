@@ -42,12 +42,8 @@ public abstract class AbstractCompositeContext<T> extends CompositeContextExtens
 
     protected AutowireContext<?> autowireContext;
 
-    public AbstractCompositeContext() {
-    }
-
     public AbstractCompositeContext(String name, CompositeContext parent, AutowireContext autowireContext) {
-        this.name = name;
-        this.parentContext = parent;
+        super(name, parent);
         this.autowireContext = autowireContext;
     }
 

@@ -4,6 +4,7 @@ import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.context.CompositeContext;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -13,7 +14,8 @@ public abstract class AtomicContextExtension<T> extends ComponentContextExtensio
     protected ScopeContext scopeContext;
     protected Scope scope;
 
-    protected AtomicContextExtension() {
+    protected AtomicContextExtension(String name, CompositeContext<?> parent) {
+        super(name, parent);
     }
 
     public Scope getScope() {

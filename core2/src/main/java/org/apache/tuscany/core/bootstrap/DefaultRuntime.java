@@ -19,6 +19,7 @@ package org.apache.tuscany.core.bootstrap;
 import org.apache.tuscany.core.system.context.SystemCompositeContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.spi.bootstrap.RuntimeContext;
+import org.apache.tuscany.spi.bootstrap.ContextNames;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.deployer.Deployer;
 
@@ -31,6 +32,7 @@ public class DefaultRuntime extends SystemCompositeContextImpl<Void> implements 
     private final Deployer deployer;
 
     public DefaultRuntime(SystemCompositeContext systemContext, CompositeContext rootContext) {
+        super(ContextNames.TUSCANY_RUNTIME, null, null);
         this.systemContext = systemContext;
         this.rootContext = rootContext;
         deployer = null;

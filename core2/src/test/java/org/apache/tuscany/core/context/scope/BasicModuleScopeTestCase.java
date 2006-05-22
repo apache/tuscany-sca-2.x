@@ -25,7 +25,7 @@ public class BasicModuleScopeTestCase extends TestCase {
 
     public void testLifecycleManagement() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        CompositeContext currentModule = new MockCompositeContext();
+        CompositeContext currentModule = new MockCompositeContext(null, null);
         ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
         scopeContext.start();
         SystemAtomicContext atomicContext = createContext();
@@ -44,7 +44,7 @@ public class BasicModuleScopeTestCase extends TestCase {
 
     public void testModuleIsolation() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        CompositeContext currentModule = new MockCompositeContext();
+        CompositeContext currentModule = new MockCompositeContext(null, null);
         ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
         scopeContext.start();
 
@@ -77,6 +77,6 @@ public class BasicModuleScopeTestCase extends TestCase {
     }
 
     private SystemAtomicContext createContext() {
-        return new SystemAtomicContextImpl("foo", ModuleScopeInitDestroyComponent.class,factory, false, initInvoker, destroyInvoker, null,null);
+        return new SystemAtomicContextImpl("foo", null, ModuleScopeInitDestroyComponent.class,factory, false, initInvoker, destroyInvoker, null,null);
     }
 }

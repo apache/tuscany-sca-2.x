@@ -11,6 +11,7 @@ import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.TargetWire;
@@ -26,8 +27,8 @@ public class SystemSingletonAtomicContext<S, T extends S> extends AbstractContex
     private T instance;
     private List<Class<?>> serviceInterfaces;
 
-    public SystemSingletonAtomicContext(String name, Class<S> serviceInterface, T instance) {
-        super(name);
+    public SystemSingletonAtomicContext(String name, CompositeContext<?> parent, Class<S> serviceInterface, T instance) {
+        super(name, parent);
         this.instance = instance;
         serviceInterfaces = new ArrayList<Class<?>>(1);
         serviceInterfaces.add(serviceInterface);

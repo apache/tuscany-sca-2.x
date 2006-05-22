@@ -22,6 +22,7 @@ import org.apache.tuscany.core.injection.NoAccessorException;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.extension.AtomicContextExtension;
 import org.apache.tuscany.spi.wire.SourceWire;
 
@@ -40,13 +41,20 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
     protected List<Injector> injectors;
     protected Map<String, Member> members;
 
-    public PojoAtomicContext(String name, Class<?> serviceInterface, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
-                             EventInvoker<Object> destroyInvoker, List<Injector> injectors, Map<String, Member> members) {
+    public PojoAtomicContext(String name,
+                             CompositeContext<?> parent,
+                             Class<?> serviceInterface,
+                             ObjectFactory<?> objectFactory,
+                             boolean eagerInit,
+                             EventInvoker<Object> initInvoker,
+                             EventInvoker<Object> destroyInvoker,
+                             List<Injector> injectors,
+                             Map<String, Member> members) {
+        super(name, parent);
         assert (objectFactory != null) : "Object factory was null";
         if (eagerInit && initInvoker == null) {
             throw new AssertionError("No intialization method found for eager init implementation");
         }
-        this.name = name;
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         serviceInterfaces.add(serviceInterface);
         this.serviceInterfaces = serviceInterfaces;
@@ -59,13 +67,20 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
 
     }
 
-    public PojoAtomicContext(String name, List<Class<?>> serviceInterfaces, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
-                             EventInvoker<Object> destroyInvoker, List<Injector> injectors, Map<String, Member> members) {
+    public PojoAtomicContext(String name,
+                             CompositeContext<?> parent,
+                             List<Class<?>> serviceInterfaces,
+                             ObjectFactory<?> objectFactory,
+                             boolean eagerInit,
+                             EventInvoker<Object> initInvoker,
+                             EventInvoker<Object> destroyInvoker,
+                             List<Injector> injectors,
+                             Map<String, Member> members) {
+        super(name, parent);
         assert (objectFactory != null) : "Object factory was null";
         if (eagerInit && initInvoker == null) {
             throw new AssertionError("No intialization method found for eager init implementation");
         }
-        this.name = name;
         this.objectFactory = objectFactory;
         this.eagerInit = eagerInit;
         this.initInvoker = initInvoker;

@@ -35,11 +35,9 @@ public abstract class AbstractContext<T> extends AbstractLifecycle implements Co
     protected Map<EventFilter, List<RuntimeEventListener>> listeners;
     protected static final EventFilter TRUE_FILTER = new TrueFilter();
 
-    public AbstractContext() {
-    }
-
-    public AbstractContext(String name) {
+    public AbstractContext(String name, CompositeContext<?> parent) {
         super(name);
+        parentContext = parent;
     }
 
     public CompositeContext getParent() {

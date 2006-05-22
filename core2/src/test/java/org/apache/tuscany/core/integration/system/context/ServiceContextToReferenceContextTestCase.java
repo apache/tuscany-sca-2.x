@@ -30,7 +30,7 @@ public class ServiceContextToReferenceContextTestCase extends TestCase {
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
         SystemCompositeContext context = new SystemCompositeContextImpl();
         scope.start();
-        SystemReferenceContext<Target> referenceContext = new MockReferenceContext<Target>("reference", Target.class);
+        SystemReferenceContext<Target> referenceContext = new MockReferenceContext<Target>("reference", context, Target.class);
         context.registerContext(referenceContext);
         TargetWire<Target> targetWire = new MockTargetWire<Target>(Target.class, new TargetImpl());
         SourceWire<Target> wire = new SystemSourceWire<Target>("service", new QualifiedName("reference"), Target.class);    //String referenceName, QualifiedName targetName, Class<T> businessInterface

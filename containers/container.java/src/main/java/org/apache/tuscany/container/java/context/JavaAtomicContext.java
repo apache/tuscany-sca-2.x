@@ -39,7 +39,7 @@ public class JavaAtomicContext<T> extends PojoAtomicContext<T> {
 
     public JavaAtomicContext(String name, List<Class<?>> serviceInterfaces, ObjectFactory<?> objectFactory, Scope scope, boolean eagerInit, EventInvoker<Object> initInvoker,
                              EventInvoker<Object> destroyInvoker, List<Injector> injectors, Map<String, Member> members) {
-        super(name, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members);
+        super(name, null, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members);
         this.scope = scope;
     }
 

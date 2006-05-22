@@ -10,6 +10,7 @@ import org.apache.tuscany.core.context.PojoAtomicContext;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.model.Scope;
 
@@ -19,15 +20,29 @@ import org.apache.tuscany.model.Scope;
 public class SystemAtomicContextImpl<T> extends PojoAtomicContext<T> implements SystemAtomicContext<T> {
 
 
-    public SystemAtomicContextImpl(String name, Class<?> serviceInterface, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
-                                   EventInvoker<Object> destroyInvoker, List<Injector> injectors, Map<String, Member> members) {
-        super(name, serviceInterface, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members);
+    public SystemAtomicContextImpl(String name,
+                                   CompositeContext<?> parent,
+                                   Class<?> serviceInterface,
+                                   ObjectFactory<?> objectFactory,
+                                   boolean eagerInit,
+                                   EventInvoker<Object> initInvoker,
+                                   EventInvoker<Object> destroyInvoker,
+                                   List<Injector> injectors,
+                                   Map<String, Member> members) {
+        super(name, parent, serviceInterface, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members);
         scope = Scope.MODULE;
     }
 
-    public SystemAtomicContextImpl(String name, List<Class<?>> serviceInterfaces, ObjectFactory<?> objectFactory, boolean eagerInit, EventInvoker<Object> initInvoker,
-                                   EventInvoker<Object> destroyInvoker, List<Injector> injectors,Map<String, Member> members) {
-        super(name, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members);
+    public SystemAtomicContextImpl(String name,
+                                   CompositeContext<?> parent,
+                                   List<Class<?>> serviceInterfaces,
+                                   ObjectFactory<?> objectFactory,
+                                   boolean eagerInit,
+                                   EventInvoker<Object> initInvoker,
+                                   EventInvoker<Object> destroyInvoker,
+                                   List<Injector> injectors,
+                                   Map<String, Member> members) {
+        super(name, parent, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members);
         scope = Scope.MODULE;
     }
 

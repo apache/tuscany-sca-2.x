@@ -24,15 +24,8 @@ public class ServiceContextExtension<T> extends AbstractContext<T> implements Se
     private T target;
 
     public ServiceContextExtension(String name, SourceWire<T> wire, CompositeContext parent) throws CoreRuntimeException {
-        this.name = name;
-        this.parentContext = parent;
+        super(name, parent);
         this.sourceWire = wire;
-    }
-
-    /**
-     * Creates a new service context
-     */
-    public ServiceContextExtension() throws CoreRuntimeException {
     }
 
     public Scope getScope() {

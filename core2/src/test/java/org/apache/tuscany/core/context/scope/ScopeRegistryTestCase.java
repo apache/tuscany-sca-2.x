@@ -15,8 +15,8 @@ import org.apache.tuscany.spi.context.ScopeContext;
 public class ScopeRegistryTestCase extends TestCase {
 
     public void testRemotableIsolation() throws Exception {
-        CompositeContext context1 = new CompositeContextImpl();
-        CompositeContext context2 = new CompositeContextImpl();
+        CompositeContext context1 = new CompositeContextImpl(null, null, null);
+        CompositeContext context2 = new CompositeContextImpl(null, null, null);
         WorkContext workContext = new WorkContextImpl();
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl(workContext);
         scopeRegistry.registerFactory(Scope.MODULE, new ModuleScopeObjectFactory());

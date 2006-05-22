@@ -24,6 +24,10 @@ import org.apache.tuscany.model.Scope;
  */
 public class MockCompositeContext<T> extends AbstractContext<T> implements CompositeContext<T> {
 
+    public MockCompositeContext(String name, CompositeContext<?> parent) {
+        super(name, parent);
+    }
+
     public Scope getScope() {
         return Scope.COMPOSITE;
     }

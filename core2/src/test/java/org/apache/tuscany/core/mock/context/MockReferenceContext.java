@@ -7,6 +7,7 @@ import org.apache.tuscany.core.system.context.SystemReferenceContext;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.TargetWire;
 
@@ -20,8 +21,8 @@ public class MockReferenceContext<T> extends AbstractContext<T> implements Syste
     private Class<T> referenceInterface;
     private TargetWire<T> wire;
 
-    public MockReferenceContext(String name, Class<T> referenceInterface) {
-        super(name);
+    public MockReferenceContext(String name, CompositeContext<?> parent, Class<T> referenceInterface) {
+        super(name, parent);
         assert (referenceInterface != null) : "Reference interface was null";
         this.referenceInterface = referenceInterface;
     }

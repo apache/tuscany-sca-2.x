@@ -25,7 +25,7 @@ public class BasicRequestScopeTestCase extends TestCase {
 
     public void testLifecycleManagement() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        CompositeContext currentModule = new MockCompositeContext();
+        CompositeContext currentModule = new MockCompositeContext(null, null);
         RequestScopeContext scopeContext = new RequestScopeContext(workContext);
         scopeContext.start();
         SystemAtomicContext atomicContext = createContext();
@@ -44,7 +44,7 @@ public class BasicRequestScopeTestCase extends TestCase {
 
     public void testRequestIsolation() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        CompositeContext currentModule = new MockCompositeContext();
+        CompositeContext currentModule = new MockCompositeContext(null, null);
         RequestScopeContext scopeContext = new RequestScopeContext(workContext);
         scopeContext.start();
 
@@ -76,6 +76,6 @@ public class BasicRequestScopeTestCase extends TestCase {
     }
 
     private SystemAtomicContext createContext() {
-        return new SystemAtomicContextImpl("foo", RequestScopeInitDestroyComponent.class,factory, false, initInvoker, destroyInvoker, null,null);
+        return new SystemAtomicContextImpl("foo", null, RequestScopeInitDestroyComponent.class,factory, false, initInvoker, destroyInvoker, null,null);
     }
 }

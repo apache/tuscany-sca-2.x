@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.ComponentContext;
+import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
@@ -19,7 +20,8 @@ public abstract class ComponentContextExtension<T> extends AbstractContext<T> im
     protected Map<String, TargetWire> targetWires = new HashMap<String, TargetWire>();
     protected List<SourceWire> sourceWires = new ArrayList<SourceWire>();
 
-    protected ComponentContextExtension() {
+    protected ComponentContextExtension(String name, CompositeContext<?> parent) {
+        super(name, parent);
     }
 
     public void addTargetWire(TargetWire wire) {

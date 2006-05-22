@@ -29,7 +29,7 @@ import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
  */
 public class CompositeBuilder implements ComponentBuilder<CompositeImplementation> {
     public ComponentContext build(CompositeContext parent, Component<CompositeImplementation> component) throws BuilderConfigException {
-        SystemCompositeContextImpl<?> context = new SystemCompositeContextImpl();
+        SystemCompositeContextImpl<?> context = new SystemCompositeContextImpl(component.getName(), null, null);
         return context;
     }
 }

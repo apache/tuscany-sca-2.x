@@ -22,6 +22,7 @@ import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
@@ -37,10 +38,8 @@ public abstract class ReferenceContextExtension<T> extends AbstractContext<T> im
     protected Class<T> referenceInterface;
     protected ObjectFactory<WireInvocationHandler> handlerFactory;
 
-    /**
-     * Creates a reference context
-     */
-    public ReferenceContextExtension() {
+    protected ReferenceContextExtension(String name, CompositeContext<?> parent) {
+        super(name, parent);
     }
 
     public Scope getScope() {

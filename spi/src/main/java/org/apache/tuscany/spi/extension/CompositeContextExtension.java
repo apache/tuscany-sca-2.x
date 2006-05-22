@@ -27,6 +27,10 @@ public abstract class CompositeContextExtension<T> extends ComponentContextExten
     protected final List<ServiceContext> services = new ArrayList<ServiceContext>();
     protected final List<ReferenceContext> references = new ArrayList<ReferenceContext>();
 
+    protected CompositeContextExtension(String name, CompositeContext<?> parent) {
+        super(name, parent);
+    }
+
     public void registerContext(Context context) {
         assert(context != null): "Context was null";
         if (context instanceof ServiceContext) {

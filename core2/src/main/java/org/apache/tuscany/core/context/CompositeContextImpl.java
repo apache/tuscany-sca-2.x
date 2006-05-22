@@ -24,10 +24,6 @@ import org.osoa.sca.ServiceUnavailableException;
  */
 public class CompositeContextImpl<T> extends AbstractCompositeContext<T> implements ModuleContext {
 
-    public CompositeContextImpl() {
-        super();
-    }
-
     public CompositeContextImpl(String name, CompositeContext parent, AutowireContext autowireContext) {
         super(name, parent, autowireContext);
     }

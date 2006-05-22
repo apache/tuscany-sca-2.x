@@ -26,6 +26,11 @@ public final class ContextNames {
     }
 
     /**
+     * The name of the context that forms the root of the runtime tree.
+     */
+    public static final String TUSCANY_RUNTIME = "tuscany.runtime";
+
+    /**
      * The name of the context that forms the root of the application context tree.
      */
     public static final String TUSCANY_ROOT = "tuscany.root";

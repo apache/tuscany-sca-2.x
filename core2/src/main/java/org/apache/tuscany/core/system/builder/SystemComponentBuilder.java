@@ -68,7 +68,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
                 }
             }
         }
-        SystemAtomicContext systemContext = new SystemAtomicContextImpl(component.getName(), serviceInterfaces, factory,
+        SystemAtomicContext systemContext = new SystemAtomicContextImpl(component.getName(), null, serviceInterfaces, factory,
                 componentType.isEagerInit(), componentType.getInitInvoker(), componentType.getDestroyInvoker(), injectors, members);
 
         for (Service service : component.getImplementation().getComponentType().getServices().values()) {
