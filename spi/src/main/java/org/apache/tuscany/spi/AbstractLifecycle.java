@@ -18,7 +18,7 @@ package org.apache.tuscany.spi;
  */
 public abstract class AbstractLifecycle implements Lifecycle {
 
-    protected String name;
+    private final String name;
     protected int lifecycleState = UNINITIALIZED;
 
     public AbstractLifecycle(String name) {
@@ -26,14 +26,11 @@ public abstract class AbstractLifecycle implements Lifecycle {
     }
 
     public AbstractLifecycle() {
+        this.name = null;
     }
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getLifecycleState() {

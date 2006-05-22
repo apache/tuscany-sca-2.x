@@ -82,8 +82,7 @@ public class SystemBuildersTestCase extends TestCase {
         SystemComponentBuilder builder = new SystemComponentBuilder();
         SystemBindingBuilder bindingBuilder = new SystemBindingBuilder();
 
-        SystemCompositeContext grandParent = new SystemCompositeContextImpl();
-        grandParent.setName("grandparent");
+        SystemCompositeContext grandParent = new SystemCompositeContextImpl("grandparent", null, null);
         SystemCompositeContext parent = new SystemCompositeContextImpl("parent", grandParent, grandParent);
 
         // create a context in the grandparent that the reference will be autowired to
@@ -167,8 +166,7 @@ public class SystemBuildersTestCase extends TestCase {
         SystemComponentBuilder builder = new SystemComponentBuilder();
         SystemBindingBuilder bindingBuilder = new SystemBindingBuilder();
 
-        SystemCompositeContext grandParent = new SystemCompositeContextImpl();
-        grandParent.setName("grandparent");
+        SystemCompositeContext grandParent = new SystemCompositeContextImpl("grandparent", null, null);
         SystemCompositeContext parent = new SystemCompositeContextImpl("parent", grandParent, grandParent);
 
         // create a context in the grandparent that the reference will be autowired to

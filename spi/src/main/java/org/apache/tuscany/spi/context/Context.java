@@ -33,11 +33,6 @@ public interface Context<T> extends EventPublisher, Lifecycle {
     String getName();
 
     /**
-     * Sets the name of the context.
-     */
-    void setName(String name);
-
-    /**
      * Returns the parent context, or null if the context does not have one
      */
     CompositeContext getParent();
