@@ -114,7 +114,7 @@ public class ConnectorImpl implements Connector {
                 e.setIdentifier(source.getReferenceName());
                 throw e;
             }
-            // if handler is configured, add that
+            // if handlers are configured, add them
             if (targetChain.getRequestHandlers() != null || targetChain.getResponseHandlers() != null) {
                 sourceChain.setTargetRequestChannel(new MessageChannelImpl(targetChain
                         .getRequestHandlers()));

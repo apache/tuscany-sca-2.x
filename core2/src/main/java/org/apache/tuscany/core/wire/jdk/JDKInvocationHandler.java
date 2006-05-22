@@ -59,38 +59,38 @@ public class JDKInvocationHandler implements WireInvocationHandler {
             e.setIdentifier(method.getName());
             throw e;
         }
-        InvocationChain config = holder.chain;
-        if (config != null) {
-            headInterceptor = config.getHeadInterceptor();
+        InvocationChain chain = holder.chain;
+        if (chain != null) {
+            headInterceptor = chain.getHeadInterceptor();
         }
 
         TargetInvoker invoker;
 
         if (holder.cachedInvoker == null) {
-            assert config != null;
-            if (config.getTargetInvoker() == null) {
+            assert chain != null;
+            if (chain.getTargetInvoker() == null) {
                 TargetException e = new TargetException("No target invoker configured for operation");
-                e.setIdentifier(config.getMethod().getName());
+                e.setIdentifier(chain.getMethod().getName());
                 throw e;
             }
-            if (config.getTargetInvoker().isCacheable()) {
+            if (chain.getTargetInvoker().isCacheable()) {
                 // clone and store the invoker locally
-                holder.cachedInvoker = (TargetInvoker) config.getTargetInvoker().clone();
+                holder.cachedInvoker = (TargetInvoker) chain.getTargetInvoker().clone();
                 invoker = holder.cachedInvoker;
             } else {
-                invoker = config.getTargetInvoker();
+                invoker = chain.getTargetInvoker();
             }
         } else {
-            assert config != null;
-            invoker = config.getTargetInvoker();
+            assert chain != null;
+            invoker = chain.getTargetInvoker();
         }
         if (headInterceptor == null) {
             try {
                 // short-circuit the dispatch and invoke the target directly
-                if (config.getTargetInvoker() == null) {
+                if (chain.getTargetInvoker() == null) {
                     throw new AssertionError("No target invoker [" + method.getName() + "]");
                 }
-                return config.getTargetInvoker().invokeTarget(args);
+                return chain.getTargetInvoker().invokeTarget(args);
             } catch (InvocationTargetException e) {
                 // the cause was thrown by the target so throw it
                 throw e.getCause();

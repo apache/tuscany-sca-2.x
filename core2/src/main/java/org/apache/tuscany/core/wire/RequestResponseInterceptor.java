@@ -37,7 +37,7 @@ public class RequestResponseInterceptor implements Interceptor {
     private MessageChannel targetResponseChannel;
 
     /**
-     * Construct an interceptor that sends messages down the supplied channels.
+     * Creates an interceptor that sends messages down the supplied channels
      *
      * @param targetRequestChannel  the channel to send request messages down
      * @param targetResponseChannel the channel to sent response messages down

@@ -53,7 +53,7 @@ public class ConnectorTestCase extends TestCase {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
         }
-
+        targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
         SimpleSource source = sourceContext.getService();
         assertEquals("foo", source.getTarget().echo("foo"));
@@ -81,7 +81,7 @@ public class ConnectorTestCase extends TestCase {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
         }
-
+        targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, interceptor.getCount());
         SimpleSource source = sourceContext.getService();
@@ -110,7 +110,7 @@ public class ConnectorTestCase extends TestCase {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
         }
-
+        targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, interceptor.getCount());
         SimpleSource source = sourceContext.getService();
@@ -142,7 +142,7 @@ public class ConnectorTestCase extends TestCase {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
         }
-
+        targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, sourceInterceptor.getCount());
         assertEquals(0, targetInterceptor.getCount());
@@ -176,7 +176,7 @@ public class ConnectorTestCase extends TestCase {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
         }
-
+        targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
@@ -187,6 +187,42 @@ public class ConnectorTestCase extends TestCase {
         scopeContext.onEvent(new ModuleStop(this, null));
         scopeContext.stop();
     }
+
+    /**
+     * Verifies an invocation with a target interceptor and a request handler
+     */
+    @SuppressWarnings("unchecked")
+    public void testTargetInterceptorTargetRequestHandler() throws Exception {
+        ConnectorImpl connector = new ConnectorImpl();
+        WorkContext workContext = new WorkContextImpl();
+        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        scopeContext.start();
+
+        MockSyncInterceptor interceptor = new MockSyncInterceptor();
+        List<Interceptor> interceptors = new ArrayList<Interceptor>();
+        interceptors.add(interceptor);
+        MockHandler handler = new MockHandler();
+        List<MessageHandler> handlers = new ArrayList<MessageHandler>();
+        handlers.add(handler);
+        MockAtomicContext<SimpleSource> sourceContext = setupSource(scopeContext, null,null, null);
+        MockAtomicContext<SimpleTarget> targetContext = setupTarget(scopeContext, interceptors, handlers, null);
+        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
+            TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
+            connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+        }
+        targetContext.prepare();
+        scopeContext.onEvent(new ModuleStart(this, null));
+        assertEquals(0, interceptor.getCount());
+        assertEquals(0, handler.getCount());
+        SimpleSource source = sourceContext.getService();
+        assertEquals("foo", source.getTarget().echo("foo"));
+        assertEquals(1, handler.getCount());
+        assertEquals(1, interceptor.getCount());
+        scopeContext.onEvent(new ModuleStop(this, null));
+        scopeContext.stop();
+    }
+
+
 
     /**
      * Verifies an invocation with a source interceptor and response handler
@@ -210,7 +246,7 @@ public class ConnectorTestCase extends TestCase {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
         }
-
+        targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
@@ -244,7 +280,7 @@ public class ConnectorTestCase extends TestCase {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
         }
-
+        targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
@@ -275,7 +311,7 @@ public class ConnectorTestCase extends TestCase {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
         }
-
+        targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, handler.getCount());
         SimpleSource source = sourceContext.getService();
@@ -304,7 +340,7 @@ public class ConnectorTestCase extends TestCase {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
         }
-
+        targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, handler.getCount());
         SimpleSource source = sourceContext.getService();
@@ -333,7 +369,7 @@ public class ConnectorTestCase extends TestCase {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
         }
-
+        targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, handler.getCount());
         SimpleSource source = sourceContext.getService();

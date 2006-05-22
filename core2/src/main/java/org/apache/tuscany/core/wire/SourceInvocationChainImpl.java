@@ -93,7 +93,6 @@ public class SourceInvocationChainImpl extends InvocationChainImpl implements So
                 if (targetInterceptorChainHead != null) {
                     // Connect source interceptor chain directly to target interceptor chain
                     interceptorChainTail.setNext(targetInterceptorChainHead);
-                    // interceptorChainTail = targetInterceptorChainHead;
                 } else {
                     // Connect source interceptor chain to the target request channel
                     Interceptor channelInterceptor = new RequestResponseInterceptor(null, targetRequestChannel, null,
