@@ -1,11 +1,14 @@
 package org.apache.tuscany.core.builder;
 
 import java.lang.reflect.Method;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.MessageChannelImpl;
+import org.apache.tuscany.core.wire.MessageDispatcher;
 import org.apache.tuscany.core.wire.SourceAutowire;
 import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.QualifiedName;
@@ -15,6 +18,8 @@ import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.ServiceContext;
+import org.apache.tuscany.spi.wire.MessageChannel;
+import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
@@ -79,17 +84,17 @@ public class ConnectorImpl implements Connector {
                 e.setIdentifier(targetName.getPortName());
                 throw e;
             }
-            if (!sourceWire.getBusinessInterface().isAssignableFrom(targetWire.getBusinessInterface())){
-               throw new BuilderConfigException("Incompatible source and target interfaces");
+            if (!sourceWire.getBusinessInterface().isAssignableFrom(targetWire.getBusinessInterface())) {
+                throw new BuilderConfigException("Incompatible source and target interfaces");
             }
-            connect(sourceWire, (TargetWire<T>)targetWire, target, isOptimizable(sourceScope, targetContext.getScope()));
+            connect(sourceWire, (TargetWire<T>) targetWire, target, isOptimizable(sourceScope, targetContext.getScope()));
         } else if (target instanceof ReferenceContext) {
-            targetWire = ((ReferenceContext)target).getTargetWire();
+            targetWire = ((ReferenceContext) target).getTargetWire();
             assert(targetWire != null);
-            if (!sourceWire.getBusinessInterface().isAssignableFrom(targetWire.getBusinessInterface())){
-               throw new BuilderConfigException("Incompatible source and target interfaces");
+            if (!sourceWire.getBusinessInterface().isAssignableFrom(targetWire.getBusinessInterface())) {
+                throw new BuilderConfigException("Incompatible source and target interfaces");
             }
-            connect(sourceWire, (TargetWire<T>)targetWire, target, isOptimizable(sourceScope, target.getScope()));
+            connect(sourceWire, (TargetWire<T>) targetWire, target, isOptimizable(sourceScope, target.getScope()));
         } else {
             BuilderConfigException e = new BuilderConfigException("Invalid wire target type for reference " + sourceWire.getReferenceName());
             e.setIdentifier(targetName.getQualifiedName());
@@ -116,8 +121,22 @@ public class ConnectorImpl implements Connector {
             }
             // if handlers are configured, add them
             if (targetChain.getRequestHandlers() != null || targetChain.getResponseHandlers() != null) {
-                sourceChain.setTargetRequestChannel(new MessageChannelImpl(targetChain
-                        .getRequestHandlers()));
+                if (targetChain.getRequestHandlers() == null) {
+                    // the target may not have request handlers, so bridge it on the source
+                    if (targetChain.getHeadInterceptor() != null) {
+                        List<MessageHandler> handlers = new ArrayList<MessageHandler>();
+                        handlers.add(new MessageDispatcher(targetChain.getHeadInterceptor()));
+                        MessageChannel channel = new MessageChannelImpl(handlers);
+                        sourceChain.setTargetRequestChannel(channel);
+                    }else{
+                        BuilderConfigException e = new BuilderConfigException("Target chain must have an interceptor");
+                        e.setIdentifier(targetChain.getMethod().getName());
+                        throw e;
+                    }
+                } else {
+                    sourceChain.setTargetRequestChannel(new MessageChannelImpl(targetChain
+                            .getRequestHandlers()));
+                }
                 sourceChain.setTargetResponseChannel(new MessageChannelImpl(targetChain
                         .getResponseHandlers()));
             } else {
@@ -136,14 +155,14 @@ public class ConnectorImpl implements Connector {
             sourceChain.build();
         }
 
-        if (target instanceof ReferenceContext){
-            attachInvoker(targetWire.getServiceName(),source.getInvocationChains().values(),(ReferenceContext)target);
-        }else{
-            attachInvoker(targetWire.getServiceName(),source.getInvocationChains().values(),(ComponentContext)target);
+        if (target instanceof ReferenceContext) {
+            attachInvoker(targetWire.getServiceName(), source.getInvocationChains().values(), (ReferenceContext) target);
+        } else {
+            attachInvoker(targetWire.getServiceName(), source.getInvocationChains().values(), (ComponentContext) target);
         }
     }
 
-    private void attachInvoker(String serviceName, Collection<SourceInvocationChain> chains, ComponentContext<?> target){
+    private void attachInvoker(String serviceName, Collection<SourceInvocationChain> chains, ComponentContext<?> target) {
         for (SourceInvocationChain chain : chains) {
             TargetInvoker invoker = target.createTargetInvoker(serviceName, chain.getMethod());
             // TODO fix cacheable attrivute
@@ -152,7 +171,7 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    private void attachInvoker(String serviceName, Collection<SourceInvocationChain> chains, ReferenceContext<?> target){
+    private void attachInvoker(String serviceName, Collection<SourceInvocationChain> chains, ReferenceContext<?> target) {
         for (SourceInvocationChain chain : chains) {
             TargetInvoker invoker = target.createTargetInvoker(serviceName, chain.getMethod());
             // TODO fix cacheable attribute

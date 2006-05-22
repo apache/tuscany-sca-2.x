@@ -259,6 +259,40 @@ public class ConnectorTestCase extends TestCase {
     }
 
     /**
+     * Verifies an invocation with a source interceptor and response handler
+     */
+    @SuppressWarnings("unchecked")
+    public void testTargetInterceptorTargetResponseHandler() throws Exception {
+        ConnectorImpl connector = new ConnectorImpl();
+        WorkContext workContext = new WorkContextImpl();
+        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        scopeContext.start();
+
+        MockSyncInterceptor interceptor = new MockSyncInterceptor();
+        List<Interceptor> interceptors = new ArrayList<Interceptor>();
+        interceptors.add(interceptor);
+        MockHandler handler = new MockHandler();
+        List<MessageHandler> handlers = new ArrayList<MessageHandler>();
+        handlers.add(handler);
+        MockAtomicContext<SimpleSource> sourceContext = setupSource(scopeContext, null, null, null);
+        MockAtomicContext<SimpleTarget> targetContext = setupTarget(scopeContext, interceptors, null, handlers);
+        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
+            TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
+            connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+        }
+        targetContext.prepare();
+        scopeContext.onEvent(new ModuleStart(this, null));
+        assertEquals(0, interceptor.getCount());
+        assertEquals(0, handler.getCount());
+        SimpleSource source = sourceContext.getService();
+        assertEquals("foo", source.getTarget().echo("foo"));
+        assertEquals(1, handler.getCount());
+        assertEquals(1, interceptor.getCount());
+        scopeContext.onEvent(new ModuleStop(this, null));
+        scopeContext.stop();
+    }
+
+    /**
      * Verifies an invocation with a source interceptor, request handler, and response handler
      */
     @SuppressWarnings("unchecked")
@@ -276,6 +310,40 @@ public class ConnectorTestCase extends TestCase {
         handlers.add(handler);
         MockAtomicContext<SimpleSource> sourceContext = setupSource(scopeContext, interceptors, handlers, handlers);
         MockAtomicContext<SimpleTarget> targetContext = setupTarget(scopeContext, null, null, null);
+        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
+            TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
+            connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+        }
+        targetContext.prepare();
+        scopeContext.onEvent(new ModuleStart(this, null));
+        assertEquals(0, interceptor.getCount());
+        assertEquals(0, handler.getCount());
+        SimpleSource source = sourceContext.getService();
+        assertEquals("foo", source.getTarget().echo("foo"));
+        assertEquals(2, handler.getCount());
+        assertEquals(1, interceptor.getCount());
+        scopeContext.onEvent(new ModuleStop(this, null));
+        scopeContext.stop();
+    }
+
+    /**
+     * Verifies an invocation with a target interceptor, request handler, and response handler
+     */
+    @SuppressWarnings("unchecked")
+    public void testTargetInterceptorTargetRequestResponseHandler() throws Exception {
+        ConnectorImpl connector = new ConnectorImpl();
+        WorkContext workContext = new WorkContextImpl();
+        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        scopeContext.start();
+
+        MockSyncInterceptor interceptor = new MockSyncInterceptor();
+        List<Interceptor> interceptors = new ArrayList<Interceptor>();
+        interceptors.add(interceptor);
+        MockHandler handler = new MockHandler();
+        List<MessageHandler> handlers = new ArrayList<MessageHandler>();
+        handlers.add(handler);
+        MockAtomicContext<SimpleSource> sourceContext = setupSource(scopeContext, null, null, handlers);
+        MockAtomicContext<SimpleTarget> targetContext = setupTarget(scopeContext, interceptors, handlers, null);
         for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
@@ -322,6 +390,35 @@ public class ConnectorTestCase extends TestCase {
     }
 
     /**
+     * Verifies an invocation with a target request handler and response handler
+     */
+    @SuppressWarnings("unchecked")
+    public void testTargetRequestResponseHandler() throws Exception {
+        ConnectorImpl connector = new ConnectorImpl();
+        WorkContext workContext = new WorkContextImpl();
+        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        scopeContext.start();
+
+        MockHandler handler = new MockHandler();
+        List<MessageHandler> handlers = new ArrayList<MessageHandler>();
+        handlers.add(handler);
+        MockAtomicContext<SimpleSource> sourceContext = setupSource(scopeContext, null, null,null);
+        MockAtomicContext<SimpleTarget> targetContext = setupTarget(scopeContext, null, handlers, handlers);
+        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
+            TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
+            connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+        }
+        targetContext.prepare();
+        scopeContext.onEvent(new ModuleStart(this, null));
+        assertEquals(0, handler.getCount());
+        SimpleSource source = sourceContext.getService();
+        assertEquals("foo", source.getTarget().echo("foo"));
+        assertEquals(2, handler.getCount());
+        scopeContext.onEvent(new ModuleStop(this, null));
+        scopeContext.stop();
+    }
+
+    /**
      * Verifies an invocation with a single source request handler
      */
     @SuppressWarnings("unchecked")
@@ -351,6 +448,35 @@ public class ConnectorTestCase extends TestCase {
     }
 
     /**
+     * Verifies an invocation with a single target request handler
+     */
+    @SuppressWarnings("unchecked")
+    public void testTargetRequestHandler() throws Exception {
+        ConnectorImpl connector = new ConnectorImpl();
+        WorkContext workContext = new WorkContextImpl();
+        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        scopeContext.start();
+
+        MockHandler handler = new MockHandler();
+        List<MessageHandler> handlers = new ArrayList<MessageHandler>();
+        handlers.add(handler);
+        MockAtomicContext<SimpleSource> sourceContext = setupSource(scopeContext, null, null, null);
+        MockAtomicContext<SimpleTarget> targetContext = setupTarget(scopeContext, null, handlers, null);
+        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
+            TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
+            connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+        }
+        targetContext.prepare();
+        scopeContext.onEvent(new ModuleStart(this, null));
+        assertEquals(0, handler.getCount());
+        SimpleSource source = sourceContext.getService();
+        assertEquals("foo", source.getTarget().echo("foo"));
+        assertEquals(1, handler.getCount());
+        scopeContext.onEvent(new ModuleStop(this, null));
+        scopeContext.stop();
+    }
+
+    /**
      * Verifies an invocation with a single source response handler
      */
     @SuppressWarnings("unchecked")
@@ -365,6 +491,35 @@ public class ConnectorTestCase extends TestCase {
         handlers.add(handler);
         MockAtomicContext<SimpleSource> sourceContext = setupSource(scopeContext, null,null, handlers);
         MockAtomicContext<SimpleTarget> targetContext = setupTarget(scopeContext, null, null, null);
+        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
+            TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
+            connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+        }
+        targetContext.prepare();
+        scopeContext.onEvent(new ModuleStart(this, null));
+        assertEquals(0, handler.getCount());
+        SimpleSource source = sourceContext.getService();
+        assertEquals("foo", source.getTarget().echo("foo"));
+        assertEquals(1, handler.getCount());
+        scopeContext.onEvent(new ModuleStop(this, null));
+        scopeContext.stop();
+    }
+
+    /**
+     * Verifies an invocation with a single target response handler
+     */
+    @SuppressWarnings("unchecked")
+    public void testTargetResponseHandler() throws Exception {
+        ConnectorImpl connector = new ConnectorImpl();
+        WorkContext workContext = new WorkContextImpl();
+        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        scopeContext.start();
+
+        MockHandler handler = new MockHandler();
+        List<MessageHandler> handlers = new ArrayList<MessageHandler>();
+        handlers.add(handler);
+        MockAtomicContext<SimpleSource> sourceContext = setupSource(scopeContext, null,null, null);
+        MockAtomicContext<SimpleTarget> targetContext = setupTarget(scopeContext, null, null, handlers);
         for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
