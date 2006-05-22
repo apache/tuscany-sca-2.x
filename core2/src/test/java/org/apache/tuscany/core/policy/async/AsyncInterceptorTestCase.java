@@ -35,7 +35,6 @@ public class AsyncInterceptorTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testInvocation() throws Exception {
-
         ConnectorImpl connector = new ConnectorImpl();
         WorkContext workContext = new WorkContextImpl();
         ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
