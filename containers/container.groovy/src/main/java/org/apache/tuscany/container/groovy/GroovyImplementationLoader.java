@@ -14,17 +14,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.groovy.loader;
+package org.apache.tuscany.container.groovy;
 
-import java.net.URL;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
-
-import org.apache.tuscany.container.extension.loader.AbstractImplementationLoader;
-import org.apache.tuscany.container.groovy.assembly.GroovyImplementation;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
 /**

@@ -14,12 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.groovy.invoker;
+package org.apache.tuscany.container.groovy;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.tuscany.container.groovy.context.GroovyAtomicContext;
-import org.apache.tuscany.spi.wire.Message;
+import groovy.lang.GroovyObject;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
@@ -28,20 +27,11 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 public class GroovyInvoker implements TargetInvoker, Cloneable {
 
     private GroovyAtomicContext context;
-    private String serviceName;
     private String methodName;
     private boolean cacheable;
 
-    /**
-     * Initializes the invoker.
-     *
-     * @param serviceName Service name.
-     * @param context     SCope context.
-     * @param methodName  Method name.
-     */
-    public GroovyInvoker(String serviceName, String methodName, GroovyAtomicContext context) {
+    public GroovyInvoker(String methodName, GroovyAtomicContext context) {
         this.context = context;
-        this.serviceName = serviceName;
         this.methodName = methodName;
     }
 
@@ -54,29 +44,16 @@ public class GroovyInvoker implements TargetInvoker, Cloneable {
     }
 
     /**
-     * Invokes the target.
+     * Dispatches to the the target.
      */
     public Object invokeTarget(Object payload) throws InvocationTargetException {
-
-        GroovyScript groovyScript = context.getScript();
+        GroovyObject target = context.getTargetInstance();
         Object[] args = (Object[]) payload;
         try {
-            return groovyScript.runScript(methodName, args);
+            return target.invokeMethod(methodName, args);
         } catch (Exception ex) {
             throw new InvocationTargetException(ex);
         }
-    }
-
-    public Message invoke(Message msg) {
-        try {
-            Object resp = invokeTarget(msg.getBody());
-            msg.setBody(resp);
-        } catch (InvocationTargetException e) {
-            msg.setBody(e.getCause());
-        } catch (Throwable e) {
-            msg.setBody(e);
-        }
-        return msg;
     }
 
     public GroovyInvoker clone() throws CloneNotSupportedException {
