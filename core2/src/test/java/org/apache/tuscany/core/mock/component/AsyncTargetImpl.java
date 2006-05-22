@@ -19,8 +19,8 @@ public class AsyncTargetImpl implements AsyncTarget {
     public void setString(String val) {
         try {
             startSignal.await();
-            doneSignal.countDown();
             this.val = val;
+            doneSignal.countDown();
         } catch (InterruptedException e) {
             throw new AssertionError();
         }
