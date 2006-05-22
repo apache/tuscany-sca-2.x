@@ -1,5 +1,7 @@
 package org.apache.tuscany.core.mock.component;
 
+import java.util.concurrent.CountDownLatch;
+
 import org.osoa.sca.annotations.OneWay;
 
 /**
@@ -11,5 +13,7 @@ public interface AsyncTarget {
     void setString(String val);
 
     String getString();
+
+    public void setLatches(CountDownLatch startSignal, CountDownLatch doneSignal);
 
 }
