@@ -8,7 +8,7 @@ import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.mock.MockContextFactory;
+import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.spi.context.WorkContext;
 

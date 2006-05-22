@@ -7,7 +7,7 @@ import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.core.mock.MockComponentFactory;
+import org.apache.tuscany.core.mock.factories.MockComponentFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.system.builder.SystemBindingBuilder;

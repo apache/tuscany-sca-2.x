@@ -9,7 +9,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.core.mock.MockContextFactory;
+import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Target;

@@ -5,7 +5,7 @@ import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.core.mock.MockContextFactory;
+import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.spi.context.AtomicContext;

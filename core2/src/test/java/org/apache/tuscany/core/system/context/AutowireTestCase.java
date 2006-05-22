@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.core.mock.MockContextFactory;
+import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.mock.context.MockReferenceContext;
 import org.apache.tuscany.core.mock.context.MockTargetWire;
 import org.apache.tuscany.core.system.wire.SystemSourceWire;

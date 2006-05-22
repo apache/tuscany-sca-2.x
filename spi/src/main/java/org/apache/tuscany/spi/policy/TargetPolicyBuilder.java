@@ -12,6 +12,6 @@ import org.apache.tuscany.spi.wire.TargetWire;
  */
 public interface TargetPolicyBuilder{
 
-    public void build(Service service, TargetWire wire) throws BuilderException;
+    public void build(Service service, TargetWire<?> wire) throws BuilderException;
 
 }

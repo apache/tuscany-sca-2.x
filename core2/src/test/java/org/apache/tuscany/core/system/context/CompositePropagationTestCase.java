@@ -10,7 +10,7 @@ import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.mock.MockContextFactory;
+import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.mock.component.ModuleScopeInitDestroyComponent;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;

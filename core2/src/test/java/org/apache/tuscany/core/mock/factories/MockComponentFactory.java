@@ -1,4 +1,4 @@
-package org.apache.tuscany.core.mock;
+package org.apache.tuscany.core.mock.factories;
 
 import java.net.URI;
 import java.net.URISyntaxException;

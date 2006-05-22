@@ -3,7 +3,7 @@ package org.apache.tuscany.core.context.scope;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.context.WorkContextImpl;
-import org.apache.tuscany.core.mock.MockContextFactory;
+import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.mock.component.StatelessComponent;
 import org.apache.tuscany.core.mock.component.StatelessComponentImpl;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;

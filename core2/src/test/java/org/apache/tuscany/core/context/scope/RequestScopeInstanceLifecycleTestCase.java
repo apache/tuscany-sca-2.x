@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.event.RequestEnd;
 import org.apache.tuscany.core.context.event.RequestStart;
-import org.apache.tuscany.core.mock.MockContextFactory;
+import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.mock.component.OrderedEagerInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;

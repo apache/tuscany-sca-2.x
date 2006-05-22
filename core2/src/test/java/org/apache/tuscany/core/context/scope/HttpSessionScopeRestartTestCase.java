@@ -10,7 +10,7 @@ import org.apache.tuscany.core.context.event.HttpSessionStart;
 import org.apache.tuscany.core.context.event.HttpSessionEnd;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
-import org.apache.tuscany.core.mock.MockContextFactory;
+import org.apache.tuscany.core.mock.factories.MockContextFactory;
 
 /**
  * @version $$Rev$$ $$Date$$
