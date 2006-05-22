@@ -9,7 +9,7 @@ import org.apache.geronimo.connector.work.GeronimoWorkManager;
 import org.apache.geronimo.transaction.context.TransactionContextManager;
 
 /**
- * Tests the Geronimo work manager
+ * Tests integration of the Geronimo work manager
  *
  * @version $Rev$ $Date$
  */

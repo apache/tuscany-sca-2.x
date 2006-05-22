@@ -14,8 +14,9 @@ import org.osoa.sca.SCA;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
- * A wire interceptor that uses a WorkManager to schedule asynchronous execution of invocations in Work
- * instances.
+ * Uses a WorkManager to schedule asynchronous execution of invocations
+ *
+ * @version $$Rev$$ $$Date$$
  */
 public class AsyncInterceptor implements Interceptor {
 
@@ -76,6 +77,9 @@ public class AsyncInterceptor implements Interceptor {
         }
     }
 
+    /**
+     * A dummy message passed back on an invocation
+     */
     private static class ImmutableMessage implements Message {
 
         public Object getBody() {

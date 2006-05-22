@@ -2,14 +2,15 @@ package org.apache.tuscany.core.policy.async;
 
 import javax.resource.spi.work.WorkManager;
 
+import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.model.Service;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
+import static org.apache.tuscany.spi.policy.PolicyBuilderRegistry.INITIAL;
 import org.apache.tuscany.spi.policy.TargetPolicyBuilder;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
-import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.OneWay;
 
@@ -28,8 +29,8 @@ public class AsyncPolicyBuilder implements TargetPolicyBuilder {
 
     @Init(eager = true)
     public void init() {
-        builderRegistry.registerTargetBuilder(this);
-        if(monitor == null){
+        builderRegistry.registerTargetBuilder(INITIAL, this);
+        if (monitor == null) {
             monitor = new NullMonitorFactory().getMonitor(AsyncMonitor.class);
         }
     }

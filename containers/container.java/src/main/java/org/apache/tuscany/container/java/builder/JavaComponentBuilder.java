@@ -4,7 +4,6 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.container.java.context.JavaAtomicContext;
 import org.apache.tuscany.container.java.model.JavaImplementation;
 import org.apache.tuscany.core.injection.ContextInjector;
@@ -15,6 +14,7 @@ import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.model.Component;
 import org.apache.tuscany.model.JavaServiceContract;
 import org.apache.tuscany.model.Service;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
@@ -65,4 +65,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
     }
 
 
+    protected Class<JavaImplementation> getImplementationType() {
+        return JavaImplementation.class;
+    }
 }

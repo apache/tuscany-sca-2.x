@@ -1,7 +1,5 @@
 package org.apache.tuscany.spi.policy;
 
-import java.util.List;
-
 import org.apache.tuscany.model.Reference;
 import org.apache.tuscany.model.Service;
 import org.apache.tuscany.spi.builder.BuilderException;
@@ -18,43 +16,23 @@ import org.apache.tuscany.spi.wire.TargetWire;
  */
 public interface PolicyBuilderRegistry {
 
-    /**
-     * Registers a target-side policy builder. Called by extensions to register their builders.
-     *
-     * @param builder the builder to register
-     */
-    public void registerTargetBuilder(TargetPolicyBuilder builder);
+    public static final int INITIAL = 0;
+    public static final int EXTENSION = 1;
+    public static final int FINAL = 2;
 
     /**
-     * De-registers a target-side builder. Called by extensions to register their builders.
-     *
+     * Registers a target-side policy builder. Called by extensions to register their builders.
+     * @param phase the phase hwne the builder must be run
      * @param builder the builder to register
      */
-    public void unregisterTargetBuilder(TargetPolicyBuilder builder);
+    public void registerTargetBuilder(int phase, TargetPolicyBuilder builder);
 
     /**
      * Registers a source-side policy builder. Called by extensions to register their builders.
-     *
+     * @param phase the phase hwne the builder must be run
      * @param builder the builder to register
      */
-    public void registerSourceBuilder(SourcePolicyBuilder builder);
-
-    /**
-     * De-registers a source-side builder. Called by extensions to register their builders.
-     *
-     * @param builder the builder to register
-     */
-    public void unregisterSourceBuilder(SourcePolicyBuilder builder);
-
-    /**
-     * Returns the list of registered target-side builders
-     */
-    public List<TargetPolicyBuilder> getTargetBuilders();
-
-    /**
-     * Returns the list of registered source-side builders
-     */
-    public List<SourcePolicyBuilder> getSourceBuilders();
+    public void registerSourceBuilder(int phase, SourcePolicyBuilder builder);
 
     /**
      * Evaluates source-side policy metadata for reference and updates the curresponding collection of wire

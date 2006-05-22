@@ -9,7 +9,7 @@ import javax.resource.spi.work.Work;
 import junit.framework.TestCase;
 
 /**
- * Test the PooledWorkManager.
+ * @version $$Rev$$ $$Date$$
  */
 public class DefaultWorkManagerTestCase extends TestCase {
 
