@@ -9,6 +9,7 @@ import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.policy.TargetPolicyBuilder;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.OneWay;
 
@@ -20,6 +21,7 @@ public class AsyncPolicyBuilder implements TargetPolicyBuilder {
 
     private PolicyBuilderRegistry builderRegistry;
     private WorkManager workManager;
+    private AsyncMonitor monitor;
 
     public AsyncPolicyBuilder() {
     }
@@ -27,11 +29,19 @@ public class AsyncPolicyBuilder implements TargetPolicyBuilder {
     @Init(eager = true)
     public void init() {
         builderRegistry.registerTargetBuilder(this);
+        if(monitor == null){
+            monitor = new NullMonitorFactory().getMonitor(AsyncMonitor.class);
+        }
     }
 
     @Autowire
     public void setBuilderRegistry(PolicyBuilderRegistry builderRegistry) {
         this.builderRegistry = builderRegistry;
+    }
+
+    @org.apache.tuscany.spi.annotation.Monitor
+    public void setMonitor(AsyncMonitor monitor) {
+        this.monitor = monitor;
     }
 
     @Autowire
@@ -42,7 +52,7 @@ public class AsyncPolicyBuilder implements TargetPolicyBuilder {
     public void build(Service service, TargetWire<?> wire) throws BuilderException {
         for (TargetInvocationChain chain : wire.getInvocationChains().values()) {
             if (chain.getMethod().getAnnotation(OneWay.class) != null) {
-                chain.addInterceptor(new AsyncInterceptor(workManager));
+                chain.addInterceptor(new AsyncInterceptor(workManager, monitor));
             }
         }
     }

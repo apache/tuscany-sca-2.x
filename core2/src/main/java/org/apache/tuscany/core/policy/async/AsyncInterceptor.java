@@ -24,9 +24,11 @@ public class AsyncInterceptor implements Interceptor {
 
     private WorkManager workManager;
     private Interceptor next;
+    private AsyncMonitor monitor;
 
-    public AsyncInterceptor(WorkManager workManager) {
+    public AsyncInterceptor(WorkManager workManager, AsyncMonitor monitor) {
         this.workManager = workManager;
+        this.monitor = monitor;
     }
 
     public Message invoke(final Message message) {
@@ -40,8 +42,7 @@ public class AsyncInterceptor implements Interceptor {
                         AsyncInterceptor.BINDER.setContext(currentModuleContext);
                         next.invoke(message); // Invoke the next interceptor
                     } catch (Exception e) {
-                        //FIXME How do we report exceptions?
-                        e.printStackTrace();
+                        monitor.executionError(e);
                     } finally {
                         AsyncInterceptor.BINDER.setContext(oldModuleContext);
                     }
@@ -52,7 +53,6 @@ public class AsyncInterceptor implements Interceptor {
 
             });
         } catch (WorkException e) {
-            //FIXME Which exception should we throw here?
             throw new ServiceRuntimeException(e);
         }
         return RESPONSE; // No return on a OneWay invocation.

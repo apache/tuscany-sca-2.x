@@ -102,9 +102,9 @@ public class ConnectorImpl implements Connector {
     }
 
     /**
-     * Default access set for unit testing
+     * Public access set for unit testing
      */
-    <T> void connect(SourceWire<T> source, TargetWire<T> targetWire, Context<?> target, boolean optimizable) {
+    public <T> void connect(SourceWire<T> source, TargetWire<T> targetWire, Context<?> target, boolean optimizable) {
         Map<Method, TargetInvocationChain> targetInvocationConfigs = targetWire.getInvocationChains();
         // perform optimization, if possible
         if (optimizable && source.getInvocationChains().isEmpty() && targetInvocationConfigs.isEmpty()) {
