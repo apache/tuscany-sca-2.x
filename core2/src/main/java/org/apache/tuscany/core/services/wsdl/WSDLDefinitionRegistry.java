@@ -25,8 +25,6 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensionRegistry;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.common.resource.ResourceLoader;
-
 /**
  * @version $Rev$ $Date$
  */

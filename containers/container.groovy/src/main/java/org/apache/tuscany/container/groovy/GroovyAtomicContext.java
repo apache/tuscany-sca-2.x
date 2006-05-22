@@ -17,33 +17,36 @@
 package org.apache.tuscany.container.groovy;
 
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
+import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyObject;
+import org.apache.tuscany.model.Scope;
 import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.extension.AtomicContextExtension;
-import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import groovy.lang.GroovyObject;
+import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
  * Groovy atomic component context.
  */
 public class GroovyAtomicContext extends AtomicContextExtension {
 
-    private URI script;
+    private String script;
     private List<Class<?>> services;
 
-    public GroovyAtomicContext(String name, URI script, List<Class<?>>services) {
-        this.name = name;
+    public GroovyAtomicContext(String name, String script, List<Class<?>>services, Scope scope, CompositeContext parent) {
+        super(name,parent);
         this.script = script;
         this.services = services;
+        this.scope = scope;
     }
 
-    public URI getScript() {
+    public String getScript() {
         return script;
     }
 
@@ -52,30 +55,45 @@ public class GroovyAtomicContext extends AtomicContextExtension {
     }
 
     public TargetInvoker createTargetInvoker(String serviceName, Method method) {
-        return new GroovyInvoker(method.getName(),this);
+        return new GroovyInvoker(method.getName(), this);
     }
 
     public InstanceWrapper createInstance() throws ObjectCreationException {
-        return new GroovyInstanceWrapper(name, script);
+        ClassLoader parent = getClass().getClassLoader();
+        GroovyClassLoader loader = new GroovyClassLoader(parent);
+        try {
+            Class groovyClass = loader.parseClass(script);
+            return new GroovyInstanceWrapper(this, (GroovyObject) groovyClass.newInstance());
+        } catch (CompilationFailedException e) {
+            throw new ObjectCreationException(e);
+        } catch (IllegalAccessException e) {
+            throw new ObjectCreationException(e);
+        } catch (InstantiationException e) {
+            throw new ObjectCreationException(e);
+        }
     }
 
     @SuppressWarnings("unchecked")
-    public GroovyObject getTargetInstance() throws TargetException {
-        return (GroovyObject)scopeContext.getInstance(this);
+    public GroovyObject getTargetInstance
+            () throws TargetException {
+        return (GroovyObject) scopeContext.getInstance(this);
     }
 
-    public Object getService() throws TargetException {
+    public Object getService
+            () throws TargetException {
         return getTargetInstance();
     }
 
-    public Object getService(String s) throws TargetException {
+    public Object getService
+            (String
+                    s) throws TargetException {
         return getTargetInstance();
     }
 
     public void init(Object instance) throws TargetException {
-        GroovyObject object = (GroovyObject)instance;
+        //GroovyObject object = (GroovyObject) instance;
         //for (SourceWire wire : sourceWires) {
-            // wire from the groovy script to targets
+        // wire from the groovy script to targets
         //    object.setProperty(wire.getReferenceName(), wire.getTargetService());
         //}
     }

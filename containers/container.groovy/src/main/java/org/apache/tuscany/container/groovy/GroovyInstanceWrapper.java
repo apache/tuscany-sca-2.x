@@ -1,16 +1,10 @@
 package org.apache.tuscany.container.groovy;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-
-import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.context.ContextRuntimeException;
+import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.context.InstanceWrapper;
-import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -18,12 +12,13 @@ import org.codehaus.groovy.control.CompilationFailedException;
 public class GroovyInstanceWrapper extends AbstractLifecycle implements InstanceWrapper {
 
     private int lifecycleState = UNINITIALIZED;
-    private URI script; // pointer to the script
+    private GroovyAtomicContext context;
     private GroovyObject groovyObject;
 
-    public GroovyInstanceWrapper(String name, URI script) {
-        super(name);
-        this.script = script;
+
+    public GroovyInstanceWrapper(GroovyAtomicContext context, GroovyObject groovyObject) {
+        this.context = context;
+        this.groovyObject = groovyObject;
     }
 
     public Object getInstance() {
@@ -35,26 +30,13 @@ public class GroovyInstanceWrapper extends AbstractLifecycle implements Instance
     }
 
     public void start() throws CoreRuntimeException {
-        ClassLoader parent = getClass().getClassLoader();
-        GroovyClassLoader loader = new GroovyClassLoader(parent);
         try {
-            Class groovyClass = loader.parseClass(new File(script));
-            groovyObject = (GroovyObject) groovyClass.newInstance();
+            context.init(groovyObject);
             lifecycleState = STARTED;
-        } catch (CompilationFailedException e) {
+        } catch (ObjectCreationException e) {
             lifecycleState = ERROR;
-            throw new ContextRuntimeException(e);
-        } catch (IOException e) {
-            lifecycleState = ERROR;
-            throw new ContextRuntimeException(e);
-        } catch (IllegalAccessException e) {
-            lifecycleState = ERROR;
-            throw new ContextRuntimeException(e);
-        } catch (InstantiationException e) {
-            lifecycleState = ERROR;
-            throw new ContextRuntimeException(e);
+            throw e;
         }
-
     }
 
     public void stop() throws CoreRuntimeException {

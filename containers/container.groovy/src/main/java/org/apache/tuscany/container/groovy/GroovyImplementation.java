@@ -19,27 +19,26 @@ package org.apache.tuscany.container.groovy;
 import java.net.URI;
 
 import org.apache.tuscany.model.AtomicImplementation;
-import org.apache.tuscany.model.ComponentType;
 
 /**
  * Meta-information for the Groovy implementation.
  */
-public class GroovyImplementation extends AtomicImplementation<ComponentType> {
+public class GroovyImplementation extends AtomicImplementation<GroovyComponentType> {
 
-    // Full path of the script file to be executed
-    private URI script;
+   //the script source to be executed
+    private String script;
 
     /**
-     * Returns the path of the script file to be executed.
+     * Returns the script source to be executed.
      */
-    public URI getScript() {
+    public String getScript() {
         return script;
     }
 
     /**
      * Sets the path of the script file to be executed.
      */
-    public void setScript(URI script) {
+    public void setScript(String script) {
         this.script = script;
     }
 
