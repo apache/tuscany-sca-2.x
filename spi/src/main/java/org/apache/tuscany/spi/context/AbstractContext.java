@@ -30,14 +30,18 @@ import org.apache.tuscany.spi.event.TrueFilter;
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
 public abstract class AbstractContext<T> extends AbstractLifecycle implements Context<T> {
-
+    private final String name;
     private final CompositeContext parent;
     protected Map<EventFilter, List<RuntimeEventListener>> listeners;
     protected static final EventFilter TRUE_FILTER = new TrueFilter();
 
     public AbstractContext(String name, CompositeContext<?> parent) {
-        super(name);
+        this.name = name;
         this.parent = parent;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public CompositeContext getParent() {
@@ -94,5 +98,9 @@ public abstract class AbstractContext<T> extends AbstractLifecycle implements Co
 
     public void prepare() {
 
+    }
+
+    public String toString() {
+        return "Context [" + name + "] in state [" + super.toString() + ']';
     }
 }

@@ -23,15 +23,19 @@ import org.apache.tuscany.spi.event.TrueFilter;
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
 public abstract class AbstractScopeContext extends AbstractLifecycle implements ScopeContext {
-
+    private final String name;
     // The event context the scope container is associated with
     protected WorkContext workContext;
     private Map<EventFilter, List<RuntimeEventListener>> listeners;
     private static final EventFilter TRUE_FILTER = new TrueFilter();
 
     public AbstractScopeContext(String name, WorkContext workContext) {
-        super(name);
+        this.name = name;
         this.workContext = workContext;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setWorkContext(WorkContext workContext) {
@@ -107,5 +111,7 @@ public abstract class AbstractScopeContext extends AbstractLifecycle implements 
         return workContext;
     }
 
-
+    public String toString() {
+        return "ScopeContext [" + name + "] in state [" + super.toString() + ']';
+    }
 }
