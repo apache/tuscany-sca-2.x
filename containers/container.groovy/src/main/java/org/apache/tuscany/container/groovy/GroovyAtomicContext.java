@@ -34,13 +34,13 @@ import org.codehaus.groovy.control.CompilationFailedException;
 /**
  * Groovy atomic component context.
  */
-public class GroovyAtomicContext extends AtomicContextExtension {
+public class GroovyAtomicContext<T> extends AtomicContextExtension<T> {
 
     private String script;
     private List<Class<?>> services;
 
     public GroovyAtomicContext(String name, String script, List<Class<?>>services, Scope scope, CompositeContext parent) {
-        super(name,parent);
+        super(name, parent);
         this.script = script;
         this.services = services;
         this.scope = scope;
@@ -50,7 +50,7 @@ public class GroovyAtomicContext extends AtomicContextExtension {
         return script;
     }
 
-    public List getServiceInterfaces() {
+    public List<Class<?>> getServiceInterfaces() {
         return Collections.unmodifiableList(services);
     }
 
@@ -79,14 +79,12 @@ public class GroovyAtomicContext extends AtomicContextExtension {
         return (GroovyObject) scopeContext.getInstance(this);
     }
 
-    public Object getService
-            () throws TargetException {
-        return getTargetInstance();
+    @SuppressWarnings("unchecked")
+    public T getService() throws TargetException {
+        return (T) getTargetInstance();
     }
 
-    public Object getService
-            (String
-                    s) throws TargetException {
+    public Object getService(String s) throws TargetException {
         return getTargetInstance();
     }
 
