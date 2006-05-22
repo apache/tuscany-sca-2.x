@@ -169,6 +169,6 @@ public class ServiceToJavaTestCase extends TestCase {
         atomicContext.setScopeContext(scope);
         parent.registerContext(serviceContext);
         parent.registerContext(atomicContext);
-        connector.connect(serviceContext, parent);
+        connector.connect(serviceContext);
     }
 }

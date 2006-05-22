@@ -31,7 +31,10 @@ import org.apache.tuscany.spi.wire.TargetWire;
  */
 public class ConnectorImpl implements Connector {
 
-    public <T> void connect(Context<T> source, CompositeContext parent) {
+    public <T> void connect(Context<T> source) {
+        CompositeContext parent = source.getParent();
+        Scope scope = source.getScope();
+
         if (source instanceof ComponentContext) {
             ComponentContext<T> sourceContext = (ComponentContext<T>) source;
             for (SourceWire<T> sourceWire : sourceContext.getSourceWires()) {
@@ -39,9 +42,9 @@ public class ConnectorImpl implements Connector {
                     continue;
                 }
                 try {
-                    connect(sourceWire, parent, sourceContext.getScope());
+                    connect(sourceWire, parent, scope);
                 } catch (BuilderConfigException e) {
-                    e.addContextName(sourceContext.getName());
+                    e.addContextName(source.getName());
                     e.addContextName(parent.getName());
                     throw e;
                 }
@@ -50,9 +53,9 @@ public class ConnectorImpl implements Connector {
             ServiceContext<T> sourceContext = (ServiceContext<T>) source;
             SourceWire<T> sourceWire = sourceContext.getSourceWire();
             try {
-                connect(sourceWire, parent, sourceContext.getScope());
+                connect(sourceWire, parent, scope);
             } catch (BuilderConfigException e) {
-                e.addContextName(sourceContext.getName());
+                e.addContextName(source.getName());
                 e.addContextName(parent.getName());
                 throw e;
             }

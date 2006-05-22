@@ -63,7 +63,7 @@ public class AutowireBuilderTestcase extends TestCase {
         ReferenceContext targetContext = (ReferenceContext) bindingBuilder.build(parent, targetReference);
         parent.registerContext(targetContext);
 
-        connector.connect(sourceContext, parent);
+        connector.connect(sourceContext);
 
         grandParent.start();
         scope.onEvent(new ModuleStart(this, parent));

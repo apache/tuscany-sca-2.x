@@ -119,13 +119,14 @@ public class JavaToReferenceTestCase extends TestCase {
         SourceWire<SimpleTarget> sourceWire = MockContextFactory.createSourceWire("target", SimpleTarget.class);
         sourceWire.setTargetName(new QualifiedName("target/Target"));
         sourceContext.addSourceWire(sourceWire);
+        sourceContext.setParent(parent);
         sourceContext.setScopeContext(scope);
         TargetWire targetWire = MockContextFactory.createTargetWire("Target", SimpleTarget.class);
         MockReferenceContext referenceContext = new MockReferenceContext("target", targetWire);
         parent.registerContext(sourceContext);
         parent.registerContext(referenceContext);
 
-        connector.connect(sourceContext, parent);
+        connector.connect(sourceContext);
         referenceContext.prepare();
         sourceContext.prepare();
     }

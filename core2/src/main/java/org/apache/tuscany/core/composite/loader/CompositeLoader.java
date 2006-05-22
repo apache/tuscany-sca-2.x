@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.loader;
+package org.apache.tuscany.core.composite.loader;
 
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -31,6 +31,7 @@ import org.apache.tuscany.model.Component;
 import org.apache.tuscany.spi.loader.LoaderContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.extension.LoaderExtension;
+import org.apache.tuscany.core.loader.AssemblyConstants;
 
 /**
  * @version $Rev$ $Date$

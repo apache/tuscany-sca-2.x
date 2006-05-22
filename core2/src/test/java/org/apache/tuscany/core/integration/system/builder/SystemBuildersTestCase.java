@@ -49,15 +49,17 @@ public class SystemBuildersTestCase extends TestCase {
         Component<SystemImplementation> sourceComponent = MockComponentFactory.createSourceWithTargetReference();
 
         AtomicContext<?> sourceContext = (AtomicContext) builder.build(parent, sourceComponent);
+        sourceContext.setParent(parent);
         sourceContext.setScopeContext(scope);
         AtomicContext<?> targetContext = (AtomicContext) builder.build(parent, targetComponent);
+        targetContext.setParent(parent);
         targetContext.setScopeContext(scope);
 
         parent.registerContext(sourceContext);
         parent.registerContext(targetContext);
 
-        connector.connect(sourceContext, parent);
-        connector.connect(targetContext, parent);
+        connector.connect(sourceContext);
+        connector.connect(targetContext);
         parent.start();
         scope.onEvent(new ModuleStart(this, parent));
         Source source = (Source) parent.getContext("source").getService();
@@ -89,6 +91,7 @@ public class SystemBuildersTestCase extends TestCase {
         // create a context in the grandparent that the reference will be autowired to
         Component<SystemImplementation> targetComponent = MockComponentFactory.createTarget();
         AtomicContext targetComponentContext = (AtomicContext) builder.build(parent, targetComponent);
+        targetComponentContext.setParent(parent);
         targetComponentContext.setScopeContext(scope);
         grandParent.registerContext(targetComponentContext);
 
@@ -96,13 +99,14 @@ public class SystemBuildersTestCase extends TestCase {
         Component<SystemImplementation> sourceComponent = MockComponentFactory.createSourceWithTargetReference();
 
         AtomicContext<?> sourceContext = (AtomicContext) builder.build(parent, sourceComponent);
+        sourceContext.setParent(parent);
         sourceContext.setScopeContext(scope);
         ReferenceContext targetContext = (ReferenceContext) bindingBuilder.build(parent, targetReference);
 
         parent.registerContext(sourceContext);
         parent.registerContext(targetContext);
 
-        connector.connect(sourceContext, parent);
+        connector.connect(sourceContext);
         grandParent.start();
         scope.onEvent(new ModuleStart(this, parent));
         Source source = (Source) parent.getContext("source").getService();
@@ -134,14 +138,15 @@ public class SystemBuildersTestCase extends TestCase {
         Component<SystemImplementation> component = MockComponentFactory.createTarget();
 
         AtomicContext<?> sourceContext = (AtomicContext) builder.build(parent, component);
+        sourceContext.setParent(parent);
         sourceContext.setScopeContext(scope);
         ServiceContext<?> serviceContext = (ServiceContext) bindingBuilder.build(parent, service);
 
         parent.registerContext(sourceContext);
         parent.registerContext(serviceContext);
 
-        connector.connect(sourceContext, parent);
-        connector.connect(serviceContext, parent);
+        connector.connect(sourceContext);
+        connector.connect(serviceContext);
         parent.start();
         scope.onEvent(new ModuleStart(this, parent));
         Target target = (Target) parent.getContext("service").getService();
@@ -174,6 +179,7 @@ public class SystemBuildersTestCase extends TestCase {
         // create a context in the grandparent that the reference will be autowired to
         Component<SystemImplementation> targetComponent = MockComponentFactory.createTarget();
         AtomicContext targetComponentContext = (AtomicContext) builder.build(parent, targetComponent);
+        targetComponentContext.setParent(parent);
         targetComponentContext.setScopeContext(scope);
         grandParent.registerContext(targetComponentContext);
 
@@ -186,7 +192,7 @@ public class SystemBuildersTestCase extends TestCase {
         parent.registerContext(referenceContext);
         parent.registerContext(serviceContext);
 
-        connector.connect(serviceContext, parent);
+        connector.connect(serviceContext);
         parent.start();
         scope.onEvent(new ModuleStart(this, parent));
         Target target = (Target) parent.getContext("service").getService();

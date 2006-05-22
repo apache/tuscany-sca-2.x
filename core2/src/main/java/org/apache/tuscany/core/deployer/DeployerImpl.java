@@ -24,6 +24,7 @@ import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.core.builder.Connector;
 
 /**
  * Default implementation of Deployer.
@@ -33,6 +34,7 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 public class DeployerImpl implements Deployer {
     private LoaderRegistry loaderRegistry;
     private BuilderRegistry builderRegistry;
+    private Connector connector;
 
     @Autowire
     public void setLoaderRegistry(LoaderRegistry loaderRegistry) {
@@ -44,9 +46,15 @@ public class DeployerImpl implements Deployer {
         this.builderRegistry = builderRegistry;
     }
 
+    @Autowire
+    public void setConnector(Connector connector) {
+        this.connector = connector;
+    }
+
     public <I extends Implementation<?>> void deploy(CompositeContext<?> parent, Component<I> component) {
         load(component);
         Context<?> context = build(parent, component);
+        connect(context);
         parent.registerContext(context);
     }
 
@@ -69,5 +77,14 @@ public class DeployerImpl implements Deployer {
      */
     protected <I extends Implementation<?>> Context<?> build(CompositeContext<?> parent, Component<I> component) {
         return builderRegistry.build(parent, component);
+    }
+
+    /**
+     * Connect the context's source wires to other target wires within the scope of the parent.
+     *
+     * @param context the context to connect
+     */
+    protected void connect(Context<?> context) {
+        connector.connect(context);
     }
 }
