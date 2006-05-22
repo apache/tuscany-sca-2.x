@@ -91,6 +91,12 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     public <I extends Implementation<?>> Context build(CompositeContext parent, Component<I> component) {
         Class<I> implClass = (Class<I>) component.getImplementation().getClass();
         ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>) componentBuilders.get(implClass);
+        if (componentBuilder == null) {
+            BuilderConfigException e = new BuilderConfigException("No builder registered for implementation");
+            e.setIdentifier(implClass.getName());
+            e.addContextName(component.getName());
+            throw e;
+        }
 
         ComponentContext context = componentBuilder.build(parent, component);
         ComponentType componentType = component.getImplementation().getComponentType();
