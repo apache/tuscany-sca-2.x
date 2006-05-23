@@ -1,17 +1,15 @@
 package org.apache.tuscany.core.context.scope;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.event.HttpSessionEnd;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.mock.component.SessionScopeInitDestroyComponent;
-import org.apache.tuscany.core.mock.context.MockCompositeContext;
-import org.apache.tuscany.core.system.context.SystemAtomicContextImpl;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
-import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.core.system.context.SystemAtomicContextImpl;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.context.WorkContext;
 
 /**
@@ -25,13 +23,11 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     public void testLifecycleManagement() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        CompositeContext currentModule = new MockCompositeContext(null, null);
         HttpSessionScopeContext scopeContext = new HttpSessionScopeContext(workContext);
         scopeContext.start();
         SystemAtomicContext atomicContext = createContext();
         atomicContext.setScopeContext(scopeContext);
         // start the request
-        workContext.setRemoteContext(currentModule);
         Object session = new Object();
         workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session);
         SessionScopeInitDestroyComponent o1 = (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
@@ -46,14 +42,12 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     public void testSessionIsolation() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        CompositeContext currentModule = new MockCompositeContext(null, null);
         HttpSessionScopeContext scopeContext = new HttpSessionScopeContext(workContext);
         scopeContext.start();
 
         SystemAtomicContext atomicContext = createContext();
         atomicContext.setScopeContext(scopeContext);
 
-        workContext.setRemoteContext(currentModule);
         Object session1 = new Object();
         workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
         SessionScopeInitDestroyComponent o1 = (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
@@ -84,6 +78,6 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     }
 
     private SystemAtomicContext createContext() {
-        return new SystemAtomicContextImpl("foo", null, SessionScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null,null);
+        return new SystemAtomicContextImpl("foo", null, SessionScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null, null);
     }
 }

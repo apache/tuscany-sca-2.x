@@ -17,21 +17,19 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.container.java.mock.MockContextFactory;
+import org.apache.tuscany.container.java.mock.components.OtherTarget;
+import org.apache.tuscany.container.java.mock.components.OtherTargetImpl;
 import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
-import org.apache.tuscany.container.java.mock.components.OtherTargetImpl;
-import org.apache.tuscany.container.java.mock.components.OtherTarget;
-import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.context.WorkContext;
 
 
 /**
@@ -45,8 +43,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         Map<String, Member> members = new HashMap<String, Member>();
         Method m = SourceImpl.class.getMethod("setTarget", Target.class);
         members.put("target", m);
-        WorkContext ctx = new WorkContextImpl();
-        ScopeContext scope = new ModuleScopeContext(ctx);
+        ScopeContext scope = new ModuleScopeContext(null);
         scope.start();
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, Target.class, scope,
                 members, "target", OtherTarget.class, OtherTargetImpl.class, scope);
@@ -62,18 +59,17 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         Map<String, Member> members = new HashMap<String, Member>();
         Method m = SourceImpl.class.getMethod("setTargets", List.class);
         members.put("target", m);
-        WorkContext ctx = new WorkContextImpl();
-        ScopeContext scope = new ModuleScopeContext(ctx);
+        ScopeContext scope = new ModuleScopeContext(null);
         scope.start();
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredMultiplicity("source", SourceImpl.class, Target.class, scope,
                 "target", OtherTarget.class, OtherTargetImpl.class, members, scope);
         AtomicContext sourceContext = contexts.get("source");
         Source source = (Source) sourceContext.getService(null);
         List<Target> targets = source.getTargets();
-        assertEquals(1,targets.size());
+        assertEquals(1, targets.size());
         Target target = targets.get(0);
         target.setString("foo");
-        assertEquals("foo",target.getString());
+        assertEquals("foo", target.getString());
         assertTrue(Proxy.isProxyClass(target.getClass()));
         scope.stop();
     }

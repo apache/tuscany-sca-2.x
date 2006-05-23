@@ -4,17 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.mock.component.SimpleSource;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.context.MockAtomicContext;
+import org.apache.tuscany.core.mock.factories.MockWireFactory;
 import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
-import org.apache.tuscany.core.mock.factories.MockWireFactory;
-import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.SourceWire;
@@ -28,8 +26,7 @@ public class ConnectorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testNoInterceptorsNoHandlers() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContext scopeContext = new ModuleScopeContext(null);
         scopeContext.start();
 
         MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null, null, null);
@@ -53,8 +50,7 @@ public class ConnectorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testSourceInterceptor() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContext scopeContext = new ModuleScopeContext(null);
         scopeContext.start();
 
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
@@ -82,8 +78,7 @@ public class ConnectorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testTargetInterceptor() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContext scopeContext = new ModuleScopeContext(null);
         scopeContext.start();
 
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
@@ -111,8 +106,7 @@ public class ConnectorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testSourceTargetInterceptor() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContext scopeContext = new ModuleScopeContext();
         scopeContext.start();
 
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
@@ -145,8 +139,7 @@ public class ConnectorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testSourceInterceptorSourceRequestHandler() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContext scopeContext = new ModuleScopeContext(null);
         scopeContext.start();
 
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
@@ -179,8 +172,7 @@ public class ConnectorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testTargetInterceptorTargetRequestHandler() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContext scopeContext = new ModuleScopeContext(null);
         scopeContext.start();
 
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
@@ -189,7 +181,7 @@ public class ConnectorTestCase extends TestCase {
         MockHandler handler = new MockHandler();
         List<MessageHandler> handlers = new ArrayList<MessageHandler>();
         handlers.add(handler);
-        MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null,null, null);
+        MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null, null, null);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, interceptors, handlers, null);
         for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
@@ -208,15 +200,13 @@ public class ConnectorTestCase extends TestCase {
     }
 
 
-
     /**
      * Verifies an invocation with a source interceptor and response handler
      */
     @SuppressWarnings("unchecked")
     public void testSourceInterceptorSourceResponseHandler() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContext scopeContext = new ModuleScopeContext(null);
         scopeContext.start();
 
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
@@ -249,8 +239,7 @@ public class ConnectorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testTargetInterceptorTargetResponseHandler() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContext scopeContext = new ModuleScopeContext(null);
         scopeContext.start();
 
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
@@ -283,8 +272,7 @@ public class ConnectorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testSourceInterceptorSourceRequestResponseHandler() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContext scopeContext = new ModuleScopeContext(null);
         scopeContext.start();
 
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
@@ -317,8 +305,7 @@ public class ConnectorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testTargetInterceptorTargetRequestResponseHandler() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContext scopeContext = new ModuleScopeContext(null);
         scopeContext.start();
 
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
@@ -351,8 +338,7 @@ public class ConnectorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testSourceRequestResponseHandler() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContext scopeContext = new ModuleScopeContext(null);
         scopeContext.start();
 
         MockHandler handler = new MockHandler();
@@ -380,14 +366,13 @@ public class ConnectorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testTargetRequestResponseHandler() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContext scopeContext = new ModuleScopeContext(null);
         scopeContext.start();
 
         MockHandler handler = new MockHandler();
         List<MessageHandler> handlers = new ArrayList<MessageHandler>();
         handlers.add(handler);
-        MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null, null,null);
+        MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null, null, null);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, null, handlers, handlers);
         for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
@@ -409,8 +394,7 @@ public class ConnectorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testSourceRequestHandler() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContext scopeContext = new ModuleScopeContext(null);
         scopeContext.start();
 
         MockHandler handler = new MockHandler();
@@ -438,8 +422,7 @@ public class ConnectorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testTargetRequestHandler() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContext scopeContext = new ModuleScopeContext(null);
         scopeContext.start();
 
         MockHandler handler = new MockHandler();
@@ -467,14 +450,13 @@ public class ConnectorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testSourceResponseHandler() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContext scopeContext = new ModuleScopeContext(null);
         scopeContext.start();
 
         MockHandler handler = new MockHandler();
         List<MessageHandler> handlers = new ArrayList<MessageHandler>();
         handlers.add(handler);
-        MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null,null, handlers);
+        MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null, null, handlers);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, null, null, null);
         for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
@@ -496,14 +478,13 @@ public class ConnectorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testTargetResponseHandler() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContext scopeContext = new ModuleScopeContext(null);
         scopeContext.start();
 
         MockHandler handler = new MockHandler();
         List<MessageHandler> handlers = new ArrayList<MessageHandler>();
         handlers.add(handler);
-        MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null,null, null);
+        MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null, null, null);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, null, null, handlers);
         for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());

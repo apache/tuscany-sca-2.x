@@ -8,15 +8,13 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.container.java.mock.MockContextFactory;
+import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.container.java.mock.components.TargetImpl;
-import org.apache.tuscany.container.java.mock.components.Source;
-import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.context.WorkContext;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -26,13 +24,12 @@ public class ReferenceInjectionTestCase extends TestCase {
     private Map<String, Member> members;
 
     public void testProxiedReferenceInjection() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        ScopeContext scope = new ModuleScopeContext(ctx);
+        ScopeContext scope = new ModuleScopeContext(null);
         scope.start();
-        Map<String,AtomicContext> contexts = MockContextFactory.createWiredContexts("source",SourceImpl.class, scope,
-                members, "target",Target.class,TargetImpl.class, scope);
+        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, scope,
+                members, "target", Target.class, TargetImpl.class, scope);
         AtomicContext sourceContext = contexts.get("source");
-        Source source = (Source)sourceContext.getService(null);
+        Source source = (Source) sourceContext.getService(null);
         Target target = source.getTarget();
         assertTrue(Proxy.isProxyClass(target.getClass()));
 
