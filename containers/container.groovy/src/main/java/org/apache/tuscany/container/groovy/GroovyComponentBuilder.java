@@ -13,6 +13,8 @@ import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 
 /**
+ * Extension point for creating {@link GroovyAtomicContext}s from an assembly configuration
+ * 
  * @version $$Rev$$ $$Date$$
  */
 public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImplementation> {

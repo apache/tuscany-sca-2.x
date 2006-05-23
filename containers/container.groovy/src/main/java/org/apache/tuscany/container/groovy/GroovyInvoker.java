@@ -22,7 +22,9 @@ import groovy.lang.GroovyObject;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * Groovy target invoker.
+ * Dispatches to a Groovy implementation instance
+ *
+ * @version $$Rev$$ $$Date$$
  */
 public class GroovyInvoker implements TargetInvoker, Cloneable {
 

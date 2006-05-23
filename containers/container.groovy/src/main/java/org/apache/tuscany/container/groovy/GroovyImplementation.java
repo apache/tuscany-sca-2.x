@@ -19,22 +19,22 @@ package org.apache.tuscany.container.groovy;
 import org.apache.tuscany.spi.model.AtomicImplementation;
 
 /**
- * Meta-information for the Groovy implementation.
+ * Model object for a Groovy implementation.
  */
 public class GroovyImplementation extends AtomicImplementation<GroovyComponentType> {
 
-    //the script source to be executed
+    //the Groovy source to be executed
     private String script;
 
     /**
-     * Returns the script source to be executed.
+     * Returns the Groovy source to be executed.
      */
     public String getScript() {
         return script;
     }
 
     /**
-     * Sets the path of the script file to be executed.
+     * Sets the Groovy source to be executed.
      */
     public void setScript(String script) {
         this.script = script;

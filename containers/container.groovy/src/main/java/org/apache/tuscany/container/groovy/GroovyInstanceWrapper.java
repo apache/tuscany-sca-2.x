@@ -7,6 +7,8 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 
 /**
+ * Wraps a <code>GroovyObject</code> so it can be managed by a <code>ScopeContext</code>
+ * 
  * @version $$Rev$$ $$Date$$
  */
 public class GroovyInstanceWrapper extends AbstractLifecycle implements InstanceWrapper {

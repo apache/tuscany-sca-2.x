@@ -80,7 +80,7 @@ public class WireTestCase extends MockObjectTestCase {
 
 
     /**
-     * Tests a basic invocation down a source wire
+     * Tests a basic invocation down a target wire
      */
     public void testTargetWireInvocation() throws Exception {
         ModuleScopeContext scope = new ModuleScopeContext(null);

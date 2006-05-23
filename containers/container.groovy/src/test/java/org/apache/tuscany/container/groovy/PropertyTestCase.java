@@ -23,7 +23,7 @@ public class PropertyTestCase extends MockObjectTestCase {
             "}";
 
     /**
-     * Tests a basic invocation down a source wire
+     * Tests injecting a simple property type on a Groovy implementation instance
      */
     public void testPropertyInjection() throws Exception {
         ModuleScopeContext scope = new ModuleScopeContext(null);

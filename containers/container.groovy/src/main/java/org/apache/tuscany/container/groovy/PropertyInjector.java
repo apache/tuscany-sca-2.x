@@ -4,6 +4,7 @@ import groovy.lang.GroovyObject;
 
 /**
  * Injects a property on a {@link groovy.lang.GroovyObject}
+ *
  * @version $$Rev$$ $$Date$$
  */
 public interface PropertyInjector {

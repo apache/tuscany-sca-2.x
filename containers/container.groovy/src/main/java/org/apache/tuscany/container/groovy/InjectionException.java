@@ -3,6 +3,8 @@ package org.apache.tuscany.container.groovy;
 import org.apache.tuscany.spi.TuscanyRuntimeException;
 
 /**
+ * Denotes an error while injecting a property on a Groovy implementation instance
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class InjectionException extends TuscanyRuntimeException {

@@ -35,7 +35,7 @@ import org.apache.tuscany.spi.wire.TargetWire;
 import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
- * Groovy atomic component context.
+ * The Groovy atomic context implementation. Groovy implementations may be "scripts" or classes.
  */
 public class GroovyAtomicContext<T> extends AtomicContextExtension<T> {
 

@@ -4,6 +4,7 @@ import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Scope;
 
 /**
+ * Model object representing a Groovy component type
  * @version $$Rev$$ $$Date$$
  */
 public class GroovyComponentType extends ComponentType {
