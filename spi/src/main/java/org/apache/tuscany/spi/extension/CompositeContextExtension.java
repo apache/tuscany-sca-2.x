@@ -107,7 +107,7 @@ public abstract class CompositeContextExtension<T> extends ComponentContextExten
     }
 
     public void onEvent(Event event) {
-
+        publish(event);
     }
 
 
