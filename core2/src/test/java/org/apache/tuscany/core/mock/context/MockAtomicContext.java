@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.core.context.PojoAtomicContext;
-import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.TargetInvoker;

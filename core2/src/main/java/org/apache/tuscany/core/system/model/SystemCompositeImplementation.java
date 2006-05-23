@@ -16,8 +16,8 @@
  */
 package org.apache.tuscany.core.system.model;
 
-import org.apache.tuscany.model.CompositeComponentType;
-import org.apache.tuscany.model.Implementation;
+import org.apache.tuscany.spi.model.CompositeComponentType;
+import org.apache.tuscany.spi.model.Implementation;
 
 /**
  * @version $Rev$ $Date$

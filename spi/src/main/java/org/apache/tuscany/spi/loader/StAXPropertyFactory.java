@@ -20,7 +20,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.model.Property;
+import org.apache.tuscany.spi.model.Property;
 
 /**
  * A factory that will create an ObjectFactory for a property by parsing a StAX XMLStreamReader.

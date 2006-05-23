@@ -3,8 +3,8 @@ package org.apache.tuscany.core.policy;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.model.Reference;
-import org.apache.tuscany.model.Service;
+import org.apache.tuscany.spi.model.Reference;
+import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.policy.SourcePolicyBuilder;

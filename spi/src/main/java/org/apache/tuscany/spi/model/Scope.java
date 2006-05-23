@@ -1,4 +1,4 @@
-package org.apache.tuscany.model;
+package org.apache.tuscany.spi.model;
 
 /**
  * The default scopes supported by assemblies.

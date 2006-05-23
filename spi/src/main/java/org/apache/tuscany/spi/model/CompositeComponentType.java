@@ -14,18 +14,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.model;
+package org.apache.tuscany.spi.model;
 
 import java.util.Map;
 import java.util.HashMap;
 
+import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.ComponentType;
+
 /**
  * @version $Rev$ $Date$
  */
-public abstract class ModelObject {
-    private final Map<?,?> extensions = new HashMap<Object, Object>();
+public class CompositeComponentType extends ComponentType {
+    private String name;
+    private final Map<String, Component<?>> components = new HashMap<String, Component<?>>();
 
-    public Map<?, ?> getExtensions() {
-        return extensions;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Map<String, Component<?>> getComponents() {
+        return components;
+    }
+
+    public void add(Component<?> component) {
+        components.put(component.getName(), component);
     }
 }

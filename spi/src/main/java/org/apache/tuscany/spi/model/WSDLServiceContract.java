@@ -14,19 +14,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.model;
+package org.apache.tuscany.spi.model;
+
+import javax.wsdl.PortType;
+
+import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
  * @version $Rev$ $Date$
  */
-public class BoundReference<B extends Binding> extends Reference {
-    private B binding;
+public class WSDLServiceContract extends ServiceContract {
+    private PortType portType;
+    private PortType callbackPortType;
 
-    public B getBinding() {
-        return binding;
+    public PortType getPortType() {
+        return portType;
     }
 
-    public void setBinding(B binding) {
-        this.binding = binding;
+    public void setPortType(PortType portType) {
+        this.portType = portType;
+    }
+
+    public PortType getCallbackPortType() {
+        return callbackPortType;
+    }
+
+    public void setCallbackPortType(PortType callbackPortType) {
+        this.callbackPortType = callbackPortType;
     }
 }

@@ -14,28 +14,33 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.model;
+package org.apache.tuscany.spi.model;
+
+import java.lang.reflect.Type;
+import java.lang.reflect.ParameterizedType;
+
+import org.apache.tuscany.spi.model.ComponentType;
 
 /**
  * @version $Rev$ $Date$
  */
-public class Service extends ModelObject {
-    private String name;
-    private ServiceContract serviceContract;
+public abstract class Implementation<T extends ComponentType> extends ModelObject {
+    private T componentType;
 
-    public String getName() {
-        return name;
+    public T getComponentType() {
+        return componentType;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setComponentType(T componentType) {
+        this.componentType = componentType;
     }
 
-    public ServiceContract getServiceContract() {
-        return serviceContract;
-    }
+    public Class<T> getComponentTypeClass(){
+        Type type = this.getClass().getGenericSuperclass();
+        if (type instanceof ParameterizedType) {
+            return (Class<T>) ((ParameterizedType) type).getActualTypeArguments()[0];
 
-    public void setServiceContract(ServiceContract serviceContract) {
-        this.serviceContract = serviceContract;
+        }
+        return null;
     }
 }

@@ -17,8 +17,8 @@
 package org.apache.tuscany.core.bootstrap;
 
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
-import org.apache.tuscany.model.Component;
-import org.apache.tuscany.model.CompositeImplementation;
+import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;

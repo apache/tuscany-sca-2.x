@@ -22,8 +22,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.model.ModelObject;
-import org.apache.tuscany.model.Implementation;
+import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.loader.LoaderContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.StAXElementLoader;

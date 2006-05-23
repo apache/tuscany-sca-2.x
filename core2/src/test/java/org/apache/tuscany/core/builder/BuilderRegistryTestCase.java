@@ -17,9 +17,9 @@
 package org.apache.tuscany.core.builder;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.model.Component;
-import org.apache.tuscany.model.CompositeImplementation;
-import org.apache.tuscany.model.CompositeComponentType;
+import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;

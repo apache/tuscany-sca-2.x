@@ -3,7 +3,7 @@ package org.apache.tuscany.core.context.scope;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.context.CompositeContextImpl;
 import org.apache.tuscany.core.context.WorkContextImpl;
-import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ScopeRegistry;
 import org.apache.tuscany.spi.context.WorkContext;

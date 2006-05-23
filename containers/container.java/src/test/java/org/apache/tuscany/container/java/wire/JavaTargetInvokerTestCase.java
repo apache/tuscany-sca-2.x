@@ -27,7 +27,7 @@ import org.apache.tuscany.container.java.mock.MockContextFactory;
 import org.apache.tuscany.container.java.wire.JavaTargetInvoker;
 import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.WorkContext;
 

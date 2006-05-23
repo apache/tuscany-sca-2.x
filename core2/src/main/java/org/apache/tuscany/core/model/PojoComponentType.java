@@ -8,8 +8,8 @@ import java.util.HashMap;
 
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.model.ComponentType;
-import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.Scope;
 
 /**
  * @version $$Rev$$ $$Date$$

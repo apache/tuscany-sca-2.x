@@ -14,16 +14,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.model;
+package org.apache.tuscany.spi.model;
+
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.model.Property;
 
 /**
  * @version $Rev$ $Date$
  */
-public class Reference extends ModelObject {
+public class PropertyValue<T> extends ModelObject {
     private String name;
-    private ServiceContract serviceContract;
-    private Multiplicity multiplicity;
-    private boolean autowire;
+    private ObjectFactory<T> valueFactory;
+    private Property<?> property;
 
     public String getName() {
         return name;
@@ -33,27 +36,20 @@ public class Reference extends ModelObject {
         this.name = name;
     }
 
-    public ServiceContract getServiceContract() {
-        return serviceContract;
+    public ObjectFactory<T> getValueFactory() {
+        return valueFactory;
     }
 
-    public void setServiceContract(ServiceContract serviceContract) {
-        this.serviceContract = serviceContract;
+    public void setValueFactory(ObjectFactory<T> valueFactory) {
+        this.valueFactory = valueFactory;
     }
 
-    public Multiplicity getMultiplicity() {
-        return multiplicity;
+    public Property<?> getProperty() {
+        return property;
     }
 
-    public void setMultiplicity(Multiplicity multiplicity) {
-        this.multiplicity = multiplicity;
+    public void setProperty(Property<?> property) {
+        this.property = property;
     }
 
-    public boolean isAutowire() {
-        return autowire;
-    }
-
-    public void setAutowire(boolean autowire) {
-        this.autowire = autowire;
-    }
 }

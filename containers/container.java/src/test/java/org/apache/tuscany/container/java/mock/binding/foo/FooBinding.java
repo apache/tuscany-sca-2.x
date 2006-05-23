@@ -15,7 +15,7 @@ package org.apache.tuscany.container.java.mock.binding.foo;
 
 import java.util.Map;
 
-import org.apache.tuscany.model.Binding;
+import org.apache.tuscany.spi.model.Binding;
 
 /**
  * Represents a mock binding that echoes back a single parameter

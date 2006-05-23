@@ -14,30 +14,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.model;
+package org.apache.tuscany.spi.model;
 
-import javax.wsdl.PortType;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * @version $Rev$ $Date$
  */
-public class WSDLServiceContract extends ServiceContract {
-    private PortType portType;
-    private PortType callbackPortType;
+public abstract class ModelObject {
+    private final Map<?,?> extensions = new HashMap<Object, Object>();
 
-    public PortType getPortType() {
-        return portType;
-    }
-
-    public void setPortType(PortType portType) {
-        this.portType = portType;
-    }
-
-    public PortType getCallbackPortType() {
-        return callbackPortType;
-    }
-
-    public void setCallbackPortType(PortType callbackPortType) {
-        this.callbackPortType = callbackPortType;
+    public Map<?, ?> getExtensions() {
+        return extensions;
     }
 }

@@ -16,11 +16,9 @@
  */
 package org.apache.tuscany.spi.deployer;
 
-import java.net.URL;
-
 import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.model.Component;
-import org.apache.tuscany.model.Implementation;
+import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.Implementation;
 
 /**
  * Interface that can be used to deploy SCA bundles to a runtime.

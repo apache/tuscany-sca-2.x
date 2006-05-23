@@ -10,7 +10,7 @@ import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.MessageChannelImpl;
 import org.apache.tuscany.core.wire.MessageDispatcher;
 import org.apache.tuscany.core.wire.SourceAutowire;
-import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.context.ComponentContext;

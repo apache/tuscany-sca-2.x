@@ -3,7 +3,7 @@ package org.apache.tuscany.spi.extension;
 import java.lang.reflect.InvocationHandler;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.ServiceContext;

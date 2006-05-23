@@ -1,6 +1,6 @@
 package org.apache.tuscany.spi.policy;
 
-import org.apache.tuscany.model.Service;
+import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.wire.TargetWire;
 

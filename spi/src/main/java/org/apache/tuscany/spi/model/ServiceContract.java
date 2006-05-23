@@ -14,31 +14,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.model;
+package org.apache.tuscany.spi.model;
 
-import java.lang.reflect.Type;
-import java.lang.reflect.ParameterizedType;
+import org.apache.tuscany.spi.model.InteractionScope;
+import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * @version $Rev$ $Date$
  */
-public abstract class Implementation<T extends ComponentType> extends ModelObject {
-    private T componentType;
+public abstract class ServiceContract extends ModelObject {
+    private InteractionScope interactionScope;
+    private Class<?> interfaze;
 
-    public T getComponentType() {
-        return componentType;
+    public Class<?> getInterface() {
+        return interfaze;
     }
 
-    public void setComponentType(T componentType) {
-        this.componentType = componentType;
+    public void setInterfaze(Class<?> interfaze) {
+        this.interfaze = interfaze;
     }
 
-    public Class<T> getComponentTypeClass(){
-        Type type = this.getClass().getGenericSuperclass();
-        if (type instanceof ParameterizedType) {
-            return (Class<T>) ((ParameterizedType) type).getActualTypeArguments()[0];
-
-        }
-        return null;
+    public InteractionScope getInteractionScope() {
+        return interactionScope;
     }
+
+    public void setInteractionScope(InteractionScope interactionScope) {
+        this.interactionScope = interactionScope;
+    }
+
 }

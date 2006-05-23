@@ -14,10 +14,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.model;
+package org.apache.tuscany.spi.model;
+
+import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * @version $Rev$ $Date$
  */
-public abstract class Binding extends ModelObject {
+public class Service extends ModelObject {
+    private String name;
+    private ServiceContract serviceContract;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ServiceContract getServiceContract() {
+        return serviceContract;
+    }
+
+    public void setServiceContract(ServiceContract serviceContract) {
+        this.serviceContract = serviceContract;
+    }
 }

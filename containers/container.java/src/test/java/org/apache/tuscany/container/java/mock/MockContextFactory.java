@@ -20,7 +20,7 @@ import org.apache.tuscany.core.wire.SourceInvocationChainImpl;
 import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
 import org.apache.tuscany.core.wire.jdk.JDKSourceWire;
 import org.apache.tuscany.core.wire.jdk.JDKTargetWire;
-import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.context.AtomicContext;

@@ -16,8 +16,6 @@
  */
 package org.apache.tuscany.container.groovy;
 
-import java.net.URI;
-
 import org.apache.tuscany.model.AtomicImplementation;
 
 /**
@@ -25,7 +23,7 @@ import org.apache.tuscany.model.AtomicImplementation;
  */
 public class GroovyImplementation extends AtomicImplementation<GroovyComponentType> {
 
-   //the script source to be executed
+    //the script source to be executed
     private String script;
 
     /**

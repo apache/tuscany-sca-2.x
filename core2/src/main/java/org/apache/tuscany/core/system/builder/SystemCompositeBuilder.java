@@ -20,7 +20,7 @@ import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
-import org.apache.tuscany.model.Component;
+import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.context.ComponentContext;

@@ -22,10 +22,10 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.model.ModelObject;
-import org.apache.tuscany.model.Multiplicity;
-import org.apache.tuscany.model.Reference;
-import org.apache.tuscany.model.ServiceContract;
+import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.model.Multiplicity;
+import org.apache.tuscany.spi.model.Reference;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.loader.LoaderContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.extension.LoaderExtension;

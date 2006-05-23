@@ -1,6 +1,6 @@
 package org.apache.tuscany.spi.policy;
 
-import org.apache.tuscany.model.Reference;
+import org.apache.tuscany.spi.model.Reference;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.wire.SourceWire;
 

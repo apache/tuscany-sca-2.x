@@ -14,12 +14,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.model;
+package org.apache.tuscany.spi.model;
+
+import java.net.URI;
+
+import org.apache.tuscany.spi.model.Binding;
 
 /**
  * @version $Rev$ $Date$
  */
-public enum InteractionScope {
-    CONVERSATIONAL,
-    NONCONVERSATIONAL
+public class BoundService<B extends Binding> extends Service {
+    private B binding;
+    private URI target;
+
+    public B getBinding() {
+        return binding;
+    }
+
+    public void setBinding(B binding) {
+        this.binding = binding;
+    }
+
+    public URI getTarget() {
+        return target;
+    }
+
+    public void setTarget(URI target) {
+        this.target = target;
+    }
 }

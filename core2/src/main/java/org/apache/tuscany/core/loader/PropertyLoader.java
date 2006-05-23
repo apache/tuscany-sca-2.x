@@ -21,7 +21,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import static org.apache.tuscany.core.loader.AssemblyConstants.PROPERTY;
-import org.apache.tuscany.model.Property;
+import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.loader.LoaderContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.extension.LoaderExtension;

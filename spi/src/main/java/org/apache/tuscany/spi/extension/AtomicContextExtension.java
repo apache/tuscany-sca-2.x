@@ -1,6 +1,6 @@
 package org.apache.tuscany.spi.extension;
 
-import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.TargetException;

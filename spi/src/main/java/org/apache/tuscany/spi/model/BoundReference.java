@@ -14,30 +14,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.model;
+package org.apache.tuscany.spi.model;
 
-import java.net.URI;
+import org.apache.tuscany.spi.model.Binding;
 
 /**
  * @version $Rev$ $Date$
  */
-public class Wire extends ModelObject {
-    private URI source;
-    private URI target;
+public class BoundReference<B extends Binding> extends Reference {
+    private B binding;
 
-    public URI getSource() {
-        return source;
+    public B getBinding() {
+        return binding;
     }
 
-    public void setSource(URI source) {
-        this.source = source;
-    }
-
-    public URI getTarget() {
-        return target;
-    }
-
-    public void setTarget(URI target) {
-        this.target = target;
+    public void setBinding(B binding) {
+        this.binding = binding;
     }
 }

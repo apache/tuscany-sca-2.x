@@ -18,7 +18,7 @@ package org.apache.tuscany.spi.extension;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.model.ModelObject;
+import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.StAXElementLoader;

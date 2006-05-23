@@ -1,8 +1,8 @@
 package org.apache.tuscany.spi.extension;
 
-import org.apache.tuscany.model.Binding;
-import org.apache.tuscany.model.BoundReference;
-import org.apache.tuscany.model.BoundService;
+import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BoundReference;
+import org.apache.tuscany.spi.model.BoundService;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderRegistry;

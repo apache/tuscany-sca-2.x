@@ -14,10 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.model;
+package org.apache.tuscany.spi.model;
 
 /**
  * @version $Rev$ $Date$
  */
-public class CompositeImplementation extends Implementation<CompositeComponentType> {
+public abstract class AtomicImplementation<T extends ComponentType> extends Implementation<T> {
 }

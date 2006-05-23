@@ -1,7 +1,7 @@
 package org.apache.tuscany.spi.wire;
 
-import org.apache.tuscany.model.Reference;
-import org.apache.tuscany.model.Service;
+import org.apache.tuscany.spi.model.Reference;
+import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 
 /**

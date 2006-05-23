@@ -26,7 +26,7 @@ import org.apache.tuscany.container.java.wire.JavaTargetInvoker;
 import org.apache.tuscany.core.context.PojoAtomicContext;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.wire.TargetInvoker;

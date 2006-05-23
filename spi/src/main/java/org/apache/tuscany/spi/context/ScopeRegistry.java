@@ -14,7 +14,7 @@
 package org.apache.tuscany.spi.context;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.model.Scope;
 
 /**
  * @version $$Rev$$ $$Date$$

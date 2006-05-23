@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.ScopeNotFoundException;

@@ -14,29 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.model;
+package org.apache.tuscany.spi.model;
 
 /**
  * @version $Rev$ $Date$
  */
-public abstract class ServiceContract extends ModelObject {
-    private InteractionScope interactionScope;
-    private Class<?> interfaze;
-
-    public Class<?> getInterface() {
-        return interfaze;
-    }
-
-    public void setInterfaze(Class<?> interfaze) {
-        this.interfaze = interfaze;
-    }
-
-    public InteractionScope getInteractionScope() {
-        return interactionScope;
-    }
-
-    public void setInteractionScope(InteractionScope interactionScope) {
-        this.interactionScope = interactionScope;
-    }
-
+public abstract class Binding extends ModelObject {
 }

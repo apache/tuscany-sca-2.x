@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.ScopeContext;

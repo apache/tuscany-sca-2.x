@@ -24,7 +24,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.core.services.wsdl.WSDLDefinitionRegistry;
-import org.apache.tuscany.model.WSDLServiceContract;
+import org.apache.tuscany.spi.model.WSDLServiceContract;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.loader.LoaderContext;
 import org.apache.tuscany.spi.loader.LoaderException;

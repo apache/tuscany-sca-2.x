@@ -16,8 +16,8 @@
  */
 package org.apache.tuscany.spi.builder;
 
-import org.apache.tuscany.model.Component;
-import org.apache.tuscany.model.Implementation;
+import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 

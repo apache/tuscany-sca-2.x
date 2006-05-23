@@ -16,13 +16,12 @@
  */
 package org.apache.tuscany.core.composite.builder;
 
-import org.apache.tuscany.model.Component;
-import org.apache.tuscany.model.CompositeImplementation;
+import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.context.CompositeContextImpl;
 
 /**

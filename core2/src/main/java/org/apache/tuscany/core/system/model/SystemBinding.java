@@ -1,6 +1,6 @@
 package org.apache.tuscany.core.system.model;
 
-import org.apache.tuscany.model.Binding;
+import org.apache.tuscany.spi.model.Binding;
 
 /**
  * @version $$Rev$$ $$Date$$

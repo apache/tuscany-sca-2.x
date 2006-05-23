@@ -1,6 +1,6 @@
 package org.apache.tuscany.spi.extension;
 
-import org.apache.tuscany.model.Implementation;
+import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;

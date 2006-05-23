@@ -13,7 +13,7 @@
  */
 package org.apache.tuscany.core.context.scope;
 
-import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;

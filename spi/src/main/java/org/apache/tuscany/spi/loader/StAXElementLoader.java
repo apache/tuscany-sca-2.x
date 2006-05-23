@@ -19,7 +19,7 @@ package org.apache.tuscany.spi.loader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.model.ModelObject;
+import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * A loader that creates a model object from a StAX input stream.

@@ -9,15 +9,15 @@ import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.model.SystemImplementation;
-import org.apache.tuscany.model.BoundReference;
-import org.apache.tuscany.model.BoundService;
-import org.apache.tuscany.model.Component;
-import org.apache.tuscany.model.JavaServiceContract;
-import org.apache.tuscany.model.Reference;
-import org.apache.tuscany.model.ReferenceTarget;
-import org.apache.tuscany.model.Scope;
-import org.apache.tuscany.model.Service;
-import org.apache.tuscany.model.ServiceContract;
+import org.apache.tuscany.spi.model.BoundReference;
+import org.apache.tuscany.spi.model.BoundService;
+import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.JavaServiceContract;
+import org.apache.tuscany.spi.model.Reference;
+import org.apache.tuscany.spi.model.ReferenceTarget;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.Service;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
  * @version $$Rev$$ $$Date$$

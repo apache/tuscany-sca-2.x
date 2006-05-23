@@ -22,8 +22,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.model.InteractionScope;
-import org.apache.tuscany.model.Multiplicity;
+import org.apache.tuscany.spi.model.InteractionScope;
+import org.apache.tuscany.spi.model.Multiplicity;
 import org.apache.tuscany.spi.loader.MissingResourceException;
 
 /**
