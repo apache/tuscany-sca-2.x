@@ -1,20 +1,18 @@
 package org.apache.tuscany.core.system.context;
 
-import junit.framework.TestCase;
-import org.apache.tuscany.spi.context.WorkContext;
-import org.apache.tuscany.spi.context.AtomicContext;
-import org.apache.tuscany.core.context.WorkContextImpl;
-import org.apache.tuscany.core.context.event.ModuleStart;
-import org.apache.tuscany.core.context.event.ModuleStop;
-import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.core.mock.factories.MockContextFactory;
-import org.apache.tuscany.core.mock.component.SourceImpl;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.core.mock.component.Source;
+import org.apache.tuscany.core.mock.component.SourceImpl;
+import org.apache.tuscany.spi.context.AtomicContext;
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class SystemCompositeLifecycleTestCase extends TestCase {
+public class SystemCompositeLifecycleTestCase extends MockObjectTestCase {
 
     public void testLifecycle() throws Exception {
         SystemCompositeContext composite = new SystemCompositeContextImpl("foo", null, null);
@@ -27,32 +25,28 @@ public class SystemCompositeLifecycleTestCase extends TestCase {
     }
 
     public void testRestart() throws NoSuchMethodException {
-        WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
-        scopeContext.start();
         SystemCompositeContext composite = new SystemCompositeContextImpl("foo", null, null);
-        composite.start();
-        SystemAtomicContext context = MockContextFactory.createSystemAtomicContext("source", SourceImpl.class);
-        scopeContext.register(context);
-        context.setScopeContext(scopeContext);
+        List<Class<?>> interfaces = new ArrayList<Class<?>>();
+        interfaces.add(Source.class);
+        Source originalSource = new SourceImpl();
+        Mock mock = mock(SystemAtomicContext.class);
+        mock.expects(atLeastOnce()).method("start");
+        mock.expects(atLeastOnce()).method("stop");
+        mock.stubs().method("getName").will(returnValue("source"));
+        mock.stubs().method("getService").will(returnValue(originalSource));
+        mock.stubs().method("getServiceInterfaces").will(returnValue(interfaces));
+        SystemAtomicContext context = (SystemAtomicContext) mock.proxy();
         composite.registerContext(context);
-        scopeContext.publish(new ModuleStart(this, composite));
+
         AtomicContext ctx = (AtomicContext) composite.getContext("source");
         Source source = (Source) ctx.getService();
         assertNotNull(source);
-        scopeContext.publish(new ModuleStop(this, composite));
         composite.stop();
-        scopeContext.stop();
-
-        scopeContext.start();
         composite.start();
-        scopeContext.publish(new ModuleStart(this, composite));
         ctx = (AtomicContext) composite.getContext("source");
         Source source2 = (Source) ctx.getService();
-        assertNotSame(source, source2);
-        scopeContext.publish(new ModuleStop(this, composite));
+        assertNotNull(source2);
         composite.stop();
-        scopeContext.stop();
 
     }
 

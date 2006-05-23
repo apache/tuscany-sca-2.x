@@ -52,7 +52,7 @@ public class ModuleScopeContext extends AbstractScopeContext {
         } else if (event instanceof ModuleStop) {
             shutdownContexts();
         }
-    }
+     }
 
     public synchronized void start() {
         if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {

@@ -1,31 +1,38 @@
 package org.apache.tuscany.core.system.context;
 
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.core.context.DuplicateNameException;
-import org.apache.tuscany.core.context.event.ModuleStart;
-import org.apache.tuscany.core.context.event.ModuleStop;
-import org.apache.tuscany.core.mock.factories.MockContextFactory;
+import org.apache.tuscany.core.mock.component.Source;
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
 
 /**
  * @version $Rev$ $Date$
  */
-public class DuplicateRegistrationTestCase extends TestCase {
+public class DuplicateRegistrationTestCase extends MockObjectTestCase {
 
     public void testDuplicateRegistration() throws Exception {
-        SystemCompositeContext systemContext = new SystemCompositeContextImpl(null, null, null);
-        systemContext.start();
-        systemContext.publish(new ModuleStart(this, null));
-        SystemAtomicContext context1 = MockContextFactory.createSystemAtomicContext("foo", MockComponent.class);
-        SystemAtomicContext context2 = MockContextFactory.createSystemAtomicContext("foo", MockComponent.class);
-        systemContext.registerContext(context1);
+        SystemCompositeContext parent = new SystemCompositeContextImpl(null, null, null);
+        parent.start();
+
+        List<Class<?>> interfaces = new ArrayList<Class<?>>();
+        interfaces.add(Source.class);
+        Mock mock = mock(SystemAtomicContext.class);
+        mock.stubs().method("getName").will(returnValue("source"));
+        mock.expects(once()).method("stop");
+        mock.stubs().method("getServiceInterfaces").will(returnValue(interfaces));
+        SystemAtomicContext context1 = (SystemAtomicContext) mock.proxy();
+        SystemAtomicContext context2 = (SystemAtomicContext) mock.proxy();
+        parent.registerContext(context1);
         try {
-            systemContext.registerContext(context2);
+            parent.registerContext(context2);
             fail();
         } catch (DuplicateNameException e) {
             // ok
         }
-        systemContext.publish(new ModuleStop(this, null));
-        systemContext.stop();
+        parent.stop();
     }
 
     protected void setUp() throws Exception {
@@ -36,9 +43,4 @@ public class DuplicateRegistrationTestCase extends TestCase {
         super.tearDown();
     }
 
-    public static class MockComponent {
-        public String hello(String message) {
-            return message;
-        }
-    }
 }

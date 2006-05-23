@@ -1,12 +1,10 @@
 package org.apache.tuscany.core.system.context;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.mock.context.scope.MockScopeContext;
-import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.ObjectFactory;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -17,12 +15,10 @@ public class SystemAtomicContextTestCase extends TestCase {
 
     public void testContextCreationAndInit() throws Exception {
         ObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor((Class[]) null), null);
-        ScopeContext scopeContext = new MockScopeContext();
-        SystemAtomicContext context = new SystemAtomicContextImpl("foo", null, Foo.class,factory,false,initInvoker,null, null,null);
-        context.setScopeContext(scopeContext);
-        Foo instance = (Foo) context.getService(null);
-        assertNotNull(instance);
-        assertTrue(instance.initialized);
+        SystemAtomicContext context = new SystemAtomicContextImpl("foo", null, Foo.class, factory, false, initInvoker, null, null, null);
+        Foo foo = (Foo) context.createInstance().getInstance();
+        assertNotNull(foo);
+        assertTrue(foo.initialized);
     }
 
     protected void setUp() throws Exception {

@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.extension.AtomicContextExtension;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.SourceWire;
 import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
@@ -89,14 +90,13 @@ public class GroovyAtomicContext<T> extends AtomicContextExtension<T> {
     }
 
     public void init(Object instance) throws TargetException {
-        //GroovyObject object = (GroovyObject) instance;
-        //for (SourceWire wire : sourceWires) {
-        // wire from the groovy script to targets
-        //    object.setProperty(wire.getReferenceName(), wire.getTargetService());
-        //}
+        GroovyObject object = (GroovyObject) instance;
+        for (SourceWire wire : sourceWires) {
+            //wire from the groovy script to targets
+            object.setProperty(wire.getReferenceName(), wire.getTargetService());
+        }
     }
 
     public void destroy(Object instance) throws TargetException {
-
     }
 }
