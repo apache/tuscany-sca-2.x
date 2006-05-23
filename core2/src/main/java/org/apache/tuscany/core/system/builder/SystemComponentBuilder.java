@@ -40,7 +40,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
         PojoComponentType componentType = component.getImplementation().getComponentType();
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         for (Service service : componentType.getServices().values()) {
-            serviceInterfaces.add(service.getServiceContract().getInterface());
+            serviceInterfaces.add(service.getServiceContract().getInterfaceClass());
         }
         Constructor<?> constr;
         try {
@@ -80,13 +80,13 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
                         members);
 
         for (Service service : component.getImplementation().getComponentType().getServices().values()) {
-            Class interfaze = service.getServiceContract().getInterface();
+            Class interfaze = service.getServiceContract().getInterfaceClass();
             SystemTargetWire wire = new SystemTargetWire(service.getName(), interfaze, systemContext);
             systemContext.addTargetWire(wire);
         }
         for (ReferenceTarget target : component.getReferenceTargets().values()) {
             String referenceName = target.getReferenceName();
-            Class interfaze = target.getReference().getServiceContract().getInterface();
+            Class interfaze = target.getReference().getServiceContract().getInterfaceClass();
             Member member = componentType.getReferenceMember(referenceName);
             if (member == null) {
                 BuilderConfigException e = new BuilderConfigException("Reference not found");

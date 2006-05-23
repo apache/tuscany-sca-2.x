@@ -24,14 +24,21 @@ import org.apache.tuscany.spi.model.ModelObject;
  */
 public abstract class ServiceContract extends ModelObject {
     private InteractionScope interactionScope;
-    private Class<?> interfaze;
+    private Class<?> interfaceClass;
 
-    public Class<?> getInterface() {
-        return interfaze;
+    protected ServiceContract() {
     }
 
-    public void setInterfaze(Class<?> interfaze) {
-        this.interfaze = interfaze;
+    protected ServiceContract(Class<?> interfaceClass) {
+        this.interfaceClass = interfaceClass;
+    }
+
+    public Class<?> getInterfaceClass() {
+        return interfaceClass;
+    }
+
+    public void setInterfaceClass(Class<?> interfaceClass) {
+        this.interfaceClass = interfaceClass;
     }
 
     public InteractionScope getInteractionScope() {

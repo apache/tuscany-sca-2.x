@@ -27,8 +27,9 @@ public class BoundService<B extends Binding> extends Service {
     private B binding;
     private URI target;
 
-    public BoundService(String name, ServiceContract serviceContract, URI target) {
+    public BoundService(String name, ServiceContract serviceContract, B binding, URI target) {
         super(name, serviceContract);
+        this.binding = binding;
         this.target = target;
     }
 

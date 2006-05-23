@@ -63,7 +63,7 @@ public class WireServiceImpl implements WireService {
 
     public SourceWire createSourceWire(Reference reference) throws BuilderConfigException {
         String name = reference.getName();
-        Class interfaze = reference.getServiceContract().getInterface();
+        Class interfaze = reference.getServiceContract().getInterfaceClass();
         SourceWire<?> wire = wireFactoryService.createSourceWire();
         wire.setBusinessInterface(interfaze);
         wire.setReferenceName(name);
@@ -82,7 +82,7 @@ public class WireServiceImpl implements WireService {
 
     public TargetWire createTargetWire(Service service) {
         String name = service.getName();
-        Class interfaze = service.getServiceContract().getInterface();
+        Class interfaze = service.getServiceContract().getInterfaceClass();
         TargetWire<?> wire = wireFactoryService.createTargetWire();
         wire.setBusinessInterface(interfaze);
         wire.setServiceName(name);

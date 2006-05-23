@@ -20,7 +20,7 @@ import org.apache.tuscany.spi.wire.TargetWire;
 public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
 
     public Context build(CompositeContext parent, BoundService<SystemBinding> boundService) {
-        Class<?> interfaze = boundService.getServiceContract().getInterface();
+        Class<?> interfaze = boundService.getServiceContract().getInterfaceClass();
         QualifiedName targetName = new QualifiedName(boundService.getTarget().getPath());
         SystemSourceWire<?> wire = new SystemSourceWire(boundService.getName(), targetName, interfaze);
         return new SystemServiceContextImpl(boundService.getName(), wire, parent);
@@ -29,7 +29,7 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
     public Context build(CompositeContext parent, BoundReference<SystemBinding> boundReference) {
         assert(parent.getParent() instanceof AutowireContext):"Grandparent not an instance of "+AutowireContext.class.getName();
         AutowireContext autowireContext = (AutowireContext)parent.getParent();
-        Class<?> interfaze = boundReference.getServiceContract().getInterface();
+        Class<?> interfaze = boundReference.getServiceContract().getInterfaceClass();
         SystemReferenceContextImpl ctx = new SystemReferenceContextImpl(boundReference.getName(), interfaze, parent);
         TargetWire<?> wire = new SystemTargetAutowire(interfaze, autowireContext);
         ctx.setTargetWire(wire);

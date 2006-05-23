@@ -45,7 +45,7 @@ public class JavaComponentBuilderTestCase extends TestCase {
         sourceType.addReferenceMember("target", SourceImpl.class.getMethod("setTarget", Target.class));
 
         ServiceContract sourceContract = new JavaServiceContract();
-        sourceContract.setInterfaze(Source.class);
+        sourceContract.setInterfaceClass(Source.class);
         Service sourceService = new Service();
         sourceService.setName("Source");
         sourceService.setServiceContract(sourceContract);

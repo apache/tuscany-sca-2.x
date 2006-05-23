@@ -21,19 +21,18 @@ package org.apache.tuscany.spi.model;
  */
 public class JavaServiceContract extends ServiceContract {
     private String interfaceName;
-    private Class<?> interfaceClass;
     private String callbackName;
     private Class<?> callbackClass;
 
     public JavaServiceContract() {
     }
-    
+
     public JavaServiceContract(String interfaceName) {
         this.interfaceName = interfaceName;
     }
 
     public JavaServiceContract(Class<?> interfaceClass) {
-        this.interfaceClass = interfaceClass;
+        super(interfaceClass);
     }
 
     public String getInterfaceName() {
@@ -42,14 +41,6 @@ public class JavaServiceContract extends ServiceContract {
 
     public void setInterfaceName(String interfaceName) {
         this.interfaceName = interfaceName;
-    }
-
-    public Class<?> getInterfaceClass() {
-        return interfaceClass;
-    }
-
-    public void setInterfaceClass(Class<?> interfaceClass) {
-        this.interfaceClass = interfaceClass;
     }
 
     public String getCallbackName() {

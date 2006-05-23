@@ -20,24 +20,52 @@ import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
+import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
+import org.apache.tuscany.spi.builder.BuilderRegistry;
+import org.apache.tuscany.spi.context.ComponentContext;
+import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
+import org.apache.tuscany.spi.model.BoundService;
 import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Service;
-import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.builder.ComponentBuilder;
-import org.apache.tuscany.spi.context.ComponentContext;
-import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.Binding;
 
 /**
  * @version $Rev$ $Date$
  */
-public class SystemCompositeBuilder implements ComponentBuilder<SystemCompositeImplementation> {
+public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemCompositeImplementation> {
+    private BuilderRegistry builderRegistry;
+
+    public SystemCompositeBuilder() {
+    }
+
+    public SystemCompositeBuilder(BuilderRegistry builderRegistry) {
+        this.builderRegistry = builderRegistry;
+    }
+
+    protected Class<SystemCompositeImplementation> getImplementationType() {
+        return SystemCompositeImplementation.class;
+    }
+
+    @Autowire
+    public void setBuilderRegistry(BuilderRegistry builderRegistry) {
+        this.builderRegistry = builderRegistry;
+    }
+
     public ComponentContext build(CompositeContext parent, Component<SystemCompositeImplementation> component) throws BuilderConfigException {
         SystemCompositeImplementation impl = component.getImplementation();
         CompositeComponentType componentType = impl.getComponentType();
         SystemCompositeContext<?> context = new SystemCompositeContextImpl(component.getName(), parent, getAutowireContext(parent));
         for (Service service : componentType.getServices().values()) {
-
+            if (service instanceof BoundService) {
+                context.registerContext(builderRegistry.build(parent, (BoundService<? extends Binding>) service));
+            }
+        }
+        for (Component<? extends Implementation> childComponent : componentType.getComponents().values()) {
+            context.registerContext(builderRegistry.build(parent, childComponent));
         }
         return context;
     }

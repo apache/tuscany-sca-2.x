@@ -34,7 +34,7 @@ public class MockComponentFactory {
         Reference reference = new Reference();
         reference.setName("target");
         ServiceContract contract = new JavaServiceContract();
-        contract.setInterfaze(Target.class);
+        contract.setInterfaceClass(Target.class);
         reference.setServiceContract(contract);
         componentType.add(reference);
         try {
@@ -70,7 +70,7 @@ public class MockComponentFactory {
         reference.setName("target");
         reference.setAutowire(true);
         ServiceContract contract = new JavaServiceContract();
-        contract.setInterfaze(Target.class);
+        contract.setInterfaceClass(Target.class);
         reference.setServiceContract(contract);
         componentType.add(reference);
         try {
@@ -100,7 +100,7 @@ public class MockComponentFactory {
         Service targetService = new Service();
         targetService.setName("Target");
         ServiceContract contract = new JavaServiceContract();
-        contract.setInterfaze(Target.class);
+        contract.setInterfaceClass(Target.class);
         targetService.setServiceContract(contract);
         componentType.add(targetService);
         impl.setComponentType(componentType);
@@ -117,7 +117,7 @@ public class MockComponentFactory {
         reference.setBinding(binding);
         reference.setName("target");
         ServiceContract contract = new JavaServiceContract();
-        contract.setInterfaze(Target.class);
+        contract.setInterfaceClass(Target.class);
         reference.setServiceContract(contract);
         return reference;
     }
@@ -132,7 +132,7 @@ public class MockComponentFactory {
         service.setBinding(binding);
         service.setName("service");
         ServiceContract contract = new JavaServiceContract();
-        contract.setInterfaze(Target.class);
+        contract.setInterfaceClass(Target.class);
         service.setServiceContract(contract);
         try {
             service.setTarget(new URI("target/Target"));

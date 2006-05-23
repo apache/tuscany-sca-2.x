@@ -20,16 +20,23 @@ import java.net.URI;
 
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.system.builder.SystemCompositeBuilder;
-import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
+import org.apache.tuscany.core.system.builder.SystemBindingBuilder;
+import org.apache.tuscany.core.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.system.model.SystemBinding;
+import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
+import org.apache.tuscany.core.system.model.SystemImplementation;
+import org.apache.tuscany.core.wire.jdk.JDKWireFactoryService;
+import org.apache.tuscany.core.wire.system.WireServiceImpl;
+import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.BoundService;
+import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.JavaServiceContract;
+import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * @version $Rev$ $Date$
@@ -46,8 +53,11 @@ public class DefaultBootstrapper {
     }
 
     public static BuilderRegistry getDefaultBuilderRegistry() {
-        BuilderRegistry builderRegistry = new BuilderRegistryImpl();
-        builderRegistry.register(SystemCompositeImplementation.class, new SystemCompositeBuilder());
+        WireService wireService = new WireServiceImpl(new JDKWireFactoryService());
+        BuilderRegistry builderRegistry = new BuilderRegistryImpl(wireService, null);
+        builderRegistry.register(SystemCompositeImplementation.class, new SystemCompositeBuilder(builderRegistry));
+        builderRegistry.register(SystemImplementation.class, new SystemComponentBuilder());
+        builderRegistry.register(SystemBinding.class, new SystemBindingBuilder());
         return builderRegistry;
     }
 
@@ -55,7 +65,8 @@ public class DefaultBootstrapper {
         CompositeComponentType composite = new CompositeComponentType();
         SystemCompositeImplementation impl = new SystemCompositeImplementation(composite);
         Component<SystemCompositeImplementation> deployerComposite = new Component<SystemCompositeImplementation>(name, impl);
-//        composite.add(new BoundService<SystemBinding>("deployer", new JavaServiceContract(Deployer.class), URI.create("deployerImpl")));
+        composite.add(new BoundService<SystemBinding>("deployer", new JavaServiceContract(Deployer.class), new SystemBinding(), URI.create("deployerImpl")));
+        composite.add(new Component<SystemImplementation>("deployerImpl", new SystemImplementation(DeployerImpl.class)));
         return builderRegistry.build(parent, deployerComposite);
     }
 }

@@ -16,18 +16,15 @@
  */
 package org.apache.tuscany.spi.model;
 
-import java.util.Map;
 import java.util.HashMap;
-
-import org.apache.tuscany.spi.model.Component;
-import org.apache.tuscany.spi.model.ComponentType;
+import java.util.Map;
 
 /**
  * @version $Rev$ $Date$
  */
 public class CompositeComponentType extends ComponentType {
     private String name;
-    private final Map<String, Component<?>> components = new HashMap<String, Component<?>>();
+    private final Map<String, Component<? extends Implementation>> components = new HashMap<String, Component<? extends Implementation>>();
 
     public String getName() {
         return name;
@@ -37,11 +34,11 @@ public class CompositeComponentType extends ComponentType {
         this.name = name;
     }
 
-    public Map<String, Component<?>> getComponents() {
+    public Map<String, Component<? extends Implementation>> getComponents() {
         return components;
     }
 
-    public void add(Component<?> component) {
+    public void add(Component<? extends Implementation> component) {
         components.put(component.getName(), component);
     }
 }

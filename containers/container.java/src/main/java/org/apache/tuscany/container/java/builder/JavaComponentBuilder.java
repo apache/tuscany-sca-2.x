@@ -32,7 +32,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
 
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         for (Service service : componentType.getServices().values()) {
-            serviceInterfaces.add(((JavaServiceContract) service.getServiceContract()).getInterfaceClass());
+            serviceInterfaces.add(service.getServiceContract().getInterfaceClass());
         }
         Constructor<?> constr;
         try {
