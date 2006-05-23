@@ -38,11 +38,12 @@ import org.apache.tuscany.spi.wire.TargetWire;
  * @version $$Rev$$ $$Date$$
  */
 public class ServiceToJavaTestCase extends TestCase {
+    private WorkContext workContext;
+    private SystemCompositeContext parent;
+
 
     public void testToStatelessScope() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        StatelessScopeContext scope = new StatelessScopeContext(ctx);
-        SystemCompositeContext parent = new SystemCompositeContextImpl();
+        StatelessScopeContext scope = new StatelessScopeContext(workContext);
         scope.start();
         setupComposite(parent, scope);
         parent.start();
@@ -57,9 +58,7 @@ public class ServiceToJavaTestCase extends TestCase {
     }
 
     public void testToRequestScope() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        final RequestScopeContext scope = new RequestScopeContext(ctx);
-        final SystemCompositeContext parent = new SystemCompositeContextImpl();
+        final RequestScopeContext scope = new RequestScopeContext(workContext);
         scope.start();
         setupComposite(parent, scope);
         parent.start();
@@ -95,14 +94,12 @@ public class ServiceToJavaTestCase extends TestCase {
     }
 
     public void testToSessionScope() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
-        SystemCompositeContext parent = new SystemCompositeContextImpl();
+        HttpSessionScopeContext scope = new HttpSessionScopeContext(workContext);
         scope.start();
         setupComposite(parent, scope);
         parent.start();
         Object session1 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
+        workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
         scope.onEvent(new HttpSessionStart(this, session1));
 
         Target service = (Target) parent.getContext("service").getService();
@@ -112,11 +109,11 @@ public class ServiceToJavaTestCase extends TestCase {
         assertEquals("foo", service.getString());
         assertEquals("foo", target.getString());
 
-        ctx.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
+        workContext.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
 
         //second session
         Object session2 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
+        workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
         scope.onEvent(new HttpSessionStart(this, session2));
 
         Target service2 = (Target) parent.getContext("service").getService();
@@ -128,9 +125,9 @@ public class ServiceToJavaTestCase extends TestCase {
         assertEquals("bar", target2.getString());
 
         scope.onEvent(new HttpSessionEnd(this, session2));
-        ctx.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
+        workContext.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
 
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
+        workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
         assertEquals("foo", service.getString());
 
         scope.onEvent(new HttpSessionEnd(this, session1));
@@ -140,9 +137,7 @@ public class ServiceToJavaTestCase extends TestCase {
     }
 
     public void testToModuleScope() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        SystemCompositeContext parent = new SystemCompositeContextImpl();
+        ModuleScopeContext scope = new ModuleScopeContext(workContext);
         scope.start();
         setupComposite(parent, scope);
         parent.start();
@@ -170,5 +165,11 @@ public class ServiceToJavaTestCase extends TestCase {
         parent.registerContext(serviceContext);
         parent.registerContext(atomicContext);
         connector.connect(serviceContext);
+    }
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        workContext = new WorkContextImpl();
+        parent = new SystemCompositeContextImpl(null, null, null);
     }
 }

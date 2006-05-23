@@ -28,7 +28,7 @@ public class ServiceContextToReferenceContextTestCase extends TestCase {
     public void testWireResolution() throws NoSuchMethodException {
         WorkContext ctx = new WorkContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        SystemCompositeContext context = new SystemCompositeContextImpl();
+        SystemCompositeContext context = new SystemCompositeContextImpl(null, null, null);
         scope.start();
         SystemReferenceContext<Target> referenceContext = new MockReferenceContext<Target>("reference", context, Target.class);
         context.registerContext(referenceContext);

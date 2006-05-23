@@ -88,7 +88,7 @@ public class AutowireBuilderTestcase extends TestCase {
 
         SystemComponentBuilder componentBuilder = new SystemComponentBuilder();
 
-        SystemCompositeContext parent = new SystemCompositeContextImpl();
+        SystemCompositeContext parent = new SystemCompositeContextImpl(null, null, null);
 
         Component<SystemImplementation> targetComponent = MockComponentFactory.createTarget();
         AtomicContext targetComponentContext = (AtomicContext) componentBuilder.build(parent, targetComponent);

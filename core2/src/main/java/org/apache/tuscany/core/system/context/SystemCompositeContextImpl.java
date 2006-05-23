@@ -6,7 +6,6 @@ import org.apache.tuscany.core.context.AbstractCompositeContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.AutowireResolutionException;
 import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
@@ -18,10 +17,6 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
 public class SystemCompositeContextImpl<S> extends AbstractCompositeContext<S> implements SystemCompositeContext<S> {
-
-    public SystemCompositeContextImpl() {
-        this(null, null, null);
-    }
 
     public SystemCompositeContextImpl(String name, CompositeContext parent, AutowireContext autowireContext) {
         super(name, parent, autowireContext);

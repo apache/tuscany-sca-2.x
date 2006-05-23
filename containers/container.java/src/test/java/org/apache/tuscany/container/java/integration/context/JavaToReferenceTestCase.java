@@ -39,11 +39,11 @@ import org.apache.tuscany.spi.wire.TargetWire;
  * @version $$Rev$$ $$Date$$
  */
 public class JavaToReferenceTestCase extends TestCase {
+    private WorkContext workContext;
+    private SystemCompositeContext parent;
 
     public void testFromStatelessScope() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        StatelessScopeContext scope = new StatelessScopeContext(ctx);
-        SystemCompositeContext parent = new SystemCompositeContextImpl();
+        StatelessScopeContext scope = new StatelessScopeContext(workContext);
         scope.start();
         setupComposite(parent, scope);
         parent.start();
@@ -56,9 +56,7 @@ public class JavaToReferenceTestCase extends TestCase {
     }
 
     public void testFromRequestScope() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        final RequestScopeContext scope = new RequestScopeContext(ctx);
-        final SystemCompositeContext parent = new SystemCompositeContextImpl();
+        final RequestScopeContext scope = new RequestScopeContext(workContext);
         scope.start();
         setupComposite(parent, scope);
         parent.start();
@@ -73,29 +71,25 @@ public class JavaToReferenceTestCase extends TestCase {
     }
 
     public void testFromSessionScope() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
-        SystemCompositeContext parent = new SystemCompositeContextImpl();
+        HttpSessionScopeContext scope = new HttpSessionScopeContext(workContext);
         scope.start();
         setupComposite(parent, scope);
         parent.start();
         Object session1 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
+        workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
         scope.onEvent(new HttpSessionStart(this, session1));
         SimpleSource source = (SimpleSource) parent.getContext("source").getService();
         assertEquals("hello", source.invokeHello());
         SimpleTarget target = (SimpleTarget) parent.getContext("target").getService();
         assertEquals("hello", target.echo("hello"));
-        ctx.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
+        workContext.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
         scope.onEvent(new HttpSessionEnd(this, session1));
         parent.stop();
         scope.stop();
     }
 
     public void testFromModuleScope() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        SystemCompositeContext parent = new SystemCompositeContextImpl();
+        ModuleScopeContext scope = new ModuleScopeContext(workContext);
         scope.start();
         setupComposite(parent, scope);
         parent.start();
@@ -130,4 +124,9 @@ public class JavaToReferenceTestCase extends TestCase {
         sourceContext.prepare();
     }
 
+    protected void setUp() throws Exception {
+        super.setUp();
+        workContext = new WorkContextImpl();
+        parent = new SystemCompositeContextImpl(null, null, null);
+    }
 }

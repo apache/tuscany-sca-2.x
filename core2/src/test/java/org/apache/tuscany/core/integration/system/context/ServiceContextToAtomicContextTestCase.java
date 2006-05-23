@@ -28,7 +28,7 @@ public class ServiceContextToAtomicContextTestCase extends TestCase {
     public void testWireResolution() throws NoSuchMethodException {
         WorkContext ctx = new WorkContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        SystemCompositeContext context = new SystemCompositeContextImpl();
+        SystemCompositeContext context = new SystemCompositeContextImpl(null, null, null);
         scope.start();
         SystemAtomicContext targetContext = MockContextFactory.createSystemAtomicContext("target", TargetImpl.class);
         context.registerContext(targetContext);

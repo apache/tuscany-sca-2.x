@@ -23,13 +23,14 @@ import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
+import org.apache.tuscany.core.context.CompositeContextImpl;
 
 /**
  * @version $Rev$ $Date$
  */
 public class CompositeBuilder implements ComponentBuilder<CompositeImplementation> {
     public ComponentContext build(CompositeContext parent, Component<CompositeImplementation> component) throws BuilderConfigException {
-        SystemCompositeContextImpl<?> context = new SystemCompositeContextImpl(component.getName(), null, null);
+        CompositeContextImpl<?> context = new CompositeContextImpl(component.getName(), parent, null);
         return context;
     }
 }

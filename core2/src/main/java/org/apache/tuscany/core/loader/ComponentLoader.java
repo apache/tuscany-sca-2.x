@@ -68,7 +68,7 @@ public class ComponentLoader extends LoaderExtension {
             throw e;
         }
         Implementation<?> impl = (Implementation<?>) o;
-        Component<?> component = impl.newComponent();
+        Component<?> component = new Component<Implementation<?>>(impl);
         component.setName(name);
 
         while (true) {

@@ -33,10 +33,6 @@ public abstract class Implementation<T extends ComponentType> extends ModelObjec
         this.componentType = componentType;
     }
 
-    public Component<Implementation<T>> newComponent() {
-        return new Component<Implementation<T>>(this);
-    }
-
     public Class<T> getComponentTypeClass(){
         Type type = this.getClass().getGenericSuperclass();
         if (type instanceof ParameterizedType) {

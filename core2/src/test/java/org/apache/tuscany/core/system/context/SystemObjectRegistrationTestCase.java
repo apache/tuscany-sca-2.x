@@ -40,7 +40,7 @@ public class SystemObjectRegistrationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        systemContext = new SystemCompositeContextImpl();
+        systemContext = new SystemCompositeContextImpl(null, null, null);
         systemContext.start();
         systemContext.publish(new ModuleStart(this,null));
     }

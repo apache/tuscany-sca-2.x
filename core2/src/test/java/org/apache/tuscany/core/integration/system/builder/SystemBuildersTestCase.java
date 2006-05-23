@@ -43,7 +43,7 @@ public class SystemBuildersTestCase extends TestCase {
         Connector connector = new ConnectorImpl();
         SystemComponentBuilder builder = new SystemComponentBuilder();
 
-        SystemCompositeContext parent = new SystemCompositeContextImpl();
+        SystemCompositeContext parent = new SystemCompositeContextImpl(null, null, null);
 
         Component<SystemImplementation> targetComponent = MockComponentFactory.createTarget();
         Component<SystemImplementation> sourceComponent = MockComponentFactory.createSourceWithTargetReference();
@@ -127,7 +127,7 @@ public class SystemBuildersTestCase extends TestCase {
         SystemComponentBuilder builder = new SystemComponentBuilder();
         SystemBindingBuilder bindingBuilder = new SystemBindingBuilder();
 
-        SystemCompositeContext parent = new SystemCompositeContextImpl();
+        SystemCompositeContext parent = new SystemCompositeContextImpl(null, null, null);
 
         BoundService<SystemBinding> service =  MockComponentFactory.createBoundService();
         Component<SystemImplementation> component = MockComponentFactory.createTarget();

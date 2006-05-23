@@ -16,6 +16,9 @@
  */
 package org.apache.tuscany.core.system.builder;
 
+import org.apache.tuscany.core.context.AutowireContext;
+import org.apache.tuscany.core.system.context.SystemCompositeContext;
+import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.model.Component;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -28,6 +31,21 @@ import org.apache.tuscany.spi.context.CompositeContext;
  */
 public class SystemCompositeBuilder implements ComponentBuilder<SystemCompositeImplementation> {
     public ComponentContext build(CompositeContext parent, Component<SystemCompositeImplementation> component) throws BuilderConfigException {
-        return null;
+        SystemCompositeContext<?> context = new SystemCompositeContextImpl(component.getName(), parent, getAutowireContext(parent));
+        return context;
+    }
+
+    /**
+     * Return the autowire context for the supplied parent
+     *
+     * @param parent the parent for a new context
+     * @return the autowire context for the parent or null if it does not support autowire
+     */
+    protected AutowireContext getAutowireContext(CompositeContext<?> parent) {
+        if (parent instanceof AutowireContext) {
+            return (AutowireContext) parent;
+        } else {
+            return null;
+        }
     }
 }

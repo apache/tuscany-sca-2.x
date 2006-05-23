@@ -12,7 +12,7 @@ import org.apache.tuscany.core.mock.factories.MockContextFactory;
 public class DuplicateRegistrationTestCase extends TestCase {
 
     public void testDuplicateRegistration() throws Exception {
-        SystemCompositeContext systemContext = new SystemCompositeContextImpl();
+        SystemCompositeContext systemContext = new SystemCompositeContextImpl(null, null, null);
         systemContext.start();
         systemContext.publish(new ModuleStart(this, null));
         SystemAtomicContext context1 = MockContextFactory.createSystemAtomicContext("foo", MockComponent.class);

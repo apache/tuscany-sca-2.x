@@ -35,7 +35,7 @@ public class AtomicContextToReferenceContextTestCase extends TestCase {
     public void testWireResolution() throws NoSuchMethodException {
         WorkContext ctx = new WorkContextImpl();
         ModuleScopeContext scope = new ModuleScopeContext(ctx);
-        SystemCompositeContext context = new SystemCompositeContextImpl();
+        SystemCompositeContext context = new SystemCompositeContextImpl(null, null, null);
         scope.start();
         MockReferenceContext<Target> serviceContext = new MockReferenceContext<Target>("service", context, Target.class);
         TargetWire<Target> targetWire = new MockTargetWire<Target>(Target.class, new TargetImpl());
