@@ -19,19 +19,14 @@ package org.apache.tuscany.container.java.wire;
 import java.lang.reflect.Method;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 import org.apache.tuscany.container.java.context.JavaAtomicContext;
-import org.apache.tuscany.container.java.mock.components.SimpleTarget;
-import org.apache.tuscany.container.java.mock.components.SimpleTargetImpl;
 import org.apache.tuscany.container.java.mock.MockContextFactory;
-import org.apache.tuscany.container.java.wire.JavaTargetInvoker;
-import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.model.Scope;
+import org.jmock.MockObjectTestCase;
 
-public class JavaTargetInvokerTestCase extends TestCase {
+public class JavaTargetInvokerTestCase extends MockObjectTestCase {
 
     private Method echoMethod;
 
@@ -44,22 +39,27 @@ public class JavaTargetInvokerTestCase extends TestCase {
     }
 
     public void setUp() throws Exception {
-        echoMethod = SimpleTarget.class.getDeclaredMethod("echo", String.class);
+        echoMethod = Echo.class.getDeclaredMethod("echo", String.class);
         Assert.assertNotNull(echoMethod);
     }
 
     public void testScopedInvoke() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        ScopeContext scope = new ModuleScopeContext(ctx);
+        ScopeContext scope = new ModuleScopeContext(null);
         scope.start();
-        JavaAtomicContext context = MockContextFactory.createJavaAtomicContext("foo", SimpleTargetImpl.class, Scope.MODULE);
+        JavaAtomicContext context = MockContextFactory.createJavaAtomicContext("foo", Echo.class, Scope.MODULE);
         scope.register(context);
         context.setScopeContext(scope);
         JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, context);
         invoker.setCacheable(false);
-        Object ret = invoker.invokeTarget("foo");
-        assertEquals("foo", ret);
+        assertEquals("foo", invoker.invokeTarget("foo"));
         scope.stop();
+    }
+
+    public static class Echo {
+        public String echo(String message) throws Exception {
+            return message;
+        }
+
     }
 
 }
