@@ -8,8 +8,11 @@ import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.TargetWire;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
+import org.jmock.core.Stub;
+import org.jmock.core.Invocation;
 
 /**
  *
@@ -71,6 +74,38 @@ public class WireTestCase extends MockObjectTestCase {
         context.setScopeContext(scope);
         TargetInvoker invoker = context.createTargetInvoker("greeting",Greeting.class.getMethod("greet", String.class));
         assertEquals("foo", invoker.invokeTarget(new String[]{"foo"}));
+        scope.stop();
+    }
+
+
+
+    /**
+     * Tests a basic invocation down a source wire
+     */
+    public void testTargetWireInvocation() throws Exception {
+        ModuleScopeContext scope = new ModuleScopeContext(null);
+        scope.start();
+        List<Class<?>> services = new ArrayList<Class<?>>();
+        services.add(Greeting.class);
+        final GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", SCRIPT2, services, Scope.MODULE,null, null);
+        context.setScopeContext(scope);
+        Mock mock = mock(TargetWire.class);
+        mock.stubs().method("getServiceName").will(returnValue("Greeting"));
+        mock.expects(atLeastOnce()).method("getTargetService").will(
+                new Stub() {
+                    public Object invoke(Invocation invocation) throws Throwable {
+                        return context.getTargetInstance();
+                    }
+
+                    public StringBuffer describeTo(StringBuffer buff) {
+                        return buff.append("returns the target instance");
+                    }
+                });
+
+        TargetWire<Greeting> wire = (TargetWire<Greeting>) mock.proxy();
+        context.addTargetWire(wire);
+        Greeting greeting = (Greeting)context.getService("Greeting");
+        assertEquals("foo", greeting.greet("foo"));
         scope.stop();
     }
 

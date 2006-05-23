@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.extension.AtomicContextExtension;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.TargetWire;
 import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
@@ -88,23 +89,31 @@ public class GroovyAtomicContext<T> extends AtomicContextExtension<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public GroovyObject getTargetInstance
-            () throws TargetException {
+    public GroovyObject getTargetInstance() throws TargetException {
         return (GroovyObject) scopeContext.getInstance(this);
     }
 
     @SuppressWarnings("unchecked")
     public T getService() throws TargetException {
+        //TODO this should return a default service from a wire
         return (T) getTargetInstance();
     }
 
-    public Object getService(String s) throws TargetException {
-        return getTargetInstance();
+    public Object getService(String service) throws TargetException {
+        TargetWire<?> wire = getTargetWire(service);
+        if (wire == null) {
+            TargetException e =  new TargetException("Service not found"); // TODO better error message
+            e.setIdentifier(service);
+            throw e;
+        }
+        return wire.getTargetService();
     }
 
     public void init(Object instance) throws TargetException {
+        //TODO implement - this should call some kind of init method
     }
 
     public void destroy(Object instance) throws TargetException {
+        //TODO implement - this should call some kind of destroy method
     }
 }

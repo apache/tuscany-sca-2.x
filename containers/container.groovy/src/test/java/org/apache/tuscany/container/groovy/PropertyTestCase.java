@@ -3,12 +3,10 @@ package org.apache.tuscany.container.groovy;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.container.groovy.mock.Greeting;
 import org.apache.tuscany.container.groovy.injectors.SingletonInjector;
+import org.apache.tuscany.container.groovy.mock.Greeting;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.SourceWire;
-import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
 /**
@@ -24,7 +22,6 @@ public class PropertyTestCase extends MockObjectTestCase {
             "   }" +
             "}";
 
-
     /**
      * Tests a basic invocation down a source wire
      */
@@ -34,7 +31,7 @@ public class PropertyTestCase extends MockObjectTestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
         List<PropertyInjector> injectors = new ArrayList<PropertyInjector>();
-        injectors.add(new SingletonInjector("property","bar"));
+        injectors.add(new SingletonInjector("property", "bar"));
         GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", PropertyTestCase.SCRIPT,
                 services, Scope.MODULE, injectors, null);
         context.setScopeContext(scope);
