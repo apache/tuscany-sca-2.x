@@ -1,7 +1,7 @@
 package org.apache.tuscany.container.groovy;
 
-import org.apache.tuscany.model.ComponentType;
-import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.Scope;
 
 /**
  * @version $$Rev$$ $$Date$$

@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.container.groovy;
 
-import org.apache.tuscany.model.AtomicImplementation;
+import org.apache.tuscany.spi.model.AtomicImplementation;
 
 /**
  * Meta-information for the Groovy implementation.

@@ -22,7 +22,7 @@ import java.util.List;
 
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
-import org.apache.tuscany.model.Scope;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
