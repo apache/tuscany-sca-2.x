@@ -32,15 +32,11 @@ public class SystemCompositeContextImpl<S> extends AbstractCompositeContext<S> i
     }
 
     public <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException {
-        if (instanceInterface.isAssignableFrom(CompositeContext.class)) {
+        if (instanceInterface.isAssignableFrom(SystemCompositeContext.class)) {
             return instanceInterface.cast(this);
         } else {
             return super.resolveInstance(instanceInterface);
         }
-    }
-
-    public void onEvent(Event event) {
-        publish(event); // propagate event to children
     }
 
     public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
