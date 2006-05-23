@@ -29,7 +29,7 @@ public class ReferenceInjectionTestCase extends TestCase {
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, scope,
                 members, "target", Target.class, TargetImpl.class, scope);
         AtomicContext sourceContext = contexts.get("source");
-        Source source = (Source) sourceContext.getService(null);
+        Source source = (Source) sourceContext.getService();
         Target target = source.getTarget();
         assertTrue(Proxy.isProxyClass(target.getClass()));
 

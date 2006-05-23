@@ -58,8 +58,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     @SuppressWarnings("unchecked")
     public void testModuleToModule() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        ScopeContext scope = new ModuleScopeContext(ctx);
+        ScopeContext scope = new ModuleScopeContext(null);
         scope.start();
 
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, scope, members, "target", Target.class, TargetImpl.class, scope);

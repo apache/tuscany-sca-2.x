@@ -136,7 +136,7 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
     }
 
     public void onSourceWires(Class<?> multiplicityClass, List<SourceWire> wires) {
-        assert(wires.size() > 0): "Wire wires was empty";
+        assert(wires.size() > 0): "Wires were empty";
         String referenceName = wires.get(0).getReferenceName();
         Member member = members.get(referenceName);
         if (member == null) {

@@ -48,7 +48,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, Target.class, scope,
                 members, "target", OtherTarget.class, OtherTargetImpl.class, scope);
         AtomicContext sourceContext = contexts.get("source");
-        Source source = (Source) sourceContext.getService(null);
+        Source source = (Source) sourceContext.getService();
         Target target = source.getTarget();
         assertTrue(Proxy.isProxyClass(target.getClass()));
         assertNotNull(target);
@@ -64,7 +64,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         Map<String, AtomicContext> contexts = MockContextFactory.createWiredMultiplicity("source", SourceImpl.class, Target.class, scope,
                 "target", OtherTarget.class, OtherTargetImpl.class, members, scope);
         AtomicContext sourceContext = contexts.get("source");
-        Source source = (Source) sourceContext.getService(null);
+        Source source = (Source) sourceContext.getService();
         List<Target> targets = source.getTargets();
         assertEquals(1, targets.size());
         Target target = targets.get(0);
