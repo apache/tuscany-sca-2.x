@@ -30,6 +30,6 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
         String script = component.getImplementation().getScript();
         String name = component.getName();
         Scope scope = component.getImplementation().getComponentType().getLifecycleScope();
-        return new GroovyAtomicContext(name, script, services, scope, parent);
+        return new GroovyAtomicContext(name, script, services, scope, null,parent);
     }
 }

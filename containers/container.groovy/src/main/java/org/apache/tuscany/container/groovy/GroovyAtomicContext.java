@@ -17,19 +17,20 @@
 package org.apache.tuscany.container.groovy;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.extension.AtomicContextExtension;
-import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
@@ -39,12 +40,15 @@ public class GroovyAtomicContext<T> extends AtomicContextExtension<T> {
 
     private String script;
     private List<Class<?>> services;
+    private List<PropertyInjector> injectors;
 
-    public GroovyAtomicContext(String name, String script, List<Class<?>>services, Scope scope, CompositeContext parent) {
+    public GroovyAtomicContext(String name, String script, List<Class<?>>services, Scope scope,
+                               List<PropertyInjector> injectors, CompositeContext parent) {
         super(name, parent);
         this.script = script;
         this.services = services;
         this.scope = scope;
+        this.injectors = (injectors != null) ? injectors : new ArrayList<PropertyInjector>();
     }
 
     public String getScript() {
@@ -60,11 +64,20 @@ public class GroovyAtomicContext<T> extends AtomicContextExtension<T> {
     }
 
     public InstanceWrapper createInstance() throws ObjectCreationException {
-        ClassLoader parent = getClass().getClassLoader();
-        GroovyClassLoader loader = new GroovyClassLoader(parent);
         try {
+            ClassLoader parent = getClass().getClassLoader();
+            GroovyClassLoader loader = new GroovyClassLoader(parent);
             Class groovyClass = loader.parseClass(script);
-            return new GroovyInstanceWrapper(this, (GroovyObject) groovyClass.newInstance());
+            GroovyObject object = (GroovyObject) groovyClass.newInstance();
+            // inject properties
+            for (PropertyInjector injector : injectors) {
+                injector.inject(object);
+            }
+            // inject wires
+            for (SourceWire wire : sourceWires) {
+                object.setProperty(wire.getReferenceName(), wire.getTargetService());
+            }
+            return new GroovyInstanceWrapper(this, object);
         } catch (CompilationFailedException e) {
             throw new ObjectCreationException(e);
         } catch (IllegalAccessException e) {
@@ -90,11 +103,6 @@ public class GroovyAtomicContext<T> extends AtomicContextExtension<T> {
     }
 
     public void init(Object instance) throws TargetException {
-        GroovyObject object = (GroovyObject) instance;
-        for (SourceWire wire : sourceWires) {
-            //wire from the groovy script to targets
-            object.setProperty(wire.getReferenceName(), wire.getTargetService());
-        }
     }
 
     public void destroy(Object instance) throws TargetException {
