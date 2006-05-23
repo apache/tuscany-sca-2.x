@@ -25,8 +25,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.model.Implementation;
-import org.apache.tuscany.model.ComponentType;
+import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.loader.StAXElementLoader;
 import org.apache.tuscany.spi.loader.LoaderContext;
 import org.apache.tuscany.spi.annotation.Autowire;
