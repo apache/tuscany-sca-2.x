@@ -28,10 +28,6 @@ public class CompositeContextImpl<T> extends AbstractCompositeContext<T> impleme
         super(name, parent, autowireContext);
     }
 
-    public void onEvent(Event event) {
-       publish(event); // propagate event to children
-    }
-
     // ----------------------------------
     // ModuleContext methods
     // ----------------------------------
