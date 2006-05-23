@@ -16,10 +16,11 @@
  */
 package org.apache.tuscany.core.system.context;
 
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
+
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.spi.context.CompositeContext;
-import org.jmock.MockObjectTestCase;
-import org.jmock.Mock;
 
 /**
  * @version $Rev$ $Date$
@@ -40,7 +41,8 @@ public class SystemCompositeContextTestCase extends MockObjectTestCase {
     }
 
     public void testResolvedByAutowire() {
-        Foo foo = new Foo(){};
+        Foo foo = new Foo() {
+        };
         autowire.expects(once()).method("resolveInstance").with(eq(Foo.class)).will(returnValue(foo));
         assertSame(foo, context.resolveInstance(Foo.class));
     }
