@@ -257,11 +257,11 @@ public class MockContextFactory {
         }
     }
 
-    public static Map<Method, SourceInvocationChain> createSourceInvocationChains(Class<?> interfaze) {
+    private static Map<Method, SourceInvocationChain> createSourceInvocationChains(Class<?> interfaze) {
         return createSourceInvocationChains(interfaze, null, null, null);
     }
 
-    public static Map<Method, SourceInvocationChain> createSourceInvocationChains(Class<?> interfaze,
+    private static Map<Method, SourceInvocationChain> createSourceInvocationChains(Class<?> interfaze,
                                                                                   Interceptor headInterceptor, MessageHandler headRequestHandler,
                                                                                   MessageHandler headResponseHandler) {
         Map<Method, SourceInvocationChain> invocations = new HashMap<Method, SourceInvocationChain>();
@@ -282,11 +282,11 @@ public class MockContextFactory {
         return invocations;
     }
 
-    public static Map<Method, TargetInvocationChain> createTargetInvocationChains(Class<?> interfaze) {
+    private static Map<Method, TargetInvocationChain> createTargetInvocationChains(Class<?> interfaze) {
         return createTargetInvocationChains(interfaze, null, null, null);
     }
 
-    public static Map<Method, TargetInvocationChain> createTargetInvocationChains(Class<?> interfaze,
+    private static Map<Method, TargetInvocationChain> createTargetInvocationChains(Class<?> interfaze,
                                                                                   Interceptor headInterceptor, MessageHandler headRequestHandler,
                                                                                   MessageHandler headResponseHandler) {
         Map<Method, TargetInvocationChain> invocations = new MethodHashMap<TargetInvocationChain>();

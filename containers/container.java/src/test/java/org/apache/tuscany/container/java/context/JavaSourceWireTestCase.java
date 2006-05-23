@@ -4,7 +4,6 @@ import java.lang.reflect.Member;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.container.java.context.JavaAtomicContext;
 import org.apache.tuscany.container.java.mock.MockContextFactory;
 import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
