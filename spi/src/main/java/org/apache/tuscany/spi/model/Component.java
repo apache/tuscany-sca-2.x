@@ -28,6 +28,11 @@ public class Component<I extends Implementation<?>> extends ModelObject {
     private final Map<String, ReferenceTarget> referenceTargets = new HashMap<String, ReferenceTarget>();
     private final Map<String, PropertyValue<?>> propertyValues = new HashMap<String, PropertyValue<?>>();
 
+    public Component(String name, I implementation) {
+        this.name = name;
+        this.implementation = implementation;
+    }
+
     public Component(I implementation) {
         this.implementation = implementation;
     }

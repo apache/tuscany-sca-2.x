@@ -21,6 +21,8 @@ import org.apache.tuscany.core.system.context.SystemCompositeContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.CompositeComponentType;
+import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.context.ComponentContext;
@@ -31,7 +33,12 @@ import org.apache.tuscany.spi.context.CompositeContext;
  */
 public class SystemCompositeBuilder implements ComponentBuilder<SystemCompositeImplementation> {
     public ComponentContext build(CompositeContext parent, Component<SystemCompositeImplementation> component) throws BuilderConfigException {
+        SystemCompositeImplementation impl = component.getImplementation();
+        CompositeComponentType componentType = impl.getComponentType();
         SystemCompositeContext<?> context = new SystemCompositeContextImpl(component.getName(), parent, getAutowireContext(parent));
+        for (Service service : componentType.getServices().values()) {
+
+        }
         return context;
     }
 

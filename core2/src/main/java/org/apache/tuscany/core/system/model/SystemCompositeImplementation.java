@@ -23,4 +23,10 @@ import org.apache.tuscany.spi.model.Implementation;
  * @version $Rev$ $Date$
  */
 public class SystemCompositeImplementation extends Implementation<CompositeComponentType> {
+    public SystemCompositeImplementation() {
+    }
+
+    public SystemCompositeImplementation(CompositeComponentType componentType) {
+        super(componentType);
+    }
 }

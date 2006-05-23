@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.context.TargetException;

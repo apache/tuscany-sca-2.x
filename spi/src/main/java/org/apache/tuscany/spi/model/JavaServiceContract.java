@@ -25,6 +25,17 @@ public class JavaServiceContract extends ServiceContract {
     private String callbackName;
     private Class<?> callbackClass;
 
+    public JavaServiceContract() {
+    }
+    
+    public JavaServiceContract(String interfaceName) {
+        this.interfaceName = interfaceName;
+    }
+
+    public JavaServiceContract(Class<?> interfaceClass) {
+        this.interfaceClass = interfaceClass;
+    }
+
     public String getInterfaceName() {
         return interfaceName;
     }

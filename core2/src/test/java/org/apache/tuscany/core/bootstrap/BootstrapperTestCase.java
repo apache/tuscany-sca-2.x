@@ -19,25 +19,23 @@ package org.apache.tuscany.core.bootstrap;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.system.context.SystemCompositeContext;
 import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.bootstrap.ContextNames;
 
 /**
- * // TODO the implementation needs a Composite builder which we don't have yet
- * 
  * @version $Rev$ $Date$
  */
 public class BootstrapperTestCase extends TestCase {
     private DefaultBootstrapper bootstrapper;
 
     public void testDeployerBootstrap() {
-/*
-        SystemCompositeContext<Deployer> context = (SystemCompositeContext<Deployer>) bootstrapper.createDeployer(null);
+        SystemCompositeContext<Deployer> context =
+                (SystemCompositeContext<Deployer>) bootstrapper.createDeployer(ContextNames.TUSCANY_DEPLOYER, null);
         assertEquals("tuscany.deployer", context.getName());
         // todo this should work
 //        Deployer deployer = context.getService();
 //        assertNotNull(deployer);
-        Deployer deployer = context.resolveExternalInstance(Deployer.class);
-        assertNotNull(deployer);
-*/
+//        Deployer deployer = context.resolveExternalInstance(Deployer.class);
+//        assertNotNull(deployer);
     }
 
     protected void setUp() throws Exception {

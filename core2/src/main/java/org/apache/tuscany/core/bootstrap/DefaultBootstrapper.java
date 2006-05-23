@@ -16,14 +16,20 @@
  */
 package org.apache.tuscany.core.bootstrap;
 
+import java.net.URI;
+
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
-import org.apache.tuscany.spi.model.Component;
-import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.core.system.builder.SystemCompositeBuilder;
+import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
+import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.bootstrap.ContextNames;
+import org.apache.tuscany.spi.model.CompositeComponentType;
+import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.BoundService;
+import org.apache.tuscany.spi.model.JavaServiceContract;
 
 /**
  * @version $Rev$ $Date$
@@ -31,14 +37,25 @@ import org.apache.tuscany.spi.bootstrap.ContextNames;
 public class DefaultBootstrapper {
     private final BuilderRegistry builderRegistry;
 
-    public DefaultBootstrapper() {
-        builderRegistry = new BuilderRegistryImpl();
+    public DefaultBootstrapper(BuilderRegistry builderRegistry) {
+        this.builderRegistry = builderRegistry;
     }
 
-    public Context<Deployer> createDeployer(CompositeContext<?> parent) {
-        CompositeImplementation impl = new CompositeImplementation();
-        Component<CompositeImplementation> deployerComposite = new Component<CompositeImplementation>(impl);
-        deployerComposite.setName(ContextNames.TUSCANY_DEPLOYER);
+    public DefaultBootstrapper() {
+        this.builderRegistry = getDefaultBuilderRegistry();
+    }
+
+    public static BuilderRegistry getDefaultBuilderRegistry() {
+        BuilderRegistry builderRegistry = new BuilderRegistryImpl();
+        builderRegistry.register(SystemCompositeImplementation.class, new SystemCompositeBuilder());
+        return builderRegistry;
+    }
+
+    public Context<Deployer> createDeployer(String name, CompositeContext<?> parent) {
+        CompositeComponentType composite = new CompositeComponentType();
+        SystemCompositeImplementation impl = new SystemCompositeImplementation(composite);
+        Component<SystemCompositeImplementation> deployerComposite = new Component<SystemCompositeImplementation>(name, impl);
+//        composite.add(new BoundService<SystemBinding>("deployer", new JavaServiceContract(Deployer.class), URI.create("deployerImpl")));
         return builderRegistry.build(parent, deployerComposite);
     }
 }

@@ -25,6 +25,14 @@ public class Service extends ModelObject {
     private String name;
     private ServiceContract serviceContract;
 
+    public Service(String name, ServiceContract serviceContract) {
+        this.name = name;
+        this.serviceContract = serviceContract;
+    }
+
+    public Service() {
+    }
+
     public String getName() {
         return name;
     }

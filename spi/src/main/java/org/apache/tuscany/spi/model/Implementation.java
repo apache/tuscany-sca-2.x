@@ -16,16 +16,21 @@
  */
 package org.apache.tuscany.spi.model;
 
-import java.lang.reflect.Type;
 import java.lang.reflect.ParameterizedType;
-
-import org.apache.tuscany.spi.model.ComponentType;
+import java.lang.reflect.Type;
 
 /**
  * @version $Rev$ $Date$
  */
 public abstract class Implementation<T extends ComponentType> extends ModelObject {
     private T componentType;
+
+    protected Implementation() {
+    }
+
+    protected Implementation(T componentType) {
+        this.componentType = componentType;
+    }
 
     public T getComponentType() {
         return componentType;
@@ -35,7 +40,7 @@ public abstract class Implementation<T extends ComponentType> extends ModelObjec
         this.componentType = componentType;
     }
 
-    public Class<T> getComponentTypeClass(){
+    public Class<T> getComponentTypeClass() {
         Type type = this.getClass().getGenericSuperclass();
         if (type instanceof ParameterizedType) {
             return (Class<T>) ((ParameterizedType) type).getActualTypeArguments()[0];
