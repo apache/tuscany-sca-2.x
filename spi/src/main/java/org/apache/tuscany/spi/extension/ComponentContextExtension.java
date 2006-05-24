@@ -18,7 +18,7 @@ import org.apache.tuscany.spi.wire.TargetWire;
 public abstract class ComponentContextExtension<T> extends AbstractContext<T> implements ComponentContext<T> {
 
     protected Map<String, TargetWire> targetWires = new HashMap<String, TargetWire>();
-    protected List<SourceWire> sourceWires = new ArrayList<SourceWire>();
+    protected Map<String, List<SourceWire>> sourceWires = new HashMap<String,List<SourceWire>>();
 
     protected ComponentContextExtension(String name, CompositeContext<?> parent) {
         super(name, parent);
@@ -38,16 +38,19 @@ public abstract class ComponentContextExtension<T> extends AbstractContext<T> im
     }
 
     public void addSourceWire(SourceWire wire) {
-        sourceWires.add(wire);
+        List<SourceWire> list = new ArrayList<SourceWire>();
+        list.add(wire);
+        sourceWires.put(wire.getReferenceName(), list);
         onSourceWire(wire);
     }
 
-    public List<SourceWire> getSourceWires() {
+    public Map<String,List<SourceWire>> getSourceWires() {
         return sourceWires;
     }
 
     public void addSourceWires(Class<?> multiplicityClass, List<SourceWire> wires) {
-        sourceWires.addAll(wires);
+        assert(wires != null && wires.size() > 0);
+        sourceWires.put(wires.get(0).getReferenceName(), wires);
         onSourceWires(multiplicityClass, wires);
     }
 

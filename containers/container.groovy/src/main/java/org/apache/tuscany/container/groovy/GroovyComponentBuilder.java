@@ -14,7 +14,7 @@ import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 
 /**
  * Extension point for creating {@link GroovyAtomicContext}s from an assembly configuration
- * 
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImplementation> {
@@ -27,7 +27,7 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
         List<Class<?>> services = new ArrayList<Class<?>>();
         Collection<Service> collection = component.getImplementation().getComponentType().getServices().values();
         for (Service service : collection) {
-            services.add(service.getServiceContract().getInterface());
+            services.add(service.getServiceContract().getInterfaceClass());
         }
         String script = component.getImplementation().getScript();
         String name = component.getName();

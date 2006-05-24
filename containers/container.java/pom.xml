@@ -24,8 +24,8 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tuscany-container-java</artifactId>
-    <name>Tuscany Java IoC Container</name>
-    <description>Container for managing components as defined by the SCA implementation specification.</description>
+    <name>Tuscany Java Container</name>
+    <description>Container for managing components as defined by the SCA Java client and implementation specification.</description>
     <version>SNAPSHOT</version>
 
     <dependencies>

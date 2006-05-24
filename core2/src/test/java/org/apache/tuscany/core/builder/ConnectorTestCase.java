@@ -31,9 +31,11 @@ public class ConnectorTestCase extends TestCase {
 
         MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null, null, null);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, null, null, null);
-        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
-            TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
-            connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+        for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
+            for (SourceWire<?> sourceWire : sourceWires) {
+                TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
+                connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+            }
         }
         targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
@@ -58,9 +60,11 @@ public class ConnectorTestCase extends TestCase {
         interceptors.add(interceptor);
         MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, interceptors, null, null);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, null, null, null);
-        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
-            TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
-            connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+        for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
+            for (SourceWire<?> sourceWire : sourceWires) {
+                TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
+                connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+            }
         }
         targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
@@ -86,9 +90,11 @@ public class ConnectorTestCase extends TestCase {
         interceptors.add(interceptor);
         MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null, null, null);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, interceptors, null, null);
-        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
-            TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
-            connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+        for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
+            for (SourceWire<?> sourceWire : sourceWires) {
+                TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
+                connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+            }
         }
         targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
@@ -117,9 +123,11 @@ public class ConnectorTestCase extends TestCase {
         targetInterceptors.add(targetInterceptor);
         MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, sourceInterceptors, null, null);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, targetInterceptors, null, null);
-        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
-            TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
-            connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+        for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
+            for (SourceWire<?> sourceWire : sourceWires) {
+                TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
+                connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+            }
         }
         targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
@@ -150,9 +158,11 @@ public class ConnectorTestCase extends TestCase {
         handlers.add(handler);
         MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, interceptors, handlers, null);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, null, null, null);
-        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
-            TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
-            connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+        for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
+            for (SourceWire<?> sourceWire : sourceWires) {
+                TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
+                connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+            }
         }
         targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
@@ -183,9 +193,11 @@ public class ConnectorTestCase extends TestCase {
         handlers.add(handler);
         MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null, null, null);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, interceptors, handlers, null);
-        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
-            TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
-            connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+        for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
+            for (SourceWire<?> sourceWire : sourceWires) {
+                TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
+                connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+            }
         }
         targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
@@ -217,9 +229,11 @@ public class ConnectorTestCase extends TestCase {
         handlers.add(handler);
         MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, interceptors, null, handlers);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, null, null, null);
-        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
-            TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
-            connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+        for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
+            for (SourceWire<?> sourceWire : sourceWires) {
+                TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
+                connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+            }
         }
         targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
@@ -250,9 +264,11 @@ public class ConnectorTestCase extends TestCase {
         handlers.add(handler);
         MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null, null, null);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, interceptors, null, handlers);
-        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
-            TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
-            connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+        for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
+            for (SourceWire<?> sourceWire : sourceWires) {
+                TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
+                connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+            }
         }
         targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
@@ -283,9 +299,11 @@ public class ConnectorTestCase extends TestCase {
         handlers.add(handler);
         MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, interceptors, handlers, handlers);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, null, null, null);
-        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
+        for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
+            for (SourceWire<?> sourceWire : sourceWires) {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+        }
         }
         targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
@@ -316,9 +334,11 @@ public class ConnectorTestCase extends TestCase {
         handlers.add(handler);
         MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null, null, handlers);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, interceptors, handlers, null);
-        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
+        for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
+            for (SourceWire<?> sourceWire : sourceWires) {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+            }
         }
         targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
@@ -346,9 +366,11 @@ public class ConnectorTestCase extends TestCase {
         handlers.add(handler);
         MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null, handlers, handlers);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, null, null, null);
-        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
+        for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
+            for (SourceWire<?> sourceWire : sourceWires) {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+            }
         }
         targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
@@ -374,9 +396,11 @@ public class ConnectorTestCase extends TestCase {
         handlers.add(handler);
         MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null, null, null);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, null, handlers, handlers);
-        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
+        for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
+            for (SourceWire<?> sourceWire : sourceWires) {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+            }
         }
         targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
@@ -402,9 +426,11 @@ public class ConnectorTestCase extends TestCase {
         handlers.add(handler);
         MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null, handlers, null);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, null, null, null);
-        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
+        for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
+            for (SourceWire<?> sourceWire : sourceWires) {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+            }
         }
         targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
@@ -430,9 +456,11 @@ public class ConnectorTestCase extends TestCase {
         handlers.add(handler);
         MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null, null, null);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, null, handlers, null);
-        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
+        for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
+            for (SourceWire<?> sourceWire : sourceWires) {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+            }
         }
         targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
@@ -458,9 +486,11 @@ public class ConnectorTestCase extends TestCase {
         handlers.add(handler);
         MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null, null, handlers);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, null, null, null);
-        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
+        for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
+            for (SourceWire<?> sourceWire : sourceWires) {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+            }
         }
         targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));
@@ -486,9 +516,11 @@ public class ConnectorTestCase extends TestCase {
         handlers.add(handler);
         MockAtomicContext<SimpleSource> sourceContext = MockWireFactory.setupSource(scopeContext, null, null, null);
         MockAtomicContext<SimpleTarget> targetContext = MockWireFactory.setupTarget(scopeContext, null, null, handlers);
-        for (SourceWire<?> sourceWire : sourceContext.getSourceWires()) {
+        for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
+            for (SourceWire<?> sourceWire : sourceWires) {
             TargetWire<SimpleTarget> targetWire = targetContext.getTargetWire(sourceWire.getTargetName().getPortName());
             connector.connect((SourceWire<SimpleTarget>) sourceWire, targetWire, targetContext, false);
+            }
         }
         targetContext.prepare();
         scopeContext.onEvent(new ModuleStart(this, null));

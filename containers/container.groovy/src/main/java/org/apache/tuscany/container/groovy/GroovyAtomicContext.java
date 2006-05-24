@@ -75,8 +75,10 @@ public class GroovyAtomicContext<T> extends AtomicContextExtension<T> {
                 injector.inject(object);
             }
             // inject wires
-            for (SourceWire wire : sourceWires) {
-                object.setProperty(wire.getReferenceName(), wire.getTargetService());
+            for (List<SourceWire> sourceWires : getSourceWires().values()) {
+                for (SourceWire<?> wire : sourceWires) {
+                    object.setProperty(wire.getReferenceName(), wire.getTargetService());
+                }
             }
             return new GroovyInstanceWrapper(this, object);
         } catch (CompilationFailedException e) {

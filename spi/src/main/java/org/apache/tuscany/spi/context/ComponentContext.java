@@ -43,9 +43,9 @@ public interface ComponentContext<T> extends Context<T> {
     void addSourceWires(Class<?> multiplicityClass, List<SourceWire> wires);
 
     /**
-     * Returns a collection of source-side wires for references. There may 1..n wires per reference.
+     * Returns a map of source-side wires for references. There may 1..n wires per reference.
      */
-    List<SourceWire> getSourceWires();
+    Map<String,List<SourceWire>> getSourceWires();
 
     /**
      * Adds a target-side wire. Target-side wire factories contain the invocation chains associated with the

@@ -10,7 +10,6 @@ import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.MessageChannelImpl;
 import org.apache.tuscany.core.wire.MessageDispatcher;
 import org.apache.tuscany.core.wire.SourceAutowire;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.context.ComponentContext;
@@ -18,6 +17,7 @@ import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.ServiceContext;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.MessageChannel;
 import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
@@ -37,16 +37,18 @@ public class ConnectorImpl implements Connector {
 
         if (source instanceof ComponentContext) {
             ComponentContext<T> sourceContext = (ComponentContext<T>) source;
-            for (SourceWire<T> sourceWire : sourceContext.getSourceWires()) {
-                if (sourceWire instanceof SourceAutowire) {
-                    continue;
-                }
-                try {
-                    connect(sourceWire, parent, scope);
-                } catch (BuilderConfigException e) {
-                    e.addContextName(source.getName());
-                    e.addContextName(parent.getName());
-                    throw e;
+            for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
+                for (SourceWire<T> sourceWire : sourceWires) {
+                    if (sourceWire instanceof SourceAutowire) {
+                        continue;
+                    }
+                    try {
+                        connect(sourceWire, parent, scope);
+                    } catch (BuilderConfigException e) {
+                        e.addContextName(source.getName());
+                        e.addContextName(parent.getName());
+                        throw e;
+                    }
                 }
             }
         } else if (source instanceof ServiceContext) {
@@ -131,7 +133,7 @@ public class ConnectorImpl implements Connector {
                         handlers.add(new MessageDispatcher(targetChain.getHeadInterceptor()));
                         MessageChannel channel = new MessageChannelImpl(handlers);
                         sourceChain.setTargetRequestChannel(channel);
-                    }else{
+                    } else {
                         BuilderConfigException e = new BuilderConfigException("Target chain must have an interceptor");
                         e.setIdentifier(targetChain.getMethod().getName());
                         throw e;
