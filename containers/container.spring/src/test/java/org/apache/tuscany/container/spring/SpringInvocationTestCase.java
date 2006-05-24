@@ -9,6 +9,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
 
 /**
+ * Verifies a simple invocation on a Spring bean
+ * 
  * @version $$Rev$$ $$Date$$
  */
 public class SpringInvocationTestCase extends MockObjectTestCase {

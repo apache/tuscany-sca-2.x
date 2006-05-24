@@ -9,6 +9,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
 /**
+ * Dispatches an operation on a Spring bean
+ * 
  * @version $$Rev$$ $$Date$$
  */
 public class SpringInvoker implements TargetInvoker {

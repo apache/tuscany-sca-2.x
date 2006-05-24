@@ -17,6 +17,11 @@ import org.springframework.context.support.StaticApplicationContext;
  */
 public class SpringReferenceTestCase extends MockObjectTestCase {
 
+    /**
+     * Verifies wiring from a Spring bean to an SCA composite reference
+     * 
+     * @throws Exception
+     */
     public void testReferenceInvocation() throws Exception {
         ConfigurableApplicationContext ctx = createSpringContext();
         SpringCompositeContext parent = new SpringCompositeContext("spring", ctx, null);
