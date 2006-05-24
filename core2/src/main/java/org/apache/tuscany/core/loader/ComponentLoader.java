@@ -88,17 +88,21 @@ public class ComponentLoader extends LoaderExtension {
         }
     }
 
-    protected <T> void loadProperty(XMLStreamReader reader, DeploymentContext deploymentContext, Component<?> component) throws XMLStreamException, LoaderException {
+    protected void loadProperty(XMLStreamReader reader, DeploymentContext deploymentContext, Component<?> component) throws XMLStreamException, LoaderException {
         String name = reader.getAttributeValue(null, "name");
         Implementation<?> implementation = component.getImplementation();
         ComponentType componentType = implementation.getComponentType();
-        Property<T> property = (Property<T>) componentType.getProperties().get(name);
+        Property<?> property = componentType.getProperties().get(name);
+        component.add(createPropertyValue(reader, property, name));
+    }
+
+    private <T> PropertyValue<T> createPropertyValue(XMLStreamReader reader, Property<T> property, String name) throws XMLStreamException, LoaderException {
         // todo allow property to specify the factory to use
         ObjectFactory<T> factory = defaultPropertyFactory.createObjectFactory(reader, property);
         PropertyValue<T> value = new PropertyValue<T>();
         value.setName(name);
         value.setValueFactory(factory);
-        component.add(value);
+        return value;
     }
 
     protected void loadReference(XMLStreamReader reader, DeploymentContext deploymentContext, Component<?> component) throws XMLStreamException, LoaderException {

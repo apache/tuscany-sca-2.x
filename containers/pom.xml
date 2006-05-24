@@ -30,8 +30,10 @@
     <version>SNAPSHOT</version>
 
     <modules>
+        <!--<module>container.groovy</module>-->
         <module>container.java</module>
-       <!-- <module>container.js</module>-->
+        <!--<module>container.js</module>-->
+        <!--<module>container.spring</module>-->
     </modules>
 
 </project>

@@ -59,13 +59,6 @@ public class Component<I extends Implementation<?>> extends ModelObject {
 
     public void add(PropertyValue<?> value) {
         propertyValues.put(value.getName(), value);
-        if (implementation != null && implementation.getComponentType() != null) {
-            Property property = implementation.getComponentType().getProperties().get(
-                    value.getName());
-            if (property != null) {
-                value.setProperty(property);
-            }
-        }
     }
 
     public void add(ReferenceTarget target) {
