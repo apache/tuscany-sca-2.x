@@ -25,6 +25,14 @@ public class PropertyValue<T> extends ModelObject {
     private String name;
     private ObjectFactory<T> valueFactory;
 
+    public PropertyValue() {
+    }
+
+    public PropertyValue(String name, ObjectFactory<T> valueFactory) {
+        this.name = name;
+        this.valueFactory = valueFactory;
+    }
+
     public String getName() {
         return name;
     }
