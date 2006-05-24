@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.model.Reference;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.extension.LoaderExtension;
@@ -55,7 +56,7 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
                     } else if (o instanceof Property<?>) {
                         composite.add((Property<?>) o);
                     } else if (o instanceof Component<?>) {
-                        composite.add((Component<?>) o);
+                        composite.add((Component<? extends Implementation>) o);
                     }
                     reader.next();
                     break;
