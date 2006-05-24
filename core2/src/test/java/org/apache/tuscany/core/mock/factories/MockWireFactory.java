@@ -49,7 +49,7 @@ public class MockWireFactory {
         Map<String, Member> members = new HashMap<String, Member>();
         members.put("target", SimpleSourceImpl.class.getMethod("setTarget", SimpleTarget.class));
         MockAtomicContext<SimpleSource> source = new MockAtomicContext<SimpleSource>("source", sourceInterfaces, new PojoObjectFactory<SimpleSourceImpl>(sourceCtr),
-                scopeContext.getScope(), members);
+                scopeContext.getScope(), scopeContext, members);
         SourceWire<SimpleTarget> sourceWire = new JDKSourceWire<SimpleTarget>();
         sourceWire.setBusinessInterface(SimpleTarget.class);
         sourceWire.setReferenceName("target");
@@ -72,7 +72,6 @@ public class MockWireFactory {
         }
         sourceWire.addInvocationChain(echo, chain);
         source.addSourceWire(sourceWire);
-        source.setScopeContext(scopeContext);
         return source;
     }
 
@@ -85,7 +84,7 @@ public class MockWireFactory {
         targetInterfaces.add(SimpleTarget.class);
         Constructor<SimpleTargetImpl> targetCtr = SimpleTargetImpl.class.getConstructor();
         MockAtomicContext<SimpleTarget> target = new MockAtomicContext<SimpleTarget>("target", targetInterfaces, new PojoObjectFactory<SimpleTargetImpl>(targetCtr),
-                scopeContext.getScope(), null);
+                scopeContext.getScope(), scopeContext, null);
         TargetWire<SimpleTarget> targetWire = new JDKTargetWire<SimpleTarget>();
         targetWire.setBusinessInterface(SimpleTarget.class);
         targetWire.setServiceName("Target");
@@ -108,7 +107,6 @@ public class MockWireFactory {
         chain.addInterceptor(new InvokerInterceptor()); // add tail interceptor
         targetWire.addInvocationChain(echo, chain);
         target.addTargetWire(targetWire);
-        target.setScopeContext(scopeContext);
         return target;
     }
 

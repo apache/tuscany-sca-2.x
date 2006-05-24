@@ -22,6 +22,7 @@ import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * Validates that system builders create autowired contexts from a set of model objects
@@ -29,6 +30,7 @@ import org.apache.tuscany.spi.context.WorkContext;
  * @version $$Rev$$ $$Date$$
  */
 public class AutowireBuilderTestcase extends TestCase {
+    private DeploymentContext deploymentContext;
 
     /**
      * Validates wiring from a component to a reference which is autowired to a component in the grandparent
@@ -47,19 +49,17 @@ public class AutowireBuilderTestcase extends TestCase {
         SystemCompositeContext parent = new SystemCompositeContextImpl("parent", grandParent, grandParent);
 
         Component<SystemImplementation> targetComponent = MockComponentFactory.createTarget();
-        AtomicContext targetComponentContext = (AtomicContext) componentBuilder.build(parent, targetComponent);
-        targetComponentContext.setScopeContext(scope);
+        AtomicContext targetComponentContext = (AtomicContext) componentBuilder.build(parent, targetComponent, deploymentContext);
         grandParent.registerContext(targetComponentContext);
 
         BoundReference<SystemBinding> targetReference = MockComponentFactory.createBoundReference();
         Component<SystemImplementation> sourceComponent = MockComponentFactory.createSourceWithTargetReference();
 
 
-        AtomicContext<?> sourceContext = (AtomicContext) componentBuilder.build(parent, sourceComponent);
-        sourceContext.setScopeContext(scope);
+        AtomicContext<?> sourceContext = (AtomicContext) componentBuilder.build(parent, sourceComponent, deploymentContext);
         parent.registerContext(sourceContext);
 
-        ReferenceContext targetContext = (ReferenceContext) bindingBuilder.build(parent, targetReference);
+        ReferenceContext targetContext = (ReferenceContext) bindingBuilder.build(parent, targetReference, deploymentContext);
         parent.registerContext(targetContext);
 
         connector.connect(sourceContext);
@@ -91,13 +91,11 @@ public class AutowireBuilderTestcase extends TestCase {
         SystemCompositeContext parent = new SystemCompositeContextImpl(null, null, null);
 
         Component<SystemImplementation> targetComponent = MockComponentFactory.createTarget();
-        AtomicContext targetComponentContext = (AtomicContext) componentBuilder.build(parent, targetComponent);
-        targetComponentContext.setScopeContext(scope);
+        AtomicContext targetComponentContext = (AtomicContext) componentBuilder.build(parent, targetComponent, deploymentContext);
         parent.registerContext(targetComponentContext);
         Component<SystemImplementation> sourceComponent = MockComponentFactory.createSourceWithTargetAutowire();
 
-        AtomicContext sourceContext = (AtomicContext) componentBuilder.build(parent, sourceComponent);
-        sourceContext.setScopeContext(scope);
+        AtomicContext sourceContext = (AtomicContext) componentBuilder.build(parent, sourceComponent, deploymentContext);
         parent.registerContext(sourceContext);
 
         parent.start();
@@ -112,5 +110,9 @@ public class AutowireBuilderTestcase extends TestCase {
         scope.stop();
     }
 
+    protected void setUp() throws Exception {
+        super.setUp();
+        deploymentContext = new DeploymentContext(null, null, null);
 
+    }
 }

@@ -25,9 +25,8 @@ public class HttpSessionScopeRestartTestCase extends TestCase {
         MethodEventInvoker<Object> destroyInvoker = new MethodEventInvoker<Object>(HttpSessionScopeRestartTestCase.InitDestroyOnce.class.getMethod("destroy"));
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(HttpSessionScopeRestartTestCase.InitDestroyOnce.class);
-        SystemAtomicContext context = MockContextFactory.createSystemAtomicContext("InitDestroy", interfaces,
+        SystemAtomicContext context = MockContextFactory.createSystemAtomicContext("InitDestroy", scope, interfaces,
                 HttpSessionScopeRestartTestCase.InitDestroyOnce.class, false, initInvoker, destroyInvoker, null,null);
-        context.setScopeContext(scope);
         context.start();
 
         Object session = new Object();

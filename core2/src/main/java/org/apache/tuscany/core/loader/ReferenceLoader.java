@@ -26,7 +26,7 @@ import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Multiplicity;
 import org.apache.tuscany.spi.model.Reference;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.loader.LoaderContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 
@@ -38,7 +38,7 @@ public class ReferenceLoader extends LoaderExtension {
         return AssemblyConstants.REFERENCE;
     }
 
-    public Reference load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, LoaderException {
+    public Reference load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert AssemblyConstants.REFERENCE.equals(reader.getName());
         Reference reference = new Reference();
         reference.setName(reader.getAttributeValue(null, "name"));
@@ -47,7 +47,7 @@ public class ReferenceLoader extends LoaderExtension {
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
-                    ModelObject o = registry.load(reader, loaderContext);
+                    ModelObject o = registry.load(reader, deploymentContext);
                     if (o instanceof ServiceContract) {
                         reference.setServiceContract((ServiceContract) o);
                     }

@@ -25,6 +25,11 @@ import org.apache.tuscany.spi.model.AtomicImplementation;
 public class SystemImplementation extends AtomicImplementation<PojoComponentType> {
     private Class<?> implementationClass;
 
+    public SystemImplementation(PojoComponentType componentType, Class<?> implementationClass) {
+        super(componentType);
+        this.implementationClass = implementationClass;
+    }
+
     public SystemImplementation() {
     }
 

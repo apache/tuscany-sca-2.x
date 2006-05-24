@@ -38,6 +38,8 @@ public class ConnectorTestCase extends TestCase {
             }
         }
         targetContext.prepare();
+        sourceContext.start();
+        targetContext.start();
         scopeContext.onEvent(new ModuleStart(this, null));
         SimpleSource source = sourceContext.getService();
         assertEquals("foo", source.getTarget().echo("foo"));
@@ -67,6 +69,8 @@ public class ConnectorTestCase extends TestCase {
             }
         }
         targetContext.prepare();
+        sourceContext.start();
+        targetContext.start();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, interceptor.getCount());
         SimpleSource source = sourceContext.getService();
@@ -97,6 +101,8 @@ public class ConnectorTestCase extends TestCase {
             }
         }
         targetContext.prepare();
+        sourceContext.start();
+        targetContext.start();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, interceptor.getCount());
         SimpleSource source = sourceContext.getService();
@@ -130,6 +136,8 @@ public class ConnectorTestCase extends TestCase {
             }
         }
         targetContext.prepare();
+        sourceContext.start();
+        targetContext.start();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, sourceInterceptor.getCount());
         assertEquals(0, targetInterceptor.getCount());
@@ -165,6 +173,8 @@ public class ConnectorTestCase extends TestCase {
             }
         }
         targetContext.prepare();
+        sourceContext.start();
+        targetContext.start();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
@@ -200,6 +210,8 @@ public class ConnectorTestCase extends TestCase {
             }
         }
         targetContext.prepare();
+        sourceContext.start();
+        targetContext.start();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
@@ -236,6 +248,8 @@ public class ConnectorTestCase extends TestCase {
             }
         }
         targetContext.prepare();
+        sourceContext.start();
+        targetContext.start();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
@@ -271,6 +285,8 @@ public class ConnectorTestCase extends TestCase {
             }
         }
         targetContext.prepare();
+        sourceContext.start();
+        targetContext.start();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
@@ -306,6 +322,8 @@ public class ConnectorTestCase extends TestCase {
         }
         }
         targetContext.prepare();
+        sourceContext.start();
+        targetContext.start();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
@@ -341,6 +359,8 @@ public class ConnectorTestCase extends TestCase {
             }
         }
         targetContext.prepare();
+        sourceContext.start();
+        targetContext.start();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
@@ -373,6 +393,8 @@ public class ConnectorTestCase extends TestCase {
             }
         }
         targetContext.prepare();
+        sourceContext.start();
+        targetContext.start();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, handler.getCount());
         SimpleSource source = sourceContext.getService();
@@ -403,6 +425,8 @@ public class ConnectorTestCase extends TestCase {
             }
         }
         targetContext.prepare();
+        sourceContext.start();
+        targetContext.start();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, handler.getCount());
         SimpleSource source = sourceContext.getService();
@@ -433,6 +457,8 @@ public class ConnectorTestCase extends TestCase {
             }
         }
         targetContext.prepare();
+        sourceContext.start();
+        targetContext.start();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, handler.getCount());
         SimpleSource source = sourceContext.getService();
@@ -463,6 +489,8 @@ public class ConnectorTestCase extends TestCase {
             }
         }
         targetContext.prepare();
+        sourceContext.start();
+        targetContext.start();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, handler.getCount());
         SimpleSource source = sourceContext.getService();
@@ -493,6 +521,8 @@ public class ConnectorTestCase extends TestCase {
             }
         }
         targetContext.prepare();
+        sourceContext.start();
+        targetContext.start();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, handler.getCount());
         SimpleSource source = sourceContext.getService();
@@ -523,6 +553,8 @@ public class ConnectorTestCase extends TestCase {
             }
         }
         targetContext.prepare();
+        sourceContext.start();
+        targetContext.start();
         scopeContext.onEvent(new ModuleStart(this, null));
         assertEquals(0, handler.getCount());
         SimpleSource source = sourceContext.getService();

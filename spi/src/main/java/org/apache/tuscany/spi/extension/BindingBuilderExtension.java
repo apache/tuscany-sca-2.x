@@ -9,6 +9,8 @@ import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+
 import org.osoa.sca.annotations.Init;
 
 /**
@@ -35,11 +37,11 @@ public abstract class BindingBuilderExtension<B extends Binding> implements Bind
         builderRegistry.register(getBindingType(), this);
     }
 
-    public Context build(CompositeContext parent, BoundService<B> boundService) {
+    public Context build(CompositeContext parent, BoundService<B> boundService, DeploymentContext deploymentContext) {
         return null;
     }
 
-    public Context build(CompositeContext parent, BoundReference<B> boundReference) {
+    public Context build(CompositeContext parent, BoundReference<B> boundReference, DeploymentContext deploymentContext) {
         return null;
     }
 

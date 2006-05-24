@@ -26,11 +26,6 @@ import org.apache.tuscany.spi.ObjectCreationException;
 public interface AtomicContext<T> extends ComponentContext<T> {
 
     /**
-     * Sets the scope context used by this atomic context for instance management
-     */
-    void setScopeContext(ScopeContext context);
-
-    /**
      * Returns whether the context should be eagerly initialized
      */
     boolean isEagerInit();

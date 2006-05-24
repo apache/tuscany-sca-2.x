@@ -25,7 +25,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.loader.LoaderContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 
@@ -37,7 +37,7 @@ public class ServiceLoader extends LoaderExtension {
         return AssemblyConstants.SERVICE;
     }
 
-    public Service load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, LoaderException {
+    public Service load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert AssemblyConstants.SERVICE.equals(reader.getName());
         Service service = new Service();
         service.setName(reader.getAttributeValue(null, "name"));
@@ -46,7 +46,7 @@ public class ServiceLoader extends LoaderExtension {
             int i = reader.next();
             switch (i) {
                 case START_ELEMENT:
-                    ModelObject o = registry.load(reader, loaderContext);
+                    ModelObject o = registry.load(reader, deploymentContext);
                     if (o instanceof ServiceContract) {
                         service.setServiceContract((ServiceContract) o);
                     }

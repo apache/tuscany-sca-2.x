@@ -16,15 +16,18 @@
  */
 package org.apache.tuscany.core.deployer;
 
-import org.apache.tuscany.spi.model.Component;
-import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.core.builder.Connector;
+import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
+import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.core.builder.Connector;
+import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.Implementation;
 
 /**
  * Default implementation of Deployer.
@@ -52,8 +55,10 @@ public class DeployerImpl implements Deployer {
     }
 
     public <I extends Implementation<?>> void deploy(CompositeContext<?> parent, Component<I> component) {
-        load(component);
-        Context<?> context = build(parent, component);
+        ScopeContext moduleScope = new ModuleScopeContext();
+        DeploymentContext deploymentContext = new DeploymentContext(null, null, moduleScope);
+        load(component, deploymentContext);
+        Context<?> context = build(parent, component, deploymentContext);
         connect(context);
         parent.registerContext(context);
     }
@@ -62,21 +67,23 @@ public class DeployerImpl implements Deployer {
      * Load the component type information for the component being deployed.
      * For a typical deployment this will result in the SCDL definition being loaded.
      *
-     * @param component the component being deployed
+     * @param component         the component being deployed
+     * @param deploymentContext the current deployment context
      */
-    protected <I extends Implementation<?>> void load(Component<I> component) {
-        loaderRegistry.loadComponentType(component.getImplementation());
+    protected <I extends Implementation<?>> void load(Component<I> component, DeploymentContext deploymentContext) {
+        loaderRegistry.loadComponentType(component.getImplementation(), deploymentContext);
     }
 
     /**
      * Build the runtime context for a loaded component.
      *
-     * @param parent the context that will be the parent of the new sub-context
-     * @param component the component being deployed
+     * @param parent            the context that will be the parent of the new sub-context
+     * @param component         the component being deployed
+     * @param deploymentContext the current deployment context
      * @return the new runtime context
      */
-    protected <I extends Implementation<?>> Context<?> build(CompositeContext<?> parent, Component<I> component) {
-        return builderRegistry.build(parent, component);
+    protected <I extends Implementation<?>> Context<?> build(CompositeContext<?> parent, Component<I> component, DeploymentContext deploymentContext) {
+        return builderRegistry.build(parent, component, deploymentContext);
     }
 
     /**

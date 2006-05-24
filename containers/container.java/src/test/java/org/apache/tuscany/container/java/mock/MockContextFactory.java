@@ -39,18 +39,19 @@ import org.apache.tuscany.spi.wire.TargetWire;
  */
 public class MockContextFactory {
 
-    public static JavaAtomicContext<?> createJavaAtomicContext(String name, Class<?> clazz, Scope scope) throws NoSuchMethodException {
-        return createJavaAtomicContext(name, null, clazz, clazz, scope, false, null, null, null, null);
+    public static JavaAtomicContext<?> createJavaAtomicContext(String name, ScopeContext scopeContext, Class<?> clazz, Scope scope) throws NoSuchMethodException {
+        return createJavaAtomicContext(name, null, scopeContext, clazz, clazz, scope, false, null, null, null, null);
 
     }
 
-    public static JavaAtomicContext<?> createJavaAtomicContext(String name, Class<?> clazz, Class<?> service, Scope scope) throws NoSuchMethodException {
-        return createJavaAtomicContext(name, null, clazz, service, scope, false, null, null, null, null);
+    public static JavaAtomicContext<?> createJavaAtomicContext(String name, ScopeContext scopeContext, Class<?> clazz, Class<?> service, Scope scope) throws NoSuchMethodException {
+        return createJavaAtomicContext(name, null, scopeContext, clazz, service, scope, false, null, null, null, null);
 
     }
 
     public static JavaAtomicContext<?> createJavaAtomicContext(String name,
                                                                CompositeContext<?> parent,
+                                                               ScopeContext scopeContext,
                                                                Class<?> clazz,
                                                                Class<?> service,
                                                                Scope scope,
@@ -62,7 +63,7 @@ public class MockContextFactory {
             throws NoSuchMethodException {
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         serviceInterfaces.add(service);
-        return new JavaAtomicContext(name, parent, serviceInterfaces, createObjectFactory(clazz), scope, eagerInit, initInvoker, destroyInvoker, injectors, members);
+        return new JavaAtomicContext(name, parent, scopeContext, serviceInterfaces, createObjectFactory(clazz), scope, eagerInit, initInvoker, destroyInvoker, injectors, members);
     }
 
     /**
@@ -110,19 +111,17 @@ public class MockContextFactory {
                                                                  Interceptor targetHeadInterceptor,
                                                                  MessageHandler targetRequestHeadHandler,
                                                                  MessageHandler targetResponseHeadHandler) throws Exception {
-        JavaAtomicContext targetContext = createJavaAtomicContext(targetName, targetClass, targetScope.getScope());
+        JavaAtomicContext targetContext = createJavaAtomicContext(targetName, targetScope, targetClass, targetScope.getScope());
         TargetWire targetWire = createTargetWire(targetService.getName().substring(
                 targetService.getName().lastIndexOf('.') + 1), targetService, targetHeadInterceptor, targetRequestHeadHandler, targetResponseHeadHandler);
         targetContext.addTargetWire(targetWire);
 
-        JavaAtomicContext sourceContext = createJavaAtomicContext(sourceName, null, sourceClass, sourceClass, sourceScope.getScope(), false, null, null, null, members);
+        JavaAtomicContext sourceContext = createJavaAtomicContext(sourceName, null, sourceScope, sourceClass, sourceClass, sourceScope.getScope(), false, null, null, null, members);
         SourceWire sourceWire = createSourceWire(targetName, sourceReferenceClass, sourceHeadInterceptor,
                 sourceHeadRequestHandler, sourceHeadResponseHandler);
         sourceContext.addSourceWire(sourceWire);
         targetScope.register(targetContext);
-        sourceContext.setScopeContext(sourceScope);
         sourceScope.register(sourceContext);
-        targetContext.setScopeContext(targetScope);
         connect(sourceWire, targetWire, targetContext, false);
         Map<String, AtomicContext> contexts = new HashMap<String, AtomicContext>();
         contexts.put(sourceName, sourceContext);
@@ -150,20 +149,18 @@ public class MockContextFactory {
                                                                      ScopeContext sourceScope,
                                                                      String targetName, Class<?> targetService, Class<?> targetClass,
                                                                      Map<String, Member> members, ScopeContext targetScope) throws Exception {
-        JavaAtomicContext targetContext = createJavaAtomicContext(targetName, targetClass, targetScope.getScope());
+        JavaAtomicContext targetContext = createJavaAtomicContext(targetName, targetScope, targetClass, targetScope.getScope());
         TargetWire targetWire = createTargetWire(targetService.getName().substring(
                 targetService.getName().lastIndexOf('.') + 1), targetService, null, null, null);
         targetContext.addTargetWire(targetWire);
 
-        JavaAtomicContext sourceContext = createJavaAtomicContext(sourceName, null, sourceClass, sourceClass, sourceScope.getScope(), false, null, null, null, members);
+        JavaAtomicContext sourceContext = createJavaAtomicContext(sourceName, null, sourceScope, sourceClass, sourceClass, sourceScope.getScope(), false, null, null, null, members);
         SourceWire sourceWire = createSourceWire(targetName, sourceReferenceClass, null, null, null);
         List<SourceWire> factories = new ArrayList<SourceWire>();
         factories.add(sourceWire);
         sourceContext.addSourceWires(sourceReferenceClass, factories);
         targetScope.register(targetContext);
-        sourceContext.setScopeContext(sourceScope);
         sourceScope.register(sourceContext);
-        targetContext.setScopeContext(targetScope);
         connect(sourceWire, targetWire, targetContext, false);
         Map<String, AtomicContext> contexts = new HashMap<String, AtomicContext>();
         contexts.put(sourceName, sourceContext);

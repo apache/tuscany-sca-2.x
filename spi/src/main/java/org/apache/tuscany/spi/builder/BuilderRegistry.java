@@ -23,6 +23,7 @@ import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * @version $Rev$ $Date$
@@ -32,13 +33,13 @@ public interface BuilderRegistry {
 
     <I extends Implementation<?>> void register(Class<I> implClass, ComponentBuilder<I> builder);
 
-    <I extends Implementation<?>> Context build(CompositeContext parent, Component<I> component);
+    <I extends Implementation<?>> Context build(CompositeContext parent, Component<I> component, DeploymentContext deploymentContext);
 
     <B extends Binding> void register(BindingBuilder<B> builder);
 
     <B extends Binding> void register(Class<B> implClass, BindingBuilder<B> builder);
 
-    <B extends Binding> Context build(CompositeContext parent, BoundService<B> boundService);
+    <B extends Binding> Context build(CompositeContext parent, BoundService<B> boundService, DeploymentContext deploymentContext);
 
-    <B extends Binding> Context build(CompositeContext parent, BoundReference<B> boundReference);
+    <B extends Binding> Context build(CompositeContext parent, BoundReference<B> boundReference, DeploymentContext deploymentContext);
 }

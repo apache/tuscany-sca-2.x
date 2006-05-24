@@ -14,9 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.spi.loader;
+package org.apache.tuscany.spi.deployer;
 
 import javax.xml.stream.XMLInputFactory;
+
+import org.apache.tuscany.spi.context.ScopeContext;
 
 /**
  * Context holder that can be used during the load process to store information
@@ -25,19 +27,22 @@ import javax.xml.stream.XMLInputFactory;
  *
  * @version $Rev$ $Date$
  */
-public class LoaderContext {
+public class DeploymentContext {
     private final ClassLoader classLoader;
     private final XMLInputFactory xmlFactory;
+    private final ScopeContext moduleScope;
 
     /**
      * Constructor specifying the loader for application resources.
      *
      * @param classLoader the loader for application resources
      * @param xmlFactory  a factory that can be used to obtain an StAX XMLStreamReader
+     * @param moduleScope the scope context representing this deployment's MODULE scope
      */
-    public LoaderContext(ClassLoader classLoader, XMLInputFactory xmlFactory) {
+    public DeploymentContext(ClassLoader classLoader, XMLInputFactory xmlFactory, ScopeContext moduleScope) {
         this.classLoader = classLoader;
         this.xmlFactory = xmlFactory;
+        this.moduleScope = moduleScope;
     }
 
     /**
@@ -56,5 +61,13 @@ public class LoaderContext {
      */
     public XMLInputFactory getXmlFactory() {
         return xmlFactory;
+    }
+
+    /**
+     * Returns the ScopeContext for the MODULE scope that will be associated with this deployment unit.
+     * @return the ScopeContext for the MODULE scope that will be associated with this deployment unit
+     */
+    public ScopeContext getModuleScope() {
+        return moduleScope;
     }
 }

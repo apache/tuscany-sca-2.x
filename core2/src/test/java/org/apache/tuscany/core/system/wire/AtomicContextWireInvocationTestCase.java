@@ -38,11 +38,11 @@ public class AtomicContextWireInvocationTestCase extends MockObjectTestCase {
         members.put("setTarget", SourceImpl.class.getMethod("setTarget", Target.class));
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
-        SystemAtomicContext sourceContext = MockContextFactory.createSystemAtomicContext("source", interfaces, SourceImpl.class, null, members);
+        SystemAtomicContext sourceContext = MockContextFactory.createSystemAtomicContext("source", scope, interfaces, SourceImpl.class, null, members);
         SourceWire<Target> sourceWire = new SystemSourceWire<Target>("setTarget", new QualifiedName("service"), Target.class);
         sourceWire.setTargetWire(targetWire);
         sourceContext.addSourceWire(sourceWire);
-        sourceContext.setScopeContext(scope);
+        sourceContext.start();
         assertSame(((Source) sourceContext.getService()).getTarget(), target); // wires should pass back direct ref
     }
 }

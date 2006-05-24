@@ -12,6 +12,7 @@ import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
@@ -22,6 +23,7 @@ public class SystemAtomicContextImpl<T> extends PojoAtomicContext<T> implements 
 
     public SystemAtomicContextImpl(String name,
                                    CompositeContext<?> parent,
+                                   ScopeContext scopeContext,
                                    Class<?> serviceInterface,
                                    ObjectFactory<?> objectFactory,
                                    boolean eagerInit,
@@ -29,12 +31,13 @@ public class SystemAtomicContextImpl<T> extends PojoAtomicContext<T> implements 
                                    EventInvoker<Object> destroyInvoker,
                                    List<Injector> injectors,
                                    Map<String, Member> members) {
-        super(name, parent, serviceInterface, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members);
+        super(name, parent, scopeContext, serviceInterface, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members);
         scope = Scope.MODULE;
     }
 
     public SystemAtomicContextImpl(String name,
                                    CompositeContext<?> parent,
+                                   ScopeContext scopeContext,
                                    List<Class<?>> serviceInterfaces,
                                    ObjectFactory<?> objectFactory,
                                    boolean eagerInit,
@@ -42,7 +45,7 @@ public class SystemAtomicContextImpl<T> extends PojoAtomicContext<T> implements 
                                    EventInvoker<Object> destroyInvoker,
                                    List<Injector> injectors,
                                    Map<String, Member> members) {
-        super(name, parent, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members);
+        super(name, parent, scopeContext, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members);
         scope = Scope.MODULE;
     }
 

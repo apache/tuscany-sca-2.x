@@ -13,24 +13,6 @@ import org.apache.tuscany.spi.context.ScopeContext;
  * @version $$Rev$$ $$Date$$
  */
 public class ScopeRegistryTestCase extends TestCase {
-
-    public void testRemotableIsolation() throws Exception {
-        CompositeContext context1 = new CompositeContextImpl(null, null, null);
-        CompositeContext context2 = new CompositeContextImpl(null, null, null);
-        WorkContext workContext = new WorkContextImpl();
-        ScopeRegistry scopeRegistry = new ScopeRegistryImpl(workContext);
-        scopeRegistry.registerFactory(Scope.MODULE, new ModuleScopeObjectFactory());
-        workContext.setRemoteContext(context1);
-        ScopeContext scope1 = scopeRegistry.getScopeContext(Scope.MODULE);
-        workContext.setRemoteContext(context2);
-        ScopeContext scope2 = scopeRegistry.getScopeContext(Scope.MODULE);
-        assertNotSame(scope1,scope2);
-        workContext.setRemoteContext(context1);
-        assertSame(scope1,scopeRegistry.getScopeContext(Scope.MODULE));
-        workContext.setRemoteContext(context2);
-        assertSame(scope2,scopeRegistry.getScopeContext(Scope.MODULE));
-    }
-
     public void testScopeContextCreation() throws Exception {
         WorkContext workContext = new WorkContextImpl();
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl(workContext);

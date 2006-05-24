@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.model.Reference;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.Component;
-import org.apache.tuscany.spi.loader.LoaderContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.core.loader.AssemblyConstants;
@@ -41,13 +41,13 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
         return AssemblyConstants.COMPOSITE;
     }
 
-    public CompositeComponentType load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, LoaderException {
+    public CompositeComponentType load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         CompositeComponentType composite = new CompositeComponentType();
         composite.setName(reader.getAttributeValue(null, "name"));
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
-                    ModelObject o = registry.load(reader, loaderContext);
+                    ModelObject o = registry.load(reader, deploymentContext);
                     if (o instanceof Service) {
                         composite.add((Service) o);
                     } else if (o instanceof Reference) {

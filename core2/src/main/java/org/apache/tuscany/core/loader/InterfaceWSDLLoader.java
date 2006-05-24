@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.core.services.wsdl.WSDLDefinitionRegistry;
 import org.apache.tuscany.spi.model.WSDLServiceContract;
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.loader.LoaderContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 
@@ -48,7 +48,7 @@ public class InterfaceWSDLLoader extends LoaderExtension {
         return AssemblyConstants.INTERFACE_WSDL;
     }
 
-    public WSDLServiceContract load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, LoaderException {
+    public WSDLServiceContract load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert AssemblyConstants.INTERFACE_WSDL.equals(reader.getName());
         WSDLServiceContract serviceContract = new WSDLServiceContract();
         serviceContract.setInteractionScope(StAXUtil.interactionScope(reader.getAttributeValue(null, "scope")));
@@ -56,7 +56,7 @@ public class InterfaceWSDLLoader extends LoaderExtension {
         String location = reader.getAttributeValue(WSDLI, WSDLI_LOCATION);
         if (location != null) {
             try {
-                wsdlRegistry.loadDefinition(location, loaderContext.getClassLoader());
+                wsdlRegistry.loadDefinition(location, deploymentContext.getClassLoader());
             } catch (IOException e) {
                 LoaderException le = new LoaderException(e);
                 le.setIdentifier(location);

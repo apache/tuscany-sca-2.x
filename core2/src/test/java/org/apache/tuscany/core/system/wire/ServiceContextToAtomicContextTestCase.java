@@ -24,12 +24,14 @@ public class ServiceContextToAtomicContextTestCase extends TestCase {
     public void testWireResolution() throws NoSuchMethodException {
         ModuleScopeContext scope = new ModuleScopeContext(null);
         scope.start();
-        SystemAtomicContext targetContext = MockContextFactory.createSystemAtomicContext("target", TargetImpl.class);
-        targetContext.setScopeContext(scope);
+        SystemAtomicContext targetContext = MockContextFactory.createSystemAtomicContext("target", scope, TargetImpl.class);
         TargetWire<Target> targetWire = new SystemTargetWire<Target>(Target.class, targetContext);
         SourceWire<Target> wire = new SystemSourceWire<Target>("service", new QualifiedName("target"), Target.class);    //String referenceName, QualifiedName targetName, Class<T> businessInterface
         wire.setTargetWire(targetWire);
         SystemServiceContext<Target> serviceContext = new SystemServiceContextImpl<Target>("service", wire, null);
+        serviceContext.start();
+        targetContext.start();
+        
         Target target = serviceContext.getService();
         assertSame(targetContext.getService(), target);
     }

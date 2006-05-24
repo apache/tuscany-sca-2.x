@@ -1,5 +1,7 @@
 package org.apache.tuscany.container.java.builder;
 
+import org.jmock.MockObjectTestCase;
+
 import org.apache.tuscany.container.java.context.JavaAtomicContext;
 import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
@@ -9,18 +11,18 @@ import org.apache.tuscany.core.context.CompositeContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.JavaServiceContract;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.jmock.MockObjectTestCase;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class JavaComponentBuilderTestCase extends MockObjectTestCase {
-
+    private DeploymentContext deploymentContext;
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
         CompositeContext parent = new CompositeContextImpl(null, null, null);
@@ -43,13 +45,16 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
         Component<JavaImplementation> sourceComponent = new Component<JavaImplementation>(sourceImpl);
 
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        JavaAtomicContext<Source> ctx = (JavaAtomicContext<Source>) builder.build(parent, sourceComponent);
-        ctx.setScopeContext(scope);
+        JavaAtomicContext<Source> ctx = (JavaAtomicContext<Source>) builder.build(parent, sourceComponent, deploymentContext);
+        deploymentContext.getModuleScope().start();
         ctx.start();
         Source source = ctx.getService();
         assertNotNull(source);
         ctx.stop();
     }
 
-
+    protected void setUp() throws Exception {
+        super.setUp();
+        deploymentContext = new DeploymentContext(null, null, new ModuleScopeContext());
+    }
 }

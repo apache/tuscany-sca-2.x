@@ -97,6 +97,7 @@ public class ModuleScopeContext extends AbstractScopeContext {
     public InstanceWrapper getInstanceContext(AtomicContext context) throws TargetException {
         checkInit();
         InstanceWrapper ctx = instanceContexts.get(context);
+        assert ctx != null : "Context not registered with scope: " + context;
         if (ctx == EMPTY) {
             ctx = context.createInstance();
             instanceContexts.put(context, ctx);

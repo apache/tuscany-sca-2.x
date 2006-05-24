@@ -20,4 +20,10 @@ package org.apache.tuscany.spi.model;
  * @version $Rev$ $Date$
  */
 public abstract class AtomicImplementation<T extends ComponentType> extends Implementation<T> {
+    protected AtomicImplementation() {
+    }
+
+    protected AtomicImplementation(T componentType) {
+        super(componentType);
+    }
 }

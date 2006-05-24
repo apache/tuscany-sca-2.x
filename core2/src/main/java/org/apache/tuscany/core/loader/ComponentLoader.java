@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.loader.InvalidReferenceException;
-import org.apache.tuscany.spi.loader.LoaderContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.MissingImplementationException;
@@ -57,11 +57,11 @@ public class ComponentLoader extends LoaderExtension {
         return AssemblyConstants.COMPONENT;
     }
 
-    public Component<?> load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, LoaderException {
+    public Component<?> load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert AssemblyConstants.COMPONENT.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         reader.nextTag();
-        ModelObject o = registry.load(reader, loaderContext);
+        ModelObject o = registry.load(reader, deploymentContext);
         if (!(o instanceof Implementation)) {
             MissingImplementationException e = new MissingImplementationException();
             e.setIdentifier(name);
@@ -76,9 +76,9 @@ public class ComponentLoader extends LoaderExtension {
                 case START_ELEMENT:
                     QName qname = reader.getName();
                     if (AssemblyConstants.PROPERTY.equals(qname)) {
-                        loadProperty(reader, loaderContext, component);
+                        loadProperty(reader, deploymentContext, component);
                     } else if (AssemblyConstants.REFERENCE.equals(qname)) {
-                        loadReference(reader, loaderContext, component);
+                        loadReference(reader, deploymentContext, component);
                     }
                     reader.next();
                     break;
@@ -88,7 +88,7 @@ public class ComponentLoader extends LoaderExtension {
         }
     }
 
-    protected <T> void loadProperty(XMLStreamReader reader, LoaderContext loaderContext, Component<?> component) throws XMLStreamException, LoaderException {
+    protected <T> void loadProperty(XMLStreamReader reader, DeploymentContext deploymentContext, Component<?> component) throws XMLStreamException, LoaderException {
         String name = reader.getAttributeValue(null, "name");
         Implementation<?> implementation = component.getImplementation();
         ComponentType componentType = implementation.getComponentType();
@@ -101,7 +101,7 @@ public class ComponentLoader extends LoaderExtension {
         component.add(value);
     }
 
-    protected void loadReference(XMLStreamReader reader, LoaderContext loaderContext, Component<?> component) throws XMLStreamException, LoaderException {
+    protected void loadReference(XMLStreamReader reader, DeploymentContext deploymentContext, Component<?> component) throws XMLStreamException, LoaderException {
         String name = reader.getAttributeValue(null, "name");
         String target = reader.getAttributeValue(null, "target");
         ReferenceTarget referenceTarget = new ReferenceTarget();

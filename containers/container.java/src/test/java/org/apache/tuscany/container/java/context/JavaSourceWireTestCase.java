@@ -27,7 +27,7 @@ public class JavaSourceWireTestCase extends MockObjectTestCase {
         Target target = new TargetImpl();
         Map<String, Member> members = new HashMap<String, Member>();
         members.put("target", SourceImpl.class.getMethod("setTarget", Target.class));
-        JavaAtomicContext<?> sourceContext = MockContextFactory.createJavaAtomicContext("source", null,
+        JavaAtomicContext<?> sourceContext = MockContextFactory.createJavaAtomicContext("source", null, scope,
                 SourceImpl.class, Source.class,
                 scope.getScope(), false, null, null, null, members);
 
@@ -37,7 +37,8 @@ public class JavaSourceWireTestCase extends MockObjectTestCase {
         SourceWire<Target> wire = (SourceWire<Target>) mock.proxy();
         sourceContext.addSourceWire(wire);
 
-        sourceContext.setScopeContext(scope);
+        sourceContext.start();
+
         Source source = (Source) sourceContext.getService();
         assertSame(target, source.getTarget());
         scope.stop();

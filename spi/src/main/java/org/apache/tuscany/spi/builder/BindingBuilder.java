@@ -21,11 +21,12 @@ import org.apache.tuscany.spi.model.BoundReference;
 import org.apache.tuscany.spi.model.BoundService;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface BindingBuilder<B extends Binding> {
-    Context build(CompositeContext parent, BoundService<B> boundService);
-    Context build(CompositeContext parent, BoundReference<B> boundReference);
+    Context build(CompositeContext parent, BoundService<B> boundService, DeploymentContext deploymentContext);
+    Context build(CompositeContext parent, BoundReference<B> boundReference, DeploymentContext deploymentContext);
 }

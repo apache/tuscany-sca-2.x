@@ -21,7 +21,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.model.JavaServiceContract;
-import org.apache.tuscany.spi.loader.LoaderContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 
@@ -33,7 +33,7 @@ public class InterfaceJavaLoader extends LoaderExtension {
         return AssemblyConstants.INTERFACE_JAVA;
     }
 
-    public JavaServiceContract load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, LoaderException {
+    public JavaServiceContract load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert AssemblyConstants.INTERFACE_JAVA.equals(reader.getName());
         JavaServiceContract serviceContract = new JavaServiceContract();
         serviceContract.setInteractionScope(StAXUtil.interactionScope(reader.getAttributeValue(null, "scope")));
@@ -43,11 +43,11 @@ public class InterfaceJavaLoader extends LoaderExtension {
             name = reader.getAttributeValue(null, "class");
         }
         serviceContract.setInterfaceName(name);
-        serviceContract.setInterfaceClass(StAXUtil.loadClass(name, loaderContext.getClassLoader()));
+        serviceContract.setInterfaceClass(StAXUtil.loadClass(name, deploymentContext.getClassLoader()));
 
         name = reader.getAttributeValue(null, "callbackInterface");
         serviceContract.setCallbackName(name);
-        serviceContract.setCallbackClass(StAXUtil.loadClass(name, loaderContext.getClassLoader()));
+        serviceContract.setCallbackClass(StAXUtil.loadClass(name, deploymentContext.getClassLoader()));
         return serviceContract;
     }
 }

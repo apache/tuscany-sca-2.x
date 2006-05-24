@@ -22,9 +22,10 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.loader.StAXElementLoader;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.ModelObject;
+
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
@@ -38,7 +39,7 @@ public class StAXLoaderRegistryImplTestCase extends MockObjectTestCase {
     private Mock mockMonitor;
     private Mock mockLoader;
     private Mock mockReader;
-    private LoaderContext loaderContext;
+    private DeploymentContext deploymentContext;
     private ModelObject modelObject;
 
     public void testLoaderRegistration() {
@@ -55,10 +56,10 @@ public class StAXLoaderRegistryImplTestCase extends MockObjectTestCase {
         mockReader.expects(once()).method("getName").will(returnValue(name));
         mockMonitor.expects(once()).method("registeringLoader").with(eq(name));
         mockMonitor.expects(once()).method("elementLoad").with(eq(name));
-        mockLoader.expects(once()).method("load").with(eq(mockReader.proxy()), eq(loaderContext)).will(returnValue(modelObject));
+        mockLoader.expects(once()).method("load").with(eq(mockReader.proxy()), eq(deploymentContext)).will(returnValue(modelObject));
 
         registry.registerLoader(name, (StAXElementLoader<ModelObject>) mockLoader.proxy());
-        assertSame(modelObject, registry.load((XMLStreamReader) mockReader.proxy(), loaderContext));
+        assertSame(modelObject, registry.load((XMLStreamReader) mockReader.proxy(), deploymentContext));
     }
 
     public void testUnsuccessfulDispatch() throws LoaderException, XMLStreamException {
@@ -66,7 +67,7 @@ public class StAXLoaderRegistryImplTestCase extends MockObjectTestCase {
         mockMonitor.expects(once()).method("elementLoad").with(eq(name));
 
         try {
-            registry.load((XMLStreamReader) mockReader.proxy(), loaderContext);
+            registry.load((XMLStreamReader) mockReader.proxy(), deploymentContext);
             fail();
         } catch (UnrecognizedElementException e) {
             assertSame(name, e.getElement());
@@ -76,7 +77,7 @@ public class StAXLoaderRegistryImplTestCase extends MockObjectTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         name = new QName("http://mock", "test");
-        loaderContext = new LoaderContext(null, null);
+        deploymentContext = new DeploymentContext(null, null, null);
         registry = new LoaderRegistryImpl();
         mockMonitor = mock(LoaderRegistryImpl.Monitor.class);
         registry.setMonitor((LoaderRegistryImpl.Monitor) mockMonitor.proxy());

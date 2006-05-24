@@ -22,6 +22,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * Registry for XML loaders that can parse a StAX input stream and return model objects.
@@ -64,11 +65,13 @@ public interface LoaderRegistry {
      * END_ELEMENT event.
      *
      * @param reader        the XML stream to parse
-     * @param loaderContext
+     * @param deploymentContext
      * @return the model object obtained by parsing the current element on the stream
      * @throws XMLStreamException if there was a problem reading the stream
      */
-    ModelObject load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, LoaderException;
+    ModelObject load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException;
 
-    <I extends Implementation> void loadComponentType(I implementation);
+    <I extends Implementation<?>> void registerLoader(Class<I> key, ComponentTypeLoader<I> loader);
+
+    <I extends Implementation<?>> void loadComponentType(I implementation, DeploymentContext deploymentContext);
 }

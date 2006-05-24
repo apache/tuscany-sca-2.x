@@ -22,7 +22,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.system.model.SystemImplementation;
-import org.apache.tuscany.spi.loader.LoaderContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 
@@ -36,13 +36,13 @@ public class SystemImplementationLoader extends LoaderExtension {
         return SYSTEM_IMPLEMENTATION;
     }
 
-    public SystemImplementation load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, LoaderException {
+    public SystemImplementation load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert SYSTEM_IMPLEMENTATION.equals(reader.getName());
         SystemImplementation implementation = new SystemImplementation();
         String implClass = reader.getAttributeValue(null, "class");
-        Class<?> implementationClass = StAXUtil.loadClass(implClass, loaderContext.getClassLoader());
+        Class<?> implementationClass = StAXUtil.loadClass(implClass, deploymentContext.getClassLoader());
         implementation.setImplementationClass(implementationClass);
-        registry.loadComponentType(implementation);
+        registry.loadComponentType(implementation, deploymentContext);
         StAXUtil.skipToEndElement(reader);
         return implementation;
     }

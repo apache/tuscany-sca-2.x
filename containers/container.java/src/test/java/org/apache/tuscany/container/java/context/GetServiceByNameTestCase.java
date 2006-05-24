@@ -19,16 +19,20 @@ public class GetServiceByNameTestCase extends MockObjectTestCase {
     public void testServiceLocate() throws Exception {
         ModuleScopeContext scope = new ModuleScopeContext(null);
         scope.start();
-        final JavaAtomicContext<?> context = MockContextFactory.createJavaAtomicContext("target",
-                TargetImpl.class, Target.class, Scope.MODULE);
-        context.setScopeContext(scope);
+        final JavaAtomicContext<?> context =
+                MockContextFactory.createJavaAtomicContext("target", scope, TargetImpl.class, Target.class, Scope.MODULE);
+
         Mock mock = mock(TargetWire.class);
         mock.stubs().method("getServiceName").will(returnValue("Target"));
-        mock.expects(once()).method("getTargetService").will(returnValue(context.getTargetInstance()));
         mock.stubs().method("getInvocationChains").will(returnValue(Collections.emptyMap()));
+
         TargetWire<Target> wire = (TargetWire<Target>) mock.proxy();
         context.addTargetWire(wire);
         context.prepare();
+        context.start();
+
+        mock.expects(once()).method("getTargetService").will(returnValue(context.getTargetInstance()));
+
         Target target = (Target) context.getService("Target");
         target.setString("foo");
         assertEquals("foo",target.getString());

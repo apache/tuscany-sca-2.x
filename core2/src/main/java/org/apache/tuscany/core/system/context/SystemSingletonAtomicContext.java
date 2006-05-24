@@ -9,7 +9,6 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
-import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.wire.SourceWire;
@@ -40,10 +39,6 @@ public class SystemSingletonAtomicContext<S, T extends S> extends AbstractContex
 
     public Scope getScope() {
         return Scope.MODULE;
-    }
-
-    public void setScopeContext(ScopeContext context) {
-        // do nothing
     }
 
     public boolean isEagerInit() {

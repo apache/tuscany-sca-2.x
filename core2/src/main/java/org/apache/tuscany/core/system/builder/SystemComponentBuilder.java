@@ -23,10 +23,12 @@ import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.wire.SourceWire;
 
 /**
@@ -34,7 +36,7 @@ import org.apache.tuscany.spi.wire.SourceWire;
  */
 public class SystemComponentBuilder implements ComponentBuilder<SystemImplementation> {
 
-    public ComponentContext build(CompositeContext parent, Component<SystemImplementation> component) throws BuilderConfigException {
+    public ComponentContext build(CompositeContext parent, Component<SystemImplementation> component, DeploymentContext deploymentContext) throws BuilderConfigException {
         assert(parent instanceof AutowireContext): "Parent must implement " + AutowireContext.class.getName();
         AutowireContext autowireContext = (AutowireContext) parent;
         PojoComponentType componentType = component.getImplementation().getComponentType();
@@ -68,9 +70,11 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
                 }
             }
         }
+        ScopeContext scopeContext = deploymentContext.getModuleScope();
         SystemAtomicContext systemContext =
                 new SystemAtomicContextImpl(component.getName(),
                         parent,
+                        scopeContext,
                         serviceInterfaces,
                         factory,
                         componentType.isEagerInit(),

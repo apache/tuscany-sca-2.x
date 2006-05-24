@@ -23,9 +23,10 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.loader.LoaderContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
@@ -34,7 +35,7 @@ import org.jmock.MockObjectTestCase;
  */
 public class ServiceLoaderTestCase extends MockObjectTestCase {
     private ServiceLoader loader;
-    private LoaderContext loaderContext;
+    private DeploymentContext deploymentContext;
     private Mock mockReader;
     private Mock mockRegistry;
 
@@ -54,8 +55,8 @@ public class ServiceLoaderTestCase extends MockObjectTestCase {
         mockReader.expects(once()).method("getName").will(returnValue(AssemblyConstants.SERVICE));
         mockReader.expects(once()).method("getAttributeValue").with(NULL, eq("name")).will(returnValue(name));
         mockReader.expects(atLeastOnce()).method("next").will(onConsecutiveCalls(returnValue(START_ELEMENT), returnValue(END_ELEMENT)));
-        mockRegistry.expects(once()).method("load").with(eq(mockReader.proxy()), eq(loaderContext)).will(returnValue(sc));
-        Service service = loader.load((XMLStreamReader) mockReader.proxy(), loaderContext);
+        mockRegistry.expects(once()).method("load").with(eq(mockReader.proxy()), eq(deploymentContext)).will(returnValue(sc));
+        Service service = loader.load((XMLStreamReader) mockReader.proxy(), deploymentContext);
         assertNotNull(service);
         assertEquals(name, service.getName());
         assertSame(sc, service.getServiceContract());
@@ -67,6 +68,6 @@ public class ServiceLoaderTestCase extends MockObjectTestCase {
         mockReader = mock(XMLStreamReader.class);
         mockRegistry = mock(LoaderRegistry.class);
         loader.setRegistry((LoaderRegistry) mockRegistry.proxy());
-        loaderContext = new LoaderContext(null, null);
+        deploymentContext = new DeploymentContext(null, null, null);
     }
 }

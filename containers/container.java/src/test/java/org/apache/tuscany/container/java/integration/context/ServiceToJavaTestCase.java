@@ -158,10 +158,9 @@ public class ServiceToJavaTestCase extends TestCase {
         SourceWire<Target> sourceWire = MockContextFactory.createSourceWire("target", Target.class);
         sourceWire.setTargetName(new QualifiedName("target/Target"));
         ServiceContextExtension<Target> serviceContext = new ServiceContextExtension<Target>("service", sourceWire, parent);
-        AtomicContext<?> atomicContext = MockContextFactory.createJavaAtomicContext("target", TargetImpl.class, Target.class, scope.getScope());
+        AtomicContext<?> atomicContext = MockContextFactory.createJavaAtomicContext("target", scope, TargetImpl.class, Target.class, scope.getScope());
         TargetWire targetWire = MockContextFactory.createTargetWire("Target", Target.class);
         atomicContext.addTargetWire(targetWire);
-        atomicContext.setScopeContext(scope);
         parent.registerContext(serviceContext);
         parent.registerContext(atomicContext);
         connector.connect(serviceContext);

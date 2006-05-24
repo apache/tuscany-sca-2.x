@@ -5,6 +5,8 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
+import org.apache.tuscany.spi.context.ScopeRegistry;
+
 import org.osoa.sca.annotations.Init;
 
 /**
@@ -14,11 +16,17 @@ import org.osoa.sca.annotations.Init;
 public abstract class ComponentBuilderExtension<I extends Implementation<?>> implements ComponentBuilder<I> {
 
     protected BuilderRegistry builderRegistry;
+    protected ScopeRegistry scopeRegistry;
     protected PolicyBuilderRegistry policyBuilderRegistry;
 
     @Autowire
     public void setBuilderRegistry(BuilderRegistry registry) {
         this.builderRegistry = registry;
+    }
+
+    @Autowire
+    public void setScopeRegistry(ScopeRegistry scopeRegistry) {
+        this.scopeRegistry = scopeRegistry;
     }
 
     @Autowire

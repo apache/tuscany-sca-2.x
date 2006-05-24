@@ -32,6 +32,7 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * @version $Rev$ $Date$
@@ -55,17 +56,17 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
         this.builderRegistry = builderRegistry;
     }
 
-    public ComponentContext build(CompositeContext parent, Component<SystemCompositeImplementation> component) throws BuilderConfigException {
+    public ComponentContext build(CompositeContext parent, Component<SystemCompositeImplementation> component, DeploymentContext deploymentContext) throws BuilderConfigException {
         SystemCompositeImplementation impl = component.getImplementation();
         CompositeComponentType componentType = impl.getComponentType();
         SystemCompositeContext<?> context = new SystemCompositeContextImpl(component.getName(), parent, getAutowireContext(parent));
         for (Service service : componentType.getServices().values()) {
             if (service instanceof BoundService) {
-                context.registerContext(builderRegistry.build(parent, (BoundService<? extends Binding>) service));
+                context.registerContext(builderRegistry.build(parent, (BoundService<? extends Binding>) service, deploymentContext));
             }
         }
         for (Component<? extends Implementation> childComponent : componentType.getComponents().values()) {
-            context.registerContext(builderRegistry.build(parent, childComponent));
+            context.registerContext(builderRegistry.build(parent, childComponent, deploymentContext));
         }
         return context;
     }

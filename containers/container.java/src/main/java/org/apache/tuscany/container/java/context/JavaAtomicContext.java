@@ -21,15 +21,16 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.container.java.wire.JavaTargetInvoker;
 import org.apache.tuscany.core.context.PojoAtomicContext;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.TargetNotFoundException;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.TargetWire;
 
@@ -41,7 +42,9 @@ import org.apache.tuscany.spi.wire.TargetWire;
 public class JavaAtomicContext<T> extends PojoAtomicContext<T> {
 
     public JavaAtomicContext(String name,
-                             CompositeContext<?> parent, List<Class<?>> serviceInterfaces,
+                             CompositeContext<?> parent,
+                             ScopeContext scopeContext,
+                             List<Class<?>> serviceInterfaces,
                              ObjectFactory<?> objectFactory,
                              Scope scope,
                              boolean eagerInit,
@@ -49,7 +52,7 @@ public class JavaAtomicContext<T> extends PojoAtomicContext<T> {
                              EventInvoker<Object> destroyInvoker,
                              List<Injector> injectors,
                              Map<String, Member> members) {
-        super(name, parent, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members);
+        super(name, parent, scopeContext, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members);
         this.scope = scope;
     }
 

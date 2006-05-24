@@ -23,11 +23,13 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * @version $Rev$ $Date$
  */
 public class BuilderRegistryTestCase extends TestCase {
+    private DeploymentContext deploymentContext;
     private BuilderRegistryImpl registry;
 
     public void testRegistrationWithGenerics() {
@@ -35,7 +37,7 @@ public class BuilderRegistryTestCase extends TestCase {
         registry.register(builder);
         Component<CompositeImplementation> component = new Component(new CompositeImplementation());
         component.getImplementation().setComponentType(new CompositeComponentType());
-        registry.build(null, component);
+        registry.build(null, component, deploymentContext);
     }
 
     public void testRegistrationWithoutGenerics() {
@@ -43,23 +45,24 @@ public class BuilderRegistryTestCase extends TestCase {
         registry.register(CompositeImplementation.class, builder);
         Component<CompositeImplementation> component = new Component(new CompositeImplementation());
         component.getImplementation().setComponentType(new CompositeComponentType());
-        registry.build(null, component);
+        registry.build(null, component, deploymentContext);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
         registry = new BuilderRegistryImpl();
+        deploymentContext = new DeploymentContext(null, null, null);
     }
 
     public static class GenerifiedBuilder implements ComponentBuilder<CompositeImplementation> {
-        public ComponentContext build(CompositeContext parent, Component<CompositeImplementation> component) {
+        public ComponentContext build(CompositeContext parent, Component<CompositeImplementation> component, DeploymentContext deploymentContext) {
             return null;
         }
     }
 
     @SuppressWarnings({"RawUseOfParameterizedType"})
     public static class RawBuilder implements ComponentBuilder {
-        public ComponentContext build(CompositeContext parent, Component component) {
+        public ComponentContext build(CompositeContext parent, Component component, DeploymentContext deploymentContext) {
             return null;
         }
     }

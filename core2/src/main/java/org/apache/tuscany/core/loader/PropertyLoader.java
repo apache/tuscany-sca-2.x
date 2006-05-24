@@ -22,7 +22,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import static org.apache.tuscany.core.loader.AssemblyConstants.PROPERTY;
 import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.loader.LoaderContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 
@@ -34,7 +34,7 @@ public class PropertyLoader extends LoaderExtension {
         return PROPERTY;
     }
 
-    public Property<?> load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, LoaderException {
+    public Property<?> load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert PROPERTY.equals(reader.getName());
         Property<?> property = new Property();
         property.setName(reader.getAttributeValue(null, "name"));

@@ -23,6 +23,7 @@ import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.extension.AtomicContextExtension;
 import org.apache.tuscany.spi.wire.SourceWire;
 
@@ -43,6 +44,7 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
 
     public PojoAtomicContext(String name,
                              CompositeContext<?> parent,
+                             ScopeContext scopeContext,
                              Class<?> serviceInterface,
                              ObjectFactory<?> objectFactory,
                              boolean eagerInit,
@@ -50,7 +52,7 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
                              EventInvoker<Object> destroyInvoker,
                              List<Injector> injectors,
                              Map<String, Member> members) {
-        super(name, parent);
+        super(name, parent, scopeContext);
         assert (objectFactory != null) : "Object factory was null";
         if (eagerInit && initInvoker == null) {
             throw new AssertionError("No intialization method found for eager init implementation");
@@ -69,6 +71,7 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
 
     public PojoAtomicContext(String name,
                              CompositeContext<?> parent,
+                             ScopeContext scopeContext,
                              List<Class<?>> serviceInterfaces,
                              ObjectFactory<?> objectFactory,
                              boolean eagerInit,
@@ -76,7 +79,7 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
                              EventInvoker<Object> destroyInvoker,
                              List<Injector> injectors,
                              Map<String, Member> members) {
-        super(name, parent);
+        super(name, parent, scopeContext);
         assert (objectFactory != null) : "Object factory was null";
         if (eagerInit && initInvoker == null) {
             throw new AssertionError("No intialization method found for eager init implementation");

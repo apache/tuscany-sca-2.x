@@ -24,7 +24,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.loader.LoaderContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.StAXElementLoader;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -57,17 +57,22 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         loaders.remove(element);
     }
 
-    public ModelObject load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, LoaderException {
+    public ModelObject load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         QName name = reader.getName();
         monitor.elementLoad(name);
         StAXElementLoader<? extends ModelObject> loader = loaders.get(name);
         if (loader == null) {
             throw new UnrecognizedElementException(name);
         }
-        return loader.load(reader, loaderContext);
+        return loader.load(reader, deploymentContext);
     }
 
-    public <I extends Implementation> void loadComponentType(I implementation) {
+    public <I extends Implementation<?>> void registerLoader(Class<I> key, ComponentTypeLoader<I> loader) {
+        componentTypeLoaders.put(key, loader);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <I extends Implementation<?>> void loadComponentType(I implementation, DeploymentContext deploymentContext) {
         Class<I> key = (Class<I>) implementation.getClass();
         ComponentTypeLoader<I> loader = (ComponentTypeLoader<I>) componentTypeLoaders.get(key);
         if (loader == null) {

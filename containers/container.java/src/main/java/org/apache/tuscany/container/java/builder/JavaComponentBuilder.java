@@ -12,21 +12,21 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.model.Component;
-import org.apache.tuscany.spi.model.JavaServiceContract;
 import org.apache.tuscany.spi.model.Service;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
-import org.osoa.sca.annotations.Scope;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-@Scope("MODULE")
 public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplementation> {
 
-    public JavaAtomicContext build(CompositeContext parent, Component<JavaImplementation> component)
+    public JavaAtomicContext build(CompositeContext parent, Component<JavaImplementation> component, DeploymentContext deploymentContext)
             throws BuilderConfigException {
         PojoComponentType componentType = component.getImplementation().getComponentType();
 
@@ -59,9 +59,25 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
                 }
             }
         }
-        return new JavaAtomicContext(component.getName(), parent, serviceInterfaces, factory, componentType.getLifecycleScope(),
-                componentType.isEagerInit(), componentType.getInitInvoker(), componentType.getDestroyInvoker(),
-                injectors, componentType.getReferenceMembers());
+
+        ScopeContext scopeContext;
+        Scope scope = componentType.getLifecycleScope();
+        if (Scope.MODULE == scope) {
+            scopeContext = deploymentContext.getModuleScope();
+        } else {
+            scopeContext = scopeRegistry.getScopeContext(scope);
+        }
+        return new JavaAtomicContext(component.getName(),
+                parent,
+                scopeContext,
+                serviceInterfaces,
+                factory,
+                scope,
+                componentType.isEagerInit(),
+                componentType.getInitInvoker(),
+                componentType.getDestroyInvoker(),
+                injectors,
+                componentType.getReferenceMembers());
     }
 
 

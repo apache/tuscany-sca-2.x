@@ -29,22 +29,20 @@ import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Reference;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
-import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.ScopeRegistry;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetWire;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * @version $Rev$ $Date$
@@ -88,7 +86,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <I extends Implementation<?>> Context build(CompositeContext parent, Component<I> component) {
+    public <I extends Implementation<?>> Context build(CompositeContext parent, Component<I> component, DeploymentContext deploymentContext) {
         Class<I> implClass = (Class<I>) component.getImplementation().getClass();
         ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>) componentBuilders.get(implClass);
         if (componentBuilder == null) {
@@ -98,7 +96,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             throw e;
         }
 
-        ComponentContext context = componentBuilder.build(parent, component);
+        ComponentContext context = componentBuilder.build(parent, component, deploymentContext);
         ComponentType componentType = component.getImplementation().getComponentType();
         assert(componentType != null): "Component type must be set";
         // create target wires
@@ -111,19 +109,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             SourceWire wire = wireService.createSourceWire(reference);
             context.addSourceWire(wire);
         }
-        if (context instanceof AtomicContext) {
-            AtomicContext ctx = (AtomicContext) context;
-            Scope scope = ctx.getScope();
-            if (scope == null) {
-                scope = Scope.STATELESS;
-            }
-            ScopeContext scopeContext = scopeRegistry.getScopeContext(scope);
-            if (scopeContext == null) {
-                throw new BuilderConfigException("Scope context not registered for scope " + scope);
-            }
-            ctx.setScopeContext(scopeContext);
-            scopeContext.register(ctx);
-        }
+
         return context;
     }
 
@@ -149,17 +135,17 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <B extends Binding> Context build(CompositeContext parent, BoundService<B> boundService) {
+    public <B extends Binding> Context build(CompositeContext parent, BoundService<B> boundService, DeploymentContext deploymentContext) {
         Class<B> bindingClass = (Class<B>) boundService.getBinding().getClass();
         BindingBuilder<B> bindingBuilder = (BindingBuilder<B>) bindingBuilders.get(bindingClass);
-        return bindingBuilder.build(parent, boundService);
+        return bindingBuilder.build(parent, boundService, deploymentContext);
     }
 
     @SuppressWarnings("unchecked")
-    public <B extends Binding> Context build(CompositeContext parent, BoundReference<B> boundReference) {
+    public <B extends Binding> Context build(CompositeContext parent, BoundReference<B> boundReference, DeploymentContext deploymentContext) {
         Class<B> bindingClass = (Class<B>) boundReference.getBinding().getClass();
         BindingBuilder<B> bindingBuilder = (BindingBuilder<B>) bindingBuilders.get(bindingClass);
-        return bindingBuilder.build(parent, boundReference);
+        return bindingBuilder.build(parent, boundReference, deploymentContext);
     }
 
 }

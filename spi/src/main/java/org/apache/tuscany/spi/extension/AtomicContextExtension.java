@@ -5,6 +5,7 @@ import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.CoreRuntimeException;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -14,21 +15,22 @@ public abstract class AtomicContextExtension<T> extends ComponentContextExtensio
     protected ScopeContext scopeContext;
     protected Scope scope;
 
-    protected AtomicContextExtension(String name, CompositeContext<?> parent) {
+    protected AtomicContextExtension(String name, CompositeContext<?> parent, ScopeContext scopeContext) {
         super(name, parent);
+        this.scopeContext = scopeContext;
     }
 
     public Scope getScope() {
         return scope;
     }
 
-    public void setScopeContext(ScopeContext context) {
-        scopeContext = context;
-        context.register(this);
-    }
-
     public boolean isEagerInit() {
         return false;
+    }
+
+    public void start() throws CoreRuntimeException {
+        super.start();
+        scopeContext.register(this);
     }
 
     public void init(Object instance) throws TargetException {

@@ -20,6 +20,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * A loader that creates a model object from a StAX input stream.
@@ -32,8 +33,8 @@ public interface StAXElementLoader<T extends ModelObject> {
      * When this method returns the stream will be positioned on the corresponding END_ELEMENT.
      *
      * @param reader the XML stream reader positioned on the applicable START_ELEMENT
-     * @param loaderContext the context for the load operation
+     * @param deploymentContext the context for the load operation
      * @return the model object for that element
      */
-    T load(XMLStreamReader reader, LoaderContext loaderContext) throws XMLStreamException, LoaderException;
+    T load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException;
 }

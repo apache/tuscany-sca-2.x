@@ -20,10 +20,11 @@ import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface ComponentBuilder<I extends Implementation<?>> {
-    ComponentContext build(CompositeContext parent, Component<I> component) throws BuilderConfigException;
+    ComponentContext build(CompositeContext parent, Component<I> component, DeploymentContext deploymentContext) throws BuilderConfigException;
 }

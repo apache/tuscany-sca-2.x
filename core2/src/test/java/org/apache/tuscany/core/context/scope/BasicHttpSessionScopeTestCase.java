@@ -11,6 +11,7 @@ import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.core.system.context.SystemAtomicContextImpl;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.context.ScopeContext;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -25,8 +26,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         WorkContext workContext = new WorkContextImpl();
         HttpSessionScopeContext scopeContext = new HttpSessionScopeContext(workContext);
         scopeContext.start();
-        SystemAtomicContext atomicContext = createContext();
-        atomicContext.setScopeContext(scopeContext);
+        SystemAtomicContext atomicContext = createContext(scopeContext);
         // start the request
         Object session = new Object();
         workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session);
@@ -45,8 +45,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         HttpSessionScopeContext scopeContext = new HttpSessionScopeContext(workContext);
         scopeContext.start();
 
-        SystemAtomicContext atomicContext = createContext();
-        atomicContext.setScopeContext(scopeContext);
+        SystemAtomicContext atomicContext = createContext(scopeContext);
 
         Object session1 = new Object();
         workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
@@ -77,7 +76,9 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         super.tearDown();
     }
 
-    private SystemAtomicContext createContext() {
-        return new SystemAtomicContextImpl("foo", null, SessionScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null, null);
+    private SystemAtomicContext createContext(ScopeContext scopeContext) {
+        SystemAtomicContextImpl context = new SystemAtomicContextImpl("foo", null, scopeContext, SessionScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null, null);
+        context.start();
+        return context;
     }
 }

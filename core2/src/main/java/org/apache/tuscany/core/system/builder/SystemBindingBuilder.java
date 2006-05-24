@@ -9,6 +9,7 @@ import org.apache.tuscany.core.system.wire.SystemTargetAutowire;
 import org.apache.tuscany.spi.model.BoundReference;
 import org.apache.tuscany.spi.model.BoundService;
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
@@ -19,14 +20,14 @@ import org.apache.tuscany.spi.wire.TargetWire;
  */
 public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
 
-    public Context build(CompositeContext parent, BoundService<SystemBinding> boundService) {
+    public Context build(CompositeContext parent, BoundService<SystemBinding> boundService, DeploymentContext deploymentContext) {
         Class<?> interfaze = boundService.getServiceContract().getInterfaceClass();
         QualifiedName targetName = new QualifiedName(boundService.getTarget().getPath());
         SystemSourceWire<?> wire = new SystemSourceWire(boundService.getName(), targetName, interfaze);
         return new SystemServiceContextImpl(boundService.getName(), wire, parent);
     }
 
-    public Context build(CompositeContext parent, BoundReference<SystemBinding> boundReference) {
+    public Context build(CompositeContext parent, BoundReference<SystemBinding> boundReference, DeploymentContext deploymentContext) {
         assert(parent.getParent() instanceof AutowireContext):"Grandparent not an instance of "+AutowireContext.class.getName();
         AutowireContext autowireContext = (AutowireContext)parent.getParent();
         Class<?> interfaze = boundReference.getServiceContract().getInterfaceClass();
