@@ -43,8 +43,9 @@ public class WireTestCase extends MockObjectTestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", SCRIPT, services, Scope.MODULE,null, null);
-        context.setScopeContext(scope);
+        GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", SCRIPT, services,
+                Scope.MODULE,null, null,scope);
+        scope.register(context);
         Mock mock = mock(SourceWire.class);
         mock.expects(atLeastOnce()).method("getTargetService").will(
                 returnValue(new Greeting() {
@@ -70,8 +71,8 @@ public class WireTestCase extends MockObjectTestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
         GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", SCRIPT2, services,
-                Scope.MODULE,null, null);
-        context.setScopeContext(scope);
+                Scope.MODULE,null, null,scope);
+        scope.register(context);
         TargetInvoker invoker = context.createTargetInvoker("greeting",Greeting.class.getMethod("greet", String.class));
         assertEquals("foo", invoker.invokeTarget(new String[]{"foo"}));
         scope.stop();
@@ -87,8 +88,9 @@ public class WireTestCase extends MockObjectTestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        final GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", SCRIPT2, services, Scope.MODULE,null, null);
-        context.setScopeContext(scope);
+        final GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", SCRIPT2,
+                services, Scope.MODULE,null, null,scope);
+        scope.register(context);
         Mock mock = mock(TargetWire.class);
         mock.stubs().method("getServiceName").will(returnValue("Greeting"));
         mock.expects(atLeastOnce()).method("getTargetService").will(

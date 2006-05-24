@@ -28,7 +28,6 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.loader.StAXElementLoader;
-import org.apache.tuscany.spi.loader.LoaderContext;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.osoa.sca.annotations.Scope;
 

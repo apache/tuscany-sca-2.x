@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.extension.AtomicContextExtension;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.SourceWire;
@@ -44,8 +45,8 @@ public class GroovyAtomicContext<T> extends AtomicContextExtension<T> {
     private List<PropertyInjector> injectors;
 
     public GroovyAtomicContext(String name, String script, List<Class<?>>services, Scope scope,
-                               List<PropertyInjector> injectors, CompositeContext parent) {
-        super(name, parent);
+                               List<PropertyInjector> injectors, CompositeContext parent, ScopeContext scopeContext) {
+        super(name, parent, scopeContext);
         this.script = script;
         this.services = services;
         this.scope = scope;

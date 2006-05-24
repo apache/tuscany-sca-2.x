@@ -33,8 +33,8 @@ public class PropertyTestCase extends MockObjectTestCase {
         List<PropertyInjector> injectors = new ArrayList<PropertyInjector>();
         injectors.add(new SingletonInjector("property", "bar"));
         GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", PropertyTestCase.SCRIPT,
-                services, Scope.MODULE, injectors, null);
-        context.setScopeContext(scope);
+                services, Scope.MODULE, injectors, null,scope);
+        scope.register(context);
         Greeting greeting = context.getService();
         assertEquals("bar", greeting.greet("foo"));
         scope.stop();
