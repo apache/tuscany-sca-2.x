@@ -16,16 +16,19 @@
  */
 package org.apache.tuscany.spi.builder;
 
+import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.Context;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.model.BoundReference;
 import org.apache.tuscany.spi.model.BoundService;
 import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
+ * Maintains a registry of builders in the runtime, dispatching to the appropriate one as an assembly model is
+ * processed into runtime artifacts
+ *
  * @version $Rev$ $Date$
  */
 public interface BuilderRegistry {

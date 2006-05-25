@@ -21,7 +21,8 @@ import java.util.List;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 
 /**
- * A context which contains child component contexts.
+ * A runtime artifact that contains child component contexts and functions as the runtime analog to composites
+ * configured in an assembly
  *
  * @version $Rev: 393708 $ $Date: 2006-04-12 21:29:05 -0700 (Wed, 12 Apr 2006) $
  */

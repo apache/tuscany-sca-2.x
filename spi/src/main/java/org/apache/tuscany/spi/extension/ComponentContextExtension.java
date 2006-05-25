@@ -13,6 +13,8 @@ import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
+ * A base extension class for supporting atomic and composite types
+ *
  * @version $$Rev$$ $$Date$$
  */
 public abstract class ComponentContextExtension<T> extends AbstractContext<T> implements ComponentContext<T> {

@@ -18,7 +18,7 @@ package org.apache.tuscany.spi;
 
 /**
  * An evaluated name consisting of a part/port pair. In the runtime, a part generally 'contains' or 'provides' ports
- * such as a module component/entry point or a component/service pair.
+ * such as a component/service point or a component/reference pair.
  *
  * @version $Rev: 394173 $ $Date: 2006-04-14 11:54:59 -0700 (Fri, 14 Apr 2006) $
  */

@@ -1,6 +1,8 @@
 package org.apache.tuscany.spi.context;
 
 /**
+ * Thrown when a runtime context cannot be found
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class ContextNotFoundException extends ContextRuntimeException {

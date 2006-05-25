@@ -1,6 +1,8 @@
 package org.apache.tuscany.spi.context;
 
 /**
+ * Thrown when a target for an operation is not of the required type
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class IllegalTargetException extends TargetException{

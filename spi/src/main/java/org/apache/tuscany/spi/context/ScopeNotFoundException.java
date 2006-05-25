@@ -1,6 +1,7 @@
 package org.apache.tuscany.spi.context;
 
 /**
+ * Throw when a scope context cannot be found for a given scope
  * @version $$Rev$$ $$Date$$
  */
 public class ScopeNotFoundException extends ScopeRuntimeException{

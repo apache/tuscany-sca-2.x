@@ -22,7 +22,7 @@ import org.apache.tuscany.spi.event.RuntimeEventListener;
 
 
 /**
- * Manages the lifecycle and visibility of instances associated with a set of scoped {@link Context}s.
+ * Manages the lifecycle and visibility of instances associated with a set of {@link AtomicContext}s.
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  * @see Context

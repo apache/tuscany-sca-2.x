@@ -1,16 +1,14 @@
 package org.apache.tuscany.spi.policy;
 
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.model.Reference;
 import org.apache.tuscany.spi.model.Service;
-import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
- * A System builderRegistry for policy builders.
- * <p/>
- * Policy builders operate on either a source- or target-side wire and typically are registered by runtime
- * extensions through {@link #registerTargetBuilder} or {@link #registerSourceBuilder}
+ * A registry for policy builders that dispatches to the appropriate builder when converting an assembly to
+ * runtime artifacts. Policy builders operate on either a source- or target-side wires.
  *
  * @version $Rev$ $Date$
  */
@@ -22,14 +20,16 @@ public interface PolicyBuilderRegistry {
 
     /**
      * Registers a target-side policy builder. Called by extensions to register their builders.
-     * @param phase the phase hwne the builder must be run
+     *
+     * @param phase   the phase hwne the builder must be run
      * @param builder the builder to register
      */
     public void registerTargetBuilder(int phase, TargetPolicyBuilder builder);
 
     /**
      * Registers a source-side policy builder. Called by extensions to register their builders.
-     * @param phase the phase hwne the builder must be run
+     *
+     * @param phase   the phase hwne the builder must be run
      * @param builder the builder to register
      */
     public void registerSourceBuilder(int phase, SourcePolicyBuilder builder);

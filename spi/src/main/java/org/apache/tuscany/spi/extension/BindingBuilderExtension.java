@@ -1,19 +1,21 @@
 package org.apache.tuscany.spi.extension;
 
-import org.apache.tuscany.spi.model.Binding;
-import org.apache.tuscany.spi.model.BoundReference;
-import org.apache.tuscany.spi.model.BoundService;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-
+import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BoundReference;
+import org.apache.tuscany.spi.model.BoundService;
+import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.osoa.sca.annotations.Init;
 
 /**
+ * An extension point for binding builders. When adding support for new bindings, implementations may extend
+ * this class as a convenience.
+ *
  * @version $$Rev$$ $$Date$$
  */
 @org.osoa.sca.annotations.Scope("MODULE")

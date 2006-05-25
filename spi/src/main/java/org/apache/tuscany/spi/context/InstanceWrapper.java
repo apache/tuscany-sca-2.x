@@ -19,10 +19,13 @@ package org.apache.tuscany.spi.context;
 import org.apache.tuscany.spi.Lifecycle;
 
 /**
+ * Provides lifecycle management for an implementation instance associated with an {@link AtomicContext} for use by the atomic context's
+ * associated {@link ScopeContext}
+ *
  * @version $Rev$ $Date$
  */
 public interface InstanceWrapper extends Lifecycle {
-    
+
     Object getInstance();
 
 }

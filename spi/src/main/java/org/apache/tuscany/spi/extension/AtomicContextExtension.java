@@ -1,13 +1,16 @@
 package org.apache.tuscany.spi.extension;
 
-import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.CoreRuntimeException;
+import org.apache.tuscany.spi.model.Scope;
 
 /**
+ * An extension point for atomic contexts. When adding support for new component types, implementations may
+ * extend this class as a convenience.
+ *
  * @version $$Rev$$ $$Date$$
  */
 public abstract class AtomicContextExtension<T> extends ComponentContextExtension<T> implements AtomicContext<T> {

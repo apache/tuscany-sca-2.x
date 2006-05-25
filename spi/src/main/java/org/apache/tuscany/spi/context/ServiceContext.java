@@ -23,11 +23,11 @@ import org.apache.tuscany.spi.wire.SourceWire;
  * <p/>
  * <pre>
  *              CompositeContext compositeContext = ...
- *              ServiceContext ctx = compositeContext.getServiceContext(&quot;source&quot;);
- *              HelloWorld proxy = (Helloworld) ctx.getInstance();
+ *              ServiceContext<HelloWorld> ctx = (ServiceContext<HelloWorld>)compositeContext.getServiceContext(&quot;source&quot;);
+ *              HelloWorld proxy = ctx.getService();
  * </pre>
  * <p/>
- * The proxy returned will be backed by the econtext wire chain.
+ * The proxy returned will be backed by the context wire chain.
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */

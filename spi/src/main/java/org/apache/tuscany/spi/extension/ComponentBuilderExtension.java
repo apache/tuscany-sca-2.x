@@ -10,6 +10,9 @@ import org.apache.tuscany.spi.context.ScopeRegistry;
 import org.osoa.sca.annotations.Init;
 
 /**
+ * An extension point for component builders. When adding support for new component types, implementations may
+ * extend this class as a convenience.
+ *
  * @version $$Rev$$ $$Date$$
  */
 @org.osoa.sca.annotations.Scope("MODULE")

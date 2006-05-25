@@ -17,6 +17,7 @@ import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.model.Scope;
 
 /**
+ * Manages {@link ScopeContext}s in the runtime
  * @version $$Rev$$ $$Date$$
  */
 public interface ScopeRegistry {

@@ -16,17 +16,22 @@
  */
 package org.apache.tuscany.spi.builder;
 
-import org.apache.tuscany.spi.model.Binding;
-import org.apache.tuscany.spi.model.BoundReference;
-import org.apache.tuscany.spi.model.BoundService;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BoundReference;
+import org.apache.tuscany.spi.model.BoundService;
 
 /**
+ * Responsible for processing a service or reference in an assembly configured with a particular binding. The
+ * builder will create and return corresponding {@link org.apache.tuscany.spi.context.ServiceContext} or
+ * {@link org.apache.tuscany.spi.context.ReferenceContext}
+ *
  * @version $Rev$ $Date$
  */
 public interface BindingBuilder<B extends Binding> {
     Context build(CompositeContext parent, BoundService<B> boundService, DeploymentContext deploymentContext);
+
     Context build(CompositeContext parent, BoundReference<B> boundReference, DeploymentContext deploymentContext);
 }

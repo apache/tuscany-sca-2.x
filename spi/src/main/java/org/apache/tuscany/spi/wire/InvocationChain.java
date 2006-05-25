@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Contains a source- or target-side invocation pipeline for a service operation. The runtime framework
- * creates invocation chains on a per-operation, per-service basis. Further, invocation chains are further
+ * creates invocation chains on a per-operation, per-service basis. Moreover, invocation chains are further
  * distinguished by being part of the source or target sides of a wire. Chains are "bridged" together by the
  * runtime with the source-side holding references to the target.
  * <p/>
@@ -18,27 +18,17 @@ import java.util.List;
  * <pre>
  * <ol>
  * <li>The first source interceptor will be called with a message, which will in
- *     turn invoke the next interceptor in the chain <li>The last source interceptor, which must be of type
- * {@link
- *     org.apache.tuscany.core.wire.impl.RequestResponseInterceptor} if there are handlers present, will be
- * invoked. The RR
- *     interceptor will in turn pass the message to a {@link MessageChannel} which
- * will invoke all source-side request handlers.
- * <li>The RR interceptor will then invoke the target-side request <code>MessageChannel</code>.
- * <li>The last source-side handler, an instance of {@link MessageDispatcher},
- * will invoke the
- *     first source-side interceptor, which in turn will pass the message down the target-side interceptor
- * chain.
- * <li>If the target is a component instance the last target-side interceptor, an instance of
- *     {@link InvokerInterceptor} will retrieve the {@link TargetInvoker} from the
- * message and
- *     call it to invoke the operation on a target instance. <tt>TargetInvoker</tt>s are help by
- *     the source proxy to enable optimizations such as caching of target instances. <li> The response is
- * returned up the wire
- * stack
- *     until it reaches the source-side <tt>RequestResponseInterceptor</tt>, which invokes the target and
- * source-side response
- *     channels respectively.
+ *     turn invoke the next interceptor in the chain
+ * <li>If source handlers are present, they will be invoked by passing the message to a {@link
+ * MessageChannel}
+ * <li>The target-side request <code>MessageChannel</code> will be invoked next
+ * <li>Following the last source-side handler, the first source-side interceptor will be invoked, which in
+ * turn
+ * will pass the message down the target-side interceptor chain.
+ * <li>After invoking the last interceptor, the chain will retrieve the {@link TargetInvoker} from the
+ * message and call it to invoke the operation on a target instance.
+ * <li>The response is returned up the wire stack until it reaches the source-side wire, which invokes the
+ * target and source-side response channels respectively.
  * <li>The response is then passed back up the rest of the wire stack. </ol>
  * </pre>
  * <p/>

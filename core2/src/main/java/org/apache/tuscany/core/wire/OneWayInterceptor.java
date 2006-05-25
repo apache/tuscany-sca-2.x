@@ -29,7 +29,7 @@ public class OneWayInterceptor implements Interceptor {
     private MessageChannel requestChannel;
 
     /**
-     * Construct an interceptor that sends messages down the supplied channel.
+     * Construct an interceptor that sends messages down the supplied channel
      *
      * @param requestChannel the channel to send messages down
      */

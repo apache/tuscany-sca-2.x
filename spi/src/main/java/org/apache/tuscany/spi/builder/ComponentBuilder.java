@@ -16,13 +16,16 @@
  */
 package org.apache.tuscany.spi.builder;
 
-import org.apache.tuscany.spi.model.Component;
-import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.Implementation;
 
 /**
+ * Responsible for building a {@link ComponentContext} from an atomic or composite component configured in an
+ * assembly
+ *
  * @version $Rev$ $Date$
  */
 public interface ComponentBuilder<I extends Implementation<?>> {

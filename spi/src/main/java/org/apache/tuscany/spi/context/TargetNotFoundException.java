@@ -1,6 +1,7 @@
 package org.apache.tuscany.spi.context;
 
 /**
+ * Thrown when a target of an operation cannot be found
  * @version $$Rev$$ $$Date$$
  */
 public class TargetNotFoundException extends TargetException{
