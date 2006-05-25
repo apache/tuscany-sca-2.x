@@ -78,7 +78,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         if (loader == null) {
             throw new UnsupportedOperationException();
         }
-        loader.load(implementation);
+        loader.load(implementation, deploymentContext);
     }
 
     public static interface Monitor {
