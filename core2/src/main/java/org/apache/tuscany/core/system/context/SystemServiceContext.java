@@ -3,7 +3,7 @@ package org.apache.tuscany.core.system.context;
 import org.apache.tuscany.spi.context.ServiceContext;
 
 /**
- * Marker for system service contexts
+ * Marker for service contexts configured with the {@link org.apache.tuscany.core.system.model.SystemBinding}
  *
  * @version $$Rev$$ $$Date$$
  */

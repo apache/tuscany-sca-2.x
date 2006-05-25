@@ -14,7 +14,7 @@ import org.osoa.sca.SCA;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
- * Uses a WorkManager to schedule asynchronous execution of invocations
+ * Uses a <code>WorkManager</code> to schedule asynchronous execution of invocations
  *
  * @version $$Rev$$ $$Date$$
  */

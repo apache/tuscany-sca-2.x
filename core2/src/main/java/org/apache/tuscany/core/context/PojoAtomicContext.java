@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.extension.AtomicContextExtension;
 import org.apache.tuscany.spi.wire.SourceWire;
 
 /**
- * Base implementation of an {@link AtomicContext} whose implementation type is a Java class
+ * Base implementation of an {@link AtomicContext} whose type is a Java class
  *
  * @version $$Rev$$ $$Date$$
  */

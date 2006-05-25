@@ -11,7 +11,7 @@ import org.apache.geronimo.connector.work.GeronimoWorkManager;
 import org.apache.geronimo.transaction.context.TransactionContextManager;
 
 /**
- * A Work Manager service component implementation which just reuses the Geronimo WorkManager.
+ * A <code>WorkManager</code> service component implementation which just reuses the Geronimo WorkManager.
  *
  * @version $Rev$ $Date$
  */

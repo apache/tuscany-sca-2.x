@@ -20,6 +20,7 @@ import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.spi.model.AtomicImplementation;
 
 /**
+ * Represents the system composite implementation
  * @version $Rev$ $Date$
  */
 public class SystemImplementation extends AtomicImplementation<PojoComponentType> {

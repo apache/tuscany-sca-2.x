@@ -8,6 +8,8 @@ import org.apache.tuscany.spi.extension.ServiceContextExtension;
 import org.apache.tuscany.spi.wire.SourceWire;
 
 /**
+ * Default implementation for service contexts configured with the {@link org.apache.tuscany.core.system.model.SystemBinding}
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class SystemServiceContextImpl<T> extends ServiceContextExtension<T> implements SystemServiceContext<T> {

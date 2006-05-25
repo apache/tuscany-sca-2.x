@@ -1,15 +1,17 @@
 package org.apache.tuscany.core.system.wire;
 
 import java.lang.reflect.Method;
-import java.util.Map;
 import java.util.Collections;
+import java.util.Map;
 
-import org.apache.tuscany.spi.wire.TargetWire;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
-import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.core.context.AutowireContext;
+import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.wire.TargetInvocationChain;
+import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
+ * The target side of an wire configured to autowire
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class SystemTargetAutowire<T> implements TargetWire<T> {
@@ -17,7 +19,7 @@ public class SystemTargetAutowire<T> implements TargetWire<T> {
     private Class<T> businessInterface;
     private AutowireContext<?> context;
 
-    public SystemTargetAutowire(Class<T> businessInterface,AutowireContext context) {
+    public SystemTargetAutowire(Class<T> businessInterface, AutowireContext context) {
         this.businessInterface = businessInterface;
         this.context = context;
     }
@@ -64,5 +66,5 @@ public class SystemTargetAutowire<T> implements TargetWire<T> {
     public boolean isOptimizable() {
         return true;  // system wires are always optimizable
     }
-    
+
 }

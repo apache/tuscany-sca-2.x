@@ -45,6 +45,8 @@ import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
+ * The default builder registry in the runtime
+ *
  * @version $Rev$ $Date$
  */
 public class BuilderRegistryImpl implements BuilderRegistry {

@@ -9,6 +9,8 @@ import org.apache.tuscany.spi.extension.ReferenceContextExtension;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
+ * Default implementation of a reference context configured with the
+ * {@link org.apache.tuscany.core.system.model.SystemBinding}
  * @version $Rev: 399991 $ $Date: 2006-05-04 23:44:07 -0700 (Thu, 04 May 2006) $
  */
 public class SystemReferenceContextImpl<T> extends ReferenceContextExtension<T> implements SystemReferenceContext<T> {

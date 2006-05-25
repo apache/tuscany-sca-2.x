@@ -27,6 +27,8 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
+ * The default connector implmentation
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class ConnectorImpl implements Connector {

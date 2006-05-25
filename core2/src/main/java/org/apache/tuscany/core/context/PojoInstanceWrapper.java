@@ -19,7 +19,8 @@ import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 
 /**
- * Manages an Java class-based implementation instance 
+ * Manages an Java class-based implementation instance
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class PojoInstanceWrapper extends AbstractLifecycle implements InstanceWrapper {

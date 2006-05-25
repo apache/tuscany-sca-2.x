@@ -10,6 +10,8 @@ import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
+ * The source side of a wire configured to use the {@link org.apache.tuscany.core.system.model.SystemBinding}
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class SystemTargetWire<T> implements TargetWire<T> {

@@ -4,6 +4,7 @@ import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.TargetException;
 
 /**
+ * Implementations manage system atomic components
  * @version $$Rev$$ $$Date$$
  */
 public interface SystemAtomicContext<T> extends AtomicContext<T> {

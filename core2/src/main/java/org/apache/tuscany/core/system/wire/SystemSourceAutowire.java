@@ -12,6 +12,8 @@ import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
+ * The source side of an wire configured to autowire
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class SystemSourceAutowire<T> implements SourceAutowire<T> {

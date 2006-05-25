@@ -26,6 +26,10 @@ import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
 
 
+/**
+ * Contains functionality common to source- and target- side invocation chains
+ * @version $Rev$ $Date$
+ */
 public abstract class InvocationChainImpl implements InvocationChain {
 
     // the operation on the target that will utlimately be invoked

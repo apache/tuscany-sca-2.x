@@ -1,9 +1,12 @@
 package org.apache.tuscany.core.builder;
 
 import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.context.CompositeContext;
 
 /**
+ * Implementations are responsible for bridging {@link org.apache.tuscany.spi.wire.SourceInvocationChain}s and
+ * {@link org.apache.tuscany.spi.wire.TargetInvocationChain}s as an assembly is converted to runtime
+ * artifacts
+ *
  * @version $$Rev$$ $$Date$$
  */
 public interface Connector {
