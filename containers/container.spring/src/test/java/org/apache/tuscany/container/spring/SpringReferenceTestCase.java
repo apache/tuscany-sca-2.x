@@ -39,7 +39,7 @@ public class SpringReferenceTestCase extends MockObjectTestCase {
     private ConfigurableApplicationContext createSpringContext() {
         StaticApplicationContext beanFactory = new StaticApplicationContext();
         BeanDefinition definition = new RootBeanDefinition(TestBeanImpl.class);
-        RuntimeBeanReference ref = new ("bar");
+        RuntimeBeanReference ref = new RuntimeBeanReference("bar");
         PropertyValue val = new PropertyValue("bean", ref);
         definition.getPropertyValues().addPropertyValue(val);
         beanFactory.registerBeanDefinition("foo", definition);
