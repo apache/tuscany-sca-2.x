@@ -35,7 +35,12 @@ public class ConnectorImpl implements Connector {
         CompositeContext parent = source.getParent();
         Scope scope = source.getScope();
 
-        if (source instanceof ComponentContext) {
+        if (source instanceof CompositeContext) {
+            CompositeContext<T> sourceContext = (CompositeContext<T>) source;
+            for (ServiceContext<?> context : sourceContext.getServiceContexts()) {
+                connect(context);
+            }
+        } else if (source instanceof ComponentContext) {
             ComponentContext<T> sourceContext = (ComponentContext<T>) source;
             for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
                 for (SourceWire<T> sourceWire : sourceWires) {
@@ -83,7 +88,7 @@ public class ConnectorImpl implements Connector {
         TargetWire<?> targetWire;
         if (target instanceof ComponentContext) {
             ComponentContext<?> targetContext = (ComponentContext<?>) target;
-            targetWire = targetContext.getTargetWires().get(targetName.getPortName());
+            targetWire = targetContext.getTargetWire(targetName.getPortName());
             if (targetWire == null) {
                 BuilderConfigException e = new BuilderConfigException("Target service not found for reference " + sourceWire.getReferenceName());
                 e.setIdentifier(targetName.getPortName());

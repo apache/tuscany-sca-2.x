@@ -59,11 +59,6 @@ public interface ComponentContext<T> extends Context<T> {
     TargetWire getTargetWire(String serviceName);
 
     /**
-     * Returns a collection of target-side wires keyed by service name
-     */
-    Map<String, TargetWire> getTargetWires();
-
-    /**
      * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to a service
      * contained by the context
      *

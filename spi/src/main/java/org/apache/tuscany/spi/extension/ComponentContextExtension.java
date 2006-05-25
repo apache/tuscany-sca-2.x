@@ -30,11 +30,11 @@ public abstract class ComponentContextExtension<T> extends AbstractContext<T> im
     }
 
     public TargetWire getTargetWire(String serviceName) {
-        return targetWires.get(serviceName);
-    }
-
-    public Map<String, TargetWire> getTargetWires() {
-        return targetWires;
+        if (serviceName == null) {
+            return targetWires.values().iterator().next();
+        } else {
+            return targetWires.get(serviceName);
+        }
     }
 
     public void addSourceWire(SourceWire wire) {

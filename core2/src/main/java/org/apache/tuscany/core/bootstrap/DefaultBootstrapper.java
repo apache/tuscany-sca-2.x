@@ -19,8 +19,14 @@ package org.apache.tuscany.core.bootstrap;
 import java.net.URI;
 
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
+import org.apache.tuscany.core.builder.Connector;
+import org.apache.tuscany.core.builder.ConnectorImpl;
+import org.apache.tuscany.core.context.WorkContextImpl;
+import org.apache.tuscany.core.context.scope.ModuleScopeContext;
+import org.apache.tuscany.core.context.scope.ScopeRegistryImpl;
 import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.core.loader.LoaderRegistryImpl;
+import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.system.builder.SystemCompositeBuilder;
@@ -30,15 +36,11 @@ import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.system.model.SystemImplementation;
 import org.apache.tuscany.core.wire.jdk.JDKWireFactoryService;
 import org.apache.tuscany.core.wire.system.WireServiceImpl;
-import org.apache.tuscany.core.model.PojoComponentType;
-import org.apache.tuscany.core.context.scope.ScopeRegistryImpl;
-import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.context.ScopeRegistry;
 import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.context.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -55,15 +57,18 @@ import org.apache.tuscany.spi.wire.WireService;
 public class DefaultBootstrapper {
     private final BuilderRegistry builderRegistry;
     private final LoaderRegistry loaderRegistry;
+    private final Connector connector;
 
-    public DefaultBootstrapper(BuilderRegistry builderRegistry, LoaderRegistry loaderRegistry) {
+    public DefaultBootstrapper(LoaderRegistry loaderRegistry, BuilderRegistry builderRegistry, Connector connector) {
         this.builderRegistry = builderRegistry;
         this.loaderRegistry = loaderRegistry;
+        this.connector = connector;
     }
 
     public DefaultBootstrapper() {
         this.builderRegistry = getDefaultBuilderRegistry();
         this.loaderRegistry = getDefaultLoaderRegistry();
+        this.connector = getDefaultConnector();
     }
 
     public static BuilderRegistry getDefaultBuilderRegistry() {
@@ -82,6 +87,10 @@ public class DefaultBootstrapper {
         return loaderRegistry;
     }
 
+    public static Connector getDefaultConnector() {
+        return new ConnectorImpl();
+    }
+
     public Context<Deployer> createDeployer(String name, CompositeContext<?> parent) {
         ScopeContext moduleScope = new ModuleScopeContext();
         DeploymentContext deploymentContext = new DeploymentContext(null, null, moduleScope);
@@ -94,7 +103,9 @@ public class DefaultBootstrapper {
         composite.add(createdeployer());
 
         Component<SystemCompositeImplementation> deployerComposite = new Component<SystemCompositeImplementation>(name, new SystemCompositeImplementation(composite));
-        return builderRegistry.build(parent, deployerComposite, deploymentContext);
+        Context<Deployer> context = builderRegistry.build(parent, deployerComposite, deploymentContext);
+        connector.connect(context);
+        return context;
     }
 
     protected Component<SystemImplementation> createdeployer() {

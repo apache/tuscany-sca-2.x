@@ -80,10 +80,6 @@ public class SystemSingletonAtomicContext<S, T extends S> extends AbstractContex
         throw new UnsupportedOperationException();
     }
 
-    public Map<String, TargetWire> getTargetWires() {
-        throw new UnsupportedOperationException();
-    }
-
     public void addSourceWire(SourceWire wire) {
         throw new UnsupportedOperationException();
     }
