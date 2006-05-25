@@ -1,4 +1,4 @@
-package org.apache.tuscany.container.java.context;
+package org.apache.tuscany.container.java;
 
 import java.lang.reflect.Member;
 import java.util.HashMap;

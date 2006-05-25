@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.java.context;
+package org.apache.tuscany.container.java;
 
 import junit.framework.TestCase;
 

@@ -1,7 +1,6 @@
-package org.apache.tuscany.container.java.context;
+package org.apache.tuscany.container.java;
 
 import junit.framework.TestCase;
-import junit.framework.Assert;
 
 /**
  * Tests SCA metadata such as <code>@ComponentName</code> and <code>@Context</code> are handled properly

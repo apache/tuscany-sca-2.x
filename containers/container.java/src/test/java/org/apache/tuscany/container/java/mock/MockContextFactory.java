@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.container.java.context.JavaAtomicContext;
-import org.apache.tuscany.container.java.wire.JavaTargetInvoker;
+import org.apache.tuscany.container.java.JavaAtomicContext;
+import org.apache.tuscany.container.java.JavaTargetInvoker;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;

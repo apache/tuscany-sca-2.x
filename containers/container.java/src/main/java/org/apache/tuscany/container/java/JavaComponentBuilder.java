@@ -1,25 +1,23 @@
-package org.apache.tuscany.container.java.builder;
+package org.apache.tuscany.container.java;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.container.java.context.JavaAtomicContext;
-import org.apache.tuscany.container.java.model.JavaImplementation;
 import org.apache.tuscany.core.injection.ContextInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
-import org.apache.tuscany.spi.model.Component;
-import org.apache.tuscany.spi.model.Service;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
+import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.Service;
 
 /**
  * @version $$Rev$$ $$Date$$

@@ -14,12 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.java.wire;
+package org.apache.tuscany.container.java;
 
 import java.lang.reflect.Method;
 
 import junit.framework.Assert;
-import org.apache.tuscany.container.java.context.JavaAtomicContext;
 import org.apache.tuscany.container.java.mock.MockContextFactory;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.spi.context.ScopeContext;

@@ -1,12 +1,8 @@
-package org.apache.tuscany.container.java.builder;
+package org.apache.tuscany.container.java;
 
-import org.jmock.MockObjectTestCase;
-
-import org.apache.tuscany.container.java.context.JavaAtomicContext;
 import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
-import org.apache.tuscany.container.java.model.JavaImplementation;
 import org.apache.tuscany.core.context.CompositeContextImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.model.PojoComponentType;
@@ -17,12 +13,14 @@ import org.apache.tuscany.spi.model.JavaServiceContract;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.jmock.MockObjectTestCase;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class JavaComponentBuilderTestCase extends MockObjectTestCase {
     private DeploymentContext deploymentContext;
+
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
         CompositeContext parent = new CompositeContextImpl(null, null, null);

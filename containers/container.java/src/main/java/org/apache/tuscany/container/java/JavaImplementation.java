@@ -1,4 +1,4 @@
-package org.apache.tuscany.container.java.model;
+package org.apache.tuscany.container.java;
 
 import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.spi.model.AtomicImplementation;

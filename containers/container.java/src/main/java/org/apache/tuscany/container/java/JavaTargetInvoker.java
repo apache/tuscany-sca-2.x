@@ -14,13 +14,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.java.wire;
+package org.apache.tuscany.container.java;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.container.java.context.JavaAtomicContext;
-import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.core.wire.jdk.PojoTargetInvoker;
+import org.apache.tuscany.spi.context.TargetException;
 
 /**
  * Uses a scope context to resolve an implementation instance based on the current thread context

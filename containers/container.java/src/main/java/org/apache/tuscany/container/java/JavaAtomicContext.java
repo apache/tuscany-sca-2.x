@@ -14,14 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.java.context;
+package org.apache.tuscany.container.java;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.container.java.wire.JavaTargetInvoker;
 import org.apache.tuscany.core.context.PojoAtomicContext;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
