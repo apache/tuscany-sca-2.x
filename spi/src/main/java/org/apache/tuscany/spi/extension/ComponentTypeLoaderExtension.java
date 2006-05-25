@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.model.Implementation;
  * @version $Rev$ $Date$
  */
 public abstract class ComponentTypeLoaderExtension<T extends Implementation> implements ComponentTypeLoader<T> {
-    private LoaderRegistry loaderRegistry;
+    protected LoaderRegistry loaderRegistry;
 
     @Property
     public void setLoaderRegistry(LoaderRegistry loaderRegistry) {
