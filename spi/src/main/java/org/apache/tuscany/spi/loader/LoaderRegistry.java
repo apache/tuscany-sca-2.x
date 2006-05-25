@@ -20,9 +20,9 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * Registry for XML loaders that can parse a StAX input stream and return model objects.
@@ -64,14 +64,16 @@ public interface LoaderRegistry {
      * When this method returns, the stream will be positioned on the corresponding
      * END_ELEMENT event.
      *
-     * @param reader        the XML stream to parse
-     * @param deploymentContext
+     * @param reader            the XML stream to parse
+     * @param deploymentContext the current deployment context
      * @return the model object obtained by parsing the current element on the stream
      * @throws XMLStreamException if there was a problem reading the stream
      */
     ModelObject load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException;
 
     <I extends Implementation<?>> void registerLoader(Class<I> key, ComponentTypeLoader<I> loader);
+
+    <I extends Implementation<?>> void unregisterLoader(Class<I> key);
 
     <I extends Implementation<?>> void loadComponentType(I implementation, DeploymentContext deploymentContext);
 }

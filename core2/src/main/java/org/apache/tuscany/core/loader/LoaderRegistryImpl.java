@@ -71,6 +71,10 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         componentTypeLoaders.put(key, loader);
     }
 
+    public <I extends Implementation<?>> void unregisterLoader(Class<I> key) {
+        componentTypeLoaders.remove(key);
+    }
+
     @SuppressWarnings("unchecked")
     public <I extends Implementation<?>> void loadComponentType(I implementation, DeploymentContext deploymentContext) {
         Class<I> key = (Class<I>) implementation.getClass();

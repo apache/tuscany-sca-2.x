@@ -18,15 +18,19 @@ package org.apache.tuscany.core.system.loader;
 
 import java.net.URL;
 
-import org.apache.tuscany.spi.loader.ComponentTypeLoader;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.core.system.model.SystemImplementation;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 
 /**
  * @version $Rev$ $Date$
  */
-public class SystemComponentTypeLoader implements ComponentTypeLoader<SystemImplementation> {
+public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<SystemImplementation> {
+    protected Class<SystemImplementation> getTypeClass() {
+        return SystemImplementation.class;
+    }
+
     public void load(SystemImplementation implementation, DeploymentContext deploymentContext) {
         Class<?> implClass = implementation.getImplementationClass();
         URL resource = implClass.getResource(JavaIntrospectionHelper.getBaseName(implClass) + ".componentType");
