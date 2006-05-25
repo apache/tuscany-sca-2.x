@@ -21,18 +21,18 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.WeakHashMap;
-import java.util.ResourceBundle;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Properties;
+import java.util.ResourceBundle;
+import java.util.WeakHashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
-import org.apache.tuscany.common.monitor.LogLevel;
-import org.apache.tuscany.common.monitor.MonitorFactory;
+import org.apache.tuscany.spi.monitor.LogLevel;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
 
 /**
  * A factory for monitors that forwards events to a {@link java.util.logging.Logger Java Logging (JSR47) Logger}.

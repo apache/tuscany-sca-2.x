@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.common.monitor;
+package org.apache.tuscany.spi.monitor;
 
 import static java.lang.annotation.ElementType.METHOD;
 import java.lang.annotation.Retention;

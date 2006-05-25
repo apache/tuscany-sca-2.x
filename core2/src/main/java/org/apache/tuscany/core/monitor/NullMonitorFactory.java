@@ -20,7 +20,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import org.apache.tuscany.common.monitor.MonitorFactory;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
 
 /**
  * Implementation of a {@link MonitorFactory} that produces implementations that simply return.
