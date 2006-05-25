@@ -27,4 +27,9 @@ public interface MessageHandler {
      */
     boolean processMessage(Message message);
 
+    /**
+     * Returns true if the handler can be optimized away from a wire
+     */
+    boolean isOptimizable();
+
 }

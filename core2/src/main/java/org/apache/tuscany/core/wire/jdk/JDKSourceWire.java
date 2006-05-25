@@ -20,6 +20,8 @@ import java.util.Map;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetWire;
@@ -97,5 +99,35 @@ public class JDKSourceWire<T> implements SourceWire<T> {
 
     public void setTargetWire(TargetWire<T> wire) {
         targetWire = wire;
+    }
+
+    public boolean isOptimizable() {
+        for (SourceInvocationChain chain : invocationChains.values()) {
+            if (chain.getHeadInterceptor() != null || !chain.getRequestHandlers().isEmpty()
+                    || !chain.getResponseHandlers().isEmpty()) {
+                Interceptor current = chain.getHeadInterceptor();
+                while (current != null && current != chain.getTargetInterceptor()) {
+                    if (!current.isOptimizable()) {
+                        return false;
+                    }
+                    current = current.getNext();
+                }
+                if (chain.getRequestHandlers() != null) {
+                    for (MessageHandler handler : chain.getRequestHandlers()) {
+                        if (!handler.isOptimizable()) {
+                            return false;
+                        }
+                    }
+                }
+                if (chain.getResponseHandlers() != null) {
+                    for (MessageHandler handler : chain.getResponseHandlers()) {
+                        if (!handler.isOptimizable()) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

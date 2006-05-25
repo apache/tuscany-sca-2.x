@@ -70,4 +70,8 @@ public interface TargetWire<T> {
 
     void addInvocationChain(Method method, TargetInvocationChain chain);
 
+    /**
+     * Returns true if the wire and all of its interceptors can be optimized
+     */
+    boolean isOptimizable();
 }

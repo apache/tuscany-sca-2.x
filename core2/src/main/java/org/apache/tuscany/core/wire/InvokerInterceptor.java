@@ -53,4 +53,12 @@ public class InvokerInterceptor implements Interceptor {
         throw new IllegalStateException("This interceptor must be the last one in an target interceptor chain");
     }
 
+    public Interceptor getNext() {
+        return null;
+    }
+
+    public boolean isOptimizable() {
+        return true;
+    }
+
 }

@@ -80,4 +80,8 @@ public class SystemSourceWire<T> implements SourceWire<T> {
         targetWire = wire;
     }
 
+    public boolean isOptimizable() {
+        return true;
+    }
+
 }

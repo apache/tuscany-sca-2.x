@@ -15,6 +15,7 @@ import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.context.IllegalTargetException;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.ServiceContext;
+import org.apache.tuscany.spi.context.DuplicateNameException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeContextExtension;
 

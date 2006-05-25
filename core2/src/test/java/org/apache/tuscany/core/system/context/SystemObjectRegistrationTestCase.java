@@ -4,7 +4,7 @@ import javax.naming.ConfigurationException;
 
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
-import org.apache.tuscany.core.context.DuplicateNameException;
+import org.apache.tuscany.spi.context.DuplicateNameException;
 import junit.framework.TestCase;
 
 /**

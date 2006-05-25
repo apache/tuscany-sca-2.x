@@ -63,6 +63,14 @@ public class AsyncInterceptor implements Interceptor {
         this.next = next;
     }
 
+    public Interceptor getNext() {
+        return next;
+    }
+
+    public boolean isOptimizable() {
+        return false;
+    }
+
     private static class ContextBinder extends SCA {
         public void setContext(ModuleContext context) {
             setModuleContext(context);

@@ -52,6 +52,7 @@ public class AsyncPolicyBuilder implements TargetPolicyBuilder {
 
     public void build(Service service, TargetWire<?> wire) throws BuilderException {
         for (TargetInvocationChain chain : wire.getInvocationChains().values()) {
+            // TODO fix this - it should be represented by the model and not through an annotation
             if (chain.getMethod().getAnnotation(OneWay.class) != null) {
                 chain.addInterceptor(new AsyncInterceptor(workManager, monitor));
             }

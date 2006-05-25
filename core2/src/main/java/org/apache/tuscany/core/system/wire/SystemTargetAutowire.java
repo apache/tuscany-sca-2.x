@@ -60,4 +60,9 @@ public class SystemTargetAutowire<T> implements TargetWire<T> {
     public void addInterface(Class claz) {
         throw new UnsupportedOperationException();
     }
+
+    public boolean isOptimizable() {
+        return true;  // system wires are always optimizable
+    }
+    
 }

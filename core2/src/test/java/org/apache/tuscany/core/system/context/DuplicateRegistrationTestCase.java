@@ -3,7 +3,7 @@ package org.apache.tuscany.core.system.context;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.core.context.DuplicateNameException;
+import org.apache.tuscany.spi.context.DuplicateNameException;
 import org.apache.tuscany.core.mock.component.Source;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;

@@ -41,5 +41,14 @@ public class MockSyncInterceptor implements Interceptor {
     public void setNext(Interceptor next) {
         this.next=next;
     }
+
+    public Interceptor getNext() {
+        return next;
+    }
+
+    public boolean isOptimizable() {
+        return false;
+    }
+
 }
 

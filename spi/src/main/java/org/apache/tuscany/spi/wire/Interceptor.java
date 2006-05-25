@@ -24,7 +24,7 @@ package org.apache.tuscany.spi.wire;
 public interface Interceptor {
     
     /**
-     * Process a synchronous wire.
+     * Process a synchronous wire
      * 
      * @param msg the request Message for the wire
      * @return the response Message from the wire
@@ -32,9 +32,17 @@ public interface Interceptor {
     Message invoke(Message msg);
 
     /**
-     * Sets the next interceptor.
-     * 
-     * @param next
+     * Sets the next interceptor
      */
     void setNext(Interceptor next);
+
+    /**
+     * Returns the next interceptor or null
+     */
+    Interceptor getNext();
+
+    /**
+     * Returns true if the interceptor can be optimized away from a wire
+     */
+    boolean isOptimizable();
 }

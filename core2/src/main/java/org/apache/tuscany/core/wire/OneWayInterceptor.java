@@ -45,4 +45,13 @@ public class OneWayInterceptor implements Interceptor {
     public void setNext(Interceptor next) {
         throw new IllegalStateException("This interceptor must be the last one in an interceptor chain");
     }
+
+    public Interceptor getNext() {
+        return null;
+    }
+
+    public boolean isOptimizable() {
+        return false;
+    }
+
 }

@@ -69,5 +69,8 @@ public class SystemTargetWire<T> implements TargetWire<T> {
         throw new UnsupportedOperationException();
     }
 
+    public boolean isOptimizable() {
+        return true;  // system wires are always optimizable
+    }
 
 }

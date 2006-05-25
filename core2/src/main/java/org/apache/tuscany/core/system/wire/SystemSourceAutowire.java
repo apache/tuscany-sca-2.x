@@ -75,4 +75,7 @@ public class SystemSourceAutowire<T> implements SourceAutowire<T> {
     public void setTargetWire(TargetWire<T> wire) {
     }
 
+    public boolean isOptimizable() {
+        return true;
+    }
 }

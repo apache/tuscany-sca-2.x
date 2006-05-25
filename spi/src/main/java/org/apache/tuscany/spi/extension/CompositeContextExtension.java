@@ -6,17 +6,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.context.ContextNotFoundException;
+import org.apache.tuscany.spi.context.DuplicateNameException;
 import org.apache.tuscany.spi.context.IllegalTargetException;
-import org.apache.tuscany.spi.context.InvalidContextTypeException;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.TargetNotFoundException;
+import org.apache.tuscany.spi.context.InvalidContextTypeException;
 import org.apache.tuscany.spi.event.Event;
+import org.apache.tuscany.spi.model.Scope;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -31,13 +32,28 @@ public abstract class CompositeContextExtension<T> extends ComponentContextExten
         super(name, parent);
     }
 
-    public void registerContext(Context context) {
-        assert(context != null): "Context was null";
-        if (context instanceof ServiceContext) {
-        } else if (context instanceof ReferenceContext) {
+    public void registerContext(Context child) {
+        assert(child != null): "Context was null";
+        if (children.get(child.getName()) != null) {
+            DuplicateNameException e = new DuplicateNameException("A context is already registered with name");
+            e.setIdentifier(child.getName());
+            e.addContextName(getName());
+            throw e;
+        }
+        children.put(child.getName(), child);
+        if (child instanceof ServiceContext) {
+            ServiceContext serviceContext = (ServiceContext) child;
+            synchronized (services) {
+                services.add(serviceContext);
+            }
+        } else if (child instanceof ReferenceContext) {
+            ReferenceContext context = (ReferenceContext) child;
+            synchronized (references) {
+                references.add(context);
+            }
         } else {
-            InvalidContextTypeException e = new InvalidContextTypeException(context.getClass().getName());
-            e.setIdentifier(context.getName());
+            InvalidContextTypeException e = new InvalidContextTypeException(child.getClass().getName());
+            e.setIdentifier(child.getName());
             e.addContextName(getName());
             throw e;
         }

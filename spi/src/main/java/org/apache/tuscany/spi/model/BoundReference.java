@@ -16,8 +16,6 @@
  */
 package org.apache.tuscany.spi.model;
 
-import org.apache.tuscany.spi.model.Binding;
-
 /**
  * @version $Rev$ $Date$
  */

@@ -1,6 +1,4 @@
-package org.apache.tuscany.core.context;
-
-import org.apache.tuscany.spi.context.ContextRuntimeException;
+package org.apache.tuscany.spi.context;
 
 /**
  * Denotes an attempt to add a context with a name equal to an existing context

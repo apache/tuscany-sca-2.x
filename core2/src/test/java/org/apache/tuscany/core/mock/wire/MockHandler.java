@@ -22,4 +22,9 @@ public class MockHandler implements MessageHandler {
     public int getCount(){
         return count;
     }
+
+    public boolean isOptimizable() {
+        return true;
+    }
+
 }

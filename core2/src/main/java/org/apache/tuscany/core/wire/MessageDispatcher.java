@@ -43,4 +43,9 @@ public class MessageDispatcher implements MessageHandler {
         msg.getCallbackChannel().send(resp);
         return false;
     }
+
+    public boolean isOptimizable() {
+        return true;
+    }
+
 }
