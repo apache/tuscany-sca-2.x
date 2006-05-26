@@ -1,17 +1,19 @@
 package org.apache.tuscany.container.spring;
 
+import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
-import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.context.CompositeContext;
 
 /**
+ * Processes <code>reference</code> elements in a Spring configuration
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class ScaReferenceBeanDefinitionParser implements BeanDefinitionParser {
 
+    public static final String REFERENCE_ELEMENT = "reference";
     private static final String REFERENCE_NAME_ATTRIBUTE = "name";
     private static final String REFERENCE_NAME_PROPERTY = "referenceName";
     private static final String TYPE_ATTRIBUTE = "type";
@@ -20,11 +22,10 @@ public class ScaReferenceBeanDefinitionParser implements BeanDefinitionParser {
     private static final String DEFAULT_SERVICE_ATTRIBUTE = "default";
     //private static final String DEFAULT_SERVICE_PROPERTY = "defaultServiceName";
 
-    private Deployer deploy;
-    private CompositeContext context;
+    private CompositeComponentType componentType;
 
-    public ScaReferenceBeanDefinitionParser(Deployer deployer, CompositeContext context ) {
-
+    public ScaReferenceBeanDefinitionParser(CompositeComponentType componentType) {
+        this.componentType = componentType;
     }
 
     public BeanDefinition parse(Element element, ParserContext parserContext) {

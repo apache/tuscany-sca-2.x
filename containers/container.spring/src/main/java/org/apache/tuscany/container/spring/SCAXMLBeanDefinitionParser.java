@@ -1,10 +1,13 @@
 package org.apache.tuscany.container.spring;
 
+import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.springframework.beans.factory.xml.DefaultXmlBeanDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerResolver;
-import org.apache.tuscany.spi.model.CompositeComponentType;
 
 /**
+ * Overrides the default top-level Spring parser to use {@link SCANamespaceHandlerResolver} for resolving
+ * namespace handlers
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class SCAXmlBeanDefinitionParser extends DefaultXmlBeanDefinitionParser {
@@ -20,7 +23,7 @@ public class SCAXmlBeanDefinitionParser extends DefaultXmlBeanDefinitionParser {
         if (classLoader == null) {
             classLoader = Thread.currentThread().getContextClassLoader();
         }
-        return new SCANamespaceHandlerResolver(classLoader,componentType);
+        return new SCANamespaceHandlerResolver(classLoader, componentType);
     }
 
 

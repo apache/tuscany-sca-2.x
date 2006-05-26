@@ -1,8 +1,5 @@
 package org.apache.tuscany.container.spring;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
@@ -29,7 +26,7 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
                                   DeploymentContext deploymentContext) throws BuilderConfigException {
         String name = component.getName();
         ConfigurableApplicationContext applicationContext = component.getImplementation().getApplicationContext();
-        SpringCompositeContext context = new SpringCompositeContext(name,applicationContext, parent);
+        SpringCompositeContext context = new SpringCompositeContext(name, applicationContext, parent);
         CompositeComponentType componentType = component.getImplementation().getComponentType();
         for (Service service : componentType.getServices().values()) {
             if (service instanceof BoundService) {

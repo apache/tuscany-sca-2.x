@@ -5,6 +5,9 @@ import org.springframework.beans.factory.xml.DefaultNamespaceHandlerResolver;
 import org.springframework.beans.factory.xml.NamespaceHandler;
 
 /**
+ * Overides the default Spring namespace resolver to autmatically register {@link SCANamespaceHandler} instead
+ * of requiring a value to be supplied in a Spring configuration
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class SCANamespaceHandlerResolver extends DefaultNamespaceHandlerResolver {
@@ -25,10 +28,6 @@ public class SCANamespaceHandlerResolver extends DefaultNamespaceHandlerResolver
         handler = new SCANamespaceHandler(componentType);
     }
 
-    /**
-     * Locate the {@link org.springframework.beans.factory.xml.NamespaceHandler} for the supplied namespace
-     * URI from the configured mappings.
-     */
     public NamespaceHandler resolve(String namespaceUri) {
         if (SCA_NAMESPACE.equals(namespaceUri)) {
             return handler;
