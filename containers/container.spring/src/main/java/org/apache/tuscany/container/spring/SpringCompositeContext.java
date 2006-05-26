@@ -33,25 +33,13 @@ public class SpringCompositeContext extends CompositeContextExtension {
     private static final String[] EMPTY_ARRAY = new String[0];
     private ConfigurableApplicationContext springContext;
     private SCAApplicationContext scaApplicationContext;
-    private URL springContextUrl;
 
     /**
      * Creates a new composite
-     * @param name the name of the SCA composite
-     * @param springContextUrl a URL to the Spring application context configuration file
-     * @param parent the SCA composite parent
-     */
-    public SpringCompositeContext(String name, URL springContextUrl, CompositeContext parent) {
-        super(name, parent);
-        this.springContextUrl = springContextUrl;
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    /**
-     * Creates a new composite
-     * @param name the name of the SCA composite
+     *
+     * @param name          the name of the SCA composite
      * @param springContext the pre-instantiated Spring applicaiton context
-     * @param parent the SCA composite parent
+     * @param parent        the SCA composite parent
      */
     public SpringCompositeContext(String name, ConfigurableApplicationContext springContext, CompositeContext parent) {
         super(name, parent);

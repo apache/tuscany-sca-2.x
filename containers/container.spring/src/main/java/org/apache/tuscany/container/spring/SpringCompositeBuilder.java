@@ -16,24 +16,20 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Reference;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Service;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * Creates a {@link SpringCompositeContext} from an assembly model
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringCompositeImplementation> {
+public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImplementation> {
 
-    public ComponentContext build(CompositeContext parent, Component<SpringCompositeImplementation> component,
+    public ComponentContext build(CompositeContext parent, Component<SpringImplementation> component,
                                   DeploymentContext deploymentContext) throws BuilderConfigException {
         String name = component.getName();
-        URL url;
-        try {
-            url = new URL(component.getImplementation().getContextPath());
-        } catch (MalformedURLException e) {
-            throw new BuilderConfigException(e);
-        }
-        SpringCompositeContext context = new SpringCompositeContext(name, url, parent);
+        ConfigurableApplicationContext applicationContext = component.getImplementation().getApplicationContext();
+        SpringCompositeContext context = new SpringCompositeContext(name,applicationContext, parent);
         CompositeComponentType componentType = component.getImplementation().getComponentType();
         for (Service service : componentType.getServices().values()) {
             if (service instanceof BoundService) {
@@ -54,7 +50,7 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringComp
         return context;
     }
 
-    protected Class<SpringCompositeImplementation> getImplementationType() {
-        return SpringCompositeImplementation.class;
+    protected Class<SpringImplementation> getImplementationType() {
+        return SpringImplementation.class;
     }
 }
