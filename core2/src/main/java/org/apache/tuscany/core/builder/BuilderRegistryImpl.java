@@ -99,19 +99,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         }
 
         ComponentContext context = componentBuilder.build(parent, component, deploymentContext);
-        ComponentType componentType = component.getImplementation().getComponentType();
-        assert(componentType != null): "Component type must be set";
-        // create target wires
-        for (Service service : componentType.getServices().values()) {
-            TargetWire wire = wireService.createTargetWire(service);
-            context.addTargetWire(wire);
-        }
-        // create source wires
-        for (Reference reference : componentType.getReferences().values()) {
-            SourceWire wire = wireService.createSourceWire(reference);
-            context.addSourceWire(wire);
-        }
-
+        assert(component.getImplementation().getComponentType() != null): "Component type must be set";
         return context;
     }
 

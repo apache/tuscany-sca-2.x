@@ -57,4 +57,5 @@ public interface CompositeContext<T> extends ComponentContext<T>, RuntimeEventLi
      */
     List<ReferenceContext> getReferenceContexts();
 
+    void setScopeContext(ScopeContext scopeContext);
 }

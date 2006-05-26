@@ -12,10 +12,11 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
+import org.apache.tuscany.spi.context.DuplicateNameException;
 import org.apache.tuscany.spi.context.IllegalTargetException;
 import org.apache.tuscany.spi.context.ReferenceContext;
+import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.ServiceContext;
-import org.apache.tuscany.spi.context.DuplicateNameException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeContextExtension;
 
@@ -43,6 +44,8 @@ public abstract class AbstractCompositeContext<T> extends CompositeContextExtens
 
     protected AutowireContext<?> autowireContext;
 
+    protected ScopeContext scopeContext;
+
     public AbstractCompositeContext(String name, CompositeContext parent, AutowireContext autowireContext) {
         super(name, parent);
         this.autowireContext = autowireContext;
@@ -53,10 +56,18 @@ public abstract class AbstractCompositeContext<T> extends CompositeContextExtens
         autowireContext = context;
     }
 
+    public void setScopeContext(ScopeContext scopeContext) {
+        this.scopeContext = scopeContext;
+    }
+
     public void start() {
         synchronized (lock) {
             if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
                 throw new IllegalStateException("Context not in UNINITIALIZED state");
+            }
+
+            if (scopeContext != null) {
+                scopeContext.start();
             }
             for (Context child : children.values()) {
                 child.start();
@@ -74,6 +85,10 @@ public abstract class AbstractCompositeContext<T> extends CompositeContextExtens
         for (Context child : children.values()) {
             child.stop();
         }
+        if (scopeContext != null) {
+            scopeContext.stop();
+        }
+
         // need to block a start until reset is complete
         initializeLatch = new CountDownLatch(2);
         lifecycleState = STOPPING;

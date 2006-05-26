@@ -34,6 +34,7 @@ import org.apache.tuscany.core.system.loader.SystemComponentTypeLoader;
 import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.system.model.SystemImplementation;
+import org.apache.tuscany.core.system.context.SystemCompositeContext;
 import org.apache.tuscany.core.wire.jdk.JDKWireFactoryService;
 import org.apache.tuscany.core.wire.system.WireServiceImpl;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
@@ -103,7 +104,8 @@ public class DefaultBootstrapper {
         composite.add(createdeployer());
 
         Component<SystemCompositeImplementation> deployerComposite = new Component<SystemCompositeImplementation>(name, new SystemCompositeImplementation(composite));
-        Context<Deployer> context = builderRegistry.build(parent, deployerComposite, deploymentContext);
+        SystemCompositeContext<Deployer> context = (SystemCompositeContext<Deployer>) builderRegistry.build(parent, deployerComposite, deploymentContext);
+        context.setScopeContext(moduleScope);
         connector.connect(context);
         return context;
     }

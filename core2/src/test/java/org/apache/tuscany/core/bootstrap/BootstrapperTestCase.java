@@ -34,6 +34,8 @@ public class BootstrapperTestCase extends TestCase {
         SystemCompositeContext<Deployer> context =
                 (SystemCompositeContext<Deployer>) bootstrapper.createDeployer(ContextNames.TUSCANY_DEPLOYER, parent);
         assertEquals("tuscany.deployer", context.getName());
+        context.start();
+
         // todo this should work
 //        Deployer deployer = context.getService();
 //        assertNotNull(deployer);
