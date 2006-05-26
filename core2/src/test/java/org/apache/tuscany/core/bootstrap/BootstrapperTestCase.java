@@ -29,7 +29,6 @@ public class BootstrapperTestCase extends TestCase {
     private DefaultBootstrapper bootstrapper;
 
     public void testDeployerBootstrap() {
-/*
         SystemCompositeContext parent = new SystemCompositeContextImpl("test", null, null);
         SystemCompositeContext<Deployer> context =
                 (SystemCompositeContext<Deployer>) bootstrapper.createDeployer(ContextNames.TUSCANY_DEPLOYER, parent);
@@ -41,7 +40,6 @@ public class BootstrapperTestCase extends TestCase {
 //        assertNotNull(deployer);
         Deployer deployer = context.resolveExternalInstance(Deployer.class);
         assertNotNull(deployer);
-*/
     }
 
     protected void setUp() throws Exception {
