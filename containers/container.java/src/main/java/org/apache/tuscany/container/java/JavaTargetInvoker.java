@@ -30,8 +30,6 @@ public class JavaTargetInvoker extends PojoTargetInvoker {
 
     private JavaAtomicContext context;
     private Object target;
-    public boolean cacheable;
-
 
     /**
      * Creates a new invoker
@@ -43,14 +41,6 @@ public class JavaTargetInvoker extends PojoTargetInvoker {
         super(operation);
         assert (context != null) : "No atomic context specified";
         this.context = context;
-    }
-
-    public boolean isCacheable() {
-        return cacheable;
-    }
-
-    public void setCacheable(boolean cacheable) {
-        this.cacheable = cacheable;
     }
 
     /**

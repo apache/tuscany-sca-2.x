@@ -28,14 +28,6 @@ public class MockTargetInvoker extends PojoTargetInvoker {
         this.context = context;
     }
 
-    public boolean isCacheable() {
-        return cacheable;
-    }
-
-    public void setCacheable(boolean cacheable) {
-        this.cacheable = cacheable;
-    }
-
     /**
      * Resolves the target service instance or returns a cached one
      */

@@ -19,6 +19,7 @@ import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 public abstract class PojoTargetInvoker implements TargetInvoker {
 
     protected Method operation;
+    protected boolean cacheable;
 
     public PojoTargetInvoker(Method operation) {
         assert (operation != null) : "Operation method cannot be null";
@@ -49,6 +50,18 @@ public abstract class PojoTargetInvoker implements TargetInvoker {
 
     public void setNext(Interceptor next) {
         throw new IllegalStateException("This interceptor must be the last interceptor in an interceptor chain");
+    }
+
+    public boolean isCacheable() {
+        return cacheable;
+    }
+
+    public void setCacheable(boolean cacheable) {
+        this.cacheable = cacheable;
+    }
+
+    public boolean isOptimizable() {
+        return isCacheable(); // we only need to check if the scopes are correct
     }
 
     @Override

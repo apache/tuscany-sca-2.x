@@ -12,6 +12,7 @@ import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetWire;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -107,6 +108,16 @@ public class JDKWireOptimizationTestCase extends TestCase {
         TargetInvocationChain chain = new TargetInvocationChainImpl(m);
         chain.addInterceptor(new OptimizableInterceptor());
         chain.addResponseHandler(new NonOptimizableHandler());
+        wire.addInvocationChain(m, chain);
+        assertFalse(wire.isOptimizable());
+    }
+
+    public void testTargetWireNonTargetInvokerOptimization() throws Exception {
+        TargetWire<?> wire = new JDKTargetWire();
+        TargetInvocationChain chain = new TargetInvocationChainImpl(m);
+        TargetInvoker invoker = new StaticPojoTargetInvoker(m,new Object());
+        invoker.setCacheable(false);
+        chain.setTargetInvoker(invoker);
         wire.addInvocationChain(m, chain);
         assertFalse(wire.isOptimizable());
     }

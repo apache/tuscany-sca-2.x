@@ -33,6 +33,10 @@ public class MockStaticInvoker implements TargetInvoker {
         this.cacheable = cacheable;
     }
 
+    public boolean isOptimizable() {
+        return isCacheable();
+    }
+
     public Object invokeTarget(Object payload) throws InvocationTargetException {
         try {
             if (payload != null && !payload.getClass().isArray()) {

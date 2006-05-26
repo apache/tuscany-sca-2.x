@@ -6,11 +6,11 @@ import java.util.Map;
 
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.MessageHandler;
 
 /**
  * Creates proxies that are returned to non-SCA clients using JDK dynamic proxy facilities and front a wire.
@@ -71,15 +71,19 @@ public class JDKTargetWire<T> implements TargetWire<T> {
 
     public boolean isOptimizable() {
         for (TargetInvocationChain chain : invocationChains.values()) {
-            if (chain.getHeadInterceptor() != null || !chain.getRequestHandlers().isEmpty()
-                || !chain.getResponseHandlers().isEmpty()) {
+            if (chain.getTargetInvoker() != null && !chain.getTargetInvoker().isOptimizable()) {
+                return false;
+            }
+            if (chain.getHeadInterceptor() != null) {
                 Interceptor current = chain.getHeadInterceptor();
-                while(current != null){
-                     if(!current.isOptimizable()){
-                         return false;
-                     }
+                while (current != null) {
+                    if (!current.isOptimizable()) {
+                        return false;
+                    }
                     current = current.getNext();
                 }
+            }
+            if (chain.getRequestHandlers() != null &&  !chain.getRequestHandlers().isEmpty()) {
                 if (chain.getRequestHandlers() != null) {
                     for (MessageHandler handler : chain.getRequestHandlers()) {
                         if (!handler.isOptimizable()) {
@@ -87,6 +91,8 @@ public class JDKTargetWire<T> implements TargetWire<T> {
                         }
                     }
                 }
+            }
+            if (chain.getResponseHandlers() != null && !chain.getResponseHandlers().isEmpty()) {
                 if (chain.getResponseHandlers() != null) {
                     for (MessageHandler handler : chain.getResponseHandlers()) {
                         if (!handler.isOptimizable()) {

@@ -18,8 +18,6 @@ package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.wire.jdk.PojoTargetInvoker;
-
 /**
  * Caches component instances that do not need to be resolved for every wire, e.g. an wire originating from a
  * lesser scope intended for a target with a wider scope
@@ -29,7 +27,6 @@ import org.apache.tuscany.core.wire.jdk.PojoTargetInvoker;
 public class StaticPojoTargetInvoker extends PojoTargetInvoker {
 
     private Object instance;
-    private boolean cacheable;
 
     public StaticPojoTargetInvoker(Method operation, Object instance) {
         super(operation);
@@ -39,14 +36,6 @@ public class StaticPojoTargetInvoker extends PojoTargetInvoker {
 
     protected Object getInstance() {
         return instance;
-    }
-
-    public boolean isCacheable() {
-        return cacheable;
-    }
-
-    public void setCacheable(boolean cacheable) {
-        this.cacheable = cacheable;
     }
 
     public StaticPojoTargetInvoker clone() throws CloneNotSupportedException {

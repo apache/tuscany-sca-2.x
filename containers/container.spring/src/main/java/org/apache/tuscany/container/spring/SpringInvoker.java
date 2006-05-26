@@ -50,6 +50,10 @@ public class SpringInvoker implements TargetInvoker {
         this.cacheable = cacheable;
     }
 
+    public boolean isOptimizable() {
+        return false;
+    }
+
 
     public SpringInvoker clone() throws CloneNotSupportedException {
         return (SpringInvoker) super.clone();

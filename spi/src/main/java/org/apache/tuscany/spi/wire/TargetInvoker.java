@@ -44,6 +44,11 @@ public interface TargetInvoker extends Cloneable {
     public void setCacheable(boolean cacheable);
 
     /**
+     * Determines if the target invoker can be discarded during wire optimization
+     */
+    public boolean isOptimizable();
+
+    /**
      * Implementations must support deep cloning
      */
     public Object clone() throws CloneNotSupportedException;
