@@ -3,6 +3,7 @@ package org.apache.tuscany.container.spring;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.ComponentTypeLoader;
 import org.apache.tuscany.spi.model.CompositeComponentType;
+import org.apache.tuscany.container.spring.config.SCABeanDefinitionReader;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;

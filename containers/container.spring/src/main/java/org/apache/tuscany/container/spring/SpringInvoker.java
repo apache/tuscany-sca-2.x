@@ -15,7 +15,7 @@ import org.springframework.context.ApplicationContext;
  */
 public class SpringInvoker implements TargetInvoker {
     private ApplicationContext springContext;
-    private boolean cacheable;
+    private boolean cacheable = true; // default to true since Spring handles resolution
     private String beanName;
     private Method method;
     private Object bean;
@@ -30,7 +30,6 @@ public class SpringInvoker implements TargetInvoker {
         if (bean == null) {
             try {
                 bean = springContext.getBean(beanName);
-                // TODO find a way to get AOP chain instead of proxy
             } catch (BeansException e) {
                 throw new TargetException(e);
             }
@@ -58,4 +57,6 @@ public class SpringInvoker implements TargetInvoker {
     public SpringInvoker clone() throws CloneNotSupportedException {
         return (SpringInvoker) super.clone();
     }
+
+
 }
