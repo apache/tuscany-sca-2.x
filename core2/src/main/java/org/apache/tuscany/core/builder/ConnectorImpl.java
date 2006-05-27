@@ -17,6 +17,7 @@ import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.ServiceContext;
+import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.MessageChannel;
 import org.apache.tuscany.spi.wire.MessageHandler;
@@ -42,8 +43,8 @@ public class ConnectorImpl implements Connector {
             for (ServiceContext<?> context : sourceContext.getServiceContexts()) {
                 connect(context);
             }
-        } else if (source instanceof ComponentContext) {
-            ComponentContext<T> sourceContext = (ComponentContext<T>) source;
+        } else if (source instanceof AtomicContext) {
+            AtomicContext<T> sourceContext = (AtomicContext<T>) source;
             for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
                 for (SourceWire<T> sourceWire : sourceWires) {
                     if (sourceWire instanceof SourceAutowire) {
@@ -88,8 +89,8 @@ public class ConnectorImpl implements Connector {
             throw e;
         }
         TargetWire<?> targetWire;
-        if (target instanceof ComponentContext) {
-            ComponentContext<?> targetContext = (ComponentContext<?>) target;
+        if (target instanceof AtomicContext) {
+            AtomicContext<?> targetContext = (AtomicContext<?>) target;
             targetWire = targetContext.getTargetWire(targetName.getPortName());
             if (targetWire == null) {
                 BuilderConfigException e = new BuilderConfigException("Target service not found for reference " + sourceWire.getReferenceName());

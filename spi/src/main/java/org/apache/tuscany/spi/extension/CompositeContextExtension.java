@@ -16,6 +16,7 @@ import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.TargetNotFoundException;
+import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
 
@@ -25,7 +26,7 @@ import org.apache.tuscany.spi.model.Scope;
  *
  * @version $$Rev$$ $$Date$$
  */
-public abstract class CompositeContextExtension<T> extends ComponentContextExtension<T> implements CompositeContext<T> {
+public abstract class CompositeContextExtension<T> extends AbstractContext<T> implements CompositeContext<T> {
 
     protected final Map<String, Context> children = new ConcurrentHashMap<String, Context>();
     protected final List<ServiceContext> services = new ArrayList<ServiceContext>();

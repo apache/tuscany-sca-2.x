@@ -22,14 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
-import org.apache.tuscany.spi.model.Binding;
-import org.apache.tuscany.spi.model.BoundReference;
-import org.apache.tuscany.spi.model.BoundService;
-import org.apache.tuscany.spi.model.Component;
-import org.apache.tuscany.spi.model.ComponentType;
-import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.Reference;
-import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -39,10 +31,13 @@ import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.context.ScopeRegistry;
-import org.apache.tuscany.spi.wire.SourceWire;
-import org.apache.tuscany.spi.wire.TargetWire;
-import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BoundReference;
+import org.apache.tuscany.spi.model.BoundService;
+import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * The default builder registry in the runtime
@@ -76,7 +71,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
 
     @SuppressWarnings("unchecked")
     public <I extends Implementation<?>> void register(ComponentBuilder<I> builder) {
-        Class<I> implClass = (Class<I>)JavaIntrospectionHelper.introspectGeneric(builder.getClass(), 0);
+        Class<I> implClass = (Class<I>) JavaIntrospectionHelper.introspectGeneric(builder.getClass(), 0);
         if (implClass == null) {
             throw new IllegalArgumentException("builder is not generified");
         }
