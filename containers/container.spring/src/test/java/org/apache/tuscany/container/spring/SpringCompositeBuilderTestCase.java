@@ -49,7 +49,7 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
         CompositeContext context = (CompositeContext) builder.build(null, component, null);
         ServiceContext service = (ServiceContext)context.getContext("fooService");
         TestBean bean = (TestBean)service.getService();
-        bean.echo("foo");
+        assertEquals("foo",bean.echo("foo"));
     }
 
 

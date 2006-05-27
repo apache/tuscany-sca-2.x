@@ -12,10 +12,6 @@ import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.extension.CompositeContextExtension;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.SourceWire;
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.SourceInvocationChain;
-import org.apache.tuscany.core.builder.Connector;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
@@ -37,6 +33,7 @@ public class SpringCompositeContext extends CompositeContextExtension {
     private static final String[] EMPTY_ARRAY = new String[0];
     private ConfigurableApplicationContext springContext;
     private SCAApplicationContext scaApplicationContext;
+
     /**
      * Creates a new composite
      *
@@ -99,11 +96,11 @@ public class SpringCompositeContext extends CompositeContextExtension {
         }
 
         public boolean containsBean(String name) {
-            return (sourceWires.get(name) != null);
+            return (children.get(name) != null);
         }
 
         public boolean isSingleton(String name) throws NoSuchBeanDefinitionException {
-            return sourceWires.get(name) != null;
+            return children.get(name) != null;
         }
 
         public Class getType(String name) throws NoSuchBeanDefinitionException {
