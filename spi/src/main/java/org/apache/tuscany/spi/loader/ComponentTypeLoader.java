@@ -28,6 +28,7 @@ public interface ComponentTypeLoader<I extends Implementation> {
      *
      * @param implementation    the implementation whose component type information should be loaded
      * @param deploymentContext the current deployment context
+     * @throws LoaderException  if there was a problem loading the configuration type
      */
-    void load(I implementation, DeploymentContext deploymentContext);
+    void load(I implementation, DeploymentContext deploymentContext) throws LoaderException;
 }

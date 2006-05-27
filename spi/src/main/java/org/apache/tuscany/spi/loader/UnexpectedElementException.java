@@ -14,26 +14,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.spi.model;
+package org.apache.tuscany.spi.loader;
+
+import javax.xml.namespace.QName;
 
 /**
+ * Exception that indicates that an element was found during loading
+ * that when loaded resulted in an unexpected type.
+ * This should not occur if the document being parsed conforms to its schema.
+ * The messages set to the name of the element
+ *
  * @version $Rev$ $Date$
  */
-public abstract class Implementation<T extends ComponentType> extends ModelObject {
-    private T componentType;
-
-    protected Implementation() {
-    }
-
-    protected Implementation(T componentType) {
-        this.componentType = componentType;
-    }
-
-    public T getComponentType() {
-        return componentType;
-    }
-
-    public void setComponentType(T componentType) {
-        this.componentType = componentType;
+public class UnexpectedElementException extends LoaderException {
+    public UnexpectedElementException(QName element) {
+        super(element.toString());
     }
 }

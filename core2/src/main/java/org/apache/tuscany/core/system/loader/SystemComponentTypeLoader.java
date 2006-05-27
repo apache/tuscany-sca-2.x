@@ -18,33 +18,38 @@ package org.apache.tuscany.core.system.loader;
 
 import java.net.URL;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.core.system.model.SystemImplementation;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.model.Property;
 
 /**
  * @version $Rev$ $Date$
  */
 public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<SystemImplementation> {
-    protected Class<SystemImplementation> getTypeClass() {
+    protected Class<SystemImplementation> getImplementationClass() {
         return SystemImplementation.class;
     }
 
-    public void load(SystemImplementation implementation, DeploymentContext deploymentContext) {
+    public void load(SystemImplementation implementation, DeploymentContext deploymentContext) throws LoaderException {
         Class<?> implClass = implementation.getImplementationClass();
-        URL resource = implClass.getResource(JavaIntrospectionHelper.getBaseName(implClass) + ".componentType");
-        if (resource == null) {
-            loadByIntrospection(implementation);
+        URL sidefile = implClass.getResource(JavaIntrospectionHelper.getBaseName(implClass) + ".componentType");
+        PojoComponentType componentType;
+        if (sidefile == null) {
+            componentType = loadByIntrospection(implementation);
         } else {
-            loadFromSidefile(implementation, resource);
+            componentType = loadFromSidefile(PojoComponentType.class, sidefile, deploymentContext);
         }
+        implementation.setComponentType(componentType);
     }
 
-    protected void loadByIntrospection(SystemImplementation implementation) {
-    }
-
-    protected void loadFromSidefile(SystemImplementation implementation, URL sidefile) {
-        throw new UnsupportedOperationException();
+    protected PojoComponentType loadByIntrospection(SystemImplementation implementation) {
+        PojoComponentType componentType = new PojoComponentType();
+        return componentType;
     }
 }

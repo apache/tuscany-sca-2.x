@@ -27,7 +27,6 @@ public final class AssemblyConstants {
     public static final QName COMPONENT = new QName(SCA_NAMESPACE, "component");
     public static final QName COMPONENT_TYPE = new QName(SCA_NAMESPACE, "componentType");
     public static final QName COMPOSITE = new QName(SCA_NAMESPACE, "composite");
-    public static final QName IMPORT_WSDL = new QName(SCA_NAMESPACE, "import.wsdl");
     public static final QName INTERFACE_JAVA = new QName(SCA_NAMESPACE, "interface.java");
     public static final QName INTERFACE_WSDL = new QName(SCA_NAMESPACE, "interface.wsdl");
     public static final QName PROPERTY = new QName(SCA_NAMESPACE, "property");

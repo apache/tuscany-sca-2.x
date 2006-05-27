@@ -16,18 +16,31 @@
  */
 package org.apache.tuscany.core.system.model;
 
+import java.net.URL;
+
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 
 /**
- * Represents a system composite type
+ * Represents a system composite type.
+ *
  * @version $Rev$ $Date$
  */
 public class SystemCompositeImplementation extends Implementation<CompositeComponentType> {
+    private URL scdlLocation;
+
     public SystemCompositeImplementation() {
     }
 
     public SystemCompositeImplementation(CompositeComponentType componentType) {
         super(componentType);
+    }
+
+    public URL getScdlLocation() {
+        return scdlLocation;
+    }
+
+    public void setScdlLocation(URL scdlLocation) {
+        this.scdlLocation = scdlLocation;
     }
 }

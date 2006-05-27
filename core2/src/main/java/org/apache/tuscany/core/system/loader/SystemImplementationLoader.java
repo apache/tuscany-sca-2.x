@@ -24,12 +24,20 @@ import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.system.model.SystemImplementation;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 
 /**
  * @version $Rev$ $Date$
  */
-public class SystemImplementationLoader extends LoaderExtension {
+public class SystemImplementationLoader extends LoaderExtension<SystemImplementation> {
+    public SystemImplementationLoader() {
+    }
+
+    public SystemImplementationLoader(LoaderRegistry registry) {
+        super(registry);
+    }
+
     public static final QName SYSTEM_IMPLEMENTATION = new QName("http://tuscany.apache.org/xmlns/system/0.9", "implementation.system");
 
     protected QName getXMLType() {

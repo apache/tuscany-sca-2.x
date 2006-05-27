@@ -25,6 +25,15 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.extension.LoaderExtension;
+import org.apache.tuscany.spi.loader.InvalidReferenceException;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.MissingImplementationException;
+import org.apache.tuscany.spi.loader.StAXPropertyFactory;
+import org.apache.tuscany.spi.loader.UndefinedPropertyException;
 import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
@@ -32,21 +41,20 @@ import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceTarget;
-import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.loader.InvalidReferenceException;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.loader.MissingImplementationException;
-import org.apache.tuscany.spi.loader.StAXPropertyFactory;
-import org.osoa.sca.annotations.Scope;
 
 /**
  * @version $Rev$ $Date$
  */
-@Scope("MODULE")
-public class ComponentLoader extends LoaderExtension {
+public class ComponentLoader extends LoaderExtension<Component<?>> {
     private StAXPropertyFactory defaultPropertyFactory;
+
+    public ComponentLoader() {
+    }
+
+    public ComponentLoader(LoaderRegistry registry, StAXPropertyFactory propertyFactory) {
+        super(registry);
+        this.defaultPropertyFactory = propertyFactory;
+    }
 
     @Autowire
     public void setDefaultPropertyFactory(StAXPropertyFactory defaultPropertyFactory) {
@@ -70,21 +78,27 @@ public class ComponentLoader extends LoaderExtension {
         Implementation<?> impl = (Implementation<?>) o;
         Component<?> component = new Component<Implementation<?>>(impl);
         component.setName(name);
+        registry.loadComponentType(impl, deploymentContext);
 
-        while (true) {
-            switch (reader.next()) {
-                case START_ELEMENT:
-                    QName qname = reader.getName();
-                    if (AssemblyConstants.PROPERTY.equals(qname)) {
-                        loadProperty(reader, deploymentContext, component);
-                    } else if (AssemblyConstants.REFERENCE.equals(qname)) {
-                        loadReference(reader, deploymentContext, component);
-                    }
-                    reader.next();
-                    break;
-                case END_ELEMENT:
-                    return component;
+        try {
+            while (true) {
+                switch (reader.next()) {
+                    case START_ELEMENT:
+                        QName qname = reader.getName();
+                        if (AssemblyConstants.PROPERTY.equals(qname)) {
+                            loadProperty(reader, deploymentContext, component);
+                        } else if (AssemblyConstants.REFERENCE.equals(qname)) {
+                            loadReference(reader, deploymentContext, component);
+                        }
+                        reader.next();
+                        break;
+                    case END_ELEMENT:
+                        return component;
+                }
             }
+        } catch (LoaderException e) {
+            e.addContextName(component.getName());
+            throw e;
         }
     }
 
@@ -93,6 +107,11 @@ public class ComponentLoader extends LoaderExtension {
         Implementation<?> implementation = component.getImplementation();
         ComponentType componentType = implementation.getComponentType();
         Property<?> property = componentType.getProperties().get(name);
+        if (property == null) {
+            LoaderException e = new UndefinedPropertyException(name);
+            e.setIdentifier(name);
+            throw e;
+        }
         component.add(createPropertyValue(reader, property, name));
     }
 

@@ -46,7 +46,6 @@ public class PojoComponentType extends ComponentType {
         this.destroyInvoker = destroyInvoker;
     }
 
-
     public List<Injector> getInjectors() {
         return injectors;
     }

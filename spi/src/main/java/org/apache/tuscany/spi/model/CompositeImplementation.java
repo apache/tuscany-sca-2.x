@@ -16,10 +16,28 @@
  */
 package org.apache.tuscany.spi.model;
 
-import org.apache.tuscany.spi.model.CompositeComponentType;
+import java.net.URL;
 
 /**
  * @version $Rev$ $Date$
  */
 public class CompositeImplementation extends Implementation<CompositeComponentType> {
+    private String name;
+    private URL scdlLocation;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public URL getScdlLocation() {
+        return scdlLocation;
+    }
+
+    public void setScdlLocation(URL scdlLocation) {
+        this.scdlLocation = scdlLocation;
+    }
 }

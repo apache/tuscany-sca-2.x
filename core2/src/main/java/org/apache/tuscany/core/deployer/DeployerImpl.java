@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.Implementation;
 
@@ -54,7 +55,7 @@ public class DeployerImpl implements Deployer {
         this.connector = connector;
     }
 
-    public <I extends Implementation<?>> void deploy(CompositeContext<?> parent, Component<I> component) {
+    public <I extends Implementation<?>> void deploy(CompositeContext<?> parent, Component<I> component) throws LoaderException {
         ScopeContext moduleScope = new ModuleScopeContext();
         DeploymentContext deploymentContext = new DeploymentContext(null, null, moduleScope);
         load(component, deploymentContext);
@@ -70,7 +71,7 @@ public class DeployerImpl implements Deployer {
      * @param component         the component being deployed
      * @param deploymentContext the current deployment context
      */
-    protected <I extends Implementation<?>> void load(Component<I> component, DeploymentContext deploymentContext) {
+    protected <I extends Implementation<?>> void load(Component<I> component, DeploymentContext deploymentContext) throws LoaderException {
         loaderRegistry.loadComponentType(component.getImplementation(), deploymentContext);
     }
 

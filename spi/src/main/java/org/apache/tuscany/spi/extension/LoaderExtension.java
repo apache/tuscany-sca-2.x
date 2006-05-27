@@ -33,6 +33,13 @@ import org.osoa.sca.annotations.Init;
 public abstract class LoaderExtension<T extends ModelObject> implements StAXElementLoader<T> {
     protected LoaderRegistry registry;
 
+    protected LoaderExtension() {
+    }
+
+    protected LoaderExtension(LoaderRegistry registry) {
+        this.registry = registry;
+    }
+
     @Autowire
     public void setRegistry(LoaderRegistry registry) {
         this.registry = registry;

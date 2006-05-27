@@ -31,6 +31,15 @@ public class Property<T> extends ModelObject {
     private boolean many;
     private boolean required;
 
+    public Property() {
+    }
+
+    public Property(String name, QName xmlType, Class<T> javaType) {
+        this.name = name;
+        this.xmlType = xmlType;
+        this.javaType = javaType;
+    }
+
     public String getName() {
         return name;
     }

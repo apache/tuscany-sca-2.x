@@ -14,26 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.spi.model;
+package org.apache.tuscany.spi.loader;
 
 /**
  * @version $Rev$ $Date$
  */
-public abstract class Implementation<T extends ComponentType> extends ModelObject {
-    private T componentType;
-
-    protected Implementation() {
-    }
-
-    protected Implementation(T componentType) {
-        this.componentType = componentType;
-    }
-
-    public T getComponentType() {
-        return componentType;
-    }
-
-    public void setComponentType(T componentType) {
-        this.componentType = componentType;
+public class UndefinedPropertyException extends LoaderException {
+    public UndefinedPropertyException(String name) {
+        super(name);
     }
 }

@@ -16,41 +16,41 @@
  */
 package org.apache.tuscany.core.bootstrap;
 
-import java.net.URI;
-
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.Connector;
 import org.apache.tuscany.core.builder.ConnectorImpl;
+import org.apache.tuscany.core.composite.loader.CompositeLoader;
 import org.apache.tuscany.core.context.WorkContextImpl;
-import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.context.scope.ScopeRegistryImpl;
 import org.apache.tuscany.core.deployer.DeployerImpl;
+import org.apache.tuscany.core.loader.AssemblyConstants;
+import org.apache.tuscany.core.loader.ComponentLoader;
+import org.apache.tuscany.core.loader.ComponentTypeElementLoader;
+import org.apache.tuscany.core.loader.InterfaceJavaLoader;
 import org.apache.tuscany.core.loader.LoaderRegistryImpl;
-import org.apache.tuscany.core.model.PojoComponentType;
+import org.apache.tuscany.core.loader.PropertyLoader;
+import org.apache.tuscany.core.loader.ReferenceLoader;
+import org.apache.tuscany.core.loader.ServiceLoader;
+import org.apache.tuscany.core.loader.StringParserPropertyFactory;
 import org.apache.tuscany.core.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.system.builder.SystemCompositeBuilder;
 import org.apache.tuscany.core.system.loader.SystemComponentTypeLoader;
+import org.apache.tuscany.core.system.loader.SystemImplementationLoader;
+import org.apache.tuscany.core.system.loader.SystemCompositeComponentTypeLoader;
+import org.apache.tuscany.core.system.loader.SystemBindingLoader;
 import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.system.model.SystemImplementation;
-import org.apache.tuscany.core.system.context.SystemCompositeContext;
 import org.apache.tuscany.core.wire.jdk.JDKWireFactoryService;
 import org.apache.tuscany.core.wire.system.WireServiceImpl;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.model.BoundService;
-import org.apache.tuscany.spi.model.Component;
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.JavaServiceContract;
-import org.apache.tuscany.spi.model.Service;
+import org.apache.tuscany.spi.loader.StAXPropertyFactory;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
 
 /**
  * @version $Rev$ $Date$
@@ -66,13 +66,21 @@ public class DefaultBootstrapper {
         this.connector = connector;
     }
 
-    public DefaultBootstrapper() {
+    public DefaultBootstrapper(MonitorFactory monitorFactory) {
         this.builderRegistry = getDefaultBuilderRegistry();
-        this.loaderRegistry = getDefaultLoaderRegistry();
+        this.loaderRegistry = getDefaultLoaderRegistry(monitorFactory, new StringParserPropertyFactory());
         this.connector = getDefaultConnector();
     }
 
-    public static BuilderRegistry getDefaultBuilderRegistry() {
+    public Deployer createDeployer() {
+        DeployerImpl deployer = new DeployerImpl();
+        deployer.setBuilderRegistry(builderRegistry);
+        deployer.setLoaderRegistry(loaderRegistry);
+        deployer.setConnector(connector);
+        return deployer;
+    }
+
+    protected BuilderRegistry getDefaultBuilderRegistry() {
         WireService wireService = new WireServiceImpl(new JDKWireFactoryService());
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl(new WorkContextImpl());
         BuilderRegistry builderRegistry = new BuilderRegistryImpl(wireService, scopeRegistry);
@@ -82,37 +90,29 @@ public class DefaultBootstrapper {
         return builderRegistry;
     }
 
-    public static LoaderRegistry getDefaultLoaderRegistry() {
-        LoaderRegistry loaderRegistry = new LoaderRegistryImpl();
+    protected LoaderRegistry getDefaultLoaderRegistry(MonitorFactory monitorFactory, StAXPropertyFactory propertyFactory) {
+        LoaderRegistryImpl loaderRegistry = new LoaderRegistryImpl();
+        loaderRegistry.setMonitor(monitorFactory.getMonitor(LoaderRegistryImpl.Monitor.class));
+
+        // register component type loaders
         loaderRegistry.registerLoader(SystemImplementation.class, new SystemComponentTypeLoader());
+        loaderRegistry.registerLoader(SystemCompositeImplementation.class, new SystemCompositeComponentTypeLoader(loaderRegistry));
+
+        // register element loaders
+        loaderRegistry.registerLoader(AssemblyConstants.COMPONENT, new ComponentLoader(loaderRegistry, propertyFactory));
+        loaderRegistry.registerLoader(AssemblyConstants.COMPONENT_TYPE, new ComponentTypeElementLoader(loaderRegistry));
+        loaderRegistry.registerLoader(AssemblyConstants.COMPOSITE, new CompositeLoader(loaderRegistry));
+        loaderRegistry.registerLoader(AssemblyConstants.INTERFACE_JAVA, new InterfaceJavaLoader(loaderRegistry));
+        loaderRegistry.registerLoader(AssemblyConstants.PROPERTY, new PropertyLoader(loaderRegistry));
+        loaderRegistry.registerLoader(AssemblyConstants.REFERENCE, new ReferenceLoader(loaderRegistry));
+        loaderRegistry.registerLoader(AssemblyConstants.SERVICE, new ServiceLoader(loaderRegistry));
+
+        loaderRegistry.registerLoader(SystemImplementationLoader.SYSTEM_IMPLEMENTATION, new SystemImplementationLoader(loaderRegistry));
+        loaderRegistry.registerLoader(SystemBindingLoader.SYSTEM_BINDING, new SystemBindingLoader(loaderRegistry));
         return loaderRegistry;
     }
 
-    public static Connector getDefaultConnector() {
+    protected Connector getDefaultConnector() {
         return new ConnectorImpl();
-    }
-
-    public Context<Deployer> createDeployer(String name, CompositeContext<?> parent) {
-        ScopeContext moduleScope = new ModuleScopeContext();
-        DeploymentContext deploymentContext = new DeploymentContext(null, null, moduleScope);
-        CompositeComponentType composite = new CompositeComponentType();
-
-        // expose the deployer as a system service
-        composite.add(new BoundService<SystemBinding>("deployer", new JavaServiceContract(Deployer.class), new SystemBinding(), URI.create("deployerImpl")));
-
-        // create the deployer component
-        composite.add(createdeployer());
-
-        Component<SystemCompositeImplementation> deployerComposite = new Component<SystemCompositeImplementation>(name, new SystemCompositeImplementation(composite));
-        SystemCompositeContext<Deployer> context = (SystemCompositeContext<Deployer>) builderRegistry.build(parent, deployerComposite, deploymentContext);
-        context.setScopeContext(moduleScope);
-        connector.connect(context);
-        return context;
-    }
-
-    protected Component<SystemImplementation> createdeployer() {
-        PojoComponentType type = new PojoComponentType();
-        type.add(new Service("default", new JavaServiceContract(Deployer.class)));
-        return new Component<SystemImplementation>("deployerImpl", new SystemImplementation(type, DeployerImpl.class));
     }
 }

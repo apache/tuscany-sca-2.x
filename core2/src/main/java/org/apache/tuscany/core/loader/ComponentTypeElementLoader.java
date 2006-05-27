@@ -29,12 +29,20 @@ import org.apache.tuscany.spi.model.Reference;
 import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ComponentTypeElementLoader extends LoaderExtension {
+public class ComponentTypeElementLoader extends LoaderExtension<ComponentType> {
+    public ComponentTypeElementLoader() {
+    }
+
+    public ComponentTypeElementLoader(LoaderRegistry registry) {
+        super(registry);
+    }
+
     public QName getXMLType() {
         return AssemblyConstants.COMPONENT_TYPE;
     }

@@ -16,22 +16,13 @@
  */
 package org.apache.tuscany.container.java;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.apache.tuscany.core.loader.AssemblyConstants;
 import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.UnrecognizedElementException;
-import org.apache.tuscany.spi.model.ComponentType;
 
 /**
  * @version $Rev$ $Date$
@@ -42,70 +33,24 @@ public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaIm
         super();
     }
 
-    public void load(JavaImplementation implementation, DeploymentContext deploymentContext) {
+    public void load(JavaImplementation implementation, DeploymentContext deploymentContext) throws LoaderException {
         Class<?> implClass = implementation.getImplementationClass();
         URL resource = implClass.getResource(JavaIntrospectionHelper.getBaseName(implClass) + ".componentType");
-        try {
-            if (resource == null) {
-                loadByIntrospection(implementation);
-            } else {
-                loadFromSidefile(implementation, resource, deploymentContext);
-            }
-        } catch (LoaderException e) {
-            // throw new TuscanyRuntimeException(e);
+        PojoComponentType componentType;
+        if (resource == null) {
+            componentType = loadByIntrospection(implementation);
+        } else {
+            componentType = loadFromSidefile(PojoComponentType.class, resource, deploymentContext);
         }
-    }
-
-    protected void loadByIntrospection(JavaImplementation implementation) {
-        Class<?> implClass = implementation.getImplementationClass();
-        PojoComponentType componentType = null; // FIXME: introspector.introspect(implClass);
         implementation.setComponentType(componentType);
     }
 
-    protected ComponentType loadFromSidefile(JavaImplementation implementation, URL sidefile, DeploymentContext deploymentContext)
-            throws LoaderException {
-        try {
-            XMLStreamReader reader;
-            InputStream is;
-            is = sidefile.openStream();
-            try {
-                XMLInputFactory factory = deploymentContext.getXmlFactory();
-                reader = factory.createXMLStreamReader(is);
-                try {
-                    reader.nextTag();
-                    if (!AssemblyConstants.COMPONENT_TYPE.equals(reader.getName())) {
-                        UnrecognizedElementException e = new UnrecognizedElementException(reader.getName());
-                        e.setResourceURI(sidefile.toString());
-                        throw e;
-                    }
-                    return (ComponentType) loaderRegistry.load(reader, deploymentContext);
-                } finally {
-                    try {
-                        reader.close();
-                    } catch (XMLStreamException e) {
-                        // ignore
-                    }
-                }
-            } finally {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    // ignore
-                }
-            }
-        } catch (IOException e) {
-            LoaderException sfe = new LoaderException(e.getMessage());
-            sfe.setResourceURI(sidefile.toString());
-            throw sfe;
-        } catch (XMLStreamException e) {
-            LoaderException sfe = new LoaderException(e.getMessage());
-            sfe.setResourceURI(sidefile.toString());
-            throw sfe;
-        }
+    protected PojoComponentType loadByIntrospection(JavaImplementation implementation) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    protected Class<JavaImplementation> getTypeClass() {
+    protected Class<JavaImplementation> getImplementationClass() {
         return JavaImplementation.class;
     }
 

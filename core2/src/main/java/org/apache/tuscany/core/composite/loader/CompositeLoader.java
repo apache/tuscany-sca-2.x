@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.core.loader.AssemblyConstants;
 
@@ -38,6 +39,13 @@ import org.apache.tuscany.core.loader.AssemblyConstants;
  * @version $Rev$ $Date$
  */
 public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
+    public CompositeLoader() {
+    }
+
+    public CompositeLoader(LoaderRegistry registry) {
+        super(registry);
+    }
+
     protected QName getXMLType() {
         return AssemblyConstants.COMPOSITE;
     }

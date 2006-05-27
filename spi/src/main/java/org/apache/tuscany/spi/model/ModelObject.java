@@ -25,6 +25,9 @@ import java.util.HashMap;
 public abstract class ModelObject {
     private final Map<?,?> extensions = new HashMap<Object, Object>();
 
+    protected ModelObject() {
+    }
+
     public Map<?, ?> getExtensions() {
         return extensions;
     }

@@ -75,5 +75,5 @@ public interface LoaderRegistry {
 
     <I extends Implementation<?>> void unregisterLoader(Class<I> key);
 
-    <I extends Implementation<?>> void loadComponentType(I implementation, DeploymentContext deploymentContext);
+    <I extends Implementation<?>> void loadComponentType(I implementation, DeploymentContext deploymentContext) throws LoaderException;
 }

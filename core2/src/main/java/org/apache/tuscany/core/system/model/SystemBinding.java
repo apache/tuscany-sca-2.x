@@ -1,5 +1,7 @@
 package org.apache.tuscany.core.system.model;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.model.Binding;
 
 /**

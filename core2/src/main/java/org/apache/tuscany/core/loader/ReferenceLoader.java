@@ -28,12 +28,20 @@ import org.apache.tuscany.spi.model.Reference;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ReferenceLoader extends LoaderExtension {
+public class ReferenceLoader extends LoaderExtension<Reference> {
+    public ReferenceLoader() {
+    }
+
+    public ReferenceLoader(LoaderRegistry registry) {
+        super(registry);
+    }
+
     public QName getXMLType() {
         return AssemblyConstants.REFERENCE;
     }

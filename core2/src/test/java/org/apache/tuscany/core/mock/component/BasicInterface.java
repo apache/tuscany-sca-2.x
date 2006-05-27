@@ -14,26 +14,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.spi.model;
+package org.apache.tuscany.core.mock.component;
 
 /**
  * @version $Rev$ $Date$
  */
-public abstract class Implementation<T extends ComponentType> extends ModelObject {
-    private T componentType;
+public interface BasicInterface {
+    String returnsProperty();
 
-    protected Implementation() {
-    }
+    BasicInterface returnsReference();
 
-    protected Implementation(T componentType) {
-        this.componentType = componentType;
-    }
-
-    public T getComponentType() {
-        return componentType;
-    }
-
-    public void setComponentType(T componentType) {
-        this.componentType = componentType;
-    }
+    int returnsInt();
 }

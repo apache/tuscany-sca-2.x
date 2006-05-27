@@ -1,0 +1,105 @@
+/**
+ *
+ * Copyright 2006 The Apache Software Foundation or its licensors as applicable
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+package org.apache.tuscany.core.loader;
+
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorManager;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.apache.tuscany.core.injection.SingletonObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.StAXPropertyFactory;
+import org.apache.tuscany.spi.model.Property;
+
+/**
+ * @version $Rev$ $Date$
+ */
+public class StringParserPropertyFactory implements StAXPropertyFactory {
+    public <T> ObjectFactory<T> createObjectFactory(XMLStreamReader reader, Property<T> property) throws XMLStreamException, LoaderException {
+        Class<T> type = property.getJavaType();
+        assert type != null : "property type is null";
+        String text = reader.getElementText();
+
+        // degenerate case where we are returning a String
+        if (String.class.equals(type)) {
+            return new SingletonObjectFactory<T>(type.cast(text));
+        }
+
+        // special handler to convert hexBinary to a byte[]
+        if (byte[].class.equals(type)) {
+            byte[] instance = new byte[text.length() >> 1];
+            for (int i = 0; i < instance.length; i++) {
+                instance[i] = (byte) (Character.digit(text.charAt(i << 1), 16) << 4 | Character.digit(text.charAt((i << 1) + 1), 16));
+            }
+            return new SingletonObjectFactory<T>(type.cast(instance));
+        }
+
+        // does this type have a static valueOf(String) method?
+        try {
+            Method valueOf = type.getMethod("valueOf", String.class);
+            if (Modifier.isStatic(valueOf.getModifiers())) {
+                try {
+                    return new SingletonObjectFactory<T>(type.cast(valueOf.invoke(null, text)));
+                } catch (IllegalAccessException e) {
+                    throw new AssertionError("getMethod returned an inaccessible method");
+                } catch (InvocationTargetException e) {
+                    // FIXME we should throw something better
+                    throw new LoaderException(e.getCause());
+                }
+            }
+        } catch (NoSuchMethodException e) {
+            // try something else
+        }
+
+        // does this type have a constructor that takes a String?
+        try {
+            Constructor<T> ctr = type.getConstructor(String.class);
+            return new SingletonObjectFactory<T>(ctr.newInstance(text));
+        } catch (NoSuchMethodException e) {
+            // try something else
+        } catch (IllegalAccessException e) {
+            throw new AssertionError("getConstructor returned an inaccessible method");
+        } catch (InstantiationException e) {
+            throw new LoaderException("Property type cannot be instantiated: " + type.getName());
+        } catch (InvocationTargetException e) {
+            // FIXME we should throw something better
+            throw new LoaderException(e.getCause());
+        }
+
+        // do we have a property editor for it?
+        PropertyEditor editor = PropertyEditorManager.findEditor(type);
+        if (editor != null) {
+            try {
+                editor.setAsText(text);
+                return new SingletonObjectFactory<T>(type.cast(editor.getValue()));
+            } catch (IllegalArgumentException e) {
+                // FIXME we should throw something better
+                throw new LoaderException(e);
+
+            }
+        }
+
+        // FIXME we should throw something better
+        throw new LoaderException("Do not have a way to parse a String into a " + type.getName());
+    }
+}

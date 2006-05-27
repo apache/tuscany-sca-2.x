@@ -25,34 +25,50 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BoundService;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ServiceLoader extends LoaderExtension {
+public class ServiceLoader extends LoaderExtension<Service> {
+    public ServiceLoader() {
+    }
+
+    public ServiceLoader(LoaderRegistry registry) {
+        super(registry);
+    }
+
     public QName getXMLType() {
         return AssemblyConstants.SERVICE;
     }
 
     public Service load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert AssemblyConstants.SERVICE.equals(reader.getName());
-        Service service = new Service();
-        service.setName(reader.getAttributeValue(null, "name"));
-
+        String name = reader.getAttributeValue(null, "name");
+        Binding binding = null;
+        ServiceContract serviceContract = null;
         while (true) {
             int i = reader.next();
             switch (i) {
                 case START_ELEMENT:
                     ModelObject o = registry.load(reader, deploymentContext);
                     if (o instanceof ServiceContract) {
-                        service.setServiceContract((ServiceContract) o);
+                        serviceContract = (ServiceContract) o;
+                    } else if (o instanceof Binding) {
+                        binding = (Binding) o;
                     }
                     break;
                 case END_ELEMENT:
-                    return service;
+                    if (binding != null) {
+                        return new BoundService<Binding>(name, serviceContract, binding, null);
+                    } else {
+                        return new Service(name, serviceContract);
+                    }
             }
         }
     }

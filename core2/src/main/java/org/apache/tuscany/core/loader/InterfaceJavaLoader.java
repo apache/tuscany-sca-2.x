@@ -23,12 +23,20 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.spi.model.JavaServiceContract;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 
 /**
  * @version $Rev$ $Date$
  */
-public class InterfaceJavaLoader extends LoaderExtension {
+public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
+    public InterfaceJavaLoader() {
+    }
+
+    public InterfaceJavaLoader(LoaderRegistry registry) {
+        super(registry);
+    }
+
     public QName getXMLType() {
         return AssemblyConstants.INTERFACE_JAVA;
     }
@@ -47,7 +55,10 @@ public class InterfaceJavaLoader extends LoaderExtension {
 
         name = reader.getAttributeValue(null, "callbackInterface");
         serviceContract.setCallbackName(name);
-        serviceContract.setCallbackClass(StAXUtil.loadClass(name, deploymentContext.getClassLoader()));
+        if (name != null) {
+            serviceContract.setCallbackClass(StAXUtil.loadClass(name, deploymentContext.getClassLoader()));
+        }
+        StAXUtil.skipToEndElement(reader);
         return serviceContract;
     }
 }

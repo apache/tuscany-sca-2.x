@@ -19,6 +19,7 @@ package org.apache.tuscany.spi.deployer;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.loader.LoaderException;
 
 /**
  * Interface that can be used to deploy SCA bundles to a runtime.
@@ -32,5 +33,5 @@ public interface Deployer {
      * @param parent the parent context
      * @param component the component definition
      */
-    <I extends Implementation<?>> void deploy(CompositeContext<?> parent, Component<I> component);
+    <I extends Implementation<?>> void deploy(CompositeContext<?> parent, Component<I> component) throws LoaderException;
 }

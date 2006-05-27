@@ -76,7 +76,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <I extends Implementation<?>> void loadComponentType(I implementation, DeploymentContext deploymentContext) {
+    public <I extends Implementation<?>> void loadComponentType(I implementation, DeploymentContext deploymentContext) throws LoaderException {
         Class<I> key = (Class<I>) implementation.getClass();
         ComponentTypeLoader<I> loader = (ComponentTypeLoader<I>) componentTypeLoaders.get(key);
         if (loader == null) {
