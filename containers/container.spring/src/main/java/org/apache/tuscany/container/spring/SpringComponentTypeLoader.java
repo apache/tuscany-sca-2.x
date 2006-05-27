@@ -9,7 +9,7 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.Resource;
 
 /**
- * Loads a component type for a Spring <code>ApplicationContext</code>. The impplementation creates a new
+ * Loads a component type for a Spring <code>ApplicationContext</code>. The implementation creates a new
  * instance of a Spring application context which is configured with SCA namespace handlers for generating
  * component type information
  *

@@ -10,11 +10,11 @@ import org.springframework.beans.factory.xml.NamespaceHandlerResolver;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SCAXmlBeanDefinitionParser extends DefaultXmlBeanDefinitionParser {
+public class SCARootDefinitionParser extends DefaultXmlBeanDefinitionParser {
 
     private CompositeComponentType componentType;
 
-    public SCAXmlBeanDefinitionParser(CompositeComponentType componentType) {
+    public SCARootDefinitionParser(CompositeComponentType componentType) {
         this.componentType = componentType;
     }
 

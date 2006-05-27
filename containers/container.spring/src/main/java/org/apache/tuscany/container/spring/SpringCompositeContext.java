@@ -2,16 +2,20 @@ package org.apache.tuscany.container.spring;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.context.ReferenceContext;
+import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.extension.CompositeContextExtension;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.SourceInvocationChain;
+import org.apache.tuscany.core.builder.Connector;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
@@ -33,7 +37,6 @@ public class SpringCompositeContext extends CompositeContextExtension {
     private static final String[] EMPTY_ARRAY = new String[0];
     private ConfigurableApplicationContext springContext;
     private SCAApplicationContext scaApplicationContext;
-
     /**
      * Creates a new composite
      *
@@ -50,6 +53,14 @@ public class SpringCompositeContext extends CompositeContextExtension {
 
     public TargetInvoker createTargetInvoker(String serviceName, Method method) {
         return new SpringInvoker(serviceName, method, springContext);
+    }
+
+    public void setScopeContext(ScopeContext scopeContext) {
+
+    }
+
+    public ConfigurableApplicationContext getApplicationContext() {
+        return springContext;
     }
 
     /**

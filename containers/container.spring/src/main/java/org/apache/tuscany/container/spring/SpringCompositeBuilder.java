@@ -3,6 +3,7 @@ package org.apache.tuscany.container.spring;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.Binding;
@@ -13,6 +14,8 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Reference;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Service;
+import org.apache.tuscany.spi.wire.SourceInvocationChain;
+import org.apache.tuscany.spi.wire.SourceWire;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
@@ -21,6 +24,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @version $$Rev$$ $$Date$$
  */
 public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImplementation> {
+
 
     public ComponentContext build(CompositeContext parent, Component<SpringImplementation> component,
                                   DeploymentContext deploymentContext) throws BuilderConfigException {
@@ -31,8 +35,18 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
         for (Service service : componentType.getServices().values()) {
             if (service instanceof BoundService) {
                 // call back into deployment context to handle building of services
-                context.registerContext(builderRegistry.build(parent, (BoundService<? extends Binding>) service,
-                        deploymentContext));
+                ServiceContext<?> childContext = (ServiceContext) builderRegistry.build(parent,
+                        (BoundService<? extends Binding>) service,
+                        deploymentContext);
+                // wire service to bean invokers
+                SourceWire<?> wire = childContext.getSourceWire();
+                for (SourceInvocationChain chain : wire.getInvocationChains().values()) {
+                    String beanName = wire.getTargetName().getPartName();
+                    chain.setTargetInvoker(context.createTargetInvoker(beanName, chain.getMethod()));
+                    // TODO add an invoker interceptor or handler if not null
+                }
+                context.registerContext(childContext);
+
             }
         }
         // TODO is this correct?

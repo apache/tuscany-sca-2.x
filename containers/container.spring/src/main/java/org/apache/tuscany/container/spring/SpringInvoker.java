@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 
 /**
  * Dispatches an operation on a Spring bean
- * 
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class SpringInvoker implements TargetInvoker {
@@ -36,7 +36,7 @@ public class SpringInvoker implements TargetInvoker {
             }
         }
         try {
-            return method.invoke(bean, object);
+            return method.invoke(bean, (Object[]) object);
         } catch (IllegalAccessException e) {
             throw new InvocationTargetException(e);
         }

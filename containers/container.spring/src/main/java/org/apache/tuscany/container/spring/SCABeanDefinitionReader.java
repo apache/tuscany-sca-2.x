@@ -19,7 +19,7 @@ public class SCABeanDefinitionReader extends XmlBeanDefinitionReader {
 
 
     protected XmlBeanDefinitionParser createXmlBeanDefinitionParser() {
-        return new SCAXmlBeanDefinitionParser(componentType);
+        return new SCARootDefinitionParser(componentType);
     }
 
 }
