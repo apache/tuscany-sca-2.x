@@ -2,11 +2,11 @@ package org.apache.tuscany.container.spring;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.lang.reflect.Method;
 
+import org.apache.tuscany.container.spring.mock.TestBean;
 import org.apache.tuscany.container.spring.mock.TestBeanImpl;
 import org.apache.tuscany.container.spring.mock.VMBinding;
-import org.apache.tuscany.container.spring.mock.TestBean;
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ServiceContext;
@@ -15,9 +15,7 @@ import org.apache.tuscany.spi.model.BoundService;
 import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.wire.SourceWire;
-import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.core.wire.jdk.JDKSourceWire;
-import org.apache.tuscany.core.wire.SourceInvocationChainImpl;
+import org.apache.tuscany.test.ArtifactFactory;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -38,18 +36,15 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
         Component<SpringImplementation> component = new Component<SpringImplementation>("spring", impl);
         Mock mock = mock(BuilderRegistry.class);
         ServiceContextExtension<TestBean> serviceContext = new ServiceContextExtension<TestBean>("fooService", null, null);
-        SourceWire<TestBean> wire = new JDKSourceWire<TestBean>();
-        wire.setBusinessInterface(TestBean.class);
-        Method m = TestBean.class.getMethod("echo",String.class);
-        wire.addInvocationChain(m,new SourceInvocationChainImpl(m));
+        SourceWire<TestBean> wire = ArtifactFactory.createSourceWire("fooService", TestBean.class);
         wire.setTargetName(new QualifiedName("foo"));
         serviceContext.setSourceWire(wire);
         mock.expects(atLeastOnce()).method("build").will(returnValue(serviceContext));
         builder.setBuilderRegistry((BuilderRegistry) mock.proxy());
         CompositeContext context = (CompositeContext) builder.build(null, component, null);
-        ServiceContext service = (ServiceContext)context.getContext("fooService");
-        TestBean bean = (TestBean)service.getService();
-        assertEquals("foo",bean.echo("foo"));
+        ServiceContext service = (ServiceContext) context.getContext("fooService");
+        TestBean bean = (TestBean) service.getService();
+        assertEquals("foo", bean.echo("foo"));
     }
 
 
@@ -73,7 +68,6 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
         componentType.add(service);
         return componentType;
     }
-
 
 
 }

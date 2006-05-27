@@ -49,6 +49,13 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany</groupId>
+            <artifactId>tuscany-test</artifactId>
+            <version>${pom.version}</version>
+            <scope>test</scope>
+        </dependency>
+
 			<dependency>
             <groupId>jmock</groupId>
             <artifactId>jmock</artifactId>

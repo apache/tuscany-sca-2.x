@@ -29,6 +29,7 @@
     <modules>
         <module>spi</module>
         <module>core2</module>
+        <module>test</module>
         <module>containers</module>
         <module>commands/launcher</module>
         <module>runtime/standalone</module>
