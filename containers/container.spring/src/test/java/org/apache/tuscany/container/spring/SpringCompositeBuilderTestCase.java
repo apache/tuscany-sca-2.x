@@ -20,7 +20,7 @@ import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
 
 /**
@@ -47,7 +47,7 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
         assertEquals("foo", bean.echo("foo"));
     }
 
-    private ConfigurableApplicationContext createSpringContext() {
+    private GenericApplicationContext createSpringContext() {
         StaticApplicationContext beanFactory = new StaticApplicationContext();
         BeanDefinition definition = new RootBeanDefinition(TestBeanImpl.class);
         beanFactory.registerBeanDefinition("foo", definition);

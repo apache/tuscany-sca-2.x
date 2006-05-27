@@ -16,7 +16,7 @@ import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
 
 /**
  * Creates a {@link SpringCompositeContext} from an assembly model
@@ -29,7 +29,7 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
     public ComponentContext build(CompositeContext parent, Component<SpringImplementation> component,
                                   DeploymentContext deploymentContext) throws BuilderConfigException {
         String name = component.getName();
-        ConfigurableApplicationContext applicationContext = component.getImplementation().getApplicationContext();
+        GenericApplicationContext applicationContext = component.getImplementation().getApplicationContext();
         SpringCompositeContext context = new SpringCompositeContext(name, applicationContext, parent);
         CompositeComponentType componentType = component.getImplementation().getComponentType();
         for (Service service : componentType.getServices().values()) {

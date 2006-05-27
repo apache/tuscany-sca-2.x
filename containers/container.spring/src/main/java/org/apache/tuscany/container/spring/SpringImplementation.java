@@ -2,7 +2,7 @@ package org.apache.tuscany.container.spring;
 
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -10,7 +10,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class SpringImplementation extends Implementation<CompositeComponentType> {
 
     private String location;
-    private ConfigurableApplicationContext applicationContext;
+    private GenericApplicationContext applicationContext;
 
     public SpringImplementation() {
     }
@@ -33,11 +33,11 @@ public class SpringImplementation extends Implementation<CompositeComponentType>
         this.location = location;
     }
 
-    public ConfigurableApplicationContext getApplicationContext() {
+    public GenericApplicationContext getApplicationContext() {
         return applicationContext;
     }
 
-    public void setApplicationContext(ConfigurableApplicationContext applicationContext) {
+    public void setApplicationContext(GenericApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 }

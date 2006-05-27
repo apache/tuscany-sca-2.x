@@ -9,7 +9,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Dispatches an operation on a Spring bean
+ * Dispatches to an operation on a Spring bean
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -55,7 +55,9 @@ public class SpringInvoker implements TargetInvoker {
 
 
     public SpringInvoker clone() throws CloneNotSupportedException {
-        return (SpringInvoker) super.clone();
+        SpringInvoker invoker = (SpringInvoker) super.clone();
+        invoker.bean = null;
+        return invoker;
     }
 
 

@@ -19,10 +19,10 @@ import org.springframework.core.io.Resource;
 public class SpringComponentTypeLoader implements ComponentTypeLoader<SpringImplementation> {
 
     public void load(SpringImplementation implementation, DeploymentContext deploymentContext) {
-        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
-        CompositeComponentType componentType = new CompositeComponentType();
-        XmlBeanDefinitionReader reader = new SCABeanDefinitionReader(beanFactory, componentType);
         Resource resource = null; //FIXME
+        CompositeComponentType componentType = new CompositeComponentType();
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        XmlBeanDefinitionReader reader = new SCABeanDefinitionReader(beanFactory, componentType);
         reader.loadBeanDefinitions(resource);
         GenericApplicationContext ctx = new GenericApplicationContext(beanFactory);
         ctx.refresh();

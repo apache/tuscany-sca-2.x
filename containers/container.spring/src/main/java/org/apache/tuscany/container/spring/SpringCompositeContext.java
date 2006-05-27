@@ -22,6 +22,7 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.Resource;
 
 /**
@@ -31,7 +32,7 @@ import org.springframework.core.io.Resource;
  */
 public class SpringCompositeContext extends CompositeContextExtension {
     private static final String[] EMPTY_ARRAY = new String[0];
-    private ConfigurableApplicationContext springContext;
+    private GenericApplicationContext springContext;
     private SCAApplicationContext scaApplicationContext;
 
     /**
@@ -41,7 +42,7 @@ public class SpringCompositeContext extends CompositeContextExtension {
      * @param springContext the pre-instantiated Spring applicaiton context
      * @param parent        the SCA composite parent
      */
-    public SpringCompositeContext(String name, ConfigurableApplicationContext springContext, CompositeContext parent) {
+    public SpringCompositeContext(String name, GenericApplicationContext springContext, CompositeContext parent) {
         super(name, parent);
         scaApplicationContext = new SCAApplicationContext();
         springContext.setParent(scaApplicationContext);
@@ -53,12 +54,23 @@ public class SpringCompositeContext extends CompositeContextExtension {
     }
 
     public void setScopeContext(ScopeContext scopeContext) {
-
+        // not needed
     }
 
     public ConfigurableApplicationContext getApplicationContext() {
         return springContext;
     }
+
+    public void start() {
+        super.start();
+        springContext.start();
+    }
+
+    public void stop() {
+        super.stop();
+        springContext.stop();
+    }
+
 
     /**
      * An inner class is required to act as the Spring application context parent as opposed to implementing
