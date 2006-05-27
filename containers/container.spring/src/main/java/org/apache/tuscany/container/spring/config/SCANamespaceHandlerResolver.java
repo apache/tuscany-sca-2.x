@@ -1,6 +1,7 @@
-package org.apache.tuscany.container.spring;
+package org.apache.tuscany.container.spring.config;
 
 import org.apache.tuscany.spi.model.CompositeComponentType;
+import org.apache.tuscany.container.spring.config.SCANamespaceHandler;
 import org.springframework.beans.factory.xml.DefaultNamespaceHandlerResolver;
 import org.springframework.beans.factory.xml.NamespaceHandler;
 

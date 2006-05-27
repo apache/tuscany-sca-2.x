@@ -47,7 +47,6 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
         assertEquals("foo", bean.echo("foo"));
     }
 
-
     private ConfigurableApplicationContext createSpringContext() {
         StaticApplicationContext beanFactory = new StaticApplicationContext();
         BeanDefinition definition = new RootBeanDefinition(TestBeanImpl.class);

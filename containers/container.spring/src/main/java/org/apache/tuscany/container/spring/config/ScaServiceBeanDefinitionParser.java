@@ -1,4 +1,4 @@
-package org.apache.tuscany.container.spring;
+package org.apache.tuscany.container.spring.config;
 
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.springframework.beans.factory.config.BeanDefinition;
