@@ -4,7 +4,9 @@ import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.Message;
 
 /**
- * @version $$Rev$$ $$Date$$
+ * Bridges between handlers in two {@link org.apache.tuscany.spi.wire.TargetInvocationChain}s
+ * 
+  * @version $$Rev$$ $$Date$$
  */
 public class BridgingHandler implements MessageHandler {
     private MessageHandler next;

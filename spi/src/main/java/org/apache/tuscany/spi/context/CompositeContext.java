@@ -41,6 +41,11 @@ public interface CompositeContext<T> extends ComponentContext<T>, RuntimeEventLi
     Context getContext(String name);
 
     /**
+     * Returns the child contexts contained by the composite
+     */
+    List<Context> getContexts();
+
+    /**
      * Returns the service contexts contained by the composite
      */
     List<ServiceContext> getServiceContexts();

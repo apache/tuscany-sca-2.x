@@ -78,6 +78,10 @@ public abstract class CompositeContextExtension<T> extends AbstractContext<T> im
         return children.get(name);
     }
 
+    public List<Context> getContexts() {
+        return Collections.unmodifiableList(new ArrayList<Context>(children.values()));
+    }
+
     public List<ServiceContext> getServiceContexts() {
         return Collections.unmodifiableList(services);
     }
@@ -154,6 +158,12 @@ public abstract class CompositeContextExtension<T> extends AbstractContext<T> im
             throw new ContextNotFoundException(serviceName);
         }
         return ((ServiceContext) context).getTargetWire();
+    }
+
+    public void prepare(){
+        for (Context context : children.values()) {
+            context.prepare();
+        }
     }
 
 

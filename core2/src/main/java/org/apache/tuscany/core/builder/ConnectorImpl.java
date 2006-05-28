@@ -182,6 +182,7 @@ public class ConnectorImpl implements Connector {
             source.setTargetWire(targetWire);
             return;
         }
+        String serviceName = targetWire.getServiceName();
         for (SourceInvocationChain sourceChain : source.getInvocationChains().values()) {
             // match wire chains
             TargetInvocationChain targetChain = targetInvocationConfigs.get(sourceChain.getMethod());
@@ -190,66 +191,57 @@ public class ConnectorImpl implements Connector {
                 e.setIdentifier(source.getReferenceName());
                 throw e;
             }
-            // if handlers are configured, add them
-            if (targetChain.getRequestHandlers() != null || targetChain.getResponseHandlers() != null) {
-                if (targetChain.getRequestHandlers() == null) {
-                    // the target may not have request handlers, so bridge it on the source
-                    if (targetChain.getHeadInterceptor() != null) {
-                        List<MessageHandler> handlers = new ArrayList<MessageHandler>();
-                        handlers.add(new MessageDispatcher(targetChain.getHeadInterceptor()));
-                        MessageChannel channel = new MessageChannelImpl(handlers);
-                        sourceChain.setTargetRequestChannel(channel);
-                    } else {
-                        BuilderConfigException e = new BuilderConfigException("Target chain must have an interceptor");
-                        e.setIdentifier(targetChain.getMethod().getName());
-                        throw e;
-                    }
-                } else {
-                    sourceChain.setTargetRequestChannel(new MessageChannelImpl(targetChain
-                            .getRequestHandlers()));
-                }
-                sourceChain.setTargetResponseChannel(new MessageChannelImpl(targetChain
-                        .getResponseHandlers()));
+            if (target instanceof ReferenceContext) {
+                ReferenceContext referenceContext = (ReferenceContext)target;
+                TargetInvoker invoker = referenceContext.createTargetInvoker(serviceName, sourceChain.getMethod());
+                connect(sourceChain,targetChain, invoker);
             } else {
-                // no handlers, just connect interceptors
-                if (targetChain.getHeadInterceptor() == null) {
-                    BuilderConfigException e = new BuilderConfigException("No chain handler or interceptor for operation");
+                ComponentContext componentContext = (ComponentContext)target;
+                TargetInvoker invoker = componentContext.createTargetInvoker(serviceName, sourceChain.getMethod());
+                connect(sourceChain,targetChain,invoker);
+            }
+        }
+    }
+
+    public void connect(SourceInvocationChain sourceChain, TargetInvocationChain targetChain, TargetInvoker invoker) {
+        // if handlers are configured, add them
+        if (targetChain.getRequestHandlers() != null || targetChain.getResponseHandlers() != null) {
+            if (targetChain.getRequestHandlers() == null) {
+                // the target may not have request handlers, so bridge it on the source
+                if (targetChain.getHeadInterceptor() != null) {
+                    List<MessageHandler> handlers = new ArrayList<MessageHandler>();
+                    handlers.add(new MessageDispatcher(targetChain.getHeadInterceptor()));
+                    MessageChannel channel = new MessageChannelImpl(handlers);
+                    sourceChain.setTargetRequestChannel(channel);
+                } else {
+                    BuilderConfigException e = new BuilderConfigException("Target chain must have an interceptor");
                     e.setIdentifier(targetChain.getMethod().getName());
                     throw e;
                 }
-                if (!(sourceChain.getTailInterceptor() instanceof InvokerInterceptor && targetChain
-                        .getHeadInterceptor() instanceof InvokerInterceptor)) {
-                    // check that we do not have the case where the only interceptors are invokers since we just need one
-                    sourceChain.setTargetInterceptor(targetChain.getHeadInterceptor());
-                }
+            } else {
+                sourceChain.setTargetRequestChannel(new MessageChannelImpl(targetChain
+                        .getRequestHandlers()));
             }
-            sourceChain.build();
-        }
-
-        if (target instanceof ReferenceContext) {
-            attachInvoker(targetWire.getServiceName(), source.getInvocationChains().values(), (ReferenceContext) target);
+            sourceChain.setTargetResponseChannel(new MessageChannelImpl(targetChain
+                    .getResponseHandlers()));
         } else {
-            attachInvoker(targetWire.getServiceName(), source.getInvocationChains().values(), (ComponentContext) target);
+            // no handlers, just connect interceptors
+            if (targetChain.getHeadInterceptor() == null) {
+                BuilderConfigException e = new BuilderConfigException("No chain handler or interceptor for operation");
+                e.setIdentifier(targetChain.getMethod().getName());
+                throw e;
+            }
+            if (!(sourceChain.getTailInterceptor() instanceof InvokerInterceptor && targetChain
+                    .getHeadInterceptor() instanceof InvokerInterceptor)) {
+                // check that we do not have the case where the only interceptors are invokers since we just need one
+                sourceChain.setTargetInterceptor(targetChain.getHeadInterceptor());
+            }
         }
+        sourceChain.build();
+        sourceChain.setTargetInvoker(invoker);
+
     }
 
-    private void attachInvoker(String serviceName, Collection<SourceInvocationChain> chains, ComponentContext<?> target) {
-        for (SourceInvocationChain chain : chains) {
-            TargetInvoker invoker = target.createTargetInvoker(serviceName, chain.getMethod());
-            // TODO fix cacheable attrivute
-            //invoker.setCacheable(cacheable);
-            chain.setTargetInvoker(invoker);
-        }
-    }
-
-    private void attachInvoker(String serviceName, Collection<SourceInvocationChain> chains, ReferenceContext<?> target) {
-        for (SourceInvocationChain chain : chains) {
-            TargetInvoker invoker = target.createTargetInvoker(serviceName, chain.getMethod());
-            // TODO fix cacheable attribute
-            //invoker.setCacheable(cacheable);
-            chain.setTargetInvoker(invoker);
-        }
-    }
 
     private boolean isOptimizable(Scope pReferrer, Scope pReferee) {
         if (pReferrer == Scope.UNDEFINED || pReferee == Scope.UNDEFINED) {

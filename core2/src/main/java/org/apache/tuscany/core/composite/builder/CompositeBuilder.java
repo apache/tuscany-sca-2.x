@@ -16,21 +16,60 @@
  */
 package org.apache.tuscany.core.composite.builder;
 
-import org.apache.tuscany.spi.model.Component;
-import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.core.context.CompositeContextImpl;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.core.context.CompositeContextImpl;
+import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
+import org.apache.tuscany.spi.model.BoundReference;
+import org.apache.tuscany.spi.model.BoundService;
+import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.CompositeComponentType;
+import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.Reference;
+import org.apache.tuscany.spi.model.ReferenceTarget;
+import org.apache.tuscany.spi.model.Service;
 
 /**
  * @version $Rev$ $Date$
  */
-public class CompositeBuilder implements ComponentBuilder<CompositeImplementation> {
-    public ComponentContext build(CompositeContext parent, Component<CompositeImplementation> component, DeploymentContext deploymentContext) throws BuilderConfigException {
+public class CompositeBuilder extends ComponentBuilderExtension<CompositeImplementation> {
+
+    public ComponentContext build(CompositeContext parent,
+                                  Component<CompositeImplementation> component,
+                                  DeploymentContext deploymentContext) throws BuilderConfigException {
+        CompositeImplementation implementation = component.getImplementation();
+        CompositeComponentType componentType = implementation.getComponentType();
         CompositeContextImpl<?> context = new CompositeContextImpl(component.getName(), parent, null);
+        for (ReferenceTarget target : component.getReferenceTargets().values()) {
+            Reference reference = target.getReference();
+            if (reference instanceof BoundReference) {
+                Context<?> refereceContext = builderRegistry.build(context, (BoundReference) reference,
+                        deploymentContext);
+                context.registerContext(refereceContext);
+            }
+        }
+        for (Component<? extends Implementation> child : componentType.getComponents().values()) {
+            Context<?> childContext = builderRegistry.build(context, child, deploymentContext);
+            context.registerContext(childContext);
+        }
+        for (Service service : componentType.getServices().values()) {
+            if (service instanceof BoundService) {
+                Context<?> serviceContext = builderRegistry.build(context, (BoundService) service,
+                        deploymentContext);
+                context.registerContext(serviceContext);
+            }
+        }
+        for (Context child : context.getContexts()) {
+            //child.prepare();
+        }
         return context;
+    }
+
+    protected Class<CompositeImplementation> getImplementationType() {
+        return CompositeImplementation.class;
     }
 }
