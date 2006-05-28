@@ -18,6 +18,7 @@ public class SystemTargetWire<T> implements TargetWire<T> {
     private String serviceName;
     private Class<T> businessInterface;
     private ComponentContext<?> componentContext;
+    private TargetWire<T> wire; // a bridge to another target wire
 
     public SystemTargetWire(String serviceName, Class<T> businessInterface, ComponentContext<?> target) {
         this.serviceName = serviceName;
@@ -40,6 +41,9 @@ public class SystemTargetWire<T> implements TargetWire<T> {
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
+        if (wire != null){
+            return wire.getTargetService();
+        }
         return (T) componentContext.getService(serviceName);
     }
 
@@ -73,6 +77,10 @@ public class SystemTargetWire<T> implements TargetWire<T> {
 
     public boolean isOptimizable() {
         return true;  // system wires are always optimizable
+    }
+
+    public void setTargetWire(TargetWire<T> wire) {
+        this.wire = wire;
     }
 
 }

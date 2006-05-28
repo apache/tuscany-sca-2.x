@@ -9,8 +9,8 @@ import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
  * The default implementation of an service context
@@ -19,26 +19,26 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  */
 public class ServiceContextExtension<T> extends AbstractContext<T> implements ServiceContext<T> {
 
-    protected SourceWire<T> sourceWire;
+    protected TargetWire<T> targetWire;
     protected ObjectFactory<WireInvocationHandler> handlerFactory;
     private T target;
 
-    public ServiceContextExtension(String name, SourceWire<T> wire, CompositeContext parent) throws CoreRuntimeException {
+    public ServiceContextExtension(String name, TargetWire<T> wire, CompositeContext parent) throws CoreRuntimeException {
         super(name, parent);
-        this.sourceWire = wire;
+        this.targetWire = wire;
     }
 
     public Scope getScope() {
         return Scope.COMPOSITE;
     }
 
-    public SourceWire<T> getSourceWire() {
-        return sourceWire;
+    public TargetWire<T> getTargetWire() {
+        return targetWire;
     }
 
-    public void setSourceWire(SourceWire<T> wire) {
+    public void setTargetWire(TargetWire<T> wire) {
         target = null;
-        sourceWire = wire;
+        targetWire = wire;
     }
 
     public void setHandlerFactory(ObjectFactory<WireInvocationHandler> handlerFactory) {
@@ -48,19 +48,19 @@ public class ServiceContextExtension<T> extends AbstractContext<T> implements Se
 
     public T getService() throws TargetException {
         if (target == null) {
-            target = sourceWire.getTargetService();
+            target = targetWire.getTargetService();
         }
         return target;
     }
 
     public InvocationHandler getHandler() {
         WireInvocationHandler invocationHandler = handlerFactory.getInstance();
-        invocationHandler.setChains(sourceWire.getInvocationChains());
+        invocationHandler.setChains(targetWire.getInvocationChains());
         return invocationHandler;
     }
 
     public Class<T> getInterface() {
-        return sourceWire.getBusinessInterface();
+        return targetWire.getBusinessInterface();
     }
 
 }

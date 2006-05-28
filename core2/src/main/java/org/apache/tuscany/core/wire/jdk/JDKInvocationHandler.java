@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.core.wire.MessageImpl;
+import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;

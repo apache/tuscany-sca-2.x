@@ -1,5 +1,7 @@
 package org.apache.tuscany.container.java.integration.context;
 
+import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
@@ -11,25 +13,27 @@ import org.apache.tuscany.container.java.mock.components.TargetImpl;
 import org.apache.tuscany.core.builder.Connector;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.context.WorkContextImpl;
+import org.apache.tuscany.core.context.event.HttpSessionEnd;
+import org.apache.tuscany.core.context.event.HttpSessionStart;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.event.RequestEnd;
 import org.apache.tuscany.core.context.event.RequestStart;
-import org.apache.tuscany.core.context.event.HttpSessionStart;
-import org.apache.tuscany.core.context.event.HttpSessionEnd;
+import org.apache.tuscany.core.context.scope.HttpSessionScopeContext;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.context.scope.RequestScopeContext;
 import org.apache.tuscany.core.context.scope.StatelessScopeContext;
-import org.apache.tuscany.core.context.scope.HttpSessionScopeContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
-import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.core.util.MethodHashMap;
+import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
+import org.apache.tuscany.core.wire.jdk.JDKTargetWire;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.extension.ServiceContextExtension;
-import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
@@ -137,6 +141,7 @@ public class ServiceToJavaTestCase extends TestCase {
     }
 
     public void testToModuleScope() throws Exception {
+
         ModuleScopeContext scope = new ModuleScopeContext(workContext);
         scope.start();
         setupComposite(parent, scope);
@@ -153,17 +158,18 @@ public class ServiceToJavaTestCase extends TestCase {
         scope.stop();
     }
 
+    @SuppressWarnings("unchecked")
     private void setupComposite(CompositeContext<?> parent, ScopeContext scope) throws NoSuchMethodException {
         Connector connector = new ConnectorImpl();
-        SourceWire<Target> sourceWire = MockContextFactory.createSourceWire("target", Target.class);
-        sourceWire.setTargetName(new QualifiedName("target/Target"));
+        TargetWire<Target> sourceWire = createTargetWire("target", Target.class);
+        sourceWire.setServiceName("Target");
         ServiceContextExtension<Target> serviceContext = new ServiceContextExtension<Target>("service", sourceWire, parent);
         AtomicContext<?> atomicContext = MockContextFactory.createJavaAtomicContext("target", scope, TargetImpl.class, Target.class, scope.getScope());
         TargetWire targetWire = MockContextFactory.createTargetWire("Target", Target.class);
         atomicContext.addTargetWire(targetWire);
         parent.registerContext(serviceContext);
         parent.registerContext(atomicContext);
-        connector.connect(serviceContext);
+        connector.connect(serviceContext.getTargetWire(), atomicContext);
     }
 
     protected void setUp() throws Exception {
@@ -171,4 +177,23 @@ public class ServiceToJavaTestCase extends TestCase {
         workContext = new WorkContextImpl();
         parent = new SystemCompositeContextImpl(null, null, null);
     }
+
+    public static <T> TargetWire<T> createTargetWire(String serviceName, Class<T> interfaze) {
+        TargetWire<T> wire = new JDKTargetWire<T>();
+        wire.setBusinessInterface(interfaze);
+        wire.setServiceName(serviceName);
+        wire.addInvocationChains(createTargetInvocationChains(interfaze));
+        return wire;
+    }
+
+    private static Map<Method, TargetInvocationChain> createTargetInvocationChains(Class<?> interfaze) {
+        Map<Method, TargetInvocationChain> invocations = new MethodHashMap<TargetInvocationChain>();
+        Method[] methods = interfaze.getMethods();
+        for (Method method : methods) {
+            TargetInvocationChain chain = new TargetInvocationChainImpl(method);
+            invocations.put(method, chain);
+        }
+        return invocations;
+    }
+
 }

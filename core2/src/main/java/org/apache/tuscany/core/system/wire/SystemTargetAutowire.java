@@ -67,4 +67,8 @@ public class SystemTargetAutowire<T> implements TargetWire<T> {
         return true;  // system wires are always optimizable
     }
 
+    public void setTargetWire(TargetWire<T> wire) {
+        throw new UnsupportedOperationException(""); // FIXME not implemented
+    }
+
 }

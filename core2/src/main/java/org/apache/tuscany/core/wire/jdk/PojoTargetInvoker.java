@@ -7,6 +7,7 @@ import java.util.Set;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
@@ -44,6 +45,18 @@ public abstract class PojoTargetInvoker implements TargetInvoker {
         } catch (IllegalAccessException e) {
             throw new InvocationRuntimeException(e);
         }
+    }
+
+    public Message invoke(Message msg) throws InvocationRuntimeException {
+        try {
+            Object resp = invokeTarget(msg.getBody());
+            msg.setBody(resp);
+        } catch (InvocationTargetException e) {
+            msg.setBody(e.getCause());
+        } catch (Throwable e) {
+            msg.setBody(e);
+        }
+        return msg;
     }
 
     protected abstract Object getInstance() throws TargetException;

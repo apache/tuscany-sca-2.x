@@ -22,7 +22,7 @@ import org.apache.tuscany.spi.wire.Message;
 
 /**
  * A message handler that dispatches the message through an interceptor stack and the uses the response
- * channel to return the wire result.
+ * channel to return the result.
  *
  * @version $Rev$ $Date$
  */

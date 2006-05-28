@@ -19,6 +19,8 @@ import org.apache.tuscany.spi.context.TargetNotFoundException;
 import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
  * An extension point for composite contexts. When adding support for new composite component types,
@@ -34,6 +36,14 @@ public abstract class CompositeContextExtension<T> extends AbstractContext<T> im
 
     protected CompositeContextExtension(String name, CompositeContext<?> parent) {
         super(name, parent);
+    }
+
+    public Scope getScope() {
+        return Scope.COMPOSITE;
+    }
+
+    public void onEvent(Event event) {
+        publish(event);
     }
 
     public void registerContext(Context child) {
@@ -61,10 +71,6 @@ public abstract class CompositeContextExtension<T> extends AbstractContext<T> im
             e.addContextName(getName());
             throw e;
         }
-    }
-
-    public Scope getScope() {
-        return Scope.COMPOSITE;
     }
 
     public Context getContext(String name) {
@@ -126,8 +132,28 @@ public abstract class CompositeContextExtension<T> extends AbstractContext<T> im
         return serviceInterfaces;
     }
 
-    public void onEvent(Event event) {
-        publish(event);
+    public void addSourceWire(SourceWire wire) {
+
+    }
+
+    public void addSourceWires(Class<?> multiplicityClass, List<SourceWire> wires) {
+
+    }
+
+    public Map<String, List<SourceWire>> getSourceWires() {
+        return null;
+    }
+
+    public void addTargetWire(TargetWire wire) {
+        //TODO implement
+    }
+
+    public TargetWire getTargetWire(String serviceName) {
+        Context context = children.get(serviceName);
+        if (context == null || !(context instanceof ServiceContext)) {
+            throw new ContextNotFoundException(serviceName);
+        }
+        return ((ServiceContext) context).getTargetWire();
     }
 
 

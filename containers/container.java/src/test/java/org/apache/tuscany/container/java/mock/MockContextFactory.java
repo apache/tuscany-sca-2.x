@@ -172,6 +172,7 @@ public class MockContextFactory {
         return createTargetWire(serviceName, interfaze, null, null, null);
     }
 
+
     public static <T> TargetWire<T> createTargetWire(String serviceName, Class<T> interfaze,
                                                      Interceptor headInterceptor,
                                                      MessageHandler headRequestHandler,
@@ -277,10 +278,6 @@ public class MockContextFactory {
             invocations.put(method, chain);
         }
         return invocations;
-    }
-
-    private static Map<Method, TargetInvocationChain> createTargetInvocationChains(Class<?> interfaze) {
-        return createTargetInvocationChains(interfaze, null, null, null);
     }
 
     private static Map<Method, TargetInvocationChain> createTargetInvocationChains(Class<?> interfaze,

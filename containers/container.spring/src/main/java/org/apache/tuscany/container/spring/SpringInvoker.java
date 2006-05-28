@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
@@ -39,6 +41,22 @@ public class SpringInvoker implements TargetInvoker {
         } catch (IllegalAccessException e) {
             throw new InvocationTargetException(e);
         }
+    }
+
+    public Message invoke(Message msg) throws InvocationRuntimeException {
+        TargetInvoker invoker = msg.getTargetInvoker();
+        if (invoker == null) {
+            throw new InvocationRuntimeException("No target invoker specified on message");
+        }
+        try {
+            Object resp = invokeTarget(msg.getBody());
+            msg.setBody(resp);
+        } catch (InvocationTargetException e) {
+            msg.setBody(e.getCause());
+        } catch (Throwable e) {
+            msg.setBody(e);
+        }
+        return msg;
     }
 
     public boolean isCacheable() {

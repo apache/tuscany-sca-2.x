@@ -71,6 +71,11 @@ public interface TargetWire<T> {
     void addInvocationChain(Method method, TargetInvocationChain chain);
 
     /**
+     * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end
+     */
+    void setTargetWire(TargetWire<T> wire);
+
+    /**
      * Returns true if the wire and all of its interceptors can be optimized
      */
     boolean isOptimizable();

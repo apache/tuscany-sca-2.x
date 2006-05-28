@@ -26,7 +26,7 @@ import org.apache.tuscany.spi.wire.MessageHandler;
 public class TargetInvocationChainImpl extends InvocationChainImpl implements TargetInvocationChain {
 
     /**
-     * Creates an new target-side pipeline for the given operation
+     * Creates an new target-side chain for the given operation
      *
      * @param operation the method on the interface representing target service, where the method corresponds
      *                  to the service operation

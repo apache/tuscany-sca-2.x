@@ -69,6 +69,11 @@ public class JDKTargetWire<T> implements TargetWire<T> {
         invocationChains.put(method, chain);
     }
 
+    public void setTargetWire(TargetWire<T> wire) {
+        throw new UnsupportedOperationException("not yet implemented"); // FIXME
+
+    }
+
     public boolean isOptimizable() {
         for (TargetInvocationChain chain : invocationChains.values()) {
             if (chain.getTargetInvoker() != null && !chain.getTargetInvoker().isOptimizable()) {

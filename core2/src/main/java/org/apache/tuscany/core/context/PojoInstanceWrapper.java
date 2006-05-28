@@ -19,7 +19,7 @@ import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 
 /**
- * Manages an Java class-based implementation instance
+ * Manages a Java class-based implementation instance
  *
  * @version $$Rev$$ $$Date$$
  */

@@ -20,6 +20,8 @@ import java.lang.reflect.InvocationTargetException;
 
 import groovy.lang.GroovyObject;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 
 /**
  * Dispatches to a Groovy implementation instance
@@ -45,6 +47,10 @@ public class GroovyInvoker implements TargetInvoker, Cloneable {
         this.cacheable = cacheable;
     }
 
+    public boolean isOptimizable() {
+        return false;
+    }
+
     /**
      * Dispatches to the the target.
      */
@@ -56,6 +62,18 @@ public class GroovyInvoker implements TargetInvoker, Cloneable {
         } catch (Exception ex) {
             throw new InvocationTargetException(ex);
         }
+    }
+
+    public Message invoke(Message msg) throws InvocationRuntimeException {
+        try {
+            Object resp = invokeTarget(msg.getBody());
+            msg.setBody(resp);
+        } catch (InvocationTargetException e) {
+            msg.setBody(e.getCause());
+        } catch (Throwable e) {
+            msg.setBody(e);
+        }
+        return msg;
     }
 
     public GroovyInvoker clone() throws CloneNotSupportedException {

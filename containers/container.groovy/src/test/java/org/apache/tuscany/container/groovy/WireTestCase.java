@@ -11,11 +11,10 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.TargetWire;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
-import org.jmock.core.Stub;
 import org.jmock.core.Invocation;
+import org.jmock.core.Stub;
 
 /**
- *
  * @version $$Rev$$ $$Date$$
  */
 public class WireTestCase extends MockObjectTestCase {
@@ -44,7 +43,7 @@ public class WireTestCase extends MockObjectTestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
         GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", SCRIPT, services,
-                Scope.MODULE,null, null,scope);
+                Scope.MODULE, null, null, scope);
         scope.register(context);
         Mock mock = mock(SourceWire.class);
         mock.expects(atLeastOnce()).method("getTargetService").will(
@@ -71,13 +70,12 @@ public class WireTestCase extends MockObjectTestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
         GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", SCRIPT2, services,
-                Scope.MODULE,null, null,scope);
+                Scope.MODULE, null, null, scope);
         scope.register(context);
-        TargetInvoker invoker = context.createTargetInvoker("greeting",Greeting.class.getMethod("greet", String.class));
+        TargetInvoker invoker = context.createTargetInvoker("greeting", Greeting.class.getMethod("greet", String.class));
         assertEquals("foo", invoker.invokeTarget(new String[]{"foo"}));
         scope.stop();
     }
-
 
 
     /**
@@ -89,7 +87,7 @@ public class WireTestCase extends MockObjectTestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
         final GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", SCRIPT2,
-                services, Scope.MODULE,null, null,scope);
+                services, Scope.MODULE, null, null, scope);
         scope.register(context);
         Mock mock = mock(TargetWire.class);
         mock.stubs().method("getServiceName").will(returnValue("Greeting"));
@@ -106,7 +104,7 @@ public class WireTestCase extends MockObjectTestCase {
 
         TargetWire<Greeting> wire = (TargetWire<Greeting>) mock.proxy();
         context.addTargetWire(wire);
-        Greeting greeting = (Greeting)context.getService("Greeting");
+        Greeting greeting = (Greeting) context.getService("Greeting");
         assertEquals("foo", greeting.greet("foo"));
         scope.stop();
     }

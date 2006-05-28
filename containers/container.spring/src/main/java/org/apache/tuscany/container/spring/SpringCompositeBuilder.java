@@ -14,8 +14,8 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Reference;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Service;
-import org.apache.tuscany.spi.wire.SourceInvocationChain;
-import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.TargetInvocationChain;
+import org.apache.tuscany.spi.wire.TargetWire;
 import org.springframework.context.support.GenericApplicationContext;
 
 /**
@@ -39,14 +39,12 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
                         (BoundService<? extends Binding>) service,
                         deploymentContext);
                 // wire service to bean invokers
-                SourceWire<?> wire = childContext.getSourceWire();
-                for (SourceInvocationChain chain : wire.getInvocationChains().values()) {
-                    String beanName = wire.getTargetName().getPartName();
+                TargetWire<?> wire = childContext.getTargetWire();
+                for (TargetInvocationChain chain : wire.getInvocationChains().values()) {
+                    String beanName = wire.getServiceName();
                     chain.setTargetInvoker(context.createTargetInvoker(beanName, chain.getMethod()));
-                    // TODO add an invoker interceptor or handler if not null
                 }
                 context.registerContext(childContext);
-
             }
         }
         // TODO is this correct?

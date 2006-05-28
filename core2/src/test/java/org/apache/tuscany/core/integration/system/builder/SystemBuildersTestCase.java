@@ -7,24 +7,24 @@ import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.core.mock.factories.MockComponentFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.Target;
+import org.apache.tuscany.core.mock.factories.MockComponentFactory;
 import org.apache.tuscany.core.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.system.context.SystemCompositeContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.model.SystemImplementation;
-import org.apache.tuscany.spi.model.BoundReference;
-import org.apache.tuscany.spi.model.Component;
-import org.apache.tuscany.spi.model.BoundService;
 import org.apache.tuscany.spi.context.AtomicContext;
-import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.context.ReferenceContext;
+import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.ServiceContext;
+import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.model.BoundReference;
+import org.apache.tuscany.spi.model.BoundService;
+import org.apache.tuscany.spi.model.Component;
 
 /**
  * Validates that system builders and the default connector create properly wired contexts
@@ -117,7 +117,8 @@ public class SystemBuildersTestCase extends TestCase {
     /**
      * Validates building a wire from a service context to an atomic context
      */
-    public void testServiceToAtomicWireBuild() throws Exception{
+    @SuppressWarnings("unchecked")
+    public void testServiceToAtomicWireBuild() throws Exception {
         WorkContext work = new WorkContextImpl();
         ScopeContext scope = new ModuleScopeContext(work);
         scope.start();
@@ -128,7 +129,7 @@ public class SystemBuildersTestCase extends TestCase {
 
         SystemCompositeContext parent = new SystemCompositeContextImpl(null, null, null);
 
-        BoundService<SystemBinding> service =  MockComponentFactory.createBoundService();
+        BoundService<SystemBinding> service = MockComponentFactory.createBoundService();
         Component<SystemImplementation> component = MockComponentFactory.createTarget();
 
         AtomicContext<?> sourceContext = (AtomicContext) builder.build(parent, component, deploymentContext);
@@ -138,7 +139,7 @@ public class SystemBuildersTestCase extends TestCase {
         parent.registerContext(serviceContext);
 
         connector.connect(sourceContext);
-        connector.connect(serviceContext);
+        connector.connect(serviceContext.getTargetWire(), sourceContext);
         parent.start();
         scope.onEvent(new ModuleStart(this, parent));
         Target target = (Target) parent.getContext("service").getService();
@@ -155,7 +156,8 @@ public class SystemBuildersTestCase extends TestCase {
     /**
      * Validates building a wire from a service context to a reference context
      */
-    public void testServiceToReferenceWireBuild() throws Exception{
+    @SuppressWarnings("unchecked")
+    public void testServiceToReferenceWireBuild() throws Exception {
         WorkContext work = new WorkContextImpl();
         ScopeContext scope = new ModuleScopeContext(work);
         scope.start();
@@ -173,15 +175,15 @@ public class SystemBuildersTestCase extends TestCase {
         grandParent.registerContext(targetComponentContext);
 
         BoundReference<SystemBinding> reference = MockComponentFactory.createBoundReference();
-        BoundService<SystemBinding> service =  MockComponentFactory.createBoundService();
+        BoundService<SystemBinding> service = MockComponentFactory.createBoundService();
 
-        ReferenceContext<?> referenceContext = (ReferenceContext) bindingBuilder.build(parent, reference, deploymentContext);
-        ServiceContext<?> serviceContext = (ServiceContext) bindingBuilder.build(parent, service, deploymentContext);
+        ReferenceContext referenceContext = (ReferenceContext) bindingBuilder.build(parent, reference, deploymentContext);
+        ServiceContext serviceContext = (ServiceContext) bindingBuilder.build(parent, service, deploymentContext);
 
         parent.registerContext(referenceContext);
         parent.registerContext(serviceContext);
 
-        connector.connect(serviceContext);
+        connector.connect(serviceContext.getTargetWire(), referenceContext);
         grandParent.registerContext(parent);
         grandParent.start();
         scope.onEvent(new ModuleStart(this, parent));

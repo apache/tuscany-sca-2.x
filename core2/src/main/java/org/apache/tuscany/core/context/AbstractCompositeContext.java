@@ -1,5 +1,6 @@
 package org.apache.tuscany.core.context;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,6 +20,7 @@ import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeContextExtension;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * The base implementation of a composite context
@@ -181,6 +183,10 @@ public abstract class AbstractCompositeContext<T> extends CompositeContextExtens
         } else {
             return null;
         }
+    }
+
+    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
+        return null;// new BridgingInvoker(serviceName, operation, this);
     }
 
     protected void registerAutowireExternal(Class<?> interfaze, SystemServiceContext context) {

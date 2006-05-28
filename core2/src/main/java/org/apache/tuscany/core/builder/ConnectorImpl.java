@@ -6,18 +6,21 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.core.wire.BridgingHandler;
+import org.apache.tuscany.core.wire.BridgingInterceptor;
+import org.apache.tuscany.core.wire.BridgingResponseInterceptor;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.MessageChannelImpl;
 import org.apache.tuscany.core.wire.MessageDispatcher;
+import org.apache.tuscany.core.wire.RequestResponseInterceptor;
 import org.apache.tuscany.core.wire.SourceAutowire;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
+import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.context.ReferenceContext;
-import org.apache.tuscany.spi.context.ServiceContext;
-import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.MessageChannel;
 import org.apache.tuscany.spi.wire.MessageHandler;
@@ -37,13 +40,7 @@ public class ConnectorImpl implements Connector {
     public <T> void connect(Context<T> source) {
         CompositeContext parent = source.getParent();
         Scope scope = source.getScope();
-
-        if (source instanceof CompositeContext) {
-            CompositeContext<T> sourceContext = (CompositeContext<T>) source;
-            for (ServiceContext<?> context : sourceContext.getServiceContexts()) {
-                connect(context);
-            }
-        } else if (source instanceof AtomicContext) {
+        if (source instanceof AtomicContext) {
             AtomicContext<T> sourceContext = (AtomicContext<T>) source;
             for (List<SourceWire> sourceWires : sourceContext.getSourceWires().values()) {
                 for (SourceWire<T> sourceWire : sourceWires) {
@@ -58,16 +55,6 @@ public class ConnectorImpl implements Connector {
                         throw e;
                     }
                 }
-            }
-        } else if (source instanceof ServiceContext) {
-            ServiceContext<T> sourceContext = (ServiceContext<T>) source;
-            SourceWire<T> sourceWire = sourceContext.getSourceWire();
-            try {
-                connect(sourceWire, parent, scope);
-            } catch (BuilderConfigException e) {
-                e.addContextName(source.getName());
-                e.addContextName(parent.getName());
-                throw e;
             }
         } else {
             BuilderConfigException e = new BuilderConfigException("Invalid source context type");
@@ -111,6 +98,77 @@ public class ConnectorImpl implements Connector {
         } else {
             BuilderConfigException e = new BuilderConfigException("Invalid wire target type for reference " + sourceWire.getReferenceName());
             e.setIdentifier(targetName.getQualifiedName());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> void connect(TargetWire<T> sourceWire, Context<?> targetContext) throws BuilderConfigException {
+        TargetWire<T> targetWire;
+        if (targetContext instanceof ComponentContext) {
+            targetWire = ((ComponentContext) targetContext).getTargetWire(sourceWire.getServiceName());
+        } else if (targetContext instanceof ReferenceContext) {
+            targetWire = ((ReferenceContext) targetContext).getTargetWire();
+        } else {
+            BuilderConfigException e = new BuilderConfigException("Invalid target context type");
+            e.setIdentifier(targetContext.getName());
+            throw e;
+        }
+        // perform optimization, if possible
+        if (sourceWire.getInvocationChains().isEmpty() && targetWire.getInvocationChains().isEmpty()) {
+            sourceWire.setTargetWire(targetWire);
+            return;
+        }
+        for (TargetInvocationChain sourceChain : sourceWire.getInvocationChains().values()) {
+            if (targetWire.getInvocationChains() != null || targetWire.getInvocationChains().isEmpty()) {
+                if (sourceChain.getTailInterceptor() != null &&
+                        !(sourceChain.getTailInterceptor() instanceof InvokerInterceptor)) {
+                    sourceChain.getTailInterceptor().setNext(new InvokerInterceptor());
+                } else {
+                    // special case where we need to attach the invoker of the second chain
+                    if (targetContext instanceof ComponentContext) {
+                        sourceChain.setTargetInvoker(((ComponentContext) targetContext).createTargetInvoker(
+                                sourceWire.getServiceName(), sourceChain.getMethod()));
+                    } else if (targetContext instanceof ReferenceContext) {
+                        sourceChain.setTargetInvoker(((ReferenceContext) targetContext).createTargetInvoker(
+                                sourceWire.getServiceName(), sourceChain.getMethod()));
+                    }
+                }
+            }
+            TargetInvocationChain targetChain = targetWire.getInvocationChains().get(sourceChain.getMethod());
+            if (sourceChain.getTailInterceptor() != null) {
+                if (targetChain.getRequestHandlers() != null) {
+                    MessageChannel requestChannel = new MessageChannelImpl(targetChain.getRequestHandlers());
+                    MessageChannel responseChannel = new MessageChannelImpl(targetChain.getResponseHandlers());
+                    sourceChain.getTailInterceptor().setNext(new RequestResponseInterceptor(null, requestChannel, null, responseChannel));
+                } else if (targetChain.getResponseHandlers() != null) {
+                    if (targetChain.getHeadInterceptor() == null) {
+                        BuilderConfigException e = new BuilderConfigException("Target chain must have an interceptor");
+                        e.setIdentifier(targetChain.getMethod().getName());
+                        throw e;
+                    }
+                    MessageChannel responseChannel = new MessageChannelImpl(targetChain.getResponseHandlers());
+                    sourceChain.getTailInterceptor().setNext(new BridgingResponseInterceptor(targetChain.getHeadInterceptor(), responseChannel));
+                } else {
+                    if (targetChain.getHeadInterceptor() == null) {
+                        BuilderConfigException e = new BuilderConfigException("Target chain must have an interceptor");
+                        e.setIdentifier(targetChain.getMethod().getName());
+                        throw e;
+                    }
+                    sourceChain.getTailInterceptor().setNext(new BridgingInterceptor(targetChain.getHeadInterceptor()));
+                }
+            } else {
+                // no target interceptor
+                List<MessageHandler> sourceRequestHandlers = sourceChain.getRequestHandlers();
+                List<MessageHandler> targetRequestHandlers = targetChain.getRequestHandlers();
+                if (sourceRequestHandlers != null && !sourceRequestHandlers.isEmpty()) {
+                    sourceRequestHandlers.add(new BridgingHandler(targetRequestHandlers.get(0)));
+                }
+                List<MessageHandler> sourceResponseHandlers = sourceChain.getResponseHandlers();
+                List<MessageHandler> targetResponseHandlers = targetChain.getResponseHandlers();
+                if (sourceResponseHandlers != null && !sourceResponseHandlers.isEmpty()) {
+                    sourceResponseHandlers.add(new BridgingHandler(targetResponseHandlers.get(0)));
+                }
+            }
         }
     }
 

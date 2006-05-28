@@ -6,6 +6,7 @@ import org.apache.tuscany.core.system.context.SystemServiceContextImpl;
 import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.wire.SystemSourceWire;
 import org.apache.tuscany.core.system.wire.SystemTargetAutowire;
+import org.apache.tuscany.core.system.wire.SystemTargetWire;
 import org.apache.tuscany.spi.model.BoundReference;
 import org.apache.tuscany.spi.model.BoundService;
 import org.apache.tuscany.spi.QualifiedName;
@@ -13,6 +14,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
+import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
@@ -23,7 +25,8 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
     public Context build(CompositeContext parent, BoundService<SystemBinding> boundService, DeploymentContext deploymentContext) {
         Class<?> interfaze = boundService.getServiceContract().getInterfaceClass();
         QualifiedName targetName = new QualifiedName(boundService.getTarget().getPath());
-        SystemSourceWire<?> wire = new SystemSourceWire(boundService.getName(), targetName, interfaze);
+        ComponentContext target = (ComponentContext)parent.getContext(targetName.getPartName());
+        SystemTargetWire<?> wire = new SystemTargetWire(targetName.getPortName(), interfaze,target);
         return new SystemServiceContextImpl(boundService.getName(), wire, parent);
     }
 

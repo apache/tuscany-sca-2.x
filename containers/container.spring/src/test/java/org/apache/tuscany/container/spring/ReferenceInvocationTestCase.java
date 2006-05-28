@@ -9,7 +9,7 @@ import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
 
 /**
@@ -20,7 +20,7 @@ import org.springframework.context.support.StaticApplicationContext;
 public class ReferenceInvocationTestCase extends MockObjectTestCase {
 
     public void testInvocation() throws Exception {
-        ConfigurableApplicationContext ctx = createSpringContext();
+        GenericApplicationContext ctx = createSpringContext();
         SpringCompositeContext parent = new SpringCompositeContext("spring", ctx, null);
         parent.start();
         TestBean referenceTarget = new TestBeanImpl();
@@ -33,7 +33,7 @@ public class ReferenceInvocationTestCase extends MockObjectTestCase {
         ctx.getBean("foo");
     }
 
-    private ConfigurableApplicationContext createSpringContext() {
+    private GenericApplicationContext createSpringContext() {
         StaticApplicationContext beanFactory = new StaticApplicationContext();
         BeanDefinition definition = new RootBeanDefinition(TestBeanImpl.class);
         RuntimeBeanReference ref = new RuntimeBeanReference("bar");
