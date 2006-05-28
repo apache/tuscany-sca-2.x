@@ -22,7 +22,6 @@ public interface ComponentContext<T> extends Context<T> {
      */
     Object getService(String name) throws TargetException;
 
-
     /**
      * Returns the service interfaces implemented by the context
      */
@@ -38,7 +37,7 @@ public interface ComponentContext<T> extends Context<T> {
      * Returns the target-side wire associated with the given service name
      */
     TargetWire getTargetWire(String serviceName);
-    
+
     /**
      * Adds a source-side wire for the given reference. Source-side wires contain the invocation chains for a
      * reference in the implementation associated with the instance wrapper created by this configuration.
@@ -53,7 +52,7 @@ public interface ComponentContext<T> extends Context<T> {
     void addSourceWires(Class<?> multiplicityClass, List<SourceWire> wires);
 
     /**
-     * Returns a map of source-side wires for references. There may 1..n wires per reference.
+     * Returns a map of source-side wires for references. There may be 1..n wires per reference.
      */
     Map<String,List<SourceWire>> getSourceWires();
 

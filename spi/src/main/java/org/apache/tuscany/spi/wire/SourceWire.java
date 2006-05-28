@@ -20,7 +20,9 @@ import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
 
 /**
- * Implementations are responsible for managing the source side of a wire.
+ * Implementations are responsible for managing the source side of a wire, incouding the source-side
+ * invocation chains associated with each service operation.  A <code>SourceWire</code> is connected to a
+ * {@link TargetWire} through their invocation chains.
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -78,8 +80,14 @@ public interface SourceWire<T> {
      */
     Map<Method, SourceInvocationChain> getInvocationChains();
 
+    /**
+     * Adds the collection of invocation chains keyed by operation
+     */
     void addInvocationChains(Map<Method, SourceInvocationChain> chains);
 
+    /**
+     * Adds the invocation chain associated with the given operation
+     */
     void addInvocationChain(Method method, SourceInvocationChain chains);
 
     /**
