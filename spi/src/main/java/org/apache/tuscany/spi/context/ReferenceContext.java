@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.wire.TargetWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
  * Manages a reference configured for a binding
@@ -24,7 +25,7 @@ public interface ReferenceContext<T> extends Context<T> {
      * @throws TargetException
      *
      */
-    public InvocationHandler getHandler() throws TargetException;
+    public WireInvocationHandler getHandler() throws TargetException;
 
     public TargetWire<T> getTargetWire();
 
@@ -37,5 +38,5 @@ public interface ReferenceContext<T> extends Context<T> {
      */
     TargetInvoker createTargetInvoker(String serviceName, Method operation);
 
-    
+
 }

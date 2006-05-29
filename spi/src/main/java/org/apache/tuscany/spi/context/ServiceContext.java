@@ -1,8 +1,7 @@
 package org.apache.tuscany.spi.context;
 
-import java.lang.reflect.InvocationHandler;
-
 import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
  * Manages the context for a service configured for a binding. Bindings uses an {@link
@@ -38,7 +37,7 @@ public interface ServiceContext<T> extends Context<T> {
      *
      * @throws TargetException
      */
-    public InvocationHandler getHandler() throws TargetException;
+    public WireInvocationHandler getHandler() throws TargetException;
 
     /**
      * Returns the service interface configured for the service

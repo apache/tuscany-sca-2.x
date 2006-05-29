@@ -15,9 +15,8 @@ import org.apache.tuscany.core.wire.MessageChannelImpl;
 import org.apache.tuscany.core.wire.SourceInvocationChainImpl;
 import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
 import org.apache.tuscany.spi.wire.SourceInvocationHandler;
+import org.apache.tuscany.spi.wire.TargetInvocationChain;
 
 public class JDKSourceInvocationHandlerTestCase extends TestCase {
 
@@ -38,14 +37,14 @@ public class JDKSourceInvocationHandlerTestCase extends TestCase {
     public void testBasicInvoke() throws Throwable {
         Map<Method, SourceInvocationChain> configs = new MethodHashMap<SourceInvocationChain>();
         configs.put(hello, createChain(hello));
-        WireInvocationHandler handler = new SourceInvocationHandler(configs);
+        SourceInvocationHandler handler = new SourceInvocationHandler(configs);
         assertEquals("foo", handler.invoke(null, hello, new Object[]{"foo"}));
     }
 
     public void testErrorInvoke() throws Throwable {
         Map<Method, SourceInvocationChain> configs = new MethodHashMap<SourceInvocationChain>();
         configs.put(hello, createChain(hello));
-        WireInvocationHandler handler = new SourceInvocationHandler(configs);
+        SourceInvocationHandler handler = new SourceInvocationHandler(configs);
         try {
             assertEquals("foo", handler.invoke(null, hello, new Object[]{}));
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -61,7 +60,7 @@ public class JDKSourceInvocationHandlerTestCase extends TestCase {
 
         Map<Method, SourceInvocationChain> configs = new MethodHashMap<SourceInvocationChain>();
         configs.put(hello, source);
-        WireInvocationHandler handler = new SourceInvocationHandler(configs);
+        SourceInvocationHandler handler = new SourceInvocationHandler(configs);
         try {
             assertEquals("foo", handler.invoke(null, hello, new Object[]{}));
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -77,7 +76,7 @@ public class JDKSourceInvocationHandlerTestCase extends TestCase {
 
         Map<Method, SourceInvocationChain> configs = new MethodHashMap<SourceInvocationChain>();
         configs.put(hello, source);
-        WireInvocationHandler handler = new SourceInvocationHandler(configs);
+        SourceInvocationHandler handler = new SourceInvocationHandler(configs);
         assertEquals("foo", handler.invoke(null, hello, new Object[]{"foo"}));
     }
 

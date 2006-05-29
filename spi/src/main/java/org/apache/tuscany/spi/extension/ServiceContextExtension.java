@@ -1,7 +1,5 @@
 package org.apache.tuscany.spi.extension;
 
-import java.lang.reflect.InvocationHandler;
-
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.CompositeContext;
@@ -47,9 +45,8 @@ public class ServiceContextExtension<T> extends AbstractContext<T> implements Se
         return target;
     }
 
-    public InvocationHandler getHandler() {
-        WireInvocationHandler invocationHandler = new TargetInvocationHandler(targetWire.getInvocationChains());
-        return invocationHandler;
+    public WireInvocationHandler getHandler() {
+        return new TargetInvocationHandler(targetWire.getInvocationChains());
     }
 
     public Class<T> getInterface() {

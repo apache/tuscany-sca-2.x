@@ -2,6 +2,7 @@ package org.apache.tuscany.spi.wire;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationHandler;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ import org.apache.tuscany.spi.context.TargetException;
  *
  * @version $Rev: 406016 $ $Date: 2006-05-12 22:45:22 -0700 (Fri, 12 May 2006) $
  */
-public class TargetInvocationHandler implements WireInvocationHandler {
+public class TargetInvocationHandler implements WireInvocationHandler, InvocationHandler {
 
     /*
      * an association of an operation to chain holder. The holder contains the master wire chain
@@ -103,6 +104,10 @@ public class TargetInvocationHandler implements WireInvocationHandler {
                 return body;
             }
         }
+    }
+
+    public Object invoke(Method method, Object[] args) throws Throwable {
+        return invoke(null,method,args);
     }
 
     /**

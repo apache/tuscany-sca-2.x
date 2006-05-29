@@ -184,11 +184,9 @@ public class ConnectorImpl implements Connector {
                     throw e;
                 }
             } else {
-                sourceChain.setTargetRequestChannel(new MessageChannelImpl(targetChain
-                        .getRequestHandlers()));
+                sourceChain.setTargetRequestChannel(new MessageChannelImpl(targetChain.getRequestHandlers()));
             }
-            sourceChain.setTargetResponseChannel(new MessageChannelImpl(targetChain
-                    .getResponseHandlers()));
+            sourceChain.setTargetResponseChannel(new MessageChannelImpl(targetChain.getResponseHandlers()));
         } else {
             // no handlers, just connect interceptors
             if (targetChain.getHeadInterceptor() == null) {
@@ -202,7 +200,7 @@ public class ConnectorImpl implements Connector {
                 sourceChain.setTargetInterceptor(targetChain.getHeadInterceptor());
             }
         }
-        sourceChain.build();
+        sourceChain.build(); //FIXME build should be moved out
         sourceChain.setTargetInvoker(invoker);
     }
 

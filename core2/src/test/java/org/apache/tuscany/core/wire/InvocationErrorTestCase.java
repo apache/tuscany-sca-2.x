@@ -25,9 +25,8 @@ import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.util.MethodHashMap;
-import org.apache.tuscany.spi.wire.SourceInvocationHandler;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.wire.SourceInvocationHandler;
 
 /**
  * Tests handling of exceptions thrown during an wire
@@ -57,7 +56,7 @@ public class InvocationErrorTestCase extends TestCase {
     public void testCheckedException() throws Exception {
         Map<Method, SourceInvocationChain> config = new MethodHashMap<SourceInvocationChain>();
         config.put(checkedMethod, getConfiguration(checkedMethod));
-        WireInvocationHandler handler = new SourceInvocationHandler(config);
+        SourceInvocationHandler handler = new SourceInvocationHandler(config);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{TestBean.class}, handler);
@@ -71,7 +70,7 @@ public class InvocationErrorTestCase extends TestCase {
     public void testRuntimeException() throws Exception {
         Map<Method, SourceInvocationChain> config = new MethodHashMap<SourceInvocationChain>();
         config.put(runtimeMethod, getConfiguration(runtimeMethod));
-        WireInvocationHandler handler = new SourceInvocationHandler(config);
+        SourceInvocationHandler handler = new SourceInvocationHandler(config);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{TestBean.class}, handler);

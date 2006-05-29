@@ -1,11 +1,10 @@
 package org.apache.tuscany.core.system.context;
 
-import java.lang.reflect.InvocationHandler;
-
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.extension.ServiceContextExtension;
 import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
  * Default implementation for service contexts configured with the {@link org.apache.tuscany.core.system.model.SystemBinding}
@@ -18,7 +17,7 @@ public class SystemServiceContextImpl<T> extends ServiceContextExtension<T> impl
         super(name, wire, parent);
     }
 
-    public InvocationHandler getHandler() {
+    public WireInvocationHandler getHandler() {
         throw new UnsupportedOperationException();
     }
 

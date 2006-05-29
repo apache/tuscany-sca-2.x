@@ -13,20 +13,18 @@
  */
 package org.apache.tuscany.spi.extension;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.context.AbstractContext;
+import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
+import org.apache.tuscany.spi.wire.TargetInvocationHandler;
 import org.apache.tuscany.spi.wire.TargetWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
-import org.apache.tuscany.spi.wire.TargetInvocationHandler;
 
 /**
  * The default implementation of an external service context
@@ -66,11 +64,10 @@ public abstract class ReferenceContextExtension<T> extends AbstractContext<T> im
         return targetWire.getTargetService();
     }
 
-    public InvocationHandler getHandler() throws TargetException {
+    public WireInvocationHandler getHandler() throws TargetException {
         Map<Method, TargetInvocationChain> configuration = targetWire.getInvocationChains();
         assert(configuration != null);
-        WireInvocationHandler handler = new TargetInvocationHandler(configuration);
-        return handler;
+        return new TargetInvocationHandler(configuration);
     }
 
     public void prepare() {
