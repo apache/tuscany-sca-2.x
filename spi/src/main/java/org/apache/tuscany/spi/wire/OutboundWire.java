@@ -16,16 +16,14 @@ package org.apache.tuscany.spi.wire;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.apache.tuscany.spi.QualifiedName;
-
 /**
  * Implementations are responsible for managing the reference side of a wire, including the invocation chains
- * associated with each service operation.  A <code>ReferenceWire</code> is connected to a {@link ServiceWire}
+ * associated with each service operation.  A <code>OutboundWire</code> is connected to a {@link InboundWire}
  * through their invocation chains.
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface ReferenceWire<T> extends RuntimeWire<T> {
+public interface OutboundWire<T> extends RuntimeWire<T> {
 
     /**
      * Returns the name of the source reference
@@ -41,16 +39,16 @@ public interface ReferenceWire<T> extends RuntimeWire<T> {
      * Returns the invocation configuration for each operation on a service specified by a reference or a
      * target service.
      */
-    Map<Method, ReferenceInvocationChain> getInvocationChains();
+    Map<Method, OutboundInvocationChain> getInvocationChains();
 
     /**
      * Adds the collection of invocation chains keyed by operation
      */
-    void addInvocationChains(Map<Method, ReferenceInvocationChain> chains);
+    void addInvocationChains(Map<Method, OutboundInvocationChain> chains);
 
     /**
      * Adds the invocation chain associated with the given operation
      */
-    void addInvocationChain(Method method, ReferenceInvocationChain chains);
+    void addInvocationChain(Method method, OutboundInvocationChain chains);
 
 }

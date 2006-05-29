@@ -9,8 +9,8 @@ import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.policy.SourcePolicyBuilder;
 import org.apache.tuscany.spi.policy.TargetPolicyBuilder;
-import org.apache.tuscany.spi.wire.ReferenceWire;
-import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 /**
  * @version $Rev$ $Date$
@@ -40,7 +40,7 @@ public class PolicyBuilderRegistryImpl implements PolicyBuilderRegistry {
     }
 
 
-    public void buildSource(Reference reference, ReferenceWire wire) throws BuilderException {
+    public void buildSource(Reference reference, OutboundWire wire) throws BuilderException {
         for (List<SourcePolicyBuilder> builders : sourceBuilders) {
             for (SourcePolicyBuilder builder : builders) {
                 builder.build(reference,wire);
@@ -48,7 +48,7 @@ public class PolicyBuilderRegistryImpl implements PolicyBuilderRegistry {
         }
     }
 
-    public void buildTarget(Service service, ServiceWire wire) throws BuilderException {
+    public void buildTarget(Service service, InboundWire wire) throws BuilderException {
         for (List<TargetPolicyBuilder> builders : targetBuilders) {
             for (TargetPolicyBuilder builder : builders) {
                 builder.build(service,wire);

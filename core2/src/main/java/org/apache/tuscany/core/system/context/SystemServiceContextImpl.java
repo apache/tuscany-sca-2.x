@@ -3,7 +3,7 @@ package org.apache.tuscany.core.system.context;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.extension.ServiceContextExtension;
-import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
@@ -13,7 +13,7 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  */
 public class SystemServiceContextImpl<T> extends ServiceContextExtension<T> implements SystemServiceContext<T> {
 
-    public SystemServiceContextImpl(String name, ServiceWire<T> wire, CompositeContext parent) throws CoreRuntimeException {
+    public SystemServiceContextImpl(String name, InboundWire<T> wire, CompositeContext parent) throws CoreRuntimeException {
         super(name, wire, parent);
     }
 

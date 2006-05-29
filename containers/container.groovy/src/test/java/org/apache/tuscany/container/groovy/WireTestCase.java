@@ -6,9 +6,9 @@ import java.util.List;
 import org.apache.tuscany.container.groovy.mock.Greeting;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.ReferenceWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.jmock.core.Invocation;
@@ -45,7 +45,7 @@ public class WireTestCase extends MockObjectTestCase {
         GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", SCRIPT, services,
                 Scope.MODULE, null, null, scope);
         scope.register(context);
-        Mock mock = mock(ReferenceWire.class);
+        Mock mock = mock(OutboundWire.class);
         mock.expects(atLeastOnce()).method("getTargetService").will(
                 returnValue(new Greeting() {
                     public String greet(String name) {
@@ -53,7 +53,7 @@ public class WireTestCase extends MockObjectTestCase {
                     }
                 }));
         mock.expects(atLeastOnce()).method("getReferenceName").will(returnValue("wire"));
-        ReferenceWire<Greeting> wire = (ReferenceWire<Greeting>) mock.proxy();
+        OutboundWire<Greeting> wire = (OutboundWire<Greeting>) mock.proxy();
         context.addReferenceWire(wire);
         Greeting greeting = context.getService();
         assertEquals("foo", greeting.greet("foo"));
@@ -89,7 +89,7 @@ public class WireTestCase extends MockObjectTestCase {
         final GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", SCRIPT2,
                 services, Scope.MODULE, null, null, scope);
         scope.register(context);
-        Mock mock = mock(ServiceWire.class);
+        Mock mock = mock(InboundWire.class);
         mock.stubs().method("getServiceName").will(returnValue("Greeting"));
         mock.expects(atLeastOnce()).method("getTargetService").will(
                 new Stub() {
@@ -102,7 +102,7 @@ public class WireTestCase extends MockObjectTestCase {
                     }
                 });
 
-        ServiceWire<Greeting> wire = (ServiceWire<Greeting>) mock.proxy();
+        InboundWire<Greeting> wire = (InboundWire<Greeting>) mock.proxy();
         context.addServiceWire(wire);
         Greeting greeting = (Greeting) context.getService("Greeting");
         assertEquals("foo", greeting.greet("foo"));

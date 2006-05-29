@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.wire.ServiceWire;
-import org.apache.tuscany.spi.wire.ReferenceWire;
-import org.apache.tuscany.spi.wire.ServiceInvocationChain;
+import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ScopeContext;
@@ -26,8 +26,8 @@ public abstract class AtomicContextExtension<T> extends AbstractContext<T> imple
 
     protected ScopeContext scopeContext;
     protected Scope scope;
-    protected Map<String, ServiceWire> serviceWires = new HashMap<String, ServiceWire>();
-    protected Map<String, List<ReferenceWire>> referenceWires = new HashMap<String,List<ReferenceWire>>();
+    protected Map<String, InboundWire> serviceWires = new HashMap<String, InboundWire>();
+    protected Map<String, List<OutboundWire>> referenceWires = new HashMap<String,List<OutboundWire>>();
 
     protected AtomicContextExtension(String name, CompositeContext<?> parent, ScopeContext scopeContext) {
         super(name, parent);
@@ -55,12 +55,12 @@ public abstract class AtomicContextExtension<T> extends AbstractContext<T> imple
 
     }
 
-    public void addServiceWire(ServiceWire wire) {
+    public void addServiceWire(InboundWire wire) {
         serviceWires.put(wire.getServiceName(), wire);
         onServiceWire(wire);
     }
 
-    public ServiceWire getServiceWire(String serviceName) {
+    public InboundWire getServiceWire(String serviceName) {
         if (serviceName == null) {
             return serviceWires.values().iterator().next();
         } else {
@@ -68,36 +68,36 @@ public abstract class AtomicContextExtension<T> extends AbstractContext<T> imple
         }
     }
 
-    public void addReferenceWire(ReferenceWire wire) {
-        List<ReferenceWire> list = new ArrayList<ReferenceWire>();
+    public void addReferenceWire(OutboundWire wire) {
+        List<OutboundWire> list = new ArrayList<OutboundWire>();
         list.add(wire);
         referenceWires.put(wire.getReferenceName(), list);
         onReferenceWire(wire);
     }
 
-    public Map<String,List<ReferenceWire>> getReferenceWires() {
+    public Map<String,List<OutboundWire>> getReferenceWires() {
         return referenceWires;
     }
 
-    public void addReferenceWires(Class<?> multiplicityClass, List<ReferenceWire> wires) {
+    public void addReferenceWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
         assert(wires != null && wires.size() > 0);
         referenceWires.put(wires.get(0).getReferenceName(), wires);
         onReferenceWires(multiplicityClass, wires);
     }
 
     public void prepare() {
-        for (ServiceWire<T> serviceWire : serviceWires.values()) {
-            for (ServiceInvocationChain chain : serviceWire.getInvocationChains().values()) {
-                chain.setTargetInvoker(createTargetInvoker(serviceWire.getServiceName(), chain.getMethod()));
+        for (InboundWire<T> inboundWire : serviceWires.values()) {
+            for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
+                chain.setTargetInvoker(createTargetInvoker(inboundWire.getServiceName(), chain.getMethod()));
                 chain.build();
             }
         }
     }
 
-    protected void onReferenceWire(ReferenceWire wire){}
+    protected void onReferenceWire(OutboundWire wire){}
 
-    protected void onReferenceWires(Class<?> multiplicityClass, List<ReferenceWire> wires){}
+    protected void onReferenceWires(Class<?> multiplicityClass, List<OutboundWire> wires){}
 
-    protected void onServiceWire(ServiceWire wire){}
+    protected void onServiceWire(InboundWire wire){}
 
 }

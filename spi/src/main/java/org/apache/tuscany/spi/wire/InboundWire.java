@@ -18,13 +18,13 @@ import java.util.Map;
 
 /**
  * Implementations are responsible for managing the service side of a wire, including the invocation chains
- * associated with each service operation. A <Code>ServiceWire</code> can be connected to another
- * <code>ServiceWire</code> when connecting a {@link org.apache.tuscany.spi.context.ServiceContext} to an
+ * associated with each service operation. A <Code>InboundWire</code> can be connected to another
+ * <code>InboundWire</code> when connecting a {@link org.apache.tuscany.spi.context.ServiceContext} to an
  * {@link org.apache.tuscany.spi.context.AtomicContext}.
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface ServiceWire<T> extends RuntimeWire<T> {
+public interface InboundWire<T> extends RuntimeWire<T> {
 
     /**
      * Returns the name of the target service of the wire
@@ -40,16 +40,16 @@ public interface ServiceWire<T> extends RuntimeWire<T> {
      * Returns the invocation configuration for each operation on a service specified by a reference or a
      * target service.
      */
-    Map<Method, ServiceInvocationChain> getInvocationChains();
+    Map<Method, InboundInvocationChain> getInvocationChains();
 
     /**
      * Adds the collection of invocation chains keyed by operation
      */
-    void addInvocationChains(Map<Method, ServiceInvocationChain> chains);
+    void addInvocationChains(Map<Method, InboundInvocationChain> chains);
 
     /**
      * Adds the invocation chain associated with the given operation
      */
-    void addInvocationChain(Method method, ServiceInvocationChain chain);
+    void addInvocationChain(Method method, InboundInvocationChain chain);
 
 }

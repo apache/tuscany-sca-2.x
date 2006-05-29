@@ -5,7 +5,7 @@ import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.apache.tuscany.core.system.context.SystemServiceContext;
 import org.apache.tuscany.core.system.context.SystemServiceContextImpl;
 import org.apache.tuscany.spi.context.ComponentContext;
-import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
@@ -20,9 +20,9 @@ public class SystemServiceWireTestCase extends MockObjectTestCase {
         Mock mock = mock(ComponentContext.class);
         mock.expects(once()).method("getService").will(returnValue(originalTarget));
         ComponentContext<Target> context = (ComponentContext<Target>) mock.proxy();
-        ServiceWire<Target> serviceWire = new SystemServiceWire<Target>("Target", Target.class, context);
+        InboundWire<Target> inboundWire = new SystemInboundWire<Target>("Target", Target.class, context);
 
-        SystemServiceContext<Target> serviceContext = new SystemServiceContextImpl<Target>("service", serviceWire, null);
+        SystemServiceContext<Target> serviceContext = new SystemServiceContextImpl<Target>("service", inboundWire, null);
         Target target = serviceContext.getService();
         assertSame(target, originalTarget);
     }

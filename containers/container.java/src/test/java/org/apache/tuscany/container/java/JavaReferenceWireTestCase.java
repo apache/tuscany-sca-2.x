@@ -10,7 +10,7 @@ import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.container.java.mock.components.TargetImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.spi.wire.ReferenceWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
@@ -31,10 +31,10 @@ public class JavaReferenceWireTestCase extends MockObjectTestCase {
                 SourceImpl.class, Source.class,
                 scope.getScope(), false, null, null, null, members);
 
-        Mock mock = mock(ReferenceWire.class);
+        Mock mock = mock(OutboundWire.class);
         mock.expects(atLeastOnce()).method("getTargetService").will(returnValue(target));
         mock.expects(atLeastOnce()).method("getReferenceName").will(returnValue("target"));
-        ReferenceWire<Target> wire = (ReferenceWire<Target>) mock.proxy();
+        OutboundWire<Target> wire = (OutboundWire<Target>) mock.proxy();
         sourceContext.addReferenceWire(wire);
 
         sourceContext.start();

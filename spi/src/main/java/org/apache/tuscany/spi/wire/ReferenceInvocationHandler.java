@@ -40,9 +40,9 @@ public class ReferenceInvocationHandler implements WireInvocationHandler, Invoca
      */
     private Map<Method, ChainHolder> chains;
 
-    public ReferenceInvocationHandler(Map<Method, ReferenceInvocationChain> invocationChains) {
+    public ReferenceInvocationHandler(Map<Method, OutboundInvocationChain> invocationChains) {
         this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
-        for (Map.Entry<Method, ReferenceInvocationChain> entry : invocationChains.entrySet()) {
+        for (Map.Entry<Method, OutboundInvocationChain> entry : invocationChains.entrySet()) {
             this.chains.put(entry.getKey(), new ChainHolder(entry.getValue()));
         }
     }
@@ -58,7 +58,7 @@ public class ReferenceInvocationHandler implements WireInvocationHandler, Invoca
             e.setIdentifier(method.getName());
             throw e;
         }
-        ReferenceInvocationChain chain = holder.chain;
+        OutboundInvocationChain chain = holder.chain;
         if (chain != null) {
             headInterceptor = chain.getHeadInterceptor();
         }
@@ -118,10 +118,10 @@ public class ReferenceInvocationHandler implements WireInvocationHandler, Invoca
      */
     private class ChainHolder {
 
-        ReferenceInvocationChain chain;
+        OutboundInvocationChain chain;
         TargetInvoker cachedInvoker;
 
-        public ChainHolder(ReferenceInvocationChain config) {
+        public ChainHolder(OutboundInvocationChain config) {
             this.chain = config;
         }
 

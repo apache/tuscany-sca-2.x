@@ -1,6 +1,6 @@
 package org.apache.tuscany.spi.context;
 
-import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
@@ -44,9 +44,9 @@ public interface ServiceContext<T> extends Context<T> {
      */
     public Class<T> getInterface();
 
-    public ServiceWire<T> getWire();
+    public InboundWire<T> getInboundWire();
 
-    public void setWire(ServiceWire<T> wire);
+    public void setInboundWire(InboundWire<T> wire);
 
 
 }

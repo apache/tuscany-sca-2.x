@@ -18,19 +18,19 @@ import java.util.ArrayList;
 
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
-import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 
 /**
  * Contains a source-side invocation pipeline for a service operation.
  *
  * @version $Rev: 394379 $ $Date: 2006-04-15 15:01:36 -0700 (Sat, 15 Apr 2006) $
  */
-public class ReferenceInvocationChainImpl extends InvocationChainImpl implements ReferenceInvocationChain {
+public class OutboundInvocationChainImpl extends InvocationChainImpl implements OutboundInvocationChain {
 
     /**
      * Creates an new source wire configuration
      */
-    public ReferenceInvocationChainImpl(Method operation) {
+    public OutboundInvocationChainImpl(Method operation) {
         super(operation);
     }
 
@@ -62,7 +62,7 @@ public class ReferenceInvocationChainImpl extends InvocationChainImpl implements
                 if (targetInterceptorChainHead != null) {
                     // Connect source interceptor chain directly to target interceptor chain
                     interceptorChainTail.setNext(targetInterceptorChainHead);
-                } else {
+                } else if (!(interceptorChainTail instanceof InvokerInterceptor)){
                     // Connect source interceptor chain to the target request channel
                     Interceptor channelInterceptor = new RequestResponseInterceptor(null, targetRequestChannel, null,
                             targetResponseChannel);

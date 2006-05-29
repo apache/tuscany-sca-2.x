@@ -4,27 +4,28 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
+import org.apache.tuscany.core.context.AutowireContext;
+import org.apache.tuscany.core.wire.OutboundAutowire;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
-import org.apache.tuscany.spi.wire.ReferenceWire;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.RuntimeWire;
 
 /**
- * The source side of a wire configured to use the {@link org.apache.tuscany.core.system.model.SystemBinding}
+ * The source side of an wire configured to autowire
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemReferenceWire<T> implements ReferenceWire<T> {
+public class SystemOutboundAutowire<T> implements OutboundAutowire<T> {
     private String referenceName;
-    private QualifiedName targetName;
     private Class<T> businessInterface;
-    private RuntimeWire<T> targetWire;
+    private AutowireContext<?> context;
 
-    public SystemReferenceWire(String referenceName, QualifiedName targetName, Class<T> businessInterface) {
+    public SystemOutboundAutowire(String referenceName, Class<T> businessInterface, AutowireContext<?> context) {
         this.referenceName = referenceName;
-        this.targetName = targetName;
         this.businessInterface = businessInterface;
+        this.context = context;
     }
 
     public String getReferenceName() {
@@ -36,18 +37,14 @@ public class SystemReferenceWire<T> implements ReferenceWire<T> {
     }
 
     public QualifiedName getTargetName() {
-        return targetName;
+        return null;
     }
 
     public void setTargetName(QualifiedName targetName) {
-        this.targetName = targetName;
     }
 
     public T getTargetService() throws TargetException {
-        if (targetWire == null) {
-            throw new TargetException("No target wire connected to source wire");
-        }
-        return targetWire.getTargetService();
+        return context.resolveInstance(businessInterface);
     }
 
     public Class<T> getBusinessInterface() {
@@ -62,11 +59,15 @@ public class SystemReferenceWire<T> implements ReferenceWire<T> {
         return new Class[0];
     }
 
-    public Map<Method, ReferenceInvocationChain> getInvocationChains() {
+    public void setTargetWire(RuntimeWire<T> wire) {
+        throw new UnsupportedOperationException();
+    }
+
+    public Map<Method, OutboundInvocationChain> getInvocationChains() {
         return Collections.emptyMap();
     }
 
-    public void addInvocationChain(Method method, ReferenceInvocationChain chains) {
+    public void addInvocationChain(Method method, OutboundInvocationChain chains) {
         throw new UnsupportedOperationException();
     }
 
@@ -78,12 +79,10 @@ public class SystemReferenceWire<T> implements ReferenceWire<T> {
         throw new UnsupportedOperationException();
     }
 
-    public void setTargetWire(RuntimeWire<T> wire) {
-        targetWire = wire;
+    public void setTargetWire(InboundWire<T> wire) {
     }
 
     public boolean isOptimizable() {
         return true;
     }
-
 }

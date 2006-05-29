@@ -17,8 +17,8 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.ReferenceInvocationChainImpl;
-import org.apache.tuscany.core.wire.ServiceInvocationChainImpl;
+import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
@@ -37,13 +37,13 @@ public class WireTestCase extends TestCase {
     }
 
     public void testReferenceWire() throws Exception {
-        ReferenceInvocationChainImpl source = new ReferenceInvocationChainImpl(hello);
+        OutboundInvocationChainImpl source = new OutboundInvocationChainImpl(hello);
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addInterceptor(sourceInterceptor);
         source.setTargetInterceptor(new InvokerInterceptor());
         source.setTargetInvoker(new MockStaticInvoker(hello, new SimpleTargetImpl()));
         source.build();
-        JDKReferenceWire<SimpleTarget> wire = new JDKReferenceWire<SimpleTarget>();
+        JDKOutboundWire<SimpleTarget> wire = new JDKOutboundWire<SimpleTarget>();
         wire.setReferenceName("foo");
         wire.addInvocationChain(hello, source);
         wire.setBusinessInterface(SimpleTarget.class);
@@ -52,13 +52,13 @@ public class WireTestCase extends TestCase {
     }
 
     public void testServiceWire() throws Exception {
-        ServiceInvocationChainImpl chain = new ServiceInvocationChainImpl(hello);
+        InboundInvocationChainImpl chain = new InboundInvocationChainImpl(hello);
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         chain.addInterceptor(sourceInterceptor);
         chain.addInterceptor(new InvokerInterceptor());
         chain.setTargetInvoker(new MockStaticInvoker(hello, new SimpleTargetImpl()));
         chain.build();
-        JDKServiceWire<SimpleTarget> wire = new JDKServiceWire<SimpleTarget>();
+        JDKInboundWire<SimpleTarget> wire = new JDKInboundWire<SimpleTarget>();
         wire.addInvocationChain(hello, chain);
         wire.setBusinessInterface(SimpleTarget.class);
         SimpleTarget instance = wire.getTargetService();

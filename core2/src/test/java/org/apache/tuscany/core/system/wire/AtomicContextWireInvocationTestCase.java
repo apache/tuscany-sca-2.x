@@ -15,9 +15,9 @@ import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
-import org.apache.tuscany.core.system.wire.SystemReferenceWire;
-import org.apache.tuscany.spi.wire.ServiceWire;
-import org.apache.tuscany.spi.wire.ReferenceWire;
+import org.apache.tuscany.core.system.wire.SystemOutboundWire;
+import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.QualifiedName;
 
 /**
@@ -31,17 +31,17 @@ public class AtomicContextWireInvocationTestCase extends MockObjectTestCase {
         ModuleScopeContext scope = new ModuleScopeContext(null);
         scope.start();
         Target target = new TargetImpl();
-        Mock mockWire = mock(ServiceWire.class);
+        Mock mockWire = mock(InboundWire.class);
         mockWire.expects(atLeastOnce()).method("getTargetService").will(returnValue(target));
-        ServiceWire<Target> serviceWire = (ServiceWire<Target>) mockWire.proxy();
+        InboundWire<Target> inboundWire = (InboundWire<Target>) mockWire.proxy();
         Map<String, Member> members = new HashMap<String, Member>();
         members.put("setTarget", SourceImpl.class.getMethod("setTarget", Target.class));
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
         SystemAtomicContext sourceContext = MockContextFactory.createSystemAtomicContext("source", scope, interfaces, SourceImpl.class, null, members);
-        ReferenceWire<Target> referenceWire = new SystemReferenceWire<Target>("setTarget", new QualifiedName("service"), Target.class);
-        referenceWire.setTargetWire(serviceWire);
-        sourceContext.addReferenceWire(referenceWire);
+        OutboundWire<Target> outboundWire = new SystemOutboundWire<Target>("setTarget", new QualifiedName("service"), Target.class);
+        outboundWire.setTargetWire(inboundWire);
+        sourceContext.addReferenceWire(outboundWire);
         sourceContext.start();
         assertSame(((Source) sourceContext.getService()).getTarget(), target); // wires should pass back direct ref
     }

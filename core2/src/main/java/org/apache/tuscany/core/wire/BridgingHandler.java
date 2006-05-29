@@ -4,7 +4,7 @@ import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.Message;
 
 /**
- * Bridges between handlers in two {@link org.apache.tuscany.spi.wire.ServiceInvocationChain}s
+ * Bridges between handlers in two {@link org.apache.tuscany.spi.wire.InboundInvocationChain}s
  * 
   * @version $$Rev$$ $$Date$$
  */

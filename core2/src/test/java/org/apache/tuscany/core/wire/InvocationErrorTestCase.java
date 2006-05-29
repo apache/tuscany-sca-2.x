@@ -25,7 +25,7 @@ import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.util.MethodHashMap;
-import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
 
 /**
@@ -54,7 +54,7 @@ public class InvocationErrorTestCase extends TestCase {
     }
 
     public void testCheckedException() throws Exception {
-        Map<Method, ReferenceInvocationChain> config = new MethodHashMap<ReferenceInvocationChain>();
+        Map<Method, OutboundInvocationChain> config = new MethodHashMap<OutboundInvocationChain>();
         config.put(checkedMethod, getConfiguration(checkedMethod));
         ReferenceInvocationHandler handler = new ReferenceInvocationHandler(config);
         try {
@@ -68,7 +68,7 @@ public class InvocationErrorTestCase extends TestCase {
     }
 
     public void testRuntimeException() throws Exception {
-        Map<Method, ReferenceInvocationChain> config = new MethodHashMap<ReferenceInvocationChain>();
+        Map<Method, OutboundInvocationChain> config = new MethodHashMap<OutboundInvocationChain>();
         config.put(runtimeMethod, getConfiguration(runtimeMethod));
         ReferenceInvocationHandler handler = new ReferenceInvocationHandler(config);
         try {
@@ -81,9 +81,9 @@ public class InvocationErrorTestCase extends TestCase {
         fail(TestException.class.getName() + " should have been thrown");
     }
 
-    private ReferenceInvocationChain getConfiguration(Method m) {
+    private OutboundInvocationChain getConfiguration(Method m) {
         MockStaticInvoker invoker = new MockStaticInvoker(m, new TestBeanImpl());
-        ReferenceInvocationChain invocationConfiguration = new ReferenceInvocationChainImpl(m);
+        OutboundInvocationChain invocationConfiguration = new OutboundInvocationChainImpl(m);
         invocationConfiguration.addInterceptor(new MockSyncInterceptor());
         invocationConfiguration.addRequestHandler(new MockHandler());
         invocationConfiguration.setTargetInvoker(invoker);

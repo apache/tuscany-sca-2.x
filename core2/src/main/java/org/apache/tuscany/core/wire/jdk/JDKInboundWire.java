@@ -8,9 +8,9 @@ import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
-import org.apache.tuscany.spi.wire.ServiceInvocationChain;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.ServiceInvocationHandler;
-import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.QualifiedName;
 
@@ -21,10 +21,10 @@ import org.apache.tuscany.spi.QualifiedName;
  *
  * @version $Rev: 394431 $ $Date: 2006-04-15 21:27:44 -0700 (Sat, 15 Apr 2006) $
  */
-public class JDKServiceWire<T> implements ServiceWire<T> {
+public class JDKInboundWire<T> implements InboundWire<T> {
 
     private Class[] businessInterfaces;
-    private Map<Method, ServiceInvocationChain> invocationChains = new MethodHashMap<ServiceInvocationChain>();
+    private Map<Method, InboundInvocationChain> invocationChains = new MethodHashMap<InboundInvocationChain>();
     private String serviceName;
     private QualifiedName targetName;
 
@@ -67,15 +67,15 @@ public class JDKServiceWire<T> implements ServiceWire<T> {
         this.targetName = targetName;
     }
     
-    public Map<Method, ServiceInvocationChain> getInvocationChains() {
+    public Map<Method, InboundInvocationChain> getInvocationChains() {
         return invocationChains;
     }
 
-    public void addInvocationChains(Map<Method, ServiceInvocationChain> chains) {
+    public void addInvocationChains(Map<Method, InboundInvocationChain> chains) {
         invocationChains.putAll(chains);
     }
 
-    public void addInvocationChain(Method method, ServiceInvocationChain chain) {
+    public void addInvocationChain(Method method, InboundInvocationChain chain) {
         invocationChains.put(method, chain);
     }
 
@@ -84,7 +84,7 @@ public class JDKServiceWire<T> implements ServiceWire<T> {
     }
 
     public boolean isOptimizable() {
-        for (ServiceInvocationChain chain : invocationChains.values()) {
+        for (InboundInvocationChain chain : invocationChains.values()) {
             if (chain.getTargetInvoker() != null && !chain.getTargetInvoker().isOptimizable()) {
                 return false;
             }

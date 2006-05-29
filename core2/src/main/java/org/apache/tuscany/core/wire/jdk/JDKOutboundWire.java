@@ -22,8 +22,8 @@ import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
-import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
-import org.apache.tuscany.spi.wire.ReferenceWire;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
 import org.apache.tuscany.spi.wire.RuntimeWire;
 
@@ -33,10 +33,10 @@ import org.apache.tuscany.spi.wire.RuntimeWire;
  *
  * @version $Rev: 394431 $ $Date: 2006-04-15 21:27:44 -0700 (Sat, 15 Apr 2006) $
  */
-public class JDKReferenceWire<T> implements ReferenceWire<T> {
+public class JDKOutboundWire<T> implements OutboundWire<T> {
 
     private Class<T>[] businessInterfaces;
-    private Map<Method, ReferenceInvocationChain> invocationChains = new MethodHashMap<ReferenceInvocationChain>();
+    private Map<Method, OutboundInvocationChain> invocationChains = new MethodHashMap<OutboundInvocationChain>();
     private String referenceName;
     private QualifiedName targetName;
     private RuntimeWire<T> targetWire;
@@ -72,15 +72,15 @@ public class JDKReferenceWire<T> implements ReferenceWire<T> {
        this.targetWire = wire;
     }
 
-    public Map<Method, ReferenceInvocationChain> getInvocationChains() {
+    public Map<Method, OutboundInvocationChain> getInvocationChains() {
         return invocationChains;
     }
 
-    public void addInvocationChains(Map<Method, ReferenceInvocationChain> chains) {
+    public void addInvocationChains(Map<Method, OutboundInvocationChain> chains) {
         invocationChains.putAll(chains);
     }
 
-    public void addInvocationChain(Method method, ReferenceInvocationChain chain) {
+    public void addInvocationChain(Method method, OutboundInvocationChain chain) {
         invocationChains.put(method, chain);
     }
 
@@ -102,7 +102,7 @@ public class JDKReferenceWire<T> implements ReferenceWire<T> {
 
 
     public boolean isOptimizable() {
-        for (ReferenceInvocationChain chain : invocationChains.values()) {
+        for (OutboundInvocationChain chain : invocationChains.values()) {
             if (chain.getHeadInterceptor() != null || !chain.getRequestHandlers().isEmpty()
                     || !chain.getResponseHandlers().isEmpty()) {
                 Interceptor current = chain.getHeadInterceptor();

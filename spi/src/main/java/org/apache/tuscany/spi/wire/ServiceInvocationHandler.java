@@ -24,9 +24,9 @@ public class ServiceInvocationHandler implements WireInvocationHandler, Invocati
      */
     private Map<Method, ChainHolder> chains;
 
-    public ServiceInvocationHandler(Map<Method, ServiceInvocationChain> invocationChains) {
+    public ServiceInvocationHandler(Map<Method, InboundInvocationChain> invocationChains) {
         this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
-        for (Map.Entry<Method, ServiceInvocationChain> entry : invocationChains.entrySet()) {
+        for (Map.Entry<Method, InboundInvocationChain> entry : invocationChains.entrySet()) {
             this.chains.put(entry.getKey(), new ChainHolder(entry.getValue()));
         }
     }
@@ -42,7 +42,7 @@ public class ServiceInvocationHandler implements WireInvocationHandler, Invocati
             e.setIdentifier(method.getName());
             throw e;
         }
-        ServiceInvocationChain chain = holder.chain;
+        InboundInvocationChain chain = holder.chain;
         if (chain != null) {
             headInterceptor = chain.getHeadInterceptor();
         }
@@ -116,10 +116,10 @@ public class ServiceInvocationHandler implements WireInvocationHandler, Invocati
      */
     private class ChainHolder {
 
-        ServiceInvocationChain chain;
+        InboundInvocationChain chain;
         TargetInvoker cachedInvoker;
 
-        public ChainHolder(ServiceInvocationChain config) {
+        public ChainHolder(InboundInvocationChain config) {
             this.chain = config;
         }
 

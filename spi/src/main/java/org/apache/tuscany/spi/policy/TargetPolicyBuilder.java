@@ -2,7 +2,7 @@ package org.apache.tuscany.spi.policy;
 
 import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 /**
  * Implementations contribute {@link org.apache.tuscany.spi.wire.Interceptor}s or {@link
@@ -12,6 +12,6 @@ import org.apache.tuscany.spi.wire.ServiceWire;
  */
 public interface TargetPolicyBuilder{
 
-    public void build(Service service, ServiceWire<?> wire) throws BuilderException;
+    public void build(Service service, InboundWire<?> wire) throws BuilderException;
 
 }

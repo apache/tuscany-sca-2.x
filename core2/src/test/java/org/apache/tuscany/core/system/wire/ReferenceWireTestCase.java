@@ -3,10 +3,10 @@ package org.apache.tuscany.core.system.wire;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.apache.tuscany.core.system.context.SystemReferenceContextImpl;
-import org.apache.tuscany.core.system.wire.SystemReferenceWire;
+import org.apache.tuscany.core.system.wire.SystemOutboundWire;
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.wire.ReferenceWire;
-import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
@@ -19,14 +19,14 @@ public class ReferenceWireTestCase extends MockObjectTestCase {
 
     public void testSReferenceWire() throws NoSuchMethodException {
         Target target = new TargetImpl();
-        Mock mockWire = mock(ReferenceWire.class);
+        Mock mockWire = mock(InboundWire.class);
         mockWire.expects(atLeastOnce()).method("getTargetService").will(returnValue(target));
-        ReferenceWire<Target> serviceWire = (ReferenceWire<Target>) mockWire.proxy();
+        InboundWire<Target> serviceWire = (InboundWire<Target>) mockWire.proxy();
         SystemReferenceContextImpl<Target> referenceContext = new SystemReferenceContextImpl<Target>("reference", Target.class, null);
-        referenceContext.setTargetWire(serviceWire);
-        ReferenceWire<Target> referenceWire = new SystemReferenceWire<Target>("setTarget", new QualifiedName("service"), Target.class);
-        referenceWire.setTargetWire(serviceWire);
-        assertSame(referenceWire.getTargetService(), target); // wires should pass back direct ref
+        referenceContext.setInboundWire(serviceWire);
+        OutboundWire<Target> outboundWire = new SystemOutboundWire<Target>("setTarget", new QualifiedName("service"), Target.class);
+        outboundWire.setTargetWire(serviceWire);
+        assertSame(outboundWire.getTargetService(), target); // wires should pass back direct ref
     }
 
 }

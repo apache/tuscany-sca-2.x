@@ -8,28 +8,28 @@ import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.RuntimeWire;
-import org.apache.tuscany.spi.wire.ServiceInvocationChain;
-import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 /**
  * The source side of a wire configured to use the {@link org.apache.tuscany.core.system.model.SystemBinding}
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemServiceWire<T> implements ServiceWire<T> {
+public class SystemInboundWire<T> implements InboundWire<T> {
     private String serviceName;
     private Class<T> businessInterface;
     private ComponentContext<?> componentContext;
     private RuntimeWire<T> wire; // a bridge to another target wire
     private QualifiedName targetName;
 
-    public SystemServiceWire(String serviceName, Class<T> businessInterface, ComponentContext<?> target) {
+    public SystemInboundWire(String serviceName, Class<T> businessInterface, ComponentContext<?> target) {
         this.serviceName = serviceName;
         this.businessInterface = businessInterface;
         this.componentContext = target;
     }
 
-    public SystemServiceWire(Class<T> businessInterface, ComponentContext<?> target) {
+    public SystemInboundWire(Class<T> businessInterface, ComponentContext<?> target) {
         this.businessInterface = businessInterface;
         this.componentContext = target;
     }
@@ -70,11 +70,11 @@ public class SystemServiceWire<T> implements ServiceWire<T> {
         this.targetName = targetName;
     }
 
-    public Map<Method, ServiceInvocationChain> getInvocationChains() {
+    public Map<Method, InboundInvocationChain> getInvocationChains() {
         return Collections.emptyMap();
     }
 
-    public void addInvocationChain(Method method, ServiceInvocationChain chain) {
+    public void addInvocationChain(Method method, InboundInvocationChain chain) {
         throw new UnsupportedOperationException();
     }
 

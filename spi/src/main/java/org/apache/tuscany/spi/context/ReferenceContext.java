@@ -2,9 +2,10 @@ package org.apache.tuscany.spi.context;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.wire.ReferenceWire;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * Manages a reference configured for a binding
@@ -25,7 +26,9 @@ public interface ReferenceContext<T> extends Context<T> {
      */
     public WireInvocationHandler getHandler() throws TargetException;
 
-    public ReferenceWire<T> getWire();
+    public InboundWire<T> getInboundWire();
+
+    public OutboundWire<T> getOutboundWire();
 
     /**
      * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to a service

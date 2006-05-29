@@ -8,8 +8,8 @@ import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.core.system.context.SystemServiceContext;
 import org.apache.tuscany.core.system.context.SystemServiceContextImpl;
-import org.apache.tuscany.core.system.wire.SystemServiceWire;
-import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.core.system.wire.SystemInboundWire;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 /**
  * Tests a wire from a service context to an atomic context
@@ -22,10 +22,10 @@ public class ServiceContextToAtomicContextTestCase extends TestCase {
         ModuleScopeContext scope = new ModuleScopeContext(null);
         scope.start();
         SystemAtomicContext targetContext = MockContextFactory.createSystemAtomicContext("target", scope, TargetImpl.class);
-        ServiceWire<Target> serviceWire = new SystemServiceWire<Target>(Target.class, targetContext);
-//        ServiceWire<Target> wire = new SystemServiceWire<Target>(Target.class);    //String referenceName, QualifiedName targetName, Class<T> businessInterface
-//        wire.setTargetWire(referenceWire);
-        SystemServiceContext<Target> serviceContext = new SystemServiceContextImpl<Target>("service", serviceWire, null);
+        InboundWire<Target> inboundWire = new SystemInboundWire<Target>(Target.class, targetContext);
+//        InboundWire<Target> wire = new SystemInboundWire<Target>(Target.class);    //String referenceName, QualifiedName targetName, Class<T> businessInterface
+//        wire.setTargetWire(outboundWire);
+        SystemServiceContext<Target> serviceContext = new SystemServiceContextImpl<Target>("service", inboundWire, null);
         serviceContext.start();
         targetContext.start();
         

@@ -13,8 +13,8 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import org.apache.tuscany.spi.wire.ReferenceWire;
-import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.WireFactoryService;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
@@ -39,12 +39,12 @@ public class JDKWireFactoryService implements WireFactoryService {
     public void init() {
     }
 
-    public ServiceWire createServiceWire() {
-        return new JDKServiceWire();
+    public InboundWire createServiceWire() {
+        return new JDKInboundWire();
     }
 
-    public ReferenceWire createReferenceWire() {
-        return new JDKReferenceWire();
+    public OutboundWire createReferenceWire() {
+        return new JDKOutboundWire();
     }
 
     public boolean isProxy(Object object) {

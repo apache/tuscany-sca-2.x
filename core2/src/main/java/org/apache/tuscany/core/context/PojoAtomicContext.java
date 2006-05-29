@@ -25,7 +25,7 @@ import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.extension.AtomicContextExtension;
-import org.apache.tuscany.spi.wire.ReferenceWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * Base implementation of an {@link AtomicContext} whose type is a Java class
@@ -129,7 +129,7 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
         return ctx;
     }
 
-    public void onReferenceWire(ReferenceWire wire) {
+    public void onReferenceWire(OutboundWire wire) {
         String referenceName = wire.getReferenceName();
         Member member = members.get(referenceName);
         if (member == null) {
@@ -138,7 +138,7 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
         injectors.add(createInjector(member, wire));
     }
 
-    public void onReferenceWires(Class<?> multiplicityClass, List<ReferenceWire> wires) {
+    public void onReferenceWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
         assert(wires.size() > 0): "Wires were empty";
         String referenceName = wires.get(0).getReferenceName();
         Member member = members.get(referenceName);
@@ -148,7 +148,7 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
         injectors.add(createMultiplicityInjector(member, multiplicityClass, wires));
     }
 
-    protected Injector createInjector(Member member, ReferenceWire wire) {
+    protected Injector createInjector(Member member, OutboundWire wire) {
         ObjectFactory<?> factory = new WireObjectFactory(wire);
         if (member instanceof Field) {
             return new FieldInjector(((Field) member), factory);
@@ -161,9 +161,9 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
         }
     }
 
-    protected Injector createMultiplicityInjector(Member member, Class<?> interfaceType, List<ReferenceWire> wireFactories) {
+    protected Injector createMultiplicityInjector(Member member, Class<?> interfaceType, List<OutboundWire> wireFactories) {
         List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
-        for (ReferenceWire wire : wireFactories) {
+        for (OutboundWire wire : wireFactories) {
             factories.add(new WireObjectFactory(wire));
         }
         if (member instanceof Field) {

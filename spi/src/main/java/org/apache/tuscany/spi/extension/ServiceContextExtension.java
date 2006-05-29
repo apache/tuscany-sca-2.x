@@ -7,7 +7,7 @@ import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.ServiceInvocationHandler;
-import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
@@ -17,40 +17,40 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  */
 public class ServiceContextExtension<T> extends AbstractContext<T> implements ServiceContext<T> {
 
-    protected ServiceWire<T> serviceWire;
+    protected InboundWire<T> inboundWire;
     private T target;
 
-    public ServiceContextExtension(String name, ServiceWire<T> wire, CompositeContext parent) throws CoreRuntimeException {
+    public ServiceContextExtension(String name, InboundWire<T> wire, CompositeContext parent) throws CoreRuntimeException {
         super(name, parent);
-        this.serviceWire = wire;
+        this.inboundWire = wire;
     }
 
     public Scope getScope() {
         return Scope.COMPOSITE;
     }
 
-    public ServiceWire<T> getWire() {
-        return serviceWire;
+    public InboundWire<T> getInboundWire() {
+        return inboundWire;
     }
 
-    public void setWire(ServiceWire<T> wire) {
+    public void setInboundWire(InboundWire<T> wire) {
         target = null;
-        serviceWire = wire;
+        inboundWire = wire;
     }
 
     public T getService() throws TargetException {
         if (target == null) {
-            target = serviceWire.getTargetService();
+            target = inboundWire.getTargetService();
         }
         return target;
     }
 
     public WireInvocationHandler getHandler() {
-        return new ServiceInvocationHandler(serviceWire.getInvocationChains());
+        return new ServiceInvocationHandler(inboundWire.getInvocationChains());
     }
 
     public Class<T> getInterface() {
-        return serviceWire.getBusinessInterface();
+        return inboundWire.getBusinessInterface();
     }
 
 }

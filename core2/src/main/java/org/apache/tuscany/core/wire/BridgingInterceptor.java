@@ -5,7 +5,7 @@ import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageChannel;
 
 /**
- * Bridges between interceptors in two {@link org.apache.tuscany.spi.wire.ServiceInvocationChain}s
+ * Bridges between interceptors in two {@link org.apache.tuscany.spi.wire.InboundInvocationChain}s
  *  
  * @version $$Rev$$ $$Date$$
  */

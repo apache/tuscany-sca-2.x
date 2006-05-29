@@ -6,9 +6,9 @@ import java.util.Map;
 
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.wire.ServiceInvocationChain;
-import org.apache.tuscany.spi.wire.ServiceWire;
-import org.apache.tuscany.spi.wire.ReferenceWire;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.QualifiedName;
 
@@ -17,12 +17,12 @@ import org.apache.tuscany.spi.QualifiedName;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemServiceAutowire<T> implements ServiceWire<T> {
+public class SystemInboundAutowire<T> implements InboundWire<T> {
 
     private Class<T> businessInterface;
     private AutowireContext<?> context;
 
-    public SystemServiceAutowire(Class<T> businessInterface, AutowireContext context) {
+    public SystemInboundAutowire(Class<T> businessInterface, AutowireContext context) {
         this.businessInterface = businessInterface;
         this.context = context;
     }
@@ -50,11 +50,11 @@ public class SystemServiceAutowire<T> implements ServiceWire<T> {
         return new Class[0];
     }
 
-    public Map<Method, ServiceInvocationChain> getInvocationChains() {
+    public Map<Method, InboundInvocationChain> getInvocationChains() {
         return Collections.emptyMap();
     }
 
-    public void addInvocationChain(Method method, ServiceInvocationChain chain) {
+    public void addInvocationChain(Method method, InboundInvocationChain chain) {
         throw new UnsupportedOperationException();
     }
 
@@ -82,7 +82,7 @@ public class SystemServiceAutowire<T> implements ServiceWire<T> {
         throw new UnsupportedOperationException(); // FIXME not implemented
     }
 
-    public void setTargetWire(ReferenceWire<T> wire) {
+    public void setTargetWire(OutboundWire<T> wire) {
         throw new UnsupportedOperationException(); // FIXME not implemented
     }
 }

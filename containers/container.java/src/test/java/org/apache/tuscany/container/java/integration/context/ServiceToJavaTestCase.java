@@ -26,15 +26,15 @@ import org.apache.tuscany.core.context.scope.StatelessScopeContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContext;
 import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.util.MethodHashMap;
-import org.apache.tuscany.core.wire.ServiceInvocationChainImpl;
-import org.apache.tuscany.core.wire.jdk.JDKServiceWire;
+import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.jdk.JDKInboundWire;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.extension.ServiceContextExtension;
-import org.apache.tuscany.spi.wire.ServiceInvocationChain;
-import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 /**
  * Validates wiring from a service context to Java atomic contexts by scope
@@ -161,15 +161,15 @@ public class ServiceToJavaTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     private void setupComposite(CompositeContext<?> parent, ScopeContext scope) throws NoSuchMethodException {
         Connector connector = new ConnectorImpl();
-        ServiceWire<Target> sourceWire = createServiceWire("target", Target.class);
+        InboundWire<Target> sourceWire = createServiceWire("target", Target.class);
         sourceWire.setServiceName("Target");
         ServiceContextExtension<Target> serviceContext = new ServiceContextExtension<Target>("service", sourceWire, parent);
         AtomicContext<?> atomicContext = MockContextFactory.createJavaAtomicContext("target", scope, TargetImpl.class, Target.class, scope.getScope());
-        ServiceWire targetWire = MockContextFactory.createTargetWire("Target", Target.class);
+        InboundWire targetWire = MockContextFactory.createTargetWire("Target", Target.class);
         atomicContext.addServiceWire(targetWire);
         parent.registerContext(serviceContext);
         parent.registerContext(atomicContext);
-        connector.connect(serviceContext.getWire(), atomicContext);
+        connector.connect(serviceContext.getInboundWire(), atomicContext);
     }
 
     protected void setUp() throws Exception {
@@ -178,19 +178,19 @@ public class ServiceToJavaTestCase extends TestCase {
         parent = new SystemCompositeContextImpl(null, null, null);
     }
 
-    public static <T> ServiceWire<T> createServiceWire(String serviceName, Class<T> interfaze) {
-        ServiceWire<T> wire = new JDKServiceWire<T>();
+    public static <T> InboundWire<T> createServiceWire(String serviceName, Class<T> interfaze) {
+        InboundWire<T> wire = new JDKInboundWire<T>();
         wire.setBusinessInterface(interfaze);
         wire.setServiceName(serviceName);
         wire.addInvocationChains(createServiceInvocationChains(interfaze));
         return wire;
     }
 
-    private static Map<Method, ServiceInvocationChain> createServiceInvocationChains(Class<?> interfaze) {
-        Map<Method, ServiceInvocationChain> invocations = new MethodHashMap<ServiceInvocationChain>();
+    private static Map<Method, InboundInvocationChain> createServiceInvocationChains(Class<?> interfaze) {
+        Map<Method, InboundInvocationChain> invocations = new MethodHashMap<InboundInvocationChain>();
         Method[] methods = interfaze.getMethods();
         for (Method method : methods) {
-            ServiceInvocationChain chain = new ServiceInvocationChainImpl(method);
+            InboundInvocationChain chain = new InboundInvocationChainImpl(method);
             invocations.put(method, chain);
         }
         return invocations;

@@ -4,17 +4,17 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
-import org.apache.tuscany.core.wire.ReferenceInvocationChainImpl;
-import org.apache.tuscany.core.wire.ServiceInvocationChainImpl;
+import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.spi.model.Reference;
 import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
-import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
-import org.apache.tuscany.spi.wire.ReferenceWire;
-import org.apache.tuscany.spi.wire.ServiceInvocationChain;
-import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.WireFactoryService;
 import org.apache.tuscany.spi.wire.WireService;
 import org.osoa.sca.annotations.Init;
@@ -61,16 +61,16 @@ public class WireServiceImpl implements WireService {
     public void init() {
     }
 
-    public ReferenceWire createReferenceWire(Reference reference) throws BuilderConfigException {
+    public OutboundWire createReferenceWire(Reference reference) throws BuilderConfigException {
         String name = reference.getName();
         Class interfaze = reference.getServiceContract().getInterfaceClass();
-        ReferenceWire<?> wire = wireFactoryService.createReferenceWire();
+        OutboundWire<?> wire = wireFactoryService.createReferenceWire();
         wire.setBusinessInterface(interfaze);
         wire.setReferenceName(name);
 
         Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(interfaze);
         for (Method method : javaMethods) {
-            ReferenceInvocationChain chain = new ReferenceInvocationChainImpl(method);
+            OutboundInvocationChain chain = new OutboundInvocationChainImpl(method);
             wire.addInvocationChain(method, chain);
         }
         if (policyRegistry != null) {
@@ -80,16 +80,16 @@ public class WireServiceImpl implements WireService {
         return wire;
     }
 
-    public ServiceWire createServiceWire(Service service) {
+    public InboundWire createServiceWire(Service service) {
         String name = service.getName();
         Class interfaze = service.getServiceContract().getInterfaceClass();
-        ServiceWire<?> wire = wireFactoryService.createServiceWire();
+        InboundWire<?> wire = wireFactoryService.createServiceWire();
         wire.setBusinessInterface(interfaze);
         wire.setServiceName(name);
 
         Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(interfaze);
         for (Method method : javaMethods) {
-            ServiceInvocationChain chain = new ServiceInvocationChainImpl(method);
+            InboundInvocationChain chain = new InboundInvocationChainImpl(method);
             wire.addInvocationChain(method, chain);
         }
         if (policyRegistry != null) {

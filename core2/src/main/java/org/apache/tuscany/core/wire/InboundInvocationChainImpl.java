@@ -16,19 +16,19 @@ package org.apache.tuscany.core.wire;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.wire.MessageHandler;
-import org.apache.tuscany.spi.wire.ServiceInvocationChain;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
 
 /**
  * Contains a target-side invocation chain
  *
  * @version $Rev: 394379 $ $Date: 2006-04-15 15:01:36 -0700 (Sat, 15 Apr 2006) $
  */
-public class ServiceInvocationChainImpl extends InvocationChainImpl implements ServiceInvocationChain {
+public class InboundInvocationChainImpl extends InvocationChainImpl implements InboundInvocationChain {
 
     /**
      * Creates an new target-side chain for the given operation
      */
-    public ServiceInvocationChainImpl(Method operation) {
+    public InboundInvocationChainImpl(Method operation) {
         super(operation);
     }
 
