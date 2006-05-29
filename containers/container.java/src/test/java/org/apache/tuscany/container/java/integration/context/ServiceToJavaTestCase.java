@@ -169,7 +169,7 @@ public class ServiceToJavaTestCase extends TestCase {
         atomicContext.addServiceWire(targetWire);
         parent.registerContext(serviceContext);
         parent.registerContext(atomicContext);
-        connector.connect(serviceContext.getTargetWire(), atomicContext);
+        connector.connect(serviceContext.getWire(), atomicContext);
     }
 
     protected void setUp() throws Exception {

@@ -157,7 +157,7 @@ public abstract class CompositeContextExtension<T> extends AbstractContext<T> im
         if (context == null || !(context instanceof ServiceContext)) {
             throw new ContextNotFoundException(serviceName);
         }
-        return ((ServiceContext) context).getTargetWire();
+        return ((ServiceContext) context).getWire();
     }
 
     public void prepare(){

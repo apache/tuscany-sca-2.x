@@ -11,6 +11,8 @@ import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.ServiceInvocationChain;
 import org.apache.tuscany.spi.wire.ServiceInvocationHandler;
 import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.RuntimeWire;
+import org.apache.tuscany.spi.QualifiedName;
 
 /**
  * Creates proxies that are returned to non-SCA clients using JDK dynamic proxy facilities and front a wire.
@@ -24,6 +26,7 @@ public class JDKServiceWire<T> implements ServiceWire<T> {
     private Class[] businessInterfaces;
     private Map<Method, ServiceInvocationChain> invocationChains = new MethodHashMap<ServiceInvocationChain>();
     private String serviceName;
+    private QualifiedName targetName;
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
@@ -56,6 +59,14 @@ public class JDKServiceWire<T> implements ServiceWire<T> {
         this.serviceName = serviceName;
     }
 
+    public QualifiedName getTargetName() {
+        return targetName;
+    }
+
+    public void setTargetName(QualifiedName targetName) {
+        this.targetName = targetName;
+    }
+    
     public Map<Method, ServiceInvocationChain> getInvocationChains() {
         return invocationChains;
     }
@@ -68,9 +79,8 @@ public class JDKServiceWire<T> implements ServiceWire<T> {
         invocationChains.put(method, chain);
     }
 
-    public void setTargetWire(ServiceWire<T> wire) {
+    public void setTargetWire(RuntimeWire<T> wire) {
         throw new UnsupportedOperationException("not yet implemented"); // FIXME
-
     }
 
     public boolean isOptimizable() {

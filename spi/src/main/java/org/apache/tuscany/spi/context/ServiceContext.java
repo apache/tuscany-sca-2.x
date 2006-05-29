@@ -44,9 +44,9 @@ public interface ServiceContext<T> extends Context<T> {
      */
     public Class<T> getInterface();
 
-    public ServiceWire<T> getTargetWire();
+    public ServiceWire<T> getWire();
 
-    public void setTargetWire(ServiceWire<T> wire);
+    public void setWire(ServiceWire<T> wire);
 
 
 }

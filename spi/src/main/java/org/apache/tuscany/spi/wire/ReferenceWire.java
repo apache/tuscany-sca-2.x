@@ -17,7 +17,6 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.context.TargetException;
 
 /**
  * Implementations are responsible for managing the reference side of a wire, including the invocation chains
@@ -26,7 +25,7 @@ import org.apache.tuscany.spi.context.TargetException;
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface ReferenceWire<T> {
+public interface ReferenceWire<T> extends RuntimeWire<T> {
 
     /**
      * Returns the name of the source reference
@@ -37,42 +36,6 @@ public interface ReferenceWire<T> {
      * Sets the name of the source reference
      */
     void setReferenceName(String name);
-
-    /**
-     * Returns the name of the target
-     */
-    QualifiedName getTargetName();
-
-    /**
-     * Sets the name of the target
-     */
-    void setTargetName(QualifiedName name);
-
-
-    /**
-     * Returns a proxy or the target instance for this wire
-     */
-    T getTargetService() throws TargetException;
-
-    /**
-     * Sets the primary interface type generated proxies implement
-     */
-    void setBusinessInterface(Class<T> interfaze);
-
-    /**
-     * Returns the primary interface type implemented by generated proxies
-     */
-    Class<T> getBusinessInterface();
-
-    /**
-     * Adds an interface type generated proxies implement
-     */
-    void addInterface(Class<?> claz);
-
-    /**
-     * Returns an array of all interfaces implemented by generated proxies
-     */
-    Class[] getImplementedInterfaces();
 
     /**
      * Returns the invocation configuration for each operation on a service specified by a reference or a
@@ -89,15 +52,5 @@ public interface ReferenceWire<T> {
      * Adds the invocation chain associated with the given operation
      */
     void addInvocationChain(Method method, ReferenceInvocationChain chains);
-
-    /**
-     * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end
-     */
-    void setTargetWire(ServiceWire<T> wire);
-
-    /**
-     * Returns true if the wire and all of its interceptors can be optimized
-     */
-    boolean isOptimizable();
 
 }

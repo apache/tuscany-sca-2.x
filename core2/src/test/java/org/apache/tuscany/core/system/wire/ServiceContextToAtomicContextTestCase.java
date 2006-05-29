@@ -24,7 +24,7 @@ public class ServiceContextToAtomicContextTestCase extends TestCase {
         SystemAtomicContext targetContext = MockContextFactory.createSystemAtomicContext("target", scope, TargetImpl.class);
         ServiceWire<Target> serviceWire = new SystemServiceWire<Target>(Target.class, targetContext);
 //        ServiceWire<Target> wire = new SystemServiceWire<Target>(Target.class);    //String referenceName, QualifiedName targetName, Class<T> businessInterface
-//        wire.setTargetWire(serviceWire);
+//        wire.setTargetWire(referenceWire);
         SystemServiceContext<Target> serviceContext = new SystemServiceContextImpl<Target>("service", serviceWire, null);
         serviceContext.start();
         targetContext.start();

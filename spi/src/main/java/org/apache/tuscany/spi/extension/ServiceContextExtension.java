@@ -29,11 +29,11 @@ public class ServiceContextExtension<T> extends AbstractContext<T> implements Se
         return Scope.COMPOSITE;
     }
 
-    public ServiceWire<T> getTargetWire() {
+    public ServiceWire<T> getWire() {
         return serviceWire;
     }
 
-    public void setTargetWire(ServiceWire<T> wire) {
+    public void setWire(ServiceWire<T> wire) {
         target = null;
         serviceWire = wire;
     }

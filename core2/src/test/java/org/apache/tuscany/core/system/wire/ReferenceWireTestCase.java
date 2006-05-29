@@ -19,9 +19,9 @@ public class ReferenceWireTestCase extends MockObjectTestCase {
 
     public void testSReferenceWire() throws NoSuchMethodException {
         Target target = new TargetImpl();
-        Mock mockWire = mock(ServiceWire.class);
+        Mock mockWire = mock(ReferenceWire.class);
         mockWire.expects(atLeastOnce()).method("getTargetService").will(returnValue(target));
-        ServiceWire<Target> serviceWire = (ServiceWire<Target>) mockWire.proxy();
+        ReferenceWire<Target> serviceWire = (ReferenceWire<Target>) mockWire.proxy();
         SystemReferenceContextImpl<Target> referenceContext = new SystemReferenceContextImpl<Target>("reference", Target.class, null);
         referenceContext.setTargetWire(serviceWire);
         ReferenceWire<Target> referenceWire = new SystemReferenceWire<Target>("setTarget", new QualifiedName("service"), Target.class);

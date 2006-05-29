@@ -8,38 +8,36 @@ import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.ReferenceInvocationChainImpl;
 import org.apache.tuscany.core.wire.ServiceInvocationChainImpl;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
 import org.apache.tuscany.spi.wire.ServiceInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
 /**
- * Verifies connection strategies between {@link org.apache.tuscany.spi.wire.ReferenceInvocationChain}s and
- * {@link org.apache.tuscany.spi.wire.ServiceInvocationChain}s
+ * Verifies connection strategies between two {@link org.apache.tuscany.spi.wire.ServiceInvocationChain}s
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SourceToTargetConnectTestCase extends MockObjectTestCase {
+public class ServiceToServiceConnectTestCase extends MockObjectTestCase {
 
     @SuppressWarnings("unchecked")
     public void testNoInterceptorsNoHandlers() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        ServiceInvocationChain serviceChain = setupTarget(null, null, null);
-        ReferenceInvocationChain referenceChain = setupSource(null, null, null);
+        ServiceInvocationChain sourceChain = setupChain(null, null, null);
+        ServiceInvocationChain serviceChain = setupTargetChain(null, null, null);
         String[] val = new String[]{"foo"};
         Mock mock = mock(TargetInvoker.class);
         mock.expects(once()).method("invokeTarget").with(eq(val)).will(returnValue(val));
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
-        connector.connect(referenceChain, serviceChain, invoker);
+        sourceChain.setTargetInvoker(invoker);
+        connector.connect(sourceChain, serviceChain);
         serviceChain.build();
-        assertEquals(val, referenceChain.getTargetInvoker().invokeTarget(val));
+        assertEquals(val, sourceChain.getTargetInvoker().invokeTarget(val));
     }
 
 
@@ -53,17 +51,18 @@ public class SourceToTargetConnectTestCase extends MockObjectTestCase {
         List<Interceptor> interceptors = new ArrayList<Interceptor>();
         interceptors.add(interceptor);
 
-        ReferenceInvocationChain referenceChain = setupSource(interceptors, null, null);
-        ServiceInvocationChain serviceChain = setupTarget(null, null, null);
+        ServiceInvocationChain sourceChain = setupChain(interceptors, null, null);
+        ServiceInvocationChain serviceChain = setupTargetChain(null, null, null);
         Message msg = new MessageImpl();
         Mock mock = mock(TargetInvoker.class);
         mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, interceptor.getCount());
-        connector.connect(referenceChain, serviceChain, invoker);
+        connector.connect(sourceChain, serviceChain);
+        sourceChain.setTargetInvoker(invoker);
         serviceChain.build();
-        msg.setTargetInvoker(referenceChain.getTargetInvoker());
-        assertEquals(msg, referenceChain.getHeadInterceptor().invoke(msg));
+        msg.setTargetInvoker(sourceChain.getTargetInvoker());
+        assertEquals(msg, sourceChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
     }
 
@@ -76,18 +75,19 @@ public class SourceToTargetConnectTestCase extends MockObjectTestCase {
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
         List<Interceptor> interceptors = new ArrayList<Interceptor>();
         interceptors.add(interceptor);
-
-        ReferenceInvocationChain referenceChain = setupSource(null, null, null);
-        ServiceInvocationChain serviceChain = setupTarget(interceptors, null, null);
+        ServiceInvocationChain sourceChain = setupChain(null, null, null);
+        ServiceInvocationChain serviceChain = setupTargetChain(interceptors, null, null);
         Message msg = new MessageImpl();
         Mock mock = mock(TargetInvoker.class);
         mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, interceptor.getCount());
-        connector.connect(referenceChain, serviceChain, invoker);
+        sourceChain.setTargetInvoker(invoker);
+        connector.connect(sourceChain, serviceChain);
+        sourceChain.setTargetInvoker(invoker);
         serviceChain.build();
-        msg.setTargetInvoker(referenceChain.getTargetInvoker());
-        assertEquals(msg, referenceChain.getHeadInterceptor().invoke(msg));
+        msg.setTargetInvoker(sourceChain.getTargetInvoker());
+        assertEquals(msg, sourceChain.getTargetInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
     }
 
@@ -104,18 +104,19 @@ public class SourceToTargetConnectTestCase extends MockObjectTestCase {
         List<Interceptor> targetInterceptors = new ArrayList<Interceptor>();
         targetInterceptors.add(targetInterceptor);
 
-        ReferenceInvocationChain referenceChain = setupSource(sourceInterceptors, null, null);
-        ServiceInvocationChain serviceChain = setupTarget(targetInterceptors, null, null);
+        ServiceInvocationChain sourceChain = setupChain(sourceInterceptors, null, null);
+        ServiceInvocationChain serviceChain = setupTargetChain(targetInterceptors, null, null);
         Message msg = new MessageImpl();
         Mock mock = mock(TargetInvoker.class);
         mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, sourceInterceptor.getCount());
         assertEquals(0, targetInterceptor.getCount());
-        connector.connect(referenceChain, serviceChain, invoker);
+        connector.connect(sourceChain, serviceChain);
+        sourceChain.setTargetInvoker(invoker);
         serviceChain.build();
-        msg.setTargetInvoker(referenceChain.getTargetInvoker());
-        assertEquals(msg, referenceChain.getHeadInterceptor().invoke(msg));
+        msg.setTargetInvoker(sourceChain.getTargetInvoker());
+        assertEquals(msg, sourceChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, sourceInterceptor.getCount());
         assertEquals(1, targetInterceptor.getCount());
     }
@@ -133,18 +134,22 @@ public class SourceToTargetConnectTestCase extends MockObjectTestCase {
         List<MessageHandler> handlers = new ArrayList<MessageHandler>();
         handlers.add(handler);
 
-        ReferenceInvocationChain referenceChain = setupSource(interceptors, handlers, null);
-        ServiceInvocationChain serviceChain = setupTarget(null, null, null);
+        ServiceInvocationChain sourceChain = setupChain(interceptors, handlers, null);
+        ServiceInvocationChain serviceChain = setupTargetChain(null, null, null);
         Message msg = new MessageImpl();
         Mock mock = mock(TargetInvoker.class);
         mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
-        connector.connect(referenceChain, serviceChain, invoker);
+        connector.connect(sourceChain, serviceChain);
+        sourceChain.setTargetInvoker(invoker);
         serviceChain.build();
-        msg.setTargetInvoker(referenceChain.getTargetInvoker());
-        assertEquals(msg, referenceChain.getHeadInterceptor().invoke(msg));
+        sourceChain.build();
+        msg.setTargetInvoker(sourceChain.getTargetInvoker());
+        for (MessageHandler messageHandler : sourceChain.getRequestHandlers()) {
+            messageHandler.processMessage(msg);
+        }
         assertEquals(1, interceptor.getCount());
         assertEquals(1, handler.getCount());
     }
@@ -162,18 +167,19 @@ public class SourceToTargetConnectTestCase extends MockObjectTestCase {
         List<MessageHandler> handlers = new ArrayList<MessageHandler>();
         handlers.add(handler);
 
-        ReferenceInvocationChain referenceChain = setupSource(null, null, null);
-        ServiceInvocationChain serviceChain = setupTarget(interceptors, handlers, null);
+        ServiceInvocationChain sourceChain = setupChain(null, null, null);
+        ServiceInvocationChain serviceChain = setupTargetChain(interceptors, handlers, null);
         Message msg = new MessageImpl();
         Mock mock = mock(TargetInvoker.class);
         mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
-        connector.connect(referenceChain, serviceChain, invoker);
+        connector.connect(sourceChain, serviceChain);
+        sourceChain.setTargetInvoker(invoker);
         serviceChain.build();
-        msg.setTargetInvoker(referenceChain.getTargetInvoker());
-        assertEquals(msg, referenceChain.getHeadInterceptor().invoke(msg));
+        msg.setTargetInvoker(sourceChain.getTargetInvoker());
+        sourceChain.getTargetRequestChannel().send(msg);
         assertEquals(1, interceptor.getCount());
         assertEquals(1, handler.getCount());
     }
@@ -192,18 +198,22 @@ public class SourceToTargetConnectTestCase extends MockObjectTestCase {
         List<MessageHandler> handlers = new ArrayList<MessageHandler>();
         handlers.add(handler);
 
-        ReferenceInvocationChain referenceChain = setupSource(interceptors, null, handlers);
-        ServiceInvocationChain serviceChain = setupTarget(null, null, null);
+        ServiceInvocationChain sourceChain = setupChain(interceptors, null, handlers);
+        ServiceInvocationChain serviceChain = setupTargetChain(null, null, null);
         Message msg = new MessageImpl();
         Mock mock = mock(TargetInvoker.class);
         mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
-        connector.connect(referenceChain, serviceChain, invoker);
+        connector.connect(sourceChain, serviceChain);
+        sourceChain.setTargetInvoker(invoker);
+        sourceChain.build();
         serviceChain.build();
-        msg.setTargetInvoker(referenceChain.getTargetInvoker());
-        assertEquals(msg, referenceChain.getHeadInterceptor().invoke(msg));
+        msg.setTargetInvoker(sourceChain.getTargetInvoker());
+        Message response = sourceChain.getHeadInterceptor().invoke(msg);
+        sourceChain.getResponseChannel().send(msg);
+        assertEquals(msg, response);
         assertEquals(1, interceptor.getCount());
         assertEquals(1, handler.getCount());
     }
@@ -221,18 +231,20 @@ public class SourceToTargetConnectTestCase extends MockObjectTestCase {
         List<MessageHandler> handlers = new ArrayList<MessageHandler>();
         handlers.add(handler);
 
-        ReferenceInvocationChain referenceChain = setupSource(null, null, null);
-        ServiceInvocationChain serviceChain = setupTarget(interceptors, null, handlers);
+        ServiceInvocationChain sourceChain = setupChain(null, null, null);
+        ServiceInvocationChain serviceChain = setupTargetChain(interceptors, null, handlers);
         Message msg = new MessageImpl();
         Mock mock = mock(TargetInvoker.class);
         mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
-        connector.connect(referenceChain, serviceChain, invoker);
+        connector.connect(sourceChain, serviceChain);
+        sourceChain.setTargetInvoker(invoker);
         serviceChain.build();
-        msg.setTargetInvoker(referenceChain.getTargetInvoker());
-        assertEquals(msg, referenceChain.getHeadInterceptor().invoke(msg));
+        msg.setTargetInvoker(sourceChain.getTargetInvoker());
+        assertEquals(msg, sourceChain.getTargetInterceptor().invoke(msg));
+        sourceChain.getTargetResponseChannel().send(msg);
         assertEquals(1, interceptor.getCount());
         assertEquals(1, handler.getCount());
     }
@@ -250,18 +262,23 @@ public class SourceToTargetConnectTestCase extends MockObjectTestCase {
         List<MessageHandler> handlers = new ArrayList<MessageHandler>();
         handlers.add(handler);
 
-        ReferenceInvocationChain referenceChain = setupSource(interceptors, handlers, handlers);
-        ServiceInvocationChain serviceChain = setupTarget(null, null, null);
+        ServiceInvocationChain sourceChain = setupChain(interceptors, handlers, handlers);
+        ServiceInvocationChain serviceChain = setupTargetChain(null, null, null);
         Message msg = new MessageImpl();
         Mock mock = mock(TargetInvoker.class);
         mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
-        connector.connect(referenceChain, serviceChain, invoker);
+        connector.connect(sourceChain, serviceChain);
+        sourceChain.setTargetInvoker(invoker);
+        sourceChain.build();
         serviceChain.build();
-        msg.setTargetInvoker(referenceChain.getTargetInvoker());
-        assertEquals(msg, referenceChain.getHeadInterceptor().invoke(msg));
+        msg.setTargetInvoker(sourceChain.getTargetInvoker());
+        sourceChain.getRequestChannel().send(msg);
+        Message response = msg.getRelatedCallbackMessage();
+        sourceChain.getResponseChannel().send(response);
+        assertEquals(msg, response);
         assertEquals(1, interceptor.getCount());
         assertEquals(2, handler.getCount());
     }
@@ -279,18 +296,22 @@ public class SourceToTargetConnectTestCase extends MockObjectTestCase {
         List<MessageHandler> handlers = new ArrayList<MessageHandler>();
         handlers.add(handler);
 
-        ReferenceInvocationChain referenceChain = setupSource(null, null, handlers);
-        ServiceInvocationChain serviceChain = setupTarget(interceptors, handlers, null);
+        ServiceInvocationChain sourceChain = setupChain(null, null, handlers);
+        ServiceInvocationChain serviceChain = setupTargetChain(interceptors, handlers, null);
         Message msg = new MessageImpl();
         Mock mock = mock(TargetInvoker.class);
         mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
-        connector.connect(referenceChain, serviceChain, invoker);
+        connector.connect(sourceChain, serviceChain);
+        sourceChain.setTargetInvoker(invoker);
+        sourceChain.build();
         serviceChain.build();
-        msg.setTargetInvoker(referenceChain.getTargetInvoker());
-        assertEquals(msg, referenceChain.getHeadInterceptor().invoke(msg));
+        msg.setTargetInvoker(sourceChain.getTargetInvoker());
+        Message response = sourceChain.getHeadInterceptor().invoke(msg);
+        sourceChain.getResponseChannel().send(response);
+        assertEquals(msg, response);
         assertEquals(1, interceptor.getCount());
         assertEquals(2, handler.getCount());
     }
@@ -305,17 +326,22 @@ public class SourceToTargetConnectTestCase extends MockObjectTestCase {
         List<MessageHandler> handlers = new ArrayList<MessageHandler>();
         handlers.add(handler);
 
-        ReferenceInvocationChain referenceChain = setupSource(null, handlers, handlers);
-        ServiceInvocationChain serviceChain = setupTarget(null, null, null);
+        ServiceInvocationChain sourceChain = setupChain(null, handlers, handlers);
+        ServiceInvocationChain serviceChain = setupTargetChain(null, null, null);
         Message msg = new MessageImpl();
         Mock mock = mock(TargetInvoker.class);
         mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, handler.getCount());
-        connector.connect(referenceChain, serviceChain, invoker);
+        connector.connect(sourceChain, serviceChain);
+        sourceChain.setTargetInvoker(invoker);
+        sourceChain.build();
         serviceChain.build();
-        msg.setTargetInvoker(referenceChain.getTargetInvoker());
-        assertEquals(msg, referenceChain.getHeadInterceptor().invoke(msg));
+
+        msg.setTargetInvoker(sourceChain.getTargetInvoker());
+        sourceChain.getRequestChannel().send(msg);
+        sourceChain.getResponseChannel().send(msg);
+        assertEquals(msg, msg.getRelatedCallbackMessage());
         assertEquals(2, handler.getCount());
     }
 
@@ -329,17 +355,19 @@ public class SourceToTargetConnectTestCase extends MockObjectTestCase {
         List<MessageHandler> handlers = new ArrayList<MessageHandler>();
         handlers.add(handler);
 
-        ReferenceInvocationChain referenceChain = setupSource(null, null, null);
-        ServiceInvocationChain serviceChain = setupTarget(null, handlers, handlers);
+        ServiceInvocationChain sourceChain = setupChain(null, null, null);
+        ServiceInvocationChain serviceChain = setupTargetChain(null, handlers, handlers);
         Message msg = new MessageImpl();
         Mock mock = mock(TargetInvoker.class);
         mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, handler.getCount());
-        connector.connect(referenceChain, serviceChain, invoker);
+        connector.connect(sourceChain, serviceChain);
+        sourceChain.setTargetInvoker(invoker);
+        sourceChain.build();
         serviceChain.build();
-        msg.setTargetInvoker(referenceChain.getTargetInvoker());
-        assertEquals(msg, referenceChain.getHeadInterceptor().invoke(msg));
+        msg.setTargetInvoker(sourceChain.getTargetInvoker());
+        assertEquals(msg, sourceChain.getHeadInterceptor().invoke(msg));
         assertEquals(2, handler.getCount());
     }
 
@@ -353,17 +381,20 @@ public class SourceToTargetConnectTestCase extends MockObjectTestCase {
         List<MessageHandler> handlers = new ArrayList<MessageHandler>();
         handlers.add(handler);
 
-        ReferenceInvocationChain referenceChain = setupSource(null, handlers, null);
-        ServiceInvocationChain serviceChain = setupTarget(null, null, null);
+        ServiceInvocationChain sourceChain = setupChain(null, handlers, null);
+        ServiceInvocationChain serviceChain = setupTargetChain(null, null, null);
         Message msg = new MessageImpl();
         Mock mock = mock(TargetInvoker.class);
         mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, handler.getCount());
-        connector.connect(referenceChain, serviceChain, invoker);
+        connector.connect(sourceChain, serviceChain);
+        sourceChain.setTargetInvoker(invoker);
         serviceChain.build();
-        msg.setTargetInvoker(referenceChain.getTargetInvoker());
-        assertEquals(msg, referenceChain.getHeadInterceptor().invoke(msg));
+        msg.setTargetInvoker(sourceChain.getTargetInvoker());
+        sourceChain.getRequestChannel().send(msg);
+        Message response = msg.getRelatedCallbackMessage();
+        assertEquals(msg, response);
         assertEquals(1, handler.getCount());
     }
 
@@ -377,17 +408,19 @@ public class SourceToTargetConnectTestCase extends MockObjectTestCase {
         List<MessageHandler> handlers = new ArrayList<MessageHandler>();
         handlers.add(handler);
 
-        ReferenceInvocationChain referenceChain = setupSource(null, null, null);
-        ServiceInvocationChain serviceChain = setupTarget(null, handlers, null);
+        ServiceInvocationChain sourceChain = setupChain(null, null, null);
+        ServiceInvocationChain serviceChain = setupTargetChain(null, handlers, null);
         Message msg = new MessageImpl();
         Mock mock = mock(TargetInvoker.class);
         mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, handler.getCount());
-        connector.connect(referenceChain, serviceChain, invoker);
+        connector.connect(sourceChain, serviceChain);
+        sourceChain.setTargetInvoker(invoker);
+        sourceChain.build();
         serviceChain.build();
-        msg.setTargetInvoker(referenceChain.getTargetInvoker());
-        assertEquals(msg, referenceChain.getHeadInterceptor().invoke(msg));
+        msg.setTargetInvoker(sourceChain.getTargetInvoker());
+        assertEquals(msg, sourceChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, handler.getCount());
     }
 
@@ -401,17 +434,19 @@ public class SourceToTargetConnectTestCase extends MockObjectTestCase {
         List<MessageHandler> handlers = new ArrayList<MessageHandler>();
         handlers.add(handler);
 
-        ReferenceInvocationChain referenceChain = setupSource(null, null, handlers);
-        ServiceInvocationChain serviceChain = setupTarget(null, null, null);
+        ServiceInvocationChain sourceChain = setupChain(null, null, handlers);
+        ServiceInvocationChain serviceChain = setupTargetChain(null, null, null);
         Message msg = new MessageImpl();
         Mock mock = mock(TargetInvoker.class);
         mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, handler.getCount());
-        connector.connect(referenceChain, serviceChain, invoker);
+        connector.connect(sourceChain, serviceChain);
+        sourceChain.setTargetInvoker(invoker);
         serviceChain.build();
-        msg.setTargetInvoker(referenceChain.getTargetInvoker());
-        assertEquals(msg, referenceChain.getHeadInterceptor().invoke(msg));
+        msg.setTargetInvoker(sourceChain.getTargetInvoker());
+        assertEquals(msg, sourceChain.getTargetInterceptor().invoke(msg));
+        sourceChain.getResponseChannel().send(msg);
         assertEquals(1, handler.getCount());
     }
 
@@ -424,25 +459,26 @@ public class SourceToTargetConnectTestCase extends MockObjectTestCase {
         MockHandler handler = new MockHandler();
         List<MessageHandler> handlers = new ArrayList<MessageHandler>();
         handlers.add(handler);
-
-        ReferenceInvocationChain referenceChain = setupSource(null, null, null);
-        ServiceInvocationChain serviceChain = setupTarget(null, null, handlers);
+        ServiceInvocationChain sourceChain = setupChain(null, null, null);
+        ServiceInvocationChain serviceChain = setupTargetChain(null, null, handlers);
         Message msg = new MessageImpl();
         Mock mock = mock(TargetInvoker.class);
         mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, handler.getCount());
-        connector.connect(referenceChain, serviceChain, invoker);
+        connector.connect(sourceChain, serviceChain);
+        sourceChain.setTargetInvoker(invoker);
         serviceChain.build();
-        msg.setTargetInvoker(referenceChain.getTargetInvoker());
-        assertEquals(msg, referenceChain.getHeadInterceptor().invoke(msg));
+        msg.setTargetInvoker(sourceChain.getTargetInvoker());
+        assertEquals(msg, sourceChain.getTargetInterceptor().invoke(msg));
+        serviceChain.getResponseChannel().send(msg);
         assertEquals(1, handler.getCount());
     }
 
 
-    public ServiceInvocationChain setupTarget(List<Interceptor> interceptors,
-                                             List<MessageHandler> requestHandlers,
-                                             List<MessageHandler> responseHandlers) {
+    public ServiceInvocationChain setupChain(List<Interceptor> interceptors,
+                                            List<MessageHandler> requestHandlers,
+                                            List<MessageHandler> responseHandlers) {
 
         Method echo;
         try {
@@ -466,36 +502,15 @@ public class SourceToTargetConnectTestCase extends MockObjectTestCase {
                 chain.addResponseHandler(handler);
             }
         }
-        chain.addInterceptor(new InvokerInterceptor()); // add tail interceptor
         return chain;
     }
 
-    public ReferenceInvocationChain setupSource(List<Interceptor> interceptors,
-                                             List<MessageHandler> requestHandlers,
-                                             List<MessageHandler> responseHandlers) {
+    public ServiceInvocationChain setupTargetChain(List<Interceptor> interceptors,
+                                                  List<MessageHandler> requestHandlers,
+                                                  List<MessageHandler> responseHandlers) {
 
-        Method echo;
-        try {
-            echo = SimpleTarget.class.getMethod("echo", String.class);
-        } catch (NoSuchMethodException e) {
-            throw new AssertionError();
-        }
-        ReferenceInvocationChainImpl chain = new ReferenceInvocationChainImpl(echo);
-        if (interceptors != null) {
-            for (Interceptor interceptor : interceptors) {
-                chain.addInterceptor(interceptor);
-            }
-        }
-        if (requestHandlers != null) {
-            for (MessageHandler handler : requestHandlers) {
-                chain.addRequestHandler(handler);
-            }
-        }
-        if (responseHandlers != null) {
-            for (MessageHandler handler : responseHandlers) {
-                chain.addResponseHandler(handler);
-            }
-        }
+        ServiceInvocationChain chain = setupChain(interceptors, requestHandlers, responseHandlers);
+        chain.addInterceptor(new InvokerInterceptor()); // add tail interceptor
         return chain;
     }
 

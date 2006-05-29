@@ -14,7 +14,7 @@ public interface Connector {
 
     <T> void connect(Context<T> source);
 
-    public <T> void connect(ServiceWire<T> serviceWire, Context<?> targetContext) throws BuilderConfigException;
+    public <T> void connect(ServiceWire<T> sourceWire, Context<?> targetContext) throws BuilderConfigException;
 
 
 }

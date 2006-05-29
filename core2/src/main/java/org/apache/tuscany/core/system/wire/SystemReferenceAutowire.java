@@ -10,6 +10,7 @@ import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
 import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.RuntimeWire;
 
 /**
  * The source side of an wire configured to autowire
@@ -56,6 +57,10 @@ public class SystemReferenceAutowire<T> implements ReferenceAutowire<T> {
 
     public Class[] getImplementedInterfaces() {
         return new Class[0];
+    }
+
+    public void setTargetWire(RuntimeWire<T> wire) {
+        throw new UnsupportedOperationException();
     }
 
     public Map<Method, ReferenceInvocationChain> getInvocationChains() {

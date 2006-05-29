@@ -21,9 +21,9 @@ import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.ServiceInvocationChain;
-import org.apache.tuscany.spi.wire.ServiceInvocationHandler;
-import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
+import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
+import org.apache.tuscany.spi.wire.ReferenceWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
@@ -33,7 +33,7 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  */
 public abstract class ReferenceContextExtension<T> extends AbstractContext<T> implements ReferenceContext<T> {
 
-    protected ServiceWire<T> serviceWire;
+    protected ReferenceWire<T> referenceWire;
     protected Class<T> referenceInterface;
 
     protected ReferenceContextExtension(String name, CompositeContext<?> parent) {
@@ -44,12 +44,12 @@ public abstract class ReferenceContextExtension<T> extends AbstractContext<T> im
         return Scope.COMPOSITE;
     }
 
-    public void setTargetWire(ServiceWire<T> serviceWire) {
-        this.serviceWire = serviceWire;
+    public void setTargetWire(ReferenceWire<T> wire) {
+        this.referenceWire = wire;
     }
 
-    public ServiceWire<T> getTargetWire() {
-        return serviceWire;
+    public ReferenceWire<T> getWire() {
+        return referenceWire;
     }
 
     public Class<T> getInterface() {
@@ -61,18 +61,18 @@ public abstract class ReferenceContextExtension<T> extends AbstractContext<T> im
     }
 
     public T getService() throws TargetException {
-        return serviceWire.getTargetService();
+        return referenceWire.getTargetService();
     }
 
     public WireInvocationHandler getHandler() throws TargetException {
-        Map<Method, ServiceInvocationChain> configuration = serviceWire.getInvocationChains();
+        Map<Method, ReferenceInvocationChain> configuration = referenceWire.getInvocationChains();
         assert(configuration != null);
-        return new ServiceInvocationHandler(configuration);
+        return new ReferenceInvocationHandler(configuration);
     }
 
     public void prepare() {
-        for (ServiceInvocationChain chain : serviceWire.getInvocationChains().values()) {
-            chain.setTargetInvoker(createTargetInvoker(serviceWire.getServiceName(), chain.getMethod()));
+        for (ReferenceInvocationChain chain : referenceWire.getInvocationChains().values()) {
+            chain.setTargetInvoker(createTargetInvoker(referenceWire.getTargetName().getQualifiedName(), chain.getMethod()));
             chain.build();
         }
     }

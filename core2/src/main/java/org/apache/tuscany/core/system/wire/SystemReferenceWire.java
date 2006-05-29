@@ -8,7 +8,7 @@ import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
 import org.apache.tuscany.spi.wire.ReferenceWire;
-import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.RuntimeWire;
 
 /**
  * The source side of a wire configured to use the {@link org.apache.tuscany.core.system.model.SystemBinding}
@@ -19,7 +19,7 @@ public class SystemReferenceWire<T> implements ReferenceWire<T> {
     private String referenceName;
     private QualifiedName targetName;
     private Class<T> businessInterface;
-    private ServiceWire<T> serviceWire;
+    private RuntimeWire<T> targetWire;
 
     public SystemReferenceWire(String referenceName, QualifiedName targetName, Class<T> businessInterface) {
         this.referenceName = referenceName;
@@ -44,10 +44,10 @@ public class SystemReferenceWire<T> implements ReferenceWire<T> {
     }
 
     public T getTargetService() throws TargetException {
-        if (serviceWire == null) {
+        if (targetWire == null) {
             throw new TargetException("No target wire connected to source wire");
         }
-        return serviceWire.getTargetService();
+        return targetWire.getTargetService();
     }
 
     public Class<T> getBusinessInterface() {
@@ -78,8 +78,8 @@ public class SystemReferenceWire<T> implements ReferenceWire<T> {
         throw new UnsupportedOperationException();
     }
 
-    public void setTargetWire(ServiceWire<T> wire) {
-        serviceWire = wire;
+    public void setTargetWire(RuntimeWire<T> wire) {
+        targetWire = wire;
     }
 
     public boolean isOptimizable() {

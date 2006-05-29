@@ -139,7 +139,7 @@ public class SystemBuildersTestCase extends TestCase {
         parent.registerContext(serviceContext);
 
         connector.connect(sourceContext);
-        connector.connect(serviceContext.getTargetWire(), sourceContext);
+        connector.connect(serviceContext.getWire(), sourceContext);
         parent.start();
         scope.onEvent(new ModuleStart(this, parent));
         Target target = (Target) parent.getContext("service").getService();
@@ -183,7 +183,7 @@ public class SystemBuildersTestCase extends TestCase {
         parent.registerContext(referenceContext);
         parent.registerContext(serviceContext);
 
-        connector.connect(serviceContext.getTargetWire(), referenceContext);
+        connector.connect(serviceContext.getWire(), referenceContext);
         grandParent.registerContext(parent);
         grandParent.start();
         scope.onEvent(new ModuleStart(this, parent));

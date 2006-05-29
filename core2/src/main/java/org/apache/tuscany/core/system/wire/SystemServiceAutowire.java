@@ -8,6 +8,9 @@ import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.ServiceInvocationChain;
 import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.ReferenceWire;
+import org.apache.tuscany.spi.wire.RuntimeWire;
+import org.apache.tuscany.spi.QualifiedName;
 
 /**
  * The target side of an wire configured to autowire
@@ -63,12 +66,23 @@ public class SystemServiceAutowire<T> implements ServiceWire<T> {
         throw new UnsupportedOperationException();
     }
 
+    public QualifiedName getTargetName() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setTargetName(QualifiedName name) {
+        throw new UnsupportedOperationException();
+    }
+
     public boolean isOptimizable() {
         return true;  // system wires are always optimizable
     }
 
-    public void setTargetWire(ServiceWire<T> wire) {
-        throw new UnsupportedOperationException(""); // FIXME not implemented
+    public void setTargetWire(RuntimeWire<T> wire) {
+        throw new UnsupportedOperationException(); // FIXME not implemented
     }
 
+    public void setTargetWire(ReferenceWire<T> wire) {
+        throw new UnsupportedOperationException(); // FIXME not implemented
+    }
 }

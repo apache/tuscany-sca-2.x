@@ -39,9 +39,9 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
                         (BoundService<? extends Binding>) service,
                         deploymentContext);
                 // wire service to bean invokers
-                ServiceWire<?> wire = childContext.getTargetWire();
+                ServiceWire<?> wire = childContext.getWire();
                 for (ServiceInvocationChain chain : wire.getInvocationChains().values()) {
-                    String beanName = wire.getServiceName();
+                    String beanName = wire.getTargetName().getPartName();
                     chain.setTargetInvoker(context.createTargetInvoker(beanName, chain.getMethod()));
                 }
                 context.registerContext(childContext);

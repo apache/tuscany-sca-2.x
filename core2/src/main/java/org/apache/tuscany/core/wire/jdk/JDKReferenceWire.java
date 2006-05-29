@@ -24,8 +24,8 @@ import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
 import org.apache.tuscany.spi.wire.ReferenceWire;
-import org.apache.tuscany.spi.wire.ServiceWire;
 import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
+import org.apache.tuscany.spi.wire.RuntimeWire;
 
 /**
  * Creates proxies that are injected on references using JDK dynamic proxy facilities and front a wire. The
@@ -39,13 +39,13 @@ public class JDKReferenceWire<T> implements ReferenceWire<T> {
     private Map<Method, ReferenceInvocationChain> invocationChains = new MethodHashMap<ReferenceInvocationChain>();
     private String referenceName;
     private QualifiedName targetName;
-    private ServiceWire<T> serviceWire;
+    private RuntimeWire<T> targetWire;
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
-        if (serviceWire != null) {
+        if (targetWire != null) {
             // optimized, no interceptors or handlers on either end
-            return serviceWire.getTargetService();
+            return targetWire.getTargetService();
         }
         ReferenceInvocationHandler handler = new ReferenceInvocationHandler(invocationChains);
         return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaces, handler);
@@ -66,6 +66,10 @@ public class JDKReferenceWire<T> implements ReferenceWire<T> {
 
     public Class[] getImplementedInterfaces() {
         return businessInterfaces;
+    }
+
+    public void setTargetWire(RuntimeWire<T> wire) {
+       this.targetWire = wire;
     }
 
     public Map<Method, ReferenceInvocationChain> getInvocationChains() {
@@ -96,9 +100,6 @@ public class JDKReferenceWire<T> implements ReferenceWire<T> {
         this.targetName = targetName;
     }
 
-    public void setTargetWire(ServiceWire<T> wire) {
-        serviceWire = wire;
-    }
 
     public boolean isOptimizable() {
         for (ReferenceInvocationChain chain : invocationChains.values()) {

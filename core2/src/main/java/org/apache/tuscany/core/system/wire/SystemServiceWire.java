@@ -4,8 +4,10 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.wire.ServiceInvocationChain;
 import org.apache.tuscany.spi.wire.ServiceWire;
 
@@ -18,7 +20,8 @@ public class SystemServiceWire<T> implements ServiceWire<T> {
     private String serviceName;
     private Class<T> businessInterface;
     private ComponentContext<?> componentContext;
-    private ServiceWire<T> wire; // a bridge to another target wire
+    private RuntimeWire<T> wire; // a bridge to another target wire
+    private QualifiedName targetName;
 
     public SystemServiceWire(String serviceName, Class<T> businessInterface, ComponentContext<?> target) {
         this.serviceName = serviceName;
@@ -41,7 +44,7 @@ public class SystemServiceWire<T> implements ServiceWire<T> {
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
-        if (wire != null){
+        if (wire != null) {
             return wire.getTargetService();
         }
         return (T) componentContext.getService(serviceName);
@@ -57,6 +60,14 @@ public class SystemServiceWire<T> implements ServiceWire<T> {
 
     public Class[] getImplementedInterfaces() {
         return new Class[0];
+    }
+
+    public QualifiedName getTargetName() {
+        return targetName;
+    }
+
+    public void setTargetName(QualifiedName targetName) {
+        this.targetName = targetName;
     }
 
     public Map<Method, ServiceInvocationChain> getInvocationChains() {
@@ -79,7 +90,7 @@ public class SystemServiceWire<T> implements ServiceWire<T> {
         return true;  // system wires are always optimizable
     }
 
-    public void setTargetWire(ServiceWire<T> wire) {
+    public void setTargetWire(RuntimeWire<T> wire) {
         this.wire = wire;
     }
 
