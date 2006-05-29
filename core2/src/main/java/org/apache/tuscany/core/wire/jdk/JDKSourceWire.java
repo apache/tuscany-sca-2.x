@@ -25,7 +25,7 @@ import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.SourceWire;
 import org.apache.tuscany.spi.wire.TargetWire;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.wire.SourceInvocationHandler;
 
 /**
  * Creates proxies that are injected on references using JDK dynamic proxy facilities and front a wire. The
@@ -47,8 +47,7 @@ public class JDKSourceWire<T> implements SourceWire<T> {
             // optimized, no interceptors or handlers on either end
             return targetWire.getTargetService();
         }
-        WireInvocationHandler handler = new JDKInvocationHandler();
-        handler.setChains(invocationChains);
+        SourceInvocationHandler handler = new SourceInvocationHandler(invocationChains);
         return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaces, handler);
     }
 

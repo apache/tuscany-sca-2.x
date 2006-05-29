@@ -21,12 +21,11 @@ import java.lang.reflect.Proxy;
 import java.util.Map;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.util.MethodHashMap;
-import org.apache.tuscany.core.wire.jdk.JDKInvocationHandler;
 import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
-import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.core.util.MethodHashMap;
+import org.apache.tuscany.spi.wire.SourceInvocationHandler;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
@@ -56,10 +55,9 @@ public class InvocationErrorTestCase extends TestCase {
     }
 
     public void testCheckedException() throws Exception {
-        Map<Method, InvocationChain> config = new MethodHashMap<InvocationChain>();
+        Map<Method, SourceInvocationChain> config = new MethodHashMap<SourceInvocationChain>();
         config.put(checkedMethod, getConfiguration(checkedMethod));
-        WireInvocationHandler handler = new JDKInvocationHandler();
-        handler.setChains(config);
+        WireInvocationHandler handler = new SourceInvocationHandler(config);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{TestBean.class}, handler);
@@ -71,10 +69,9 @@ public class InvocationErrorTestCase extends TestCase {
     }
 
     public void testRuntimeException() throws Exception {
-        Map<Method, InvocationChain> config = new MethodHashMap<InvocationChain>();
+        Map<Method, SourceInvocationChain> config = new MethodHashMap<SourceInvocationChain>();
         config.put(runtimeMethod, getConfiguration(runtimeMethod));
-        WireInvocationHandler handler = new JDKInvocationHandler();
-        handler.setChains(config);
+        WireInvocationHandler handler = new SourceInvocationHandler(config);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{TestBean.class}, handler);
@@ -85,7 +82,7 @@ public class InvocationErrorTestCase extends TestCase {
         fail(TestException.class.getName() + " should have been thrown");
     }
 
-    private InvocationChain getConfiguration(Method m) {
+    private SourceInvocationChain getConfiguration(Method m) {
         MockStaticInvoker invoker = new MockStaticInvoker(m, new TestBeanImpl());
         SourceInvocationChain invocationConfiguration = new SourceInvocationChainImpl(m);
         invocationConfiguration.addInterceptor(new MockSyncInterceptor());

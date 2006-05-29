@@ -54,10 +54,13 @@ public class RequestResponseInterceptor implements Interceptor {
         if (sourceRequestChannel != null) {
             sourceRequestChannel.send(requestMessage);
         }
+        Message responseMessage;
         if (targetRequestChannel != null) {
             targetRequestChannel.send(requestMessage);
+            responseMessage = requestMessage.getRelatedCallbackMessage();
+        } else{
+            responseMessage = requestMessage;
         }
-        Message responseMessage = requestMessage.getRelatedCallbackMessage();
         if (targetResponseChannel != null) {
             targetResponseChannel.send(responseMessage);
         }

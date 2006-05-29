@@ -15,11 +15,11 @@ package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.MessageHandler;
+import org.apache.tuscany.spi.wire.TargetInvocationChain;
 
 /**
- * Contains a target-side invocation pipeline for a service operation.
+ * Contains a target-side invocation chain
  *
  * @version $Rev: 394379 $ $Date: 2006-04-15 15:01:36 -0700 (Sat, 15 Apr 2006) $
  */
@@ -27,20 +27,20 @@ public class TargetInvocationChainImpl extends InvocationChainImpl implements Ta
 
     /**
      * Creates an new target-side chain for the given operation
-     *
-     * @param operation the method on the interface representing target service, where the method corresponds
-     *                  to the service operation
      */
     public TargetInvocationChainImpl(Method operation) {
         super(operation);
     }
 
     public void build() {
-        if (requestHandlers != null && interceptorChainHead != null) {
-            // on target-side, connect existing handlers and interceptors
-            MessageHandler messageDispatcher = new MessageDispatcher(interceptorChainHead);
-            requestHandlers.add(messageDispatcher);
+        if (requestHandlers != null) {
+            if (interceptorChainHead != null) {
+                // on target-side, connect existing handlers and interceptors
+                MessageHandler messageDispatcher = new MessageDispatcher(interceptorChainHead);
+                requestHandlers.add(messageDispatcher);
+            }
         }
     }
+
 
 }

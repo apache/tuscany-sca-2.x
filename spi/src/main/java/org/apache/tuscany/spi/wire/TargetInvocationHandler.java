@@ -1,40 +1,18 @@
-/**
- *
- *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
-package org.apache.tuscany.core.wire.jdk;
+package org.apache.tuscany.spi.wire;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
  * Receives a request from a proxy and dispatches it to a target invoker or source interceptor stack
  *
  * @version $Rev: 406016 $ $Date: 2006-05-12 22:45:22 -0700 (Fri, 12 May 2006) $
  */
-public class JDKInvocationHandler implements WireInvocationHandler {
+public class TargetInvocationHandler implements WireInvocationHandler {
 
     /*
      * an association of an operation to chain holder. The holder contains the master wire chain
@@ -45,7 +23,11 @@ public class JDKInvocationHandler implements WireInvocationHandler {
      */
     private Map<Method, ChainHolder> chains;
 
-    public JDKInvocationHandler() {
+    public TargetInvocationHandler(Map<Method, TargetInvocationChain> invocationChains) {
+        this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
+        for (Map.Entry<Method, TargetInvocationChain> entry : invocationChains.entrySet()) {
+            this.chains.put(entry.getKey(), new ChainHolder(entry.getValue()));
+        }
     }
 
     /**
@@ -59,7 +41,7 @@ public class JDKInvocationHandler implements WireInvocationHandler {
             e.setIdentifier(method.getName());
             throw e;
         }
-        InvocationChain chain = holder.chain;
+        TargetInvocationChain chain = holder.chain;
         if (chain != null) {
             headInterceptor = chain.getHeadInterceptor();
         }
@@ -84,7 +66,8 @@ public class JDKInvocationHandler implements WireInvocationHandler {
             assert chain != null;
             invoker = chain.getTargetInvoker();
         }
-        if (headInterceptor == null) {
+        if (chain.getTargetRequestChannel() == null && chain.getTargetResponseChannel() == null
+                && headInterceptor == null) {
             try {
                 // short-circuit the dispatch and invoke the target directly
                 if (chain.getTargetInvoker() == null) {
@@ -100,32 +83,38 @@ public class JDKInvocationHandler implements WireInvocationHandler {
             msg.setTargetInvoker(invoker);
             msg.setBody(args);
             // dispatch the wire down the chain and get the response
-            Message resp = headInterceptor.invoke(msg);
-            Object body = resp.getBody();
-            if (body instanceof Throwable) {
-                throw (Throwable) body;
-            }
-            return body;
-        }
-    }
+            if (chain.getTargetRequestChannel() != null) {
+                chain.getTargetRequestChannel().send(msg);
+                return msg.getRelatedCallbackMessage();
 
-    public void setChains(Map<Method, ? extends InvocationChain> invocationChains) {
-        this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
-        for (Map.Entry<Method, ? extends InvocationChain> entry : invocationChains.entrySet()) {
-            this.chains.put(entry.getKey(), new ChainHolder(entry.getValue()));
+            } else if (headInterceptor == null) {
+                throw new AssertionError("No target interceptor configured [" + method.getName() + "]");
+
+            } else {
+                Message resp = headInterceptor.invoke(msg);
+                if (chain.getTargetResponseChannel() != null) {
+                    chain.getTargetResponseChannel().send(resp);
+                    resp = resp.getRelatedCallbackMessage();
+                }
+                Object body = resp.getBody();
+                if (body instanceof Throwable) {
+                    throw (Throwable) body;
+                }
+                return body;
+            }
         }
     }
 
     /**
-     * A holder used to associate an wire chain with a local copy of a target invoker that was
-     * previously cloned from the chain master
+     * A holder used to associate an wire chain with a local copy of a target invoker that was previously
+     * cloned from the chain master
      */
     private class ChainHolder {
 
-        InvocationChain chain;
+        TargetInvocationChain chain;
         TargetInvoker cachedInvoker;
 
-        public ChainHolder(InvocationChain config) {
+        public ChainHolder(TargetInvocationChain config) {
             this.chain = config;
         }
 

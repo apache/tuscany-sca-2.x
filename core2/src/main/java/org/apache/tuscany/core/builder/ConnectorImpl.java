@@ -2,7 +2,6 @@ package org.apache.tuscany.core.builder;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -135,40 +134,7 @@ public class ConnectorImpl implements Connector {
                 }
             }
             TargetInvocationChain targetChain = targetWire.getInvocationChains().get(sourceChain.getMethod());
-            if (sourceChain.getTailInterceptor() != null) {
-                if (targetChain.getRequestHandlers() != null) {
-                    MessageChannel requestChannel = new MessageChannelImpl(targetChain.getRequestHandlers());
-                    MessageChannel responseChannel = new MessageChannelImpl(targetChain.getResponseHandlers());
-                    sourceChain.getTailInterceptor().setNext(new RequestResponseInterceptor(null, requestChannel, null, responseChannel));
-                } else if (targetChain.getResponseHandlers() != null) {
-                    if (targetChain.getHeadInterceptor() == null) {
-                        BuilderConfigException e = new BuilderConfigException("Target chain must have an interceptor");
-                        e.setIdentifier(targetChain.getMethod().getName());
-                        throw e;
-                    }
-                    MessageChannel responseChannel = new MessageChannelImpl(targetChain.getResponseHandlers());
-                    sourceChain.getTailInterceptor().setNext(new BridgingResponseInterceptor(targetChain.getHeadInterceptor(), responseChannel));
-                } else {
-                    if (targetChain.getHeadInterceptor() == null) {
-                        BuilderConfigException e = new BuilderConfigException("Target chain must have an interceptor");
-                        e.setIdentifier(targetChain.getMethod().getName());
-                        throw e;
-                    }
-                    sourceChain.getTailInterceptor().setNext(new BridgingInterceptor(targetChain.getHeadInterceptor()));
-                }
-            } else {
-                // no target interceptor
-                List<MessageHandler> sourceRequestHandlers = sourceChain.getRequestHandlers();
-                List<MessageHandler> targetRequestHandlers = targetChain.getRequestHandlers();
-                if (sourceRequestHandlers != null && !sourceRequestHandlers.isEmpty()) {
-                    sourceRequestHandlers.add(new BridgingHandler(targetRequestHandlers.get(0)));
-                }
-                List<MessageHandler> sourceResponseHandlers = sourceChain.getResponseHandlers();
-                List<MessageHandler> targetResponseHandlers = targetChain.getResponseHandlers();
-                if (sourceResponseHandlers != null && !sourceResponseHandlers.isEmpty()) {
-                    sourceResponseHandlers.add(new BridgingHandler(targetResponseHandlers.get(0)));
-                }
-            }
+            connect(sourceChain, targetChain);
         }
     }
 
@@ -192,13 +158,13 @@ public class ConnectorImpl implements Connector {
                 throw e;
             }
             if (target instanceof ReferenceContext) {
-                ReferenceContext referenceContext = (ReferenceContext)target;
+                ReferenceContext referenceContext = (ReferenceContext) target;
                 TargetInvoker invoker = referenceContext.createTargetInvoker(serviceName, sourceChain.getMethod());
-                connect(sourceChain,targetChain, invoker);
+                connect(sourceChain, targetChain, invoker);
             } else {
-                ComponentContext componentContext = (ComponentContext)target;
+                ComponentContext componentContext = (ComponentContext) target;
                 TargetInvoker invoker = componentContext.createTargetInvoker(serviceName, sourceChain.getMethod());
-                connect(sourceChain,targetChain,invoker);
+                connect(sourceChain, targetChain, invoker);
             }
         }
     }
@@ -239,9 +205,70 @@ public class ConnectorImpl implements Connector {
         }
         sourceChain.build();
         sourceChain.setTargetInvoker(invoker);
-
     }
 
+    public void connect(TargetInvocationChain sourceChain, TargetInvocationChain targetChain) {
+        if (sourceChain.getTailInterceptor() != null) {
+            if (targetChain.getRequestHandlers() != null) {
+                MessageChannel requestChannel = new MessageChannelImpl(targetChain.getRequestHandlers());
+                MessageChannel responseChannel = new MessageChannelImpl(targetChain.getResponseHandlers());
+                sourceChain.getTailInterceptor().setNext(new RequestResponseInterceptor(null, requestChannel,
+                        null, responseChannel));
+            } else if (targetChain.getResponseHandlers() != null) {
+                if (targetChain.getHeadInterceptor() == null) {
+                    BuilderConfigException e = new BuilderConfigException("Target chain must have an interceptor");
+                    e.setIdentifier(targetChain.getMethod().getName());
+                    throw e;
+                }
+                MessageChannel responseChannel = new MessageChannelImpl(targetChain.getResponseHandlers());
+                sourceChain.getTailInterceptor().setNext(new BridgingResponseInterceptor(targetChain.getHeadInterceptor(),
+                        responseChannel));
+            } else {
+                // one interceptor, no handlers
+                if (targetChain.getHeadInterceptor() == null) {
+                    BuilderConfigException e = new BuilderConfigException("Target chain must have an interceptor");
+                    e.setIdentifier(targetChain.getMethod().getName());
+                    throw e;
+                }
+                sourceChain.getTailInterceptor().setNext(new BridgingInterceptor(targetChain.getHeadInterceptor(),
+                        sourceChain.getResponseChannel()));
+            }
+        } else {
+            // no interceptor
+            List<MessageHandler> sourceRequestHandlers = sourceChain.getRequestHandlers();
+            List<MessageHandler> targetRequestHandlers = targetChain.getRequestHandlers();
+            if (sourceRequestHandlers != null && !sourceRequestHandlers.isEmpty()) {
+                if (targetRequestHandlers != null && !targetRequestHandlers.isEmpty()) {
+                    sourceRequestHandlers.add(new BridgingHandler(targetRequestHandlers.get(0)));
+                } else if (targetChain.getRequestHandlers() == null) {
+                    sourceRequestHandlers.add(new MessageDispatcher(targetChain.getHeadInterceptor()));
+                }
+            } else {
+                MessageChannel requestChannel = targetChain.getRequestChannel();
+                MessageChannel responseChannel = targetChain.getResponseChannel();
+                if (requestChannel == null && responseChannel == null) {
+                    sourceChain.setTargetInterceptor(targetChain.getHeadInterceptor());
+                } else {
+                    if (requestChannel == null) {
+                        sourceChain.setTargetInterceptor(new BridgingInterceptor(targetChain.getHeadInterceptor()));
+
+                    } else {
+                        sourceChain.setTargetRequestChannel(requestChannel);
+                        sourceChain.addInterceptor(new RequestResponseInterceptor(null, requestChannel, null, responseChannel));
+                    }
+                    sourceChain.setTargetResponseChannel(responseChannel);
+                }
+            }
+
+            List<MessageHandler> sourceResponseHandlers = sourceChain.getResponseHandlers();
+            List<MessageHandler> targetResponseHandlers = targetChain.getResponseHandlers();
+            if (sourceResponseHandlers != null && !sourceResponseHandlers.isEmpty()) {
+                if (targetResponseHandlers != null && !targetResponseHandlers.isEmpty()) {
+                    sourceResponseHandlers.add(new BridgingHandler(targetResponseHandlers.get(0)));
+                }
+            }
+        }
+    }
 
     private boolean isOptimizable(Scope pReferrer, Scope pReferee) {
         if (pReferrer == Scope.UNDEFINED || pReferee == Scope.UNDEFINED) {

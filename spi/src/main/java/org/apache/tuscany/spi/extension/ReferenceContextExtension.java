@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
 import org.apache.tuscany.spi.wire.TargetWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.wire.TargetInvocationHandler;
 
 /**
  * The default implementation of an external service context
@@ -36,7 +37,6 @@ public abstract class ReferenceContextExtension<T> extends AbstractContext<T> im
 
     protected TargetWire<T> targetWire;
     protected Class<T> referenceInterface;
-    protected ObjectFactory<WireInvocationHandler> handlerFactory;
 
     protected ReferenceContextExtension(String name, CompositeContext<?> parent) {
         super(name, parent);
@@ -62,10 +62,6 @@ public abstract class ReferenceContextExtension<T> extends AbstractContext<T> im
         this.referenceInterface = referenceInterface;
     }
 
-    public void setHandlerFactory(ObjectFactory<WireInvocationHandler> handlerFactory) {
-        this.handlerFactory = handlerFactory;
-    }
-
     public T getService() throws TargetException {
         return targetWire.getTargetService();
     }
@@ -73,8 +69,7 @@ public abstract class ReferenceContextExtension<T> extends AbstractContext<T> im
     public InvocationHandler getHandler() throws TargetException {
         Map<Method, TargetInvocationChain> configuration = targetWire.getInvocationChains();
         assert(configuration != null);
-        WireInvocationHandler handler = handlerFactory.getInstance();
-        handler.setChains(configuration);
+        WireInvocationHandler handler = new TargetInvocationHandler(configuration);
         return handler;
     }
 

@@ -17,34 +17,37 @@
 package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.MessageChannel;
 import org.apache.tuscany.spi.wire.MessageHandler;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 
 /**
  * Contains functionality common to source- and target- side invocation chains
+ *
  * @version $Rev$ $Date$
  */
 public abstract class InvocationChainImpl implements InvocationChain {
-
-    // the operation on the target that will utlimately be invoked
     protected Method operation;
-
-    // responsible for invoking a target instance
     protected TargetInvoker targetInvoker;
-
     protected Interceptor interceptorChainHead;
-
     protected Interceptor interceptorChainTail;
-
     protected List<MessageHandler> requestHandlers;
-
     protected List<MessageHandler> responseHandlers;
+    protected MessageChannel requestChannel;
+    protected MessageChannel responseChannel;
+
+    // the pointer to a bridged target request channel, or null if the target has an interceptor
+    protected MessageChannel targetRequestChannel;
+    // the pointer to a bridged target response channel, or null if the target has an interceptor
+    protected MessageChannel targetResponseChannel;
+    // the pointer to a bridged target head interceptor or null if the target has no interceptors
+    protected Interceptor targetInterceptorChainHead;
 
     public InvocationChainImpl(Method operation) {
         assert (operation != null) : "No operation type specified";
@@ -53,20 +56,6 @@ public abstract class InvocationChainImpl implements InvocationChain {
 
     public Method getMethod() {
         return operation;
-    }
-
-    public void addRequestHandler(MessageHandler handler) {
-        if (requestHandlers == null) {
-            requestHandlers = new ArrayList<MessageHandler>();
-        }
-        requestHandlers.add(handler);
-    }
-
-    public void addResponseHandler(MessageHandler handler) {
-        if (responseHandlers == null) {
-            responseHandlers = new ArrayList<MessageHandler>();
-        }
-        responseHandlers.add(handler);
     }
 
     public List<MessageHandler> getRequestHandlers() {
@@ -94,12 +83,61 @@ public abstract class InvocationChainImpl implements InvocationChain {
         interceptorChainTail = interceptor;
     }
 
+    public Interceptor getHeadInterceptor() {
+        return interceptorChainHead;
+    }
+
     public Interceptor getTailInterceptor() {
         return interceptorChainTail;
     }
 
-    public Interceptor getHeadInterceptor() {
-        return interceptorChainHead;
+    public MessageChannel getRequestChannel() {
+        return requestChannel;
     }
+
+    public MessageChannel getResponseChannel() {
+        return responseChannel;
+    }
+
+    public void addRequestHandler(MessageHandler handler) {
+        if (requestHandlers == null) {
+            requestHandlers = new ArrayList<MessageHandler>();
+            requestChannel = new MessageChannelImpl(requestHandlers);
+        }
+        requestHandlers.add(handler);
+    }
+
+    public void addResponseHandler(MessageHandler handler) {
+        if (responseHandlers == null) {
+            responseHandlers = new ArrayList<MessageHandler>();
+            responseChannel = new MessageChannelImpl(responseHandlers);
+        }
+        responseHandlers.add(handler);
+    }
+
+    public MessageChannel getTargetRequestChannel() {
+        return targetRequestChannel;
+    }
+
+    public void setTargetRequestChannel(MessageChannel channel) {
+        this.targetRequestChannel = channel;
+    }
+
+    public void setTargetResponseChannel(MessageChannel channel) {
+        this.targetResponseChannel = channel;
+    }
+
+    public MessageChannel getTargetResponseChannel() {
+        return targetResponseChannel;
+    }
+
+    public void setTargetInterceptor(Interceptor interceptor) {
+        targetInterceptorChainHead = interceptor;
+    }
+
+    public Interceptor getTargetInterceptor() {
+        return targetInterceptorChainHead;
+    }
+
 
 }

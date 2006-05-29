@@ -2,15 +2,15 @@ package org.apache.tuscany.spi.extension;
 
 import java.lang.reflect.InvocationHandler;
 
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.context.AbstractContext;
+import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.wire.TargetInvocationHandler;
 import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
  * The default implementation of an service context
@@ -20,7 +20,6 @@ import org.apache.tuscany.spi.wire.TargetWire;
 public class ServiceContextExtension<T> extends AbstractContext<T> implements ServiceContext<T> {
 
     protected TargetWire<T> targetWire;
-    protected ObjectFactory<WireInvocationHandler> handlerFactory;
     private T target;
 
     public ServiceContextExtension(String name, TargetWire<T> wire, CompositeContext parent) throws CoreRuntimeException {
@@ -41,11 +40,6 @@ public class ServiceContextExtension<T> extends AbstractContext<T> implements Se
         targetWire = wire;
     }
 
-    public void setHandlerFactory(ObjectFactory<WireInvocationHandler> handlerFactory) {
-        this.handlerFactory = handlerFactory;
-    }
-
-
     public T getService() throws TargetException {
         if (target == null) {
             target = targetWire.getTargetService();
@@ -54,8 +48,7 @@ public class ServiceContextExtension<T> extends AbstractContext<T> implements Se
     }
 
     public InvocationHandler getHandler() {
-        WireInvocationHandler invocationHandler = handlerFactory.getInstance();
-        invocationHandler.setChains(targetWire.getInvocationChains());
+        WireInvocationHandler invocationHandler = new TargetInvocationHandler(targetWire.getInvocationChains());
         return invocationHandler;
     }
 

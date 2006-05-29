@@ -16,10 +16,9 @@ package org.apache.tuscany.core.wire;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.MessageChannel;
 import org.apache.tuscany.spi.wire.MessageHandler;
+import org.apache.tuscany.spi.wire.SourceInvocationChain;
 
 /**
  * Contains a source-side invocation pipeline for a service operation.
@@ -28,56 +27,26 @@ import org.apache.tuscany.spi.wire.MessageHandler;
  */
 public class SourceInvocationChainImpl extends InvocationChainImpl implements SourceInvocationChain {
 
-    // the pointer to the bridged target head interceptor or null if the target has no interceptors
-    private Interceptor targetInterceptorChainHead;
-
-    // the pointer to bridged target request channel, or null if the target has an interceptor
-    private MessageChannel targetRequestChannel;
-
-    // the pointer to bridged target response channel, or null if the target has an interceptor
-    private MessageChannel targetResponseChannel;
-
     /**
-     * Creates an new wire configuration for the given service reference operation
-     *
-     * @param operation the method on the interface representing specified by the reference, where the method corresponds to the
-     *                  service operation
+     * Creates an new source wire configuration
      */
     public SourceInvocationChainImpl(Method operation) {
         super(operation);
     }
 
-    public void setTargetInterceptor(Interceptor interceptor) {
-        targetInterceptorChainHead = interceptor;
-    }
-
-    public Interceptor getTargetInterceptor() {
-        return targetInterceptorChainHead;
-    }
-
-    public void setTargetRequestChannel(MessageChannel channel) {
-        targetRequestChannel = channel;
-    }
-
-    public void setTargetResponseChannel(MessageChannel channel) {
-        targetResponseChannel = channel;
-    }
-
     public void build() {
         if ((requestHandlers != null || responseHandlers != null) && targetInterceptorChainHead != null) {
-            // on target-side, connect existing handlers and interceptors
             MessageHandler messageDispatcher = new MessageDispatcher(targetInterceptorChainHead);
             if (requestHandlers == null) {
                 // case where there is only a response handler
                 requestHandlers = new ArrayList<MessageHandler>();
+                requestChannel = new MessageChannelImpl(requestHandlers);
             }
 
             requestHandlers.add(messageDispatcher);
         }
 
         if (requestHandlers != null || responseHandlers != null) {
-            MessageChannel requestChannel = new MessageChannelImpl(requestHandlers);
-            MessageChannel responseChannel = new MessageChannelImpl(responseHandlers);
             Interceptor channelInterceptor = new RequestResponseInterceptor(requestChannel, targetRequestChannel,
                     responseChannel, targetResponseChannel);
 
@@ -88,7 +57,7 @@ public class SourceInvocationChainImpl extends InvocationChainImpl implements So
             }
 
         } else {
-            // no request handlers
+            // no handlers
             if (interceptorChainHead != null) {
                 if (targetInterceptorChainHead != null) {
                     // Connect source interceptor chain directly to target interceptor chain

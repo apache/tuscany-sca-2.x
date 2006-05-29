@@ -1,34 +1,33 @@
 package org.apache.tuscany.core.wire.jdk;
 
+import java.lang.reflect.Method;
+import java.util.Map;
+
 import junit.framework.TestCase;
-import org.apache.tuscany.core.wire.InvocationChainImpl;
-import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
-import org.apache.tuscany.core.wire.SourceInvocationChainImpl;
+import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.MessageChannelImpl;
+import org.apache.tuscany.core.wire.SourceInvocationChainImpl;
 import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
 import org.apache.tuscany.spi.wire.SourceInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvocationChain;
-import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.wire.SourceInvocationHandler;
 
-import java.lang.reflect.Method;
-import java.util.Map;
-
-public class JDKInvocationHandlerTestCase extends TestCase {
+public class JDKSourceInvocationHandlerTestCase extends TestCase {
 
     private Method hello;
 
-    public JDKInvocationHandlerTestCase() {
+    public JDKSourceInvocationHandlerTestCase() {
         super();
     }
 
-    public JDKInvocationHandlerTestCase(String arg0) {
+    public JDKSourceInvocationHandlerTestCase(String arg0) {
         super(arg0);
     }
 
@@ -37,20 +36,18 @@ public class JDKInvocationHandlerTestCase extends TestCase {
     }
 
     public void testBasicInvoke() throws Throwable {
-        Map<Method, InvocationChain> configs = new MethodHashMap<InvocationChain>();
-        configs.put(hello, getInvocationHandler(hello));
-        WireInvocationHandler handler = new JDKInvocationHandler();
-        handler.setChains(configs);
-        assertEquals("foo", handler.invoke(null, hello, new Object[] { "foo" }));
+        Map<Method, SourceInvocationChain> configs = new MethodHashMap<SourceInvocationChain>();
+        configs.put(hello, createChain(hello));
+        WireInvocationHandler handler = new SourceInvocationHandler(configs);
+        assertEquals("foo", handler.invoke(null, hello, new Object[]{"foo"}));
     }
 
     public void testErrorInvoke() throws Throwable {
-        Map<Method, InvocationChain> configs = new MethodHashMap<InvocationChain>();
-        configs.put(hello, getInvocationHandler(hello));
-        WireInvocationHandler handler = new JDKInvocationHandler();
-        handler.setChains(configs);
+        Map<Method, SourceInvocationChain> configs = new MethodHashMap<SourceInvocationChain>();
+        configs.put(hello, createChain(hello));
+        WireInvocationHandler handler = new SourceInvocationHandler(configs);
         try {
-            assertEquals("foo", handler.invoke(null, hello, new Object[] {}));
+            assertEquals("foo", handler.invoke(null, hello, new Object[]{}));
             fail("Expected " + IllegalArgumentException.class.getName());
         } catch (IllegalArgumentException e) {
             // should throw
@@ -62,12 +59,11 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
-        Map<Method, InvocationChain> configs = new MethodHashMap<InvocationChain>();
+        Map<Method, SourceInvocationChain> configs = new MethodHashMap<SourceInvocationChain>();
         configs.put(hello, source);
-        WireInvocationHandler handler = new JDKInvocationHandler();
-        handler.setChains(configs);
+        WireInvocationHandler handler = new SourceInvocationHandler(configs);
         try {
-            assertEquals("foo", handler.invoke(null, hello, new Object[] {}));
+            assertEquals("foo", handler.invoke(null, hello, new Object[]{}));
             fail("Expected " + IllegalArgumentException.class.getName());
         } catch (IllegalArgumentException e) {
             // should throw
@@ -79,14 +75,13 @@ public class JDKInvocationHandlerTestCase extends TestCase {
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
-        Map<Method, InvocationChainImpl> configs = new MethodHashMap<InvocationChainImpl>();
+        Map<Method, SourceInvocationChain> configs = new MethodHashMap<SourceInvocationChain>();
         configs.put(hello, source);
-        WireInvocationHandler handler = new JDKInvocationHandler();
-        handler.setChains(configs);
-        assertEquals("foo", handler.invoke(null, hello, new Object[] { "foo" }));
+        WireInvocationHandler handler = new SourceInvocationHandler(configs);
+        assertEquals("foo", handler.invoke(null, hello, new Object[]{"foo"}));
     }
 
-    private InvocationChain getInvocationHandler(Method m) {
+    private SourceInvocationChain createChain(Method m) {
         SourceInvocationChain source = new SourceInvocationChainImpl(m);
         MockHandler sourceRequestHandler = new MockHandler();
         MockHandler sourceResponseHandler = new MockHandler();

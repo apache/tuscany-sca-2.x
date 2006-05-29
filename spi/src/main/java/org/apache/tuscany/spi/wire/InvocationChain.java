@@ -4,51 +4,28 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 /**
- * Contains a source- or target-side invocation pipeline for a service operation. The runtime framework
- * creates invocation chains on a per-operation, per-service basis. Moreover, invocation chains are further
- * distinguished by being part of the source or target sides of a wire. Chains are "bridged" together by the
- * runtime with the source-side holding references to the target.
+ * A source- or target-side invocation pipeline for a service operation. Invocation chains are associated with
+ * the source or target side of a wire and are bridged when an assembly is processed.
  * <p/>
- * <code>InvocationChain</code>s are managed by {@link SourceWire}s and {@link TargetWire}s, which are used by
- * wire factories to buildSource wires and proxies.
+ * Invocation configurations contain at least one {@link Interceptor} and may have 0 to N {@link
+ * MessageHandler}s. <code>Interceptors>/code> process invocations in a synchronous, around style manner while
+ * <code>MessageHandler</code>s do so in a one-way manner.
  * <p/>
- * Invocation configurations must contain at least one interceptor and may have 0 to N handlers. Handlers
- * process a wire request or response in a one-way fashion. A typical wire sequence where interceptors and
- * handlers are configured for both the source and target-side will proceed as follows:
- * <pre>
- * <ol>
- * <li>The first source interceptor will be called with a message, which will in
- *     turn invoke the next interceptor in the chain
- * <li>If source handlers are present, they will be invoked by passing the message to a {@link
- * MessageChannel}
- * <li>The target-side request <code>MessageChannel</code> will be invoked next
- * <li>Following the last source-side handler, the first source-side interceptor will be invoked, which in
- * turn
- * will pass the message down the target-side interceptor chain.
- * <li>After invoking the last interceptor, the chain will retrieve the {@link TargetInvoker} from the
- * message and call it to invoke the operation on a target instance.
- * <li>The response is returned up the wire stack until it reaches the source-side wire, which invokes the
- * target and source-side response channels respectively.
- * <li>The response is then passed back up the rest of the wire stack. </ol>
- * </pre>
- * <p/>
- * The source-to-target bridge may be constructed in any of the following ways:
- * <pre>
- * <ul>
- * <li>Source handler-to-target handler
- * <li>Source handler-to-target interceptor
- * <li>Source interceptor-to-target handler
- * <li>Source interceptor-to-target interceptor
- * </ul>
- * </pre>
+ * Source-side chains may only connect to target-side chains. Target-side chains may connect to other
+ * target-side chains, for example, when invoking from a {@link org.apache.tuscany.spi.context.ServiceContext}
+ * to an {@link org.apache.tuscany.spi.context.AtomicContext}.
  * <p/>
  * In some scenarios, a service proxy may only contain target-side invocaton chains, for example, when a
  * service is resolved through a locate operation by a non-component client. In this case, there will be no
  * source-side wire chains and the target invoker will be held by the target-side and passed down the
  * pipeline.
+ * <p/>
+ * A {@link Message} is used to pass data associated with an invocation through the chain.
+ * <code>Message</code>s contain a {@link TargetInvoker} responsible for dispatching to a target instance and
+ * may be cached on the client-side. Caching allows various optimizations such as avoiding target instance
+ * resolution when the client-side lifecycle scope is a shorter duration than the target.
  *
  * @version $Rev: 396284 $ $Date: 2006-04-23 08:27:42 -0700 (Sun, 23 Apr 2006) $
- * @see TargetInvoker
  */
 public interface InvocationChain {
     /**
@@ -57,12 +34,12 @@ public interface InvocationChain {
     Method getMethod();
 
     /**
-     * Adds an request handler to the invocation chain
+     * Adds a request handler to the invocation chain
      */
     void addRequestHandler(MessageHandler handler);
 
     /**
-     * Adds an response handler to the invocation chain
+     * Adds a response handler to the invocation chain
      */
     void addResponseHandler(MessageHandler handler);
 
@@ -75,6 +52,16 @@ public interface InvocationChain {
      * Returns the response handler chain
      */
     List<MessageHandler> getResponseHandlers();
+
+    /**
+     * Returns the request channel for the chain
+     */
+    public MessageChannel getRequestChannel();
+
+    /**
+     * Returns the response channel for the chain
+     */
+    public MessageChannel getResponseChannel();
 
     /**
      * Sets the target invoker to pass down the chain
@@ -92,14 +79,44 @@ public interface InvocationChain {
     void addInterceptor(Interceptor interceptor);
 
     /**
+     * Returns the first interceptor in the chain
+     */
+    Interceptor getHeadInterceptor();
+
+    /**
      * Returns the last interceptor in the chain
      */
     Interceptor getTailInterceptor();
 
     /**
-     * Returns the first interceptor in the chain
+     * Sets the head interceptor of the bridged target-side chain
      */
-    Interceptor getHeadInterceptor();
+    void setTargetInterceptor(Interceptor interceptor);
+
+    /**
+     * Returns the head interceptor of the birdged target-side chain
+     */
+    Interceptor getTargetInterceptor();
+
+    /**
+     * Sets the target-side request channel when two chains are bidged
+     */
+    void setTargetRequestChannel(MessageChannel channel);
+
+    /**
+     * Sets the target-side response channel when two chains are bridged
+     */
+    void setTargetResponseChannel(MessageChannel channel);
+
+    /**
+     * Returns the target-side request channel when two chains are bridged
+     */
+    public MessageChannel getTargetRequestChannel();
+
+    /**
+     * Returns the target-side response channel when two chains are bridged
+     */
+    public MessageChannel getTargetResponseChannel();
 
     /**
      * Signals to the chain that its configuration is complete. Implementations may use this callback to

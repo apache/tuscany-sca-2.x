@@ -16,4 +16,5 @@ public interface Connector {
 
     public <T> void connect(TargetWire<T> sourceWire, Context<?> targetContext) throws BuilderConfigException;
 
+
 }
