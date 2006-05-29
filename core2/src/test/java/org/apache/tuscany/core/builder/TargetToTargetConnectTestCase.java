@@ -212,7 +212,9 @@ public class TargetToTargetConnectTestCase extends MockObjectTestCase {
         sourceChain.build();
         targetChain.build();
         msg.setTargetInvoker(sourceChain.getTargetInvoker());
-        assertEquals(msg, sourceChain.getHeadInterceptor().invoke(msg));
+        Message response = sourceChain.getHeadInterceptor().invoke(msg);
+        sourceChain.getResponseChannel().send(msg);
+        assertEquals(msg, response);
         assertEquals(1, interceptor.getCount());
         assertEquals(1, handler.getCount());
     }
@@ -275,7 +277,9 @@ public class TargetToTargetConnectTestCase extends MockObjectTestCase {
         targetChain.build();
         msg.setTargetInvoker(sourceChain.getTargetInvoker());
         sourceChain.getRequestChannel().send(msg);
-        assertEquals(msg, msg.getRelatedCallbackMessage());
+        Message response = msg.getRelatedCallbackMessage();
+        sourceChain.getResponseChannel().send(response);
+        assertEquals(msg, response);
         assertEquals(1, interceptor.getCount());
         assertEquals(2, handler.getCount());
     }

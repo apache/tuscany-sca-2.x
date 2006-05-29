@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.apache.tuscany.core.wire.BridgingHandler;
 import org.apache.tuscany.core.wire.BridgingInterceptor;
-import org.apache.tuscany.core.wire.BridgingResponseInterceptor;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.MessageChannelImpl;
 import org.apache.tuscany.core.wire.MessageDispatcher;
@@ -209,59 +208,61 @@ public class ConnectorImpl implements Connector {
 
     public void connect(TargetInvocationChain sourceChain, TargetInvocationChain targetChain) {
         if (sourceChain.getTailInterceptor() != null) {
+            // connect the tail interceptor to a target request channel or target interceptor
             if (targetChain.getRequestHandlers() != null) {
-                MessageChannel requestChannel = new MessageChannelImpl(targetChain.getRequestHandlers());
-                MessageChannel responseChannel = new MessageChannelImpl(targetChain.getResponseHandlers());
-                sourceChain.getTailInterceptor().setNext(new RequestResponseInterceptor(null, requestChannel,
-                        null, responseChannel));
-            } else if (targetChain.getResponseHandlers() != null) {
-                if (targetChain.getHeadInterceptor() == null) {
-                    BuilderConfigException e = new BuilderConfigException("Target chain must have an interceptor");
-                    e.setIdentifier(targetChain.getMethod().getName());
-                    throw e;
-                }
-                MessageChannel responseChannel = new MessageChannelImpl(targetChain.getResponseHandlers());
-                sourceChain.getTailInterceptor().setNext(new BridgingResponseInterceptor(targetChain.getHeadInterceptor(),
-                        responseChannel));
+                MessageChannel targetRequestChannel = targetChain.getRequestChannel();
+                MessageChannel targetResponseChannel = targetChain.getResponseChannel();
+                sourceChain.setTargetRequestChannel(targetRequestChannel);
+                sourceChain.setTargetResponseChannel(targetResponseChannel);
+                sourceChain.getTailInterceptor().setNext(new RequestResponseInterceptor(null, targetRequestChannel,
+                        null, targetResponseChannel));
             } else {
-                // one interceptor, no handlers
+                // connect to target interceptor
                 if (targetChain.getHeadInterceptor() == null) {
                     BuilderConfigException e = new BuilderConfigException("Target chain must have an interceptor");
                     e.setIdentifier(targetChain.getMethod().getName());
                     throw e;
                 }
-                sourceChain.getTailInterceptor().setNext(new BridgingInterceptor(targetChain.getHeadInterceptor(),
-                        sourceChain.getResponseChannel()));
+                sourceChain.getTailInterceptor().setNext(new BridgingInterceptor(targetChain.getHeadInterceptor()));
             }
         } else {
-            // no interceptor
+            // no source interceptor
             List<MessageHandler> sourceRequestHandlers = sourceChain.getRequestHandlers();
             List<MessageHandler> targetRequestHandlers = targetChain.getRequestHandlers();
+            List<MessageHandler> targetResponseHandlers = targetChain.getResponseHandlers();
+            List<MessageHandler> sourceResponseHandlers = sourceChain.getResponseHandlers();
             if (sourceRequestHandlers != null && !sourceRequestHandlers.isEmpty()) {
+                // connect source and target side request handlers
                 if (targetRequestHandlers != null && !targetRequestHandlers.isEmpty()) {
                     sourceRequestHandlers.add(new BridgingHandler(targetRequestHandlers.get(0)));
-                } else if (targetChain.getRequestHandlers() == null) {
+                } else {
                     sourceRequestHandlers.add(new MessageDispatcher(targetChain.getHeadInterceptor()));
                 }
             } else {
-                MessageChannel requestChannel = targetChain.getRequestChannel();
-                MessageChannel responseChannel = targetChain.getResponseChannel();
-                if (requestChannel == null && responseChannel == null) {
+                // no source interceptor or request handlers
+                MessageChannel targetRequestChannel = targetChain.getRequestChannel();
+                MessageChannel targetResponseChannel = targetChain.getResponseChannel();
+                if ((targetRequestHandlers == null || targetRequestHandlers.isEmpty())
+                        && (targetResponseHandlers == null || targetResponseHandlers.isEmpty())){
+                    // no handlers on target, connect directly to head target interceptor (there must be at least one)
+                    if (targetChain.getHeadInterceptor() == null) {
+                        BuilderConfigException e = new BuilderConfigException("Target chain must have an interceptor");
+                        e.setIdentifier(targetChain.getMethod().getName());
+                        throw e;
+                    }
                     sourceChain.setTargetInterceptor(targetChain.getHeadInterceptor());
                 } else {
-                    if (requestChannel == null) {
+                    if (targetRequestChannel == null) {
                         sourceChain.setTargetInterceptor(new BridgingInterceptor(targetChain.getHeadInterceptor()));
 
                     } else {
-                        sourceChain.setTargetRequestChannel(requestChannel);
-                        sourceChain.addInterceptor(new RequestResponseInterceptor(null, requestChannel, null, responseChannel));
+                        sourceChain.setTargetRequestChannel(targetRequestChannel);
+                        sourceChain.addInterceptor(new RequestResponseInterceptor(null, targetRequestChannel, null, targetResponseChannel));
                     }
-                    sourceChain.setTargetResponseChannel(responseChannel);
+                    sourceChain.setTargetResponseChannel(targetResponseChannel);
                 }
             }
-
-            List<MessageHandler> sourceResponseHandlers = sourceChain.getResponseHandlers();
-            List<MessageHandler> targetResponseHandlers = targetChain.getResponseHandlers();
+            // bridge response handlers
             if (sourceResponseHandlers != null && !sourceResponseHandlers.isEmpty()) {
                 if (targetResponseHandlers != null && !targetResponseHandlers.isEmpty()) {
                     sourceResponseHandlers.add(new BridgingHandler(targetResponseHandlers.get(0)));
