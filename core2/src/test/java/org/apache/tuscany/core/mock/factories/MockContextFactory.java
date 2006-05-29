@@ -15,17 +15,17 @@ import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.core.system.context.SystemAtomicContextImpl;
-import org.apache.tuscany.core.system.wire.SystemSourceWire;
-import org.apache.tuscany.core.system.wire.SystemTargetWire;
+import org.apache.tuscany.core.system.wire.SystemReferenceWire;
+import org.apache.tuscany.core.system.wire.SystemServiceWire;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
-import org.apache.tuscany.core.wire.jdk.JDKTargetWire;
+import org.apache.tuscany.core.wire.ServiceInvocationChainImpl;
+import org.apache.tuscany.core.wire.jdk.JDKServiceWire;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.ServiceInvocationChain;
+import org.apache.tuscany.spi.wire.ServiceWire;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 
@@ -87,11 +87,11 @@ public class MockContextFactory {
         members.put(setter.getName(), setter);
         SystemAtomicContext sourceCtx = createSystemAtomicContext(source, sourceScopeCtx, sourceInterfaces, sourceClass, null, members);//, sourceEager, sourceInitInvoker, sourceDestroyInvoker, injectors);
         QualifiedName targetName = new QualifiedName(target);
-        SystemSourceWire wire = new SystemSourceWire(setter.getName(), targetName, targetClass);
-        TargetWire targetWire = new SystemTargetWire(targetName.getPortName(), targetClass, targetCtx);
-        wire.setTargetWire(targetWire);
+        SystemReferenceWire wire = new SystemReferenceWire(setter.getName(), targetName, targetClass);
+        ServiceWire serviceWire = new SystemServiceWire(targetName.getPortName(), targetClass, targetCtx);
+        wire.setTargetWire(serviceWire);
 
-        sourceCtx.addSourceWire(wire);
+        sourceCtx.addReferenceWire(wire);
         contexts.put(source, sourceCtx);
         contexts.put(target, targetCtx);
         return contexts;
@@ -153,19 +153,19 @@ public class MockContextFactory {
         return new SystemAtomicContextImpl(name, null, scopeContext, serviceInterfaces, createObjectFactory(clazz), eagerInit, initInvoker, destroyInvoker, injectors, members);
     }
 
-    public static <T> TargetWire<T> createTargetWireFactory(String serviceName, Class<T> interfaze) {
-        TargetWire<T> wire = new JDKTargetWire<T>();
+    public static <T> ServiceWire<T> createTargetWireFactory(String serviceName, Class<T> interfaze) {
+        ServiceWire<T> wire = new JDKServiceWire<T>();
         wire.setServiceName(serviceName);
         wire.setBusinessInterface(interfaze);
         wire.addInvocationChains(createTargetInvocationConfigurations(interfaze));
         return wire;
     }
 
-    public static Map<Method, TargetInvocationChain> createTargetInvocationConfigurations(Class<?> interfaze) {
-        Map<Method, TargetInvocationChain> invocations = new MethodHashMap<TargetInvocationChain>();
+    public static Map<Method, ServiceInvocationChain> createTargetInvocationConfigurations(Class<?> interfaze) {
+        Map<Method, ServiceInvocationChain> invocations = new MethodHashMap<ServiceInvocationChain>();
         Method[] methods = interfaze.getMethods();
         for (Method method : methods) {
-            TargetInvocationChain iConfig = new TargetInvocationChainImpl(method);
+            ServiceInvocationChain iConfig = new ServiceInvocationChainImpl(method);
             // add tail interceptor
             iConfig.addInterceptor(new InvokerInterceptor());
             invocations.put(method, iConfig);

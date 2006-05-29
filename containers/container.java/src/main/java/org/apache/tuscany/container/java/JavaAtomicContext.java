@@ -31,7 +31,7 @@ import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.TargetNotFoundException;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.ServiceWire;
 
 /**
  * Provides a runtime context for Java component implementations
@@ -56,7 +56,7 @@ public class JavaAtomicContext<T> extends PojoAtomicContext<T> {
     }
 
     public Object getService(String name) throws TargetException {
-        TargetWire<?> wire = targetWires.get(name);
+        ServiceWire<?> wire = serviceWires.get(name);
         if (wire == null){
             TargetNotFoundException e = new TargetNotFoundException(name);
             e.addContextName(getName());

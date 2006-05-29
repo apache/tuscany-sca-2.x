@@ -7,7 +7,7 @@ import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.container.java.mock.components.TargetImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.ServiceWire;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
@@ -22,12 +22,12 @@ public class GetServiceByNameTestCase extends MockObjectTestCase {
         final JavaAtomicContext<?> context =
                 MockContextFactory.createJavaAtomicContext("target", scope, TargetImpl.class, Target.class, Scope.MODULE);
 
-        Mock mock = mock(TargetWire.class);
+        Mock mock = mock(ServiceWire.class);
         mock.stubs().method("getServiceName").will(returnValue("Target"));
         mock.stubs().method("getInvocationChains").will(returnValue(Collections.emptyMap()));
 
-        TargetWire<Target> wire = (TargetWire<Target>) mock.proxy();
-        context.addTargetWire(wire);
+        ServiceWire<Target> wire = (ServiceWire<Target>) mock.proxy();
+        context.addServiceWire(wire);
         context.prepare();
         context.start();
 

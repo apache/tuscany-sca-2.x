@@ -14,8 +14,8 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Reference;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Service;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.ServiceInvocationChain;
+import org.apache.tuscany.spi.wire.ServiceWire;
 import org.springframework.context.support.GenericApplicationContext;
 
 /**
@@ -39,8 +39,8 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
                         (BoundService<? extends Binding>) service,
                         deploymentContext);
                 // wire service to bean invokers
-                TargetWire<?> wire = childContext.getTargetWire();
-                for (TargetInvocationChain chain : wire.getInvocationChains().values()) {
+                ServiceWire<?> wire = childContext.getTargetWire();
+                for (ServiceInvocationChain chain : wire.getInvocationChains().values()) {
                     String beanName = wire.getServiceName();
                     chain.setTargetInvoker(context.createTargetInvoker(beanName, chain.getMethod()));
                 }

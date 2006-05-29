@@ -12,11 +12,11 @@ import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.MessageChannelImpl;
-import org.apache.tuscany.core.wire.SourceInvocationChainImpl;
-import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
-import org.apache.tuscany.spi.wire.SourceInvocationChain;
-import org.apache.tuscany.spi.wire.SourceInvocationHandler;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
+import org.apache.tuscany.core.wire.ReferenceInvocationChainImpl;
+import org.apache.tuscany.core.wire.ServiceInvocationChainImpl;
+import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
+import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
+import org.apache.tuscany.spi.wire.ServiceInvocationChain;
 
 public class JDKSourceInvocationHandlerTestCase extends TestCase {
 
@@ -35,16 +35,16 @@ public class JDKSourceInvocationHandlerTestCase extends TestCase {
     }
 
     public void testBasicInvoke() throws Throwable {
-        Map<Method, SourceInvocationChain> configs = new MethodHashMap<SourceInvocationChain>();
+        Map<Method, ReferenceInvocationChain> configs = new MethodHashMap<ReferenceInvocationChain>();
         configs.put(hello, createChain(hello));
-        SourceInvocationHandler handler = new SourceInvocationHandler(configs);
+        ReferenceInvocationHandler handler = new ReferenceInvocationHandler(configs);
         assertEquals("foo", handler.invoke(null, hello, new Object[]{"foo"}));
     }
 
     public void testErrorInvoke() throws Throwable {
-        Map<Method, SourceInvocationChain> configs = new MethodHashMap<SourceInvocationChain>();
+        Map<Method, ReferenceInvocationChain> configs = new MethodHashMap<ReferenceInvocationChain>();
         configs.put(hello, createChain(hello));
-        SourceInvocationHandler handler = new SourceInvocationHandler(configs);
+        ReferenceInvocationHandler handler = new ReferenceInvocationHandler(configs);
         try {
             assertEquals("foo", handler.invoke(null, hello, new Object[]{}));
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -54,13 +54,13 @@ public class JDKSourceInvocationHandlerTestCase extends TestCase {
     }
 
     public void testDirectErrorInvoke() throws Throwable {
-        SourceInvocationChainImpl source = new SourceInvocationChainImpl(hello);
+        ReferenceInvocationChainImpl source = new ReferenceInvocationChainImpl(hello);
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
-        Map<Method, SourceInvocationChain> configs = new MethodHashMap<SourceInvocationChain>();
+        Map<Method, ReferenceInvocationChain> configs = new MethodHashMap<ReferenceInvocationChain>();
         configs.put(hello, source);
-        SourceInvocationHandler handler = new SourceInvocationHandler(configs);
+        ReferenceInvocationHandler handler = new ReferenceInvocationHandler(configs);
         try {
             assertEquals("foo", handler.invoke(null, hello, new Object[]{}));
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -70,18 +70,18 @@ public class JDKSourceInvocationHandlerTestCase extends TestCase {
     }
 
     public void testDirectInvoke() throws Throwable {
-        SourceInvocationChainImpl source = new SourceInvocationChainImpl(hello);
+        ReferenceInvocationChainImpl source = new ReferenceInvocationChainImpl(hello);
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
-        Map<Method, SourceInvocationChain> configs = new MethodHashMap<SourceInvocationChain>();
+        Map<Method, ReferenceInvocationChain> configs = new MethodHashMap<ReferenceInvocationChain>();
         configs.put(hello, source);
-        SourceInvocationHandler handler = new SourceInvocationHandler(configs);
+        ReferenceInvocationHandler handler = new ReferenceInvocationHandler(configs);
         assertEquals("foo", handler.invoke(null, hello, new Object[]{"foo"}));
     }
 
-    private SourceInvocationChain createChain(Method m) {
-        SourceInvocationChain source = new SourceInvocationChainImpl(m);
+    private ReferenceInvocationChain createChain(Method m) {
+        ReferenceInvocationChain source = new ReferenceInvocationChainImpl(m);
         MockHandler sourceRequestHandler = new MockHandler();
         MockHandler sourceResponseHandler = new MockHandler();
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
@@ -89,7 +89,7 @@ public class JDKSourceInvocationHandlerTestCase extends TestCase {
         source.addResponseHandler(sourceResponseHandler);
         source.addInterceptor(sourceInterceptor);
 
-        TargetInvocationChain target = new TargetInvocationChainImpl(m);
+        ServiceInvocationChain target = new ServiceInvocationChainImpl(m);
         MockHandler targetRequestHandler = new MockHandler();
         MockHandler targetResponseHandler = new MockHandler();
         MockSyncInterceptor targetInterceptor = new MockSyncInterceptor();

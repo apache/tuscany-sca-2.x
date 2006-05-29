@@ -23,7 +23,7 @@ public class SystemReferenceContextImpl<T> extends ReferenceContextExtension<T> 
     }
 
     public T getService() throws TargetException {
-        return referenceInterface.cast(targetWire.getTargetService());
+        return referenceInterface.cast(serviceWire.getTargetService());
     }
 
     public WireInvocationHandler getHandler() throws TargetException {

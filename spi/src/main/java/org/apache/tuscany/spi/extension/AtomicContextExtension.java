@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.wire.TargetWire;
-import org.apache.tuscany.spi.wire.SourceWire;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
+import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.ReferenceWire;
+import org.apache.tuscany.spi.wire.ServiceInvocationChain;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ScopeContext;
@@ -26,8 +26,8 @@ public abstract class AtomicContextExtension<T> extends AbstractContext<T> imple
 
     protected ScopeContext scopeContext;
     protected Scope scope;
-    protected Map<String, TargetWire> targetWires = new HashMap<String, TargetWire>();
-    protected Map<String, List<SourceWire>> sourceWires = new HashMap<String,List<SourceWire>>();
+    protected Map<String, ServiceWire> serviceWires = new HashMap<String, ServiceWire>();
+    protected Map<String, List<ReferenceWire>> referenceWires = new HashMap<String,List<ReferenceWire>>();
 
     protected AtomicContextExtension(String name, CompositeContext<?> parent, ScopeContext scopeContext) {
         super(name, parent);
@@ -55,50 +55,49 @@ public abstract class AtomicContextExtension<T> extends AbstractContext<T> imple
 
     }
 
-    public void addTargetWire(TargetWire wire) {
-        targetWires.put(wire.getServiceName(), wire);
-        onTargetWire(wire);
+    public void addServiceWire(ServiceWire wire) {
+        serviceWires.put(wire.getServiceName(), wire);
+        onServiceWire(wire);
     }
 
-    public TargetWire getTargetWire(String serviceName) {
+    public ServiceWire getServiceWire(String serviceName) {
         if (serviceName == null) {
-            return targetWires.values().iterator().next();
+            return serviceWires.values().iterator().next();
         } else {
-            return targetWires.get(serviceName);
+            return serviceWires.get(serviceName);
         }
     }
 
-    public void addSourceWire(SourceWire wire) {
-        List<SourceWire> list = new ArrayList<SourceWire>();
+    public void addReferenceWire(ReferenceWire wire) {
+        List<ReferenceWire> list = new ArrayList<ReferenceWire>();
         list.add(wire);
-        sourceWires.put(wire.getReferenceName(), list);
-        onSourceWire(wire);
+        referenceWires.put(wire.getReferenceName(), list);
+        onReferenceWire(wire);
     }
 
-    public Map<String,List<SourceWire>> getSourceWires() {
-        return sourceWires;
+    public Map<String,List<ReferenceWire>> getReferenceWires() {
+        return referenceWires;
     }
 
-    public void addSourceWires(Class<?> multiplicityClass, List<SourceWire> wires) {
+    public void addReferenceWires(Class<?> multiplicityClass, List<ReferenceWire> wires) {
         assert(wires != null && wires.size() > 0);
-        sourceWires.put(wires.get(0).getReferenceName(), wires);
-        onSourceWires(multiplicityClass, wires);
+        referenceWires.put(wires.get(0).getReferenceName(), wires);
+        onReferenceWires(multiplicityClass, wires);
     }
 
     public void prepare() {
-        for (TargetWire<T> targetWire : targetWires.values()) {
-            for (TargetInvocationChain chain : targetWire.getInvocationChains().values()) {
-                chain.setTargetInvoker(createTargetInvoker(targetWire.getServiceName(), chain.getMethod()));
+        for (ServiceWire<T> serviceWire : serviceWires.values()) {
+            for (ServiceInvocationChain chain : serviceWire.getInvocationChains().values()) {
+                chain.setTargetInvoker(createTargetInvoker(serviceWire.getServiceName(), chain.getMethod()));
                 chain.build();
             }
         }
     }
 
-    protected void onSourceWire(SourceWire wire){}
+    protected void onReferenceWire(ReferenceWire wire){}
 
-    protected void onSourceWires(Class<?> multiplicityClass, List<SourceWire> wires){}
+    protected void onReferenceWires(Class<?> multiplicityClass, List<ReferenceWire> wires){}
 
-    protected void onTargetWire(TargetWire wire){}
-
+    protected void onServiceWire(ServiceWire wire){}
 
 }

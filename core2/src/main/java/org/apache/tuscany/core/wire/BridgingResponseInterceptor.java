@@ -5,7 +5,7 @@ import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageChannel;
 
 /**
- * Bridges between two {@link org.apache.tuscany.spi.wire.TargetInvocationChain}s where the destination chain
+ * Bridges between two {@link org.apache.tuscany.spi.wire.ServiceInvocationChain}s where the destination chain
  * has an interceptor and response handler chain but no request handlers
  * 
  * @version $$Rev$$ $$Date$$

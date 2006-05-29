@@ -22,8 +22,8 @@ import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.SourceInvocationChain;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
+import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
+import org.apache.tuscany.spi.wire.ServiceInvocationChain;
 import org.apache.tuscany.spi.wire.MessageImpl;
 
 public class InvocationConfigurationTestCase extends TestCase {
@@ -47,7 +47,7 @@ public class InvocationConfigurationTestCase extends TestCase {
      * Tests basic wiring of a source to a target, including handlers and interceptors
      */
     public void testInvokeWithHandlers() throws Exception {
-        SourceInvocationChain source = new SourceInvocationChainImpl(hello);
+        ReferenceInvocationChain source = new ReferenceInvocationChainImpl(hello);
         MockHandler sourceRequestHandler = new MockHandler();
         MockHandler sourceResponseHandler = new MockHandler();
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
@@ -55,7 +55,7 @@ public class InvocationConfigurationTestCase extends TestCase {
         source.addResponseHandler(sourceResponseHandler);
         source.addInterceptor(sourceInterceptor);
 
-        TargetInvocationChain target = new TargetInvocationChainImpl(hello);
+        ServiceInvocationChain target = new ServiceInvocationChainImpl(hello);
         MockHandler targetRequestHandler = new MockHandler();
         MockHandler targetResponseHandler = new MockHandler();
         MockSyncInterceptor targetInterceptor = new MockSyncInterceptor();
@@ -86,13 +86,13 @@ public class InvocationConfigurationTestCase extends TestCase {
     }
 
     public void testInvokeWithRequestHandlers() throws Exception {
-        SourceInvocationChain source = new SourceInvocationChainImpl(hello);
+        ReferenceInvocationChain source = new ReferenceInvocationChainImpl(hello);
         MockHandler sourceRequestHandler = new MockHandler();
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addRequestHandler(sourceRequestHandler);
         source.addInterceptor(sourceInterceptor);
 
-        TargetInvocationChain target = new TargetInvocationChainImpl(hello);
+        ServiceInvocationChain target = new ServiceInvocationChainImpl(hello);
         MockHandler targetRequestHandler = new MockHandler();
         MockSyncInterceptor targetInterceptor = new MockSyncInterceptor();
         target.addRequestHandler(targetRequestHandler);
@@ -122,11 +122,11 @@ public class InvocationConfigurationTestCase extends TestCase {
      * Tests basic wiring of a source to a target, including handlers and interceptors
      */
     public void testInvokeWithInterceptorsOnly() throws Exception {
-        SourceInvocationChain source = new SourceInvocationChainImpl(hello);
+        ReferenceInvocationChain source = new ReferenceInvocationChainImpl(hello);
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addInterceptor(sourceInterceptor);
 
-        TargetInvocationChain target = new TargetInvocationChainImpl(hello);
+        ServiceInvocationChain target = new ServiceInvocationChainImpl(hello);
         MockSyncInterceptor targetInterceptor = new MockSyncInterceptor();
         target.addInterceptor(targetInterceptor);
         target.addInterceptor(new InvokerInterceptor());

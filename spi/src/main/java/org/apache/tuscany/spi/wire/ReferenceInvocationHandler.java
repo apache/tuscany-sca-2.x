@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.context.TargetException;
  *
  * @version $Rev: 406016 $ $Date: 2006-05-12 22:45:22 -0700 (Fri, 12 May 2006) $
  */
-public class SourceInvocationHandler implements WireInvocationHandler, InvocationHandler {
+public class ReferenceInvocationHandler implements WireInvocationHandler, InvocationHandler {
 
     /*
      * an association of an operation to chain holder. The holder contains the master wire chain
@@ -40,9 +40,9 @@ public class SourceInvocationHandler implements WireInvocationHandler, Invocatio
      */
     private Map<Method, ChainHolder> chains;
 
-    public SourceInvocationHandler(Map<Method, SourceInvocationChain> invocationChains) {
+    public ReferenceInvocationHandler(Map<Method, ReferenceInvocationChain> invocationChains) {
         this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
-        for (Map.Entry<Method, SourceInvocationChain> entry : invocationChains.entrySet()) {
+        for (Map.Entry<Method, ReferenceInvocationChain> entry : invocationChains.entrySet()) {
             this.chains.put(entry.getKey(), new ChainHolder(entry.getValue()));
         }
     }
@@ -58,7 +58,7 @@ public class SourceInvocationHandler implements WireInvocationHandler, Invocatio
             e.setIdentifier(method.getName());
             throw e;
         }
-        SourceInvocationChain chain = holder.chain;
+        ReferenceInvocationChain chain = holder.chain;
         if (chain != null) {
             headInterceptor = chain.getHeadInterceptor();
         }
@@ -118,10 +118,10 @@ public class SourceInvocationHandler implements WireInvocationHandler, Invocatio
      */
     private class ChainHolder {
 
-        SourceInvocationChain chain;
+        ReferenceInvocationChain chain;
         TargetInvoker cachedInvoker;
 
-        public ChainHolder(SourceInvocationChain config) {
+        public ChainHolder(ReferenceInvocationChain config) {
             this.chain = config;
         }
 

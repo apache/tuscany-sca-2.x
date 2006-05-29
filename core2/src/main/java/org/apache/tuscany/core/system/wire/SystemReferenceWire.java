@@ -6,22 +6,22 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.wire.SourceInvocationChain;
-import org.apache.tuscany.spi.wire.SourceWire;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
+import org.apache.tuscany.spi.wire.ReferenceWire;
+import org.apache.tuscany.spi.wire.ServiceWire;
 
 /**
  * The source side of a wire configured to use the {@link org.apache.tuscany.core.system.model.SystemBinding}
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemSourceWire<T> implements SourceWire<T> {
+public class SystemReferenceWire<T> implements ReferenceWire<T> {
     private String referenceName;
     private QualifiedName targetName;
     private Class<T> businessInterface;
-    private TargetWire<T> targetWire;
+    private ServiceWire<T> serviceWire;
 
-    public SystemSourceWire(String referenceName, QualifiedName targetName, Class<T> businessInterface) {
+    public SystemReferenceWire(String referenceName, QualifiedName targetName, Class<T> businessInterface) {
         this.referenceName = referenceName;
         this.targetName = targetName;
         this.businessInterface = businessInterface;
@@ -44,10 +44,10 @@ public class SystemSourceWire<T> implements SourceWire<T> {
     }
 
     public T getTargetService() throws TargetException {
-        if (targetWire == null) {
+        if (serviceWire == null) {
             throw new TargetException("No target wire connected to source wire");
         }
-        return targetWire.getTargetService();
+        return serviceWire.getTargetService();
     }
 
     public Class<T> getBusinessInterface() {
@@ -62,11 +62,11 @@ public class SystemSourceWire<T> implements SourceWire<T> {
         return new Class[0];
     }
 
-    public Map<Method, SourceInvocationChain> getInvocationChains() {
+    public Map<Method, ReferenceInvocationChain> getInvocationChains() {
         return Collections.emptyMap();
     }
 
-    public void addInvocationChain(Method method, SourceInvocationChain chains) {
+    public void addInvocationChain(Method method, ReferenceInvocationChain chains) {
         throw new UnsupportedOperationException();
     }
 
@@ -78,8 +78,8 @@ public class SystemSourceWire<T> implements SourceWire<T> {
         throw new UnsupportedOperationException();
     }
 
-    public void setTargetWire(TargetWire<T> wire) {
-        targetWire = wire;
+    public void setTargetWire(ServiceWire<T> wire) {
+        serviceWire = wire;
     }
 
     public boolean isOptimizable() {

@@ -2,7 +2,7 @@ package org.apache.tuscany.spi.policy;
 
 import org.apache.tuscany.spi.model.Reference;
 import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.ReferenceWire;
 
 /**
  * Implementations contribute {@link org.apache.tuscany.spi.wire.Interceptor}s or {@link
@@ -12,6 +12,6 @@ import org.apache.tuscany.spi.wire.SourceWire;
  */
 public interface SourcePolicyBuilder {
 
-    public void build(Reference reference, SourceWire wire) throws BuilderException;
+    public void build(Reference reference, ReferenceWire wire) throws BuilderException;
 
 }

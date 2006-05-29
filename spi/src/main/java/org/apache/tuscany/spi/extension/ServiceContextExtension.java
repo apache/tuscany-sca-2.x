@@ -6,8 +6,8 @@ import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.TargetInvocationHandler;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.ServiceInvocationHandler;
+import org.apache.tuscany.spi.wire.ServiceWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
@@ -17,40 +17,40 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  */
 public class ServiceContextExtension<T> extends AbstractContext<T> implements ServiceContext<T> {
 
-    protected TargetWire<T> targetWire;
+    protected ServiceWire<T> serviceWire;
     private T target;
 
-    public ServiceContextExtension(String name, TargetWire<T> wire, CompositeContext parent) throws CoreRuntimeException {
+    public ServiceContextExtension(String name, ServiceWire<T> wire, CompositeContext parent) throws CoreRuntimeException {
         super(name, parent);
-        this.targetWire = wire;
+        this.serviceWire = wire;
     }
 
     public Scope getScope() {
         return Scope.COMPOSITE;
     }
 
-    public TargetWire<T> getTargetWire() {
-        return targetWire;
+    public ServiceWire<T> getTargetWire() {
+        return serviceWire;
     }
 
-    public void setTargetWire(TargetWire<T> wire) {
+    public void setTargetWire(ServiceWire<T> wire) {
         target = null;
-        targetWire = wire;
+        serviceWire = wire;
     }
 
     public T getService() throws TargetException {
         if (target == null) {
-            target = targetWire.getTargetService();
+            target = serviceWire.getTargetService();
         }
         return target;
     }
 
     public WireInvocationHandler getHandler() {
-        return new TargetInvocationHandler(targetWire.getInvocationChains());
+        return new ServiceInvocationHandler(serviceWire.getInvocationChains());
     }
 
     public Class<T> getInterface() {
-        return targetWire.getBusinessInterface();
+        return serviceWire.getBusinessInterface();
     }
 
 }

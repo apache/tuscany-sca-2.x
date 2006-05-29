@@ -18,19 +18,19 @@ import java.util.ArrayList;
 
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
-import org.apache.tuscany.spi.wire.SourceInvocationChain;
+import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
 
 /**
  * Contains a source-side invocation pipeline for a service operation.
  *
  * @version $Rev: 394379 $ $Date: 2006-04-15 15:01:36 -0700 (Sat, 15 Apr 2006) $
  */
-public class SourceInvocationChainImpl extends InvocationChainImpl implements SourceInvocationChain {
+public class ReferenceInvocationChainImpl extends InvocationChainImpl implements ReferenceInvocationChain {
 
     /**
      * Creates an new source wire configuration
      */
-    public SourceInvocationChainImpl(Method operation) {
+    public ReferenceInvocationChainImpl(Method operation) {
         super(operation);
     }
 

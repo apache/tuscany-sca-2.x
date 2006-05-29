@@ -1,16 +1,9 @@
 package org.apache.tuscany.core.system.context;
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.tuscany.core.context.AbstractCompositeContext;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.context.AutowireResolutionException;
 import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.SourceWire;
-import org.apache.tuscany.spi.wire.TargetWire;
 
 /**
  * Implements an composite context for system components. In addition, it implements an autowire policy A

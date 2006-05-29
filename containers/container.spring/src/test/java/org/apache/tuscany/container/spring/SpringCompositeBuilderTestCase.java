@@ -13,7 +13,7 @@ import org.apache.tuscany.spi.extension.ServiceContextExtension;
 import org.apache.tuscany.spi.model.BoundService;
 import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.ServiceWire;
 import org.apache.tuscany.test.ArtifactFactory;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
@@ -35,7 +35,7 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
         Component<SpringImplementation> component = new Component<SpringImplementation>("spring", impl);
         Mock mock = mock(BuilderRegistry.class);
         ServiceContextExtension<TestBean> serviceContext = new ServiceContextExtension<TestBean>("fooService", null, null);
-        TargetWire<TestBean> wire = ArtifactFactory.createTargetWire("foo", TestBean.class);
+        ServiceWire<TestBean> wire = ArtifactFactory.createTargetWire("foo", TestBean.class);
         wire.setServiceName("foo");
         serviceContext.setTargetWire(wire);
         mock.expects(atLeastOnce()).method("build").will(returnValue(serviceContext));

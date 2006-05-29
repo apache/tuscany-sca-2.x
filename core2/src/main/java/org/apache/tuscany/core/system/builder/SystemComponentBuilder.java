@@ -15,9 +15,9 @@ import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.core.system.context.SystemAtomicContextImpl;
 import org.apache.tuscany.core.system.model.SystemImplementation;
-import org.apache.tuscany.core.system.wire.SystemSourceAutowire;
-import org.apache.tuscany.core.system.wire.SystemSourceWire;
-import org.apache.tuscany.core.system.wire.SystemTargetWire;
+import org.apache.tuscany.core.system.wire.SystemReferenceAutowire;
+import org.apache.tuscany.core.system.wire.SystemReferenceWire;
+import org.apache.tuscany.core.system.wire.SystemServiceWire;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.ReferenceTarget;
@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.ReferenceWire;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -85,8 +85,8 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
 
         for (Service service : component.getImplementation().getComponentType().getServices().values()) {
             Class interfaze = service.getServiceContract().getInterfaceClass();
-            SystemTargetWire wire = new SystemTargetWire(service.getName(), interfaze, systemContext);
-            systemContext.addTargetWire(wire);
+            SystemServiceWire wire = new SystemServiceWire(service.getName(), interfaze, systemContext);
+            systemContext.addServiceWire(wire);
         }
         for (ReferenceTarget target : component.getReferenceTargets().values()) {
             String referenceName = target.getReferenceName();
@@ -99,16 +99,16 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
                 e.addContextName(parent.getName());
                 throw e;
             }
-            SourceWire<?> wire;
+            ReferenceWire<?> wire;
             if (target.getReference().isAutowire()) {
-                wire = new SystemSourceAutowire(referenceName, interfaze, autowireContext);
+                wire = new SystemReferenceAutowire(referenceName, interfaze, autowireContext);
             } else {
                 //FIXME support multiplicity!
                 assert(target.getTargets().size() == 1): "Multiplicity not yet implemented";
                 QualifiedName targetName = new QualifiedName(target.getTargets().get(0).getPath());
-                wire = new SystemSourceWire(referenceName, targetName, interfaze);
+                wire = new SystemReferenceWire(referenceName, targetName, interfaze);
             }
-            systemContext.addSourceWire(wire);
+            systemContext.addReferenceWire(wire);
         }
         return systemContext;
     }

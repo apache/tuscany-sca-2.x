@@ -6,20 +6,20 @@ import java.util.Map;
 
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.ServiceInvocationChain;
+import org.apache.tuscany.spi.wire.ServiceWire;
 
 /**
  * The target side of an wire configured to autowire
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemTargetAutowire<T> implements TargetWire<T> {
+public class SystemServiceAutowire<T> implements ServiceWire<T> {
 
     private Class<T> businessInterface;
     private AutowireContext<?> context;
 
-    public SystemTargetAutowire(Class<T> businessInterface, AutowireContext context) {
+    public SystemServiceAutowire(Class<T> businessInterface, AutowireContext context) {
         this.businessInterface = businessInterface;
         this.context = context;
     }
@@ -47,11 +47,11 @@ public class SystemTargetAutowire<T> implements TargetWire<T> {
         return new Class[0];
     }
 
-    public Map<Method, TargetInvocationChain> getInvocationChains() {
+    public Map<Method, ServiceInvocationChain> getInvocationChains() {
         return Collections.emptyMap();
     }
 
-    public void addInvocationChain(Method method, TargetInvocationChain chain) {
+    public void addInvocationChain(Method method, ServiceInvocationChain chain) {
         throw new UnsupportedOperationException();
     }
 
@@ -67,7 +67,7 @@ public class SystemTargetAutowire<T> implements TargetWire<T> {
         return true;  // system wires are always optimizable
     }
 
-    public void setTargetWire(TargetWire<T> wire) {
+    public void setTargetWire(ServiceWire<T> wire) {
         throw new UnsupportedOperationException(""); // FIXME not implemented
     }
 

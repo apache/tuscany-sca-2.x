@@ -1,9 +1,8 @@
 package org.apache.tuscany.spi.context;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.ServiceWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
@@ -27,7 +26,7 @@ public interface ReferenceContext<T> extends Context<T> {
      */
     public WireInvocationHandler getHandler() throws TargetException;
 
-    public TargetWire<T> getTargetWire();
+    public ServiceWire<T> getTargetWire();
 
     /**
      * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to a service

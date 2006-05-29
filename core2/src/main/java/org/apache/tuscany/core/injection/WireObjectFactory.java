@@ -2,7 +2,7 @@ package org.apache.tuscany.core.injection;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.ReferenceWire;
 
 /**
  * Uses a wire to return an object instance
@@ -11,9 +11,9 @@ import org.apache.tuscany.spi.wire.SourceWire;
  */
 public class WireObjectFactory implements ObjectFactory {
 
-    private SourceWire factory;
+    private ReferenceWire factory;
 
-    public WireObjectFactory(SourceWire factory) {
+    public WireObjectFactory(ReferenceWire factory) {
         this.factory = factory;
     }
 

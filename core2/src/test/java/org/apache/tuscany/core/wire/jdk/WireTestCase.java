@@ -17,18 +17,18 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.SourceInvocationChainImpl;
-import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
+import org.apache.tuscany.core.wire.ReferenceInvocationChainImpl;
+import org.apache.tuscany.core.wire.ServiceInvocationChainImpl;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 
-public class JDKWireFactoryServiceTestCase extends TestCase {
+public class WireTestCase extends TestCase {
 
     private Method hello;
 
-    public JDKWireFactoryServiceTestCase(String arg0) {
+    public WireTestCase(String arg0) {
         super(arg0);
     }
 
@@ -36,32 +36,32 @@ public class JDKWireFactoryServiceTestCase extends TestCase {
         hello = SimpleTarget.class.getMethod("hello", String.class);
     }
 
-    public void testSourceWireFactory() throws Exception {
-        SourceInvocationChainImpl source = new SourceInvocationChainImpl(hello);
+    public void testReferenceWire() throws Exception {
+        ReferenceInvocationChainImpl source = new ReferenceInvocationChainImpl(hello);
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addInterceptor(sourceInterceptor);
         source.setTargetInterceptor(new InvokerInterceptor());
         source.setTargetInvoker(new MockStaticInvoker(hello, new SimpleTargetImpl()));
         source.build();
-        JDKSourceWire<SimpleTarget> factory = new JDKSourceWire<SimpleTarget>();
-        factory.setReferenceName("foo");
-        factory.addInvocationChain(hello, source);
-        factory.setBusinessInterface(SimpleTarget.class);
-        SimpleTarget instance = factory.getTargetService();
+        JDKReferenceWire<SimpleTarget> wire = new JDKReferenceWire<SimpleTarget>();
+        wire.setReferenceName("foo");
+        wire.addInvocationChain(hello, source);
+        wire.setBusinessInterface(SimpleTarget.class);
+        SimpleTarget instance = wire.getTargetService();
         assertEquals("foo", instance.hello("foo"));
     }
 
-    public void testTargetWireFactory() throws Exception {
-        TargetInvocationChainImpl source = new TargetInvocationChainImpl(hello);
+    public void testServiceWire() throws Exception {
+        ServiceInvocationChainImpl chain = new ServiceInvocationChainImpl(hello);
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
-        source.addInterceptor(sourceInterceptor);
-        source.addInterceptor(new InvokerInterceptor());
-        source.setTargetInvoker(new MockStaticInvoker(hello, new SimpleTargetImpl()));
-        source.build();
-        JDKTargetWire<SimpleTarget> factory = new JDKTargetWire<SimpleTarget>();
-        factory.addInvocationChain(hello, source);
-        factory.setBusinessInterface(SimpleTarget.class);
-        SimpleTarget instance = factory.getTargetService();
+        chain.addInterceptor(sourceInterceptor);
+        chain.addInterceptor(new InvokerInterceptor());
+        chain.setTargetInvoker(new MockStaticInvoker(hello, new SimpleTargetImpl()));
+        chain.build();
+        JDKServiceWire<SimpleTarget> wire = new JDKServiceWire<SimpleTarget>();
+        wire.addInvocationChain(hello, chain);
+        wire.setBusinessInterface(SimpleTarget.class);
+        SimpleTarget instance = wire.getTargetService();
         assertEquals("foo", instance.hello("foo"));
     }
 }

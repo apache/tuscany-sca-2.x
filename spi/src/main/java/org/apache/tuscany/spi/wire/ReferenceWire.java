@@ -16,27 +16,38 @@ package org.apache.tuscany.spi.wire;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
 
 /**
- * Implementations are responsible for managing the target side of a wire, including the invocation chains
- * associated with each service operation. A <Code>TargetWire</code> can be connected to another
- * <code>TargetWire</code> when connecting a {@link org.apache.tuscany.spi.context.ServiceContext} to an
- * {@link org.apache.tuscany.spi.context.AtomicContext} or a {@link org.apache.tuscany.spi.context.ReferenceContext}.
+ * Implementations are responsible for managing the reference side of a wire, including the invocation chains
+ * associated with each service operation.  A <code>ReferenceWire</code> is connected to a {@link ServiceWire}
+ * through their invocation chains.
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface TargetWire<T> {
+public interface ReferenceWire<T> {
 
     /**
-     * Returns the name of the target service of the wire
+     * Returns the name of the source reference
      */
-    String getServiceName();
+    String getReferenceName();
 
     /**
-     * Sets the name of the target service of the wire
+     * Sets the name of the source reference
      */
-    void setServiceName(String name);
+    void setReferenceName(String name);
+
+    /**
+     * Returns the name of the target
+     */
+    QualifiedName getTargetName();
+
+    /**
+     * Sets the name of the target
+     */
+    void setTargetName(QualifiedName name);
+
 
     /**
      * Returns a proxy or the target instance for this wire
@@ -67,25 +78,26 @@ public interface TargetWire<T> {
      * Returns the invocation configuration for each operation on a service specified by a reference or a
      * target service.
      */
-    Map<Method, TargetInvocationChain> getInvocationChains();
+    Map<Method, ReferenceInvocationChain> getInvocationChains();
 
     /**
      * Adds the collection of invocation chains keyed by operation
      */
-    void addInvocationChains(Map<Method, TargetInvocationChain> chains);
+    void addInvocationChains(Map<Method, ReferenceInvocationChain> chains);
 
     /**
      * Adds the invocation chain associated with the given operation
      */
-    void addInvocationChain(Method method, TargetInvocationChain chain);
+    void addInvocationChain(Method method, ReferenceInvocationChain chains);
 
     /**
      * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end
      */
-    void setTargetWire(TargetWire<T> wire);
+    void setTargetWire(ServiceWire<T> wire);
 
     /**
      * Returns true if the wire and all of its interceptors can be optimized
      */
     boolean isOptimizable();
+
 }

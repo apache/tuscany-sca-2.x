@@ -6,27 +6,27 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.ServiceInvocationChain;
+import org.apache.tuscany.spi.wire.ServiceWire;
 
 /**
  * The source side of a wire configured to use the {@link org.apache.tuscany.core.system.model.SystemBinding}
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemTargetWire<T> implements TargetWire<T> {
+public class SystemServiceWire<T> implements ServiceWire<T> {
     private String serviceName;
     private Class<T> businessInterface;
     private ComponentContext<?> componentContext;
-    private TargetWire<T> wire; // a bridge to another target wire
+    private ServiceWire<T> wire; // a bridge to another target wire
 
-    public SystemTargetWire(String serviceName, Class<T> businessInterface, ComponentContext<?> target) {
+    public SystemServiceWire(String serviceName, Class<T> businessInterface, ComponentContext<?> target) {
         this.serviceName = serviceName;
         this.businessInterface = businessInterface;
         this.componentContext = target;
     }
 
-    public SystemTargetWire(Class<T> businessInterface, ComponentContext<?> target) {
+    public SystemServiceWire(Class<T> businessInterface, ComponentContext<?> target) {
         this.businessInterface = businessInterface;
         this.componentContext = target;
     }
@@ -59,11 +59,11 @@ public class SystemTargetWire<T> implements TargetWire<T> {
         return new Class[0];
     }
 
-    public Map<Method, TargetInvocationChain> getInvocationChains() {
+    public Map<Method, ServiceInvocationChain> getInvocationChains() {
         return Collections.emptyMap();
     }
 
-    public void addInvocationChain(Method method, TargetInvocationChain chain) {
+    public void addInvocationChain(Method method, ServiceInvocationChain chain) {
         throw new UnsupportedOperationException();
     }
 
@@ -79,7 +79,7 @@ public class SystemTargetWire<T> implements TargetWire<T> {
         return true;  // system wires are always optimizable
     }
 
-    public void setTargetWire(TargetWire<T> wire) {
+    public void setTargetWire(ServiceWire<T> wire) {
         this.wire = wire;
     }
 

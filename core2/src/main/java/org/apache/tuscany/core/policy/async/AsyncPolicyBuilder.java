@@ -9,8 +9,8 @@ import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import static org.apache.tuscany.spi.policy.PolicyBuilderRegistry.INITIAL;
 import org.apache.tuscany.spi.policy.TargetPolicyBuilder;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.ServiceInvocationChain;
+import org.apache.tuscany.spi.wire.ServiceWire;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.OneWay;
 
@@ -50,8 +50,8 @@ public class AsyncPolicyBuilder implements TargetPolicyBuilder {
         this.workManager = workManager;
     }
 
-    public void build(Service service, TargetWire<?> wire) throws BuilderException {
-        for (TargetInvocationChain chain : wire.getInvocationChains().values()) {
+    public void build(Service service, ServiceWire<?> wire) throws BuilderException {
+        for (ServiceInvocationChain chain : wire.getInvocationChains().values()) {
             // TODO fix this - it should be represented by the model and not through an annotation
             if (chain.getMethod().getAnnotation(OneWay.class) != null) {
                 chain.addInterceptor(new AsyncInterceptor(workManager, monitor));

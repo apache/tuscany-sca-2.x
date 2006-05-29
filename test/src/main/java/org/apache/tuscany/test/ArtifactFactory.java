@@ -6,14 +6,14 @@ import java.util.Map;
 
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.SourceInvocationChainImpl;
-import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
-import org.apache.tuscany.core.wire.jdk.JDKSourceWire;
-import org.apache.tuscany.core.wire.jdk.JDKTargetWire;
-import org.apache.tuscany.spi.wire.SourceInvocationChain;
-import org.apache.tuscany.spi.wire.SourceWire;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.core.wire.ReferenceInvocationChainImpl;
+import org.apache.tuscany.core.wire.ServiceInvocationChainImpl;
+import org.apache.tuscany.core.wire.jdk.JDKReferenceWire;
+import org.apache.tuscany.core.wire.jdk.JDKServiceWire;
+import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
+import org.apache.tuscany.spi.wire.ReferenceWire;
+import org.apache.tuscany.spi.wire.ServiceInvocationChain;
+import org.apache.tuscany.spi.wire.ServiceWire;
 
 /**
  * A factory for creating runtime artifacts to facilitate testing without directly instantiating core
@@ -28,14 +28,14 @@ public class ArtifactFactory {
 
     /**
      * Creates a target wire. After a wire is returned, client code must call
-     * {@link #completeTargetWire(org.apache.tuscany.spi.wire.TargetWire<T>)}. These two methods have been separated
+     * {@link #completeTargetWire(org.apache.tuscany.spi.wire.ServiceWire<T>)}. These two methods have been separated
      * to allow wires to be decorated with interceptors or handlers prior to their completion
      *
      * @param serviceName the service name associated with the wire
      * @param interfaze the interface associated with the wire
      */
-    public static <T> TargetWire<T> createTargetWire(String serviceName, Class<T> interfaze) {
-        TargetWire<T> wire = new JDKTargetWire<T>();
+    public static <T> ServiceWire<T> createTargetWire(String serviceName, Class<T> interfaze) {
+        ServiceWire<T> wire = new JDKServiceWire<T>();
         wire.setBusinessInterface(interfaze);
         wire.setServiceName(serviceName);
         wire.addInvocationChains(createTargetInvocationChains(interfaze));
@@ -45,8 +45,8 @@ public class ArtifactFactory {
     /**
      * Finalizes the target wire
      */
-    public static <T> void completeTargetWire(TargetWire<T> wire) {
-        for (TargetInvocationChain chain : wire.getInvocationChains().values()) {
+    public static <T> void completeTargetWire(ServiceWire<T> wire) {
+        for (ServiceInvocationChain chain : wire.getInvocationChains().values()) {
             // add tail interceptor
             chain.addInterceptor(new InvokerInterceptor());
         }
@@ -57,29 +57,29 @@ public class ArtifactFactory {
      * @param refName the reference name the wire is associated with on the client
      * @param interfaze the interface associated with the wire
      */
-    public static <T> SourceWire<T> createSourceWire(String refName, Class<T> interfaze) {
-        SourceWire<T> wire = new JDKSourceWire<T>();
+    public static <T> ReferenceWire<T> createReferenceWire(String refName, Class<T> interfaze) {
+        ReferenceWire<T> wire = new JDKReferenceWire<T>();
         wire.setReferenceName(refName);
         wire.addInvocationChains(createSourceInvocationChains(interfaze));
         wire.setBusinessInterface(interfaze);
         return wire;
     }
 
-    private static Map<Method, SourceInvocationChain> createSourceInvocationChains(Class<?> interfaze) {
-        Map<Method, SourceInvocationChain> invocations = new HashMap<Method, SourceInvocationChain>();
+    private static Map<Method, ReferenceInvocationChain> createSourceInvocationChains(Class<?> interfaze) {
+        Map<Method, ReferenceInvocationChain> invocations = new HashMap<Method, ReferenceInvocationChain>();
         Method[] methods = interfaze.getMethods();
         for (Method method : methods) {
-            SourceInvocationChain chain = new SourceInvocationChainImpl(method);
+            ReferenceInvocationChain chain = new ReferenceInvocationChainImpl(method);
             invocations.put(method, chain);
         }
         return invocations;
     }
 
-    private static Map<Method, TargetInvocationChain> createTargetInvocationChains(Class<?> interfaze) {
-        Map<Method, TargetInvocationChain> invocations = new MethodHashMap<TargetInvocationChain>();
+    private static Map<Method, ServiceInvocationChain> createTargetInvocationChains(Class<?> interfaze) {
+        Map<Method, ServiceInvocationChain> invocations = new MethodHashMap<ServiceInvocationChain>();
         Method[] methods = interfaze.getMethods();
         for (Method method : methods) {
-            TargetInvocationChain chain = new TargetInvocationChainImpl(method);
+            ServiceInvocationChain chain = new ServiceInvocationChainImpl(method);
             // add tail interceptor
             chain.addInterceptor(new InvokerInterceptor());
             invocations.put(method, chain);

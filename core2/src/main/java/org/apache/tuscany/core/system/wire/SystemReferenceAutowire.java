@@ -5,23 +5,23 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.apache.tuscany.core.context.AutowireContext;
-import org.apache.tuscany.core.wire.SourceAutowire;
+import org.apache.tuscany.core.wire.ReferenceAutowire;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.wire.SourceInvocationChain;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
+import org.apache.tuscany.spi.wire.ServiceWire;
 
 /**
  * The source side of an wire configured to autowire
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemSourceAutowire<T> implements SourceAutowire<T> {
+public class SystemReferenceAutowire<T> implements ReferenceAutowire<T> {
     private String referenceName;
     private Class<T> businessInterface;
     private AutowireContext<?> context;
 
-    public SystemSourceAutowire(String referenceName, Class<T> businessInterface, AutowireContext<?> context) {
+    public SystemReferenceAutowire(String referenceName, Class<T> businessInterface, AutowireContext<?> context) {
         this.referenceName = referenceName;
         this.businessInterface = businessInterface;
         this.context = context;
@@ -58,11 +58,11 @@ public class SystemSourceAutowire<T> implements SourceAutowire<T> {
         return new Class[0];
     }
 
-    public Map<Method, SourceInvocationChain> getInvocationChains() {
+    public Map<Method, ReferenceInvocationChain> getInvocationChains() {
         return Collections.emptyMap();
     }
 
-    public void addInvocationChain(Method method, SourceInvocationChain chains) {
+    public void addInvocationChain(Method method, ReferenceInvocationChain chains) {
         throw new UnsupportedOperationException();
     }
 
@@ -74,7 +74,7 @@ public class SystemSourceAutowire<T> implements SourceAutowire<T> {
         throw new UnsupportedOperationException();
     }
 
-    public void setTargetWire(TargetWire<T> wire) {
+    public void setTargetWire(ServiceWire<T> wire) {
     }
 
     public boolean isOptimizable() {

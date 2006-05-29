@@ -16,10 +16,10 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.MessageChannelImpl;
-import org.apache.tuscany.core.wire.SourceInvocationChainImpl;
-import org.apache.tuscany.core.wire.TargetInvocationChainImpl;
-import org.apache.tuscany.core.wire.jdk.JDKSourceWire;
-import org.apache.tuscany.core.wire.jdk.JDKTargetWire;
+import org.apache.tuscany.core.wire.ReferenceInvocationChainImpl;
+import org.apache.tuscany.core.wire.ServiceInvocationChainImpl;
+import org.apache.tuscany.core.wire.jdk.JDKReferenceWire;
+import org.apache.tuscany.core.wire.jdk.JDKServiceWire;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -28,11 +28,11 @@ import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
-import org.apache.tuscany.spi.wire.SourceInvocationChain;
-import org.apache.tuscany.spi.wire.SourceWire;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
+import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
+import org.apache.tuscany.spi.wire.ReferenceWire;
+import org.apache.tuscany.spi.wire.ServiceInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.ServiceWire;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -112,17 +112,17 @@ public class MockContextFactory {
                                                                  MessageHandler targetRequestHeadHandler,
                                                                  MessageHandler targetResponseHeadHandler) throws Exception {
         JavaAtomicContext targetContext = createJavaAtomicContext(targetName, targetScope, targetClass, targetScope.getScope());
-        TargetWire targetWire = createTargetWire(targetService.getName().substring(
+        ServiceWire serviceWire = createServiceWire(targetService.getName().substring(
                 targetService.getName().lastIndexOf('.') + 1), targetService, targetHeadInterceptor, targetRequestHeadHandler, targetResponseHeadHandler);
-        targetContext.addTargetWire(targetWire);
+        targetContext.addServiceWire(serviceWire);
 
         JavaAtomicContext sourceContext = createJavaAtomicContext(sourceName, null, sourceScope, sourceClass, sourceClass, sourceScope.getScope(), false, null, null, null, members);
-        SourceWire sourceWire = createSourceWire(targetName, sourceReferenceClass, sourceHeadInterceptor,
+        ReferenceWire referenceWire = createReferenceWire(targetName, sourceReferenceClass, sourceHeadInterceptor,
                 sourceHeadRequestHandler, sourceHeadResponseHandler);
-        sourceContext.addSourceWire(sourceWire);
+        sourceContext.addReferenceWire(referenceWire);
         targetScope.register(targetContext);
         sourceScope.register(sourceContext);
-        connect(sourceWire, targetWire, targetContext, false);
+        connect(referenceWire, serviceWire, targetContext, false);
         Map<String, AtomicContext> contexts = new HashMap<String, AtomicContext>();
         contexts.put(sourceName, sourceContext);
         contexts.put(targetName, targetContext);
@@ -150,122 +150,122 @@ public class MockContextFactory {
                                                                      String targetName, Class<?> targetService, Class<?> targetClass,
                                                                      Map<String, Member> members, ScopeContext targetScope) throws Exception {
         JavaAtomicContext targetContext = createJavaAtomicContext(targetName, targetScope, targetClass, targetScope.getScope());
-        TargetWire targetWire = createTargetWire(targetService.getName().substring(
+        ServiceWire serviceWire = createServiceWire(targetService.getName().substring(
                 targetService.getName().lastIndexOf('.') + 1), targetService, null, null, null);
-        targetContext.addTargetWire(targetWire);
+        targetContext.addServiceWire(serviceWire);
 
         JavaAtomicContext sourceContext = createJavaAtomicContext(sourceName, null, sourceScope, sourceClass, sourceClass, sourceScope.getScope(), false, null, null, null, members);
-        SourceWire sourceWire = createSourceWire(targetName, sourceReferenceClass, null, null, null);
-        List<SourceWire> factories = new ArrayList<SourceWire>();
-        factories.add(sourceWire);
-        sourceContext.addSourceWires(sourceReferenceClass, factories);
+        ReferenceWire referenceWire = createReferenceWire(targetName, sourceReferenceClass, null, null, null);
+        List<ReferenceWire> factories = new ArrayList<ReferenceWire>();
+        factories.add(referenceWire);
+        sourceContext.addReferenceWires(sourceReferenceClass, factories);
         targetScope.register(targetContext);
         sourceScope.register(sourceContext);
-        connect(sourceWire, targetWire, targetContext, false);
+        connect(referenceWire, serviceWire, targetContext, false);
         Map<String, AtomicContext> contexts = new HashMap<String, AtomicContext>();
         contexts.put(sourceName, sourceContext);
         contexts.put(targetName, targetContext);
         return contexts;
     }
 
-    public static <T> TargetWire<T> createTargetWire(String serviceName, Class<T> interfaze) {
-        return createTargetWire(serviceName, interfaze, null, null, null);
+    public static <T> ServiceWire<T> createTargetWire(String serviceName, Class<T> interfaze) {
+        return createServiceWire(serviceName, interfaze, null, null, null);
     }
 
 
-    public static <T> TargetWire<T> createTargetWire(String serviceName, Class<T> interfaze,
-                                                     Interceptor headInterceptor,
-                                                     MessageHandler headRequestHandler,
-                                                     MessageHandler headResponseHandler) {
-        TargetWire<T> wire = new JDKTargetWire<T>();
+    public static <T> ServiceWire<T> createServiceWire(String serviceName, Class<T> interfaze,
+                                                       Interceptor headInterceptor,
+                                                       MessageHandler headRequestHandler,
+                                                       MessageHandler headResponseHandler) {
+        ServiceWire<T> wire = new JDKServiceWire<T>();
         wire.setBusinessInterface(interfaze);
         wire.setServiceName(serviceName);
-        wire.addInvocationChains(createTargetInvocationChains(interfaze, headInterceptor, headRequestHandler, headResponseHandler));
+        wire.addInvocationChains(createServiceInvocationChains(interfaze, headInterceptor, headRequestHandler, headResponseHandler));
         return wire;
     }
 
-    public static <T> SourceWire<T> createSourceWire(String refName, Class<T> interfaze,
-                                                     Interceptor headInterceptor,
-                                                     MessageHandler headRequestHandler,
-                                                     MessageHandler headResponseHandler) {
+    public static <T> ReferenceWire<T> createReferenceWire(String refName, Class<T> interfaze,
+                                                           Interceptor headInterceptor,
+                                                           MessageHandler headRequestHandler,
+                                                           MessageHandler headResponseHandler) {
 
-        SourceWire<T> wire = new JDKSourceWire<T>();
+        ReferenceWire<T> wire = new JDKReferenceWire<T>();
         wire.setReferenceName(refName);
-        wire.addInvocationChains(createSourceInvocationChains(interfaze, headInterceptor, headRequestHandler, headResponseHandler));
+        wire.addInvocationChains(createReferenceInvocationChains(interfaze, headInterceptor, headRequestHandler, headResponseHandler));
         wire.setBusinessInterface(interfaze);
         return wire;
     }
 
-    public static <T> SourceWire<T> createSourceWire(String refName, Class<T> interfaze) {
-        SourceWire<T> wire = new JDKSourceWire<T>();
+    public static <T> ReferenceWire<T> createReferenceWire(String refName, Class<T> interfaze) {
+        ReferenceWire<T> wire = new JDKReferenceWire<T>();
         wire.setReferenceName(refName);
-        wire.addInvocationChains(createSourceInvocationChains(interfaze));
+        wire.addInvocationChains(createReferenceInvocationChains(interfaze));
         wire.setBusinessInterface(interfaze);
         return wire;
     }
 
 
     /**
-     * @param sourceWire
-     * @param targetWire
+     * @param referenceWire
+     * @param serviceWire
      * @param targetContext
      * @param cacheable
      * @throws Exception
      */
-    public static void connect(SourceWire<?> sourceWire, TargetWire<?> targetWire, JavaAtomicContext targetContext, boolean cacheable) throws Exception {
-        if (targetWire != null) {
+    public static void connect(ReferenceWire<?> referenceWire, ServiceWire<?> serviceWire, JavaAtomicContext targetContext, boolean cacheable) throws Exception {
+        if (serviceWire != null) {
             // if null, the target side has no interceptors or handlers
-            Map<Method, TargetInvocationChain> targetInvocationConfigs = targetWire.getInvocationChains();
-            for (SourceInvocationChain sourceInvocationConfig : sourceWire.getInvocationChains().values()) {
+            Map<Method, ServiceInvocationChain> targetInvocationConfigs = serviceWire.getInvocationChains();
+            for (ReferenceInvocationChain referenceInvocationConfig : referenceWire.getInvocationChains().values()) {
                 // match wire chains
-                TargetInvocationChain targetInvocationConfig = targetInvocationConfigs.get(sourceInvocationConfig.getMethod());
-                if (targetInvocationConfig == null) {
+                ServiceInvocationChain serviceInvocationConfig = targetInvocationConfigs.get(referenceInvocationConfig.getMethod());
+                if (serviceInvocationConfig == null) {
                     BuilderConfigException e = new BuilderConfigException("Incompatible source and target interface types for reference");
-                    e.setIdentifier(sourceWire.getReferenceName());
+                    e.setIdentifier(referenceWire.getReferenceName());
                     throw e;
                 }
                 // if handler is configured, add that
-                if (targetInvocationConfig.getRequestHandlers() != null) {
-                    sourceInvocationConfig.setTargetRequestChannel(new MessageChannelImpl(targetInvocationConfig
+                if (serviceInvocationConfig.getRequestHandlers() != null) {
+                    referenceInvocationConfig.setTargetRequestChannel(new MessageChannelImpl(serviceInvocationConfig
                             .getRequestHandlers()));
-                    sourceInvocationConfig.setTargetResponseChannel(new MessageChannelImpl(targetInvocationConfig
+                    referenceInvocationConfig.setTargetResponseChannel(new MessageChannelImpl(serviceInvocationConfig
                             .getResponseHandlers()));
                 } else {
                     // no handlers, just connect interceptors
-                    if (targetInvocationConfig.getHeadInterceptor() == null) {
+                    if (serviceInvocationConfig.getHeadInterceptor() == null) {
                         BuilderConfigException e = new BuilderConfigException("No target handler or interceptor for operation");
-                        e.setIdentifier(targetInvocationConfig.getMethod().getName());
+                        e.setIdentifier(serviceInvocationConfig.getMethod().getName());
                         throw e;
                     }
-                    if (!(sourceInvocationConfig.getTailInterceptor() instanceof InvokerInterceptor && targetInvocationConfig
+                    if (!(referenceInvocationConfig.getTailInterceptor() instanceof InvokerInterceptor && serviceInvocationConfig
                             .getHeadInterceptor() instanceof InvokerInterceptor)) {
                         // check that we do not have the case where the only interceptors are invokers since we just need one
-                        sourceInvocationConfig.setTargetInterceptor(targetInvocationConfig.getHeadInterceptor());
+                        referenceInvocationConfig.setTargetInterceptor(serviceInvocationConfig.getHeadInterceptor());
                     }
                 }
             }
 
-            for (SourceInvocationChain sourceInvocationConfig : sourceWire.getInvocationChains()
+            for (ReferenceInvocationChain referenceInvocationConfig : referenceWire.getInvocationChains()
                     .values()) {
-                //FIXME should use target method, not sourceInvocationConfig.getMethod()
-                TargetInvoker invoker = new JavaTargetInvoker(sourceInvocationConfig.getMethod(), targetContext);
+                //FIXME should use target method, not referenceInvocationConfig.getMethod()
+                TargetInvoker invoker = new JavaTargetInvoker(referenceInvocationConfig.getMethod(), targetContext);
                 invoker.setCacheable(cacheable);
-                sourceInvocationConfig.setTargetInvoker(invoker);
+                referenceInvocationConfig.setTargetInvoker(invoker);
             }
         }
     }
 
-    private static Map<Method, SourceInvocationChain> createSourceInvocationChains(Class<?> interfaze) {
-        return createSourceInvocationChains(interfaze, null, null, null);
+    private static Map<Method, ReferenceInvocationChain> createReferenceInvocationChains(Class<?> interfaze) {
+        return createReferenceInvocationChains(interfaze, null, null, null);
     }
 
-    private static Map<Method, SourceInvocationChain> createSourceInvocationChains(Class<?> interfaze,
-                                                                                  Interceptor headInterceptor, MessageHandler headRequestHandler,
-                                                                                  MessageHandler headResponseHandler) {
-        Map<Method, SourceInvocationChain> invocations = new HashMap<Method, SourceInvocationChain>();
+    private static Map<Method, ReferenceInvocationChain> createReferenceInvocationChains(Class<?> interfaze,
+                                                                                         Interceptor headInterceptor, MessageHandler headRequestHandler,
+                                                                                         MessageHandler headResponseHandler) {
+        Map<Method, ReferenceInvocationChain> invocations = new HashMap<Method, ReferenceInvocationChain>();
         Method[] methods = interfaze.getMethods();
         for (Method method : methods) {
-            SourceInvocationChain chain = new SourceInvocationChainImpl(method);
+            ReferenceInvocationChain chain = new ReferenceInvocationChainImpl(method);
             if (headInterceptor != null) {
                 chain.addInterceptor(headInterceptor);
             }
@@ -280,13 +280,13 @@ public class MockContextFactory {
         return invocations;
     }
 
-    private static Map<Method, TargetInvocationChain> createTargetInvocationChains(Class<?> interfaze,
-                                                                                  Interceptor headInterceptor, MessageHandler headRequestHandler,
-                                                                                  MessageHandler headResponseHandler) {
-        Map<Method, TargetInvocationChain> invocations = new MethodHashMap<TargetInvocationChain>();
+    private static Map<Method, ServiceInvocationChain> createServiceInvocationChains(Class<?> interfaze,
+                                                                                     Interceptor headInterceptor, MessageHandler headRequestHandler,
+                                                                                     MessageHandler headResponseHandler) {
+        Map<Method, ServiceInvocationChain> invocations = new MethodHashMap<ServiceInvocationChain>();
         Method[] methods = interfaze.getMethods();
         for (Method method : methods) {
-            TargetInvocationChain chain = new TargetInvocationChainImpl(method);
+            ServiceInvocationChain chain = new ServiceInvocationChainImpl(method);
             if (headInterceptor != null) {
                 chain.addInterceptor(headInterceptor);
             }

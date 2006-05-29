@@ -25,8 +25,8 @@ import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.util.MethodHashMap;
-import org.apache.tuscany.spi.wire.SourceInvocationChain;
-import org.apache.tuscany.spi.wire.SourceInvocationHandler;
+import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
+import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
 
 /**
  * Tests handling of exceptions thrown during an wire
@@ -54,9 +54,9 @@ public class InvocationErrorTestCase extends TestCase {
     }
 
     public void testCheckedException() throws Exception {
-        Map<Method, SourceInvocationChain> config = new MethodHashMap<SourceInvocationChain>();
+        Map<Method, ReferenceInvocationChain> config = new MethodHashMap<ReferenceInvocationChain>();
         config.put(checkedMethod, getConfiguration(checkedMethod));
-        SourceInvocationHandler handler = new SourceInvocationHandler(config);
+        ReferenceInvocationHandler handler = new ReferenceInvocationHandler(config);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{TestBean.class}, handler);
@@ -68,9 +68,9 @@ public class InvocationErrorTestCase extends TestCase {
     }
 
     public void testRuntimeException() throws Exception {
-        Map<Method, SourceInvocationChain> config = new MethodHashMap<SourceInvocationChain>();
+        Map<Method, ReferenceInvocationChain> config = new MethodHashMap<ReferenceInvocationChain>();
         config.put(runtimeMethod, getConfiguration(runtimeMethod));
-        SourceInvocationHandler handler = new SourceInvocationHandler(config);
+        ReferenceInvocationHandler handler = new ReferenceInvocationHandler(config);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{TestBean.class}, handler);
@@ -81,9 +81,9 @@ public class InvocationErrorTestCase extends TestCase {
         fail(TestException.class.getName() + " should have been thrown");
     }
 
-    private SourceInvocationChain getConfiguration(Method m) {
+    private ReferenceInvocationChain getConfiguration(Method m) {
         MockStaticInvoker invoker = new MockStaticInvoker(m, new TestBeanImpl());
-        SourceInvocationChain invocationConfiguration = new SourceInvocationChainImpl(m);
+        ReferenceInvocationChain invocationConfiguration = new ReferenceInvocationChainImpl(m);
         invocationConfiguration.addInterceptor(new MockSyncInterceptor());
         invocationConfiguration.addRequestHandler(new MockHandler());
         invocationConfiguration.setTargetInvoker(invoker);

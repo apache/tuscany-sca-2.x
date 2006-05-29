@@ -11,9 +11,9 @@ import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.ReferenceWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.ServiceWire;
 
 /**
  * An {@link org.apache.tuscany.spi.context.AtomicContext} used when registering objects directly into a
@@ -72,23 +72,23 @@ public class SystemSingletonAtomicContext<S, T extends S> extends AbstractContex
         throw new UnsupportedOperationException();
     }
 
-    public void addTargetWire(TargetWire wire) {
+    public void addServiceWire(ServiceWire wire) {
         throw new UnsupportedOperationException();
     }
 
-    public TargetWire getTargetWire(String serviceName) {
+    public ServiceWire getServiceWire(String serviceName) {
         throw new UnsupportedOperationException();
     }
 
-    public void addSourceWire(SourceWire wire) {
+    public void addReferenceWire(ReferenceWire wire) {
         throw new UnsupportedOperationException();
     }
 
-    public void addSourceWires(Class<?> multiplicityClass, List<SourceWire> wires) {
+    public void addReferenceWires(Class<?> multiplicityClass, List<ReferenceWire> wires) {
         throw new UnsupportedOperationException();
     }
 
-    public Map<String,List<SourceWire>> getSourceWires() {
+    public Map<String,List<ReferenceWire>> getReferenceWires() {
         throw new UnsupportedOperationException();
     }
 

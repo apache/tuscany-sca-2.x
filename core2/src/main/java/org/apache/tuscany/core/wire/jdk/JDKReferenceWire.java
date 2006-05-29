@@ -22,10 +22,10 @@ import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
-import org.apache.tuscany.spi.wire.SourceInvocationChain;
-import org.apache.tuscany.spi.wire.SourceWire;
-import org.apache.tuscany.spi.wire.TargetWire;
-import org.apache.tuscany.spi.wire.SourceInvocationHandler;
+import org.apache.tuscany.spi.wire.ReferenceInvocationChain;
+import org.apache.tuscany.spi.wire.ReferenceWire;
+import org.apache.tuscany.spi.wire.ServiceWire;
+import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
 
 /**
  * Creates proxies that are injected on references using JDK dynamic proxy facilities and front a wire. The
@@ -33,21 +33,21 @@ import org.apache.tuscany.spi.wire.SourceInvocationHandler;
  *
  * @version $Rev: 394431 $ $Date: 2006-04-15 21:27:44 -0700 (Sat, 15 Apr 2006) $
  */
-public class JDKSourceWire<T> implements SourceWire<T> {
+public class JDKReferenceWire<T> implements ReferenceWire<T> {
 
     private Class<T>[] businessInterfaces;
-    private Map<Method, SourceInvocationChain> invocationChains = new MethodHashMap<SourceInvocationChain>();
+    private Map<Method, ReferenceInvocationChain> invocationChains = new MethodHashMap<ReferenceInvocationChain>();
     private String referenceName;
     private QualifiedName targetName;
-    private TargetWire<T> targetWire;
+    private ServiceWire<T> serviceWire;
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
-        if (targetWire != null) {
+        if (serviceWire != null) {
             // optimized, no interceptors or handlers on either end
-            return targetWire.getTargetService();
+            return serviceWire.getTargetService();
         }
-        SourceInvocationHandler handler = new SourceInvocationHandler(invocationChains);
+        ReferenceInvocationHandler handler = new ReferenceInvocationHandler(invocationChains);
         return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaces, handler);
     }
 
@@ -68,15 +68,15 @@ public class JDKSourceWire<T> implements SourceWire<T> {
         return businessInterfaces;
     }
 
-    public Map<Method, SourceInvocationChain> getInvocationChains() {
+    public Map<Method, ReferenceInvocationChain> getInvocationChains() {
         return invocationChains;
     }
 
-    public void addInvocationChains(Map<Method, SourceInvocationChain> chains) {
+    public void addInvocationChains(Map<Method, ReferenceInvocationChain> chains) {
         invocationChains.putAll(chains);
     }
 
-    public void addInvocationChain(Method method, SourceInvocationChain chain) {
+    public void addInvocationChain(Method method, ReferenceInvocationChain chain) {
         invocationChains.put(method, chain);
     }
 
@@ -96,12 +96,12 @@ public class JDKSourceWire<T> implements SourceWire<T> {
         this.targetName = targetName;
     }
 
-    public void setTargetWire(TargetWire<T> wire) {
-        targetWire = wire;
+    public void setTargetWire(ServiceWire<T> wire) {
+        serviceWire = wire;
     }
 
     public boolean isOptimizable() {
-        for (SourceInvocationChain chain : invocationChains.values()) {
+        for (ReferenceInvocationChain chain : invocationChains.values()) {
             if (chain.getHeadInterceptor() != null || !chain.getRequestHandlers().isEmpty()
                     || !chain.getResponseHandlers().isEmpty()) {
                 Interceptor current = chain.getHeadInterceptor();

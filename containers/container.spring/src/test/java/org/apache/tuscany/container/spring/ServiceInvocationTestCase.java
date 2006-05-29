@@ -5,8 +5,8 @@ import org.apache.tuscany.container.spring.mock.TestBean;
 import org.apache.tuscany.container.spring.mock.TestBeanImpl;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.extension.ServiceContextExtension;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.ServiceInvocationChain;
+import org.apache.tuscany.spi.wire.ServiceWire;
 import org.apache.tuscany.test.ArtifactFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -23,8 +23,8 @@ public class ServiceInvocationTestCase extends TestCase {
     public void testInvocation() {
         SpringCompositeContext context = new SpringCompositeContext("parent", createSpringContext(), null);
         context.start();
-        TargetWire<TestBean> wire = ArtifactFactory.createTargetWire("fooService", TestBean.class);
-        for (TargetInvocationChain chain : wire.getInvocationChains().values()) {
+        ServiceWire<TestBean> wire = ArtifactFactory.createTargetWire("fooService", TestBean.class);
+        for (ServiceInvocationChain chain : wire.getInvocationChains().values()) {
             chain.setTargetInvoker(context.createTargetInvoker("foo", chain.getMethod()));
         }
         ServiceContext<TestBean> serviceContext = new ServiceContextExtension<TestBean>("fooService", wire, context);

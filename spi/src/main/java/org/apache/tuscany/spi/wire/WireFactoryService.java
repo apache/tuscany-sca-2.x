@@ -25,12 +25,12 @@ public interface WireFactoryService {
     /**
      * Creates a target-side wire factory
      */
-    public TargetWire<?> createTargetWire();
+    public ServiceWire<?> createServiceWire();
 
     /**
      * Creates a source-side wire factory
      */
-    public SourceWire<?> createSourceWire();
+    public ReferenceWire<?> createReferenceWire();
 
     /**
      * Determines whether the given object is a proxy

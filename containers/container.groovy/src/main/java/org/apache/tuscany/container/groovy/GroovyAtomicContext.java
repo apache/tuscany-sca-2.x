@@ -30,9 +30,9 @@ import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.extension.AtomicContextExtension;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.SourceWire;
+import org.apache.tuscany.spi.wire.ReferenceWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.ServiceWire;
 import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
@@ -76,8 +76,8 @@ public class GroovyAtomicContext<T> extends AtomicContextExtension<T> {
                 injector.inject(object);
             }
             // inject wires
-            for (List<SourceWire> sourceWires : getSourceWires().values()) {
-                for (SourceWire<?> wire : sourceWires) {
+            for (List<ReferenceWire> referenceWires : getReferenceWires().values()) {
+                for (ReferenceWire<?> wire : referenceWires) {
                     object.setProperty(wire.getReferenceName(), wire.getTargetService());
                 }
             }
@@ -103,7 +103,7 @@ public class GroovyAtomicContext<T> extends AtomicContextExtension<T> {
     }
 
     public Object getService(String service) throws TargetException {
-        TargetWire<?> wire = getTargetWire(service);
+        ServiceWire<?> wire = getServiceWire(service);
         if (wire == null) {
             TargetException e =  new TargetException("Service not found"); // TODO better error message
             e.setIdentifier(service);

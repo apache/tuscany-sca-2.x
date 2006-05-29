@@ -8,9 +8,9 @@ import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
-import org.apache.tuscany.spi.wire.TargetInvocationChain;
-import org.apache.tuscany.spi.wire.TargetInvocationHandler;
-import org.apache.tuscany.spi.wire.TargetWire;
+import org.apache.tuscany.spi.wire.ServiceInvocationChain;
+import org.apache.tuscany.spi.wire.ServiceInvocationHandler;
+import org.apache.tuscany.spi.wire.ServiceWire;
 
 /**
  * Creates proxies that are returned to non-SCA clients using JDK dynamic proxy facilities and front a wire.
@@ -19,15 +19,15 @@ import org.apache.tuscany.spi.wire.TargetWire;
  *
  * @version $Rev: 394431 $ $Date: 2006-04-15 21:27:44 -0700 (Sat, 15 Apr 2006) $
  */
-public class JDKTargetWire<T> implements TargetWire<T> {
+public class JDKServiceWire<T> implements ServiceWire<T> {
 
     private Class[] businessInterfaces;
-    private Map<Method, TargetInvocationChain> invocationChains = new MethodHashMap<TargetInvocationChain>();
+    private Map<Method, ServiceInvocationChain> invocationChains = new MethodHashMap<ServiceInvocationChain>();
     private String serviceName;
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
-        TargetInvocationHandler handler = new TargetInvocationHandler(invocationChains);
+        ServiceInvocationHandler handler = new ServiceInvocationHandler(invocationChains);
         return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaces, handler);
     }
 
@@ -56,25 +56,25 @@ public class JDKTargetWire<T> implements TargetWire<T> {
         this.serviceName = serviceName;
     }
 
-    public Map<Method, TargetInvocationChain> getInvocationChains() {
+    public Map<Method, ServiceInvocationChain> getInvocationChains() {
         return invocationChains;
     }
 
-    public void addInvocationChains(Map<Method, TargetInvocationChain> chains) {
+    public void addInvocationChains(Map<Method, ServiceInvocationChain> chains) {
         invocationChains.putAll(chains);
     }
 
-    public void addInvocationChain(Method method, TargetInvocationChain chain) {
+    public void addInvocationChain(Method method, ServiceInvocationChain chain) {
         invocationChains.put(method, chain);
     }
 
-    public void setTargetWire(TargetWire<T> wire) {
+    public void setTargetWire(ServiceWire<T> wire) {
         throw new UnsupportedOperationException("not yet implemented"); // FIXME
 
     }
 
     public boolean isOptimizable() {
-        for (TargetInvocationChain chain : invocationChains.values()) {
+        for (ServiceInvocationChain chain : invocationChains.values()) {
             if (chain.getTargetInvoker() != null && !chain.getTargetInvoker().isOptimizable()) {
                 return false;
             }
