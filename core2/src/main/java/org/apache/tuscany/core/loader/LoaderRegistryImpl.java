@@ -18,9 +18,13 @@ package org.apache.tuscany.core.loader;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URL;
+import java.io.InputStream;
+import java.io.IOException;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Implementation;
@@ -65,6 +69,50 @@ public class LoaderRegistryImpl implements LoaderRegistry {
             throw new UnrecognizedElementException(name);
         }
         return loader.load(reader, deploymentContext);
+    }
+
+    public <MO extends ModelObject> MO load(URL url, Class<MO> type, DeploymentContext deploymentContext) throws LoaderException {
+        try {
+            XMLStreamReader reader;
+            InputStream is;
+            is = url.openStream();
+            try {
+                XMLInputFactory factory = deploymentContext.getXmlFactory();
+                reader = factory.createXMLStreamReader(is);
+                try {
+                    reader.nextTag();
+                    QName name = reader.getName();
+                    ModelObject mo = load(reader, deploymentContext);
+                    if (type.isInstance(mo)) {
+                        return type.cast(mo);
+                    } else {
+                        UnrecognizedElementException e = new UnrecognizedElementException(name);
+                        e.setResourceURI(url.toString());
+                        throw e;
+                    }
+                } finally {
+                    try {
+                        reader.close();
+                    } catch (XMLStreamException e) {
+                        // ignore
+                    }
+                }
+            } finally {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
+        } catch (IOException e) {
+            LoaderException sfe = new LoaderException(e.getMessage());
+            sfe.setResourceURI(url.toString());
+            throw sfe;
+        } catch (XMLStreamException e) {
+            LoaderException sfe = new LoaderException(e.getMessage());
+            sfe.setResourceURI(url.toString());
+            throw sfe;
+        }
     }
 
     public <I extends Implementation<?>> void registerLoader(Class<I> key, ComponentTypeLoader<I> loader) {

@@ -16,6 +16,7 @@
  */
 package org.apache.tuscany.spi.loader;
 
+import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -71,9 +72,41 @@ public interface LoaderRegistry {
      */
     ModelObject load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException;
 
+    /**
+     * Load a model object from a specified locations.
+     *
+     * @param url               the location of an XML document to be loaded
+     * @param type              the type of ModelObject that is expected to be in the document
+     * @param deploymentContext the current deployment context
+     * @return the model ojbect loaded from the document
+     * @throws LoaderException if there was a problem loading the document
+     */
+    <MO extends ModelObject> MO load(URL url, Class<MO> type, DeploymentContext deploymentContext) throws LoaderException;
+
+    /**
+     * Regsiter a component type loader.
+     *
+     * @param key    a type of implementation this loader can load component types for
+     * @param loader the loader that is being contributed to the system
+     */
     <I extends Implementation<?>> void registerLoader(Class<I> key, ComponentTypeLoader<I> loader);
 
+    /**
+     * Unregister a component type loader form the system.
+     *
+     * @param key a type of implementation whose loader should be unregistered
+     */
     <I extends Implementation<?>> void unregisterLoader(Class<I> key);
 
+    /**
+     * Load the component type definition for a given implementation.
+     * How the component type information is located is defined by the implementation specification.
+     * It may include loading from an XML sidefile, introspection of some artifact related to the
+     * implementation, some combination of those techniques or any other implementation-defined mechanism.
+     *
+     * @param implementation    the implementation whose component type should be loaded
+     * @param deploymentContext the current deployment context
+     * @throws LoaderException if there was a problem loading the component type definition
+     */
     <I extends Implementation<?>> void loadComponentType(I implementation, DeploymentContext deploymentContext) throws LoaderException;
 }

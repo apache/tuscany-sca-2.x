@@ -17,6 +17,7 @@
 package org.apache.tuscany.container.java;
 
 import java.net.URL;
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
@@ -40,7 +41,7 @@ public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaIm
         if (resource == null) {
             componentType = loadByIntrospection(implementation);
         } else {
-            componentType = loadFromSidefile(PojoComponentType.class, resource, deploymentContext);
+            componentType = loadFromSidefile(resource, deploymentContext);
         }
         implementation.setComponentType(componentType);
     }
@@ -54,4 +55,7 @@ public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaIm
         return JavaImplementation.class;
     }
 
+    protected PojoComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext) throws LoaderException {
+        return loaderRegistry.load(url, PojoComponentType.class, deploymentContext);
+    }
 }

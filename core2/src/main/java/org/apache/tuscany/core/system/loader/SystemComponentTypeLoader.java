@@ -17,16 +17,14 @@
 package org.apache.tuscany.core.system.loader;
 
 import java.net.URL;
+import javax.xml.stream.XMLStreamException;
 
-import javax.xml.namespace.QName;
-
+import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.system.model.SystemImplementation;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
-import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.model.Property;
 
 /**
  * @version $Rev$ $Date$
@@ -43,7 +41,7 @@ public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<Syst
         if (sidefile == null) {
             componentType = loadByIntrospection(implementation);
         } else {
-            componentType = loadFromSidefile(PojoComponentType.class, sidefile, deploymentContext);
+            componentType = loadFromSidefile(sidefile, deploymentContext);
         }
         implementation.setComponentType(componentType);
     }
@@ -51,5 +49,10 @@ public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<Syst
     protected PojoComponentType loadByIntrospection(SystemImplementation implementation) {
         PojoComponentType componentType = new PojoComponentType();
         return componentType;
+    }
+
+
+    protected PojoComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext) throws LoaderException {
+        return loaderRegistry.load(url, PojoComponentType.class, deploymentContext);
     }
 }
