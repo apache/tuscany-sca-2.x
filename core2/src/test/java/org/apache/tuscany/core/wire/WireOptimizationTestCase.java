@@ -1,10 +1,13 @@
-package org.apache.tuscany.core.wire.jdk;
+package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.jdk.JDKOutboundWire;
+import org.apache.tuscany.core.wire.jdk.JDKInboundWire;
+import org.apache.tuscany.core.wire.StaticPojoTargetInvoker;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageHandler;
@@ -17,7 +20,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class JDKWireOptimizationTestCase extends TestCase {
+public class WireOptimizationTestCase extends TestCase {
 
 
     private Method m;

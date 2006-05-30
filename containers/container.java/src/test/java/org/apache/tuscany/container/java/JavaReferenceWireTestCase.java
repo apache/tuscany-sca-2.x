@@ -35,7 +35,7 @@ public class JavaReferenceWireTestCase extends MockObjectTestCase {
         mock.expects(atLeastOnce()).method("getTargetService").will(returnValue(target));
         mock.expects(atLeastOnce()).method("getReferenceName").will(returnValue("target"));
         OutboundWire<Target> wire = (OutboundWire<Target>) mock.proxy();
-        sourceContext.addReferenceWire(wire);
+        sourceContext.addOutboundWire(wire);
 
         sourceContext.start();
 

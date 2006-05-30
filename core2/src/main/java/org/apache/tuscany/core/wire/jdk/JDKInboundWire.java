@@ -6,13 +6,12 @@ import java.util.Map;
 
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.ServiceInvocationHandler;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.RuntimeWire;
-import org.apache.tuscany.spi.QualifiedName;
 
 /**
  * Creates proxies that are returned to non-SCA clients using JDK dynamic proxy facilities and front a wire.
@@ -23,10 +22,9 @@ import org.apache.tuscany.spi.QualifiedName;
  */
 public class JDKInboundWire<T> implements InboundWire<T> {
 
+    private String serviceName;
     private Class[] businessInterfaces;
     private Map<Method, InboundInvocationChain> invocationChains = new MethodHashMap<InboundInvocationChain>();
-    private String serviceName;
-    private QualifiedName targetName;
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
@@ -59,14 +57,6 @@ public class JDKInboundWire<T> implements InboundWire<T> {
         this.serviceName = serviceName;
     }
 
-    public QualifiedName getTargetName() {
-        return targetName;
-    }
-
-    public void setTargetName(QualifiedName targetName) {
-        this.targetName = targetName;
-    }
-    
     public Map<Method, InboundInvocationChain> getInvocationChains() {
         return invocationChains;
     }
@@ -79,7 +69,7 @@ public class JDKInboundWire<T> implements InboundWire<T> {
         invocationChains.put(method, chain);
     }
 
-    public void setTargetWire(RuntimeWire<T> wire) {
+    public void setTargetWire(OutboundWire<T> wire) {
         throw new UnsupportedOperationException("not yet implemented"); // FIXME
     }
 

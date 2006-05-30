@@ -23,18 +23,16 @@ import org.apache.tuscany.core.context.scope.HttpSessionScopeContext;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.context.scope.RequestScopeContext;
 import org.apache.tuscany.core.context.scope.StatelessScopeContext;
-import org.apache.tuscany.core.system.context.SystemCompositeContext;
-import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.util.MethodHashMap;
-import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.jdk.JDKInboundWire;
+import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.jdk.JDKOutboundWire;
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.AtomicContext;
-import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.WorkContext;
-import org.apache.tuscany.spi.extension.ServiceContextExtension;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * Validates wiring from a service context to Java atomic contexts by scope
@@ -43,34 +41,29 @@ import org.apache.tuscany.spi.wire.InboundWire;
  */
 public class ServiceToJavaTestCase extends TestCase {
     private WorkContext workContext;
-    private SystemCompositeContext parent;
+    //private SystemCompositeContext parent;
 
 
     public void testToStatelessScope() throws Exception {
         StatelessScopeContext scope = new StatelessScopeContext(workContext);
         scope.start();
-        setupComposite(parent, scope);
-        parent.start();
-        Target service = (Target) parent.getContext("service").getService();
+        final OutboundWire wire = getWire(scope);
+        Target service = (Target) wire.getTargetService();
         assertNotNull(service);
-        Target target = (Target) parent.getContext("target").getService();
         service.setString("foo");
         assertEquals(null, service.getString());
-        assertEquals(null, target.getString());
-        parent.stop();
         scope.stop();
     }
 
     public void testToRequestScope() throws Exception {
         final RequestScopeContext scope = new RequestScopeContext(workContext);
         scope.start();
-        setupComposite(parent, scope);
-        parent.start();
 
         scope.onEvent(new RequestStart(this));
-        Target service = (Target) parent.getContext("service").getService();
+
+        final OutboundWire wire = getWire(scope);
+        Target service = (Target) wire.getTargetService();
         assertNotNull(service);
-        Target target = (Target) parent.getContext("target").getService();
         service.setString("foo");
 
         // another request
@@ -78,8 +71,8 @@ public class ServiceToJavaTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 scope.onEvent(new RequestStart(this));
-                Target service2 = (Target) parent.getContext("service").getService();
-                Target target2 = (Target) parent.getContext("target").getService();
+                Target service2 = (Target) wire.getTargetService();
+                Target target2 = (Target) wire.getTargetService();
                 assertEquals(null, service2.getString());
                 service2.setString("bar");
                 assertEquals("bar", service2.getString());
@@ -91,24 +84,21 @@ public class ServiceToJavaTestCase extends TestCase {
         future.get();
 
         assertEquals("foo", service.getString());
-        assertEquals("foo", target.getString());
         scope.onEvent(new RequestEnd(this));
-        parent.stop();
         scope.stop();
     }
 
     public void testToSessionScope() throws Exception {
         HttpSessionScopeContext scope = new HttpSessionScopeContext(workContext);
         scope.start();
-        setupComposite(parent, scope);
-        parent.start();
         Object session1 = new Object();
         workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
         scope.onEvent(new HttpSessionStart(this, session1));
 
-        Target service = (Target) parent.getContext("service").getService();
+        final OutboundWire wire = getWire(scope);
+        Target service = (Target) wire.getTargetService();
+        Target target = (Target) wire.getTargetService();
         assertNotNull(service);
-        Target target = (Target) parent.getContext("target").getService();
         service.setString("foo");
         assertEquals("foo", service.getString());
         assertEquals("foo", target.getString());
@@ -120,10 +110,10 @@ public class ServiceToJavaTestCase extends TestCase {
         workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
         scope.onEvent(new HttpSessionStart(this, session2));
 
-        Target service2 = (Target) parent.getContext("service").getService();
+        Target service2 = (Target) wire.getTargetService();
         assertNotNull(service2);
         assertNull(service2.getString());
-        Target target2 = (Target) parent.getContext("target").getService();
+        Target target2 = (Target) wire.getTargetService();
         service2.setString("bar");
         assertEquals("bar", service2.getString());
         assertEquals("bar", target2.getString());
@@ -136,7 +126,6 @@ public class ServiceToJavaTestCase extends TestCase {
 
         scope.onEvent(new HttpSessionEnd(this, session1));
 
-        parent.stop();
         scope.stop();
     }
 
@@ -144,53 +133,51 @@ public class ServiceToJavaTestCase extends TestCase {
 
         ModuleScopeContext scope = new ModuleScopeContext(workContext);
         scope.start();
-        setupComposite(parent, scope);
-        parent.start();
-        scope.onEvent(new ModuleStart(this, parent));
-        Target service = (Target) parent.getContext("service").getService();
+        final OutboundWire wire = getWire(scope);
+        scope.onEvent(new ModuleStart(this, null));
+        Target service = (Target) wire.getTargetService();
+        Target target = (Target) wire.getTargetService();
+
         assertNotNull(service);
-        Target target = (Target) parent.getContext("target").getService();
         service.setString("foo");
         assertEquals("foo", service.getString());
         assertEquals("foo", target.getString());
-        scope.onEvent(new ModuleStop(this, parent));
-        parent.stop();
+        scope.onEvent(new ModuleStop(this, null));
         scope.stop();
     }
 
     @SuppressWarnings("unchecked")
-    private void setupComposite(CompositeContext<?> parent, ScopeContext scope) throws NoSuchMethodException {
+    private OutboundWire getWire(ScopeContext scope) throws NoSuchMethodException {
         Connector connector = new ConnectorImpl();
-        InboundWire<Target> sourceWire = createServiceWire("target", Target.class);
-        sourceWire.setServiceName("Target");
-        ServiceContextExtension<Target> serviceContext = new ServiceContextExtension<Target>("service", sourceWire, parent);
+        OutboundWire<Target> wire = createOutboundWire(new QualifiedName("target/Target"), Target.class);
+
         AtomicContext<?> atomicContext = MockContextFactory.createJavaAtomicContext("target", scope, TargetImpl.class, Target.class, scope.getScope());
         InboundWire targetWire = MockContextFactory.createTargetWire("Target", Target.class);
-        atomicContext.addServiceWire(targetWire);
-        parent.registerContext(serviceContext);
-        parent.registerContext(atomicContext);
-        connector.connect(serviceContext.getInboundWire(), atomicContext);
+        atomicContext.addInboundWire(targetWire);
+        connector.connect(wire, atomicContext.getInboundWire("Target"), atomicContext, false);
+        atomicContext.start();
+        return wire;
     }
 
     protected void setUp() throws Exception {
         super.setUp();
         workContext = new WorkContextImpl();
-        parent = new SystemCompositeContextImpl(null, null, null);
+        //parent = new SystemCompositeContextImpl(null, null, null);
     }
 
-    public static <T> InboundWire<T> createServiceWire(String serviceName, Class<T> interfaze) {
-        InboundWire<T> wire = new JDKInboundWire<T>();
+    public static <T> OutboundWire<T> createOutboundWire(QualifiedName targetName, Class<T> interfaze) {
+        OutboundWire<T> wire = new JDKOutboundWire<T>();
         wire.setBusinessInterface(interfaze);
-        wire.setServiceName(serviceName);
-        wire.addInvocationChains(createServiceInvocationChains(interfaze));
+        wire.setTargetName(targetName);
+        wire.addInvocationChains(createInvocationChains(interfaze));
         return wire;
     }
 
-    private static Map<Method, InboundInvocationChain> createServiceInvocationChains(Class<?> interfaze) {
-        Map<Method, InboundInvocationChain> invocations = new MethodHashMap<InboundInvocationChain>();
+    private static Map<Method, OutboundInvocationChain> createInvocationChains(Class<?> interfaze) {
+        Map<Method, OutboundInvocationChain> invocations = new MethodHashMap<OutboundInvocationChain>();
         Method[] methods = interfaze.getMethods();
         for (Method method : methods) {
-            InboundInvocationChain chain = new InboundInvocationChainImpl(method);
+            OutboundInvocationChain chain = new OutboundInvocationChainImpl(method);
             invocations.put(method, chain);
         }
         return invocations;

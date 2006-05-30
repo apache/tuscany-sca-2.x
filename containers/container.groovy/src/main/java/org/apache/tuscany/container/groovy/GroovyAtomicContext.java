@@ -76,7 +76,7 @@ public class GroovyAtomicContext<T> extends AtomicContextExtension<T> {
                 injector.inject(object);
             }
             // inject wires
-            for (List<OutboundWire> referenceWires : getReferenceWires().values()) {
+            for (List<OutboundWire> referenceWires : getOutboundWires().values()) {
                 for (OutboundWire<?> wire : referenceWires) {
                     object.setProperty(wire.getReferenceName(), wire.getTargetService());
                 }
@@ -103,7 +103,7 @@ public class GroovyAtomicContext<T> extends AtomicContextExtension<T> {
     }
 
     public Object getService(String service) throws TargetException {
-        InboundWire<?> wire = getServiceWire(service);
+        InboundWire<?> wire = getInboundWire(service);
         if (wire == null) {
             TargetException e =  new TargetException("Service not found"); // TODO better error message
             e.setIdentifier(service);

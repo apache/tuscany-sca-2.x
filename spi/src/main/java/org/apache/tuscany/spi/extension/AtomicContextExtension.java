@@ -55,12 +55,12 @@ public abstract class AtomicContextExtension<T> extends AbstractContext<T> imple
 
     }
 
-    public void addServiceWire(InboundWire wire) {
+    public void addInboundWire(InboundWire wire) {
         serviceWires.put(wire.getServiceName(), wire);
         onServiceWire(wire);
     }
 
-    public InboundWire getServiceWire(String serviceName) {
+    public InboundWire getInboundWire(String serviceName) {
         if (serviceName == null) {
             return serviceWires.values().iterator().next();
         } else {
@@ -68,18 +68,18 @@ public abstract class AtomicContextExtension<T> extends AbstractContext<T> imple
         }
     }
 
-    public void addReferenceWire(OutboundWire wire) {
+    public void addOutboundWire(OutboundWire wire) {
         List<OutboundWire> list = new ArrayList<OutboundWire>();
         list.add(wire);
         referenceWires.put(wire.getReferenceName(), list);
         onReferenceWire(wire);
     }
 
-    public Map<String,List<OutboundWire>> getReferenceWires() {
+    public Map<String,List<OutboundWire>> getOutboundWires() {
         return referenceWires;
     }
 
-    public void addReferenceWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
+    public void addOutboundWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
         assert(wires != null && wires.size() > 0);
         referenceWires.put(wires.get(0).getReferenceName(), wires);
         onReferenceWires(multiplicityClass, wires);

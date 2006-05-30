@@ -8,19 +8,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.core.system.context.SystemAtomicContextImpl;
-import org.apache.tuscany.core.system.wire.SystemOutboundWire;
 import org.apache.tuscany.core.system.wire.SystemInboundWire;
+import org.apache.tuscany.core.system.wire.SystemOutboundWire;
 import org.apache.tuscany.core.util.MethodHashMap;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.jdk.JDKInboundWire;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ScopeContext;
@@ -91,7 +91,7 @@ public class MockContextFactory {
         InboundWire inboundWire = new SystemInboundWire(targetName.getPortName(), targetClass, targetCtx);
         wire.setTargetWire(inboundWire);
 
-        sourceCtx.addReferenceWire(wire);
+        sourceCtx.addOutboundWire(wire);
         contexts.put(source, sourceCtx);
         contexts.put(target, targetCtx);
         return contexts;

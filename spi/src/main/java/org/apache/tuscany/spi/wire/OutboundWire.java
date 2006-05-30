@@ -16,6 +16,8 @@ package org.apache.tuscany.spi.wire;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.apache.tuscany.spi.QualifiedName;
+
 /**
  * Implementations are responsible for managing the reference side of a wire, including the invocation chains
  * associated with each service operation.  A <code>OutboundWire</code> is connected to a {@link InboundWire}
@@ -36,6 +38,16 @@ public interface OutboundWire<T> extends RuntimeWire<T> {
     void setReferenceName(String name);
 
     /**
+     * Returns the name of the target
+     */
+    QualifiedName getTargetName();
+
+    /**
+     * Sets the name of the target
+     */
+    void setTargetName(QualifiedName name);
+
+    /**
      * Returns the invocation configuration for each operation on a service specified by a reference or a
      * target service.
      */
@@ -50,5 +62,11 @@ public interface OutboundWire<T> extends RuntimeWire<T> {
      * Adds the invocation chain associated with the given operation
      */
     void addInvocationChain(Method method, OutboundInvocationChain chains);
+
+    /**
+     * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end
+     */
+    void setTargetWire(InboundWire<T> wire);
+
 
 }

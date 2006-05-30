@@ -18,7 +18,7 @@ package org.apache.tuscany.container.java;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.wire.jdk.PojoTargetInvoker;
+import org.apache.tuscany.core.wire.PojoTargetInvoker;
 import org.apache.tuscany.spi.context.TargetException;
 
 /**

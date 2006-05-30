@@ -27,7 +27,7 @@ public class GetServiceByNameTestCase extends MockObjectTestCase {
         mock.stubs().method("getInvocationChains").will(returnValue(Collections.emptyMap()));
 
         InboundWire<Target> wire = (InboundWire<Target>) mock.proxy();
-        context.addServiceWire(wire);
+        context.addInboundWire(wire);
         context.prepare();
         context.start();
 

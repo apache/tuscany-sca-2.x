@@ -52,4 +52,10 @@ public interface InboundWire<T> extends RuntimeWire<T> {
      */
     void addInvocationChain(Method method, InboundInvocationChain chain);
 
+    /**
+     * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end
+     */
+    void setTargetWire(OutboundWire<T> wire);
+
+
 }

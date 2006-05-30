@@ -54,7 +54,7 @@ public class WireTestCase extends MockObjectTestCase {
                 }));
         mock.expects(atLeastOnce()).method("getReferenceName").will(returnValue("wire"));
         OutboundWire<Greeting> wire = (OutboundWire<Greeting>) mock.proxy();
-        context.addReferenceWire(wire);
+        context.addOutboundWire(wire);
         Greeting greeting = context.getService();
         assertEquals("foo", greeting.greet("foo"));
         scope.stop();
@@ -103,7 +103,7 @@ public class WireTestCase extends MockObjectTestCase {
                 });
 
         InboundWire<Greeting> wire = (InboundWire<Greeting>) mock.proxy();
-        context.addServiceWire(wire);
+        context.addInboundWire(wire);
         Greeting greeting = (Greeting) context.getService("Greeting");
         assertEquals("foo", greeting.greet("foo"));
         scope.stop();

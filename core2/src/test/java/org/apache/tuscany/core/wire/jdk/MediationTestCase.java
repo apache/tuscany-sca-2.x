@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
+import org.apache.tuscany.core.wire.StaticPojoTargetInvoker;
 
 /**
  * Tests invoking on a different interface from the one actually implemented by the target

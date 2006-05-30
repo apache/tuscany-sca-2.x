@@ -72,23 +72,23 @@ public class SystemSingletonAtomicContext<S, T extends S> extends AbstractContex
         throw new UnsupportedOperationException();
     }
 
-    public void addServiceWire(InboundWire wire) {
+    public void addInboundWire(InboundWire wire) {
         throw new UnsupportedOperationException();
     }
 
-    public InboundWire getServiceWire(String serviceName) {
+    public InboundWire getInboundWire(String serviceName) {
         throw new UnsupportedOperationException();
     }
 
-    public void addReferenceWire(OutboundWire wire) {
+    public void addOutboundWire(OutboundWire wire) {
         throw new UnsupportedOperationException();
     }
 
-    public void addReferenceWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
+    public void addOutboundWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
         throw new UnsupportedOperationException();
     }
 
-    public Map<String,List<OutboundWire>> getReferenceWires() {
+    public Map<String,List<OutboundWire>> getOutboundWires() {
         throw new UnsupportedOperationException();
     }
 

@@ -9,6 +9,7 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.ServiceInvocationHandler;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * The default implementation of an service context
@@ -18,11 +19,11 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
 public class ServiceContextExtension<T> extends AbstractContext<T> implements ServiceContext<T> {
 
     protected InboundWire<T> inboundWire;
+    protected OutboundWire<T> outboundWire;
     private T target;
 
-    public ServiceContextExtension(String name, InboundWire<T> wire, CompositeContext parent) throws CoreRuntimeException {
+    public ServiceContextExtension(String name, CompositeContext parent) throws CoreRuntimeException {
         super(name, parent);
-        this.inboundWire = wire;
     }
 
     public Scope getScope() {
@@ -36,6 +37,14 @@ public class ServiceContextExtension<T> extends AbstractContext<T> implements Se
     public void setInboundWire(InboundWire<T> wire) {
         target = null;
         inboundWire = wire;
+    }
+
+    public OutboundWire<T> getOutboundWire() {
+        return outboundWire;
+    }
+
+    public void setOutboundWire(OutboundWire<T> outboundWire) {
+        this.outboundWire = outboundWire;
     }
 
     public T getService() throws TargetException {

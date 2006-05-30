@@ -93,15 +93,6 @@ public class AutowireTestCase extends MockObjectTestCase {
         assertNull(parent.resolveExternalInstance(Source.class));
     }
 
-
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     public static class SourceImpl implements Source, Source2 {
         public SourceImpl() {
         }

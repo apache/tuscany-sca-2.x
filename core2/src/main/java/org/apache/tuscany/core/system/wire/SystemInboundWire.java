@@ -4,15 +4,15 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
- * The source side of a wire configured to use the {@link org.apache.tuscany.core.system.model.SystemBinding}
+ * An inbound wire configured to use the {@link org.apache.tuscany.core.system.model.SystemBinding}. System
+ * wires bind directly to their targets without proxying or interposing invocation chains.
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -20,18 +20,23 @@ public class SystemInboundWire<T> implements InboundWire<T> {
     private String serviceName;
     private Class<T> businessInterface;
     private ComponentContext<?> componentContext;
-    private RuntimeWire<T> wire; // a bridge to another target wire
-    private QualifiedName targetName;
+    private OutboundWire<T> wire;
 
+    /**
+     * Constructs a new inbound wire
+     * @param serviceName the name of the service the inbound wire represents
+     * @param businessInterface the service interface
+     * @param target the target context the wire is connected to
+     */
     public SystemInboundWire(String serviceName, Class<T> businessInterface, ComponentContext<?> target) {
         this.serviceName = serviceName;
         this.businessInterface = businessInterface;
         this.componentContext = target;
     }
 
-    public SystemInboundWire(Class<T> businessInterface, ComponentContext<?> target) {
+    public SystemInboundWire(String serviceName, Class<T> businessInterface) {
+        this.serviceName = serviceName;
         this.businessInterface = businessInterface;
-        this.componentContext = target;
     }
 
     public String getServiceName() {
@@ -39,7 +44,7 @@ public class SystemInboundWire<T> implements InboundWire<T> {
     }
 
     public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
+        throw new UnsupportedOperationException();
     }
 
     @SuppressWarnings("unchecked")
@@ -62,14 +67,6 @@ public class SystemInboundWire<T> implements InboundWire<T> {
         return new Class[0];
     }
 
-    public QualifiedName getTargetName() {
-        return targetName;
-    }
-
-    public void setTargetName(QualifiedName targetName) {
-        this.targetName = targetName;
-    }
-
     public Map<Method, InboundInvocationChain> getInvocationChains() {
         return Collections.emptyMap();
     }
@@ -90,7 +87,7 @@ public class SystemInboundWire<T> implements InboundWire<T> {
         return true;  // system wires are always optimizable
     }
 
-    public void setTargetWire(RuntimeWire<T> wire) {
+    public void setTargetWire(OutboundWire<T> wire) {
         this.wire = wire;
     }
 

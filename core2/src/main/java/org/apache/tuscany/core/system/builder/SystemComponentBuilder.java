@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.core.context.AutowireContext;
 import org.apache.tuscany.core.injection.ContextInjector;
 import org.apache.tuscany.core.injection.Injector;
@@ -15,20 +14,21 @@ import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.core.system.context.SystemAtomicContextImpl;
 import org.apache.tuscany.core.system.model.SystemImplementation;
+import org.apache.tuscany.core.system.wire.SystemInboundWire;
 import org.apache.tuscany.core.system.wire.SystemOutboundAutowire;
 import org.apache.tuscany.core.system.wire.SystemOutboundWire;
-import org.apache.tuscany.core.system.wire.SystemInboundWire;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
-import org.apache.tuscany.spi.model.Component;
-import org.apache.tuscany.spi.model.ReferenceTarget;
-import org.apache.tuscany.spi.model.Service;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.ReferenceTarget;
+import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
@@ -85,8 +85,8 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
 
         for (Service service : component.getImplementation().getComponentType().getServices().values()) {
             Class interfaze = service.getServiceContract().getInterfaceClass();
-            SystemInboundWire wire = new SystemInboundWire(service.getName(), interfaze, systemContext);
-            systemContext.addServiceWire(wire);
+            SystemInboundWire<?> wire = new SystemInboundWire(service.getName(), interfaze, systemContext);
+            systemContext.addInboundWire(wire);
         }
         for (ReferenceTarget target : component.getReferenceTargets().values()) {
             String referenceName = target.getReferenceName();
@@ -108,7 +108,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
                 QualifiedName targetName = new QualifiedName(target.getTargets().get(0).getPath());
                 wire = new SystemOutboundWire(referenceName, targetName, interfaze);
             }
-            systemContext.addReferenceWire(wire);
+            systemContext.addOutboundWire(wire);
         }
         return systemContext;
     }

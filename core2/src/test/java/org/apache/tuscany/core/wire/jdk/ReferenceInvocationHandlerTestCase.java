@@ -18,15 +18,15 @@ import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 
-public class JDKSourceInvocationHandlerTestCase extends TestCase {
+public class ReferenceInvocationHandlerTestCase extends TestCase {
 
     private Method hello;
 
-    public JDKSourceInvocationHandlerTestCase() {
+    public ReferenceInvocationHandlerTestCase() {
         super();
     }
 
-    public JDKSourceInvocationHandlerTestCase(String arg0) {
+    public ReferenceInvocationHandlerTestCase(String arg0) {
         super(arg0);
     }
 
@@ -54,7 +54,7 @@ public class JDKSourceInvocationHandlerTestCase extends TestCase {
     }
 
     public void testDirectErrorInvoke() throws Throwable {
-        OutboundInvocationChainImpl source = new OutboundInvocationChainImpl(hello);
+        OutboundInvocationChain source = new OutboundInvocationChainImpl(hello);
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
@@ -70,7 +70,7 @@ public class JDKSourceInvocationHandlerTestCase extends TestCase {
     }
 
     public void testDirectInvoke() throws Throwable {
-        OutboundInvocationChainImpl source = new OutboundInvocationChainImpl(hello);
+        OutboundInvocationChain source = new OutboundInvocationChainImpl(hello);
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 

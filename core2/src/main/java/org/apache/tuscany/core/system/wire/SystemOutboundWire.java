@@ -6,12 +6,13 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.RuntimeWire;
 
 /**
- * The source side of a wire configured to use the {@link org.apache.tuscany.core.system.model.SystemBinding}
+ * An outbound wire configured to use the {@link org.apache.tuscany.core.system.model.SystemBinding}. System
+ * wires bind directly to their targets without prxying or interposing invocation chains.
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -19,7 +20,7 @@ public class SystemOutboundWire<T> implements OutboundWire<T> {
     private String referenceName;
     private QualifiedName targetName;
     private Class<T> businessInterface;
-    private RuntimeWire<T> targetWire;
+    private InboundWire<T> targetWire;
 
     public SystemOutboundWire(String referenceName, QualifiedName targetName, Class<T> businessInterface) {
         this.referenceName = referenceName;
@@ -62,6 +63,7 @@ public class SystemOutboundWire<T> implements OutboundWire<T> {
         return new Class[0];
     }
 
+
     public Map<Method, OutboundInvocationChain> getInvocationChains() {
         return Collections.emptyMap();
     }
@@ -78,7 +80,7 @@ public class SystemOutboundWire<T> implements OutboundWire<T> {
         throw new UnsupportedOperationException();
     }
 
-    public void setTargetWire(RuntimeWire<T> wire) {
+    public void setTargetWire(InboundWire<T> wire) {
         targetWire = wire;
     }
 

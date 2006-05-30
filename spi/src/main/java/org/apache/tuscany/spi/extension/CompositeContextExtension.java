@@ -136,23 +136,23 @@ public abstract class CompositeContextExtension<T> extends AbstractContext<T> im
         return serviceInterfaces;
     }
 
-    public void addReferenceWire(OutboundWire wire) {
+    public void addOutboundWire(OutboundWire wire) {
 
     }
 
-    public void addReferenceWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
+    public void addOutboundWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
 
     }
 
-    public Map<String, List<OutboundWire>> getReferenceWires() {
+    public Map<String, List<OutboundWire>> getOutboundWires() {
         return null;
     }
 
-    public void addServiceWire(InboundWire wire) {
+    public void addInboundWire(InboundWire wire) {
         //TODO implement
     }
 
-    public InboundWire getServiceWire(String serviceName) {
+    public InboundWire getInboundWire(String serviceName) {
         Context context = children.get(serviceName);
         if (context == null || !(context instanceof ServiceContext)) {
             throw new ContextNotFoundException(serviceName);

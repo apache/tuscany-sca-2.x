@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.wire.jdk;
+package org.apache.tuscany.core.wire;
 
 import static java.lang.Integer.TYPE;
 import java.lang.reflect.InvocationTargetException;
@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import org.apache.tuscany.core.wire.StaticPojoTargetInvoker;
 
 public class StaticPojoInvokerTestCase extends TestCase {
 

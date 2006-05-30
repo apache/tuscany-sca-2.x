@@ -20,12 +20,12 @@ import java.util.Map;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
-import org.apache.tuscany.spi.wire.RuntimeWire;
 
 /**
  * Creates proxies that are injected on references using JDK dynamic proxy facilities and front a wire. The
@@ -39,7 +39,7 @@ public class JDKOutboundWire<T> implements OutboundWire<T> {
     private Map<Method, OutboundInvocationChain> invocationChains = new MethodHashMap<OutboundInvocationChain>();
     private String referenceName;
     private QualifiedName targetName;
-    private RuntimeWire<T> targetWire;
+    private InboundWire<T> targetWire;
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
@@ -68,8 +68,8 @@ public class JDKOutboundWire<T> implements OutboundWire<T> {
         return businessInterfaces;
     }
 
-    public void setTargetWire(RuntimeWire<T> wire) {
-       this.targetWire = wire;
+    public void setTargetWire(InboundWire<T> wire) {
+        this.targetWire = wire;
     }
 
     public Map<Method, OutboundInvocationChain> getInvocationChains() {

@@ -2,6 +2,7 @@ package org.apache.tuscany.spi.context;
 
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * Manages the context for a service configured for a binding. Bindings uses an {@link
@@ -47,6 +48,10 @@ public interface ServiceContext<T> extends Context<T> {
     public InboundWire<T> getInboundWire();
 
     public void setInboundWire(InboundWire<T> wire);
+
+    public OutboundWire<T> getOutboundWire();
+
+    public void setOutboundWire(OutboundWire<T> wire);
 
 
 }

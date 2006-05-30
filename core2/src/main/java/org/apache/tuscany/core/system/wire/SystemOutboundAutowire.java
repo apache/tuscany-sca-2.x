@@ -10,10 +10,9 @@ import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.RuntimeWire;
 
 /**
- * The source side of an wire configured to autowire
+ * An outbound wire that relies on the runtime autowire algorithm to resolve a target instance
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -59,7 +58,7 @@ public class SystemOutboundAutowire<T> implements OutboundAutowire<T> {
         return new Class[0];
     }
 
-    public void setTargetWire(RuntimeWire<T> wire) {
+    public void setTargetWire(InboundWire<T> wire) {
         throw new UnsupportedOperationException();
     }
 
@@ -77,9 +76,6 @@ public class SystemOutboundAutowire<T> implements OutboundAutowire<T> {
 
     public void addInterface(Class claz) {
         throw new UnsupportedOperationException();
-    }
-
-    public void setTargetWire(InboundWire<T> wire) {
     }
 
     public boolean isOptimizable() {

@@ -41,7 +41,7 @@ public class AtomicContextWireInvocationTestCase extends MockObjectTestCase {
         SystemAtomicContext sourceContext = MockContextFactory.createSystemAtomicContext("source", scope, interfaces, SourceImpl.class, null, members);
         OutboundWire<Target> outboundWire = new SystemOutboundWire<Target>("setTarget", new QualifiedName("service"), Target.class);
         outboundWire.setTargetWire(inboundWire);
-        sourceContext.addReferenceWire(outboundWire);
+        sourceContext.addOutboundWire(outboundWire);
         sourceContext.start();
         assertSame(((Source) sourceContext.getService()).getTarget(), target); // wires should pass back direct ref
     }
