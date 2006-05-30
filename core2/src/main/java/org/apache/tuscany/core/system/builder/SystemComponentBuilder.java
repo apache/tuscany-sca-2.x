@@ -39,7 +39,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
     public ComponentContext build(CompositeContext parent, Component<SystemImplementation> component, DeploymentContext deploymentContext) throws BuilderConfigException {
         assert(parent instanceof AutowireContext): "Parent must implement " + AutowireContext.class.getName();
         AutowireContext autowireContext = (AutowireContext) parent;
-        PojoComponentType componentType = component.getImplementation().getComponentType();
+        PojoComponentType<?,?,?> componentType = component.getImplementation().getComponentType();
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         for (Service service : componentType.getServices().values()) {
             serviceInterfaces.add(service.getServiceContract().getInterfaceClass());
@@ -83,7 +83,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
                         injectors,
                         members);
 
-        for (Service service : component.getImplementation().getComponentType().getServices().values()) {
+        for (Service service : componentType.getServices().values()) {
             Class interfaze = service.getServiceContract().getInterfaceClass();
             SystemInboundWire<?> wire = new SystemInboundWire(service.getName(), interfaze, systemContext);
             systemContext.addInboundWire(wire);

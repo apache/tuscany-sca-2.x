@@ -63,12 +63,5 @@ public class Component<I extends Implementation<?>> extends ModelObject {
 
     public void add(ReferenceTarget target) {
         referenceTargets.put(target.getReferenceName(), target);
-        if (implementation != null && implementation.getComponentType() != null) {
-            Reference reference = implementation.getComponentType().getReferences().get(
-                    target.getReferenceName());
-            if (reference != null) {
-                target.setReference(reference);
-            }
-        }
     }
 }

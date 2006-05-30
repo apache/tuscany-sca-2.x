@@ -26,7 +26,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
 
     public JavaAtomicContext build(CompositeContext parent, Component<JavaImplementation> component, DeploymentContext deploymentContext)
             throws BuilderConfigException {
-        PojoComponentType componentType = component.getImplementation().getComponentType();
+        PojoComponentType<?,?,?> componentType = component.getImplementation().getComponentType();
 
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         for (Service service : componentType.getServices().values()) {

@@ -58,7 +58,7 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
 
     public ComponentContext build(CompositeContext parent, Component<SystemCompositeImplementation> component, DeploymentContext deploymentContext) throws BuilderConfigException {
         SystemCompositeImplementation impl = component.getImplementation();
-        CompositeComponentType componentType = impl.getComponentType();
+        CompositeComponentType<?,?,?> componentType = impl.getComponentType();
         SystemCompositeContext<?> context = new SystemCompositeContextImpl(component.getName(), parent, getAutowireContext(parent));
         for (Service service : componentType.getServices().values()) {
             if (service instanceof BoundService) {

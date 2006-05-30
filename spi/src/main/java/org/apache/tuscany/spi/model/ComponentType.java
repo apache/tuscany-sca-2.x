@@ -22,11 +22,11 @@ import java.util.Map;
 /**
  * @version $Rev$ $Date$
  */
-public class ComponentType extends ModelObject {
+public class ComponentType<S extends Service, R extends Reference, P extends Property<?>> extends ModelObject {
     private boolean eagerInit;
-    private final Map<String, Service> services = new HashMap<String, Service>();
-    private final Map<String, Reference> references = new HashMap<String, Reference>();
-    private final Map<String, Property<?>> properties = new HashMap<String, Property<?>>();
+    private final Map<String, S> services = new HashMap<String, S>();
+    private final Map<String, R> references = new HashMap<String, R>();
+    private final Map<String, P> properties = new HashMap<String, P>();
 
     public boolean isEagerInit() {
         return eagerInit;
@@ -36,27 +36,27 @@ public class ComponentType extends ModelObject {
         this.eagerInit = eagerInit;
     }
 
-    public Map<String, Service> getServices() {
+    public Map<String, S> getServices() {
         return services;
     }
 
-    public Map<String, Reference> getReferences() {
+    public Map<String, R> getReferences() {
         return references;
     }
 
-    public Map<String, Property<?>> getProperties() {
+    public Map<String, P> getProperties() {
         return properties;
     }
 
-    public void add(Service service) {
+    public void add(S service) {
         services.put(service.getName(), service);
     }
 
-    public void add(Reference reference) {
+    public void add(R reference) {
         references.put(reference.getName(), reference);
     }
 
-    public void add(Property<?> property) {
+    public void add(P property) {
         properties.put(property.getName(), property);
     }
 }

@@ -42,29 +42,24 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
                                   Component<CompositeImplementation> component,
                                   DeploymentContext deploymentContext) throws BuilderConfigException {
         CompositeImplementation implementation = component.getImplementation();
-        CompositeComponentType componentType = implementation.getComponentType();
+        CompositeComponentType<?,?,?> componentType = implementation.getComponentType();
         CompositeContextImpl<?> context = new CompositeContextImpl(component.getName(), parent, null);
         for (ReferenceTarget target : component.getReferenceTargets().values()) {
             Reference reference = target.getReference();
             if (reference instanceof BoundReference) {
-                Context<?> refereceContext = builderRegistry.build(context, (BoundReference) reference,
-                        deploymentContext);
+                Context<?> refereceContext = builderRegistry.build(context, (BoundReference) reference, deploymentContext);
                 context.registerContext(refereceContext);
             }
         }
-        for (Component<? extends Implementation> child : componentType.getComponents().values()) {
+        for (Component<? extends Implementation<?>> child : componentType.getComponents().values()) {
             Context<?> childContext = builderRegistry.build(context, child, deploymentContext);
             context.registerContext(childContext);
         }
         for (Service service : componentType.getServices().values()) {
             if (service instanceof BoundService) {
-                Context<?> serviceContext = builderRegistry.build(context, (BoundService) service,
-                        deploymentContext);
+                Context<?> serviceContext = builderRegistry.build(context, (BoundService) service, deploymentContext);
                 context.registerContext(serviceContext);
             }
-        }
-        for (Context child : context.getContexts()) {
-            //child.prepare();
         }
         return context;
     }
