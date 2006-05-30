@@ -19,7 +19,7 @@ import org.apache.tuscany.core.system.wire.SystemOutboundWire;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.jdk.JDKInboundWire;
+import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.AtomicContext;
@@ -154,7 +154,7 @@ public class MockContextFactory {
     }
 
     public static <T> InboundWire<T> createTargetWireFactory(String serviceName, Class<T> interfaze) {
-        InboundWire<T> wire = new JDKInboundWire<T>();
+        InboundWire<T> wire = new InboundWireImpl<T>();
         wire.setServiceName(serviceName);
         wire.setBusinessInterface(interfaze);
         wire.addInvocationChains(createTargetInvocationConfigurations(interfaze));

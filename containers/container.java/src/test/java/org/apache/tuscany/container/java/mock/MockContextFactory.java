@@ -18,8 +18,8 @@ import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.MessageChannelImpl;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.jdk.JDKInboundWire;
-import org.apache.tuscany.core.wire.jdk.JDKOutboundWire;
+import org.apache.tuscany.core.wire.InboundWireImpl;
+import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.context.AtomicContext;
@@ -177,7 +177,7 @@ public class MockContextFactory {
                                                        Interceptor headInterceptor,
                                                        MessageHandler headRequestHandler,
                                                        MessageHandler headResponseHandler) {
-        InboundWire<T> wire = new JDKInboundWire<T>();
+        InboundWire<T> wire = new InboundWireImpl<T>();
         wire.setBusinessInterface(interfaze);
         wire.setServiceName(serviceName);
         wire.addInvocationChains(createServiceInvocationChains(interfaze, headInterceptor, headRequestHandler, headResponseHandler));
@@ -189,7 +189,7 @@ public class MockContextFactory {
                                                           MessageHandler headRequestHandler,
                                                           MessageHandler headResponseHandler) {
 
-        OutboundWire<T> wire = new JDKOutboundWire<T>();
+        OutboundWire<T> wire = new OutboundWireImpl<T>();
         wire.setReferenceName(refName);
         wire.addInvocationChains(createReferenceInvocationChains(interfaze, headInterceptor, headRequestHandler, headResponseHandler));
         wire.setBusinessInterface(interfaze);
@@ -197,7 +197,7 @@ public class MockContextFactory {
     }
 
     public static <T> OutboundWire<T> createReferenceWire(String refName, Class<T> interfaze) {
-        OutboundWire<T> wire = new JDKOutboundWire<T>();
+        OutboundWire<T> wire = new OutboundWireImpl<T>();
         wire.setReferenceName(refName);
         wire.addInvocationChains(createReferenceInvocationChains(interfaze));
         wire.setBusinessInterface(interfaze);

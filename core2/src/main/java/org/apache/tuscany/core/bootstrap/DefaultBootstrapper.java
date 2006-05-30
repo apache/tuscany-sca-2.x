@@ -35,21 +35,18 @@ import org.apache.tuscany.core.loader.StringParserPropertyFactory;
 import org.apache.tuscany.core.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.system.builder.SystemCompositeBuilder;
-import org.apache.tuscany.core.system.loader.SystemComponentTypeLoader;
-import org.apache.tuscany.core.system.loader.SystemImplementationLoader;
-import org.apache.tuscany.core.system.loader.SystemCompositeComponentTypeLoader;
 import org.apache.tuscany.core.system.loader.SystemBindingLoader;
+import org.apache.tuscany.core.system.loader.SystemComponentTypeLoader;
+import org.apache.tuscany.core.system.loader.SystemCompositeComponentTypeLoader;
+import org.apache.tuscany.core.system.loader.SystemImplementationLoader;
 import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.system.model.SystemImplementation;
-import org.apache.tuscany.core.wire.jdk.JDKWireFactoryService;
-import org.apache.tuscany.core.wire.system.WireServiceImpl;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.context.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.StAXPropertyFactory;
-import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.spi.monitor.MonitorFactory;
 
 /**
@@ -81,9 +78,8 @@ public class DefaultBootstrapper {
     }
 
     protected BuilderRegistry getDefaultBuilderRegistry() {
-        WireService wireService = new WireServiceImpl(new JDKWireFactoryService());
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl(new WorkContextImpl());
-        BuilderRegistry builderRegistry = new BuilderRegistryImpl(wireService, scopeRegistry);
+        BuilderRegistry builderRegistry = new BuilderRegistryImpl(scopeRegistry);
         builderRegistry.register(SystemCompositeImplementation.class, new SystemCompositeBuilder(builderRegistry));
         builderRegistry.register(SystemImplementation.class, new SystemComponentBuilder());
         builderRegistry.register(SystemBinding.class, new SystemBindingBuilder());

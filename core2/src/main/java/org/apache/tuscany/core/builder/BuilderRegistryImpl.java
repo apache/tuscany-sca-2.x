@@ -37,7 +37,6 @@ import org.apache.tuscany.spi.model.BoundReference;
 import org.apache.tuscany.spi.model.BoundService;
 import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * The default builder registry in the runtime
@@ -48,20 +47,14 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     private final Map<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>> componentBuilders = new HashMap<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>();
     private final Map<Class<? extends Binding>, BindingBuilder<? extends Binding>> bindingBuilders = new HashMap<Class<? extends Binding>, BindingBuilder<? extends Binding>>();
 
-    protected WireService wireService;
+    //protected WireService wireService;
     protected ScopeRegistry scopeRegistry;
 
     public BuilderRegistryImpl() {
     }
 
-    public BuilderRegistryImpl(WireService wireService, ScopeRegistry scopeRegistry) {
-        this.wireService = wireService;
+    public BuilderRegistryImpl(ScopeRegistry scopeRegistry) {
         this.scopeRegistry = scopeRegistry;
-    }
-
-    @Autowire
-    public void setWireService(WireService wireService) {
-        this.wireService = wireService;
     }
 
     @Autowire

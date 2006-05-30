@@ -17,9 +17,10 @@ public interface Connector {
 
     <T> void connect(Context<T> source);
 
-    public <T> void connect(InboundWire<T> inboundWire, OutboundWire<T> outboundWire, boolean optimizable) throws BuilderConfigException;
+    <T> void connect(InboundWire<T> inboundWire, OutboundWire<T> outboundWire, boolean optimizable) throws BuilderConfigException;
 
-    public <T> void connect(OutboundWire<T> outboundWire, CompositeContext<?> parent, Scope sourceScope) throws BuilderConfigException;
-    public <T> void connect(OutboundWire<T> sourceWire, InboundWire<T> targetWire, Context<?> context, boolean optimizable);
+    <T> void connect(OutboundWire<T> outboundWire, CompositeContext<?> parent, Scope sourceScope) throws BuilderConfigException;
+
+    <T> void connect(OutboundWire<T> sourceWire, InboundWire<T> targetWire, Context<?> context, boolean optimizable);
 
 }

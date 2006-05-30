@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.jdk.JDKOutboundWire;
-import org.apache.tuscany.core.wire.jdk.JDKInboundWire;
+import org.apache.tuscany.core.wire.OutboundWireImpl;
+import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.StaticPojoTargetInvoker;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
@@ -29,7 +29,7 @@ public class WireOptimizationTestCase extends TestCase {
     }
 
     public void testSourceWireInterceptorOptimization() throws Exception {
-        OutboundWire<?> wire = new JDKOutboundWire();
+        OutboundWire<?> wire = new OutboundWireImpl();
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(m);
         chain.addInterceptor(new OptimizableInterceptor());
         wire.addInvocationChain(m, chain);
@@ -37,7 +37,7 @@ public class WireOptimizationTestCase extends TestCase {
     }
 
     public void testSourceWireHandlerOptimization() throws Exception {
-        OutboundWire<?> wire = new JDKOutboundWire();
+        OutboundWire<?> wire = new OutboundWireImpl();
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(m);
         chain.addRequestHandler(new OptimizableHandler());
         chain.addResponseHandler(new OptimizableHandler());
@@ -46,7 +46,7 @@ public class WireOptimizationTestCase extends TestCase {
     }
 
     public void testSourceWireNonInterceptorOptimization() throws Exception {
-        OutboundWire<?> wire = new JDKOutboundWire();
+        OutboundWire<?> wire = new OutboundWireImpl();
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(m);
         chain.addInterceptor(new NonOptimizableInterceptor());
         wire.addInvocationChain(m, chain);
@@ -54,7 +54,7 @@ public class WireOptimizationTestCase extends TestCase {
     }
 
     public void testSourceWireNonRequestHandlerOptimization() throws Exception {
-        OutboundWire<?> wire = new JDKOutboundWire();
+        OutboundWire<?> wire = new OutboundWireImpl();
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(m);
         chain.addInterceptor(new OptimizableInterceptor());
         chain.addRequestHandler(new NonOptimizableHandler());
@@ -63,7 +63,7 @@ public class WireOptimizationTestCase extends TestCase {
     }
 
     public void testSourceWireNonResponseHandlerOptimization() throws Exception {
-        OutboundWire<?> wire = new JDKOutboundWire();
+        OutboundWire<?> wire = new OutboundWireImpl();
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(m);
         chain.addInterceptor(new OptimizableInterceptor());
         chain.addResponseHandler(new NonOptimizableHandler());
@@ -73,7 +73,7 @@ public class WireOptimizationTestCase extends TestCase {
 
 
     public void testTargetWireInterceptorOptimization() throws Exception {
-        InboundWire<?> wire = new JDKInboundWire();
+        InboundWire<?> wire = new InboundWireImpl();
         InboundInvocationChain chain = new InboundInvocationChainImpl(m);
         chain.addInterceptor(new OptimizableInterceptor());
         wire.addInvocationChain(m, chain);
@@ -81,7 +81,7 @@ public class WireOptimizationTestCase extends TestCase {
     }
 
     public void testTargetWireHandlerOptimization() throws Exception {
-        InboundWire<?> wire = new JDKInboundWire();
+        InboundWire<?> wire = new InboundWireImpl();
         InboundInvocationChain chain = new InboundInvocationChainImpl(m);
         chain.addRequestHandler(new OptimizableHandler());
         chain.addResponseHandler(new OptimizableHandler());
@@ -90,7 +90,7 @@ public class WireOptimizationTestCase extends TestCase {
     }
 
     public void testTargetWireNonInterceptorOptimization() throws Exception {
-        InboundWire<?> wire = new JDKInboundWire();
+        InboundWire<?> wire = new InboundWireImpl();
         InboundInvocationChain chain = new InboundInvocationChainImpl(m);
         chain.addInterceptor(new NonOptimizableInterceptor());
         wire.addInvocationChain(m, chain);
@@ -98,7 +98,7 @@ public class WireOptimizationTestCase extends TestCase {
     }
 
     public void testTargetWireNonRequestHandlerOptimization() throws Exception {
-        InboundWire<?> wire = new JDKInboundWire();
+        InboundWire<?> wire = new InboundWireImpl();
         InboundInvocationChain chain = new InboundInvocationChainImpl(m);
         chain.addInterceptor(new OptimizableInterceptor());
         chain.addRequestHandler(new NonOptimizableHandler());
@@ -107,7 +107,7 @@ public class WireOptimizationTestCase extends TestCase {
     }
 
     public void testTargetWireNonResponseHandlerOptimization() throws Exception {
-        InboundWire<?> wire = new JDKInboundWire();
+        InboundWire<?> wire = new InboundWireImpl();
         InboundInvocationChain chain = new InboundInvocationChainImpl(m);
         chain.addInterceptor(new OptimizableInterceptor());
         chain.addResponseHandler(new NonOptimizableHandler());
@@ -116,7 +116,7 @@ public class WireOptimizationTestCase extends TestCase {
     }
 
     public void testTargetWireNonTargetInvokerOptimization() throws Exception {
-        InboundWire<?> wire = new JDKInboundWire();
+        InboundWire<?> wire = new InboundWireImpl();
         InboundInvocationChain chain = new InboundInvocationChainImpl(m);
         TargetInvoker invoker = new StaticPojoTargetInvoker(m,new Object());
         invoker.setCacheable(false);

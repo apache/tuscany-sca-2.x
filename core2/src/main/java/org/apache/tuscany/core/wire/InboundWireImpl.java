@@ -1,4 +1,4 @@
-package org.apache.tuscany.core.wire.jdk;
+package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -14,13 +14,11 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.ServiceInvocationHandler;
 
 /**
- * Creates proxies that are returned to non-SCA clients using JDK dynamic proxy facilities and front a wire.
- * The proxies implement the business interface associated with the target service of the wire and are
- * typically returned by a locate operation.
+ * Default implementation of an inbound wire
  *
  * @version $Rev: 394431 $ $Date: 2006-04-15 21:27:44 -0700 (Sat, 15 Apr 2006) $
  */
-public class JDKInboundWire<T> implements InboundWire<T> {
+public class InboundWireImpl<T> implements InboundWire<T> {
 
     private String serviceName;
     private Class[] businessInterfaces;

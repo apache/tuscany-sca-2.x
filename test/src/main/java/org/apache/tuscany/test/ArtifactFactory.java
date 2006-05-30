@@ -8,8 +8,8 @@ import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.jdk.JDKInboundWire;
-import org.apache.tuscany.core.wire.jdk.JDKOutboundWire;
+import org.apache.tuscany.core.wire.InboundWireImpl;
+import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.apache.tuscany.core.builder.Connector;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
@@ -41,7 +41,7 @@ public class ArtifactFactory {
      * @param interfaze   the interface associated with the wire
      */
     public static <T> InboundWire<T> createInboundWire(String serviceName, Class<T> interfaze) {
-        InboundWire<T> wire = new JDKInboundWire<T>();
+        InboundWire<T> wire = new InboundWireImpl<T>();
         wire.setBusinessInterface(interfaze);
         wire.setServiceName(serviceName);
         wire.addInvocationChains(createInboundChains(interfaze));
@@ -57,7 +57,7 @@ public class ArtifactFactory {
      * @param interfaze the interface associated with the wire
      */
     public static <T> OutboundWire<T> createOutboundWire(String refName, Class<T> interfaze) {
-        OutboundWire<T> wire = new JDKOutboundWire<T>();
+        OutboundWire<T> wire = new OutboundWireImpl<T>();
         wire.setReferenceName(refName);
         wire.addInvocationChains(createOutboundChains(interfaze));
         wire.setBusinessInterface(interfaze);

@@ -11,7 +11,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.wire.jdk;
+package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -28,12 +28,11 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
 
 /**
- * Creates proxies that are injected on references using JDK dynamic proxy facilities and front a wire. The
- * proxies implement the business interface associated with the service required by reference.
+ * Default implementation of an outbound wire
  *
  * @version $Rev: 394431 $ $Date: 2006-04-15 21:27:44 -0700 (Sat, 15 Apr 2006) $
  */
-public class JDKOutboundWire<T> implements OutboundWire<T> {
+public class OutboundWireImpl<T> implements OutboundWire<T> {
 
     private Class<T>[] businessInterfaces;
     private Map<Method, OutboundInvocationChain> invocationChains = new MethodHashMap<OutboundInvocationChain>();
@@ -99,7 +98,6 @@ public class JDKOutboundWire<T> implements OutboundWire<T> {
     public void setTargetName(QualifiedName targetName) {
         this.targetName = targetName;
     }
-
 
     public boolean isOptimizable() {
         for (OutboundInvocationChain chain : invocationChains.values()) {

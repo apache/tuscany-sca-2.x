@@ -25,7 +25,7 @@ import org.apache.tuscany.core.context.scope.RequestScopeContext;
 import org.apache.tuscany.core.context.scope.StatelessScopeContext;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.jdk.JDKOutboundWire;
+import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.ScopeContext;
@@ -39,10 +39,8 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class ServiceToJavaTestCase extends TestCase {
+public class OutboundWireToJavaTestCase extends TestCase {
     private WorkContext workContext;
-    //private SystemCompositeContext parent;
-
 
     public void testToStatelessScope() throws Exception {
         StatelessScopeContext scope = new StatelessScopeContext(workContext);
@@ -162,11 +160,10 @@ public class ServiceToJavaTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         workContext = new WorkContextImpl();
-        //parent = new SystemCompositeContextImpl(null, null, null);
     }
 
     public static <T> OutboundWire<T> createOutboundWire(QualifiedName targetName, Class<T> interfaze) {
-        OutboundWire<T> wire = new JDKOutboundWire<T>();
+        OutboundWire<T> wire = new OutboundWireImpl<T>();
         wire.setBusinessInterface(interfaze);
         wire.setTargetName(targetName);
         wire.addInvocationChains(createInvocationChains(interfaze));
