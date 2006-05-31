@@ -24,7 +24,7 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.ServiceInvocationHandler;
+import org.apache.tuscany.spi.wire.JDKInboundInvocationHandler;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
@@ -77,7 +77,7 @@ public abstract class ReferenceContextExtension<T> extends AbstractContext<T> im
     public WireInvocationHandler getHandler() throws TargetException {
         Map<Method, InboundInvocationChain> configuration = inboundWire.getInvocationChains();
         assert(configuration != null);
-        return new ServiceInvocationHandler(configuration);
+        return new JDKInboundInvocationHandler(configuration);
     }
 
     public void prepare() {

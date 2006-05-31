@@ -5,13 +5,13 @@ import java.lang.reflect.Proxy;
 import java.util.Map;
 
 import org.apache.tuscany.core.util.MethodHashMap;
+import org.apache.tuscany.spi.wire.JDKInboundInvocationHandler;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.ServiceInvocationHandler;
 
 /**
  * Default implementation of an inbound wire
@@ -26,7 +26,7 @@ public class InboundWireImpl<T> implements InboundWire<T> {
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
-        ServiceInvocationHandler handler = new ServiceInvocationHandler(invocationChains);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(invocationChains);
         return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaces, handler);
     }
 

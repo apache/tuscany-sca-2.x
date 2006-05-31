@@ -16,7 +16,7 @@ import org.jmock.MockObjectTestCase;
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class ReferenceInvocationandlerTestCase extends MockObjectTestCase {
+public class BasicReferenceInvocationHandlerTestCase extends MockObjectTestCase {
 
     private Method echo;
 

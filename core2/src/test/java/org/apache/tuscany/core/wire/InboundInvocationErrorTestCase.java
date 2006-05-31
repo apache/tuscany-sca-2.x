@@ -9,8 +9,8 @@ import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.util.MethodHashMap;
+import org.apache.tuscany.spi.wire.JDKInboundInvocationHandler;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.ServiceInvocationHandler;
 
 /**
  * Tests handling of exceptions thrown during an inbound wire invocation
@@ -40,7 +40,7 @@ public class InboundInvocationErrorTestCase extends TestCase {
     public void testCheckedException() throws Exception {
         Map<Method, InboundInvocationChain> chains = new MethodHashMap<InboundInvocationChain>();
         chains.put(checkedMethod, createChain(checkedMethod));
-        ServiceInvocationHandler handler = new ServiceInvocationHandler(chains);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
         try {
             InboundInvocationErrorTestCase.TestBean proxy = (InboundInvocationErrorTestCase.TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{InboundInvocationErrorTestCase.TestBean.class}, handler);
@@ -54,7 +54,7 @@ public class InboundInvocationErrorTestCase extends TestCase {
     public void testRuntimeException() throws Exception {
         Map<Method, InboundInvocationChain> chains = new MethodHashMap<InboundInvocationChain>();
         chains.put(runtimeMethod, createChain(runtimeMethod));
-        ServiceInvocationHandler handler = new ServiceInvocationHandler(chains);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
         try {
             InboundInvocationErrorTestCase.TestBean proxy = (InboundInvocationErrorTestCase.TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{InboundInvocationErrorTestCase.TestBean.class}, handler);

@@ -10,15 +10,13 @@ import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.ServiceInvocationHandler;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
+import org.apache.tuscany.spi.wire.JDKInboundInvocationHandler;
 import org.jmock.MockObjectTestCase;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class ServiceInvocationandlerTestCase extends MockObjectTestCase {
+public class JDKInboundInvocationHandlerTestCase extends MockObjectTestCase {
 
     private Method echo;
 
@@ -36,8 +34,8 @@ public class ServiceInvocationandlerTestCase extends MockObjectTestCase {
         chain.setTargetInvoker(invoker);
         chain.build();
         chains.put(echo, chain);
-        ServiceInvocationHandler handler = new ServiceInvocationHandler(chains);
-        assertEquals("foo", handler.invoke(null, echo, new String[]{"foo"}));
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
+        assertEquals("foo", handler.invoke(echo, new String[]{"foo"}));
         assertEquals(1, interceptor.getCount());
         assertEquals(1, requestHandler.getCount());
         assertEquals(1, responseHandler.getCount());
@@ -53,8 +51,8 @@ public class ServiceInvocationandlerTestCase extends MockObjectTestCase {
         chain.setTargetInvoker(invoker);
         chain.build();
         chains.put(echo, chain);
-        ServiceInvocationHandler handler = new ServiceInvocationHandler(chains);
-        assertEquals("foo", handler.invoke(null, echo, new String[]{"foo"}));
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
+        assertEquals("foo", handler.invoke(echo, new String[]{"foo"}));
         assertEquals(1, interceptor.getCount());
     }
 
@@ -66,9 +64,9 @@ public class ServiceInvocationandlerTestCase extends MockObjectTestCase {
 
         Map<Method, InboundInvocationChain> chains = new MethodHashMap<InboundInvocationChain>();
         chains.put(echo, source);
-        ServiceInvocationHandler handler = new ServiceInvocationHandler(chains);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
         try {
-            assertEquals("foo", handler.invoke(null, echo, new Object[]{}));
+            assertEquals("foo", handler.invoke(echo, new Object[]{}));
             fail("Expected " + IllegalArgumentException.class.getName());
         } catch (IllegalArgumentException e) {
             // should throw
@@ -82,8 +80,8 @@ public class ServiceInvocationandlerTestCase extends MockObjectTestCase {
 
         Map<Method, InboundInvocationChain> chains = new MethodHashMap<InboundInvocationChain>();
         chains.put(echo, source);
-        ServiceInvocationHandler handler = new ServiceInvocationHandler(chains);
-        assertEquals("foo", handler.invoke(null, echo, new Object[]{"foo"}));
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
+        assertEquals("foo", handler.invoke(echo, new Object[]{"foo"}));
     }
 
 

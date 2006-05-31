@@ -6,7 +6,7 @@ import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.ServiceInvocationHandler;
+import org.apache.tuscany.spi.wire.JDKInboundInvocationHandler;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -55,7 +55,7 @@ public class ServiceContextExtension<T> extends AbstractContext<T> implements Se
     }
 
     public WireInvocationHandler getHandler() {
-        return new ServiceInvocationHandler(inboundWire.getInvocationChains());
+        return new JDKInboundInvocationHandler(inboundWire.getInvocationChains());
     }
 
     public Class<T> getInterface() {

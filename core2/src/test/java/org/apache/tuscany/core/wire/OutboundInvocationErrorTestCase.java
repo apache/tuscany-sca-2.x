@@ -25,8 +25,8 @@ import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.util.MethodHashMap;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 
 /**
  * Tests handling of exceptions thrown during an outbound wire invocation

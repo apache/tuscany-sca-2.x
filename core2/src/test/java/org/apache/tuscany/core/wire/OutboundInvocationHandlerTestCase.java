@@ -10,19 +10,19 @@ import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.util.MethodHashMap;
+import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
 
-public class ReferenceInvocationHandlerTestCase extends TestCase {
+public class OutboundInvocationHandlerTestCase extends TestCase {
 
     private Method hello;
 
-    public ReferenceInvocationHandlerTestCase() {
+    public OutboundInvocationHandlerTestCase() {
         super();
     }
 
-    public ReferenceInvocationHandlerTestCase(String arg0) {
+    public OutboundInvocationHandlerTestCase(String arg0) {
         super(arg0);
     }
 
@@ -34,7 +34,7 @@ public class ReferenceInvocationHandlerTestCase extends TestCase {
         Map<Method, OutboundInvocationChain> configs = new MethodHashMap<OutboundInvocationChain>();
         configs.put(hello, createChain(hello));
         ReferenceInvocationHandler handler = new ReferenceInvocationHandler(configs);
-        assertEquals("foo", handler.invoke(null, hello, new Object[]{"foo"}));
+        assertEquals("foo", handler.invoke(hello, new Object[]{"foo"}));
     }
 
     public void testErrorInvoke() throws Throwable {
@@ -42,7 +42,7 @@ public class ReferenceInvocationHandlerTestCase extends TestCase {
         configs.put(hello, createChain(hello));
         ReferenceInvocationHandler handler = new ReferenceInvocationHandler(configs);
         try {
-            handler.invoke(null, hello, new Object[]{});
+            handler.invoke(hello, new Object[]{});
             fail("Expected " + IllegalArgumentException.class.getName());
         } catch (IllegalArgumentException e) {
             // should throw
@@ -58,7 +58,7 @@ public class ReferenceInvocationHandlerTestCase extends TestCase {
         configs.put(hello, source);
         ReferenceInvocationHandler handler = new ReferenceInvocationHandler(configs);
         try {
-            assertEquals("foo", handler.invoke(null, hello, new Object[]{}));
+            assertEquals("foo", handler.invoke(hello, new Object[]{}));
             fail("Expected " + IllegalArgumentException.class.getName());
         } catch (IllegalArgumentException e) {
             // should throw
@@ -73,7 +73,7 @@ public class ReferenceInvocationHandlerTestCase extends TestCase {
         Map<Method, OutboundInvocationChain> configs = new MethodHashMap<OutboundInvocationChain>();
         configs.put(hello, source);
         ReferenceInvocationHandler handler = new ReferenceInvocationHandler(configs);
-        assertEquals("foo", handler.invoke(null, hello, new Object[]{"foo"}));
+        assertEquals("foo", handler.invoke(hello, new Object[]{"foo"}));
     }
 
     private OutboundInvocationChain createChain(Method m) {

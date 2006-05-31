@@ -23,9 +23,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageImpl;
 
 /**
- * Receives a request from a proxy and performs an invocation on an {@link OutboundWire} via an {@link
+ * Receives a request from a proxy and performs an invocation on an {@link org.apache.tuscany.spi.wire.OutboundWire} via an {@link
  * OutboundInvocationChain}
  *
  * @version $Rev: 406016 $ $Date: 2006-05-12 22:45:22 -0700 (Fri, 12 May 2006) $
