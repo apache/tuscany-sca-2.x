@@ -29,20 +29,20 @@ import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
 
 /**
- * Tests handling of exceptions thrown during an wire
+ * Tests handling of exceptions thrown during an outbound wire invocation
  *
  * @version $Rev: 377006 $ $Date: 2006-02-11 09:41:59 -0800 (Sat, 11 Feb 2006) $
  */
-public class InvocationErrorTestCase extends TestCase {
+public class OutboundInvocationErrorTestCase extends TestCase {
 
     private Method checkedMethod;
     private Method runtimeMethod;
 
-    public InvocationErrorTestCase() {
+    public OutboundInvocationErrorTestCase() {
         super();
     }
 
-    public InvocationErrorTestCase(String arg0) {
+    public OutboundInvocationErrorTestCase(String arg0) {
         super(arg0);
     }
 
@@ -54,9 +54,9 @@ public class InvocationErrorTestCase extends TestCase {
     }
 
     public void testCheckedException() throws Exception {
-        Map<Method, OutboundInvocationChain> config = new MethodHashMap<OutboundInvocationChain>();
-        config.put(checkedMethod, getConfiguration(checkedMethod));
-        ReferenceInvocationHandler handler = new ReferenceInvocationHandler(config);
+        Map<Method, OutboundInvocationChain> chains = new MethodHashMap<OutboundInvocationChain>();
+        chains.put(checkedMethod, createChain(checkedMethod));
+        ReferenceInvocationHandler handler = new ReferenceInvocationHandler(chains);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{TestBean.class}, handler);
@@ -68,9 +68,9 @@ public class InvocationErrorTestCase extends TestCase {
     }
 
     public void testRuntimeException() throws Exception {
-        Map<Method, OutboundInvocationChain> config = new MethodHashMap<OutboundInvocationChain>();
-        config.put(runtimeMethod, getConfiguration(runtimeMethod));
-        ReferenceInvocationHandler handler = new ReferenceInvocationHandler(config);
+        Map<Method, OutboundInvocationChain> chains = new MethodHashMap<OutboundInvocationChain>();
+        chains.put(runtimeMethod, createChain(runtimeMethod));
+        ReferenceInvocationHandler handler = new ReferenceInvocationHandler(chains);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{TestBean.class}, handler);
@@ -81,15 +81,15 @@ public class InvocationErrorTestCase extends TestCase {
         fail(TestException.class.getName() + " should have been thrown");
     }
 
-    private OutboundInvocationChain getConfiguration(Method m) {
+    private OutboundInvocationChain createChain(Method m) {
         MockStaticInvoker invoker = new MockStaticInvoker(m, new TestBeanImpl());
-        OutboundInvocationChain invocationConfiguration = new OutboundInvocationChainImpl(m);
-        invocationConfiguration.addInterceptor(new MockSyncInterceptor());
-        invocationConfiguration.addRequestHandler(new MockHandler());
-        invocationConfiguration.setTargetInvoker(invoker);
-        invocationConfiguration.setTargetInterceptor(new InvokerInterceptor());
-        invocationConfiguration.build();
-        return invocationConfiguration;
+        OutboundInvocationChain chain = new OutboundInvocationChainImpl(m);
+        chain.addInterceptor(new MockSyncInterceptor());
+        chain.addRequestHandler(new MockHandler());
+        chain.setTargetInvoker(invoker);
+        chain.setTargetInterceptor(new InvokerInterceptor());
+        chain.build();
+        return chain;
     }
 
     public interface TestBean {

@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 public class OutboundInvocationChainImpl extends InvocationChainImpl implements OutboundInvocationChain {
 
     /**
-     * Creates an new source wire configuration
+     * Creates an new outbound chain
      */
     public OutboundInvocationChainImpl(Method operation) {
         super(operation);
@@ -49,7 +49,6 @@ public class OutboundInvocationChainImpl extends InvocationChainImpl implements 
         if (requestHandlers != null || responseHandlers != null) {
             Interceptor channelInterceptor = new RequestResponseInterceptor(requestChannel, targetRequestChannel,
                     responseChannel, targetResponseChannel);
-
             if (interceptorChainHead != null) {
                 interceptorChainTail.setNext(channelInterceptor);
             } else {

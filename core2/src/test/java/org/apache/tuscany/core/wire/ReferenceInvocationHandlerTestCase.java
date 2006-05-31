@@ -10,13 +10,9 @@ import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.util.MethodHashMap;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.MessageChannelImpl;
-import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
 
 public class ReferenceInvocationHandlerTestCase extends TestCase {
 
@@ -46,7 +42,7 @@ public class ReferenceInvocationHandlerTestCase extends TestCase {
         configs.put(hello, createChain(hello));
         ReferenceInvocationHandler handler = new ReferenceInvocationHandler(configs);
         try {
-            assertEquals("foo", handler.invoke(null, hello, new Object[]{}));
+            handler.invoke(null, hello, new Object[]{});
             fail("Expected " + IllegalArgumentException.class.getName());
         } catch (IllegalArgumentException e) {
             // should throw
