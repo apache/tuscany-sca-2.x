@@ -18,7 +18,7 @@ import java.lang.reflect.Proxy;
 import java.util.Map;
 
 import org.apache.tuscany.core.util.MethodHashMap;
-import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
+import org.apache.tuscany.spi.wire.JDKOutboundInvocationHandler;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -46,7 +46,7 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
             // optimized, no interceptors or handlers on either end
             return targetWire.getTargetService();
         }
-        ReferenceInvocationHandler handler = new ReferenceInvocationHandler(invocationChains);
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(invocationChains);
         return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaces, handler);
     }
 

@@ -23,20 +23,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageImpl;
 
 /**
- * Receives a request from a proxy and performs an invocation on an {@link org.apache.tuscany.spi.wire.OutboundWire} via an {@link
- * OutboundInvocationChain}
+ * Receives a request from a proxy and performs an invocation on an {@link OutboundWire}
+ * via an {@link OutboundInvocationChain}
  *
  * @version $Rev: 406016 $ $Date: 2006-05-12 22:45:22 -0700 (Fri, 12 May 2006) $
  */
-public class ReferenceInvocationHandler implements WireInvocationHandler, InvocationHandler {
+public class JDKOutboundInvocationHandler implements WireInvocationHandler, InvocationHandler {
 
     /*
      * an association of an operation to chain holder. The holder contains an invocation chain
@@ -47,7 +41,7 @@ public class ReferenceInvocationHandler implements WireInvocationHandler, Invoca
      */
     private Map<Method, ChainHolder> chains;
 
-    public ReferenceInvocationHandler(Map<Method, OutboundInvocationChain> invocationChains) {
+    public JDKOutboundInvocationHandler(Map<Method, OutboundInvocationChain> invocationChains) {
         this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
         for (Map.Entry<Method, OutboundInvocationChain> entry : invocationChains.entrySet()) {
             this.chains.put(entry.getKey(), new ChainHolder(entry.getValue()));

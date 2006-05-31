@@ -71,7 +71,7 @@ public abstract class ReferenceContextExtension<T> extends AbstractContext<T> im
     }
 
     public T getService() throws TargetException {
-        return outboundWire.getTargetService();
+        return inboundWire.getTargetService();
     }
 
     public WireInvocationHandler getHandler() throws TargetException {

@@ -10,7 +10,7 @@ import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
+import org.apache.tuscany.spi.wire.JDKOutboundInvocationHandler;
 import org.jmock.MockObjectTestCase;
 
 /**
@@ -34,7 +34,7 @@ public class BasicReferenceInvocationHandlerTestCase extends MockObjectTestCase 
         chain.setTargetInvoker(invoker);
         chain.build();
         chains.put(echo, chain);
-        ReferenceInvocationHandler handler = new ReferenceInvocationHandler(chains);
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(chains);
         assertEquals("foo",handler.invoke(null,echo,new String[]{"foo"}));
         assertEquals(1,interceptor.getCount());
         assertEquals(1,requestHandler.getCount());

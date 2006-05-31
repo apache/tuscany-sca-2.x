@@ -25,7 +25,7 @@ import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.util.MethodHashMap;
-import org.apache.tuscany.spi.wire.ReferenceInvocationHandler;
+import org.apache.tuscany.spi.wire.JDKOutboundInvocationHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 
 /**
@@ -56,7 +56,7 @@ public class OutboundInvocationErrorTestCase extends TestCase {
     public void testCheckedException() throws Exception {
         Map<Method, OutboundInvocationChain> chains = new MethodHashMap<OutboundInvocationChain>();
         chains.put(checkedMethod, createChain(checkedMethod));
-        ReferenceInvocationHandler handler = new ReferenceInvocationHandler(chains);
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(chains);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{TestBean.class}, handler);
@@ -70,7 +70,7 @@ public class OutboundInvocationErrorTestCase extends TestCase {
     public void testRuntimeException() throws Exception {
         Map<Method, OutboundInvocationChain> chains = new MethodHashMap<OutboundInvocationChain>();
         chains.put(runtimeMethod, createChain(runtimeMethod));
-        ReferenceInvocationHandler handler = new ReferenceInvocationHandler(chains);
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(chains);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{TestBean.class}, handler);
