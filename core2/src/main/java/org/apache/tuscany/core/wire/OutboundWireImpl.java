@@ -40,13 +40,11 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
-//        if (targetWire != null) {
-//            // optimized, no interceptors or handlers on either end
-//            return targetWire.getTargetService();
-//        }
-//        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(invocationChains);
-//        return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaces, handler);
-        throw new UnsupportedOperationException();
+        if (targetWire != null) {
+            // optimized, no interceptors or handlers on either end
+            return targetWire.getTargetService();
+        }
+        throw new TargetException("Target wire not optimized");
     }
 
     @SuppressWarnings("unchecked")

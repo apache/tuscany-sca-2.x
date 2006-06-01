@@ -9,9 +9,4 @@ import org.apache.tuscany.spi.context.TargetException;
  */
 public interface SystemOutboundWire<T> extends OutboundWire<T> {
 
-    /**
-     * Returns the target instance for this wire
-     */
-    T getTargetService() throws TargetException;
-
 }

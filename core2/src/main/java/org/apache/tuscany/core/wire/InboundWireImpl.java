@@ -21,12 +21,15 @@ public class InboundWireImpl<T> implements InboundWire<T> {
     private String serviceName;
     private Class[] businessInterfaces;
     private Map<Method, InboundInvocationChain> invocationChains = new MethodHashMap<InboundInvocationChain>();
+    private OutboundWire<T> targetWire;
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
-        throw new UnsupportedOperationException();
-//        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(invocationChains);
-//        return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaces, handler);
+        if (targetWire != null) {
+            // optimized, no interceptors or handlers on either end
+            return targetWire.getTargetService();
+        }
+        throw new TargetException("Target wire not optimized");
     }
 
     public void setBusinessInterface(Class interfaze) {
@@ -67,7 +70,7 @@ public class InboundWireImpl<T> implements InboundWire<T> {
     }
 
     public void setTargetWire(OutboundWire<T> wire) {
-        throw new UnsupportedOperationException("not yet implemented"); // FIXME
+        targetWire = wire;
     }
 
     public boolean isOptimizable() {
