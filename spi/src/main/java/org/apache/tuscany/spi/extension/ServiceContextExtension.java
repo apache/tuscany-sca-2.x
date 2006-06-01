@@ -6,10 +6,10 @@ import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.JDKInboundInvocationHandler;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * The default implementation of an service context
@@ -20,10 +20,11 @@ public class ServiceContextExtension<T> extends AbstractContext<T> implements Se
 
     protected InboundWire<T> inboundWire;
     protected OutboundWire<T> outboundWire;
-    private T target;
+    protected WireService wireService;
 
-    public ServiceContextExtension(String name, CompositeContext parent) throws CoreRuntimeException {
+    public ServiceContextExtension(String name, CompositeContext parent, WireService wireService) throws CoreRuntimeException {
         super(name, parent);
+        this.wireService = wireService;
     }
 
     public Scope getScope() {
@@ -35,7 +36,7 @@ public class ServiceContextExtension<T> extends AbstractContext<T> implements Se
     }
 
     public void setInboundWire(InboundWire<T> wire) {
-        target = null;
+        //target = null;
         inboundWire = wire;
     }
 
@@ -48,14 +49,15 @@ public class ServiceContextExtension<T> extends AbstractContext<T> implements Se
     }
 
     public T getService() throws TargetException {
-        if (target == null) {
-            target = inboundWire.getTargetService();
-        }
-        return target;
+        return wireService.createProxy(inboundWire);
+//        if (target == null) {
+//            target = inboundWire.getTargetService();
+//        }
+//        return target;
     }
 
     public WireInvocationHandler getHandler() {
-        return new JDKInboundInvocationHandler(inboundWire.getInvocationChains());
+        return wireService.createHandler(inboundWire);
     }
 
     public Class<T> getInterface() {

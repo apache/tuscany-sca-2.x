@@ -16,7 +16,7 @@ import org.apache.tuscany.spi.context.CompositeContext;
 public class SystemCompositeContextImpl<S> extends AbstractCompositeContext<S> implements SystemCompositeContext<S> {
 
     public SystemCompositeContextImpl(String name, CompositeContext parent, AutowireContext autowireContext) {
-        super(name, parent, autowireContext);
+        super(name, parent, autowireContext,null);
     }
 
     public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance) throws ObjectRegistrationException {

@@ -33,11 +33,15 @@ import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.test.ArtifactFactory;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class MockContextFactory {
+
+    private static final WireService wireService = ArtifactFactory.createWireService();
 
     public static JavaAtomicContext<?> createJavaAtomicContext(String name, ScopeContext scopeContext, Class<?> clazz, Scope scope) throws NoSuchMethodException {
         return createJavaAtomicContext(name, null, scopeContext, clazz, clazz, scope, false, null, null, null, null);
@@ -63,7 +67,8 @@ public class MockContextFactory {
             throws NoSuchMethodException {
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         serviceInterfaces.add(service);
-        return new JavaAtomicContext(name, parent, scopeContext, serviceInterfaces, createObjectFactory(clazz), scope, eagerInit, initInvoker, destroyInvoker, injectors, members);
+        return new JavaAtomicContext(name, parent, scopeContext, serviceInterfaces, createObjectFactory(clazz),
+                scope, eagerInit, initInvoker, destroyInvoker, injectors, members,wireService);
     }
 
     /**

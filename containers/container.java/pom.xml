@@ -35,6 +35,12 @@
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany</groupId>
+            <artifactId>tuscany-test</artifactId>
+            <version>${pom.version}</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>

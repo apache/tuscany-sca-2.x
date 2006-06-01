@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.context.ContextNotFoundException;
@@ -16,11 +17,11 @@ import org.apache.tuscany.spi.context.ReferenceContext;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.TargetNotFoundException;
-import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * An extension point for composite contexts. When adding support for new composite component types,
@@ -33,9 +34,15 @@ public abstract class CompositeContextExtension<T> extends AbstractContext<T> im
     protected final Map<String, Context> children = new ConcurrentHashMap<String, Context>();
     protected final List<ServiceContext> services = new ArrayList<ServiceContext>();
     protected final List<ReferenceContext> references = new ArrayList<ReferenceContext>();
+    protected WireService wireService;
 
-    protected CompositeContextExtension(String name, CompositeContext<?> parent) {
+    protected CompositeContextExtension(String name, CompositeContext<?> parent, WireService wireService) {
         super(name, parent);
+        this.wireService = wireService;
+    }
+
+    public void setWireService(WireService wireService) {
+        this.wireService = wireService;
     }
 
     public Scope getScope() {
@@ -160,7 +167,7 @@ public abstract class CompositeContextExtension<T> extends AbstractContext<T> im
         return ((ServiceContext) context).getInboundWire();
     }
 
-    public void prepare(){
+    public void prepare() {
         for (Context context : children.values()) {
             context.prepare();
         }

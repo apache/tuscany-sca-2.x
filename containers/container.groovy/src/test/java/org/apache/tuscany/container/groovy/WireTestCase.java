@@ -9,6 +9,7 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.test.ArtifactFactory;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.jmock.core.Invocation;
@@ -43,7 +44,7 @@ public class WireTestCase extends MockObjectTestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
         GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", SCRIPT, services,
-                Scope.MODULE, null, null, scope);
+                Scope.MODULE, null, null, scope, ArtifactFactory.createWireService());
         scope.register(context);
         Mock mock = mock(OutboundWire.class);
         mock.expects(atLeastOnce()).method("getTargetService").will(
@@ -70,7 +71,7 @@ public class WireTestCase extends MockObjectTestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
         GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", SCRIPT2, services,
-                Scope.MODULE, null, null, scope);
+                Scope.MODULE, null, null, scope,ArtifactFactory.createWireService());
         scope.register(context);
         TargetInvoker invoker = context.createTargetInvoker("greeting", Greeting.class.getMethod("greet", String.class));
         assertEquals("foo", invoker.invokeTarget(new String[]{"foo"}));
@@ -87,7 +88,7 @@ public class WireTestCase extends MockObjectTestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
         final GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", SCRIPT2,
-                services, Scope.MODULE, null, null, scope);
+                services, Scope.MODULE, null, null, scope,ArtifactFactory.createWireService());
         scope.register(context);
         Mock mock = mock(InboundWire.class);
         mock.stubs().method("getServiceName").will(returnValue("Greeting"));

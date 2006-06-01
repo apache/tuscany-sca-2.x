@@ -32,6 +32,7 @@ import org.apache.tuscany.spi.context.TargetNotFoundException;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * Provides a runtime context for Java component implementations
@@ -50,8 +51,9 @@ public class JavaAtomicContext<T> extends PojoAtomicContext<T> {
                              EventInvoker<Object> initInvoker,
                              EventInvoker<Object> destroyInvoker,
                              List<Injector> injectors,
-                             Map<String, Member> members) {
-        super(name, parent, scopeContext, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members);
+                             Map<String, Member> members,
+                             WireService wireService) {
+        super(name, parent, scopeContext, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members, wireService);
         this.scope = scope;
     }
 
@@ -62,7 +64,7 @@ public class JavaAtomicContext<T> extends PojoAtomicContext<T> {
             e.addContextName(getName());
             throw e;
         }
-        return wire.getTargetService();
+        return wireService.createProxy(wire);
     }
 
     public T getService() throws TargetException {

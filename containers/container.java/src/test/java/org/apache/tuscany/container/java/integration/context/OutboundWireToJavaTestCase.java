@@ -33,6 +33,8 @@ import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.test.ArtifactFactory;
 
 /**
  * Validates wiring from a service context to Java atomic contexts by scope
@@ -41,12 +43,13 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  */
 public class OutboundWireToJavaTestCase extends TestCase {
     private WorkContext workContext;
+    private WireService wireService = ArtifactFactory.createWireService();
 
     public void testToStatelessScope() throws Exception {
         StatelessScopeContext scope = new StatelessScopeContext(workContext);
         scope.start();
-        final OutboundWire wire = getWire(scope);
-        Target service = (Target) wire.getTargetService();
+        final OutboundWire<Target> wire = getWire(scope);
+        Target service = wireService.createProxy(wire);
         assertNotNull(service);
         service.setString("foo");
         assertEquals(null, service.getString());
@@ -59,8 +62,8 @@ public class OutboundWireToJavaTestCase extends TestCase {
 
         scope.onEvent(new RequestStart(this));
 
-        final OutboundWire wire = getWire(scope);
-        Target service = (Target) wire.getTargetService();
+        final OutboundWire<Target> wire = getWire(scope);
+        Target service = wireService.createProxy(wire);
         assertNotNull(service);
         service.setString("foo");
 
@@ -69,8 +72,8 @@ public class OutboundWireToJavaTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 scope.onEvent(new RequestStart(this));
-                Target service2 = (Target) wire.getTargetService();
-                Target target2 = (Target) wire.getTargetService();
+                Target service2 = wireService.createProxy(wire);
+                Target target2 = wireService.createProxy(wire);
                 assertEquals(null, service2.getString());
                 service2.setString("bar");
                 assertEquals("bar", service2.getString());
@@ -93,9 +96,9 @@ public class OutboundWireToJavaTestCase extends TestCase {
         workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
         scope.onEvent(new HttpSessionStart(this, session1));
 
-        final OutboundWire wire = getWire(scope);
-        Target service = (Target) wire.getTargetService();
-        Target target = (Target) wire.getTargetService();
+        final OutboundWire<Target> wire = getWire(scope);
+        Target service = wireService.createProxy(wire);
+        Target target = wireService.createProxy(wire);
         assertNotNull(service);
         service.setString("foo");
         assertEquals("foo", service.getString());
@@ -108,10 +111,10 @@ public class OutboundWireToJavaTestCase extends TestCase {
         workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
         scope.onEvent(new HttpSessionStart(this, session2));
 
-        Target service2 = (Target) wire.getTargetService();
+        Target service2 = wireService.createProxy(wire);
         assertNotNull(service2);
         assertNull(service2.getString());
-        Target target2 = (Target) wire.getTargetService();
+        Target target2 = wireService.createProxy(wire);
         service2.setString("bar");
         assertEquals("bar", service2.getString());
         assertEquals("bar", target2.getString());
@@ -131,11 +134,10 @@ public class OutboundWireToJavaTestCase extends TestCase {
 
         ModuleScopeContext scope = new ModuleScopeContext(workContext);
         scope.start();
-        final OutboundWire wire = getWire(scope);
         scope.onEvent(new ModuleStart(this, null));
-        Target service = (Target) wire.getTargetService();
-        Target target = (Target) wire.getTargetService();
-
+        final OutboundWire<Target> wire = getWire(scope);
+        Target service = wireService.createProxy(wire);
+        Target target = wireService.createProxy(wire);
         assertNotNull(service);
         service.setString("foo");
         assertEquals("foo", service.getString());
@@ -145,7 +147,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    private OutboundWire getWire(ScopeContext scope) throws NoSuchMethodException {
+    private OutboundWire<Target> getWire(ScopeContext scope) throws NoSuchMethodException {
         Connector connector = new ConnectorImpl();
         OutboundWire<Target> wire = createOutboundWire(new QualifiedName("target/Target"), Target.class);
 

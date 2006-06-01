@@ -2,7 +2,6 @@ package org.apache.tuscany.core.system.wire;
 
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
@@ -16,10 +15,10 @@ public class SystemInboundtoOutboundTestCase extends MockObjectTestCase {
 
     public void testWire() throws NoSuchMethodException {
         Target target = new TargetImpl();
-        Mock mockWire = mock(OutboundWire.class);
+        Mock mockWire = mock(SystemOutboundWire.class);
         mockWire.expects(atLeastOnce()).method("getTargetService").will(returnValue(target));
-        OutboundWire<Target> outboundWire = (OutboundWire<Target>) mockWire.proxy();
-        InboundWire<Target> inboundWire = new SystemInboundWire<Target>("service", Target.class);
+        SystemOutboundWire<Target> outboundWire = (SystemOutboundWire<Target>) mockWire.proxy();
+        SystemInboundWire<Target> inboundWire = new SystemInboundWireImpl<Target>("service", Target.class);
         inboundWire.setTargetWire(outboundWire);
         assertSame(inboundWire.getTargetService(), target);
     }

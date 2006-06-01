@@ -9,6 +9,7 @@ import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ScopeContext;
@@ -28,10 +29,12 @@ public abstract class AtomicContextExtension<T> extends AbstractContext<T> imple
     protected Scope scope;
     protected Map<String, InboundWire> serviceWires = new HashMap<String, InboundWire>();
     protected Map<String, List<OutboundWire>> referenceWires = new HashMap<String,List<OutboundWire>>();
+    protected WireService wireService;
 
-    protected AtomicContextExtension(String name, CompositeContext<?> parent, ScopeContext scopeContext) {
+    protected AtomicContextExtension(String name, CompositeContext<?> parent, ScopeContext scopeContext, WireService wireService) {
         super(name, parent);
         this.scopeContext = scopeContext;
+        this.wireService = wireService;
     }
 
     public Scope getScope() {

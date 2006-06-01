@@ -1,6 +1,7 @@
 package org.apache.tuscany.core.context;
 
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.spi.context.AtomicContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
@@ -17,8 +18,8 @@ import org.osoa.sca.ServiceUnavailableException;
  */
 public class CompositeContextImpl<T> extends AbstractCompositeContext<T> {
 
-    public CompositeContextImpl(String name, CompositeContext parent, AutowireContext autowireContext) {
-        super(name, parent, autowireContext);
+    public CompositeContextImpl(String name, CompositeContext parent, AutowireContext autowireContext, WireService wireService) {
+        super(name, parent, autowireContext,wireService);
     }
 
     private String uri;

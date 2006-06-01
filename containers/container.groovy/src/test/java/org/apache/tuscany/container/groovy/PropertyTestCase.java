@@ -7,6 +7,7 @@ import org.apache.tuscany.container.groovy.injectors.SingletonInjector;
 import org.apache.tuscany.container.groovy.mock.Greeting;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.test.ArtifactFactory;
 import org.jmock.MockObjectTestCase;
 
 /**
@@ -33,7 +34,7 @@ public class PropertyTestCase extends MockObjectTestCase {
         List<PropertyInjector> injectors = new ArrayList<PropertyInjector>();
         injectors.add(new SingletonInjector("property", "bar"));
         GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", PropertyTestCase.SCRIPT,
-                services, Scope.MODULE, injectors, null,scope);
+                services, Scope.MODULE, injectors, null, scope, ArtifactFactory.createWireService());
         scope.register(context);
         Greeting greeting = context.getService();
         assertEquals("bar", greeting.greet("foo"));

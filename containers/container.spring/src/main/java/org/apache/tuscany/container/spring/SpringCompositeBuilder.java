@@ -31,7 +31,7 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
                                   DeploymentContext deploymentContext) throws BuilderConfigException {
         String name = component.getName();
         GenericApplicationContext applicationContext = component.getImplementation().getApplicationContext();
-        SpringCompositeContext context = new SpringCompositeContext(name, applicationContext, parent);
+        SpringCompositeContext context = new SpringCompositeContext(name, applicationContext, parent,wireService);
         CompositeComponentType<BoundService, BoundReference, ? extends Property> componentType = component.getImplementation().getComponentType();
         for (BoundService service : componentType.getServices().values()) {
             // call back into deployment context to handle building of services

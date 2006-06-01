@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
@@ -17,15 +15,18 @@ import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.InvalidAccessorException;
 import org.apache.tuscany.core.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.MethodInjector;
-import org.apache.tuscany.core.injection.WireObjectFactory;
 import org.apache.tuscany.core.injection.NoAccessorException;
+import org.apache.tuscany.core.injection.WireObjectFactory;
+import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.context.AtomicContext;
-import org.apache.tuscany.spi.context.InstanceWrapper;
-import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.extension.AtomicContextExtension;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * Base implementation of an {@link AtomicContext} whose type is a Java class
@@ -51,8 +52,9 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
                              EventInvoker<Object> initInvoker,
                              EventInvoker<Object> destroyInvoker,
                              List<Injector> injectors,
-                             Map<String, Member> members) {
-        super(name, parent, scopeContext);
+                             Map<String, Member> members,
+                             WireService wireService) {
+        super(name, parent, scopeContext, wireService);
         assert (objectFactory != null) : "Object factory was null";
         if (eagerInit && initInvoker == null) {
             throw new AssertionError("No intialization method found for eager init implementation");
@@ -78,8 +80,9 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
                              EventInvoker<Object> initInvoker,
                              EventInvoker<Object> destroyInvoker,
                              List<Injector> injectors,
-                             Map<String, Member> members) {
-        super(name, parent, scopeContext);
+                             Map<String, Member> members,
+                             WireService wireService) {
+        super(name, parent, scopeContext, wireService);
         assert (objectFactory != null) : "Object factory was null";
         if (eagerInit && initInvoker == null) {
             throw new AssertionError("No intialization method found for eager init implementation");
@@ -149,7 +152,7 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
     }
 
     protected Injector createInjector(Member member, OutboundWire wire) {
-        ObjectFactory<?> factory = new WireObjectFactory(wire);
+        ObjectFactory<?> factory = new WireObjectFactory(wire, wireService);
         if (member instanceof Field) {
             return new FieldInjector(((Field) member), factory);
         } else if (member instanceof Method) {
@@ -164,7 +167,7 @@ public abstract class PojoAtomicContext<T> extends AtomicContextExtension<T> {
     protected Injector createMultiplicityInjector(Member member, Class<?> interfaceType, List<OutboundWire> wireFactories) {
         List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
         for (OutboundWire wire : wireFactories) {
-            factories.add(new WireObjectFactory(wire));
+            factories.add(new WireObjectFactory(wire, wireService));
         }
         if (member instanceof Field) {
             Field field = (Field) member;

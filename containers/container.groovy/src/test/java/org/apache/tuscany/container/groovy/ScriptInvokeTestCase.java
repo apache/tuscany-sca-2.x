@@ -7,6 +7,7 @@ import groovy.lang.GroovyObject;
 import org.apache.tuscany.container.groovy.mock.Greeting;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.test.ArtifactFactory;
 import org.jmock.MockObjectTestCase;
 
 /**
@@ -25,7 +26,7 @@ public class ScriptInvokeTestCase extends MockObjectTestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
         GroovyAtomicContext<GroovyObject> context = new GroovyAtomicContext<GroovyObject>("source", script2,
-                services, Scope.MODULE, null, null,scope);
+                services, Scope.MODULE, null, null,scope, ArtifactFactory.createWireService());
         scope.register(context);
         GroovyObject object = context.getService();
         assertEquals("foo", object.invokeMethod("greet", "foo"));

@@ -33,6 +33,7 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.WireService;
 import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
@@ -44,9 +45,14 @@ public class GroovyAtomicContext<T> extends AtomicContextExtension<T> {
     private List<Class<?>> services;
     private List<PropertyInjector> injectors;
 
-    public GroovyAtomicContext(String name, String script, List<Class<?>>services, Scope scope,
-                               List<PropertyInjector> injectors, CompositeContext parent, ScopeContext scopeContext) {
-        super(name, parent, scopeContext);
+    public GroovyAtomicContext(String name, String script,
+                               List<Class<?>>services,
+                               Scope scope,
+                               List<PropertyInjector> injectors,
+                               CompositeContext parent,
+                               ScopeContext scopeContext,
+                               WireService wireService) {
+        super(name, parent, scopeContext,wireService);
         this.script = script;
         this.services = services;
         this.scope = scope;
@@ -78,7 +84,7 @@ public class GroovyAtomicContext<T> extends AtomicContextExtension<T> {
             // inject wires
             for (List<OutboundWire> referenceWires : getOutboundWires().values()) {
                 for (OutboundWire<?> wire : referenceWires) {
-                    object.setProperty(wire.getReferenceName(), wire.getTargetService());
+                    object.setProperty(wire.getReferenceName(), wireService.createProxy(wire));
                 }
             }
             return new GroovyInstanceWrapper(this, object);
@@ -109,7 +115,7 @@ public class GroovyAtomicContext<T> extends AtomicContextExtension<T> {
             e.setIdentifier(service);
             throw e;
         }
-        return wire.getTargetService();
+        return wireService.createProxy(wire);
     }
 
     public void init(Object instance) throws TargetException {

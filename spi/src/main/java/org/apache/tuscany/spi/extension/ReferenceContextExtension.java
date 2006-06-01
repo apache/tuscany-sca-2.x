@@ -13,9 +13,6 @@
  */
 package org.apache.tuscany.spi.extension;
 
-import java.lang.reflect.Method;
-import java.util.Map;
-
 import org.apache.tuscany.spi.context.AbstractContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ReferenceContext;
@@ -24,8 +21,8 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.JDKInboundInvocationHandler;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * The default implementation of an external service context
@@ -37,9 +34,11 @@ public abstract class ReferenceContextExtension<T> extends AbstractContext<T> im
     protected InboundWire<T> inboundWire;
     protected OutboundWire<T> outboundWire;
     protected Class<T> referenceInterface;
+    protected WireService wireService;
 
-    protected ReferenceContextExtension(String name, CompositeContext<?> parent) {
+    protected ReferenceContextExtension(String name, CompositeContext<?> parent, WireService wireService) {
         super(name, parent);
+        this.wireService = wireService;
     }
 
     public Scope getScope() {
@@ -71,13 +70,13 @@ public abstract class ReferenceContextExtension<T> extends AbstractContext<T> im
     }
 
     public T getService() throws TargetException {
-        return inboundWire.getTargetService();
+        return wireService.createProxy(inboundWire);// inboundWire.getTargetService();
     }
 
     public WireInvocationHandler getHandler() throws TargetException {
-        Map<Method, InboundInvocationChain> configuration = inboundWire.getInvocationChains();
-        assert(configuration != null);
-        return new JDKInboundInvocationHandler(configuration);
+        //Map<Method, InboundInvocationChain> configuration = inboundWire.getInvocationChains();
+        return wireService.createHandler(inboundWire);
+        //return new JDKInboundInvocationHandler(configuration);
     }
 
     public void prepare() {

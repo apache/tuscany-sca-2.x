@@ -6,6 +6,7 @@ import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.context.ScopeRegistry;
+import org.apache.tuscany.spi.wire.WireService;
 
 import org.osoa.sca.annotations.Init;
 
@@ -21,6 +22,7 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
     protected BuilderRegistry builderRegistry;
     protected ScopeRegistry scopeRegistry;
     protected PolicyBuilderRegistry policyBuilderRegistry;
+    protected WireService wireService;
 
     @Autowire
     public void setBuilderRegistry(BuilderRegistry registry) {
@@ -35,6 +37,11 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
     @Autowire
     public void setPolicyBuilderRegistry(PolicyBuilderRegistry registry) {
         this.policyBuilderRegistry = registry;
+    }
+
+    @Autowire
+    public void setWireService(WireService wireService) {
+        this.wireService = wireService;
     }
 
     @Init(eager = true)

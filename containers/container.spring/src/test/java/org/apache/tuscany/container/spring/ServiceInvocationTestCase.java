@@ -23,12 +23,12 @@ import org.springframework.context.support.StaticApplicationContext;
 public class ServiceInvocationTestCase extends TestCase {
 
     public void testInvocation() {
-        SpringCompositeContext context = new SpringCompositeContext("parent", createSpringContext(), null);
+        SpringCompositeContext context = new SpringCompositeContext("parent", createSpringContext(), null,ArtifactFactory.createWireService());
         context.start();
         InboundWire<TestBean> inboundWire = ArtifactFactory.createInboundWire("fooService", TestBean.class);
         OutboundWire<TestBean> outboundWire = ArtifactFactory.createOutboundWire("fooService", TestBean.class);
         ArtifactFactory.terminateWire(outboundWire);
-        ServiceContext<TestBean> serviceContext = new ServiceContextExtension<TestBean>("fooService", context);
+        ServiceContext<TestBean> serviceContext = new ServiceContextExtension<TestBean>("fooService", context, ArtifactFactory.createWireService());
         serviceContext.setInboundWire(inboundWire);
         serviceContext.setOutboundWire(outboundWire);
         Connector conntector = ArtifactFactory.createConnector();

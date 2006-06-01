@@ -3,6 +3,7 @@ package org.apache.tuscany.core.injection;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * Uses a wire to return an object instance
@@ -11,14 +12,16 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  */
 public class WireObjectFactory implements ObjectFactory {
 
-    private OutboundWire factory;
+    private OutboundWire<?> wire;
+    private WireService wireService;
 
-    public WireObjectFactory(OutboundWire factory) {
-        this.factory = factory;
+    public WireObjectFactory(OutboundWire<?> factory, WireService wireService) {
+        this.wire = factory;
+        this.wireService = wireService;
     }
 
     public Object getInstance() throws ObjectCreationException {
-        return factory.getTargetService();
+        return wireService.createProxy(wire);
 
 
     }

@@ -21,6 +21,7 @@ import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeContextExtension;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * The base implementation of a composite context
@@ -48,8 +49,8 @@ public abstract class AbstractCompositeContext<T> extends CompositeContextExtens
 
     protected ScopeContext scopeContext;
 
-    public AbstractCompositeContext(String name, CompositeContext parent, AutowireContext autowireContext) {
-        super(name, parent);
+    public AbstractCompositeContext(String name, CompositeContext parent, AutowireContext autowireContext, WireService wireService) {
+        super(name, parent, wireService);
         this.autowireContext = autowireContext;
     }
 

@@ -12,6 +12,7 @@ import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.ServiceContext;
 import org.apache.tuscany.spi.extension.CompositeContextExtension;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WireService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
@@ -42,8 +43,8 @@ public class SpringCompositeContext extends CompositeContextExtension {
      * @param springContext the pre-instantiated Spring applicaiton context
      * @param parent        the SCA composite parent
      */
-    public SpringCompositeContext(String name, GenericApplicationContext springContext, CompositeContext parent) {
-        super(name, parent);
+    public SpringCompositeContext(String name, GenericApplicationContext springContext, CompositeContext parent, WireService wireService) {
+        super(name, parent, wireService);
         scaApplicationContext = new SCAApplicationContext();
         springContext.setParent(scaApplicationContext);
         this.springContext = springContext;

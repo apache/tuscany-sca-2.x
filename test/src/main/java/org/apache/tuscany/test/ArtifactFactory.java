@@ -10,12 +10,14 @@ import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
+import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.apache.tuscany.core.builder.Connector;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * A factory for creating runtime artifacts to facilitate testing without directly instantiating core
@@ -32,6 +34,10 @@ public class ArtifactFactory {
         return new ConnectorImpl();
     }
 
+    public static WireService createWireService(){
+        return new JDKWireService();
+    }
+    
     /**
      * Creates an inbound wire. After a wire is returned, client code must call {@link
      * #terminateWire(org.apache.tuscany.spi.wire.InboundWire<T>)}. These two methods have been separated

@@ -26,8 +26,9 @@ public class InboundWireImpl<T> implements InboundWire<T> {
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(invocationChains);
-        return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaces, handler);
+        throw new UnsupportedOperationException();
+//        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(invocationChains);
+//        return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaces, handler);
     }
 
     public void setBusinessInterface(Class interfaze) {

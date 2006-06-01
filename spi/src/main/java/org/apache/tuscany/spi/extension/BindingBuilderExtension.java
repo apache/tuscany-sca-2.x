@@ -10,6 +10,7 @@ import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.model.BoundReference;
 import org.apache.tuscany.spi.model.BoundService;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
+import org.apache.tuscany.spi.wire.WireService;
 import org.osoa.sca.annotations.Init;
 
 /**
@@ -23,6 +24,7 @@ public abstract class BindingBuilderExtension<B extends Binding> implements Bind
 
     protected BuilderRegistry builderRegistry;
     protected PolicyBuilderRegistry policyBuilderRegistry;
+    protected WireService wireService;
 
     @Autowire
     public void setBuilderRegistry(BuilderRegistry registry) {
@@ -32,6 +34,11 @@ public abstract class BindingBuilderExtension<B extends Binding> implements Bind
     @Autowire
     public void setPolicyBuilderRegistry(PolicyBuilderRegistry registry) {
         this.policyBuilderRegistry = registry;
+    }
+
+    @Autowire
+    public void setWireService(WireService wireService) {
+        this.wireService = wireService;
     }
 
     @Init(eager = true)

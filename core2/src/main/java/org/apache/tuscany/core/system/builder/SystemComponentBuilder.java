@@ -14,9 +14,10 @@ import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.system.context.SystemAtomicContext;
 import org.apache.tuscany.core.system.context.SystemAtomicContextImpl;
 import org.apache.tuscany.core.system.model.SystemImplementation;
-import org.apache.tuscany.core.system.wire.SystemInboundWire;
+import org.apache.tuscany.core.system.wire.SystemInboundWireImpl;
 import org.apache.tuscany.core.system.wire.SystemOutboundAutowire;
-import org.apache.tuscany.core.system.wire.SystemOutboundWire;
+import org.apache.tuscany.core.system.wire.SystemOutboundWireImpl;
+import org.apache.tuscany.core.system.wire.SystemInboundWire;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
@@ -85,7 +86,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
 
         for (Service service : componentType.getServices().values()) {
             Class interfaze = service.getServiceContract().getInterfaceClass();
-            SystemInboundWire<?> wire = new SystemInboundWire(service.getName(), interfaze, systemContext);
+            SystemInboundWire<?> wire = new SystemInboundWireImpl(service.getName(), interfaze, systemContext);
             systemContext.addInboundWire(wire);
         }
         for (ReferenceTarget target : component.getReferenceTargets().values()) {
@@ -106,7 +107,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
                 //FIXME support multiplicity!
                 assert(target.getTargets().size() == 1): "Multiplicity not yet implemented";
                 QualifiedName targetName = new QualifiedName(target.getTargets().get(0).getPath());
-                wire = new SystemOutboundWire(referenceName, targetName, interfaze);
+                wire = new SystemOutboundWireImpl(referenceName, targetName, interfaze);
             }
             systemContext.addOutboundWire(wire);
         }

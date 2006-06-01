@@ -43,7 +43,7 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
                                   DeploymentContext deploymentContext) throws BuilderConfigException {
         CompositeImplementation implementation = component.getImplementation();
         CompositeComponentType<?,?,?> componentType = implementation.getComponentType();
-        CompositeContextImpl<?> context = new CompositeContextImpl(component.getName(), parent, null);
+        CompositeContextImpl<?> context = new CompositeContextImpl(component.getName(), parent, null, wireService);
         for (ReferenceTarget target : component.getReferenceTargets().values()) {
             Reference reference = target.getReference();
             if (reference instanceof BoundReference) {

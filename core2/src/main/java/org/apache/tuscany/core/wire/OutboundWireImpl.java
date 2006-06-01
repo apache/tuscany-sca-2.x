@@ -14,11 +14,9 @@
 package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.Map;
 
 import org.apache.tuscany.core.util.MethodHashMap;
-import org.apache.tuscany.spi.wire.JDKOutboundInvocationHandler;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -42,12 +40,13 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
-        if (targetWire != null) {
-            // optimized, no interceptors or handlers on either end
-            return targetWire.getTargetService();
-        }
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(invocationChains);
-        return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaces, handler);
+//        if (targetWire != null) {
+//            // optimized, no interceptors or handlers on either end
+//            return targetWire.getTargetService();
+//        }
+//        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(invocationChains);
+//        return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), businessInterfaces, handler);
+        throw new UnsupportedOperationException();
     }
 
     @SuppressWarnings("unchecked")

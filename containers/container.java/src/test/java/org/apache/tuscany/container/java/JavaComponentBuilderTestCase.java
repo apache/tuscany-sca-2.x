@@ -13,6 +13,7 @@ import org.apache.tuscany.spi.model.JavaServiceContract;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.Service;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.test.ArtifactFactory;
 import org.jmock.MockObjectTestCase;
 
 /**
@@ -23,7 +24,7 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
 
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
-        CompositeContext parent = new CompositeContextImpl(null, null, null);
+        CompositeContext parent = new CompositeContextImpl(null, null, null, ArtifactFactory.createWireService());
         ModuleScopeContext scope = new ModuleScopeContext(null);
         scope.start();
         PojoComponentType sourceType = new PojoComponentType();

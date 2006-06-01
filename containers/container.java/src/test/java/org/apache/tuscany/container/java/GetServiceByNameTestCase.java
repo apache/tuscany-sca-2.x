@@ -23,19 +23,15 @@ public class GetServiceByNameTestCase extends MockObjectTestCase {
                 MockContextFactory.createJavaAtomicContext("target", scope, TargetImpl.class, Target.class, Scope.MODULE);
 
         Mock mock = mock(InboundWire.class);
+        mock.stubs().method("getBusinessInterface").will(returnValue(Target.class));
         mock.stubs().method("getServiceName").will(returnValue("Target"));
-        mock.stubs().method("getInvocationChains").will(returnValue(Collections.emptyMap()));
+        mock.expects(atLeastOnce()).method("getInvocationChains").will(returnValue(Collections.emptyMap()));
 
         InboundWire<Target> wire = (InboundWire<Target>) mock.proxy();
         context.addInboundWire(wire);
         context.prepare();
         context.start();
-
-        mock.expects(once()).method("getTargetService").will(returnValue(context.getTargetInstance()));
-
-        Target target = (Target) context.getService("Target");
-        target.setString("foo");
-        assertEquals("foo",target.getString());
+        assertTrue(context.getService("Target") instanceof Target);
     }
 
     
