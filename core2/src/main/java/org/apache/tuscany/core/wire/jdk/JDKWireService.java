@@ -5,8 +5,6 @@ import java.lang.reflect.Proxy;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.JDKInboundInvocationHandler;
-import org.apache.tuscany.spi.wire.JDKOutboundInvocationHandler;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.RuntimeWire;

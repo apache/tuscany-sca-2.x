@@ -10,7 +10,7 @@ import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.JDKInboundInvocationHandler;
+import org.apache.tuscany.core.wire.jdk.JDKInboundInvocationHandler;
 import org.jmock.MockObjectTestCase;
 
 /**

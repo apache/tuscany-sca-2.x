@@ -1,4 +1,4 @@
-package org.apache.tuscany.spi.wire;
+package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
