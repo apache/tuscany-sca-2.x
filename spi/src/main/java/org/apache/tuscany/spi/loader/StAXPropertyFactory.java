@@ -30,12 +30,17 @@ import org.apache.tuscany.spi.model.Property;
 public interface StAXPropertyFactory {
     /**
      * Return an ObjectFactory for instances of a property defined in an XML stream.
+     * The ObjectFactory must return instances that can safely be supplied to component
+     * implementations.
+     * If the instance is mutable and isolation between components is required,
+     * then the factory must clone or otherwise protect the implementation from
+     * unexpected modifications by other implementation instances.
      *
-     * @param reader the reader to use to access the XML stream
+     * @param reader   the reader to use to access the XML stream
      * @param property the Property definition that the resulting ObjectFactory must be able to assign to
      * @return an ObjectFactory that can produce instances that can be assigned to the supplied Property
-     * @throws javax.xml.stream.XMLStreamException if there is a problem reading the stream
-     * @throws LoaderException if there is a problem creating the ObjectFactory
+     * @throws XMLStreamException if there is a problem reading the stream
+     * @throws LoaderException    if there is a problem creating the ObjectFactory
      */
     <T> ObjectFactory<T> createObjectFactory(XMLStreamReader reader, Property<T> property) throws XMLStreamException, LoaderException;
 }

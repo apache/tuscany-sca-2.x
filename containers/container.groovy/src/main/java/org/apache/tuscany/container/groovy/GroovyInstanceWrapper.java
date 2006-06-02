@@ -34,7 +34,7 @@ public class GroovyInstanceWrapper extends AbstractLifecycle implements Instance
     public void start() throws CoreRuntimeException {
         try {
             context.init(groovyObject);
-            lifecycleState = STARTED;
+            lifecycleState = RUNNING;
         } catch (ObjectCreationException e) {
             lifecycleState = ERROR;
             throw e;

@@ -75,8 +75,12 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         componentBuilders.put(implClass, builder);
     }
 
+    public <I extends Implementation<?>> void unregister(Class<I> implClass) {
+        componentBuilders.remove(implClass);
+    }
+
     @SuppressWarnings("unchecked")
-    public <I extends Implementation<?>> Context build(CompositeContext parent, Component<I> component, DeploymentContext deploymentContext) {
+    public <I extends Implementation<?>> ComponentContext<?> build(CompositeContext<?> parent, Component<I> component, DeploymentContext deploymentContext) {
         Class<I> implClass = (Class<I>) component.getImplementation().getClass();
         ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>) componentBuilders.get(implClass);
         if (componentBuilder == null) {
@@ -86,7 +90,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             throw e;
         }
 
-        ComponentContext context = componentBuilder.build(parent, component, deploymentContext);
+        ComponentContext<?> context = componentBuilder.build(parent, component, deploymentContext);
         assert(component.getImplementation().getComponentType() != null): "Component type must be set";
         return context;
     }

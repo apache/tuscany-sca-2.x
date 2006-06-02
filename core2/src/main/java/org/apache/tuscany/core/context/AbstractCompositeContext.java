@@ -125,7 +125,7 @@ public abstract class AbstractCompositeContext<T> extends CompositeContextExtens
             registerAutowire((AtomicContext) child);
         } else if (child instanceof CompositeContext) {
             CompositeContext context = (CompositeContext) child;
-            if (lifecycleState == STARTED && context.getLifecycleState() == UNINITIALIZED) {
+            if (lifecycleState == RUNNING && context.getLifecycleState() == UNINITIALIZED) {
                 context.start();
             }
             registerAutowire(context);

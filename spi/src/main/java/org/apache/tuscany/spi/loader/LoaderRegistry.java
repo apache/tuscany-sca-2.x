@@ -39,7 +39,7 @@ import org.apache.tuscany.spi.model.ModelObject;
  *
  * @version $Rev$ $Date$
  */
-public interface LoaderRegistry {
+public interface LoaderRegistry extends Loader {
     /**
      * Register a loader. This operation will typically be called by a loader
      * during its initialization.
@@ -58,32 +58,6 @@ public interface LoaderRegistry {
     <T extends ModelObject> void unregisterLoader(QName element, StAXElementLoader<T> loader);
 
     /**
-     * Parse the supplied XML stream dispatching to the appropriate registered loader
-     * for each element encountered in the stream.
-     * <p/>
-     * This method must be called with the XML cursor positioned on a START_ELEMENT event.
-     * When this method returns, the stream will be positioned on the corresponding
-     * END_ELEMENT event.
-     *
-     * @param reader            the XML stream to parse
-     * @param deploymentContext the current deployment context
-     * @return the model object obtained by parsing the current element on the stream
-     * @throws XMLStreamException if there was a problem reading the stream
-     */
-    ModelObject load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException;
-
-    /**
-     * Load a model object from a specified locations.
-     *
-     * @param url               the location of an XML document to be loaded
-     * @param type              the type of ModelObject that is expected to be in the document
-     * @param deploymentContext the current deployment context
-     * @return the model ojbect loaded from the document
-     * @throws LoaderException if there was a problem loading the document
-     */
-    <MO extends ModelObject> MO load(URL url, Class<MO> type, DeploymentContext deploymentContext) throws LoaderException;
-
-    /**
      * Regsiter a component type loader.
      *
      * @param key    a type of implementation this loader can load component types for
@@ -97,16 +71,4 @@ public interface LoaderRegistry {
      * @param key a type of implementation whose loader should be unregistered
      */
     <I extends Implementation<?>> void unregisterLoader(Class<I> key);
-
-    /**
-     * Load the component type definition for a given implementation.
-     * How the component type information is located is defined by the implementation specification.
-     * It may include loading from an XML sidefile, introspection of some artifact related to the
-     * implementation, some combination of those techniques or any other implementation-defined mechanism.
-     *
-     * @param implementation    the implementation whose component type should be loaded
-     * @param deploymentContext the current deployment context
-     * @throws LoaderException if there was a problem loading the component type definition
-     */
-    <I extends Implementation<?>> void loadComponentType(I implementation, DeploymentContext deploymentContext) throws LoaderException;
 }

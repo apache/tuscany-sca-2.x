@@ -1,14 +1,15 @@
 package org.apache.tuscany.spi.extension;
 
-import org.apache.tuscany.spi.model.Implementation;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
-import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.context.ScopeRegistry;
+import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.wire.WireService;
-
-import org.osoa.sca.annotations.Init;
 
 /**
  * An extension point for component builders. When adding support for new component types, implementations may
@@ -18,9 +19,19 @@ import org.osoa.sca.annotations.Init;
  */
 @org.osoa.sca.annotations.Scope("MODULE")
 public abstract class ComponentBuilderExtension<I extends Implementation<?>> implements ComponentBuilder<I> {
-
+    /**
+     * The builder registry that this builder should register with; usually set by injection.
+     */
     protected BuilderRegistry builderRegistry;
+
+    /**
+     * The scope registry that this builder should use; usually set by injection.
+     */
     protected ScopeRegistry scopeRegistry;
+
+    /**
+     * The policy builder that this builder should use; usually set by injection.
+     */
     protected PolicyBuilderRegistry policyBuilderRegistry;
     protected WireService wireService;
 
@@ -46,8 +57,17 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
 
     @Init(eager = true)
     public void init() {
-        builderRegistry.register(getImplementationType(),this);
+        builderRegistry.register(getImplementationType(), this);
     }
 
+    @Destroy
+    public void destroy() {
+        builderRegistry.unregister(getImplementationType());
+    }
+
+    /**
+     * Returns the Class of the implementation that this builder can handle.
+     * @return the type of implementation that this builder can handle
+     */
     protected abstract Class<I> getImplementationType();
 }

@@ -20,11 +20,18 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Implementation;
 
 /**
+ * Loader that will load the ComponentType definition for the supplied implementation.
+ * The actual mechanism used to load that definition is determined by the Client and
+ * Implementation Specification for the implementaion type. In some cases the definition
+ * may be contained in a XML file related to the implementation artifact in some well
+ * defined manner; other implementations may obtain this information from introspection
+ * of the artifact itself (for example, by examining Java annotations).
+ * 
  * @version $Rev$ $Date$
  */
 public interface ComponentTypeLoader<I extends Implementation> {
     /**
-     * Load the component type information for the supplied implementation.
+     * Load the component type definition for the supplied implementation.
      *
      * @param implementation    the implementation whose component type information should be loaded
      * @param deploymentContext the current deployment context

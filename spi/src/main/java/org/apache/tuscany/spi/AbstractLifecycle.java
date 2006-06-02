@@ -14,27 +14,37 @@
 package org.apache.tuscany.spi;
 
 /**
+ * Base class providing a simple implementation of Lifecycle.
+ *
  * @version $Rev$ $Date$
  */
 public abstract class AbstractLifecycle implements Lifecycle {
-    protected int lifecycleState = UNINITIALIZED;
+    protected volatile int lifecycleState = UNINITIALIZED;
 
     public int getLifecycleState() {
         return lifecycleState;
     }
 
+    /**
+     * Set the current state of the Lifecycle.
+     * @param lifecycleState the new state
+     */
     protected void setLifecycleState(int lifecycleState) {
         this.lifecycleState = lifecycleState;
     }
 
-    public void start() throws CoreRuntimeException {
-        setLifecycleState(STARTED);
+    public void start() {
+        setLifecycleState(RUNNING);
     }
 
-    public void stop() throws CoreRuntimeException {
+    public void stop() {
         setLifecycleState(STOPPED);
     }
 
+    /**
+     * Returns the current lifecycle as a String (for example, "RUNNING").
+     * @return the current lifecycle as a String
+     */
     public String toString() {
         switch (lifecycleState) {
             case (Lifecycle.CONFIG_ERROR):

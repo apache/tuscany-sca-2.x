@@ -37,7 +37,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  */
 public class SystemComponentBuilder implements ComponentBuilder<SystemImplementation> {
 
-    public ComponentContext build(CompositeContext parent, Component<SystemImplementation> component, DeploymentContext deploymentContext) throws BuilderConfigException {
+    public ComponentContext<?> build(CompositeContext<?> parent, Component<SystemImplementation> component, DeploymentContext deploymentContext) throws BuilderConfigException {
         assert(parent instanceof AutowireContext): "Parent must implement " + AutowireContext.class.getName();
         AutowireContext autowireContext = (AutowireContext) parent;
         PojoComponentType<?,?,?> componentType = component.getImplementation().getComponentType();

@@ -71,8 +71,8 @@ public class DefaultBootstrapper {
 
     public Deployer createDeployer() {
         DeployerImpl deployer = new DeployerImpl();
-        deployer.setBuilderRegistry(builderRegistry);
-        deployer.setLoaderRegistry(loaderRegistry);
+        deployer.setBuilder(builderRegistry);
+        deployer.setLoader(loaderRegistry);
         deployer.setConnector(connector);
         return deployer;
     }

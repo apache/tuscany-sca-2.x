@@ -38,7 +38,7 @@ import org.apache.tuscany.spi.model.Service;
  */
 public class CompositeBuilder extends ComponentBuilderExtension<CompositeImplementation> {
 
-    public ComponentContext build(CompositeContext parent,
+    public ComponentContext<?> build(CompositeContext<?> parent,
                                   Component<CompositeImplementation> component,
                                   DeploymentContext deploymentContext) throws BuilderConfigException {
         CompositeImplementation implementation = component.getImplementation();

@@ -49,7 +49,7 @@ public class ComponentTypeElementLoader extends LoaderExtension<ComponentType> {
 
     public ComponentType load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert AssemblyConstants.COMPONENT_TYPE.equals(reader.getName());
-        ComponentType componentType = new ComponentType();
+        ComponentType<Service,Reference,Property<?>> componentType = new ComponentType<Service, Reference, Property<?>>();
 
         while (true) {
             switch (reader.next()) {

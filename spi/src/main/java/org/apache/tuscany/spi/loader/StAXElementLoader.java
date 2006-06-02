@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  */
 public interface StAXElementLoader<T extends ModelObject> {
     /**
-     * Build the model object for an element in an XML stream.
+     * Create the model object for an element in an XML stream.
      * When this method returns the stream will be positioned on the corresponding END_ELEMENT.
      *
      * @param reader the XML stream reader positioned on the applicable START_ELEMENT

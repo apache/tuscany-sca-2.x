@@ -21,6 +21,7 @@ import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -55,14 +56,14 @@ public class BuilderRegistryTestCase extends TestCase {
     }
 
     public static class GenerifiedBuilder implements ComponentBuilder<CompositeImplementation> {
-        public ComponentContext build(CompositeContext parent, Component<CompositeImplementation> component, DeploymentContext deploymentContext) {
+        public ComponentContext<?> build(CompositeContext<?> parent, Component<CompositeImplementation> component, DeploymentContext deploymentContext) {
             return null;
         }
     }
 
     @SuppressWarnings({"RawUseOfParameterizedType"})
     public static class RawBuilder implements ComponentBuilder {
-        public ComponentContext build(CompositeContext parent, Component component, DeploymentContext deploymentContext) {
+        public ComponentContext build(CompositeContext parent, Component component, DeploymentContext deploymentContext) throws BuilderConfigException {
             return null;
         }
     }

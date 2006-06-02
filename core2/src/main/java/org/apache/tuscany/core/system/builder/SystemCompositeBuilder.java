@@ -56,7 +56,7 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
         this.builderRegistry = builderRegistry;
     }
 
-    public ComponentContext build(CompositeContext parent, Component<SystemCompositeImplementation> component, DeploymentContext deploymentContext) throws BuilderConfigException {
+    public ComponentContext<?> build(CompositeContext<?> parent, Component<SystemCompositeImplementation> component, DeploymentContext deploymentContext) throws BuilderConfigException {
         SystemCompositeImplementation impl = component.getImplementation();
         CompositeComponentType<?,?,?> componentType = impl.getComponentType();
         SystemCompositeContext<?> context = new SystemCompositeContextImpl(component.getName(), parent, getAutowireContext(parent));

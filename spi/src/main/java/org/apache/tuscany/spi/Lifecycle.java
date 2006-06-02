@@ -28,8 +28,6 @@ public interface Lifecycle {
     int INITIALIZING = 1;
     /* Instantiated and configured */
     int INITIALIZED = 2;
-    /* Started */
-    int STARTED = 4;
     /* Configured and initialized */
     int RUNNING = 4;
     /* In the process of being shutdown */

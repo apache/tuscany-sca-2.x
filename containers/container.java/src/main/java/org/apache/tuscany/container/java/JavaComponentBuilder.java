@@ -13,6 +13,7 @@ import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.context.ComponentContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.Component;
@@ -24,7 +25,7 @@ import org.apache.tuscany.spi.model.Service;
  */
 public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplementation> {
 
-    public JavaAtomicContext build(CompositeContext parent, Component<JavaImplementation> component, DeploymentContext deploymentContext)
+    public ComponentContext<?> build(CompositeContext<?> parent, Component<JavaImplementation> component, DeploymentContext deploymentContext)
             throws BuilderConfigException {
         PojoComponentType<?, ?, ?> componentType = component.getImplementation().getComponentType();
 

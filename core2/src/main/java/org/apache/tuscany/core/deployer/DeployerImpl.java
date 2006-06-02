@@ -20,13 +20,14 @@ import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.builder.Connector;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
+import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.context.CompositeContext;
 import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.Loader;
 import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.Implementation;
 
@@ -36,18 +37,18 @@ import org.apache.tuscany.spi.model.Implementation;
  * @version $Rev$ $Date$
  */
 public class DeployerImpl implements Deployer {
-    private LoaderRegistry loaderRegistry;
-    private BuilderRegistry builderRegistry;
+    private Loader loader;
+    private Builder builder;
     private Connector connector;
 
     @Autowire
-    public void setLoaderRegistry(LoaderRegistry loaderRegistry) {
-        this.loaderRegistry = loaderRegistry;
+    public void setLoader(Loader loader) {
+        this.loader = loader;
     }
 
     @Autowire
-    public void setBuilderRegistry(BuilderRegistry builderRegistry) {
-        this.builderRegistry = builderRegistry;
+    public void setBuilder(Builder builder) {
+        this.builder = builder;
     }
 
     @Autowire
@@ -55,13 +56,14 @@ public class DeployerImpl implements Deployer {
         this.connector = connector;
     }
 
-    public <I extends Implementation<?>> void deploy(CompositeContext<?> parent, Component<I> component) throws LoaderException {
+    public <I extends Implementation<?>> Context<?> deploy(CompositeContext<?> parent, Component<I> component) throws LoaderException {
         ScopeContext moduleScope = new ModuleScopeContext();
         DeploymentContext deploymentContext = new DeploymentContext(null, null, moduleScope);
         load(component, deploymentContext);
         Context<?> context = build(parent, component, deploymentContext);
         connect(context);
         parent.registerContext(context);
+        return context;
     }
 
     /**
@@ -72,7 +74,7 @@ public class DeployerImpl implements Deployer {
      * @param deploymentContext the current deployment context
      */
     protected <I extends Implementation<?>> void load(Component<I> component, DeploymentContext deploymentContext) throws LoaderException {
-        loaderRegistry.loadComponentType(component.getImplementation(), deploymentContext);
+        loader.loadComponentType(component.getImplementation(), deploymentContext);
     }
 
     /**
@@ -84,7 +86,7 @@ public class DeployerImpl implements Deployer {
      * @return the new runtime context
      */
     protected <I extends Implementation<?>> Context<?> build(CompositeContext<?> parent, Component<I> component, DeploymentContext deploymentContext) {
-        return builderRegistry.build(parent, component, deploymentContext);
+        return builder.build(parent, component, deploymentContext);
     }
 
     /**

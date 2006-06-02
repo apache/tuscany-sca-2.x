@@ -17,6 +17,7 @@
 package org.apache.tuscany.spi.deployer;
 
 import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.Context;
 import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -29,9 +30,13 @@ import org.apache.tuscany.spi.loader.LoaderException;
 public interface Deployer {
     /**
      * Deploy a component as a child of the supplied parent.
+     * This operation creates a new context in the runtime to represent the supplied component.
+     * The type of context created will depend on the implementation of the component; for example,
+     * if the implementation of the component is a composite then typically a CompositeContext would be returned. 
      *
      * @param parent the parent context
      * @param component the component definition
+     * @return the newly deployed context for the component
      */
-    <I extends Implementation<?>> void deploy(CompositeContext<?> parent, Component<I> component) throws LoaderException;
+    <I extends Implementation<?>> Context<?> deploy(CompositeContext<?> parent, Component<I> component) throws LoaderException;
 }

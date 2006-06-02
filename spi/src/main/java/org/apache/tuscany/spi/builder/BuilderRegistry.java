@@ -16,13 +16,7 @@
  */
 package org.apache.tuscany.spi.builder;
 
-import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Binding;
-import org.apache.tuscany.spi.model.BoundReference;
-import org.apache.tuscany.spi.model.BoundService;
-import org.apache.tuscany.spi.model.Component;
 import org.apache.tuscany.spi.model.Implementation;
 
 /**
@@ -31,18 +25,37 @@ import org.apache.tuscany.spi.model.Implementation;
  *
  * @version $Rev$ $Date$
  */
-public interface BuilderRegistry {
+public interface BuilderRegistry extends Builder {
+    /**
+     * Register a builder based on an implementation type specified in an annotation.
+     * The implementation type is obtained by reflecting the generic definition.
+     *
+     * @param builder the builder to register
+     */
     <I extends Implementation<?>> void register(ComponentBuilder<I> builder);
 
+    /**
+     * Register a builder for an implementation type.
+     *
+     * @param implClass the type of implementation that this builder can handle
+     * @param builder the builder to be registered
+     */
     <I extends Implementation<?>> void register(Class<I> implClass, ComponentBuilder<I> builder);
 
-    <I extends Implementation<?>> Context build(CompositeContext parent, Component<I> component, DeploymentContext deploymentContext);
+    /**
+     * Unregister a builder for an implementation type.
+     * @param implClass the implementation whose builder should be unregistered
+     */
+    <I extends Implementation<?>> void unregister(Class<I> implClass);
 
+    /**
+     * TODO: JavaDoc this once we know if we will be building contexts for bindings
+     */
     <B extends Binding> void register(BindingBuilder<B> builder);
 
+    /**
+     * TODO: JavaDoc this once we know if we will be building contexts for bindings
+     */
     <B extends Binding> void register(Class<B> implClass, BindingBuilder<B> builder);
 
-    <B extends Binding> Context build(CompositeContext parent, BoundService<B> boundService, DeploymentContext deploymentContext);
-
-    <B extends Binding> Context build(CompositeContext parent, BoundReference<B> boundReference, DeploymentContext deploymentContext);
 }
