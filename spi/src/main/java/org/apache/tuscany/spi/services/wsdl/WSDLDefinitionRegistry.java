@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.services.wsdl;
+package org.apache.tuscany.spi.services.wsdl;
 
 import java.net.URL;
 import java.io.IOException;

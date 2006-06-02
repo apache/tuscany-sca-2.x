@@ -1,4 +1,4 @@
-package org.apache.tuscany.core.host;
+package org.apache.tuscany.spi.host;
 
 import javax.servlet.Servlet;
 

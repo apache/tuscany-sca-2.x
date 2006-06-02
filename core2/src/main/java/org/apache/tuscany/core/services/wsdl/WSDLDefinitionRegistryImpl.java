@@ -33,6 +33,8 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.spi.services.wsdl.WSDLDefinitionRegistry;
+
 /**
  * @version $Rev$ $Date$
  */
