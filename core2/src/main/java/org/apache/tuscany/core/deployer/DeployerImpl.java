@@ -19,16 +19,15 @@ package org.apache.tuscany.core.deployer;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.builder.Connector;
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Builder;
-import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.Context;
+import org.apache.tuscany.spi.context.CompositeComponent;
+import org.apache.tuscany.spi.context.SCAObject;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.Loader;
-import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 
 /**
@@ -56,37 +55,37 @@ public class DeployerImpl implements Deployer {
         this.connector = connector;
     }
 
-    public <I extends Implementation<?>> Context<?> deploy(CompositeContext<?> parent, Component<I> component) throws LoaderException {
+    public <I extends Implementation<?>> SCAObject<?> deploy(CompositeComponent<?> parent, ComponentDefinition<I> componentDefinition) throws LoaderException {
         ScopeContext moduleScope = new ModuleScopeContext();
         DeploymentContext deploymentContext = new DeploymentContext(null, null, moduleScope);
-        load(component, deploymentContext);
-        Context<?> context = build(parent, component, deploymentContext);
+        load(componentDefinition, deploymentContext);
+        SCAObject<?> context = build(parent, componentDefinition, deploymentContext);
         connect(context);
-        parent.registerContext(context);
+        parent.register(context);
         return context;
     }
 
     /**
-     * Load the component type information for the component being deployed.
+     * Load the componentDefinition type information for the componentDefinition being deployed.
      * For a typical deployment this will result in the SCDL definition being loaded.
      *
-     * @param component         the component being deployed
+     * @param componentDefinition         the componentDefinition being deployed
      * @param deploymentContext the current deployment context
      */
-    protected <I extends Implementation<?>> void load(Component<I> component, DeploymentContext deploymentContext) throws LoaderException {
-        loader.loadComponentType(component.getImplementation(), deploymentContext);
+    protected <I extends Implementation<?>> void load(ComponentDefinition<I> componentDefinition, DeploymentContext deploymentContext) throws LoaderException {
+        loader.loadComponentType(componentDefinition.getImplementation(), deploymentContext);
     }
 
     /**
-     * Build the runtime context for a loaded component.
+     * Build the runtime context for a loaded componentDefinition.
      *
      * @param parent            the context that will be the parent of the new sub-context
-     * @param component         the component being deployed
+     * @param componentDefinition         the componentDefinition being deployed
      * @param deploymentContext the current deployment context
      * @return the new runtime context
      */
-    protected <I extends Implementation<?>> Context<?> build(CompositeContext<?> parent, Component<I> component, DeploymentContext deploymentContext) {
-        return builder.build(parent, component, deploymentContext);
+    protected <I extends Implementation<?>> SCAObject<?> build(CompositeComponent<?> parent, ComponentDefinition<I> componentDefinition, DeploymentContext deploymentContext) {
+        return builder.build(parent, componentDefinition, deploymentContext);
     }
 
     /**
@@ -94,7 +93,7 @@ public class DeployerImpl implements Deployer {
      *
      * @param context the context to connect
      */
-    protected void connect(Context<?> context) {
+    protected void connect(SCAObject<?> context) {
         connector.connect(context);
     }
 }

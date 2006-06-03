@@ -14,20 +14,20 @@ import org.jmock.MockObjectTestCase;
 public class DuplicateRegistrationTestCase extends MockObjectTestCase {
 
     public void testDuplicateRegistration() throws Exception {
-        SystemCompositeContext parent = new SystemCompositeContextImpl(null, null, null);
+        SystemCompositeComponent parent = new SystemCompositeComponentImpl(null, null, null);
         parent.start();
 
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
-        Mock mock = mock(SystemAtomicContext.class);
+        Mock mock = mock(SystemAtomicComponent.class);
         mock.stubs().method("getName").will(returnValue("source"));
         mock.expects(once()).method("stop");
         mock.stubs().method("getServiceInterfaces").will(returnValue(interfaces));
-        SystemAtomicContext context1 = (SystemAtomicContext) mock.proxy();
-        SystemAtomicContext context2 = (SystemAtomicContext) mock.proxy();
-        parent.registerContext(context1);
+        SystemAtomicComponent context1 = (SystemAtomicComponent) mock.proxy();
+        SystemAtomicComponent context2 = (SystemAtomicComponent) mock.proxy();
+        parent.register(context1);
         try {
-            parent.registerContext(context2);
+            parent.register(context2);
             fail();
         } catch (DuplicateNameException e) {
             // ok

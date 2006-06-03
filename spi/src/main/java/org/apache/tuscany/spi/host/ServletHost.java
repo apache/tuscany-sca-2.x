@@ -3,7 +3,7 @@ package org.apache.tuscany.spi.host;
 import javax.servlet.Servlet;
 
 /**
- * Service interface implemented by host environments that allow Servlets
+ * ServiceDefinition interface implemented by host environments that allow Servlets
  * to be registered.
  * <p/>
  * This interface allows an SCA system component to register a servlet to handle

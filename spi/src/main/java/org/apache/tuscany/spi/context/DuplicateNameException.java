@@ -1,11 +1,11 @@
 package org.apache.tuscany.spi.context;
 
 /**
- * Denotes an attempt to add a context with a name equal to an existing context
+ * Denotes an attempt to add an child to a composite component with a name equal to an existing child
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
-public class DuplicateNameException extends ContextRuntimeException {
+public class DuplicateNameException extends ComponentRuntimeException {
 
     public DuplicateNameException() {
         super();

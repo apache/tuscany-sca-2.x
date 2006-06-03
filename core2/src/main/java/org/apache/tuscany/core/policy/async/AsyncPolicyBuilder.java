@@ -3,7 +3,7 @@ package org.apache.tuscany.core.policy.async;
 import javax.resource.spi.work.WorkManager;
 
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.apache.tuscany.spi.model.Service;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
@@ -50,7 +50,7 @@ public class AsyncPolicyBuilder implements TargetPolicyBuilder {
         this.workManager = workManager;
     }
 
-    public void build(Service service, InboundWire<?> wire) throws BuilderException {
+    public void build(ServiceDefinition serviceDefinition, InboundWire<?> wire) throws BuilderException {
         for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
             // TODO fix this - it should be represented by the model and not through an annotation
             if (chain.getMethod().getAnnotation(OneWay.class) != null) {

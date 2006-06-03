@@ -22,9 +22,9 @@ import java.util.Map;
 /**
  * @version $Rev$ $Date$
  */
-public class CompositeComponentType<S extends Service, R extends Reference, P extends Property<?>> extends ComponentType<S,R,P> {
+public class CompositeComponentType<S extends ServiceDefinition, R extends ReferenceDefinition, P extends Property<?>> extends ComponentType<S,R,P> {
     private String name;
-    private final Map<String, Component<? extends Implementation<?>>> components = new HashMap<String, Component<? extends Implementation<?>>>();
+    private final Map<String, ComponentDefinition<? extends Implementation<?>>> components = new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
 
     public String getName() {
         return name;
@@ -34,11 +34,11 @@ public class CompositeComponentType<S extends Service, R extends Reference, P ex
         this.name = name;
     }
 
-    public Map<String, Component<? extends Implementation<?>>> getComponents() {
+    public Map<String, ComponentDefinition<? extends Implementation<?>>> getComponents() {
         return components;
     }
 
-    public void add(Component<? extends Implementation<?>> component) {
-        components.put(component.getName(), component);
+    public void add(ComponentDefinition<? extends Implementation<?>> componentDefinition) {
+        components.put(componentDefinition.getName(), componentDefinition);
     }
 }

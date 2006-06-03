@@ -27,7 +27,7 @@ import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.AtomicComponent;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -151,11 +151,11 @@ public class OutboundWireToJavaTestCase extends TestCase {
         Connector connector = new ConnectorImpl();
         OutboundWire<Target> wire = createOutboundWire(new QualifiedName("target/Target"), Target.class);
 
-        AtomicContext<?> atomicContext = MockContextFactory.createJavaAtomicContext("target", scope, TargetImpl.class, Target.class, scope.getScope());
+        AtomicComponent<?> atomicComponent = MockContextFactory.createJavaAtomicContext("target", scope, TargetImpl.class, Target.class, scope.getScope());
         InboundWire targetWire = MockContextFactory.createTargetWire("Target", Target.class);
-        atomicContext.addInboundWire(targetWire);
-        connector.connect(wire, atomicContext.getInboundWire("Target"), atomicContext, false);
-        atomicContext.start();
+        atomicComponent.addInboundWire(targetWire);
+        connector.connect(wire, atomicComponent.getInboundWire("Target"), atomicComponent, false);
+        atomicComponent.start();
         return wire;
     }
 

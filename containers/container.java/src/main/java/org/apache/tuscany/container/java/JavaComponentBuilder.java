@@ -11,34 +11,34 @@ import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.CompositeComponent;
 import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.context.ComponentContext;
+import org.apache.tuscany.spi.context.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
-import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.Service;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplementation> {
 
-    public ComponentContext<?> build(CompositeContext<?> parent, Component<JavaImplementation> component, DeploymentContext deploymentContext)
+    public Component<?> build(CompositeComponent<?> parent, ComponentDefinition<JavaImplementation> componentDefinition, DeploymentContext deploymentContext)
             throws BuilderConfigException {
-        PojoComponentType<?, ?, ?> componentType = component.getImplementation().getComponentType();
+        PojoComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
 
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
-        for (Service service : componentType.getServices().values()) {
-            serviceInterfaces.add(service.getServiceContract().getInterfaceClass());
+        for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
+            serviceInterfaces.add(serviceDefinition.getServiceContract().getInterfaceClass());
         }
         Constructor<?> constr;
         try {
-            constr = JavaIntrospectionHelper.getDefaultConstructor(component.getImplementation().getImplementationClass());
+            constr = JavaIntrospectionHelper.getDefaultConstructor(componentDefinition.getImplementation().getImplementationClass());
         } catch (NoSuchMethodException e) {
-            BuilderConfigException bce = new BuilderConfigException("Error building component", e);
-            bce.setIdentifier(component.getName());
+            BuilderConfigException bce = new BuilderConfigException("Error building componentDefinition", e);
+            bce.setIdentifier(componentDefinition.getName());
             bce.addContextName(parent.getName());
             throw bce;
         }
@@ -52,7 +52,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
                 if (contextType.isAssignableFrom(parent.getClass())) {
                     ((ContextInjector) injector).setContext(parent);
                 } else {
-                    BuilderConfigException e = new BuilderConfigException("Context not found for type");
+                    BuilderConfigException e = new BuilderConfigException("SCAObject not found for type");
                     e.setIdentifier(contextType.getName());
                     throw e;
                 }
@@ -66,7 +66,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         } else {
             scopeContext = scopeRegistry.getScopeContext(scope);
         }
-        return new JavaAtomicContext(component.getName(),
+        return new JavaAtomicComponent(componentDefinition.getName(),
                 parent,
                 scopeContext,
                 serviceInterfaces,

@@ -25,8 +25,8 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.model.Reference;
-import org.apache.tuscany.spi.model.Service;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -49,16 +49,16 @@ public class ComponentTypeElementLoader extends LoaderExtension<ComponentType> {
 
     public ComponentType load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert AssemblyConstants.COMPONENT_TYPE.equals(reader.getName());
-        ComponentType<Service,Reference,Property<?>> componentType = new ComponentType<Service, Reference, Property<?>>();
+        ComponentType<ServiceDefinition,ReferenceDefinition,Property<?>> componentType = new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
 
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
                     ModelObject o = registry.load(reader, deploymentContext);
-                    if (o instanceof Service) {
-                        componentType.add((Service) o);
-                    } else if (o instanceof Reference) {
-                        componentType.add((Reference) o);
+                    if (o instanceof ServiceDefinition) {
+                        componentType.add((ServiceDefinition) o);
+                    } else if (o instanceof ReferenceDefinition) {
+                        componentType.add((ReferenceDefinition) o);
                     } else if (o instanceof Property) {
                         componentType.add((Property<?>) o);
                     }

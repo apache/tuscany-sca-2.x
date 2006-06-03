@@ -30,11 +30,11 @@ import org.apache.tuscany.spi.wire.InvocationRuntimeException;
  */
 public class GroovyInvoker implements TargetInvoker, Cloneable {
 
-    private GroovyAtomicContext context;
+    private GroovyAtomicComponent context;
     private String methodName;
     private boolean cacheable;
 
-    public GroovyInvoker(String methodName, GroovyAtomicContext context) {
+    public GroovyInvoker(String methodName, GroovyAtomicComponent context) {
         this.context = context;
         this.methodName = methodName;
     }

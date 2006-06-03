@@ -13,7 +13,7 @@ import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.container.java.mock.components.TargetImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.AtomicComponent;
 import org.apache.tuscany.spi.context.ScopeContext;
 
 /**
@@ -26,10 +26,10 @@ public class ReferenceInjectionTestCase extends TestCase {
     public void testProxiedReferenceInjection() throws Exception {
         ScopeContext scope = new ModuleScopeContext(null);
         scope.start();
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, scope,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, scope,
                 members, "target", Target.class, TargetImpl.class, scope);
-        AtomicContext sourceContext = contexts.get("source");
-        Source source = (Source) sourceContext.getService();
+        AtomicComponent sourceComponent = contexts.get("source");
+        Source source = (Source) sourceComponent.getService();
         Target target = source.getTarget();
         assertTrue(Proxy.isProxyClass(target.getClass()));
 

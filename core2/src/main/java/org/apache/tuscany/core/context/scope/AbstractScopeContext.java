@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.spi.AbstractLifecycle;
-import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.AtomicComponent;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.TargetException;
@@ -83,8 +83,8 @@ public abstract class AbstractScopeContext extends AbstractLifecycle implements 
         }
     }
 
-    public Object getInstance(AtomicContext context) throws TargetException {
-        InstanceWrapper ctx = getInstanceContext(context);
+    public Object getInstance(AtomicComponent component) throws TargetException {
+        InstanceWrapper ctx = getInstanceContext(component);
         if (ctx != null) {
             if (ctx.getLifecycleState() == UNINITIALIZED) {
                 ctx.start();

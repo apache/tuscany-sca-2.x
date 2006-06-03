@@ -24,10 +24,10 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.model.Service;
-import org.apache.tuscany.spi.model.Reference;
+import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -57,14 +57,14 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
             switch (reader.next()) {
                 case START_ELEMENT:
                     ModelObject o = registry.load(reader, deploymentContext);
-                    if (o instanceof Service) {
-                        composite.add((Service) o);
-                    } else if (o instanceof Reference) {
-                        composite.add((Reference) o);
+                    if (o instanceof ServiceDefinition) {
+                        composite.add((ServiceDefinition) o);
+                    } else if (o instanceof ReferenceDefinition) {
+                        composite.add((ReferenceDefinition) o);
                     } else if (o instanceof Property<?>) {
                         composite.add((Property<?>) o);
-                    } else if (o instanceof Component<?>) {
-                        composite.add((Component<? extends Implementation>) o);
+                    } else if (o instanceof ComponentDefinition<?>) {
+                        composite.add((ComponentDefinition<? extends Implementation>) o);
                     }
                     reader.next();
                     break;

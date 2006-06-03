@@ -17,38 +17,38 @@
 package org.apache.tuscany.spi.builder;
 
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Binding;
-import org.apache.tuscany.spi.model.BoundService;
-import org.apache.tuscany.spi.model.BoundReference;
-import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.ComponentContext;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
+import org.apache.tuscany.spi.context.SCAObject;
+import org.apache.tuscany.spi.context.CompositeComponent;
+import org.apache.tuscany.spi.context.Component;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
- * Service interface that builds runtime contexts from model objects.
+ * Implementations build <code>SCAObject</code> types from model objects.
  *
  * @version $Rev$ $Date$
  */
 public interface Builder {
     /**
-     * Build a component context from a component definition.
+     * Builds a <code>Component</code> context from a <code>ComponentDefinition</code>
      *
-     * @param parent the context that will be the parent of the newly build context
-     * @param component the definition of the component
+     * @param parent the composite that will be the parent of the newly built component
+     * @param componentDefinition the component definition as parsed from an SCA assembly
      * @param deploymentContext the current deployment context
-     * @return a newly created component context
+     * @return a newly created component
      */
-    <I extends Implementation<?>> ComponentContext<?> build(CompositeContext<?> parent, Component<I> component, DeploymentContext deploymentContext);
+    <I extends Implementation<?>> Component<?> build(CompositeComponent<?> parent, ComponentDefinition<I> componentDefinition, DeploymentContext deploymentContext);
 
     /**
      * TODO: JavaDoc this when we know if we will still register Services as contexts 
      */
-    <B extends Binding> Context build(CompositeContext parent, BoundService<B> boundService, DeploymentContext deploymentContext);
+    <B extends Binding> SCAObject build(CompositeComponent parent, BoundServiceDefinition<B> boundServiceDefinition, DeploymentContext deploymentContext);
 
     /**
      * TODO: JavaDoc this when we know if we will still register References as contexts
      */
-    <B extends Binding> Context build(CompositeContext parent, BoundReference<B> boundReference, DeploymentContext deploymentContext);
+    <B extends Binding> SCAObject build(CompositeComponent parent, BoundReferenceDefinition<B> boundReferenceDefinition, DeploymentContext deploymentContext);
 }

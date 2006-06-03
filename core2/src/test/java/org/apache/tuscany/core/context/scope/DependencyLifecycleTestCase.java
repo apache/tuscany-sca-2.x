@@ -14,7 +14,7 @@ import org.apache.tuscany.core.mock.component.OrderedDependentPojo;
 import org.apache.tuscany.core.mock.component.OrderedDependentPojoImpl;
 import org.apache.tuscany.core.mock.component.OrderedInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;
-import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.AtomicComponent;
 import org.apache.tuscany.spi.context.WorkContext;
 
 /**
@@ -28,18 +28,18 @@ public class DependencyLifecycleTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         ModuleScopeContext scopeCtx = new ModuleScopeContext(ctx);
         scopeCtx.start();
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
                 scopeCtx, "target", OrderedInitPojoImpl.class, scopeCtx);
-        for (AtomicContext context : contexts.values()) {
-            scopeCtx.register(context);
+        for (AtomicComponent component : contexts.values()) {
+            scopeCtx.register(component);
         }
-        AtomicContext sourceContext = contexts.get("source");
-        AtomicContext targetContext = contexts.get("target");
-        scopeCtx.register(sourceContext);
-        scopeCtx.register(targetContext);
+        AtomicComponent sourceComponent = contexts.get("source");
+        AtomicComponent targetComponent = contexts.get("target");
+        scopeCtx.register(sourceComponent);
+        scopeCtx.register(targetComponent);
         scopeCtx.onEvent(new ModuleStart(this, null));
-        OrderedDependentPojo source = (OrderedDependentPojo)scopeCtx.getInstance(sourceContext);
-        OrderedInitPojo target = (OrderedInitPojo) scopeCtx.getInstance(targetContext);
+        OrderedDependentPojo source = (OrderedDependentPojo)scopeCtx.getInstance(sourceComponent);
+        OrderedInitPojo target = (OrderedInitPojo) scopeCtx.getInstance(targetComponent);
         assertNotNull(source.getPojo());
         assertNotNull(target);
         assertEquals(2, source.getNumberInstantiated());
@@ -52,15 +52,15 @@ public class DependencyLifecycleTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         ModuleScopeContext scopeCtx = new ModuleScopeContext(ctx);
         scopeCtx.start();
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
                 scopeCtx, "target", OrderedInitPojoImpl.class, scopeCtx);
-        AtomicContext sourceContext = contexts.get("source");
-        AtomicContext targetContext = contexts.get("target");
+        AtomicComponent sourceComponent = contexts.get("source");
+        AtomicComponent targetComponent = contexts.get("target");
         scopeCtx.onEvent(new ModuleStart(this, null));
-        scopeCtx.register(sourceContext);
-        scopeCtx.register(targetContext);
-        OrderedDependentPojo source = (OrderedDependentPojo) scopeCtx.getInstance(sourceContext);
-        OrderedInitPojo target = (OrderedInitPojo) scopeCtx.getInstance(targetContext);
+        scopeCtx.register(sourceComponent);
+        scopeCtx.register(targetComponent);
+        OrderedDependentPojo source = (OrderedDependentPojo) scopeCtx.getInstance(sourceComponent);
+        OrderedInitPojo target = (OrderedInitPojo) scopeCtx.getInstance(targetComponent);
         assertNotNull(source.getPojo());
         assertNotNull(target);
         assertEquals(2, source.getNumberInstantiated());
@@ -75,14 +75,14 @@ public class DependencyLifecycleTestCase extends TestCase {
         HttpSessionScopeContext scopeCtx = new HttpSessionScopeContext(ctx);
         scopeCtx.start();
         Object session = new Object();
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
                 scopeCtx, "target", OrderedInitPojoImpl.class, scopeCtx);
-        AtomicContext sourceContext = contexts.get("source");
-        AtomicContext targetContext = contexts.get("target");
-        scopeCtx.register(sourceContext);
-        scopeCtx.register(targetContext);
+        AtomicComponent sourceComponent = contexts.get("source");
+        AtomicComponent targetComponent = contexts.get("target");
+        scopeCtx.register(sourceComponent);
+        scopeCtx.register(targetComponent);
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session);
-        OrderedDependentPojo source = (OrderedDependentPojo) scopeCtx.getInstance(sourceContext);
+        OrderedDependentPojo source = (OrderedDependentPojo) scopeCtx.getInstance(sourceComponent);
         assertNotNull(source.getPojo());
         assertEquals(2, source.getNumberInstantiated());
         scopeCtx.onEvent(new HttpSessionEnd(this, session));
@@ -96,14 +96,14 @@ public class DependencyLifecycleTestCase extends TestCase {
         HttpSessionScopeContext scopeCtx = new HttpSessionScopeContext(ctx);
         scopeCtx.start();
         Object session = new Object();
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
                 scopeCtx, "target", OrderedInitPojoImpl.class, scopeCtx);
-        AtomicContext sourceContext = contexts.get("source");
-        AtomicContext targetContext = contexts.get("target");
+        AtomicComponent sourceComponent = contexts.get("source");
+        AtomicComponent targetComponent = contexts.get("target");
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session);
-        scopeCtx.register(sourceContext);
-        scopeCtx.register(targetContext);
-        OrderedDependentPojo source = (OrderedDependentPojo) scopeCtx.getInstance(sourceContext);
+        scopeCtx.register(sourceComponent);
+        scopeCtx.register(targetComponent);
+        OrderedDependentPojo source = (OrderedDependentPojo) scopeCtx.getInstance(sourceComponent);
         assertNotNull(source.getPojo());
         assertEquals(2, source.getNumberInstantiated());
         scopeCtx.onEvent(new HttpSessionEnd(this, session));
@@ -116,13 +116,13 @@ public class DependencyLifecycleTestCase extends TestCase {
         RequestScopeContext scopeCtx = new RequestScopeContext(ctx);
         scopeCtx.start();
         scopeCtx.onEvent(new RequestStart(this));
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
                 scopeCtx, "target", OrderedInitPojoImpl.class, scopeCtx);
-        AtomicContext sourceContext = contexts.get("source");
-        AtomicContext targetContext = contexts.get("target");
-        scopeCtx.register(sourceContext);
-        scopeCtx.register(targetContext);
-        OrderedDependentPojo source = (OrderedDependentPojo) scopeCtx.getInstance(sourceContext);
+        AtomicComponent sourceComponent = contexts.get("source");
+        AtomicComponent targetComponent = contexts.get("target");
+        scopeCtx.register(sourceComponent);
+        scopeCtx.register(targetComponent);
+        OrderedDependentPojo source = (OrderedDependentPojo) scopeCtx.getInstance(sourceComponent);
         assertNotNull(source.getPojo());
         assertEquals(2, source.getNumberInstantiated());
         scopeCtx.onEvent(new RequestEnd(this));

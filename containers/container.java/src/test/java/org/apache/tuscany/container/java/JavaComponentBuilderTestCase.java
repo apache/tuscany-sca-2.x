@@ -3,15 +3,15 @@ package org.apache.tuscany.container.java;
 import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
-import org.apache.tuscany.core.context.CompositeContextImpl;
+import org.apache.tuscany.core.context.CompositeComponentImpl;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.model.PojoComponentType;
-import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.JavaServiceContract;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.Service;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.test.ArtifactFactory;
 import org.jmock.MockObjectTestCase;
@@ -24,7 +24,7 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
 
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
-        CompositeContext parent = new CompositeContextImpl(null, null, null, ArtifactFactory.createWireService());
+        CompositeComponent parent = new CompositeComponentImpl(null, null, null, ArtifactFactory.createWireService());
         ModuleScopeContext scope = new ModuleScopeContext(null);
         scope.start();
         PojoComponentType sourceType = new PojoComponentType();
@@ -33,18 +33,18 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
 
         ServiceContract sourceContract = new JavaServiceContract();
         sourceContract.setInterfaceClass(Source.class);
-        Service sourceService = new Service();
-        sourceService.setName("Source");
-        sourceService.setServiceContract(sourceContract);
+        ServiceDefinition sourceServiceDefinition = new ServiceDefinition();
+        sourceServiceDefinition.setName("Source");
+        sourceServiceDefinition.setServiceContract(sourceContract);
 
-        sourceType.add(sourceService);
+        sourceType.add(sourceServiceDefinition);
         JavaImplementation sourceImpl = new JavaImplementation();
         sourceImpl.setComponentType(sourceType);
         sourceImpl.setImplementationClass(SourceImpl.class);
-        Component<JavaImplementation> sourceComponent = new Component<JavaImplementation>(sourceImpl);
+        ComponentDefinition<JavaImplementation> sourceComponentDefinition = new ComponentDefinition<JavaImplementation>(sourceImpl);
 
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        JavaAtomicContext<Source> ctx = (JavaAtomicContext<Source>) builder.build(parent, sourceComponent, deploymentContext);
+        JavaAtomicComponent<Source> ctx = (JavaAtomicComponent<Source>) builder.build(parent, sourceComponentDefinition, deploymentContext);
         deploymentContext.getModuleScope().start();
         ctx.start();
         Source source = ctx.getService();

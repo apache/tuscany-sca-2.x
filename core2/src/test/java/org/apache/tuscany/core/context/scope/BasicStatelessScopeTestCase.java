@@ -6,7 +6,7 @@ import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.mock.component.StatelessComponent;
 import org.apache.tuscany.core.mock.component.StatelessComponentImpl;
-import org.apache.tuscany.core.system.context.SystemAtomicContext;
+import org.apache.tuscany.core.system.context.SystemAtomicComponent;
 import org.apache.tuscany.spi.context.WorkContext;
 
 /**
@@ -23,9 +23,9 @@ public class BasicStatelessScopeTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         StatelessScopeContext scope = new StatelessScopeContext(ctx);
         scope.start();
-        SystemAtomicContext context1 = MockContextFactory.createSystemAtomicContext("comp1", scope, StatelessComponentImpl.class);
+        SystemAtomicComponent context1 = MockContextFactory.createSystemAtomicContext("comp1", scope, StatelessComponentImpl.class);
         scope.register(context1);
-        SystemAtomicContext context2 = MockContextFactory.createSystemAtomicContext("comp2", scope, StatelessComponentImpl.class);
+        SystemAtomicComponent context2 = MockContextFactory.createSystemAtomicContext("comp2", scope, StatelessComponentImpl.class);
         scope.register(context2);
         StatelessComponentImpl comp1 = (StatelessComponentImpl) scope.getInstance(context1);
         Assert.assertNotNull(comp1);
@@ -40,11 +40,11 @@ public class BasicStatelessScopeTestCase extends TestCase {
         StatelessScopeContext scope = new StatelessScopeContext(ctx);
 
         scope.start();
-        SystemAtomicContext context1 = MockContextFactory.createSystemAtomicContext("comp1", scope, StatelessComponentImpl.class);
+        SystemAtomicComponent context1 = MockContextFactory.createSystemAtomicContext("comp1", scope, StatelessComponentImpl.class);
         scope.register(context1);
         StatelessComponent comp1 = (StatelessComponentImpl) scope.getInstance(context1);
         Assert.assertNotNull(comp1);
-        SystemAtomicContext context2 = MockContextFactory.createSystemAtomicContext("comp2", scope, StatelessComponentImpl.class);
+        SystemAtomicComponent context2 = MockContextFactory.createSystemAtomicContext("comp2", scope, StatelessComponentImpl.class);
         scope.register(context2);
         StatelessComponentImpl comp2 = (StatelessComponentImpl) scope.getInstance(context2);
         Assert.assertNotNull(comp2);

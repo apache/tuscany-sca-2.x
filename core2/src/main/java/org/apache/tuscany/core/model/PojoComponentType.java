@@ -10,14 +10,14 @@ import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.Service;
-import org.apache.tuscany.spi.model.Reference;
+import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.Property;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class PojoComponentType<S extends Service, R extends Reference, P extends Property<?>> extends ComponentType<S,R,P> {
+public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceDefinition, P extends Property<?>> extends ComponentType<S,R,P> {
 
     private Scope lifecycleScope = Scope.UNDEFINED;
     private EventInvoker<Object> initInvoker;

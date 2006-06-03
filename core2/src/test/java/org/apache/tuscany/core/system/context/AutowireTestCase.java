@@ -19,19 +19,19 @@ public class AutowireTestCase extends MockObjectTestCase {
      * @throws Exception
      */
     public void testAtomicAutowire() throws Exception {
-        SystemCompositeContext<?> parent = new SystemCompositeContextImpl("parent", null, null);
+        SystemCompositeComponent<?> parent = new SystemCompositeComponentImpl("parent", null, null);
         parent.start();
 
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
         interfaces.add(Source2.class);
         Source originalSource = new SourceImpl();
-        Mock mock = mock(SystemAtomicContext.class);
+        Mock mock = mock(SystemAtomicComponent.class);
         mock.stubs().method("getName").will(returnValue("source"));
         mock.stubs().method("getService").will(returnValue(originalSource));
         mock.stubs().method("getServiceInterfaces").will(returnValue(interfaces));
-        SystemAtomicContext context = (SystemAtomicContext) mock.proxy();
-        parent.registerContext(context);
+        SystemAtomicComponent context = (SystemAtomicComponent) mock.proxy();
+        parent.register(context);
 
         Source source = parent.resolveInstance(Source.class);
         assertNotNull(source);
@@ -44,7 +44,7 @@ public class AutowireTestCase extends MockObjectTestCase {
      * Tests autowiring to a service context which is wired to an atomic context.
      */
     public void testServiceAutowire() throws Exception {
-        SystemCompositeContext<?> parent = new SystemCompositeContextImpl("parent", null, null);
+        SystemCompositeComponent<?> parent = new SystemCompositeComponentImpl("parent", null, null);
         parent.start();
 
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -52,20 +52,20 @@ public class AutowireTestCase extends MockObjectTestCase {
         interfaces.add(Source2.class);
 
         Source serviceSource = new SourceImpl();
-        Mock mock = mock(SystemServiceContext.class);
+        Mock mock = mock(SystemService.class);
         mock.stubs().method("getName").will(returnValue("service"));
         mock.stubs().method("getService").will(returnValue(serviceSource));
         mock.stubs().method("getInterface").will(returnValue(Source.class));
-        SystemServiceContext serviceContext = (SystemServiceContext) mock.proxy();
-        parent.registerContext(serviceContext);
+        SystemService serviceContext = (SystemService) mock.proxy();
+        parent.register(serviceContext);
 
         Source atomicSource = new SourceImpl();
-        Mock mock2 = mock(SystemAtomicContext.class);
+        Mock mock2 = mock(SystemAtomicComponent.class);
         mock2.stubs().method("getName").will(returnValue("source"));
         mock2.stubs().method("getService").will(returnValue(atomicSource));
         mock2.stubs().method("getServiceInterfaces").will(returnValue(interfaces));
-        SystemAtomicContext context = (SystemAtomicContext) mock2.proxy();
-        parent.registerContext(context);
+        SystemAtomicComponent context = (SystemAtomicComponent) mock2.proxy();
+        parent.register(context);
 
         Source source = parent.resolveExternalInstance(Source.class);
         assertSame(serviceSource, source);
@@ -77,16 +77,16 @@ public class AutowireTestCase extends MockObjectTestCase {
      * Tests autowiring to a reference
      */
     public void testReferenceAutowire() throws Exception {
-        SystemCompositeContext<?> parent = new SystemCompositeContextImpl("parent", null, null);
+        SystemCompositeComponent<?> parent = new SystemCompositeComponentImpl("parent", null, null);
         parent.start();
 
         Source refSource = new SourceImpl();
-        Mock mock = mock(SystemReferenceContext.class);
+        Mock mock = mock(SystemReference.class);
         mock.stubs().method("getName").will(returnValue("service"));
         mock.stubs().method("getService").will(returnValue(refSource));
         mock.stubs().method("getInterface").will(returnValue(Source.class));
-        SystemReferenceContext referenceContext = (SystemReferenceContext) mock.proxy();
-        parent.registerContext(referenceContext);
+        SystemReference referenceContext = (SystemReference) mock.proxy();
+        parent.register(referenceContext);
 
         Source source = parent.resolveInstance(Source.class);
         assertNotNull(source);

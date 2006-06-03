@@ -19,8 +19,8 @@ import java.util.Map;
 /**
  * Implementations are responsible for managing the service side of a wire, including the invocation chains
  * associated with each service operation. A <Code>InboundWire</code> can be connected to another
- * <code>InboundWire</code> when connecting a {@link org.apache.tuscany.spi.context.ServiceContext} to an
- * {@link org.apache.tuscany.spi.context.AtomicContext}.
+ * <code>InboundWire</code> when connecting a {@link org.apache.tuscany.spi.context.Service} to an
+ * {@link org.apache.tuscany.spi.context.AtomicComponent}.
  *
  * @version $$Rev$$ $$Date$$
  */

@@ -9,11 +9,11 @@ import org.apache.tuscany.container.spring.mock.VMBinding;
 import org.apache.tuscany.core.builder.Connector;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.ServiceContext;
-import org.apache.tuscany.spi.extension.ServiceContextExtension;
-import org.apache.tuscany.spi.model.BoundService;
-import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.context.CompositeComponent;
+import org.apache.tuscany.spi.context.Service;
+import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -38,9 +38,9 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
         SpringImplementation impl = new SpringImplementation();
         impl.setComponentType(createComponentType());
         impl.setApplicationContext(createSpringContext());
-        Component<SpringImplementation> component = new Component<SpringImplementation>("spring", impl);
+        ComponentDefinition<SpringImplementation> componentDefinition = new ComponentDefinition<SpringImplementation>("spring", impl);
         Mock mock = mock(BuilderRegistry.class);
-        ServiceContextExtension<TestBean> serviceContext = new ServiceContextExtension<TestBean>("fooService", null, wireService);
+        ServiceExtension<TestBean> serviceContext = new ServiceExtension<TestBean>("fooService", null, wireService);
         InboundWire<TestBean> inboundWire = ArtifactFactory.createInboundWire("fooSerice", TestBean.class);
         OutboundWire<TestBean> outboundwire = ArtifactFactory.createOutboundWire("fooService", TestBean.class);
         outboundwire.setTargetName(new QualifiedName("foo"));
@@ -51,8 +51,8 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
         ArtifactFactory.terminateWire(inboundWire);
         mock.expects(atLeastOnce()).method("build").will(returnValue(serviceContext));
         builder.setBuilderRegistry((BuilderRegistry) mock.proxy());
-        CompositeContext context = (CompositeContext) builder.build(null, component, null);
-        ServiceContext service = (ServiceContext) context.getContext("fooService");
+        CompositeComponent component = (CompositeComponent) builder.build(null, componentDefinition, null);
+        Service service = (Service) component.getChild("fooService");
         TestBean bean = (TestBean) service.getService();
         assertEquals("foo", bean.echo("foo"));
     }
@@ -66,15 +66,15 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
 
     private CompositeComponentType createComponentType() {
         CompositeComponentType componentType = new CompositeComponentType();
-        BoundService<VMBinding> service = new BoundService<VMBinding>();
-        service.setName("FooService");
-        service.setBinding(new VMBinding());
+        BoundServiceDefinition<VMBinding> serviceDefinition = new BoundServiceDefinition<VMBinding>();
+        serviceDefinition.setName("FooService");
+        serviceDefinition.setBinding(new VMBinding());
         try {
-            service.setTarget(new URI("foo"));
+            serviceDefinition.setTarget(new URI("foo"));
         } catch (URISyntaxException e) {
             throw new AssertionError();
         }
-        componentType.add(service);
+        componentType.add(serviceDefinition);
         return componentType;
     }
 

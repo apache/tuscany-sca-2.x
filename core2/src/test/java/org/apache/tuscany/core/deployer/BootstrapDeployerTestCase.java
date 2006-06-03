@@ -29,10 +29,10 @@ import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.model.BoundService;
-import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.Service;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * @version $Rev$ $Date$
@@ -40,23 +40,23 @@ import org.apache.tuscany.spi.model.Service;
 public class BootstrapDeployerTestCase extends TestCase {
     private DeployerImpl deployer;
     private DeploymentContext deploymentContext;
-    private Component<SystemCompositeImplementation> component;
+    private ComponentDefinition<SystemCompositeImplementation> componentDefinition;
     private SystemCompositeImplementation implementation;
 
     public void testBoot1() throws LoaderException {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
         implementation.setScdlLocation(scdl);
-        deployer.load(component, deploymentContext);
+        deployer.load(componentDefinition, deploymentContext);
         CompositeComponentType componentType = implementation.getComponentType();
         assertNotNull(componentType);
         assertEquals("simple", componentType.getName());
-        Map<String, Service> services = componentType.getServices();
+        Map<String, ServiceDefinition> services = componentType.getServices();
         assertEquals(1, services.size());
-        BoundService service = (BoundService) services.get("service");
-        assertNotNull(service);
-        assertEquals("service", service.getName());
-        assertEquals(BasicInterface.class, service.getServiceContract().getInterfaceClass());
-        assertTrue(service.getBinding() instanceof SystemBinding);
+        BoundServiceDefinition serviceDefinition = (BoundServiceDefinition) services.get("service");
+        assertNotNull(serviceDefinition);
+        assertEquals("service", serviceDefinition.getName());
+        assertEquals(BasicInterface.class, serviceDefinition.getServiceContract().getInterfaceClass());
+        assertTrue(serviceDefinition.getBinding() instanceof SystemBinding);
     }
 
     protected void setUp() throws Exception {
@@ -66,6 +66,6 @@ public class BootstrapDeployerTestCase extends TestCase {
         deployer = (DeployerImpl) bootstrapper.createDeployer();
         deploymentContext = new DeploymentContext(getClass().getClassLoader(), xmlFactory, null);
         implementation = new SystemCompositeImplementation();
-        component = new Component<SystemCompositeImplementation>(implementation);
+        componentDefinition = new ComponentDefinition<SystemCompositeImplementation>(implementation);
     }
 }

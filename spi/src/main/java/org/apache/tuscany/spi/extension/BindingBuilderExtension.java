@@ -3,12 +3,12 @@ package org.apache.tuscany.spi.extension;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.Context;
+import org.apache.tuscany.spi.context.CompositeComponent;
+import org.apache.tuscany.spi.context.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Binding;
-import org.apache.tuscany.spi.model.BoundReference;
-import org.apache.tuscany.spi.model.BoundService;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.wire.WireService;
 import org.osoa.sca.annotations.Init;
 
@@ -39,11 +39,11 @@ public abstract class BindingBuilderExtension<B extends Binding> implements Bind
         builderRegistry.register(getBindingType(), this);
     }
 
-    public Context build(CompositeContext parent, BoundService<B> boundService, DeploymentContext deploymentContext) {
+    public SCAObject build(CompositeComponent parent, BoundServiceDefinition<B> boundServiceDefinition, DeploymentContext deploymentContext) {
         return null;
     }
 
-    public Context build(CompositeContext parent, BoundReference<B> boundReference, DeploymentContext deploymentContext) {
+    public SCAObject build(CompositeComponent parent, BoundReferenceDefinition<B> boundReferenceDefinition, DeploymentContext deploymentContext) {
         return null;
     }
 

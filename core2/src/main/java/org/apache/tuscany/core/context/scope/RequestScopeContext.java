@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.tuscany.core.context.event.RequestEnd;
 import org.apache.tuscany.core.context.event.RequestStart;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.AtomicComponent;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.WorkContext;
@@ -22,7 +22,7 @@ import org.apache.tuscany.spi.event.Event;
  */
 public class RequestScopeContext extends AbstractScopeContext {
 
-    private final Map<AtomicContext, Map<Thread, InstanceWrapper>> contexts;
+    private final Map<AtomicComponent, Map<Thread, InstanceWrapper>> contexts;
     private final Map<Thread, List<InstanceWrapper>> destroyQueues;
 
     public RequestScopeContext(){
@@ -31,7 +31,7 @@ public class RequestScopeContext extends AbstractScopeContext {
 
     public RequestScopeContext(WorkContext workContext) {
         super("Request Scope", workContext);
-        contexts = new ConcurrentHashMap<AtomicContext, Map<Thread, InstanceWrapper>>();
+        contexts = new ConcurrentHashMap<AtomicComponent, Map<Thread, InstanceWrapper>>();
         destroyQueues = new ConcurrentHashMap<Thread, List<InstanceWrapper>>();
     }
 
@@ -42,7 +42,7 @@ public class RequestScopeContext extends AbstractScopeContext {
     public void onEvent(Event event) {
         checkInit();
         if (event instanceof RequestStart) {
-            for (Map.Entry<AtomicContext, Map<Thread, InstanceWrapper>> entry : contexts.entrySet()) {
+            for (Map.Entry<AtomicComponent, Map<Thread, InstanceWrapper>> entry : contexts.entrySet()) {
                 if (entry.getKey().isEagerInit()) {
                     getInstance(entry.getKey());
                 }
@@ -67,16 +67,16 @@ public class RequestScopeContext extends AbstractScopeContext {
         lifecycleState = STOPPED;
     }
 
-    public void register(AtomicContext context) {
-        contexts.put(context, new ConcurrentHashMap<Thread, InstanceWrapper>());
+    public void register(AtomicComponent component) {
+        contexts.put(component, new ConcurrentHashMap<Thread, InstanceWrapper>());
     }
 
-    public InstanceWrapper getInstanceContext(AtomicContext context) throws TargetException {
-        Map<Thread, InstanceWrapper> instanceContextMap = contexts.get(context);
-        assert(instanceContextMap != null):"Atomic context not registered";
+    public InstanceWrapper getInstanceContext(AtomicComponent component) throws TargetException {
+        Map<Thread, InstanceWrapper> instanceContextMap = contexts.get(component);
+        assert(instanceContextMap != null):"Atomic component not registered";
         InstanceWrapper ctx = instanceContextMap.get(Thread.currentThread());
         if (ctx == null) {
-            ctx = context.createInstance();
+            ctx = component.createInstance();
             instanceContextMap.put(Thread.currentThread(), ctx);
             List<InstanceWrapper> destroyQueue = destroyQueues.get(Thread.currentThread());
             if (destroyQueue == null) {

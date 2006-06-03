@@ -33,7 +33,7 @@ public class PropertyTestCase extends MockObjectTestCase {
         services.add(Greeting.class);
         List<PropertyInjector> injectors = new ArrayList<PropertyInjector>();
         injectors.add(new SingletonInjector("property", "bar"));
-        GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", PropertyTestCase.SCRIPT,
+        GroovyAtomicComponent<Greeting> context = new GroovyAtomicComponent<Greeting>("source", PropertyTestCase.SCRIPT,
                 services, Scope.MODULE, injectors, null, scope, ArtifactFactory.createWireService());
         scope.register(context);
         Greeting greeting = context.getService();

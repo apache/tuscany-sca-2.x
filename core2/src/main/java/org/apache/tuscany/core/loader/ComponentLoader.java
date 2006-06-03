@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.MissingImplementationException;
 import org.apache.tuscany.spi.loader.StAXPropertyFactory;
 import org.apache.tuscany.spi.loader.UndefinedPropertyException;
-import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
@@ -45,7 +45,7 @@ import org.apache.tuscany.spi.model.ReferenceTarget;
 /**
  * @version $Rev$ $Date$
  */
-public class ComponentLoader extends LoaderExtension<Component<?>> {
+public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
     private StAXPropertyFactory defaultPropertyFactory;
 
     public ComponentLoader() {
@@ -65,7 +65,7 @@ public class ComponentLoader extends LoaderExtension<Component<?>> {
         return AssemblyConstants.COMPONENT;
     }
 
-    public Component<?> load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ComponentDefinition<?> load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert AssemblyConstants.COMPONENT.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         reader.nextTag();
@@ -76,8 +76,8 @@ public class ComponentLoader extends LoaderExtension<Component<?>> {
             throw e;
         }
         Implementation<?> impl = (Implementation<?>) o;
-        Component<?> component = new Component<Implementation<?>>(impl);
-        component.setName(name);
+        ComponentDefinition<?> componentDefinition = new ComponentDefinition<Implementation<?>>(impl);
+        componentDefinition.setName(name);
         registry.loadComponentType(impl, deploymentContext);
 
         try {
@@ -86,25 +86,25 @@ public class ComponentLoader extends LoaderExtension<Component<?>> {
                     case START_ELEMENT:
                         QName qname = reader.getName();
                         if (AssemblyConstants.PROPERTY.equals(qname)) {
-                            loadProperty(reader, deploymentContext, component);
+                            loadProperty(reader, deploymentContext, componentDefinition);
                         } else if (AssemblyConstants.REFERENCE.equals(qname)) {
-                            loadReference(reader, deploymentContext, component);
+                            loadReference(reader, deploymentContext, componentDefinition);
                         }
                         reader.next();
                         break;
                     case END_ELEMENT:
-                        return component;
+                        return componentDefinition;
                 }
             }
         } catch (LoaderException e) {
-            e.addContextName(component.getName());
+            e.addContextName(componentDefinition.getName());
             throw e;
         }
     }
 
-    protected void loadProperty(XMLStreamReader reader, DeploymentContext deploymentContext, Component<?> component) throws XMLStreamException, LoaderException {
+    protected void loadProperty(XMLStreamReader reader, DeploymentContext deploymentContext, ComponentDefinition<?> componentDefinition) throws XMLStreamException, LoaderException {
         String name = reader.getAttributeValue(null, "name");
-        Implementation<?> implementation = component.getImplementation();
+        Implementation<?> implementation = componentDefinition.getImplementation();
         ComponentType<?,?,?> componentType = implementation.getComponentType();
         Property<?> property = componentType.getProperties().get(name);
         if (property == null) {
@@ -112,7 +112,7 @@ public class ComponentLoader extends LoaderExtension<Component<?>> {
             e.setIdentifier(name);
             throw e;
         }
-        component.add(createPropertyValue(reader, property, name));
+        componentDefinition.add(createPropertyValue(reader, property, name));
     }
 
     private <T> PropertyValue<T> createPropertyValue(XMLStreamReader reader, Property<T> property, String name) throws XMLStreamException, LoaderException {
@@ -121,7 +121,7 @@ public class ComponentLoader extends LoaderExtension<Component<?>> {
         return new PropertyValue<T>(name, factory);
     }
 
-    protected void loadReference(XMLStreamReader reader, DeploymentContext deploymentContext, Component<?> component) throws XMLStreamException, LoaderException {
+    protected void loadReference(XMLStreamReader reader, DeploymentContext deploymentContext, ComponentDefinition<?> componentDefinition) throws XMLStreamException, LoaderException {
         String name = reader.getAttributeValue(null, "name");
         String target = reader.getAttributeValue(null, "target");
         ReferenceTarget referenceTarget = new ReferenceTarget();
@@ -133,7 +133,7 @@ public class ComponentLoader extends LoaderExtension<Component<?>> {
             le.setIdentifier(target);
             throw le;
         }
-        component.add(referenceTarget);
+        componentDefinition.add(referenceTarget);
     }
 
 /*

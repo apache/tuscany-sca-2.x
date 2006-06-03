@@ -1,6 +1,6 @@
 package org.apache.tuscany.spi.policy;
 
-import org.apache.tuscany.spi.model.Reference;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
@@ -12,6 +12,6 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  */
 public interface SourcePolicyBuilder {
 
-    public void build(Reference reference, OutboundWire wire) throws BuilderException;
+    public void build(ReferenceDefinition referenceDefinition, OutboundWire wire) throws BuilderException;
 
 }

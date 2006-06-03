@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
-import org.apache.tuscany.spi.context.ComponentContext;
+import org.apache.tuscany.spi.context.Component;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -18,7 +18,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
     private String serviceName;
     private Class<T> businessInterface;
-    private ComponentContext<?> componentContext;
+    private Component<?> component;
     private SystemOutboundWire<T> wire;
 
     /**
@@ -28,10 +28,10 @@ public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
      * @param businessInterface the service interface
      * @param target            the target context the wire is connected to
      */
-    public SystemInboundWireImpl(String serviceName, Class<T> businessInterface, ComponentContext<?> target) {
+    public SystemInboundWireImpl(String serviceName, Class<T> businessInterface, Component<?> target) {
         this.serviceName = serviceName;
         this.businessInterface = businessInterface;
-        this.componentContext = target;
+        this.component = target;
     }
 
     public SystemInboundWireImpl(String serviceName, Class<T> businessInterface) {
@@ -52,7 +52,7 @@ public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
         if (wire != null) {
             return wire.getTargetService();
         }
-        return (T) componentContext.getService(serviceName);
+        return (T) component.getServiceInstance(serviceName);
     }
 
     public Class<T> getBusinessInterface() {

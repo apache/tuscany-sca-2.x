@@ -17,13 +17,13 @@
 package org.apache.tuscany.core.builder;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.context.ComponentContext;
-import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.Component;
+import org.apache.tuscany.spi.context.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
@@ -36,17 +36,17 @@ public class BuilderRegistryTestCase extends TestCase {
     public void testRegistrationWithGenerics() {
         GenerifiedBuilder builder = new GenerifiedBuilder();
         registry.register(builder);
-        Component<CompositeImplementation> component = new Component(new CompositeImplementation());
-        component.getImplementation().setComponentType(new CompositeComponentType());
-        registry.build(null, component, deploymentContext);
+        ComponentDefinition<CompositeImplementation> componentDefinition = new ComponentDefinition(new CompositeImplementation());
+        componentDefinition.getImplementation().setComponentType(new CompositeComponentType());
+        registry.build(null, componentDefinition, deploymentContext);
     }
 
     public void testRegistrationWithoutGenerics() {
         RawBuilder builder = new RawBuilder();
         registry.register(CompositeImplementation.class, builder);
-        Component<CompositeImplementation> component = new Component(new CompositeImplementation());
-        component.getImplementation().setComponentType(new CompositeComponentType());
-        registry.build(null, component, deploymentContext);
+        ComponentDefinition<CompositeImplementation> componentDefinition = new ComponentDefinition(new CompositeImplementation());
+        componentDefinition.getImplementation().setComponentType(new CompositeComponentType());
+        registry.build(null, componentDefinition, deploymentContext);
     }
 
     protected void setUp() throws Exception {
@@ -56,14 +56,14 @@ public class BuilderRegistryTestCase extends TestCase {
     }
 
     public static class GenerifiedBuilder implements ComponentBuilder<CompositeImplementation> {
-        public ComponentContext<?> build(CompositeContext<?> parent, Component<CompositeImplementation> component, DeploymentContext deploymentContext) {
+        public Component<?> build(CompositeComponent<?> parent, ComponentDefinition<CompositeImplementation> componentDefinition, DeploymentContext deploymentContext) {
             return null;
         }
     }
 
     @SuppressWarnings({"RawUseOfParameterizedType"})
     public static class RawBuilder implements ComponentBuilder {
-        public ComponentContext build(CompositeContext parent, Component component, DeploymentContext deploymentContext) throws BuilderConfigException {
+        public Component build(CompositeComponent parent, ComponentDefinition componentDefinition, DeploymentContext deploymentContext) throws BuilderConfigException {
             return null;
         }
     }

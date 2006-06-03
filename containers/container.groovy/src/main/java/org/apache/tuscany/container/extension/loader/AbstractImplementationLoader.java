@@ -16,19 +16,8 @@
  */
 package org.apache.tuscany.container.extension.loader;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.MissingResourceException;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.loader.StAXElementLoader;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.osoa.sca.annotations.Scope;
 
 /**
@@ -102,7 +91,7 @@ public abstract class AbstractImplementationLoader<T extends Implementation> imp
 //	 *
 //	 * @param scriptFile SCript file name.
 //	 * @param loaderContext Loader context.
-//	 * @return Component information.
+//	 * @return ComponentDefinition information.
 //	 * @throws SidefileLoadException
 //	 * @throws MissingResourceException
 //	 */

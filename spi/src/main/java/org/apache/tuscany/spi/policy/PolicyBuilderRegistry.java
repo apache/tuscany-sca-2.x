@@ -1,8 +1,8 @@
 package org.apache.tuscany.spi.policy;
 
 import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.model.Reference;
-import org.apache.tuscany.spi.model.Service;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.InboundWire;
 
@@ -35,12 +35,12 @@ public interface PolicyBuilderRegistry {
     public void registerSourceBuilder(int phase, SourcePolicyBuilder builder);
 
     /**
-     * Evaluates source-side policy metadata for reference and updates the curresponding collection of wire
+     * Evaluates source-side policy metadata for referenceDefinition and updates the curresponding collection of wire
      * configurations
      *
      * @throws BuilderException
      */
-    public void buildSource(Reference reference, OutboundWire wire) throws BuilderException;
+    public void buildSource(ReferenceDefinition referenceDefinition, OutboundWire wire) throws BuilderException;
 
     /**
      * Evaluates target-side policy metadata for configured reference and updates the curresponding collection
@@ -48,5 +48,5 @@ public interface PolicyBuilderRegistry {
      *
      * @throws BuilderException
      */
-    public void buildTarget(Service service, InboundWire wire) throws BuilderException;
+    public void buildTarget(ServiceDefinition serviceDefinition, InboundWire wire) throws BuilderException;
 }

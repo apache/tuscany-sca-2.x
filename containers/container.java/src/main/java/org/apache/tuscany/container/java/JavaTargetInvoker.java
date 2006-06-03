@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.context.TargetException;
  */
 public class JavaTargetInvoker extends PojoTargetInvoker {
 
-    private JavaAtomicContext context;
+    private JavaAtomicComponent context;
     private Object target;
 
     /**
@@ -37,7 +37,7 @@ public class JavaTargetInvoker extends PojoTargetInvoker {
      * @param operation the operation the invoker is associated with
      * @param context   the scope context the component is resolved in
      */
-    public JavaTargetInvoker(Method operation, JavaAtomicContext context) {
+    public JavaTargetInvoker(Method operation, JavaAtomicComponent context) {
         super(operation);
         assert (context != null) : "No atomic context specified";
         this.context = context;

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
-import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.AtomicComponent;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
@@ -15,35 +15,35 @@ import org.jmock.MockObjectTestCase;
 public class SystemCompositeLifecycleTestCase extends MockObjectTestCase {
 
     public void testLifecycle() throws Exception {
-        SystemCompositeContext composite = new SystemCompositeContextImpl("foo", null, null);
+        SystemCompositeComponent composite = new SystemCompositeComponentImpl("foo", null, null);
         composite.start();
-        assertNull(composite.getContext("nothtere"));
+        assertNull(composite.getChild("nothtere"));
         composite.stop();
         composite.start();
-        assertNull(composite.getContext("nothtere"));
+        assertNull(composite.getChild("nothtere"));
         composite.stop();
     }
 
     public void testRestart() throws NoSuchMethodException {
-        SystemCompositeContext composite = new SystemCompositeContextImpl("foo", null, null);
+        SystemCompositeComponent composite = new SystemCompositeComponentImpl("foo", null, null);
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
         Source originalSource = new SourceImpl();
-        Mock mock = mock(SystemAtomicContext.class);
+        Mock mock = mock(SystemAtomicComponent.class);
         mock.expects(atLeastOnce()).method("start");
         mock.expects(atLeastOnce()).method("stop");
         mock.stubs().method("getName").will(returnValue("source"));
         mock.stubs().method("getService").will(returnValue(originalSource));
         mock.stubs().method("getServiceInterfaces").will(returnValue(interfaces));
-        SystemAtomicContext context = (SystemAtomicContext) mock.proxy();
-        composite.registerContext(context);
+        SystemAtomicComponent context = (SystemAtomicComponent) mock.proxy();
+        composite.register(context);
 
-        AtomicContext ctx = (AtomicContext) composite.getContext("source");
+        AtomicComponent ctx = (AtomicComponent) composite.getChild("source");
         Source source = (Source) ctx.getService();
         assertNotNull(source);
         composite.stop();
         composite.start();
-        ctx = (AtomicContext) composite.getContext("source");
+        ctx = (AtomicComponent) composite.getChild("source");
         Source source2 = (Source) ctx.getService();
         assertNotNull(source2);
         composite.stop();

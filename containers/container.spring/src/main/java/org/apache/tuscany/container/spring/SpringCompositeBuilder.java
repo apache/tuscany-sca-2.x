@@ -2,57 +2,57 @@ package org.apache.tuscany.container.spring;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.context.ComponentContext;
-import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.ServiceContext;
+import org.apache.tuscany.spi.context.Component;
+import org.apache.tuscany.spi.context.CompositeComponent;
+import org.apache.tuscany.spi.context.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.Binding;
-import org.apache.tuscany.spi.model.BoundReference;
-import org.apache.tuscany.spi.model.BoundService;
-import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.model.Reference;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.springframework.context.support.GenericApplicationContext;
 
 /**
- * Creates a {@link SpringCompositeContext} from an assembly model
+ * Creates a {@link SpringCompositeComponent} from an assembly model
  *
  * @version $$Rev$$ $$Date$$
  */
 public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImplementation> {
 
 
-    public ComponentContext build(CompositeContext parent, Component<SpringImplementation> component,
+    public Component build(CompositeComponent<?> parent, ComponentDefinition<SpringImplementation> componentDefinition,
                                   DeploymentContext deploymentContext) throws BuilderConfigException {
-        String name = component.getName();
-        GenericApplicationContext applicationContext = component.getImplementation().getApplicationContext();
-        SpringCompositeContext context = new SpringCompositeContext(name, applicationContext, parent,wireService);
-        CompositeComponentType<BoundService, BoundReference, ? extends Property> componentType = component.getImplementation().getComponentType();
-        for (BoundService service : componentType.getServices().values()) {
+        String name = componentDefinition.getName();
+        GenericApplicationContext applicationContext = componentDefinition.getImplementation().getApplicationContext();
+        SpringCompositeComponent context = new SpringCompositeComponent(name, applicationContext, parent,wireService);
+        CompositeComponentType<BoundServiceDefinition, BoundReferenceDefinition, ? extends Property> componentType = componentDefinition.getImplementation().getComponentType();
+        for (BoundServiceDefinition serviceDefinition : componentType.getServices().values()) {
             // call back into deployment context to handle building of services
-            ServiceContext<?> serviceContext = (ServiceContext) builderRegistry.build(parent,
-                    service,
+            Service<?> service = (Service) builderRegistry.build(parent,
+                    serviceDefinition,
                     deploymentContext);
-            // wire service to bean invokers
-            InboundWire<?> wire = serviceContext.getInboundWire();
-            QualifiedName targetName = new QualifiedName(service.getTarget().getPath());
+            // wire serviceDefinition to bean invokers
+            InboundWire<?> wire = service.getInboundWire();
+            QualifiedName targetName = new QualifiedName(serviceDefinition.getTarget().getPath());
             for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
                 chain.setTargetInvoker(context.createTargetInvoker(targetName.getPartName(), chain.getMethod()));
             }
-            context.registerContext(serviceContext);
+            context.register(service);
         }
         // TODO is this correct?
-        for (ReferenceTarget target : component.getReferenceTargets().values()) {
-            Reference reference = target.getReference();
-            if (reference instanceof BoundReference) {
+        for (ReferenceTarget target : componentDefinition.getReferenceTargets().values()) {
+            ReferenceDefinition referenceDefinition = target.getReference();
+            if (referenceDefinition instanceof BoundReferenceDefinition) {
                 // call back into deployment context to handle building of references
-                context.registerContext(builderRegistry.build(parent, (BoundReference<? extends Binding>)
-                        reference, deploymentContext));
+                context.register(builderRegistry.build(parent, (BoundReferenceDefinition<? extends Binding>)
+                        referenceDefinition, deploymentContext));
             }
         }
         return context;

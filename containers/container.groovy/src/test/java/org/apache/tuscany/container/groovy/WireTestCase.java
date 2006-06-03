@@ -53,7 +53,7 @@ public class WireTestCase extends MockObjectTestCase {
 
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", SCRIPT,
+        GroovyAtomicComponent<Greeting> context = new GroovyAtomicComponent<Greeting>("source", SCRIPT,
                 services, Scope.MODULE, null, null, scope, ArtifactFactory.createWireService());
         OutboundWire<?> wire = ArtifactFactory.createOutboundWire("wire", Greeting.class);
         ArtifactFactory.terminateWire(wire);
@@ -90,7 +90,7 @@ public class WireTestCase extends MockObjectTestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", SCRIPT2, services,
+        GroovyAtomicComponent<Greeting> context = new GroovyAtomicComponent<Greeting>("source", SCRIPT2, services,
                 Scope.MODULE, null, null, scope, ArtifactFactory.createWireService());
         scope.register(context);
         TargetInvoker invoker = context.createTargetInvoker("greeting", Greeting.class.getMethod("greet", String.class));
@@ -107,7 +107,7 @@ public class WireTestCase extends MockObjectTestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        GroovyAtomicContext<Greeting> context = new GroovyAtomicContext<Greeting>("source", SCRIPT2,
+        GroovyAtomicComponent<Greeting> context = new GroovyAtomicComponent<Greeting>("source", SCRIPT2,
                 services, Scope.MODULE, null, null, scope, ArtifactFactory.createWireService());
         scope.register(context);
 
@@ -117,7 +117,7 @@ public class WireTestCase extends MockObjectTestCase {
             chain.setTargetInvoker(context.createTargetInvoker("Greeting", chain.getMethod()));
         }
         context.addInboundWire(wire);
-        Greeting greeting = (Greeting) context.getService("Greeting");
+        Greeting greeting = (Greeting) context.getServiceInstance("Greeting");
         assertEquals("foo", greeting.greet("foo"));
         scope.stop();
     }

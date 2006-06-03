@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * @version $Rev$ $Date$
  */
-public class ComponentType<S extends Service, R extends Reference, P extends Property<?>> extends ModelObject {
+public class ComponentType<S extends ServiceDefinition, R extends ReferenceDefinition, P extends Property<?>> extends ModelObject {
     private boolean eagerInit;
     private final Map<String, S> services = new HashMap<String, S>();
     private final Map<String, R> references = new HashMap<String, R>();

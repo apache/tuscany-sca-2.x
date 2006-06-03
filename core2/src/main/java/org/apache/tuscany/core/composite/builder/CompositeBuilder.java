@@ -16,49 +16,49 @@
  */
 package org.apache.tuscany.core.composite.builder;
 
-import org.apache.tuscany.core.context.CompositeContextImpl;
+import org.apache.tuscany.core.context.CompositeComponentImpl;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.context.ComponentContext;
-import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.Context;
+import org.apache.tuscany.spi.context.Component;
+import org.apache.tuscany.spi.context.CompositeComponent;
+import org.apache.tuscany.spi.context.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
-import org.apache.tuscany.spi.model.BoundReference;
-import org.apache.tuscany.spi.model.BoundService;
-import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.Reference;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
-import org.apache.tuscany.spi.model.Service;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * @version $Rev$ $Date$
  */
 public class CompositeBuilder extends ComponentBuilderExtension<CompositeImplementation> {
 
-    public ComponentContext<?> build(CompositeContext<?> parent,
-                                  Component<CompositeImplementation> component,
+    public Component<?> build(CompositeComponent<?> parent,
+                                  ComponentDefinition<CompositeImplementation> componentDefinition,
                                   DeploymentContext deploymentContext) throws BuilderConfigException {
-        CompositeImplementation implementation = component.getImplementation();
+        CompositeImplementation implementation = componentDefinition.getImplementation();
         CompositeComponentType<?,?,?> componentType = implementation.getComponentType();
-        CompositeContextImpl<?> context = new CompositeContextImpl(component.getName(), parent, null, wireService);
-        for (ReferenceTarget target : component.getReferenceTargets().values()) {
-            Reference reference = target.getReference();
-            if (reference instanceof BoundReference) {
-                Context<?> refereceContext = builderRegistry.build(context, (BoundReference) reference, deploymentContext);
-                context.registerContext(refereceContext);
+        CompositeComponentImpl<?> context = new CompositeComponentImpl(componentDefinition.getName(), parent, null, wireService);
+        for (ReferenceTarget target : componentDefinition.getReferenceTargets().values()) {
+            ReferenceDefinition referenceDefinition = target.getReference();
+            if (referenceDefinition instanceof BoundReferenceDefinition) {
+                SCAObject<?> refereceSCAObject = builderRegistry.build(context, (BoundReferenceDefinition) referenceDefinition, deploymentContext);
+                context.register(refereceSCAObject);
             }
         }
-        for (Component<? extends Implementation<?>> child : componentType.getComponents().values()) {
-            Context<?> childContext = builderRegistry.build(context, child, deploymentContext);
-            context.registerContext(childContext);
+        for (ComponentDefinition<? extends Implementation<?>> child : componentType.getComponents().values()) {
+            SCAObject<?> childSCAObject = builderRegistry.build(context, child, deploymentContext);
+            context.register(childSCAObject);
         }
-        for (Service service : componentType.getServices().values()) {
-            if (service instanceof BoundService) {
-                Context<?> serviceContext = builderRegistry.build(context, (BoundService) service, deploymentContext);
-                context.registerContext(serviceContext);
+        for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
+            if (serviceDefinition instanceof BoundServiceDefinition) {
+                SCAObject<?> serviceSCAObject = builderRegistry.build(context, (BoundServiceDefinition) serviceDefinition, deploymentContext);
+                context.register(serviceSCAObject);
             }
         }
         return context;

@@ -1,6 +1,6 @@
 package org.apache.tuscany.core.context.event;
 
-import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.CompositeComponent;
 
 /**
  * Propagated when a module stops
@@ -9,19 +9,19 @@ import org.apache.tuscany.spi.context.CompositeContext;
  */
 public class ModuleStop extends AbstractEvent implements ModuleEvent{
 
-    private CompositeContext context;
+    private CompositeComponent component;
 
     /**
      * Creates a module stop event
      * @param source the source of the event
-     * @param ctx the composite context associated the module being stopped
+     * @param ctx the composite component associated the module being stopped
      */
-    public ModuleStop(Object source, CompositeContext ctx) {
+    public ModuleStop(Object source, CompositeComponent ctx) {
         super(source);
-        context = ctx;
+        component = ctx;
     }
 
-    public CompositeContext getContext(){
-        return context;
+    public CompositeComponent getContext(){
+        return component;
     }
 }

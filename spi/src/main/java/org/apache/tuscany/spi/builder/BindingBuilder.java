@@ -16,22 +16,22 @@
  */
 package org.apache.tuscany.spi.builder;
 
-import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.Context;
+import org.apache.tuscany.spi.context.CompositeComponent;
+import org.apache.tuscany.spi.context.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Binding;
-import org.apache.tuscany.spi.model.BoundReference;
-import org.apache.tuscany.spi.model.BoundService;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
 
 /**
  * Responsible for processing a service or reference in an assembly configured with a particular binding. The
- * builder will create and return corresponding {@link org.apache.tuscany.spi.context.ServiceContext} or
- * {@link org.apache.tuscany.spi.context.ReferenceContext}
+ * builder will create and return corresponding {@link org.apache.tuscany.spi.context.Service} or
+ * {@link org.apache.tuscany.spi.context.Reference}
  *
  * @version $Rev$ $Date$
  */
 public interface BindingBuilder<B extends Binding> {
-    Context build(CompositeContext parent, BoundService<B> boundService, DeploymentContext deploymentContext);
+    SCAObject build(CompositeComponent parent, BoundServiceDefinition<B> boundServiceDefinition, DeploymentContext deploymentContext);
 
-    Context build(CompositeContext parent, BoundReference<B> boundReference, DeploymentContext deploymentContext);
+    SCAObject build(CompositeComponent parent, BoundReferenceDefinition<B> boundReferenceDefinition, DeploymentContext deploymentContext);
 }

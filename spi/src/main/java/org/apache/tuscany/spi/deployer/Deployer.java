@@ -16,11 +16,11 @@
  */
 package org.apache.tuscany.spi.deployer;
 
-import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.model.Component;
-import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.context.CompositeComponent;
+import org.apache.tuscany.spi.context.SCAObject;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.Implementation;
 
 /**
  * Interface that can be used to deploy SCA bundles to a runtime.
@@ -29,14 +29,14 @@ import org.apache.tuscany.spi.loader.LoaderException;
  */
 public interface Deployer {
     /**
-     * Deploy a component as a child of the supplied parent.
-     * This operation creates a new context in the runtime to represent the supplied component.
-     * The type of context created will depend on the implementation of the component; for example,
-     * if the implementation of the component is a composite then typically a CompositeContext would be returned. 
+     * Deploy a component as a child of the supplied parent. This operation creates a new component in the
+     * runtime to represent the supplied component definition. The type of component created will depend on
+     * the component definition implementation; for example, if the implementation of the component definition is a composite then
+     * typically a CompositeComponent would be returned.
      *
-     * @param parent the parent context
-     * @param component the component definition
-     * @return the newly deployed context for the component
+     * @param parent              the parent context
+     * @param componentDefinition the component definition as parsed from an assembly
+     * @return the newly deployed component
      */
-    <I extends Implementation<?>> Context<?> deploy(CompositeContext<?> parent, Component<I> component) throws LoaderException;
+    <I extends Implementation<?>> SCAObject<?> deploy(CompositeComponent<?> parent, ComponentDefinition<I> componentDefinition) throws LoaderException;
 }

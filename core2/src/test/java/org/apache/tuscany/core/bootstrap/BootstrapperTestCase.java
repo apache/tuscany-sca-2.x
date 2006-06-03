@@ -17,12 +17,8 @@
 package org.apache.tuscany.core.bootstrap;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.system.context.SystemCompositeContext;
-import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
 import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.bootstrap.ContextNames;
 
 /**
  * @version $Rev$ $Date$

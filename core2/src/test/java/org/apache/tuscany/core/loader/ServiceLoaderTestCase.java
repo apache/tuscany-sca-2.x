@@ -21,7 +21,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.model.Service;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -40,26 +40,26 @@ public class ServiceLoaderTestCase extends MockObjectTestCase {
     private Mock mockRegistry;
 
     public void testWithNoInterface() throws LoaderException, XMLStreamException {
-        String name = "service";
+        String name = "serviceDefinition";
         mockReader.expects(once()).method("getName").will(returnValue(AssemblyConstants.SERVICE));
         mockReader.expects(once()).method("getAttributeValue").with(NULL, eq("name")).will(returnValue(name));
         mockReader.expects(once()).method("next").will(returnValue(END_ELEMENT));
-        Service service = loader.load((XMLStreamReader) mockReader.proxy(), null);
-        assertNotNull(service);
-        assertEquals(name, service.getName());
+        ServiceDefinition serviceDefinition = loader.load((XMLStreamReader) mockReader.proxy(), null);
+        assertNotNull(serviceDefinition);
+        assertEquals(name, serviceDefinition.getName());
     }
 
     public void testWithInterface() throws LoaderException, XMLStreamException {
-        String name = "service";
+        String name = "serviceDefinition";
         ServiceContract sc = new ServiceContract(){};
         mockReader.expects(once()).method("getName").will(returnValue(AssemblyConstants.SERVICE));
         mockReader.expects(once()).method("getAttributeValue").with(NULL, eq("name")).will(returnValue(name));
         mockReader.expects(atLeastOnce()).method("next").will(onConsecutiveCalls(returnValue(START_ELEMENT), returnValue(END_ELEMENT)));
         mockRegistry.expects(once()).method("load").with(eq(mockReader.proxy()), eq(deploymentContext)).will(returnValue(sc));
-        Service service = loader.load((XMLStreamReader) mockReader.proxy(), deploymentContext);
-        assertNotNull(service);
-        assertEquals(name, service.getName());
-        assertSame(sc, service.getServiceContract());
+        ServiceDefinition serviceDefinition = loader.load((XMLStreamReader) mockReader.proxy(), deploymentContext);
+        assertNotNull(serviceDefinition);
+        assertEquals(name, serviceDefinition.getName());
+        assertSame(sc, serviceDefinition.getServiceContract());
     }
 
     protected void setUp() throws Exception {

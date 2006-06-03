@@ -11,20 +11,20 @@ public class ChildLocateTestCase extends TestCase {
 //         WorkContext workContext = new WorkContextImpl();
 //         ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
 //         scopeContext.start();
-//         SystemCompositeContext parent = new SystemCompositeContextImpl("parent", null, null);
-//         SystemCompositeContext child1 = new SystemCompositeContextImpl("child1", null, null);
+//         SystemCompositeComponent parent = new SystemCompositeComponentImpl("parent", null, null);
+//         SystemCompositeComponent child1 = new SystemCompositeComponentImpl("child1", null, null);
 //         child1.setParent(parent);
 //         parent.registerContext(child1);
 //         parent.start();
-//         SystemAtomicContext context = MockContextFactory.createSystemAtomicContext("source", SourceImpl.class);
+//         SystemAtomicComponent context = MockContextFactory.createSystemAtomicContext("source", SourceImpl.class);
 //         scopeContext.register(context);
 //         context.setScopeContext(scopeContext);
 //         scopeContext.publish(new ModuleStart(this, parent));
 //
 //         assertNotNull(source);
-//         CompositeContext composite1 = (CompositeContext) parent.getContext("child1");
-//         CompositeContext composite2 = (CompositeContext) composite1.getContext("child2");
-//         AtomicContext ctx2 = (AtomicContext) composite2.getContext("source");
+//         CompositeComponent composite1 = (CompositeComponent) parent.getContext("child1");
+//         CompositeComponent composite2 = (CompositeComponent) composite1.getContext("child2");
+//         AtomicComponent ctx2 = (AtomicComponent) composite2.getContext("source");
 //         Source source2 = (Source) ctx2.getInstance();
 //         assertSame(source, source2);
 //         scopeContext.onEvent(new ModuleStop(this, parent));
@@ -33,12 +33,12 @@ public class ChildLocateTestCase extends TestCase {
 /////
 
 //        system.start();
-//        Component compositeComponent = MockContextFactory.createCompositeComponent("system.child");
+//        ComponentDefinition compositeComponent = MockContextFactory.createCompositeComponent("system.child");
 //        system.registerModelObject(compositeComponent);
-//        CompositeContext childContext = (CompositeContext) system.getContext("system.child");
+//        CompositeComponent childContext = (CompositeComponent) system.getContext("system.child");
 //        Assert.assertNotNull(childContext);
 //
-//        Component component = factory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
+//        ComponentDefinition component = factory.createSystemComponent("TestService1", ModuleScopeSystemComponent.class, ModuleScopeSystemComponentImpl.class, Scope.MODULE);
 //        EntryPoint ep = MockContextFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1", component);
 //        childContext.registerModelObject(component);
 //        childContext.registerModelObject(ep);

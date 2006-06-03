@@ -16,33 +16,33 @@
  */
 package org.apache.tuscany.core.bootstrap;
 
-import org.apache.tuscany.core.system.context.SystemCompositeContext;
-import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
-import org.apache.tuscany.spi.bootstrap.RuntimeContext;
-import org.apache.tuscany.spi.bootstrap.ContextNames;
-import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.core.system.context.SystemCompositeComponent;
+import org.apache.tuscany.core.system.context.SystemCompositeComponentImpl;
+import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
+import org.apache.tuscany.spi.bootstrap.ComponentNames;
+import org.apache.tuscany.spi.context.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 
 /**
  * @version $Rev$ $Date$
  */
-public class DefaultRuntime extends SystemCompositeContextImpl<Void> implements RuntimeContext<SystemCompositeContext> {
-    private final CompositeContext rootContext;
-    private final SystemCompositeContext systemContext;
+public class DefaultRuntime extends SystemCompositeComponentImpl<Void> implements RuntimeComponent<SystemCompositeComponent> {
+    private final CompositeComponent rootComponent;
+    private final SystemCompositeComponent systemContext;
     private final Deployer deployer;
 
-    public DefaultRuntime(SystemCompositeContext systemContext, CompositeContext rootContext) {
-        super(ContextNames.TUSCANY_RUNTIME, null, null);
+    public DefaultRuntime(SystemCompositeComponent systemContext, CompositeComponent rootComponent) {
+        super(ComponentNames.TUSCANY_RUNTIME, null, null);
         this.systemContext = systemContext;
-        this.rootContext = rootContext;
+        this.rootComponent = rootComponent;
         deployer = null;
     }
 
-    public CompositeContext getRootContext() {
-        return rootContext;
+    public CompositeComponent getRootComponent() {
+        return rootComponent;
     }
 
-    public SystemCompositeContext getSystemContext() {
+    public SystemCompositeComponent getSystemComponent() {
         return systemContext;
     }
 

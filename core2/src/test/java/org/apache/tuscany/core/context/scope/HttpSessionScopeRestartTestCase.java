@@ -9,7 +9,7 @@ import org.apache.tuscany.core.context.WorkContextImpl;
 import org.apache.tuscany.core.context.event.HttpSessionStart;
 import org.apache.tuscany.core.context.event.HttpSessionEnd;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.system.context.SystemAtomicContext;
+import org.apache.tuscany.core.system.context.SystemAtomicComponent;
 import org.apache.tuscany.core.mock.factories.MockContextFactory;
 
 /**
@@ -25,7 +25,7 @@ public class HttpSessionScopeRestartTestCase extends TestCase {
         MethodEventInvoker<Object> destroyInvoker = new MethodEventInvoker<Object>(HttpSessionScopeRestartTestCase.InitDestroyOnce.class.getMethod("destroy"));
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(HttpSessionScopeRestartTestCase.InitDestroyOnce.class);
-        SystemAtomicContext context = MockContextFactory.createSystemAtomicContext("InitDestroy", scope, interfaces,
+        SystemAtomicComponent context = MockContextFactory.createSystemAtomicContext("InitDestroy", scope, interfaces,
                 HttpSessionScopeRestartTestCase.InitDestroyOnce.class, false, initInvoker, destroyInvoker, null,null);
         context.start();
 

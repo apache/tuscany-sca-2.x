@@ -24,7 +24,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Multiplicity;
-import org.apache.tuscany.spi.model.Reference;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 /**
  * @version $Rev$ $Date$
  */
-public class ReferenceLoader extends LoaderExtension<Reference> {
+public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
     public ReferenceLoader() {
     }
 
@@ -46,23 +46,23 @@ public class ReferenceLoader extends LoaderExtension<Reference> {
         return AssemblyConstants.REFERENCE;
     }
 
-    public Reference load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ReferenceDefinition load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert AssemblyConstants.REFERENCE.equals(reader.getName());
-        Reference reference = new Reference();
-        reference.setName(reader.getAttributeValue(null, "name"));
-        reference.setMultiplicity(StAXUtil.multiplicity(reader.getAttributeValue(null, "multiplicity"), Multiplicity.ONE_ONE));
+        ReferenceDefinition referenceDefinition = new ReferenceDefinition();
+        referenceDefinition.setName(reader.getAttributeValue(null, "name"));
+        referenceDefinition.setMultiplicity(StAXUtil.multiplicity(reader.getAttributeValue(null, "multiplicity"), Multiplicity.ONE_ONE));
 
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
                     ModelObject o = registry.load(reader, deploymentContext);
                     if (o instanceof ServiceContract) {
-                        reference.setServiceContract((ServiceContract) o);
+                        referenceDefinition.setServiceContract((ServiceContract) o);
                     }
                     reader.next();
                     break;
                 case END_ELEMENT:
-                    return reference;
+                    return referenceDefinition;
             }
         }
     }

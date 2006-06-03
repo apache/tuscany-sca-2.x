@@ -1,9 +1,9 @@
 package org.apache.tuscany.core.system.builder;
 
-import org.apache.tuscany.core.context.AutowireContext;
-import org.apache.tuscany.core.system.context.SystemReferenceContextImpl;
-import org.apache.tuscany.core.system.context.SystemServiceContext;
-import org.apache.tuscany.core.system.context.SystemServiceContextImpl;
+import org.apache.tuscany.core.context.AutowireComponent;
+import org.apache.tuscany.core.system.context.SystemReferenceImpl;
+import org.apache.tuscany.core.system.context.SystemService;
+import org.apache.tuscany.core.system.context.SystemServiceImpl;
 import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.wire.SystemInboundWireImpl;
 import org.apache.tuscany.core.system.wire.SystemOutboundAutowire;
@@ -12,12 +12,12 @@ import org.apache.tuscany.core.system.wire.SystemInboundWire;
 import org.apache.tuscany.core.system.wire.SystemOutboundWire;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BindingBuilder;
-import org.apache.tuscany.spi.context.ComponentContext;
-import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.Context;
+import org.apache.tuscany.spi.context.Component;
+import org.apache.tuscany.spi.context.CompositeComponent;
+import org.apache.tuscany.spi.context.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.BoundReference;
-import org.apache.tuscany.spi.model.BoundService;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
@@ -25,25 +25,25 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  */
 public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
 
-    public Context build(CompositeContext parent, BoundService<SystemBinding> boundService, DeploymentContext deploymentContext) {
-        Class<?> interfaze = boundService.getServiceContract().getInterfaceClass();
-        QualifiedName targetName = new QualifiedName(boundService.getTarget().getPath());
-        ComponentContext target = (ComponentContext) parent.getContext(targetName.getPartName());
-        SystemInboundWire<?> inboundWire = new SystemInboundWireImpl(boundService.getName(), interfaze, target);
-        SystemOutboundWire<?> outboundWire = new SystemOutboundWireImpl(boundService.getName(), targetName, interfaze);
-        SystemServiceContext context = new SystemServiceContextImpl(boundService.getName(), parent);
+    public SCAObject build(CompositeComponent parent, BoundServiceDefinition<SystemBinding> boundServiceDefinition, DeploymentContext deploymentContext) {
+        Class<?> interfaze = boundServiceDefinition.getServiceContract().getInterfaceClass();
+        QualifiedName targetName = new QualifiedName(boundServiceDefinition.getTarget().getPath());
+        Component target = (Component) parent.getChild(targetName.getPartName());
+        SystemInboundWire<?> inboundWire = new SystemInboundWireImpl(boundServiceDefinition.getName(), interfaze, target);
+        SystemOutboundWire<?> outboundWire = new SystemOutboundWireImpl(boundServiceDefinition.getName(), targetName, interfaze);
+        SystemService context = new SystemServiceImpl(boundServiceDefinition.getName(), parent);
         context.setInboundWire(inboundWire);
         context.setOutboundWire(outboundWire);
         return context;
     }
 
-    public Context build(CompositeContext parent, BoundReference<SystemBinding> boundReference, DeploymentContext deploymentContext) {
-        assert(parent.getParent() instanceof AutowireContext):"Grandparent not an instance of " + AutowireContext.class.getName();
-        AutowireContext autowireContext = (AutowireContext) parent.getParent();
-        Class<?> interfaze = boundReference.getServiceContract().getInterfaceClass();
-        SystemReferenceContextImpl ctx = new SystemReferenceContextImpl(boundReference.getName(), interfaze, parent);
-        SystemInboundWire<?> inboundWire = new SystemInboundWireImpl(boundReference.getName(), interfaze);
-        OutboundWire<?> outboundWire = new SystemOutboundAutowire(boundReference.getName(), interfaze, autowireContext);
+    public SCAObject build(CompositeComponent parent, BoundReferenceDefinition<SystemBinding> boundReferenceDefinition, DeploymentContext deploymentContext) {
+        assert(parent.getParent() instanceof AutowireComponent):"Grandparent not an instance of " + AutowireComponent.class.getName();
+        AutowireComponent autowireContext = (AutowireComponent) parent.getParent();
+        Class<?> interfaze = boundReferenceDefinition.getServiceContract().getInterfaceClass();
+        SystemReferenceImpl ctx = new SystemReferenceImpl(boundReferenceDefinition.getName(), interfaze, parent);
+        SystemInboundWire<?> inboundWire = new SystemInboundWireImpl(boundReferenceDefinition.getName(), interfaze);
+        OutboundWire<?> outboundWire = new SystemOutboundAutowire(boundReferenceDefinition.getName(), interfaze, autowireContext);
         ctx.setInboundWire(inboundWire);
         ctx.setOutboundWire(outboundWire);
         return ctx;

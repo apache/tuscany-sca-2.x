@@ -12,19 +12,19 @@ import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.factories.MockComponentFactory;
 import org.apache.tuscany.core.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.system.builder.SystemComponentBuilder;
-import org.apache.tuscany.core.system.context.SystemCompositeContext;
-import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
+import org.apache.tuscany.core.system.context.SystemCompositeComponent;
+import org.apache.tuscany.core.system.context.SystemCompositeComponentImpl;
 import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.model.SystemImplementation;
-import org.apache.tuscany.spi.context.AtomicContext;
-import org.apache.tuscany.spi.context.ReferenceContext;
+import org.apache.tuscany.spi.context.AtomicComponent;
+import org.apache.tuscany.spi.context.Reference;
 import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.context.ServiceContext;
+import org.apache.tuscany.spi.context.Service;
 import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.BoundReference;
-import org.apache.tuscany.spi.model.BoundService;
-import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 
 /**
  * Validates that system builders and the default connector create properly wired contexts
@@ -45,24 +45,24 @@ public class SystemBuildersTestCase extends TestCase {
         Connector connector = new ConnectorImpl();
         SystemComponentBuilder builder = new SystemComponentBuilder();
 
-        SystemCompositeContext parent = new SystemCompositeContextImpl(null, null, null);
+        SystemCompositeComponent parent = new SystemCompositeComponentImpl(null, null, null);
 
-        Component<SystemImplementation> targetComponent = MockComponentFactory.createTarget();
-        Component<SystemImplementation> sourceComponent = MockComponentFactory.createSourceWithTargetReference();
+        ComponentDefinition<SystemImplementation> targetComponentDefinition = MockComponentFactory.createTarget();
+        ComponentDefinition<SystemImplementation> sourceComponentDefinition = MockComponentFactory.createSourceWithTargetReference();
 
-        AtomicContext<?> sourceContext = (AtomicContext) builder.build(parent, sourceComponent, deploymentContext);
-        AtomicContext<?> targetContext = (AtomicContext) builder.build(parent, targetComponent, deploymentContext);
+        AtomicComponent<?> sourceComponent = (AtomicComponent) builder.build(parent, sourceComponentDefinition, deploymentContext);
+        AtomicComponent<?> targetComponent = (AtomicComponent) builder.build(parent, targetComponentDefinition, deploymentContext);
 
-        parent.registerContext(sourceContext);
-        parent.registerContext(targetContext);
+        parent.register(sourceComponent);
+        parent.register(targetComponent);
 
-        connector.connect(sourceContext);
-        connector.connect(targetContext);
+        connector.connect(sourceComponent);
+        connector.connect(targetComponent);
         parent.start();
         scope.onEvent(new ModuleStart(this, parent));
-        Source source = (Source) parent.getContext("source").getService();
+        Source source = (Source) parent.getChild("source").getService();
         assertNotNull(source);
-        Target target = (Target) parent.getContext("target").getService();
+        Target target = (Target) parent.getChild("target").getService();
         assertNotNull(target);
         assertSame(target, source.getTarget());
         scope.onEvent(new ModuleStop(this, parent));
@@ -82,30 +82,30 @@ public class SystemBuildersTestCase extends TestCase {
         SystemComponentBuilder builder = new SystemComponentBuilder();
         SystemBindingBuilder bindingBuilder = new SystemBindingBuilder();
 
-        SystemCompositeContext grandParent = new SystemCompositeContextImpl("grandparent", null, null);
-        SystemCompositeContext parent = new SystemCompositeContextImpl("parent", grandParent, grandParent);
+        SystemCompositeComponent grandParent = new SystemCompositeComponentImpl("grandparent", null, null);
+        SystemCompositeComponent parent = new SystemCompositeComponentImpl("parent", grandParent, grandParent);
 
         // create a context in the grandparent that the reference will be autowired to
-        Component<SystemImplementation> targetComponent = MockComponentFactory.createTarget();
-        AtomicContext targetComponentContext = (AtomicContext) builder.build(parent, targetComponent, deploymentContext);
-        grandParent.registerContext(targetComponentContext);
+        ComponentDefinition<SystemImplementation> targetComponentDefinition = MockComponentFactory.createTarget();
+        AtomicComponent targetComponentComponent = (AtomicComponent) builder.build(parent, targetComponentDefinition, deploymentContext);
+        grandParent.register(targetComponentComponent);
 
-        BoundReference<SystemBinding> targetReference = MockComponentFactory.createBoundReference();
-        Component<SystemImplementation> sourceComponent = MockComponentFactory.createSourceWithTargetReference();
+        BoundReferenceDefinition<SystemBinding> targetReferenceDefinition = MockComponentFactory.createBoundReference();
+        ComponentDefinition<SystemImplementation> sourceComponentDefinition = MockComponentFactory.createSourceWithTargetReference();
 
-        AtomicContext<?> sourceContext = (AtomicContext) builder.build(parent, sourceComponent, deploymentContext);
-        ReferenceContext targetContext = (ReferenceContext) bindingBuilder.build(parent, targetReference, deploymentContext);
+        AtomicComponent<?> sourceComponent = (AtomicComponent) builder.build(parent, sourceComponentDefinition, deploymentContext);
+        Reference reference = (Reference) bindingBuilder.build(parent, targetReferenceDefinition, deploymentContext);
 
-        parent.registerContext(sourceContext);
-        parent.registerContext(targetContext);
-        connector.connect(targetContext.getInboundWire(), targetContext.getOutboundWire(), true);
-        connector.connect(sourceContext);
-        grandParent.registerContext(parent);
+        parent.register(sourceComponent);
+        parent.register(reference);
+        connector.connect(reference.getInboundWire(), reference.getOutboundWire(), true);
+        connector.connect(sourceComponent);
+        grandParent.register(parent);
         grandParent.start();
         scope.onEvent(new ModuleStart(this, parent));
-        Source source = (Source) parent.getContext("source").getService();
+        Source source = (Source) parent.getChild("source").getService();
         assertNotNull(source);
-        Target target = (Target) parent.getContext("target").getService();
+        Target target = (Target) parent.getChild("target").getService();
         assertNotNull(target);
         assertSame(target, source.getTarget());
         scope.onEvent(new ModuleStop(this, parent));
@@ -127,26 +127,26 @@ public class SystemBuildersTestCase extends TestCase {
         SystemComponentBuilder builder = new SystemComponentBuilder();
         SystemBindingBuilder bindingBuilder = new SystemBindingBuilder();
 
-        SystemCompositeContext parent = new SystemCompositeContextImpl(null, null, null);
+        SystemCompositeComponent parent = new SystemCompositeComponentImpl(null, null, null);
 
-        BoundService<SystemBinding> service = MockComponentFactory.createBoundService();
-        Component<SystemImplementation> component = MockComponentFactory.createTarget();
+        BoundServiceDefinition<SystemBinding> serviceDefinition = MockComponentFactory.createBoundService();
+        ComponentDefinition<SystemImplementation> componentDefinition = MockComponentFactory.createTarget();
 
-        AtomicContext sourceContext = (AtomicContext) builder.build(parent, component, deploymentContext);
-        ServiceContext serviceContext = (ServiceContext) bindingBuilder.build(parent, service, deploymentContext);
+        AtomicComponent sourceComponent = (AtomicComponent) builder.build(parent, componentDefinition, deploymentContext);
+        Service service = (Service) bindingBuilder.build(parent, serviceDefinition, deploymentContext);
 
-        connector.connect(serviceContext.getInboundWire(), serviceContext.getOutboundWire(), true);
-        parent.registerContext(sourceContext);
-        parent.registerContext(serviceContext);
+        connector.connect(service.getInboundWire(), service.getOutboundWire(), true);
+        parent.register(sourceComponent);
+        parent.register(service);
 
-        connector.connect(sourceContext);
-        String serviceName = serviceContext.getOutboundWire().getTargetName().getPortName();
-        connector.connect(serviceContext.getOutboundWire(), sourceContext.getInboundWire(serviceName), parent, true);
+        connector.connect(sourceComponent);
+        String serviceName = service.getOutboundWire().getTargetName().getPortName();
+        connector.connect(service.getOutboundWire(), sourceComponent.getInboundWire(serviceName), parent, true);
         parent.start();
         scope.onEvent(new ModuleStart(this, parent));
-        Target target = (Target) parent.getContext("service").getService();
+        Target target = (Target) parent.getChild("serviceDefinition").getService();
         assertNotNull(target);
-        Target target2 = (Target) parent.getContext("target").getService();
+        Target target2 = (Target) parent.getChild("target").getService();
         assertNotNull(target);
         assertSame(target, target2);
         scope.onEvent(new ModuleStop(this, parent));
@@ -168,19 +168,19 @@ public class SystemBuildersTestCase extends TestCase {
 //        SystemComponentBuilder builder = new SystemComponentBuilder();
 //        SystemBindingBuilder bindingBuilder = new SystemBindingBuilder();
 //
-//        SystemCompositeContext grandParent = new SystemCompositeContextImpl("grandparent", null, null);
-//        SystemCompositeContext parent = new SystemCompositeContextImpl("parent", grandParent, grandParent);
+//        SystemCompositeComponent grandParent = new SystemCompositeComponentImpl("grandparent", null, null);
+//        SystemCompositeComponent parent = new SystemCompositeComponentImpl("parent", grandParent, grandParent);
 //
 //        // create a context in the grandparent that the reference will be autowired to
-//        Component<SystemImplementation> targetComponent = MockComponentFactory.createTarget();
-//        AtomicContext targetComponentContext = (AtomicContext) builder.build(parent, targetComponent, deploymentContext);
+//        ComponentDefinition<SystemImplementation> targetComponent = MockComponentFactory.createTarget();
+//        AtomicComponent targetComponentContext = (AtomicComponent) builder.build(parent, targetComponent, deploymentContext);
 //        grandParent.registerContext(targetComponentContext);
 //
-//        BoundReference<SystemBinding> reference = MockComponentFactory.createBoundReference();
-//        BoundService<SystemBinding> service = MockComponentFactory.createBoundService();
+//        BoundReferenceDefinition<SystemBinding> reference = MockComponentFactory.createBoundReference();
+//        BoundServiceDefinition<SystemBinding> service = MockComponentFactory.createBoundService();
 //
-//        ReferenceContext referenceContext = (ReferenceContext) bindingBuilder.build(parent, reference, deploymentContext);
-//        ServiceContext serviceContext = (ServiceContext) bindingBuilder.build(parent, service, deploymentContext);
+//        Reference referenceContext = (Reference) bindingBuilder.build(parent, reference, deploymentContext);
+//        Service serviceContext = (Service) bindingBuilder.build(parent, service, deploymentContext);
 //
 //        parent.registerContext(referenceContext);
 //        parent.registerContext(serviceContext);

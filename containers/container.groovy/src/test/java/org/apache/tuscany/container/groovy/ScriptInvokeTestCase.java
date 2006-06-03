@@ -25,7 +25,7 @@ public class ScriptInvokeTestCase extends MockObjectTestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        GroovyAtomicContext<GroovyObject> context = new GroovyAtomicContext<GroovyObject>("source", script2,
+        GroovyAtomicComponent<GroovyObject> context = new GroovyAtomicComponent<GroovyObject>("source", script2,
                 services, Scope.MODULE, null, null,scope, ArtifactFactory.createWireService());
         scope.register(context);
         GroovyObject object = context.getService();

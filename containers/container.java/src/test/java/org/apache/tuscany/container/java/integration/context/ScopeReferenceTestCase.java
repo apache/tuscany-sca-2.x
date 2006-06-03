@@ -40,7 +40,7 @@ import org.apache.tuscany.core.context.scope.ModuleScopeContext;
 import org.apache.tuscany.core.context.scope.RequestScopeContext;
 import org.apache.tuscany.core.context.scope.StatelessScopeContext;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
-import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.AtomicComponent;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.context.WorkContext;
 
@@ -61,12 +61,12 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext scope = new ModuleScopeContext(null);
         scope.start();
 
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, scope, members, "target", Target.class, TargetImpl.class, scope);
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, scope, members, "target", Target.class, TargetImpl.class, scope);
         scope.onEvent(new ModuleStart(this, null));
-        AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
-        AtomicContext<Target> targetContext = (AtomicContext<Target>) contexts.get("target");
-        Source source = sourceContext.getService();
-        Target target = targetContext.getService();
+        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
+        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
+        Source source = sourceComponent.getService();
+        Target target = targetComponent.getService();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -87,16 +87,16 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
         sessionScope.start();
 
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 moduleScope, members, "target", Target.class, TargetImpl.class, sessionScope);
         moduleScope.onEvent(new ModuleStart(this, null));
         Object session1 = new Object();
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
-        AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
-        AtomicContext<Target> targetContext = (AtomicContext<Target>) contexts.get("target");
-        Source source = sourceContext.getService();
-        Target target = targetContext.getService();
+        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
+        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
+        Source source = sourceComponent.getService();
+        Target target = targetComponent.getService();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -110,7 +110,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
-        Target target2 = targetContext.getService();
+        Target target2 = targetComponent.getService();
         assertFalse("foo".equals(target2.getString()));
 
         assertFalse("foo".equals(source.getTarget().getString()));
@@ -136,15 +136,15 @@ public class ScopeReferenceTestCase extends TestCase {
         final ScopeContext requestScope = new RequestScopeContext(ctx);
         requestScope.start();
 
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 moduleScope, members, "target", Target.class, TargetImpl.class, requestScope);
         moduleScope.onEvent(new ModuleStart(this, null));
         requestScope.onEvent(new RequestStart(this));
 
-        AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
-        final AtomicContext<Target> targetContext = (AtomicContext<Target>) contexts.get("target");
-        final Source source = sourceContext.getService();
-        Target target = targetContext.getService();
+        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
+        final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
+        final Source source = sourceComponent.getService();
+        Target target = targetComponent.getService();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -156,7 +156,7 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Target target2 = targetContext.getService();
+                Target target2 = targetComponent.getService();
                 assertFalse("foo".equals(target2.getString()));
                 assertFalse("foo".equals(source.getTarget().getString()));
                 source.getTarget().setString("bar");
@@ -185,20 +185,20 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext statelessScope = new StatelessScopeContext(ctx);
         statelessScope.start();
 
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 moduleScope, members, "target", Target.class, TargetImpl.class, statelessScope);
         moduleScope.onEvent(new ModuleStart(this, null));
 
-        AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
-        AtomicContext<Target> targetContext = (AtomicContext<Target>) contexts.get("target");
-        Source source = sourceContext.getService();
-        Target target = targetContext.getService();
+        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
+        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
+        Source source = sourceComponent.getService();
+        Target target = targetComponent.getService();
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
         assertFalse("foo".equals(source.getTarget().getString()));
-        Target target2 = targetContext.getService();
+        Target target2 = targetComponent.getService();
         assertFalse("foo".equals(target2.getString()));
         source.getTarget().setString("bar");
         assertFalse("bar".equals(source.getTarget().getString()));
@@ -217,16 +217,16 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
         sessionScope.start();
 
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 sessionScope, members, "target", Target.class, TargetImpl.class, sessionScope);
 
         Object session1 = new Object();
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
-        AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
-        AtomicContext<Target> targetContext = (AtomicContext<Target>) contexts.get("target");
-        Source source = sourceContext.getService();
-        Target target = targetContext.getService();
+        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
+        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
+        Source source = sourceComponent.getService();
+        Target target = targetComponent.getService();
         source.getTarget().setString("foo");
         source.getTarget().setString("foo");
         assertEquals("foo", target.getString());
@@ -239,9 +239,9 @@ public class ScopeReferenceTestCase extends TestCase {
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
-        Source source2 = sourceContext.getService();
+        Source source2 = sourceComponent.getService();
         assertNotNull(source2);
-        Target target2 = targetContext.getService();
+        Target target2 = targetComponent.getService();
 
         assertNotNull(target2);
         assertNull(target2.getString());
@@ -266,16 +266,16 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
         sessionScope.start();
 
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 sessionScope, members, "target", Target.class, TargetImpl.class, moduleScope);
         moduleScope.onEvent(new ModuleStart(this, null));
         Object session1 = new Object();
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
-        AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
-        AtomicContext<Target> targetContext = (AtomicContext<Target>) contexts.get("target");
-        Source source = sourceContext.getService();
-        Target target = targetContext.getService();
+        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
+        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
+        Source source = sourceComponent.getService();
+        Target target = targetComponent.getService();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -289,8 +289,8 @@ public class ScopeReferenceTestCase extends TestCase {
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
-        Target target2 = targetContext.getService();
-        Source source2 = sourceContext.getService();
+        Target target2 = targetComponent.getService();
+        Source source2 = sourceComponent.getService();
         assertEquals("foo", target2.getString());
         assertEquals("foo", source2.getTarget().getString());
         source2.getTarget().setString("baz");
@@ -314,16 +314,16 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
         sessionScope.start();
 
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 sessionScope, members, "target", Target.class, TargetImpl.class, requestScope);
         Object session1 = new Object();
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         requestScope.onEvent(new RequestStart(this));
-        AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
-        final AtomicContext<Target> targetContext = (AtomicContext<Target>) contexts.get("target");
-        final Source source = sourceContext.getService();
-        Target target = targetContext.getService();
+        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
+        final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
+        final Source source = sourceComponent.getService();
+        Target target = targetComponent.getService();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -335,7 +335,7 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Target target2 = targetContext.getService();
+                Target target2 = targetComponent.getService();
                 assertFalse("foo".equals(target2.getString()));
                 assertFalse("foo".equals(source.getTarget().getString()));
                 source.getTarget().setString("bar");
@@ -366,23 +366,23 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext statelessScope = new StatelessScopeContext(ctx);
         statelessScope.start();
 
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 sessionScope, members, "target", Target.class, TargetImpl.class, statelessScope);
 
         Object session1 = new Object();
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
 
-        AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
-        AtomicContext<Target> targetContext = (AtomicContext<Target>) contexts.get("target");
-        Source source = sourceContext.getService();
-        Target target = targetContext.getService();
+        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
+        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
+        Source source = sourceComponent.getService();
+        Target target = targetComponent.getService();
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
         assertFalse("foo".equals(source.getTarget().getString()));
-        Target target2 = targetContext.getService();
+        Target target2 = targetComponent.getService();
         assertFalse("foo".equals(target2.getString()));
         source.getTarget().setString("bar");
         assertFalse("bar".equals(source.getTarget().getString()));
@@ -402,14 +402,14 @@ public class ScopeReferenceTestCase extends TestCase {
         final ScopeContext requestScope = new RequestScopeContext(ctx);
         requestScope.start();
 
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 requestScope, members, "target", Target.class, TargetImpl.class, requestScope);
         requestScope.onEvent(new RequestStart(this));
 
-        final AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
-        final AtomicContext<Target> targetContext = (AtomicContext<Target>) contexts.get("target");
-        Source source = sourceContext.getService();
-        Target target = targetContext.getService();
+        final AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
+        final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
+        Source source = sourceComponent.getService();
+        Target target = targetComponent.getService();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -421,8 +421,8 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Source source2 = sourceContext.getService();
-                Target target2 = targetContext.getService();
+                Source source2 = sourceComponent.getService();
+                Target target2 = targetComponent.getService();
                 assertFalse("foo".equals(target2.getString()));
                 assertFalse("foo".equals(source2.getTarget().getString()));
                 source2.getTarget().setString("bar");
@@ -449,14 +449,14 @@ public class ScopeReferenceTestCase extends TestCase {
         moduleScope.start();
         moduleScope.onEvent(new ModuleStart(this, null));
 
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 requestScope, members, "target", Target.class, TargetImpl.class, moduleScope);
         requestScope.onEvent(new RequestStart(this));
 
-        final AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
-        final AtomicContext<Target> targetContext = (AtomicContext<Target>) contexts.get("target");
-        Source source = sourceContext.getService();
-        Target target = targetContext.getService();
+        final AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
+        final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
+        Source source = sourceComponent.getService();
+        Target target = targetComponent.getService();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -468,8 +468,8 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Source source2 = sourceContext.getService();
-                Target target2 = targetContext.getService();
+                Source source2 = sourceComponent.getService();
+                Target target2 = targetComponent.getService();
                 assertEquals("foo",target2.getString());
                 assertEquals("foo",source2.getTarget().getString());
                 source2.getTarget().setString("bar");
@@ -502,14 +502,14 @@ public class ScopeReferenceTestCase extends TestCase {
         Object session1 = new Object();
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 requestScope, members, "target", Target.class, TargetImpl.class, sessionScope);
 
-        final AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
-        final AtomicContext<Target> targetContext = (AtomicContext<Target>) contexts.get("target");
+        final AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
+        final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
         requestScope.onEvent(new RequestStart(this));
-        Source source = sourceContext.getService();
-        Target target = targetContext.getService();
+        Source source = sourceComponent.getService();
+        Target target = targetComponent.getService();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -521,8 +521,8 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Source source2 = sourceContext.getService();
-                Target target2 = targetContext.getService();
+                Source source2 = sourceComponent.getService();
+                Target target2 = targetComponent.getService();
                 assertEquals("foo",target2.getString());
                 assertEquals("foo",source2.getTarget().getString());
                 source2.getTarget().setString("bar");
@@ -554,20 +554,20 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext statelessScope = new StatelessScopeContext(ctx);
         statelessScope.start();
 
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 requestScope, members, "target", Target.class, TargetImpl.class, statelessScope);
 
-        AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
-        AtomicContext<Target> targetContext = (AtomicContext<Target>) contexts.get("target");
+        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
+        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
         requestScope.onEvent(new RequestStart(this));
-        Source source = sourceContext.getService();
-        Target target = targetContext.getService();
+        Source source = sourceComponent.getService();
+        Target target = targetComponent.getService();
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
         assertFalse("foo".equals(source.getTarget().getString()));
-        Target target2 = targetContext.getService();
+        Target target2 = targetComponent.getService();
         assertFalse("foo".equals(target2.getString()));
         source.getTarget().setString("bar");
         assertFalse("bar".equals(source.getTarget().getString()));
@@ -586,19 +586,19 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext statelessScope = new StatelessScopeContext(ctx);
         statelessScope.start();
 
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 statelessScope, members, "target", Target.class, TargetImpl.class, statelessScope);
 
-        AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
-        AtomicContext<Target> targetContext = (AtomicContext<Target>) contexts.get("target");
-        Source source = sourceContext.getService();
-        Target target = targetContext.getService();
+        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
+        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
+        Source source = sourceComponent.getService();
+        Target target = targetComponent.getService();
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
         assertFalse("foo".equals(source.getTarget().getString()));
-        Target target2 = targetContext.getService();
+        Target target2 = targetComponent.getService();
         assertFalse("foo".equals(target2.getString()));
         source.getTarget().setString("bar");
         assertFalse("bar".equals(source.getTarget().getString()));
@@ -616,13 +616,13 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext statelessScope = new StatelessScopeContext(ctx);
         statelessScope.start();
 
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 statelessScope, members, "target", Target.class, TargetImpl.class, requestScope);
         requestScope.onEvent(new RequestStart(this));
-        AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
-        final AtomicContext<Target> targetContext = (AtomicContext<Target>) contexts.get("target");
-        final Source source = sourceContext.getService();
-        Target target = targetContext.getService();
+        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
+        final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
+        final Source source = sourceComponent.getService();
+        Target target = targetComponent.getService();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -634,7 +634,7 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Target target2 = targetContext.getService();
+                Target target2 = targetComponent.getService();
                 assertFalse("foo".equals(target2.getString()));
                 assertFalse("foo".equals(source.getTarget().getString()));
                 source.getTarget().setString("bar");
@@ -660,15 +660,15 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
         sessionScope.start();
 
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 statelessScope, members, "target", Target.class, TargetImpl.class, sessionScope);
         Object session1 = new Object();
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
-        AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
-        AtomicContext<Target> targetContext = (AtomicContext<Target>) contexts.get("target");
-        Source source = sourceContext.getService();
-        Target target = targetContext.getService();
+        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
+        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
+        Source source = sourceComponent.getService();
+        Target target = targetComponent.getService();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -682,7 +682,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
-        Target target2 = targetContext.getService();
+        Target target2 = targetComponent.getService();
         assertFalse("foo".equals(target2.getString()));
 
         assertFalse("foo".equals(source.getTarget().getString()));
@@ -708,13 +708,13 @@ public class ScopeReferenceTestCase extends TestCase {
         ScopeContext moduleScope = new ModuleScopeContext(ctx);
         moduleScope.start();
 
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 statelessScope, members, "target", Target.class, TargetImpl.class, moduleScope);
         moduleScope.onEvent(new ModuleStart(this, null));
-        AtomicContext<Source> sourceContext = (AtomicContext<Source>) contexts.get("source");
-        AtomicContext<Target> targetContext = (AtomicContext<Target>) contexts.get("target");
-        Source source = sourceContext.getService();
-        Target target = targetContext.getService();
+        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
+        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
+        Source source = sourceComponent.getService();
+        Target target = targetComponent.getService();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -726,7 +726,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
         moduleScope.onEvent(new HttpSessionStart(this, session2));
 
-        Target target2 = targetContext.getService();
+        Target target2 = targetComponent.getService();
         assertEquals("foo",target2.getString());
 
         assertEquals("foo",source.getTarget().getString());

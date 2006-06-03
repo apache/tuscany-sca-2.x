@@ -60,10 +60,10 @@ public interface WSDLDefinitionRegistry {
     PortType getPortType(QName name);
 
     /**
-     * Returns the Service with the supplied qualified name, or null if no such service has been defined.
+     * Returns the ServiceDefinition with the supplied qualified name, or null if no such service has been defined.
      *
      * @param name the qualified name of the WSDL service
-     * @return the Service for the supplied name, or null if none has been defined
+     * @return the ServiceDefinition for the supplied name, or null if none has been defined
      */
     Service getService(QName name);
 

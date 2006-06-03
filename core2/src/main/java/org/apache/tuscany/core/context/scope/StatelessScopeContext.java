@@ -14,7 +14,7 @@
 package org.apache.tuscany.core.context.scope;
 
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.AtomicComponent;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.WorkContext;
@@ -57,12 +57,12 @@ public class StatelessScopeContext extends AbstractScopeContext {
     public void onEvent(Event event) {
     }
 
-    public void register(AtomicContext context) {
+    public void register(AtomicComponent component) {
         checkInit();
     }
 
-    public InstanceWrapper getInstanceContext(AtomicContext context) throws TargetException {
-        return context.createInstance();
+    public InstanceWrapper getInstanceContext(AtomicComponent component) throws TargetException {
+        return component.createInstance();
     }
 
 }

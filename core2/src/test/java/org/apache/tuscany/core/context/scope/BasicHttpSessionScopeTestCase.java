@@ -7,8 +7,8 @@ import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.mock.component.SessionScopeInitDestroyComponent;
-import org.apache.tuscany.core.system.context.SystemAtomicContext;
-import org.apache.tuscany.core.system.context.SystemAtomicContextImpl;
+import org.apache.tuscany.core.system.context.SystemAtomicComponent;
+import org.apache.tuscany.core.system.context.SystemAtomicComponentImpl;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.context.ScopeContext;
@@ -26,7 +26,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         WorkContext workContext = new WorkContextImpl();
         HttpSessionScopeContext scopeContext = new HttpSessionScopeContext(workContext);
         scopeContext.start();
-        SystemAtomicContext atomicContext = createContext(scopeContext);
+        SystemAtomicComponent atomicContext = createContext(scopeContext);
         // start the request
         Object session = new Object();
         workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session);
@@ -45,7 +45,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         HttpSessionScopeContext scopeContext = new HttpSessionScopeContext(workContext);
         scopeContext.start();
 
-        SystemAtomicContext atomicContext = createContext(scopeContext);
+        SystemAtomicComponent atomicContext = createContext(scopeContext);
 
         Object session1 = new Object();
         workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
@@ -76,8 +76,8 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         super.tearDown();
     }
 
-    private SystemAtomicContext createContext(ScopeContext scopeContext) {
-        SystemAtomicContextImpl context = new SystemAtomicContextImpl("foo", null, scopeContext, SessionScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null, null);
+    private SystemAtomicComponent createContext(ScopeContext scopeContext) {
+        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo", null, scopeContext, SessionScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null, null);
         context.start();
         return context;
     }

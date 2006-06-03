@@ -39,7 +39,7 @@ public class JDKWireService implements WireService {
 
 
     public <T> T createProxy(RuntimeWire<T> wire) throws ProxyCreationException {
-        assert(wire != null): "Wire was null";
+        assert(wire != null): "WireDefinition was null";
         if (wire instanceof InboundWire) {
             InboundWire<T> inbound = (InboundWire<T>) wire;
             JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(inbound.getInvocationChains());
@@ -58,7 +58,7 @@ public class JDKWireService implements WireService {
     }
 
     public WireInvocationHandler createHandler(RuntimeWire<?> wire) {
-        assert(wire != null): "Wire was null";
+        assert(wire != null): "WireDefinition was null";
         if (wire instanceof InboundWire) {
             InboundWire<?> inbound = (InboundWire) wire;
             return new JDKInboundInvocationHandler(inbound.getInvocationChains());
@@ -73,7 +73,7 @@ public class JDKWireService implements WireService {
     }
 
     /*
-    public OutboundWire createReferenceWire(Reference reference) throws BuilderConfigException {
+    public OutboundWire createReferenceWire(ReferenceDefinition reference) throws BuilderConfigException {
         String name = reference.getName();
         Class interfaze = reference.getServiceContract().getInterfaceClass();
         OutboundWire<?> wire = new OutboundWireImpl();
@@ -92,7 +92,7 @@ public class JDKWireService implements WireService {
         return wire;
     }
 
-    public InboundWire createServiceWire(Service service) {
+    public InboundWire createServiceWire(ServiceDefinition service) {
         String name = service.getName();
         Class interfaze = service.getServiceContract().getInterfaceClass();
         InboundWire<?> wire = new InboundWireImpl();

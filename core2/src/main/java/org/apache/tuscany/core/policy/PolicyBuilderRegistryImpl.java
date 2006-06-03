@@ -3,8 +3,8 @@ package org.apache.tuscany.core.policy;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.spi.model.Reference;
-import org.apache.tuscany.spi.model.Service;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.policy.SourcePolicyBuilder;
@@ -40,18 +40,18 @@ public class PolicyBuilderRegistryImpl implements PolicyBuilderRegistry {
     }
 
 
-    public void buildSource(Reference reference, OutboundWire wire) throws BuilderException {
+    public void buildSource(ReferenceDefinition referenceDefinition, OutboundWire wire) throws BuilderException {
         for (List<SourcePolicyBuilder> builders : sourceBuilders) {
             for (SourcePolicyBuilder builder : builders) {
-                builder.build(reference,wire);
+                builder.build(referenceDefinition,wire);
             }
         }
     }
 
-    public void buildTarget(Service service, InboundWire wire) throws BuilderException {
+    public void buildTarget(ServiceDefinition serviceDefinition, InboundWire wire) throws BuilderException {
         for (List<TargetPolicyBuilder> builders : targetBuilders) {
             for (TargetPolicyBuilder builder : builders) {
-                builder.build(service,wire);
+                builder.build(serviceDefinition,wire);
             }
         }
     }

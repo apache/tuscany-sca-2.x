@@ -12,11 +12,11 @@ import org.apache.tuscany.core.wire.MessageDispatcher;
 import org.apache.tuscany.core.wire.OutboundAutowire;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.context.AtomicContext;
-import org.apache.tuscany.spi.context.ComponentContext;
-import org.apache.tuscany.spi.context.CompositeContext;
-import org.apache.tuscany.spi.context.Context;
-import org.apache.tuscany.spi.context.ReferenceContext;
+import org.apache.tuscany.spi.context.AtomicComponent;
+import org.apache.tuscany.spi.context.Component;
+import org.apache.tuscany.spi.context.CompositeComponent;
+import org.apache.tuscany.spi.context.SCAObject;
+import org.apache.tuscany.spi.context.Reference;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -33,12 +33,12 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public class ConnectorImpl implements Connector {
 
-    public <T> void connect(Context<T> source) {
-        CompositeContext parent = source.getParent();
+    public <T> void connect(SCAObject<T> source) {
+        CompositeComponent parent = source.getParent();
         Scope scope = source.getScope();
-        if (source instanceof AtomicContext) {
-            AtomicContext<T> sourceContext = (AtomicContext<T>) source;
-            for (List<OutboundWire> referenceWires : sourceContext.getOutboundWires().values()) {
+        if (source instanceof AtomicComponent) {
+            AtomicComponent<T> sourceComponent = (AtomicComponent<T>) source;
+            for (List<OutboundWire> referenceWires : sourceComponent.getOutboundWires().values()) {
                 for (OutboundWire<T> outboundWire : referenceWires) {
                     if (outboundWire instanceof OutboundAutowire) {
                         continue;
@@ -61,20 +61,20 @@ public class ConnectorImpl implements Connector {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> void connect(OutboundWire<T> sourceWire, CompositeContext<?> parent, Scope sourceScope) throws BuilderConfigException {
+    public <T> void connect(OutboundWire<T> sourceWire, CompositeComponent<?> parent, Scope sourceScope) throws BuilderConfigException {
         assert(sourceScope != null): "Source scope was null";
-        assert(sourceWire.getTargetName() != null): "Wire target name was null";
+        assert(sourceWire.getTargetName() != null): "WireDefinition target name was null";
         QualifiedName targetName = sourceWire.getTargetName();
-        Context<?> target = parent.getContext(targetName.getPartName());
+        SCAObject<?> target = parent.getChild(targetName.getPartName());
         if (target == null) {
             BuilderConfigException e = new BuilderConfigException("Target not found for reference" + sourceWire.getReferenceName());
             e.setIdentifier(targetName.getQualifiedName());
             throw e;
         }
 
-        if (target instanceof AtomicContext) {
-            AtomicContext<?> targetContext = (AtomicContext<?>) target;
-            InboundWire<T> targetWire = targetContext.getInboundWire(targetName.getPortName());
+        if (target instanceof AtomicComponent) {
+            AtomicComponent<?> targetComponent = (AtomicComponent<?>) target;
+            InboundWire<T> targetWire = targetComponent.getInboundWire(targetName.getPortName());
             if (targetWire == null) {
                 BuilderConfigException e = new BuilderConfigException("Target service not found for reference " + sourceWire.getReferenceName());
                 e.setIdentifier(targetName.getPortName());
@@ -84,8 +84,8 @@ public class ConnectorImpl implements Connector {
                 throw new BuilderConfigException("Incompatible source and target interfaces");
             }
             connect(sourceWire, targetWire, target, isOptimizable(sourceScope, target.getScope()));
-        } else if (target instanceof ReferenceContext) {
-            InboundWire<T> targetWire = ((ReferenceContext) target).getInboundWire();
+        } else if (target instanceof Reference) {
+            InboundWire<T> targetWire = ((Reference) target).getInboundWire();
             assert(targetWire != null);
             if (!sourceWire.getBusinessInterface().isAssignableFrom(targetWire.getBusinessInterface())) {
                 throw new BuilderConfigException("Incompatible source and target interfaces");
@@ -117,7 +117,7 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    public <T> void connect(OutboundWire<T> sourceWire, InboundWire<T> targetWire, Context<?> context, boolean optimizable) {
+    public <T> void connect(OutboundWire<T> sourceWire, InboundWire<T> targetWire, SCAObject<?> context, boolean optimizable) {
         Map<Method, InboundInvocationChain> targetChains = targetWire.getInvocationChains();
         // perform optimization, if possible
         if (optimizable && sourceWire.getInvocationChains().isEmpty() && targetChains.isEmpty()) {
@@ -132,10 +132,10 @@ public class ConnectorImpl implements Connector {
                 e.setIdentifier(sourceWire.getReferenceName());
                 throw e;
             }
-            if (context instanceof ComponentContext) {
-                connect(outboundChain, inboundChain, ((ComponentContext) context).createTargetInvoker(targetWire.getServiceName(), inboundChain.getMethod()));
-            } else if (context instanceof ReferenceContext) {
-                connect(outboundChain, inboundChain, ((ReferenceContext) context).createTargetInvoker(targetWire.getServiceName(), inboundChain.getMethod()));
+            if (context instanceof Component) {
+                connect(outboundChain, inboundChain, ((Component) context).createTargetInvoker(targetWire.getServiceName(), inboundChain.getMethod()));
+            } else if (context instanceof Reference) {
+                connect(outboundChain, inboundChain, ((Reference) context).createTargetInvoker(targetWire.getServiceName(), inboundChain.getMethod()));
             }
         }
     }
@@ -151,7 +151,7 @@ public class ConnectorImpl implements Connector {
                     MessageChannel channel = new MessageChannelImpl(handlers);
                     sourceChain.setTargetRequestChannel(channel);
                 } else {
-                    BuilderConfigException e = new BuilderConfigException("Service chain must have an interceptor");
+                    BuilderConfigException e = new BuilderConfigException("ServiceDefinition chain must have an interceptor");
                     e.setIdentifier(targetChain.getMethod().getName());
                     throw e;
                 }

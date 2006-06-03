@@ -14,11 +14,11 @@ import org.apache.tuscany.spi.context.InstanceWrapper;
 public class GroovyInstanceWrapper extends AbstractLifecycle implements InstanceWrapper {
 
     private int lifecycleState = UNINITIALIZED;
-    private GroovyAtomicContext context;
+    private GroovyAtomicComponent context;
     private GroovyObject groovyObject;
 
 
-    public GroovyInstanceWrapper(GroovyAtomicContext context, GroovyObject groovyObject) {
+    public GroovyInstanceWrapper(GroovyAtomicComponent context, GroovyObject groovyObject) {
         this.context = context;
         this.groovyObject = groovyObject;
     }

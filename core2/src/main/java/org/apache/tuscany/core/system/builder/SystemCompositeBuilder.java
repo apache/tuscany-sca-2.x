@@ -16,20 +16,20 @@
  */
 package org.apache.tuscany.core.system.builder;
 
-import org.apache.tuscany.core.context.AutowireContext;
-import org.apache.tuscany.core.system.context.SystemCompositeContext;
-import org.apache.tuscany.core.system.context.SystemCompositeContextImpl;
+import org.apache.tuscany.core.context.AutowireComponent;
+import org.apache.tuscany.core.system.context.SystemCompositeComponent;
+import org.apache.tuscany.core.system.context.SystemCompositeComponentImpl;
 import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.context.ComponentContext;
-import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.Component;
+import org.apache.tuscany.spi.context.CompositeComponent;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
-import org.apache.tuscany.spi.model.BoundService;
-import org.apache.tuscany.spi.model.Component;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.Service;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -56,17 +56,17 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
         this.builderRegistry = builderRegistry;
     }
 
-    public ComponentContext<?> build(CompositeContext<?> parent, Component<SystemCompositeImplementation> component, DeploymentContext deploymentContext) throws BuilderConfigException {
-        SystemCompositeImplementation impl = component.getImplementation();
+    public Component<?> build(CompositeComponent<?> parent, ComponentDefinition<SystemCompositeImplementation> componentDefinition, DeploymentContext deploymentContext) throws BuilderConfigException {
+        SystemCompositeImplementation impl = componentDefinition.getImplementation();
         CompositeComponentType<?,?,?> componentType = impl.getComponentType();
-        SystemCompositeContext<?> context = new SystemCompositeContextImpl(component.getName(), parent, getAutowireContext(parent));
-        for (Service service : componentType.getServices().values()) {
-            if (service instanceof BoundService) {
-                context.registerContext(builderRegistry.build(context, (BoundService<? extends Binding>) service, deploymentContext));
+        SystemCompositeComponent<?> context = new SystemCompositeComponentImpl(componentDefinition.getName(), parent, getAutowireContext(parent));
+        for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
+            if (serviceDefinition instanceof BoundServiceDefinition) {
+                context.register(builderRegistry.build(context, (BoundServiceDefinition<? extends Binding>) serviceDefinition, deploymentContext));
             }
         }
-        for (Component<? extends Implementation> childComponent : componentType.getComponents().values()) {
-            context.registerContext(builderRegistry.build(context, childComponent, deploymentContext));
+        for (ComponentDefinition<? extends Implementation> childComponentDefinition : componentType.getComponents().values()) {
+            context.register(builderRegistry.build(context, childComponentDefinition, deploymentContext));
         }
         return context;
     }
@@ -77,9 +77,9 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
      * @param parent the parent for a new context
      * @return the autowire context for the parent or null if it does not support autowire
      */
-    protected AutowireContext getAutowireContext(CompositeContext<?> parent) {
-        if (parent instanceof AutowireContext) {
-            return (AutowireContext) parent;
+    protected AutowireComponent getAutowireContext(CompositeComponent<?> parent) {
+        if (parent instanceof AutowireComponent) {
+            return (AutowireComponent) parent;
         } else {
             return null;
         }

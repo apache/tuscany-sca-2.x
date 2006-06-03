@@ -11,7 +11,7 @@ import org.apache.tuscany.core.context.event.ModuleStart;
 import org.apache.tuscany.core.context.event.ModuleStop;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.AtomicComponent;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.WorkContext;
@@ -24,7 +24,7 @@ import org.apache.tuscany.spi.event.Event;
  */
 public class ModuleScopeContext extends AbstractScopeContext {
 
-    private final Map<AtomicContext, InstanceWrapper> instanceContexts;
+    private final Map<AtomicComponent, InstanceWrapper> instanceContexts;
     // the queue of instanceContexts to destroy, in the order that their instances were created
     private final List<InstanceWrapper> destroyQueue;
     private static final InstanceWrapper EMPTY = new EmptyWrapper();
@@ -35,7 +35,7 @@ public class ModuleScopeContext extends AbstractScopeContext {
 
     public ModuleScopeContext(WorkContext workContext) {
         super("Module Scope", workContext);
-        instanceContexts = new ConcurrentHashMap<AtomicContext, InstanceWrapper>();
+        instanceContexts = new ConcurrentHashMap<AtomicComponent, InstanceWrapper>();
         destroyQueue = new ArrayList<InstanceWrapper>();
     }
 
@@ -88,19 +88,19 @@ public class ModuleScopeContext extends AbstractScopeContext {
         }
     }
 
-    public void register(AtomicContext context) {
+    public void register(AtomicComponent component) {
         checkInit();
-        instanceContexts.put(context, EMPTY);
+        instanceContexts.put(component, EMPTY);
     }
 
 
-    public InstanceWrapper getInstanceContext(AtomicContext context) throws TargetException {
+    public InstanceWrapper getInstanceContext(AtomicComponent component) throws TargetException {
         checkInit();
-        InstanceWrapper ctx = instanceContexts.get(context);
-        assert ctx != null : "Context not registered with scope: " + context;
+        InstanceWrapper ctx = instanceContexts.get(component);
+        assert ctx != null : "SCAObject not registered with scope: " + component;
         if (ctx == EMPTY) {
-            ctx = context.createInstance();
-            instanceContexts.put(context, ctx);
+            ctx = component.createInstance();
+            instanceContexts.put(component, ctx);
             synchronized (destroyQueue) {
                 destroyQueue.add(ctx);
             }
@@ -109,11 +109,11 @@ public class ModuleScopeContext extends AbstractScopeContext {
     }
 
     private void eagerInitContexts() throws CoreRuntimeException {
-        for (Map.Entry<AtomicContext, InstanceWrapper> entry : instanceContexts.entrySet()) {
-            AtomicContext context = entry.getKey();
-            if (context.isEagerInit()) {
-                InstanceWrapper instanceCtx = context.createInstance();
-                instanceContexts.put(context, instanceCtx);
+        for (Map.Entry<AtomicComponent, InstanceWrapper> entry : instanceContexts.entrySet()) {
+            AtomicComponent component = entry.getKey();
+            if (component.isEagerInit()) {
+                InstanceWrapper instanceCtx = component.createInstance();
+                instanceContexts.put(component, instanceCtx);
                 destroyQueue.add(instanceCtx);
             }
         }

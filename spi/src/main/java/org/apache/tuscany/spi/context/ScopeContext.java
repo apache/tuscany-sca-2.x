@@ -22,10 +22,10 @@ import org.apache.tuscany.spi.event.RuntimeEventListener;
 
 
 /**
- * Manages the lifecycle and visibility of instances associated with a set of {@link AtomicContext}s.
+ * Manages the lifecycle and visibility of instances associated with a set of {@link AtomicComponent}s.
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
- * @see Context
+ * @see SCAObject
  */
 public interface ScopeContext extends Lifecycle, RuntimeEventListener {
 
@@ -40,24 +40,24 @@ public interface ScopeContext extends Lifecycle, RuntimeEventListener {
     void setWorkContext(WorkContext workContext);
 
     /**
-     * Registers a context with the scope context
+     * Registers a component with the scope component
      */
-    void register(AtomicContext context);
+    void register(AtomicComponent component);
 
     /**
-     * Returns an instance associated with the current context
+     * Returns an instance associated with the current component
      *
      * @throws TargetException
      */
-    Object getInstance(AtomicContext context) throws TargetException;
+    Object getInstance(AtomicComponent component) throws TargetException;
 
 
     /**
-     * Returns the instance wrapper associated with the current context
+     * Returns the instance wrapper associated with the current component
      *
      * @throws TargetException
      */
-    InstanceWrapper getInstanceContext(AtomicContext context) throws TargetException;
+    InstanceWrapper getInstanceContext(AtomicComponent component) throws TargetException;
 
 
 }

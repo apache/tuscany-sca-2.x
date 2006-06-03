@@ -15,7 +15,7 @@ package org.apache.tuscany.core.context;
 
 import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.AtomicComponent;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 
 /**
@@ -26,12 +26,12 @@ import org.apache.tuscany.spi.context.InstanceWrapper;
 public class PojoInstanceWrapper extends AbstractLifecycle implements InstanceWrapper {
 
     private Object instance;
-    private AtomicContext context;
+    private AtomicComponent component;
 
-    public PojoInstanceWrapper(AtomicContext context, Object instance) {
-        assert(context != null);
+    public PojoInstanceWrapper(AtomicComponent component, Object instance) {
+        assert(component != null);
         assert(instance != null);
-        this.context = context;
+        this.component = component;
         this.instance = instance;
     }
 
@@ -42,7 +42,7 @@ public class PojoInstanceWrapper extends AbstractLifecycle implements InstanceWr
 
     public void start() throws CoreRuntimeException {
         try {
-            context.init(instance);
+            component.init(instance);
             lifecycleState = RUNNING;
         } catch (RuntimeException e) {
             lifecycleState = ERROR;
@@ -52,7 +52,7 @@ public class PojoInstanceWrapper extends AbstractLifecycle implements InstanceWr
 
     public void stop() throws CoreRuntimeException {
         checkInit();
-        context.destroy(instance);
+        component.destroy(instance);
     }
 
     protected void checkInit() {

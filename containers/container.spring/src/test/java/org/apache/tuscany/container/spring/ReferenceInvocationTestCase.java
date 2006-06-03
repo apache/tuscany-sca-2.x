@@ -2,7 +2,7 @@ package org.apache.tuscany.container.spring;
 
 import org.apache.tuscany.container.spring.mock.TestBean;
 import org.apache.tuscany.container.spring.mock.TestBeanImpl;
-import org.apache.tuscany.spi.context.ReferenceContext;
+import org.apache.tuscany.spi.context.Reference;
 import org.apache.tuscany.test.ArtifactFactory;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
@@ -22,15 +22,15 @@ public class ReferenceInvocationTestCase extends MockObjectTestCase {
 
     public void testInvocation() throws Exception {
         GenericApplicationContext ctx = createSpringContext();
-        SpringCompositeContext parent = new SpringCompositeContext("spring", ctx, null, ArtifactFactory.createWireService());
+        SpringCompositeComponent parent = new SpringCompositeComponent("spring", ctx, null, ArtifactFactory.createWireService());
         parent.start();
         TestBean referenceTarget = new TestBeanImpl();
-        Mock mock = mock(ReferenceContext.class);
+        Mock mock = mock(Reference.class);
         mock.stubs().method("getName").will(returnValue("bar"));
         mock.stubs().method("getInterface").will(returnValue(TestBean.class));
         mock.expects(atLeastOnce()).method("getService").will(returnValue(referenceTarget));
-        ReferenceContext referenceContext = (ReferenceContext) mock.proxy();
-        parent.registerContext(referenceContext);
+        Reference reference = (Reference) mock.proxy();
+        parent.register(reference);
         ctx.getBean("foo");
     }
 

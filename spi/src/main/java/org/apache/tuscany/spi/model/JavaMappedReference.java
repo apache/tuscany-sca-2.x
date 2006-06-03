@@ -19,12 +19,12 @@ package org.apache.tuscany.spi.model;
 import java.lang.reflect.Member;
 
 /**
- * A Reference definition that is mapped to a specific location in the implementation class.
+ * A ReferenceDefinition definition that is mapped to a specific location in the implementation class.
  * This location will typically be used to inject reference values.
  *
  * @version $Rev$ $Date$
  */
-public class JavaMappedReference extends Reference {
+public class JavaMappedReference extends ReferenceDefinition {
     private Member member;
 
     /**

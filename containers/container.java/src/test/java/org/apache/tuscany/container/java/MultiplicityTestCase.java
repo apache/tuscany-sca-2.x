@@ -24,13 +24,13 @@ import junit.framework.TestCase;
 public class MultiplicityTestCase extends TestCase {
 
     public void testMultiplicity() throws Exception {
-//        CompositeContext context = createContext();
+//        CompositeComponent context = createContext();
 //        context.start();
 //        context.registerModelObject(MockContextFactory.createModuleWithWiredComponents(Scope.MODULE, Scope.MODULE));
 //        context.publish(new ModuleStart(this));
-//        Source source = (Source) ((AtomicContext) context.getContext("source")).getTargetInstance();
+//        Source source = (Source) ((AtomicComponent) context.getContext("source")).getTargetInstance();
 //        Assert.assertNotNull(source);
-//        Target target = (Target) ((AtomicContext)context.getContext("target")).getTargetInstance();
+//        Target target = (Target) ((AtomicComponent)context.getContext("target")).getTargetInstance();
 //        Assert.assertNotNull(target);
 //        // test setter injection
 //        List<Target> targets = source.getTargets();
@@ -41,8 +41,8 @@ public class MultiplicityTestCase extends TestCase {
 //        Assert.assertEquals(1, targets.size());
     }
 
-//    private CompositeContext createContext() {
-//        CompositeContextImpl context = new CompositeContextImpl();
+//    private CompositeComponent createContext() {
+//        CompositeComponentImpl context = new CompositeComponentImpl();
 //        context.setName("system.context");
 //        List<ContextFactoryBuilder>builders = MockContextFactory.createSystemBuilders();
 //        WireService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(), new JDKWireFactoryService(), new DefaultPolicyBuilderRegistry());

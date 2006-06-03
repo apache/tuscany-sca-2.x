@@ -3,7 +3,7 @@ package org.apache.tuscany.core.context;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.context.CompositeContext;
+import org.apache.tuscany.spi.context.CompositeComponent;
 import org.apache.tuscany.spi.context.WorkContext;
 
 /**
@@ -23,22 +23,22 @@ public class WorkContextImpl implements WorkContext {
      */
     private ThreadLocal<Map<Object, Object>> workContext = new InheritableThreadLocal<Map<Object, Object>>();
 
-    public CompositeContext getRemoteContext() {
+    public CompositeComponent getRemoteContext() {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             return null;
         }
-        return (CompositeContext) map.get(REMOTE_CONTEXT);
+        return (CompositeComponent) map.get(REMOTE_CONTEXT);
     }
 
 
-    public void setRemoteContext(CompositeContext context) {
+    public void setRemoteContext(CompositeComponent component) {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             map = new HashMap<Object, Object>();
             workContext.set(map);
         }
-        map.put(REMOTE_CONTEXT, context);
+        map.put(REMOTE_CONTEXT, component);
     }
 
     public Object getIdentifier(Object type) {

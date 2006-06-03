@@ -12,8 +12,8 @@ import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.system.context.SystemAtomicContext;
-import org.apache.tuscany.core.system.context.SystemAtomicContextImpl;
+import org.apache.tuscany.core.system.context.SystemAtomicComponent;
+import org.apache.tuscany.core.system.context.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.system.wire.SystemInboundWireImpl;
 import org.apache.tuscany.core.system.wire.SystemOutboundWireImpl;
 import org.apache.tuscany.core.system.wire.SystemOutboundWire;
@@ -23,7 +23,7 @@ import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.AtomicComponent;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -38,7 +38,7 @@ public class MockContextFactory {
     private MockContextFactory() {
     }
 
-    public static Map<String, AtomicContext> createWiredContexts(String source, Class<?> sourceClass, ScopeContext sourceScopeCtx,
+    public static Map<String, AtomicComponent> createWiredContexts(String source, Class<?> sourceClass, ScopeContext sourceScopeCtx,
                                                                  String target, Class<?> targetClass, ScopeContext targetScopeCtx) throws NoSuchMethodException {
         List<Class<?>> sourceClasses = new ArrayList<Class<?>>();
         sourceClasses.add(sourceClass);
@@ -46,13 +46,13 @@ public class MockContextFactory {
     }
 
     /**
-     * Creates source and target {@link AtomicContext}s whose instances are wired together. The wiring
+     * Creates source and target {@link AtomicComponent}s whose instances are wired together. The wiring
      * algorithm searches for the first method on the source with a single parameter type matching an
      * interface implemented by the target.
      *
      * @throws NoSuchMethodException
      */
-    public static Map<String, AtomicContext> createWiredContexts(String source,
+    public static Map<String, AtomicComponent> createWiredContexts(String source,
                                                                  List<Class<?>> sourceInterfaces,
                                                                  Class<?> sourceClass,
                                                                  ScopeContext sourceScopeCtx,
@@ -60,8 +60,8 @@ public class MockContextFactory {
                                                                  Class<?> targetClass,
                                                                  ScopeContext targetScopeCtx) throws NoSuchMethodException {
 
-        Map<String, AtomicContext> contexts = new HashMap<String, AtomicContext>();
-        SystemAtomicContext targetCtx = createSystemAtomicContext(target, targetScopeCtx, targetClass);//, targetEager, targetInitInvoker, targetDestroyInvoker, null);
+        Map<String, AtomicComponent> contexts = new HashMap<String, AtomicComponent>();
+        SystemAtomicComponent targetCtx = createSystemAtomicContext(target, targetScopeCtx, targetClass);//, targetEager, targetInitInvoker, targetDestroyInvoker, null);
 
         //create target wire
         Method[] sourceMethods = sourceClass.getMethods();
@@ -86,7 +86,7 @@ public class MockContextFactory {
 
         Map<String, Member> members = new HashMap<String, Member>();
         members.put(setter.getName(), setter);
-        SystemAtomicContext sourceCtx = createSystemAtomicContext(source, sourceScopeCtx, sourceInterfaces, sourceClass, null, members);//, sourceEager, sourceInitInvoker, sourceDestroyInvoker, injectors);
+        SystemAtomicComponent sourceCtx = createSystemAtomicContext(source, sourceScopeCtx, sourceInterfaces, sourceClass, null, members);//, sourceEager, sourceInitInvoker, sourceDestroyInvoker, injectors);
         QualifiedName targetName = new QualifiedName(target);
         SystemOutboundWire wire = new SystemOutboundWireImpl(setter.getName(), targetName, targetClass);
         InboundWire inboundWire = new SystemInboundWireImpl(targetName.getPortName(), targetClass, targetCtx);
@@ -98,17 +98,17 @@ public class MockContextFactory {
         return contexts;
     }
 
-    public static SystemAtomicContext createSystemAtomicContext(String name, ScopeContext scopeContext, Class<?> clazz) throws NoSuchMethodException {
+    public static SystemAtomicComponent createSystemAtomicContext(String name, ScopeContext scopeContext, Class<?> clazz) throws NoSuchMethodException {
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         serviceInterfaces.add(clazz);
         return createSystemAtomicContext(name, scopeContext, serviceInterfaces, clazz);
     }
 
-    public static SystemAtomicContext createSystemAtomicContext(String name, ScopeContext scopeContext, List<Class<?>> interfaces, Class<?> clazz) throws NoSuchMethodException {
+    public static SystemAtomicComponent createSystemAtomicContext(String name, ScopeContext scopeContext, List<Class<?>> interfaces, Class<?> clazz) throws NoSuchMethodException {
         return createSystemAtomicContext(name, scopeContext, interfaces, clazz, null, null);
     }
 
-    public static SystemAtomicContext createSystemAtomicContext(String name,
+    public static SystemAtomicComponent createSystemAtomicContext(String name,
                                                                 ScopeContext scopeContext,
                                                                 List<Class<?>> serviceInterfaces,
                                                                 Class<?> clazz,
@@ -142,7 +142,7 @@ public class MockContextFactory {
      * @param injectors
      * @throws NoSuchMethodException
      */
-    public static SystemAtomicContextImpl createSystemAtomicContext(String name,
+    public static SystemAtomicComponentImpl createSystemAtomicContext(String name,
                                                                     ScopeContext scopeContext,
                                                                     List<Class<?>> serviceInterfaces,
                                                                     Class<?> clazz,
@@ -151,7 +151,7 @@ public class MockContextFactory {
                                                                     EventInvoker<Object> destroyInvoker,
                                                                     List<Injector> injectors,
                                                                     Map<String, Member> members) throws NoSuchMethodException {
-        return new SystemAtomicContextImpl(name, null, scopeContext, serviceInterfaces, createObjectFactory(clazz), eagerInit, initInvoker, destroyInvoker, injectors, members);
+        return new SystemAtomicComponentImpl(name, null, scopeContext, serviceInterfaces, createObjectFactory(clazz), eagerInit, initInvoker, destroyInvoker, injectors, members);
     }
 
     public static <T> InboundWire<T> createTargetWireFactory(String serviceName, Class<T> interfaze) {

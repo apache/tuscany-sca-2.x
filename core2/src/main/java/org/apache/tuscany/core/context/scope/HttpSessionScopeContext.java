@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.tuscany.core.context.event.HttpSessionEnd;
 import org.apache.tuscany.core.context.event.HttpSessionStart;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.AtomicComponent;
 import org.apache.tuscany.spi.context.InstanceWrapper;
 import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.spi.context.WorkContext;
@@ -24,7 +24,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext {
 
     public static final Object HTTP_IDENTIFIER = new Object();
 
-    private final Map<AtomicContext, Map<Object, InstanceWrapper>> contexts;
+    private final Map<AtomicComponent, Map<Object, InstanceWrapper>> contexts;
     private final Map<Object, List<InstanceWrapper>> destroyQueues;
 
     public HttpSessionScopeContext(){
@@ -33,7 +33,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext {
 
     public HttpSessionScopeContext(WorkContext workContext) {
         super("Session Scope", workContext);
-        contexts = new ConcurrentHashMap<AtomicContext, Map<Object, InstanceWrapper>>();
+        contexts = new ConcurrentHashMap<AtomicComponent, Map<Object, InstanceWrapper>>();
         destroyQueues = new ConcurrentHashMap<Object, List<InstanceWrapper>>();
     }
 
@@ -45,7 +45,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext {
         checkInit();
         if (event instanceof HttpSessionStart) {
             Object key = ((HttpSessionStart) event).getId();
-            for (Map.Entry<AtomicContext, Map<Object, InstanceWrapper>> entry : contexts.entrySet()) {
+            for (Map.Entry<AtomicComponent, Map<Object, InstanceWrapper>> entry : contexts.entrySet()) {
                 if(entry.getKey().isEagerInit()){
                     getInstance(entry.getKey(),key);
                 }
@@ -70,23 +70,23 @@ public class HttpSessionScopeContext extends AbstractScopeContext {
         lifecycleState = STOPPED;
     }
 
-    public void register(AtomicContext context) {
-        contexts.put(context, new ConcurrentHashMap<Object, InstanceWrapper>());
-        context.addListener(this);
+    public void register(AtomicComponent component) {
+        contexts.put(component, new ConcurrentHashMap<Object, InstanceWrapper>());
+        component.addListener(this);
 
     }
 
-    public InstanceWrapper getInstanceContext(AtomicContext context) throws TargetException {
+    public InstanceWrapper getInstanceContext(AtomicComponent component) throws TargetException {
         Object key = workContext.getIdentifier(HTTP_IDENTIFIER);
-        assert(key != null):"HTTP session key not bound in work context";
-        return getInstance(context, key);
+        assert(key != null):"HTTP session key not bound in work component";
+        return getInstance(component, key);
     }
 
-    private InstanceWrapper getInstance(AtomicContext context, Object key) {
-        Map<Object, InstanceWrapper> wrappers = contexts.get(context);
+    private InstanceWrapper getInstance(AtomicComponent component, Object key) {
+        Map<Object, InstanceWrapper> wrappers = contexts.get(component);
         InstanceWrapper ctx = wrappers.get(key);
         if (ctx == null) {
-            ctx = context.createInstance();
+            ctx = component.createInstance();
             wrappers.put(key, ctx);
             List<InstanceWrapper> destroyQueue = destroyQueues.get(key);
             if (destroyQueue == null) {

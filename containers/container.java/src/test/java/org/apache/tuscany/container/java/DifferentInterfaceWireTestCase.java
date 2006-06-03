@@ -28,7 +28,7 @@ import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.core.context.scope.ModuleScopeContext;
-import org.apache.tuscany.spi.context.AtomicContext;
+import org.apache.tuscany.spi.context.AtomicComponent;
 import org.apache.tuscany.spi.context.ScopeContext;
 
 
@@ -45,10 +45,10 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         members.put("target", m);
         ScopeContext scope = new ModuleScopeContext(null);
         scope.start();
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, Target.class, scope,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, Target.class, scope,
                 members, "target", OtherTarget.class, OtherTargetImpl.class, scope);
-        AtomicContext sourceContext = contexts.get("source");
-        Source source = (Source) sourceContext.getService();
+        AtomicComponent sourceComponent = contexts.get("source");
+        Source source = (Source) sourceComponent.getService();
         Target target = source.getTarget();
         assertTrue(Proxy.isProxyClass(target.getClass()));
         assertNotNull(target);
@@ -61,10 +61,10 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         members.put("target", m);
         ScopeContext scope = new ModuleScopeContext(null);
         scope.start();
-        Map<String, AtomicContext> contexts = MockContextFactory.createWiredMultiplicity("source", SourceImpl.class, Target.class, scope,
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredMultiplicity("source", SourceImpl.class, Target.class, scope,
                 "target", OtherTarget.class, OtherTargetImpl.class, members, scope);
-        AtomicContext sourceContext = contexts.get("source");
-        Source source = (Source) sourceContext.getService();
+        AtomicComponent sourceComponent = contexts.get("source");
+        Source source = (Source) sourceComponent.getService();
         List<Target> targets = source.getTargets();
         assertEquals(1, targets.size());
         Target target = targets.get(0);

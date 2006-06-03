@@ -11,12 +11,12 @@ import junit.framework.TestCase;
  * @version $Rev$ $Date$
  */
 public class SystemObjectRegistrationTestCase extends TestCase {
-    private SystemCompositeContext<?> systemContext;
+    private SystemCompositeComponent<?> systemContext;
 
     public void testRegistration() throws Exception {
         MockComponent instance = new MockComponent();
         systemContext.registerJavaObject("foo", MockComponent.class, instance);
-        MockComponent resolvedInstance = (MockComponent)systemContext.getContext("foo").getService();
+        MockComponent resolvedInstance = (MockComponent)systemContext.getChild("foo").getService();
         assertSame(instance, resolvedInstance);
     }
 
@@ -40,7 +40,7 @@ public class SystemObjectRegistrationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        systemContext = new SystemCompositeContextImpl(null, null, null);
+        systemContext = new SystemCompositeComponentImpl(null, null, null);
         systemContext.start();
         systemContext.publish(new ModuleStart(this,null));
     }

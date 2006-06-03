@@ -19,7 +19,7 @@ public class GetServiceByNameTestCase extends MockObjectTestCase {
     public void testServiceLocate() throws Exception {
         ModuleScopeContext scope = new ModuleScopeContext(null);
         scope.start();
-        final JavaAtomicContext<?> context =
+        final JavaAtomicComponent<?> context =
                 MockContextFactory.createJavaAtomicContext("target", scope, TargetImpl.class, Target.class, Scope.MODULE);
 
         Mock mock = mock(InboundWire.class);
@@ -31,7 +31,7 @@ public class GetServiceByNameTestCase extends MockObjectTestCase {
         context.addInboundWire(wire);
         context.prepare();
         context.start();
-        assertTrue(context.getService("Target") instanceof Target);
+        assertTrue(context.getServiceInstance("Target") instanceof Target);
     }
 
     

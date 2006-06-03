@@ -23,10 +23,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.model.Service;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.Binding;
-import org.apache.tuscany.spi.model.BoundService;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -35,7 +35,7 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 /**
  * @version $Rev$ $Date$
  */
-public class ServiceLoader extends LoaderExtension<Service> {
+public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
     public ServiceLoader() {
     }
 
@@ -47,7 +47,7 @@ public class ServiceLoader extends LoaderExtension<Service> {
         return AssemblyConstants.SERVICE;
     }
 
-    public Service load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ServiceDefinition load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert AssemblyConstants.SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         Binding binding = null;
@@ -65,9 +65,9 @@ public class ServiceLoader extends LoaderExtension<Service> {
                     break;
                 case END_ELEMENT:
                     if (binding != null) {
-                        return new BoundService<Binding>(name, serviceContract, binding, null);
+                        return new BoundServiceDefinition<Binding>(name, serviceContract, binding, null);
                     } else {
-                        return new Service(name, serviceContract);
+                        return new ServiceDefinition(name, serviceContract);
                     }
             }
         }

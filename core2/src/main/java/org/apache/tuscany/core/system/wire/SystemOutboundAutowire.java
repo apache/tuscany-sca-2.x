@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
-import org.apache.tuscany.core.context.AutowireContext;
+import org.apache.tuscany.core.context.AutowireComponent;
 import org.apache.tuscany.core.wire.OutboundAutowire;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;
@@ -19,9 +19,9 @@ import org.apache.tuscany.spi.wire.InboundWire;
 public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOutboundWire<T> {
     private String referenceName;
     private Class<T> businessInterface;
-    private AutowireContext<?> context;
+    private AutowireComponent<?> context;
 
-    public SystemOutboundAutowire(String referenceName, Class<T> businessInterface, AutowireContext<?> context) {
+    public SystemOutboundAutowire(String referenceName, Class<T> businessInterface, AutowireComponent<?> context) {
         this.referenceName = referenceName;
         this.businessInterface = businessInterface;
         this.context = context;

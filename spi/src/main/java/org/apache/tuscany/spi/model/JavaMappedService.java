@@ -17,7 +17,7 @@
 package org.apache.tuscany.spi.model;
 
 /**
- * A Service definition that is mapped to a Java interface.
+ * A ServiceDefinition definition that is mapped to a Java interface.
  * The mapped interface is not required to be the same as the interface
  * specified in the service contract. This is to allow the service contract
  * to be specified using different interface definition languages or, in the
@@ -26,7 +26,7 @@ package org.apache.tuscany.spi.model;
  *
  * @version $Rev$ $Date$
  */
-public class JavaMappedService extends Service {
+public class JavaMappedService extends ServiceDefinition {
     private Class<?> serviceInterface;
 
     public JavaMappedService() {
