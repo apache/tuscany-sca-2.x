@@ -13,4 +13,5 @@ public interface TransportMonitor {
 
     void shutdownError(int port, Exception e);
 
+    void requestHandleError(Exception e);
 }
