@@ -13,11 +13,11 @@
  */
 package org.apache.tuscany.core.component;
 
-import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.component.TargetException;
 
 /**
  * Denotes an exception while resolving an automatic wire
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class AutowireResolutionException extends TargetException {

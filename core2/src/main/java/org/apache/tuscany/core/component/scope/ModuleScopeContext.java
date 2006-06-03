@@ -6,20 +6,19 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
-import org.apache.tuscany.core.component.scope.AbstractScopeContext;
-import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.context.AtomicComponent;
-import org.apache.tuscany.spi.context.InstanceWrapper;
-import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
+import org.apache.tuscany.spi.model.Scope;
 
 /**
- * Manages instanceContexts whose implementations are module scoped
+ * A scope context which manages atomic component instances keyed by module
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
@@ -30,7 +29,7 @@ public class ModuleScopeContext extends AbstractScopeContext {
     private final List<InstanceWrapper> destroyQueue;
     private static final InstanceWrapper EMPTY = new EmptyWrapper();
 
-    public ModuleScopeContext(){
+    public ModuleScopeContext() {
         this(null);
     }
 
@@ -53,7 +52,7 @@ public class ModuleScopeContext extends AbstractScopeContext {
         } else if (event instanceof CompositeStop) {
             shutdownContexts();
         }
-     }
+    }
 
     public synchronized void start() {
         if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
@@ -65,7 +64,7 @@ public class ModuleScopeContext extends AbstractScopeContext {
     public synchronized void stop() {
         checkInit();
         instanceContexts.clear();
-        synchronized (destroyQueue){
+        synchronized (destroyQueue) {
             destroyQueue.clear();
         }
         lifecycleState = STOPPED;

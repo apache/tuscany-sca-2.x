@@ -2,7 +2,6 @@ package org.apache.tuscany.core.component.scope;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
 import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
@@ -11,8 +10,8 @@ import org.apache.tuscany.core.mock.component.ModuleScopeInitDestroyComponent;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.context.WorkContext;
-import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * @version $$Rev$$ $$Date$$

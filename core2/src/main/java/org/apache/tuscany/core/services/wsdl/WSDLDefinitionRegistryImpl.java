@@ -147,8 +147,8 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
 
     public static interface Monitor {
         /**
-         * Monitor event emitted immediately before an attempt is made to
-         * read WSDL for the supplied namespace from the supplied location.
+         * Monitor event emitted immediately before an attempt is made to read WSDL for the supplied namespace
+         * from the supplied location.
          *
          * @param namespace the target namespace expected in the WSDL; may be null
          * @param location  the location where we will attempt to read the WSDL definition from
@@ -156,8 +156,7 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         void readingWSDL(String namespace, URL location);
 
         /**
-         * Monitor event emitted immediately before registering a WSDL definition
-         * in the cache.
+         * Monitor event emitted immediately before registering a WSDL definition in the cache.
          *
          * @param namespace the target namespace for the WSDL
          * @param location  the location where the WSDL definition was read from

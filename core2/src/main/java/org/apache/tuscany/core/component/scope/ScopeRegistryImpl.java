@@ -4,10 +4,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.context.ScopeNotFoundException;
-import org.apache.tuscany.spi.context.ScopeRegistry;
-import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeNotFoundException;
+import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
 
 /**
@@ -52,7 +52,7 @@ public class ScopeRegistryImpl implements ScopeRegistry {
             context = factory.getInstance();
             context.setWorkContext(workContext);
             context.start();
-            scopeCache.put(scope,context);
+            scopeCache.put(scope, context);
         }
         return context;
     }

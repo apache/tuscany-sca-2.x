@@ -3,8 +3,8 @@ package org.apache.tuscany.spi.policy;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * A registry for policy builders that dispatches to the appropriate builder when converting an assembly to
@@ -35,8 +35,8 @@ public interface PolicyBuilderRegistry {
     public void registerSourceBuilder(int phase, SourcePolicyBuilder builder);
 
     /**
-     * Evaluates source-side policy metadata for referenceDefinition and updates the curresponding collection of wire
-     * configurations
+     * Evaluates source-side policy metadata for referenceDefinition and updates the curresponding collection
+     * of wire configurations
      *
      * @throws BuilderException
      */

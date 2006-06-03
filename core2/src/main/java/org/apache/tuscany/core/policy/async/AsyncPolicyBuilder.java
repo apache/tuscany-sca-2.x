@@ -3,9 +3,9 @@ package org.apache.tuscany.core.policy.async;
 import javax.resource.spi.work.WorkManager;
 
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import static org.apache.tuscany.spi.policy.PolicyBuilderRegistry.INITIAL;
 import org.apache.tuscany.spi.policy.TargetPolicyBuilder;

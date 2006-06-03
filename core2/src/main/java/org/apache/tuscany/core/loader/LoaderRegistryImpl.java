@@ -16,24 +16,24 @@
  */
 package org.apache.tuscany.core.loader;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.net.URL;
-import java.io.InputStream;
-import java.io.IOException;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLInputFactory;
 
-import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.StAXElementLoader;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.loader.ComponentTypeLoader;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.StAXElementLoader;
+import org.apache.tuscany.spi.loader.UnrecognizedElementException;
+import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * @version $Rev$ $Date$

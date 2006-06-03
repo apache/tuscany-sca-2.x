@@ -29,20 +29,20 @@ import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.container.java.mock.components.TargetImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.HttpSessionScopeContext;
-import org.apache.tuscany.core.component.event.HttpSessionEnd;
-import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.component.event.HttpSessionEnd;
+import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
+import org.apache.tuscany.core.component.scope.HttpSessionScopeContext;
 import org.apache.tuscany.core.component.scope.ModuleScopeContext;
 import org.apache.tuscany.core.component.scope.RequestScopeContext;
 import org.apache.tuscany.core.component.scope.StatelessScopeContext;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
-import org.apache.tuscany.spi.context.AtomicComponent;
-import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * Tests scoping is properly handled for service references
@@ -169,7 +169,7 @@ public class ScopeReferenceTestCase extends TestCase {
         future.get();
         assertEquals("foo", source.getTarget().getString());
         requestScope.onEvent(new RequestEnd(this));
-        moduleScope.onEvent(new CompositeStop(this,null));
+        moduleScope.onEvent(new CompositeStop(this, null));
         requestScope.stop();
         moduleScope.stop();
     }
@@ -470,8 +470,8 @@ public class ScopeReferenceTestCase extends TestCase {
                 requestScope.onEvent(new RequestStart(this));
                 Source source2 = sourceComponent.getService();
                 Target target2 = targetComponent.getService();
-                assertEquals("foo",target2.getString());
-                assertEquals("foo",source2.getTarget().getString());
+                assertEquals("foo", target2.getString());
+                assertEquals("foo", source2.getTarget().getString());
                 source2.getTarget().setString("bar");
                 assertEquals("bar", target2.getString());
                 assertEquals("bar", source2.getTarget().getString());
@@ -523,8 +523,8 @@ public class ScopeReferenceTestCase extends TestCase {
                 requestScope.onEvent(new RequestStart(this));
                 Source source2 = sourceComponent.getService();
                 Target target2 = targetComponent.getService();
-                assertEquals("foo",target2.getString());
-                assertEquals("foo",source2.getTarget().getString());
+                assertEquals("foo", target2.getString());
+                assertEquals("foo", source2.getTarget().getString());
                 source2.getTarget().setString("bar");
                 assertEquals("bar", target2.getString());
                 assertEquals("bar", source2.getTarget().getString());
@@ -727,9 +727,9 @@ public class ScopeReferenceTestCase extends TestCase {
         moduleScope.onEvent(new HttpSessionStart(this, session2));
 
         Target target2 = targetComponent.getService();
-        assertEquals("foo",target2.getString());
+        assertEquals("foo", target2.getString());
 
-        assertEquals("foo",source.getTarget().getString());
+        assertEquals("foo", source.getTarget().getString());
         source.getTarget().setString("bar");
         assertEquals("bar", target2.getString());
         assertEquals("bar", source.getTarget().getString());

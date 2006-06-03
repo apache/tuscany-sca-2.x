@@ -17,7 +17,6 @@
 package org.apache.tuscany.core.system.loader;
 
 import java.net.URL;
-import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.spi.deployer.DeploymentContext;

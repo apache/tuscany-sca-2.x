@@ -1,8 +1,8 @@
 package org.apache.tuscany.core.util;
 
-import junit.framework.AssertionFailedError;
-
 import java.util.List;
+
+import junit.framework.AssertionFailedError;
 
 public class Bean2 {
 
@@ -23,8 +23,8 @@ public class Bean2 {
     }
 
     public void setfieldList(List list) {
-       throw new AssertionFailedError("setter inadvertantly called");
+        throw new AssertionFailedError("setter inadvertantly called");
     }
 
-     
+
 }

@@ -34,6 +34,5 @@ public class GetServiceByNameTestCase extends MockObjectTestCase {
         assertTrue(context.getServiceInstance("Target") instanceof Target);
     }
 
-    
 
 }

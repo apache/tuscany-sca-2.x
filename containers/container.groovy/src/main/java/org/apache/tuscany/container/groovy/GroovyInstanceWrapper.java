@@ -4,7 +4,7 @@ import groovy.lang.GroovyObject;
 import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.context.InstanceWrapper;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 
 /**
  * Wraps a <code>GroovyObject</code> so it can be managed by a <code>ScopeContext</code>

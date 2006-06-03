@@ -16,13 +16,10 @@
  */
 package org.apache.tuscany.core.system.component;
 
+import org.apache.tuscany.core.component.AutowireComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
-
-import org.apache.tuscany.core.component.AutowireComponent;
-import org.apache.tuscany.core.system.component.SystemCompositeComponent;
-import org.apache.tuscany.core.system.component.SystemCompositeComponentImpl;
-import org.apache.tuscany.spi.context.CompositeComponent;
 
 /**
  * @version $Rev$ $Date$

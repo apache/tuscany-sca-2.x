@@ -13,8 +13,6 @@
  */
 package org.apache.tuscany.core.component.event;
 
-import org.apache.tuscany.core.component.event.AbstractRequestEvent;
-
 /**
  * Propagated when a request is started in the runtime
  *
@@ -24,10 +22,11 @@ public class RequestStart extends AbstractRequestEvent {
 
     /**
      * Creates a new event
+     *
      * @param source the source of the event
      */
-     public RequestStart(Object source) {
-         super(source);
-     }
+    public RequestStart(Object source) {
+        super(source);
+    }
 
 }

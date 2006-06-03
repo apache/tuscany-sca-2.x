@@ -4,8 +4,8 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
-import org.apache.tuscany.spi.context.Component;
-import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 

@@ -21,12 +21,11 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
@@ -51,7 +50,8 @@ public class ServiceLoaderTestCase extends MockObjectTestCase {
 
     public void testWithInterface() throws LoaderException, XMLStreamException {
         String name = "serviceDefinition";
-        ServiceContract sc = new ServiceContract(){};
+        ServiceContract sc = new ServiceContract() {
+        };
         mockReader.expects(once()).method("getName").will(returnValue(AssemblyConstants.SERVICE));
         mockReader.expects(once()).method("getAttributeValue").with(NULL, eq("name")).will(returnValue(name));
         mockReader.expects(atLeastOnce()).method("next").will(onConsecutiveCalls(returnValue(START_ELEMENT), returnValue(END_ELEMENT)));

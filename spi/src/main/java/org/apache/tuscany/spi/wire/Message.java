@@ -34,12 +34,14 @@ public interface Message {
     void setBody(Object body);
 
     /**
-     * Sets the target invoker to dispatch to when the message passes through the request side of the invocation chain
+     * Sets the target invoker to dispatch to when the message passes through the request side of the
+     * invocation chain
      */
     public void setTargetInvoker(TargetInvoker invoker);
 
     /**
-     * Sets the target invoker to dispatch to when the message passes through the request side of the invocation chain
+     * Sets the target invoker to dispatch to when the message passes through the request side of the
+     * invocation chain
      */
     public TargetInvoker getTargetInvoker();
 

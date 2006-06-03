@@ -18,9 +18,9 @@ package org.apache.tuscany.core.composite.builder;
 
 import org.apache.tuscany.core.component.CompositeComponentImpl;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.context.Component;
-import org.apache.tuscany.spi.context.CompositeComponent;
-import org.apache.tuscany.spi.context.SCAObject;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
@@ -39,10 +39,10 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 public class CompositeBuilder extends ComponentBuilderExtension<CompositeImplementation> {
 
     public Component<?> build(CompositeComponent<?> parent,
-                                  ComponentDefinition<CompositeImplementation> componentDefinition,
-                                  DeploymentContext deploymentContext) throws BuilderConfigException {
+                              ComponentDefinition<CompositeImplementation> componentDefinition,
+                              DeploymentContext deploymentContext) throws BuilderConfigException {
         CompositeImplementation implementation = componentDefinition.getImplementation();
-        CompositeComponentType<?,?,?> componentType = implementation.getComponentType();
+        CompositeComponentType<?, ?, ?> componentType = implementation.getComponentType();
         CompositeComponentImpl<?> context = new CompositeComponentImpl(componentDefinition.getName(), parent, null, wireService);
         for (ReferenceTarget target : componentDefinition.getReferenceTargets().values()) {
             ReferenceDefinition referenceDefinition = target.getReference();
@@ -51,7 +51,8 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
                 context.register(refereceSCAObject);
             }
         }
-        for (ComponentDefinition<? extends Implementation<?>> child : componentType.getComponents().values()) {
+        for (ComponentDefinition<? extends Implementation<?>> child : componentType.getComponents().values())
+        {
             SCAObject<?> childSCAObject = builderRegistry.build(context, child, deploymentContext);
             context.register(childSCAObject);
         }

@@ -2,12 +2,10 @@ package org.apache.tuscany.core.system.component;
 
 import javax.naming.ConfigurationException;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
-import org.apache.tuscany.core.system.component.SystemCompositeComponent;
-import org.apache.tuscany.core.system.component.SystemCompositeComponentImpl;
-import org.apache.tuscany.spi.context.DuplicateNameException;
-import junit.framework.TestCase;
+import org.apache.tuscany.spi.component.DuplicateNameException;
 
 /**
  * @version $Rev$ $Date$
@@ -18,7 +16,7 @@ public class SystemObjectRegistrationTestCase extends TestCase {
     public void testRegistration() throws Exception {
         MockComponent instance = new MockComponent();
         systemContext.registerJavaObject("foo", MockComponent.class, instance);
-        MockComponent resolvedInstance = (MockComponent)systemContext.getChild("foo").getService();
+        MockComponent resolvedInstance = (MockComponent) systemContext.getChild("foo").getService();
         assertSame(instance, resolvedInstance);
     }
 
@@ -33,7 +31,7 @@ public class SystemObjectRegistrationTestCase extends TestCase {
         }
     }
 
-    public void testAutowireToObject()  {
+    public void testAutowireToObject() {
         MockComponent instance = new MockComponent();
         systemContext.registerJavaObject("foo", MockComponent.class, instance);
         assertSame(instance, systemContext.resolveInstance(MockComponent.class));
@@ -44,11 +42,11 @@ public class SystemObjectRegistrationTestCase extends TestCase {
         super.setUp();
         systemContext = new SystemCompositeComponentImpl(null, null, null);
         systemContext.start();
-        systemContext.publish(new CompositeStart(this,null));
+        systemContext.publish(new CompositeStart(this, null));
     }
 
     protected void tearDown() throws Exception {
-        systemContext.publish(new CompositeStop(this,null));
+        systemContext.publish(new CompositeStop(this, null));
         systemContext.stop();
         super.tearDown();
     }

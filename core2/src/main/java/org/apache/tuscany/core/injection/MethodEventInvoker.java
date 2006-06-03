@@ -1,7 +1,7 @@
 package org.apache.tuscany.core.injection;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Performs an wire on a method of a given instance

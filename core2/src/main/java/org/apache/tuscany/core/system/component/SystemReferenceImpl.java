@@ -4,10 +4,9 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.core.system.wire.SystemInboundWire;
 import org.apache.tuscany.core.system.wire.SystemOutboundWire;
-import org.apache.tuscany.core.system.component.SystemReference;
-import org.apache.tuscany.spi.context.AbstractSCAObject;
-import org.apache.tuscany.spi.context.CompositeComponent;
-import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.component.AbstractSCAObject;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;

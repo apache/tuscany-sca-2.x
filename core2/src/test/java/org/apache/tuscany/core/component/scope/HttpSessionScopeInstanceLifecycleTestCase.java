@@ -3,18 +3,17 @@ package org.apache.tuscany.core.component.scope;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.HttpSessionScopeContext;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
-import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.mock.component.OrderedEagerInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;
 import org.apache.tuscany.core.mock.component.RequestScopeDestroyOnlyComponent;
 import org.apache.tuscany.core.mock.component.RequestScopeInitDestroyComponent;
 import org.apache.tuscany.core.mock.component.RequestScopeInitOnlyComponent;
+import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
-import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * Lifecycle unit tests for the module scope container
@@ -36,7 +35,7 @@ public class HttpSessionScopeInstanceLifecycleTestCase extends TestCase {
 
         SystemAtomicComponent destroyOnlyContext = MockContextFactory.createSystemAtomicContext("DestroyOnly", scope, RequestScopeDestroyOnlyComponent.class);
         destroyOnlyContext.start();
-        
+
         Object session = new Object();
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session);
         scope.onEvent(new HttpSessionStart(this, session));

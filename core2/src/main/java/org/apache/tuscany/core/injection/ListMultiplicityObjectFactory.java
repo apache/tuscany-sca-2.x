@@ -1,7 +1,7 @@
 package org.apache.tuscany.core.injection;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;

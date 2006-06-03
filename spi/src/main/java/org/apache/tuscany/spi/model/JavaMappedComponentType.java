@@ -17,8 +17,8 @@
 package org.apache.tuscany.spi.model;
 
 /**
- * A specialized component type definition whose services, references and properties
- * can be mapped to the Java programming model.
+ * A specialized component type definition whose services, references and properties can be mapped to the Java
+ * programming model.
  *
  * @version $Rev$ $Date$
  */

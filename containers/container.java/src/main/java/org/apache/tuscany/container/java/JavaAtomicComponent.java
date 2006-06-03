@@ -25,13 +25,13 @@ import org.apache.tuscany.core.component.PojoAtomicComponent;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.context.CompositeComponent;
-import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.context.TargetNotFoundException;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
 /**
@@ -59,7 +59,7 @@ public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
 
     public Object getServiceInstance(String name) throws TargetException {
         InboundWire<?> wire = serviceWires.get(name);
-        if (wire == null){
+        if (wire == null) {
             TargetNotFoundException e = new TargetNotFoundException(name);
             e.addContextName(getName());
             throw e;
@@ -70,7 +70,7 @@ public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
     public T getService() throws TargetException {
         if (serviceInterfaces.size() == 0) {
             return getTargetInstance();
-        }else if (serviceInterfaces.size() == 1) {
+        } else if (serviceInterfaces.size() == 1) {
             return getTargetInstance();
         } else {
             throw new TargetException("Component must have exactly one service");

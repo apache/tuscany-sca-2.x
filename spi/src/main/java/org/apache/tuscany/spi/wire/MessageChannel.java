@@ -18,7 +18,6 @@ package org.apache.tuscany.spi.wire;
 
 /**
  * Represents a one-way pipeline through which messages are sent during an invocation over a wire
- * 
  */
 public interface MessageChannel {
 

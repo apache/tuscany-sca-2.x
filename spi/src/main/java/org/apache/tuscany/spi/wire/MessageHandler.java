@@ -18,7 +18,6 @@ package org.apache.tuscany.spi.wire;
 
 /**
  * Performs a uni-directional mediation on a message
- *
  */
 public interface MessageHandler {
 

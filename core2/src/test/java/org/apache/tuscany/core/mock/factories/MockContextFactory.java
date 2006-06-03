@@ -15,16 +15,16 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.system.wire.SystemInboundWireImpl;
-import org.apache.tuscany.core.system.wire.SystemOutboundWireImpl;
 import org.apache.tuscany.core.system.wire.SystemOutboundWire;
+import org.apache.tuscany.core.system.wire.SystemOutboundWireImpl;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.context.AtomicComponent;
-import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.ScopeContext;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.osoa.sca.annotations.Destroy;
@@ -39,7 +39,7 @@ public class MockContextFactory {
     }
 
     public static Map<String, AtomicComponent> createWiredContexts(String source, Class<?> sourceClass, ScopeContext sourceScopeCtx,
-                                                                 String target, Class<?> targetClass, ScopeContext targetScopeCtx) throws NoSuchMethodException {
+                                                                   String target, Class<?> targetClass, ScopeContext targetScopeCtx) throws NoSuchMethodException {
         List<Class<?>> sourceClasses = new ArrayList<Class<?>>();
         sourceClasses.add(sourceClass);
         return createWiredContexts(source, sourceClasses, sourceClass, sourceScopeCtx, target, targetClass, targetScopeCtx);
@@ -53,12 +53,12 @@ public class MockContextFactory {
      * @throws NoSuchMethodException
      */
     public static Map<String, AtomicComponent> createWiredContexts(String source,
-                                                                 List<Class<?>> sourceInterfaces,
-                                                                 Class<?> sourceClass,
-                                                                 ScopeContext sourceScopeCtx,
-                                                                 String target,
-                                                                 Class<?> targetClass,
-                                                                 ScopeContext targetScopeCtx) throws NoSuchMethodException {
+                                                                   List<Class<?>> sourceInterfaces,
+                                                                   Class<?> sourceClass,
+                                                                   ScopeContext sourceScopeCtx,
+                                                                   String target,
+                                                                   Class<?> targetClass,
+                                                                   ScopeContext targetScopeCtx) throws NoSuchMethodException {
 
         Map<String, AtomicComponent> contexts = new HashMap<String, AtomicComponent>();
         SystemAtomicComponent targetCtx = createSystemAtomicContext(target, targetScopeCtx, targetClass);//, targetEager, targetInitInvoker, targetDestroyInvoker, null);
@@ -109,11 +109,11 @@ public class MockContextFactory {
     }
 
     public static SystemAtomicComponent createSystemAtomicContext(String name,
-                                                                ScopeContext scopeContext,
-                                                                List<Class<?>> serviceInterfaces,
-                                                                Class<?> clazz,
-                                                                List<Injector> injectors,
-                                                                Map<String, Member> members) throws NoSuchMethodException {
+                                                                  ScopeContext scopeContext,
+                                                                  List<Class<?>> serviceInterfaces,
+                                                                  Class<?> clazz,
+                                                                  List<Injector> injectors,
+                                                                  Map<String, Member> members) throws NoSuchMethodException {
         Method[] methods = clazz.getMethods();
         EventInvoker<Object> initInvoker = null;
         EventInvoker<Object> destroyInvoker = null;
@@ -143,14 +143,14 @@ public class MockContextFactory {
      * @throws NoSuchMethodException
      */
     public static SystemAtomicComponentImpl createSystemAtomicContext(String name,
-                                                                    ScopeContext scopeContext,
-                                                                    List<Class<?>> serviceInterfaces,
-                                                                    Class<?> clazz,
-                                                                    boolean eagerInit,
-                                                                    EventInvoker<Object> initInvoker,
-                                                                    EventInvoker<Object> destroyInvoker,
-                                                                    List<Injector> injectors,
-                                                                    Map<String, Member> members) throws NoSuchMethodException {
+                                                                      ScopeContext scopeContext,
+                                                                      List<Class<?>> serviceInterfaces,
+                                                                      Class<?> clazz,
+                                                                      boolean eagerInit,
+                                                                      EventInvoker<Object> initInvoker,
+                                                                      EventInvoker<Object> destroyInvoker,
+                                                                      List<Injector> injectors,
+                                                                      Map<String, Member> members) throws NoSuchMethodException {
         return new SystemAtomicComponentImpl(name, null, scopeContext, serviceInterfaces, createObjectFactory(clazz), eagerInit, initInvoker, destroyInvoker, injectors, members);
     }
 

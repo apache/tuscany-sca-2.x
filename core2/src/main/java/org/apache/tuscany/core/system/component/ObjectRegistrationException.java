@@ -1,6 +1,6 @@
 package org.apache.tuscany.core.system.component;
 
-import org.apache.tuscany.spi.context.ComponentRuntimeException;
+import org.apache.tuscany.spi.component.ComponentRuntimeException;
 
 /**
  * @version $$Rev$$ $$Date$$

@@ -1,4 +1,4 @@
-package org.apache.tuscany.spi.context;
+package org.apache.tuscany.spi.component;
 
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;

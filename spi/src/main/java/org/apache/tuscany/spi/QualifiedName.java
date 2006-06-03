@@ -17,8 +17,8 @@
 package org.apache.tuscany.spi;
 
 /**
- * An evaluated name consisting of a part/port pair. In the runtime, a part generally 'contains' or 'provides' ports
- * such as a component/service point or a component/reference pair.
+ * An evaluated name consisting of a part/port pair. In the runtime, a part generally 'contains' or 'provides'
+ * ports such as a component/service point or a component/reference pair.
  *
  * @version $Rev: 394173 $ $Date: 2006-04-14 11:54:59 -0700 (Fri, 14 Apr 2006) $
  */
@@ -33,8 +33,9 @@ public class QualifiedName {
     public static final String NAME_SEPARATOR = "/";
 
     /**
-     * Constructs a new qualified name in the form of part/port where part is the parent context and port represents a
-     * child, which is either a service in the case of an atomic context or a contained context in the case of a composite.
+     * Constructs a new qualified name in the form of part/port where part is the parent context and port
+     * represents a child, which is either a service in the case of an atomic context or a contained context
+     * in the case of a composite.
      *
      * @throws InvalidNameException if the name is in an invalid format
      */

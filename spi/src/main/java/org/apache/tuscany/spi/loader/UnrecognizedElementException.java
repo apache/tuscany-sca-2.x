@@ -28,8 +28,8 @@ public class UnrecognizedElementException extends LoaderException {
     private final QName element;
 
     /**
-     * Constructor that indicates which resource could not be found.
-     * The supplied parameter is also returned as the message.
+     * Constructor that indicates which resource could not be found. The supplied parameter is also returned
+     * as the message.
      *
      * @param element the element that could not be handled
      */

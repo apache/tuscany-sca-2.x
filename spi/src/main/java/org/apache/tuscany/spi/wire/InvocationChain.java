@@ -12,8 +12,8 @@ import java.util.List;
  * <code>MessageHandler</code>s do so in a one-way manner.
  * <p/>
  * Source-side chains may only connect to target-side chains. Target-side chains may connect to other
- * target-side chains, for example, when invoking from a {@link org.apache.tuscany.spi.context.Service}
- * to an {@link org.apache.tuscany.spi.context.AtomicComponent}.
+ * target-side chains, for example, when invoking from a {@link org.apache.tuscany.spi.component.Service} to
+ * an {@link org.apache.tuscany.spi.component.AtomicComponent}.
  * <p/>
  * In some scenarios, a service proxy may only contain target-side invocaton chains, for example, when a
  * service is resolved through a locate operation by a non-component client. In this case, there will be no

@@ -1,6 +1,6 @@
 package org.apache.tuscany.core.system.component;
 
-import org.apache.tuscany.spi.context.Service;
+import org.apache.tuscany.spi.component.Service;
 
 /**
  * Marker for services configured with the {@link org.apache.tuscany.core.system.model.SystemBinding}

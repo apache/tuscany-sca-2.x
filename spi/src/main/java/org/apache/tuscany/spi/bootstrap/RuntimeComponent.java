@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.spi.bootstrap;
 
-import org.apache.tuscany.spi.context.CompositeComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 
 /**

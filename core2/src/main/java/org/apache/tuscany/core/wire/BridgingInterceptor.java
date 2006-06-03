@@ -6,7 +6,7 @@ import org.apache.tuscany.spi.wire.MessageChannel;
 
 /**
  * Bridges between interceptors in two {@link org.apache.tuscany.spi.wire.InboundInvocationChain}s
- *  
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class BridgingInterceptor implements Interceptor {
@@ -27,7 +27,7 @@ public class BridgingInterceptor implements Interceptor {
 
     public Message invoke(Message msg) {
         Message response = next.invoke(msg);
-        if (responseChannel != null){
+        if (responseChannel != null) {
             responseChannel.send(response);
         }
         return response;

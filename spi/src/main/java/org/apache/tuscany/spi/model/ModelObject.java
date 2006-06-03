@@ -16,14 +16,14 @@
  */
 package org.apache.tuscany.spi.model;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @version $Rev$ $Date$
  */
 public abstract class ModelObject {
-    private final Map<?,?> extensions = new HashMap<Object, Object>();
+    private final Map<?, ?> extensions = new HashMap<Object, Object>();
 
     protected ModelObject() {
     }

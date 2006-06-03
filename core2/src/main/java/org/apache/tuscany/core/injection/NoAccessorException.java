@@ -3,7 +3,7 @@ package org.apache.tuscany.core.injection;
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class NoAccessorException extends InjectionRuntimeException{
+public class NoAccessorException extends InjectionRuntimeException {
     public NoAccessorException() {
     }
 

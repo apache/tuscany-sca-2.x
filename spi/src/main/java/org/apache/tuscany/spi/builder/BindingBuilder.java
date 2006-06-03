@@ -16,8 +16,8 @@
  */
 package org.apache.tuscany.spi.builder;
 
-import org.apache.tuscany.spi.context.CompositeComponent;
-import org.apache.tuscany.spi.context.SCAObject;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
@@ -25,8 +25,8 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 
 /**
  * Responsible for processing a service or reference in an assembly configured with a particular binding. The
- * builder will create and return corresponding {@link org.apache.tuscany.spi.context.Service} or
- * {@link org.apache.tuscany.spi.context.Reference}
+ * builder will create and return corresponding {@link org.apache.tuscany.spi.component.Service} or {@link
+ * org.apache.tuscany.spi.component.Reference}
  *
  * @version $Rev$ $Date$
  */

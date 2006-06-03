@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Caches component instances that do not need to be resolved for every wire, e.g. an wire originating from a

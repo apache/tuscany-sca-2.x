@@ -35,7 +35,8 @@ import org.apache.tuscany.spi.monitor.LogLevel;
 import org.apache.tuscany.spi.monitor.MonitorFactory;
 
 /**
- * A factory for monitors that forwards events to a {@link java.util.logging.Logger Java Logging (JSR47) Logger}.
+ * A factory for monitors that forwards events to a {@link java.util.logging.Logger Java Logging (JSR47)
+ * Logger}.
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  * @see java.util.logging
@@ -48,13 +49,12 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
     private final Map<Class<?>, WeakReference<?>> proxies = new WeakHashMap<Class<?>, WeakReference<?>>();
 
     /**
-     * Construct a MonitorFactory that will monitor the specified methods at the specified levels
-     * and generate messages using java.util.logging.
+     * Construct a MonitorFactory that will monitor the specified methods at the specified levels and generate
+     * messages using java.util.logging.
      * <p/>
-     * The supplied Properties can be used to specify custom log levels for specific monitor
-     * methods. The key should be the method name in form returned by
-     * <code>Class.getName() + '#' + Method.getName()</code> and the value the log level to use
-     * as defined by {@link java.util.logging.Level}.
+     * The supplied Properties can be used to specify custom log levels for specific monitor methods. The key
+     * should be the method name in form returned by <code>Class.getName() + '#' + Method.getName()</code> and
+     * the value the log level to use as defined by {@link java.util.logging.Level}.
      *
      * @param levels       definition of custom levels for specific monitored methods
      * @param defaultLevel the default log level to use

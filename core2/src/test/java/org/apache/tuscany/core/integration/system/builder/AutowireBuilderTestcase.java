@@ -4,25 +4,25 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.Connector;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
-import org.apache.tuscany.core.mock.factories.MockComponentFactory;
+import org.apache.tuscany.core.component.scope.ModuleScopeContext;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.Target;
+import org.apache.tuscany.core.mock.factories.MockComponentFactory;
 import org.apache.tuscany.core.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.system.component.SystemCompositeComponent;
 import org.apache.tuscany.core.system.component.SystemCompositeComponentImpl;
 import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.model.SystemImplementation;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.context.AtomicComponent;
-import org.apache.tuscany.spi.context.Reference;
-import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.context.WorkContext;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * Validates that system builders create autowired contexts from a set of model objects

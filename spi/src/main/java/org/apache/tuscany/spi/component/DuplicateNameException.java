@@ -1,4 +1,4 @@
-package org.apache.tuscany.spi.context;
+package org.apache.tuscany.spi.component;
 
 /**
  * Denotes an attempt to add an child to a composite component with a name equal to an existing child

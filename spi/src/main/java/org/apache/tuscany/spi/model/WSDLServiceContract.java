@@ -18,8 +18,6 @@ package org.apache.tuscany.spi.model;
 
 import javax.wsdl.PortType;
 
-import org.apache.tuscany.spi.model.ServiceContract;
-
 /**
  * @version $Rev$ $Date$
  */

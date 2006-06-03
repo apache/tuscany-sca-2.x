@@ -7,11 +7,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.spi.AbstractLifecycle;
-import org.apache.tuscany.spi.context.AtomicComponent;
-import org.apache.tuscany.spi.context.InstanceWrapper;
-import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;

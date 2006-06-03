@@ -3,7 +3,7 @@ package org.apache.tuscany.container.spring;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;

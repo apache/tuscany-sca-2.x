@@ -3,15 +3,15 @@
  */
 package org.apache.tuscany.core.mock.wire;
 
-import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageHandler;
 
 /**
  *
  */
 public class MockHandler implements MessageHandler {
 
-    private int count =0;
+    private int count = 0;
 
     public boolean processMessage(Message message) {
         //System.out.println("Invoking handler");
@@ -19,7 +19,7 @@ public class MockHandler implements MessageHandler {
         return true;
     }
 
-    public int getCount(){
+    public int getCount() {
         return count;
     }
 

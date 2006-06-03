@@ -61,7 +61,7 @@ public class OutboundInvocationChainImpl extends InvocationChainImpl implements 
                 if (targetInterceptorChainHead != null) {
                     // Connect source interceptor chain directly to target interceptor chain
                     interceptorChainTail.setNext(targetInterceptorChainHead);
-                } else if (!(interceptorChainTail instanceof InvokerInterceptor)){
+                } else if (!(interceptorChainTail instanceof InvokerInterceptor)) {
                     // Connect source interceptor chain to the target request channel
                     Interceptor channelInterceptor = new RequestResponseInterceptor(null, targetRequestChannel, null,
                             targetResponseChannel);

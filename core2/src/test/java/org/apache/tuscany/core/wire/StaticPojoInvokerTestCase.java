@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.apache.tuscany.core.wire.StaticPojoTargetInvoker;
 
 public class StaticPojoInvokerTestCase extends TestCase {
 

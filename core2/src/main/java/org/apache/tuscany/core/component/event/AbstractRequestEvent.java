@@ -13,8 +13,6 @@
  */
 package org.apache.tuscany.core.component.event;
 
-import org.apache.tuscany.core.component.event.AbstractEvent;
-
 /**
  * Base implementation of a request event
  *
@@ -24,11 +22,12 @@ public abstract class AbstractRequestEvent extends AbstractEvent implements Requ
 
     /**
      * Creates a new event
+     *
      * @param source the source of the event
      */
-     public AbstractRequestEvent(Object source) {
-         super(source);
-     }
+    public AbstractRequestEvent(Object source) {
+        super(source);
+    }
 
 
 }

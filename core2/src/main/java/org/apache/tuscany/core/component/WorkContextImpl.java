@@ -3,12 +3,11 @@ package org.apache.tuscany.core.component;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.context.CompositeComponent;
-import org.apache.tuscany.spi.context.WorkContext;
-import org.apache.tuscany.core.component.ScopeIdentifier;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.WorkContext;
 
 /**
- * An implementation of an {@link org.apache.tuscany.spi.context.WorkContext} that handles event-to-thread
+ * An implementation of an {@link org.apache.tuscany.spi.component.WorkContext} that handles event-to-thread
  * associations using an <code>InheritableThreadLocal</code>
  *
  * @version $Rev: 393567 $ $Date: 2006-04-12 11:28:58 -0700 (Wed, 12 Apr 2006) $
@@ -24,7 +23,7 @@ public class WorkContextImpl implements WorkContext {
      */
     private ThreadLocal<Map<Object, Object>> workContext = new InheritableThreadLocal<Map<Object, Object>>();
 
-    public CompositeComponent getRemoteContext() {
+    public CompositeComponent getRemoteComponent() {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             return null;
@@ -33,7 +32,7 @@ public class WorkContextImpl implements WorkContext {
     }
 
 
-    public void setRemoteContext(CompositeComponent component) {
+    public void setRemoteComponent(CompositeComponent component) {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             map = new HashMap<Object, Object>();

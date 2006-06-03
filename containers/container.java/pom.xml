@@ -25,7 +25,8 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tuscany-container-java</artifactId>
     <name>Tuscany Java Container</name>
-    <description>Container for managing components as defined by the SCA Java client and implementation specification.</description>
+    <description>Container for managing components as defined by the SCA Java client and implementation
+        specification.</description>
     <version>SNAPSHOT</version>
 
     <dependencies>
@@ -48,7 +49,7 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
-			<dependency>
+        <dependency>
             <groupId>jmock</groupId>
             <artifactId>jmock</artifactId>
             <version>1.0.1</version>

@@ -17,8 +17,8 @@
 package org.apache.tuscany.core.wire;
 
 import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.MessageChannel;
 import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageChannel;
 
 /**
  * An interceptor that first sends a message down its request channel then extracts the response from the
@@ -58,7 +58,7 @@ public class RequestResponseInterceptor implements Interceptor {
         if (targetRequestChannel != null) {
             targetRequestChannel.send(requestMessage);
             responseMessage = requestMessage.getRelatedCallbackMessage();
-        } else{
+        } else {
             responseMessage = requestMessage;
         }
         if (targetResponseChannel != null) {

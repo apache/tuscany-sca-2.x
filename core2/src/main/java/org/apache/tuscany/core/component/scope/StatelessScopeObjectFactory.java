@@ -1,8 +1,7 @@
 package org.apache.tuscany.core.component.scope;
 
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.core.component.scope.StatelessScopeContext;
+import org.apache.tuscany.spi.ObjectFactory;
 
 /**
  * @version $$Rev$$ $$Date$$

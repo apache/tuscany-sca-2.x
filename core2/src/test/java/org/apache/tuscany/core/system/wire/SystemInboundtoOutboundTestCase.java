@@ -2,7 +2,6 @@ package org.apache.tuscany.core.system.wire;
 
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 

@@ -16,17 +16,17 @@
  */
 package org.apache.tuscany.core.deployer;
 
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
 import org.apache.tuscany.core.builder.Connector;
+import org.apache.tuscany.core.component.scope.ModuleScopeContext;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.Builder;
-import org.apache.tuscany.spi.context.CompositeComponent;
-import org.apache.tuscany.spi.context.SCAObject;
-import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.ScopeContext;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.Loader;
+import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 
@@ -66,11 +66,11 @@ public class DeployerImpl implements Deployer {
     }
 
     /**
-     * Load the componentDefinition type information for the componentDefinition being deployed.
-     * For a typical deployment this will result in the SCDL definition being loaded.
+     * Load the componentDefinition type information for the componentDefinition being deployed. For a typical
+     * deployment this will result in the SCDL definition being loaded.
      *
-     * @param componentDefinition         the componentDefinition being deployed
-     * @param deploymentContext the current deployment context
+     * @param componentDefinition the componentDefinition being deployed
+     * @param deploymentContext   the current deployment context
      */
     protected <I extends Implementation<?>> void load(ComponentDefinition<I> componentDefinition, DeploymentContext deploymentContext) throws LoaderException {
         loader.loadComponentType(componentDefinition.getImplementation(), deploymentContext);
@@ -79,9 +79,9 @@ public class DeployerImpl implements Deployer {
     /**
      * Build the runtime context for a loaded componentDefinition.
      *
-     * @param parent            the context that will be the parent of the new sub-context
-     * @param componentDefinition         the componentDefinition being deployed
-     * @param deploymentContext the current deployment context
+     * @param parent              the context that will be the parent of the new sub-context
+     * @param componentDefinition the componentDefinition being deployed
+     * @param deploymentContext   the current deployment context
      * @return the new runtime context
      */
     protected <I extends Implementation<?>> SCAObject<?> build(CompositeComponent<?> parent, ComponentDefinition<I> componentDefinition, DeploymentContext deploymentContext) {

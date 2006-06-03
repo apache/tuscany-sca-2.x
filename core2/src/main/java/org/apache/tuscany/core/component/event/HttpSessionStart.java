@@ -1,7 +1,5 @@
 package org.apache.tuscany.core.component.event;
 
-import org.apache.tuscany.core.component.event.HttpSessionEvent;
-
 /**
  * Propagated when an HTTP-based session has started
  *
@@ -11,11 +9,12 @@ public class HttpSessionStart extends HttpSessionEvent {
 
     /**
      * Creates a new event
+     *
      * @param source the source of the event
-     * @param id the id of the HTTP session being ended
+     * @param id     the id of the HTTP session being ended
      */
     public HttpSessionStart(Object source, Object id) {
-        super(source,id);
+        super(source, id);
     }
 
- }
+}

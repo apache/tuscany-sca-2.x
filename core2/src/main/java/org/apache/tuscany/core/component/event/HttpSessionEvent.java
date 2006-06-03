@@ -13,8 +13,6 @@
  */
 package org.apache.tuscany.core.component.event;
 
-import org.apache.tuscany.core.component.event.AbstractEvent;
-
 /**
  * A base implementation of HTTP-based session events in the runtime
  *
@@ -26,7 +24,7 @@ public abstract class HttpSessionEvent extends AbstractEvent {
 
     public HttpSessionEvent(Object source, Object id) {
         super(source);
-        assert (id !=null): "Session id was null";
+        assert (id != null): "Session id was null";
         this.id = id;
     }
 
@@ -35,7 +33,7 @@ public abstract class HttpSessionEvent extends AbstractEvent {
         return source;
     }
 
-    public Object getId(){
+    public Object getId() {
         return id;
     }
 

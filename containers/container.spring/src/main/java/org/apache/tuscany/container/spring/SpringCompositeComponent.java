@@ -5,11 +5,11 @@ import java.lang.reflect.Method;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.tuscany.spi.context.CompositeComponent;
-import org.apache.tuscany.spi.context.SCAObject;
-import org.apache.tuscany.spi.context.Reference;
-import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.context.Service;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
@@ -76,7 +76,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
     /**
      * An inner class is required to act as the Spring application context parent as opposed to implementing
      * the interface since the return types for {@link org.springframework.context.ApplicationContext#getParent()}
-     * and {@link org.apache.tuscany.spi.context.CompositeComponent#getParent()} clash
+     * and {@link org.apache.tuscany.spi.component.CompositeComponent#getParent()} clash
      */
     private class SCAApplicationContext implements ApplicationContext {
 

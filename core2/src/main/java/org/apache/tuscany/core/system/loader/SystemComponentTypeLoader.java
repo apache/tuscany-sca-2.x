@@ -17,7 +17,6 @@
 package org.apache.tuscany.core.system.loader;
 
 import java.net.URL;
-import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.system.model.SystemImplementation;

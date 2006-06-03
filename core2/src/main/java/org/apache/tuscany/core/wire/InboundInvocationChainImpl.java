@@ -15,8 +15,8 @@ package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.MessageHandler;
 
 /**
  * Contains a target-side invocation chain

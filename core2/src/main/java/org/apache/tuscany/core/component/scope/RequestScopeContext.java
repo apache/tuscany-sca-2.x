@@ -8,16 +8,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
-import org.apache.tuscany.core.component.scope.AbstractScopeContext;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.context.AtomicComponent;
-import org.apache.tuscany.spi.context.InstanceWrapper;
-import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
+import org.apache.tuscany.spi.model.Scope;
 
 /**
- * An implementation of a request-scoped component container.
+ * A scope context which manages atomic component instances keyed on the current request context
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
@@ -26,7 +25,7 @@ public class RequestScopeContext extends AbstractScopeContext {
     private final Map<AtomicComponent, Map<Thread, InstanceWrapper>> contexts;
     private final Map<Thread, List<InstanceWrapper>> destroyQueues;
 
-    public RequestScopeContext(){
+    public RequestScopeContext() {
         this(null);
     }
 
@@ -62,7 +61,7 @@ public class RequestScopeContext extends AbstractScopeContext {
 
     public synchronized void stop() {
         contexts.clear();
-        synchronized(destroyQueues){
+        synchronized (destroyQueues) {
             destroyQueues.clear();
         }
         lifecycleState = STOPPED;

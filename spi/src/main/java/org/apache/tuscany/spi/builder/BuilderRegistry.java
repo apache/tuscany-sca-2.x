@@ -27,8 +27,8 @@ import org.apache.tuscany.spi.model.Implementation;
  */
 public interface BuilderRegistry extends Builder {
     /**
-     * Register a builder based on an implementation type specified in an annotation.
-     * The implementation type is obtained by reflecting the generic definition.
+     * Register a builder based on an implementation type specified in an annotation. The implementation type
+     * is obtained by reflecting the generic definition.
      *
      * @param builder the builder to register
      */
@@ -38,12 +38,13 @@ public interface BuilderRegistry extends Builder {
      * Register a builder for an implementation type.
      *
      * @param implClass the type of implementation that this builder can handle
-     * @param builder the builder to be registered
+     * @param builder   the builder to be registered
      */
     <I extends Implementation<?>> void register(Class<I> implClass, ComponentBuilder<I> builder);
 
     /**
      * Unregister a builder for an implementation type.
+     *
      * @param implClass the implementation whose builder should be unregistered
      */
     <I extends Implementation<?>> void unregister(Class<I> implClass);

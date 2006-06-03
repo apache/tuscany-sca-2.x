@@ -4,8 +4,6 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.system.component.SystemAtomicComponent;
-import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.spi.ObjectFactory;
 
 /**

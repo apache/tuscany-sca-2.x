@@ -3,18 +3,17 @@ package org.apache.tuscany.core.component.scope;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.RequestScopeContext;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
-import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.mock.component.OrderedEagerInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;
 import org.apache.tuscany.core.mock.component.RequestScopeDestroyOnlyComponent;
 import org.apache.tuscany.core.mock.component.RequestScopeInitDestroyComponent;
 import org.apache.tuscany.core.mock.component.RequestScopeInitOnlyComponent;
+import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
-import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * Lifecycle unit tests for the module scope container
@@ -36,7 +35,7 @@ public class RequestScopeInstanceLifecycleTestCase extends TestCase {
 
         SystemAtomicComponent destroyOnlyContext = MockContextFactory.createSystemAtomicContext("DestroyOnly", scope, RequestScopeDestroyOnlyComponent.class);
         destroyOnlyContext.start();
-        
+
         scope.onEvent(new RequestStart(this));
         RequestScopeInitDestroyComponent initDestroy = (RequestScopeInitDestroyComponent) scope.getInstance(initDestroyContext);
         Assert.assertNotNull(initDestroy);
@@ -100,7 +99,7 @@ public class RequestScopeInstanceLifecycleTestCase extends TestCase {
         RequestScopeContext scope = new RequestScopeContext(ctx);
         scope.start();
 
-        SystemAtomicComponent oneCtx = MockContextFactory.createSystemAtomicContext("one",scope, OrderedEagerInitPojo.class);
+        SystemAtomicComponent oneCtx = MockContextFactory.createSystemAtomicContext("one", scope, OrderedEagerInitPojo.class);
         scope.register(oneCtx);
         SystemAtomicComponent twoCtx = MockContextFactory.createSystemAtomicContext("two", scope, OrderedEagerInitPojo.class);
         scope.register(twoCtx);

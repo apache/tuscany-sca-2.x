@@ -21,11 +21,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import static org.apache.tuscany.core.loader.AssemblyConstants.PROPERTY;
-import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.extension.LoaderExtension;
+import org.apache.tuscany.spi.model.Property;
 
 /**
  * @version $Rev$ $Date$

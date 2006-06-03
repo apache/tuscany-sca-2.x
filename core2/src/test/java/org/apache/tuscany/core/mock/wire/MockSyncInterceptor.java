@@ -39,7 +39,7 @@ public class MockSyncInterceptor implements Interceptor {
     }
 
     public void setNext(Interceptor next) {
-        this.next=next;
+        this.next = next;
     }
 
     public Interceptor getNext() {

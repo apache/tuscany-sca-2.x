@@ -15,6 +15,7 @@ package org.apache.tuscany.core.component.event;
 
 /**
  * Implemented by runtime events associated request
+ *
  * @version $$Rev$$ $$Date$$
  */
 public interface RequestEvent {

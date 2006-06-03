@@ -26,7 +26,6 @@ public class MissingImplementationException extends LoaderException {
 
     /**
      * Default constructor.
-     *
      */
     public MissingImplementationException() {
         super();

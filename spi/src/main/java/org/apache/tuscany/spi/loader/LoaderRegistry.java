@@ -16,33 +16,26 @@
  */
 package org.apache.tuscany.spi.loader;
 
-import java.net.URL;
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * Registry for XML loaders that can parse a StAX input stream and return model objects.
  * <p/>
- * Loaders will typically be contributed to the system by any extension that needs to
- * handle extension specific information contained in some XML configuration file.
- * The loader can be contributed as a system component with an autowire reference
- * to this builderRegistry which is used during initialization to actually register.
- * </p>
- * This builderRegistry can also be used to parse an input stream, dispatching to the
- * appropriate loader for each element accepted. Loaders can call back to the
- * builderRegistry to load sub-elements that they are not able to handle directly.
+ * Loaders will typically be contributed to the system by any extension that needs to handle extension
+ * specific information contained in some XML configuration file. The loader can be contributed as a system
+ * component with an autowire reference to this builderRegistry which is used during initialization to
+ * actually register. </p> This builderRegistry can also be used to parse an input stream, dispatching to the
+ * appropriate loader for each element accepted. Loaders can call back to the builderRegistry to load
+ * sub-elements that they are not able to handle directly.
  *
  * @version $Rev$ $Date$
  */
 public interface LoaderRegistry extends Loader {
     /**
-     * Register a loader. This operation will typically be called by a loader
-     * during its initialization.
+     * Register a loader. This operation will typically be called by a loader during its initialization.
      *
      * @param element the element that should be delegated to the contibuted loader
      * @param loader  a loader that is being contributed to the system

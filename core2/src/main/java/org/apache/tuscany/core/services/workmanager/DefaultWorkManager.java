@@ -2,13 +2,13 @@ package org.apache.tuscany.core.services.workmanager;
 
 import javax.resource.spi.work.WorkManager;
 
-import org.osoa.sca.annotations.Service;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Destroy;
 import org.apache.geronimo.connector.work.GeronimoWorkManager;
 import org.apache.geronimo.transaction.context.TransactionContextManager;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Service;
 
 /**
  * A <code>WorkManager</code> service component implementation which just reuses the Geronimo WorkManager.
@@ -29,7 +29,7 @@ public class DefaultWorkManager extends GeronimoWorkManager implements WorkManag
         super(defaultSize, new TransactionContextManager());
     }
 
-    @Init(eager=true)
+    @Init(eager = true)
     public void init() throws Exception {
         doStart();
     }

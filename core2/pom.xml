@@ -48,13 +48,13 @@
             <scope>provided</scope>
         </dependency>
 
-       <dependency>
+        <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
-       </dependency>
-       
+        </dependency>
+
         <dependency>
             <groupId>org.apache.geronimo</groupId>
             <artifactId>geronimo-connector</artifactId>
@@ -68,12 +68,12 @@
             <scope>compile</scope>
         </dependency>
 
-       <dependency>
+        <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
             <version>1.0</version>
             <scope>runtime</scope>
-       </dependency>
+        </dependency>
 
         <dependency>
             <groupId>concurrent</groupId>
@@ -88,7 +88,7 @@
             <version>1.0.4</version>
             <scope>runtime</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

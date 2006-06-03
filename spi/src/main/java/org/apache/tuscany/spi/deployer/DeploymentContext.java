@@ -18,12 +18,12 @@ package org.apache.tuscany.spi.deployer;
 
 import javax.xml.stream.XMLInputFactory;
 
-import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContext;
 
 /**
- * An holder that can be used during the load process to store information
- * that is not part of the logical assembly model. This should be regarded as transient
- * and references to this context should not be stored inside the model.
+ * An holder that can be used during the load process to store information that is not part of the logical
+ * assembly model. This should be regarded as transient and references to this context should not be stored
+ * inside the model.
  *
  * @version $Rev$ $Date$
  */
@@ -65,6 +65,7 @@ public class DeploymentContext {
 
     /**
      * Returns the ScopeContext for the MODULE scope that will be associated with this deployment unit.
+     *
      * @return the ScopeContext for the MODULE scope that will be associated with this deployment unit
      */
     public ScopeContext getModuleScope() {

@@ -22,15 +22,15 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.model.Binding;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.extension.LoaderExtension;
+import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * @version $Rev$ $Date$

@@ -16,8 +16,8 @@
  */
 package org.apache.tuscany.spi.services.wsdl;
 
-import java.net.URL;
 import java.io.IOException;
+import java.net.URL;
 import javax.wsdl.Definition;
 import javax.wsdl.PortType;
 import javax.wsdl.Service;
@@ -43,8 +43,8 @@ public interface WSDLDefinitionRegistry {
     /**
      * Load and register a WSDL definition as specified in a WSDL2.0 wsdlLocation attribute.
      *
-     * @param wsdlLocation   the value of the wsdlLocation attribute
-     * @param classLoader application classloader used to support relative locations
+     * @param wsdlLocation the value of the wsdlLocation attribute
+     * @param classLoader  application classloader used to support relative locations
      * @return the loaded Definition
      * @throws IOException   if there was a problem reading the document
      * @throws WSDLException if there was a problem parsing the definition
@@ -60,7 +60,8 @@ public interface WSDLDefinitionRegistry {
     PortType getPortType(QName name);
 
     /**
-     * Returns the ServiceDefinition with the supplied qualified name, or null if no such service has been defined.
+     * Returns the ServiceDefinition with the supplied qualified name, or null if no such service has been
+     * defined.
      *
      * @param name the qualified name of the WSDL service
      * @return the ServiceDefinition for the supplied name, or null if none has been defined
@@ -69,8 +70,7 @@ public interface WSDLDefinitionRegistry {
 
 
     /**
-     * Returns the ExtensionRegistry that is used when parsing WSDL documents during the
-     * loadDefinition call.
+     * Returns the ExtensionRegistry that is used when parsing WSDL documents during the loadDefinition call.
      *
      * @return the ExtensionRegistry that is used when parsing WSDL documents.
      */

@@ -7,15 +7,15 @@ import java.util.List;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
+import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
@@ -441,8 +441,8 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
 
 
     public InboundInvocationChain setupTarget(List<Interceptor> interceptors,
-                                             List<MessageHandler> requestHandlers,
-                                             List<MessageHandler> responseHandlers) {
+                                              List<MessageHandler> requestHandlers,
+                                              List<MessageHandler> responseHandlers) {
 
         Method echo;
         try {
@@ -471,8 +471,8 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
     }
 
     public OutboundInvocationChain setupSource(List<Interceptor> interceptors,
-                                             List<MessageHandler> requestHandlers,
-                                             List<MessageHandler> responseHandlers) {
+                                               List<MessageHandler> requestHandlers,
+                                               List<MessageHandler> responseHandlers) {
 
         Method echo;
         try {

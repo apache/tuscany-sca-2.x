@@ -14,11 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.spi.context;
+package org.apache.tuscany.spi.component;
 
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.Lifecycle;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
+import org.apache.tuscany.spi.model.Scope;
 
 
 /**

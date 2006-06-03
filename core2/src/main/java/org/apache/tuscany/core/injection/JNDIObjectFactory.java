@@ -19,12 +19,11 @@ package org.apache.tuscany.core.injection;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
 
 /**
- * An implementation of ObjectFactory that creates instances
- * by looking them up in a JNDI context.
+ * An implementation of ObjectFactory that creates instances by looking them up in a JNDI context.
  *
  * @version $Rev$ $Date$
  */

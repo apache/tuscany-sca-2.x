@@ -1,27 +1,25 @@
 package org.apache.tuscany.core.component;
 
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.wire.WireService;
-import org.apache.tuscany.spi.context.AtomicComponent;
-import org.apache.tuscany.spi.context.CompositeComponent;
-import org.apache.tuscany.spi.context.SCAObject;
-import org.apache.tuscany.spi.context.Reference;
-import org.apache.tuscany.spi.context.Service;
-import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.core.component.AbstractCompositeComponent;
-import org.apache.tuscany.core.component.AutowireComponent;
 import org.osoa.sca.ServiceUnavailableException;
 
 /**
- * The standard implementation of an composite context. Autowiring is performed by delegating to the parent
- * context.
+ * The standard implementation of a composite component. Autowiring is performed by delegating to the parent
+ * composite.
  *
  * @version $Rev: 399348 $ $Date: 2006-05-03 09:33:22 -0700 (Wed, 03 May 2006) $
  */
 public class CompositeComponentImpl<T> extends AbstractCompositeComponent<T> {
 
     public CompositeComponentImpl(String name, CompositeComponent parent, AutowireComponent autowireContext, WireService wireService) {
-        super(name, parent, autowireContext,wireService);
+        super(name, parent, autowireContext, wireService);
     }
 
     private String uri;

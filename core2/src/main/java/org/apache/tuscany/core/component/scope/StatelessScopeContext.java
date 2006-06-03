@@ -13,22 +13,21 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.context.AtomicComponent;
-import org.apache.tuscany.spi.context.InstanceWrapper;
-import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
-import org.apache.tuscany.core.component.scope.AbstractScopeContext;
+import org.apache.tuscany.spi.model.Scope;
 
 /**
- * A container that manages stateless components in a non-pooled fashion so basically it does nothing
+ * A scope context which manages stateless atomic component instances in a non-pooled fashion
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
 public class StatelessScopeContext extends AbstractScopeContext {
 
-    public StatelessScopeContext(){
+    public StatelessScopeContext() {
         this(null);
     }
 

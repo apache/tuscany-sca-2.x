@@ -1,7 +1,7 @@
 package org.apache.tuscany.spi.policy;
 
-import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**

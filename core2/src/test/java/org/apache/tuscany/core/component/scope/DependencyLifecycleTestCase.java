@@ -4,21 +4,18 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.HttpSessionScopeContext;
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
-import org.apache.tuscany.core.component.scope.RequestScopeContext;
-import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
-import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.mock.component.OrderedDependentPojo;
 import org.apache.tuscany.core.mock.component.OrderedDependentPojoImpl;
 import org.apache.tuscany.core.mock.component.OrderedInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;
-import org.apache.tuscany.spi.context.AtomicComponent;
-import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.core.mock.factories.MockContextFactory;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * Tests dependencies are initalized and destroyed in the proper order (i.e. LIFO)
@@ -41,7 +38,7 @@ public class DependencyLifecycleTestCase extends TestCase {
         scopeCtx.register(sourceComponent);
         scopeCtx.register(targetComponent);
         scopeCtx.onEvent(new CompositeStart(this, null));
-        OrderedDependentPojo source = (OrderedDependentPojo)scopeCtx.getInstance(sourceComponent);
+        OrderedDependentPojo source = (OrderedDependentPojo) scopeCtx.getInstance(sourceComponent);
         OrderedInitPojo target = (OrderedInitPojo) scopeCtx.getInstance(targetComponent);
         assertNotNull(source.getPojo());
         assertNotNull(target);

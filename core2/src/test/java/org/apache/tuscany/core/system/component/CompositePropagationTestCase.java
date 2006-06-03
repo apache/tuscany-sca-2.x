@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.core.mock.component.Source;
-import org.apache.tuscany.core.system.component.SystemAtomicComponent;
-import org.apache.tuscany.core.system.component.SystemCompositeComponent;
-import org.apache.tuscany.core.system.component.SystemCompositeComponentImpl;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 

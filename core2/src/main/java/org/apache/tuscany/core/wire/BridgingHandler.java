@@ -1,12 +1,12 @@
 package org.apache.tuscany.core.wire;
 
-import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageHandler;
 
 /**
  * Bridges between handlers in two {@link org.apache.tuscany.spi.wire.InboundInvocationChain}s
- * 
-  * @version $$Rev$$ $$Date$$
+ *
+ * @version $$Rev$$ $$Date$$
  */
 public class BridgingHandler implements MessageHandler {
     private MessageHandler next;

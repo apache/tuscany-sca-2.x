@@ -17,11 +17,8 @@
 package org.apache.tuscany.spi.model;
 
 import java.net.URI;
-import java.util.List;
 import java.util.ArrayList;
-
-import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
+import java.util.List;
 
 /**
  * @version $Rev$ $Date$
@@ -44,15 +41,15 @@ public class ReferenceTarget extends ModelObject {
     }
 
     public void addTarget(URI target) {
-       targets.add(target);
+        targets.add(target);
     }
 
-    public ReferenceDefinition getReference(){
+    public ReferenceDefinition getReference() {
         return referenceDefinition;
     }
 
-    public void setReference(ReferenceDefinition referenceDefinition){
-         this.referenceDefinition = referenceDefinition;
+    public void setReference(ReferenceDefinition referenceDefinition) {
+        this.referenceDefinition = referenceDefinition;
     }
 
 }

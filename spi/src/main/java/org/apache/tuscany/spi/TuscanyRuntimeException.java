@@ -55,8 +55,8 @@ public abstract class TuscanyRuntimeException extends RuntimeException {
     }
 
     /**
-     * Returns a collection of names representing the context call stack where the error occured.
-     * The top of the stack is the first element in the collection.
+     * Returns a collection of names representing the context call stack where the error occured. The top of
+     * the stack is the first element in the collection.
      *
      * @return a collection of names representing the context call stack
      */

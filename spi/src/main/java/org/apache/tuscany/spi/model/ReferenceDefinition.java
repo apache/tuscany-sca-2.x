@@ -16,9 +16,6 @@
  */
 package org.apache.tuscany.spi.model;
 
-import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.model.Multiplicity;
-
 /**
  * @version $Rev$ $Date$
  */

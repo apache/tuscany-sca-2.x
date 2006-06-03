@@ -47,7 +47,7 @@ public class BasicInterfaceImpl implements BasicInterface {
     public BasicInterface returnsReference() {
         return privateReference;
     }
-    
+
     public int returnsInt() {
         return 0;
     }

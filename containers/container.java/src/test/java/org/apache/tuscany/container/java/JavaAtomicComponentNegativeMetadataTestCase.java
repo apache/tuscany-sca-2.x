@@ -29,8 +29,7 @@ public class JavaAtomicComponentNegativeMetadataTestCase extends TestCase {
     /**
      * Tests that a pojo with <code>@ComponentName</code> specified on a non-String type generates an error.
      * <p/>
-     * <strong>NB:</strong> the test assumes an error with a message containing
-     * "@ComponentName" is generated
+     * <strong>NB:</strong> the test assumes an error with a message containing "@ComponentName" is generated
      */
     public void testBadNameType() throws Exception {
 //        CompositeComponent mc = new CompositeComponentImpl();
@@ -48,8 +47,7 @@ public class JavaAtomicComponentNegativeMetadataTestCase extends TestCase {
     /**
      * Tests that a pojo with <code>@Context</code> specified on a non-ModuleContext type generates an error.
      * <p/>
-     * <strong>NB:</strong> the test assumes an error with a message containing
-     * "@Context" is generated
+     * <strong>NB:</strong> the test assumes an error with a message containing "@Context" is generated
      */
     public void testContextType() throws Exception {
 //        CompositeComponent mc = new CompositeComponentImpl();

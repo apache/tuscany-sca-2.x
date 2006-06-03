@@ -7,7 +7,7 @@ import junit.framework.TestCase;
  */
 public class ChildLocateTestCase extends TestCase {
 
-     public void testChildLocate() throws Exception {
+    public void testChildLocate() throws Exception {
 //         WorkContext workContext = new WorkContextImpl();
 //         ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
 //         scopeContext.start();

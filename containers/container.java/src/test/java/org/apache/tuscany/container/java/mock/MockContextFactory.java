@@ -15,16 +15,16 @@ import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.MessageChannelImpl;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.context.AtomicComponent;
-import org.apache.tuscany.spi.context.CompositeComponent;
-import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ScopeContext;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -54,21 +54,21 @@ public class MockContextFactory {
     }
 
     public static JavaAtomicComponent<?> createJavaAtomicContext(String name,
-                                                               CompositeComponent<?> parent,
-                                                               ScopeContext scopeContext,
-                                                               Class<?> clazz,
-                                                               Class<?> service,
-                                                               Scope scope,
-                                                               boolean eagerInit,
-                                                               EventInvoker<Object> initInvoker,
-                                                               EventInvoker<Object> destroyInvoker,
-                                                               List<Injector> injectors,
-                                                               Map<String, Member> members)
+                                                                 CompositeComponent<?> parent,
+                                                                 ScopeContext scopeContext,
+                                                                 Class<?> clazz,
+                                                                 Class<?> service,
+                                                                 Scope scope,
+                                                                 boolean eagerInit,
+                                                                 EventInvoker<Object> initInvoker,
+                                                                 EventInvoker<Object> destroyInvoker,
+                                                                 List<Injector> injectors,
+                                                                 Map<String, Member> members)
             throws NoSuchMethodException {
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         serviceInterfaces.add(service);
         return new JavaAtomicComponent(name, parent, scopeContext, serviceInterfaces, createObjectFactory(clazz),
-                scope, eagerInit, initInvoker, destroyInvoker, injectors, members,wireService);
+                scope, eagerInit, initInvoker, destroyInvoker, injectors, members, wireService);
     }
 
     /**
@@ -86,9 +86,9 @@ public class MockContextFactory {
      * @throws Exception
      */
     public static Map<String, AtomicComponent> createWiredContexts(String sourceName, Class<?> sourceClass,
-                                                                 ScopeContext sourceScope,
-                                                                 Map<String, Member> members, String targetName, Class<?> targetService, Class<?> targetClass,
-                                                                 ScopeContext targetScope) throws Exception {
+                                                                   ScopeContext sourceScope,
+                                                                   Map<String, Member> members, String targetName, Class<?> targetService, Class<?> targetClass,
+                                                                   ScopeContext targetScope) throws Exception {
         return createWiredContexts(sourceName, sourceClass, targetService, sourceScope, members, targetName, targetService, targetClass, targetScope);
 
     }
@@ -97,25 +97,25 @@ public class MockContextFactory {
      * Wires two contexts together where the reference interface may be different from the target service
      */
     public static Map<String, AtomicComponent> createWiredContexts(String sourceName, Class<?> sourceClass, Class<?> sourceReferenceClass,
-                                                                 ScopeContext sourceScope,
-                                                                 Map<String, Member> members, String targetName,
-                                                                 Class<?> targetService, Class<?> targetClass,
-                                                                 ScopeContext targetScope) throws Exception {
+                                                                   ScopeContext sourceScope,
+                                                                   Map<String, Member> members, String targetName,
+                                                                   Class<?> targetService, Class<?> targetClass,
+                                                                   ScopeContext targetScope) throws Exception {
         return createWiredContexts(sourceName, sourceClass, sourceReferenceClass, sourceScope, null, null, null, members, targetName, targetService,
                 targetClass, targetScope, null, null, null);
     }
 
     public static Map<String, AtomicComponent> createWiredContexts(String sourceName, Class<?> sourceClass, Class<?> sourceReferenceClass,
-                                                                 ScopeContext sourceScope,
-                                                                 Interceptor sourceHeadInterceptor,
-                                                                 MessageHandler sourceHeadRequestHandler,
-                                                                 MessageHandler sourceHeadResponseHandler,
-                                                                 Map<String, Member> members,
-                                                                 String targetName, Class<?> targetService, Class<?> targetClass,
-                                                                 ScopeContext targetScope,
-                                                                 Interceptor targetHeadInterceptor,
-                                                                 MessageHandler targetRequestHeadHandler,
-                                                                 MessageHandler targetResponseHeadHandler) throws Exception {
+                                                                   ScopeContext sourceScope,
+                                                                   Interceptor sourceHeadInterceptor,
+                                                                   MessageHandler sourceHeadRequestHandler,
+                                                                   MessageHandler sourceHeadResponseHandler,
+                                                                   Map<String, Member> members,
+                                                                   String targetName, Class<?> targetService, Class<?> targetClass,
+                                                                   ScopeContext targetScope,
+                                                                   Interceptor targetHeadInterceptor,
+                                                                   MessageHandler targetRequestHeadHandler,
+                                                                   MessageHandler targetResponseHeadHandler) throws Exception {
         JavaAtomicComponent targetContext = createJavaAtomicContext(targetName, targetScope, targetClass, targetScope.getScope());
         InboundWire inboundWire = createServiceWire(targetService.getName().substring(
                 targetService.getName().lastIndexOf('.') + 1), targetService, targetHeadInterceptor, targetRequestHeadHandler, targetResponseHeadHandler);
@@ -151,9 +151,9 @@ public class MockContextFactory {
      * @throws Exception
      */
     public static Map<String, AtomicComponent> createWiredMultiplicity(String sourceName, Class<?> sourceClass, Class<?> sourceReferenceClass,
-                                                                     ScopeContext sourceScope,
-                                                                     String targetName, Class<?> targetService, Class<?> targetClass,
-                                                                     Map<String, Member> members, ScopeContext targetScope) throws Exception {
+                                                                       ScopeContext sourceScope,
+                                                                       String targetName, Class<?> targetService, Class<?> targetClass,
+                                                                       Map<String, Member> members, ScopeContext targetScope) throws Exception {
         JavaAtomicComponent targetContext = createJavaAtomicContext(targetName, targetScope, targetClass, targetScope.getScope());
         InboundWire inboundWire = createServiceWire(targetService.getName().substring(
                 targetService.getName().lastIndexOf('.') + 1), targetService, null, null, null);

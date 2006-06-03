@@ -5,9 +5,9 @@ import java.util.concurrent.CountDownLatch;
 import org.apache.geronimo.connector.work.GeronimoWorkManager;
 import org.apache.geronimo.transaction.context.TransactionContextManager;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageImpl;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.jmock.core.Invocation;
@@ -34,6 +34,7 @@ public class AsyncInterceptorTestCase extends MockObjectTestCase {
                 doneSignal.countDown();
                 return null;
             }
+
             public StringBuffer describeTo(StringBuffer stringBuffer) {
                 return null;
             }

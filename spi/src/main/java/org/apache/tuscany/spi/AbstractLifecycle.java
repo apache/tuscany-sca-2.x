@@ -27,6 +27,7 @@ public abstract class AbstractLifecycle implements Lifecycle {
 
     /**
      * Set the current state of the Lifecycle.
+     *
      * @param lifecycleState the new state
      */
     protected void setLifecycleState(int lifecycleState) {
@@ -43,6 +44,7 @@ public abstract class AbstractLifecycle implements Lifecycle {
 
     /**
      * Returns the current lifecycle as a String (for example, "RUNNING").
+     *
      * @return the current lifecycle as a String
      */
     public String toString() {

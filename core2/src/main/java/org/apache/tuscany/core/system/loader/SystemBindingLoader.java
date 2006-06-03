@@ -17,15 +17,15 @@
 package org.apache.tuscany.core.system.loader;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.extension.LoaderExtension;
+import org.apache.tuscany.core.loader.StAXUtil;
+import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.core.system.model.SystemBinding;
-import org.apache.tuscany.core.loader.StAXUtil;
 
 /**
  * @version $Rev$ $Date$

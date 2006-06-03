@@ -14,18 +14,18 @@ import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.system.model.SystemImplementation;
+import org.apache.tuscany.core.system.wire.SystemInboundWire;
 import org.apache.tuscany.core.system.wire.SystemInboundWireImpl;
 import org.apache.tuscany.core.system.wire.SystemOutboundAutowire;
 import org.apache.tuscany.core.system.wire.SystemOutboundWireImpl;
-import org.apache.tuscany.core.system.wire.SystemInboundWire;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
-import org.apache.tuscany.spi.context.Component;
-import org.apache.tuscany.spi.context.CompositeComponent;
-import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ScopeContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
@@ -40,7 +40,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
     public Component<?> build(CompositeComponent<?> parent, ComponentDefinition<SystemImplementation> componentDefinition, DeploymentContext deploymentContext) throws BuilderConfigException {
         assert(parent instanceof AutowireComponent): "Parent must implement " + AutowireComponent.class.getName();
         AutowireComponent autowireContext = (AutowireComponent) parent;
-        PojoComponentType<?,?,?> componentType = componentDefinition.getImplementation().getComponentType();
+        PojoComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             serviceInterfaces.add(serviceDefinition.getServiceContract().getInterfaceClass());

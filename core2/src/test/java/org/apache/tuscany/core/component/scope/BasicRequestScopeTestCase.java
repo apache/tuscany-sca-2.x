@@ -2,7 +2,6 @@ package org.apache.tuscany.core.component.scope;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.event.RequestEnd;
-import org.apache.tuscany.core.component.scope.RequestScopeContext;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
@@ -10,7 +9,7 @@ import org.apache.tuscany.core.mock.component.RequestScopeInitDestroyComponent;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.context.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContext;
 
 /**
  * @version $$Rev$$ $$Date$$

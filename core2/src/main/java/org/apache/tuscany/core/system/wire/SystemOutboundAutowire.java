@@ -7,9 +7,9 @@ import java.util.Map;
 import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.wire.OutboundAutowire;
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 
 /**
  * An outbound wire that relies on the runtime autowire algorithm to resolve a target instance

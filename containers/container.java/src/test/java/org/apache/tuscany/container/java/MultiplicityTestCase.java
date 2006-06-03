@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 
 /**
  * Tests wires that are configured with a multiplicity
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class MultiplicityTestCase extends TestCase {

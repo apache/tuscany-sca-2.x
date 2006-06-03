@@ -23,16 +23,16 @@ import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.context.Component;
-import org.apache.tuscany.spi.context.CompositeComponent;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
+import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.Binding;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * @version $Rev$ $Date$
@@ -58,14 +58,15 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
 
     public Component<?> build(CompositeComponent<?> parent, ComponentDefinition<SystemCompositeImplementation> componentDefinition, DeploymentContext deploymentContext) throws BuilderConfigException {
         SystemCompositeImplementation impl = componentDefinition.getImplementation();
-        CompositeComponentType<?,?,?> componentType = impl.getComponentType();
+        CompositeComponentType<?, ?, ?> componentType = impl.getComponentType();
         SystemCompositeComponent<?> context = new SystemCompositeComponentImpl(componentDefinition.getName(), parent, getAutowireContext(parent));
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             if (serviceDefinition instanceof BoundServiceDefinition) {
                 context.register(builderRegistry.build(context, (BoundServiceDefinition<? extends Binding>) serviceDefinition, deploymentContext));
             }
         }
-        for (ComponentDefinition<? extends Implementation> childComponentDefinition : componentType.getComponents().values()) {
+        for (ComponentDefinition<? extends Implementation> childComponentDefinition : componentType.getComponents().values())
+        {
             context.register(builderRegistry.build(context, childComponentDefinition, deploymentContext));
         }
         return context;

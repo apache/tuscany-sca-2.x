@@ -13,10 +13,10 @@
  */
 package org.apache.tuscany.spi.extension;
 
-import org.apache.tuscany.spi.context.AbstractSCAObject;
-import org.apache.tuscany.spi.context.CompositeComponent;
-import org.apache.tuscany.spi.context.Reference;
-import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.component.AbstractSCAObject;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;

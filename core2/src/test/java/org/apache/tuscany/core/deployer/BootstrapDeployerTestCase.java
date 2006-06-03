@@ -21,7 +21,6 @@ import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 
 import junit.framework.TestCase;
-
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.mock.component.BasicInterface;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;

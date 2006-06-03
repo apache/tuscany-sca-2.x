@@ -1,10 +1,10 @@
 package org.apache.tuscany.spi.extension;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.context.AbstractSCAObject;
-import org.apache.tuscany.spi.context.CompositeComponent;
-import org.apache.tuscany.spi.context.Service;
-import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.component.AbstractSCAObject;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -12,7 +12,7 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
 import org.apache.tuscany.spi.wire.WireService;
 
 /**
- * The default implementation of an SCA service 
+ * The default implementation of an SCA service
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */

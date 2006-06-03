@@ -1,12 +1,12 @@
-package org.apache.tuscany.spi.context;
+package org.apache.tuscany.spi.component;
 
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * The runtime instantiation of an SCA component
@@ -54,7 +54,7 @@ public interface Component<T> extends SCAObject<T> {
     /**
      * Returns a map of source-side wires for references. There may be 1..n wires per reference.
      */
-    Map<String,List<OutboundWire>> getOutboundWires();
+    Map<String, List<OutboundWire>> getOutboundWires();
 
     /**
      * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to a service

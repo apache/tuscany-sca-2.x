@@ -1,21 +1,21 @@
 package org.apache.tuscany.spi.extension;
 
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
+import org.apache.tuscany.spi.component.AbstractSCAObject;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.WireService;
-import org.apache.tuscany.spi.context.AtomicComponent;
-import org.apache.tuscany.spi.context.CompositeComponent;
-import org.apache.tuscany.spi.context.ScopeContext;
-import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.context.AbstractSCAObject;
-import org.apache.tuscany.spi.model.Scope;
 
 /**
  * An extension point for atomic component type, which new implementation types may extend
@@ -27,7 +27,7 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
     protected ScopeContext scopeContext;
     protected Scope scope;
     protected Map<String, InboundWire> serviceWires = new HashMap<String, InboundWire>();
-    protected Map<String, List<OutboundWire>> referenceWires = new HashMap<String,List<OutboundWire>>();
+    protected Map<String, List<OutboundWire>> referenceWires = new HashMap<String, List<OutboundWire>>();
     protected WireService wireService;
 
     protected AtomicComponentExtension(String name, CompositeComponent<?> parent, ScopeContext scopeContext, WireService wireService) {
@@ -77,7 +77,7 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
         onReferenceWire(wire);
     }
 
-    public Map<String,List<OutboundWire>> getOutboundWires() {
+    public Map<String, List<OutboundWire>> getOutboundWires() {
         return referenceWires;
     }
 
@@ -96,10 +96,13 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
         }
     }
 
-    protected void onReferenceWire(OutboundWire wire){}
+    protected void onReferenceWire(OutboundWire wire) {
+    }
 
-    protected void onReferenceWires(Class<?> multiplicityClass, List<OutboundWire> wires){}
+    protected void onReferenceWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
+    }
 
-    protected void onServiceWire(InboundWire wire){}
+    protected void onServiceWire(InboundWire wire) {
+    }
 
 }

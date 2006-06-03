@@ -3,7 +3,7 @@ package org.apache.tuscany.core.injection;
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class InvalidAccessorException extends InjectionRuntimeException{
+public class InvalidAccessorException extends InjectionRuntimeException {
     public InvalidAccessorException() {
     }
 

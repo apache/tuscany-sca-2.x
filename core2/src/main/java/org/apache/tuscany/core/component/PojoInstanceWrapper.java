@@ -15,8 +15,8 @@ package org.apache.tuscany.core.component;
 
 import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.context.AtomicComponent;
-import org.apache.tuscany.spi.context.InstanceWrapper;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
 
 /**
  * Manages a Java class-based implementation instance

@@ -49,10 +49,12 @@ public class DefaultWorkManagerTestCase extends TestCase {
     private class Worker implements Work {
         private final CountDownLatch startSignal;
         private final CountDownLatch doneSignal;
+
         Worker(CountDownLatch startSignal, CountDownLatch doneSignal) {
             this.startSignal = startSignal;
             this.doneSignal = doneSignal;
         }
+
         public void run() {
             try {
                 startSignal.await();

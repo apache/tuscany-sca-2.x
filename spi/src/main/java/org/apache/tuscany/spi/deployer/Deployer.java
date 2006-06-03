@@ -16,8 +16,8 @@
  */
 package org.apache.tuscany.spi.deployer;
 
-import org.apache.tuscany.spi.context.CompositeComponent;
-import org.apache.tuscany.spi.context.SCAObject;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
@@ -31,8 +31,8 @@ public interface Deployer {
     /**
      * Deploy a component as a child of the supplied parent. This operation creates a new component in the
      * runtime to represent the supplied component definition. The type of component created will depend on
-     * the component definition implementation; for example, if the implementation of the component definition is a composite then
-     * typically a CompositeComponent would be returned.
+     * the component definition implementation; for example, if the implementation of the component definition
+     * is a composite then typically a CompositeComponent would be returned.
      *
      * @param parent              the parent context
      * @param componentDefinition the component definition as parsed from an assembly

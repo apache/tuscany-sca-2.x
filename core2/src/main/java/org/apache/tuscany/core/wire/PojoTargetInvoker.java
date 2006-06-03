@@ -1,15 +1,15 @@
 package org.apache.tuscany.core.wire;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Set;
 
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.context.TargetException;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Base class for dispatching to a Java based component implementation. Subclasses implement a strategy for

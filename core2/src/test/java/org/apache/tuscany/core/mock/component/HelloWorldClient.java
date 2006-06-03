@@ -14,20 +14,18 @@
 package org.apache.tuscany.core.mock.component;
 
 /**
- * 
- * 
  * @version $Rev$ $Date$
  */
-public class HelloWorldClient implements HelloWorldService{
+public class HelloWorldClient implements HelloWorldService {
 
     private int count;
-    
+
     public HelloWorldClient() {
     }
 
     private HelloWorldService service;
-    
-    public void setHelloWorldService(HelloWorldService service){
+
+    public void setHelloWorldService(HelloWorldService service) {
         this.service = service;
     }
 
@@ -39,6 +37,6 @@ public class HelloWorldClient implements HelloWorldService{
     public int count() {
         return count;
     }
-    
+
 }
 

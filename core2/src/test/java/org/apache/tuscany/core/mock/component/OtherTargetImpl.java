@@ -14,8 +14,8 @@
 package org.apache.tuscany.core.mock.component;
 
 /**
- * A target used for testing wires with a different source and target interface 
- * 
+ * A target used for testing wires with a different source and target interface
+ *
  * @version $Rev$ $Date$
  */
 public class OtherTargetImpl implements OtherTarget {

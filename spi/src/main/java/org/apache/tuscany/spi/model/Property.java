@@ -18,8 +18,6 @@ package org.apache.tuscany.spi.model;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.model.ModelObject;
-
 /**
  * @version $Rev$ $Date$
  */

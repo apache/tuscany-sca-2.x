@@ -20,8 +20,8 @@ import java.lang.reflect.Member;
 import javax.xml.namespace.QName;
 
 /**
- * A Property definition that is mapped to a specific location in the implementation class.
- * This location will typically be used to inject property values.
+ * A Property definition that is mapped to a specific location in the implementation class. This location will
+ * typically be used to inject property values.
  *
  * @version $Rev$ $Date$
  */

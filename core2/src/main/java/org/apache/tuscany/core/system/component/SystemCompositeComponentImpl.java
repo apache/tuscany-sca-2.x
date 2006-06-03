@@ -3,9 +3,7 @@ package org.apache.tuscany.core.system.component;
 import org.apache.tuscany.core.component.AbstractCompositeComponent;
 import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.component.AutowireResolutionException;
-import org.apache.tuscany.core.system.component.ObjectRegistrationException;
-import org.apache.tuscany.core.system.component.SystemCompositeComponent;
-import org.apache.tuscany.spi.context.CompositeComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
 
 /**
  * Implements an composite context for system components. In addition, it implements an autowire policy A
@@ -18,7 +16,7 @@ import org.apache.tuscany.spi.context.CompositeComponent;
 public class SystemCompositeComponentImpl<S> extends AbstractCompositeComponent<S> implements SystemCompositeComponent<S> {
 
     public SystemCompositeComponentImpl(String name, CompositeComponent parent, AutowireComponent autowireContext) {
-        super(name, parent, autowireContext,null);
+        super(name, parent, autowireContext, null);
     }
 
     public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance) throws ObjectRegistrationException {

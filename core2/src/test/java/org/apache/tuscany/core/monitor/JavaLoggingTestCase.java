@@ -25,13 +25,12 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import junit.framework.TestCase;
-
 import org.apache.tuscany.spi.monitor.LogLevel;
 import org.apache.tuscany.spi.monitor.MonitorFactory;
 
 /**
  * Test case for the JavaLoggingMonitorFactory.
- * 
+ *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
 public class JavaLoggingTestCase extends TestCase {

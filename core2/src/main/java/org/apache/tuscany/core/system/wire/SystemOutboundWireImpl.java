@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 

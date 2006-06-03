@@ -18,9 +18,9 @@ package org.apache.tuscany.core.wire;
 
 import java.util.List;
 
+import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageChannel;
 import org.apache.tuscany.spi.wire.MessageHandler;
-import org.apache.tuscany.spi.wire.Message;
 
 /**
  * A channel comprising an ordered collection of message handlers.

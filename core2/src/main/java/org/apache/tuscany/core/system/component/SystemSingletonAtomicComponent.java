@@ -6,18 +6,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.component.AbstractSCAObject;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.context.AbstractSCAObject;
-import org.apache.tuscany.spi.context.InstanceWrapper;
-import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.context.CompositeComponent;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 
 /**
- * An {@link org.apache.tuscany.spi.context.AtomicComponent} used when registering objects directly into a
+ * An {@link org.apache.tuscany.spi.component.AtomicComponent} used when registering objects directly into a
  * composite
  *
  * @version $$Rev$$ $$Date$$
@@ -89,7 +88,7 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
         throw new UnsupportedOperationException();
     }
 
-    public Map<String,List<OutboundWire>> getOutboundWires() {
+    public Map<String, List<OutboundWire>> getOutboundWires() {
         throw new UnsupportedOperationException();
     }
 

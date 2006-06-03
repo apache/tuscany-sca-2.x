@@ -30,7 +30,7 @@ public class InvalidLevelException extends IllegalArgumentException {
      * Constructor specifying the method name and the level affected.
      *
      * @param method the name of the method being monitored
-     * @param level the invalid log level value
+     * @param level  the invalid log level value
      */
     public InvalidLevelException(String method, String level) {
         super();
@@ -40,6 +40,7 @@ public class InvalidLevelException extends IllegalArgumentException {
 
     /**
      * Returns the name of the method being monitored.
+     *
      * @return the name of the method being monitored
      */
     public String getMethod() {
@@ -48,6 +49,7 @@ public class InvalidLevelException extends IllegalArgumentException {
 
     /**
      * Returns the invalid log level specified.
+     *
      * @return the invalid log level that was specified
      */
     public String getLevel() {

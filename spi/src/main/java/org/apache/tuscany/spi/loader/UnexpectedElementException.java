@@ -19,10 +19,9 @@ package org.apache.tuscany.spi.loader;
 import javax.xml.namespace.QName;
 
 /**
- * Exception that indicates that an element was found during loading
- * that when loaded resulted in an unexpected type.
- * This should not occur if the document being parsed conforms to its schema.
- * The messages set to the name of the element
+ * Exception that indicates that an element was found during loading that when loaded resulted in an
+ * unexpected type. This should not occur if the document being parsed conforms to its schema. The messages
+ * set to the name of the element
  *
  * @version $Rev$ $Date$
  */

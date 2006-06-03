@@ -22,9 +22,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Multiplicity;
-import org.apache.tuscany.spi.loader.MissingResourceException;
 
 /**
  * Utility classes to support StAX-based loaders
@@ -77,9 +77,8 @@ public final class StAXUtil {
     }
 
     /**
-     * Convert a "scope" attribute to the equivalent enum value.
-     * Returns CONVERSATIONAL if the value equals (ignoring case) "conversational",
-     * otherwise returns NONCONVERSATIONAL.
+     * Convert a "scope" attribute to the equivalent enum value. Returns CONVERSATIONAL if the value equals
+     * (ignoring case) "conversational", otherwise returns NONCONVERSATIONAL.
      *
      * @param scope the attribute to convert
      * @return the enum equivalent

@@ -35,10 +35,10 @@ public class BasicReferenceInvocationHandlerTestCase extends MockObjectTestCase 
         chain.build();
         chains.put(echo, chain);
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(chains);
-        assertEquals("foo",handler.invoke(null,echo,new String[]{"foo"}));
-        assertEquals(1,interceptor.getCount());
-        assertEquals(1,requestHandler.getCount());
-        assertEquals(1,responseHandler.getCount());
+        assertEquals("foo", handler.invoke(null, echo, new String[]{"foo"}));
+        assertEquals(1, interceptor.getCount());
+        assertEquals(1, requestHandler.getCount());
+        assertEquals(1, responseHandler.getCount());
     }
 
     public void setUp() throws Exception {

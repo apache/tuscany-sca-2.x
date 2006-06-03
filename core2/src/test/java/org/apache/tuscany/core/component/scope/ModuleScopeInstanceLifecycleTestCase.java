@@ -4,18 +4,17 @@ package org.apache.tuscany.core.component.scope;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
-import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.mock.component.ModuleScopeDestroyOnlyComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeInitDestroyComponent;
 import org.apache.tuscany.core.mock.component.ModuleScopeInitOnlyComponent;
-import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;
-import org.apache.tuscany.core.mock.component.OrderedInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedEagerInitPojo;
+import org.apache.tuscany.core.mock.component.OrderedInitPojo;
+import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;
+import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
-import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * Lifecycle unit tests for the module scope container
@@ -37,7 +36,7 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
 
         SystemAtomicComponent destroyOnlyContext = MockContextFactory.createSystemAtomicContext("DestroyOnly", scope, ModuleScopeDestroyOnlyComponent.class);
         destroyOnlyContext.start();
-        
+
         scope.onEvent(new CompositeStart(this, null));
         ModuleScopeInitDestroyComponent initDestroy = (ModuleScopeInitDestroyComponent) scope.getInstance(initDestroyContext);
         Assert.assertNotNull(initDestroy);
@@ -74,7 +73,7 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
         SystemAtomicComponent threeCtx = MockContextFactory.createSystemAtomicContext("three", scope, OrderedInitPojoImpl.class);
         scope.register(threeCtx);
 
-        scope.onEvent(new CompositeStart(this,null));
+        scope.onEvent(new CompositeStart(this, null));
         OrderedInitPojo one = (OrderedInitPojo) scope.getInstance(oneCtx);
         Assert.assertNotNull(one);
         Assert.assertEquals(1, one.getNumberInstantiated());
@@ -91,7 +90,7 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
         Assert.assertEquals(3, three.getInitOrder());
 
         // expire module
-        scope.onEvent(new CompositeStop(this,null));
+        scope.onEvent(new CompositeStop(this, null));
         Assert.assertEquals(0, one.getNumberInstantiated());
         scope.stop();
     }
@@ -108,7 +107,7 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
         SystemAtomicComponent threeCtx = MockContextFactory.createSystemAtomicContext("three", scope, OrderedEagerInitPojo.class);
         scope.register(threeCtx);
 
-        scope.onEvent(new CompositeStart(this,null));
+        scope.onEvent(new CompositeStart(this, null));
         OrderedEagerInitPojo one = (OrderedEagerInitPojo) scope.getInstance(oneCtx);
         Assert.assertNotNull(one);
 
@@ -119,7 +118,7 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
         Assert.assertNotNull(three);
 
         // expire module
-        scope.onEvent(new CompositeStop(this,null));
+        scope.onEvent(new CompositeStop(this, null));
         Assert.assertEquals(0, one.getNumberInstantiated());
         scope.stop();
     }

@@ -8,16 +8,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
-import org.apache.tuscany.core.component.scope.AbstractScopeContext;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.context.AtomicComponent;
-import org.apache.tuscany.spi.context.InstanceWrapper;
-import org.apache.tuscany.spi.context.TargetException;
-import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.InstanceWrapper;
+import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
+import org.apache.tuscany.spi.model.Scope;
 
 /**
- * An implementation of a request-scoped component container.
+ * A scope context which manages atomic component instances keyed on HTTP session
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
@@ -28,7 +27,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext {
     private final Map<AtomicComponent, Map<Object, InstanceWrapper>> contexts;
     private final Map<Object, List<InstanceWrapper>> destroyQueues;
 
-    public HttpSessionScopeContext(){
+    public HttpSessionScopeContext() {
         this(null);
     }
 
@@ -47,8 +46,8 @@ public class HttpSessionScopeContext extends AbstractScopeContext {
         if (event instanceof HttpSessionStart) {
             Object key = ((HttpSessionStart) event).getId();
             for (Map.Entry<AtomicComponent, Map<Object, InstanceWrapper>> entry : contexts.entrySet()) {
-                if(entry.getKey().isEagerInit()){
-                    getInstance(entry.getKey(),key);
+                if (entry.getKey().isEagerInit()) {
+                    getInstance(entry.getKey(), key);
                 }
             }
         } else if (event instanceof HttpSessionEnd) {
@@ -65,7 +64,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext {
 
     public synchronized void stop() {
         contexts.clear();
-        synchronized(destroyQueues){
+        synchronized (destroyQueues) {
             destroyQueues.clear();
         }
         lifecycleState = STOPPED;

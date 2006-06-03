@@ -32,7 +32,7 @@ public class ModuleScopeInitOnlyComponent extends ModuleScopeComponentImpl {
 
     @Init
     public void init() {
-        if (initialized){
+        if (initialized) {
             throw new AssertionError("Init called more than once");
         }
         initialized = true;

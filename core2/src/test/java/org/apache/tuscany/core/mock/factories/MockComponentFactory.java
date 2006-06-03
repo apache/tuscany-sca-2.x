@@ -16,8 +16,8 @@ import org.apache.tuscany.spi.model.JavaServiceContract;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * @version $$Rev$$ $$Date$$

@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.spi.context;
+package org.apache.tuscany.spi.component;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 
@@ -45,7 +45,8 @@ public interface AtomicComponent<T> extends Component<T> {
     void destroy(Object instance) throws TargetException;
 
     /**
-     * Creates a new implementation instance, generally used as a callback by a {@link ScopeContext}
+     * Creates a new implementation instance, generally used as a callback by a {@link
+     * org.apache.tuscany.spi.component.ScopeContext}
      *
      * @throws ObjectCreationException
      */

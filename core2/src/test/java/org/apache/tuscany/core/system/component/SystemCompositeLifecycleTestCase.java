@@ -5,10 +5,7 @@ import java.util.List;
 
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
-import org.apache.tuscany.core.system.component.SystemAtomicComponent;
-import org.apache.tuscany.core.system.component.SystemCompositeComponent;
-import org.apache.tuscany.core.system.component.SystemCompositeComponentImpl;
-import org.apache.tuscany.spi.context.AtomicComponent;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 

@@ -105,7 +105,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
     protected void loadProperty(XMLStreamReader reader, DeploymentContext deploymentContext, ComponentDefinition<?> componentDefinition) throws XMLStreamException, LoaderException {
         String name = reader.getAttributeValue(null, "name");
         Implementation<?> implementation = componentDefinition.getImplementation();
-        ComponentType<?,?,?> componentType = implementation.getComponentType();
+        ComponentType<?, ?, ?> componentType = implementation.getComponentType();
         Property<?> property = componentType.getProperties().get(name);
         if (property == null) {
             LoaderException e = new UndefinedPropertyException(name);

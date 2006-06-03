@@ -17,7 +17,6 @@
 package org.apache.tuscany.container.java;
 
 import java.net.URL;
-import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;

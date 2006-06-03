@@ -1,10 +1,10 @@
 package org.apache.tuscany.core.injection;
 
-import java.util.List;
 import java.lang.reflect.Array;
+import java.util.List;
 
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
 
 /**
  * Resolves targets configured in a multiplicity by delegating to object factories and returning an

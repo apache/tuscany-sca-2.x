@@ -1,6 +1,6 @@
 package org.apache.tuscany.spi.wire;
 
-import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.component.TargetException;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -11,7 +11,7 @@ public interface RuntimeWire<T> {
      * Returns the non-proxied target instance for this wire
      */
     T getTargetService() throws TargetException;
-    
+
     /**
      * Sets the primary interface type generated proxies implement
      */

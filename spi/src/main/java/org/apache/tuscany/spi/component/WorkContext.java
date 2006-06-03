@@ -1,14 +1,19 @@
-package org.apache.tuscany.spi.context;
+package org.apache.tuscany.spi.component;
 
 /**
- *
  * @version $Rev: 393567 $ $Date: 2006-04-12 11:28:58 -0700 (Wed, 12 Apr 2006) $
  */
 public interface WorkContext {
 
-    public CompositeComponent getRemoteContext();
+    /**
+     * Returns the composite where a remote request came in
+     */
+    public CompositeComponent getRemoteComponent();
 
-    public void setRemoteContext(CompositeComponent component);
+    /**
+     * Sets the composite where a remote request came in
+     */
+    public void setRemoteComponent(CompositeComponent component);
 
     /**
      * Returns the unique key for the given identifier associated with the current request

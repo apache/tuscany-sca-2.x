@@ -1,4 +1,4 @@
-package org.apache.tuscany.spi.context;
+package org.apache.tuscany.spi.component;
 
 /**
  * Thrown when a component cannot be found

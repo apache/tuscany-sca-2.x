@@ -1,8 +1,10 @@
 package org.apache.tuscany.core.component;
 
-import org.apache.tuscany.spi.context.ComponentRuntimeException;
+import org.apache.tuscany.spi.component.ComponentRuntimeException;
 
 /**
+ * Denotes an error initializing a component
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class ComponentInitException extends ComponentRuntimeException {

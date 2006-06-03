@@ -13,8 +13,6 @@
  */
 package org.apache.tuscany.core.component.event;
 
-import org.apache.tuscany.core.component.event.AbstractRequestEvent;
-
 /**
  * Propagated when a request completes or is ended
  *
@@ -24,11 +22,12 @@ public class RequestEnd extends AbstractRequestEvent {
 
     /**
      * Creates a new event
+     *
      * @param source the source of the event
      */
-     public RequestEnd(Object source) {
-         super(source);
-     }
+    public RequestEnd(Object source) {
+        super(source);
+    }
 
 
 }

@@ -25,19 +25,18 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
 
 /**
- * System service for loading physical artifacts that represent SCDL configurations
- * and creating the model objects that represent them.
+ * System service for loading physical artifacts that represent SCDL configurations and creating the model
+ * objects that represent them.
  *
  * @version $Rev$ $Date$
  */
 public interface Loader {
     /**
-     * Parse the supplied XML stream, dispatching to the appropriate registered loader
-     * for each element encountered in the stream.
+     * Parse the supplied XML stream, dispatching to the appropriate registered loader for each element
+     * encountered in the stream.
      * <p/>
-     * This method must be called with the XML cursor positioned on a START_ELEMENT event.
-     * When this method returns, the stream will be positioned on the corresponding
-     * END_ELEMENT event.
+     * This method must be called with the XML cursor positioned on a START_ELEMENT event. When this method
+     * returns, the stream will be positioned on the corresponding END_ELEMENT event.
      *
      * @param reader            the XML stream to parse
      * @param deploymentContext the current deployment context
@@ -58,10 +57,10 @@ public interface Loader {
     <MO extends ModelObject> MO load(URL url, Class<MO> type, DeploymentContext deploymentContext) throws LoaderException;
 
     /**
-     * Load the component type definition for a given implementation.
-     * How the component type information is located is defined by the implementation specification.
-     * It may include loading from an XML sidefile, introspection of some artifact related to the
-     * implementation, some combination of those techniques or any other implementation-defined mechanism.
+     * Load the component type definition for a given implementation. How the component type information is
+     * located is defined by the implementation specification. It may include loading from an XML sidefile,
+     * introspection of some artifact related to the implementation, some combination of those techniques or
+     * any other implementation-defined mechanism.
      *
      * @param implementation    the implementation whose component type should be loaded
      * @param deploymentContext the current deployment context

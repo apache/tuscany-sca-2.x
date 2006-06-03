@@ -18,14 +18,14 @@ package org.apache.tuscany.spi.wire;
 
 /**
  * Synchronous, around-style mediation associated with a client- or target- side wire.
- * 
+ *
  * @version $Rev: 394379 $ $Date: 2006-04-15 15:01:36 -0700 (Sat, 15 Apr 2006) $
  */
 public interface Interceptor {
-    
+
     /**
      * Process a synchronous wire
-     * 
+     *
      * @param msg the request Message for the wire
      * @return the response Message from the wire
      */

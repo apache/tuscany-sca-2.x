@@ -17,8 +17,8 @@
 package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;

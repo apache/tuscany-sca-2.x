@@ -1,16 +1,15 @@
 package org.apache.tuscany.core.component.scope;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.RequestScopeContext;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.mock.factories.MockContextFactory;
+import org.apache.tuscany.core.system.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -26,7 +25,7 @@ public class RequestScopeRestartTestCase extends TestCase {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(RequestScopeRestartTestCase.InitDestroyOnce.class);
         SystemAtomicComponent context = MockContextFactory.createSystemAtomicContext("InitDestroy", scope, interfaces,
-                RequestScopeRestartTestCase.InitDestroyOnce.class, false, initInvoker, destroyInvoker, null,null);
+                RequestScopeRestartTestCase.InitDestroyOnce.class, false, initInvoker, destroyInvoker, null, null);
         context.start();
 
         Object instance = context.getService();

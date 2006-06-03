@@ -2,28 +2,28 @@ package org.apache.tuscany.core.model;
 
 import java.lang.reflect.Member;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.Property;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceDefinition, P extends Property<?>> extends ComponentType<S,R,P> {
+public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceDefinition, P extends Property<?>> extends ComponentType<S, R, P> {
 
     private Scope lifecycleScope = Scope.UNDEFINED;
     private EventInvoker<Object> initInvoker;
     private EventInvoker<Object> destroyInvoker;
     private final List<Injector> injectors = new ArrayList<Injector>();
-    private final Map<String,Member> members = new HashMap<String,Member>();
+    private final Map<String, Member> members = new HashMap<String, Member>();
 
     public Scope getLifecycleScope() {
         return lifecycleScope;
@@ -62,10 +62,10 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
     }
 
     public void addReferenceMember(String name, Member member) {
-        members.put(name,member);
+        members.put(name, member);
     }
 
-    public Map<String,Member> getReferenceMembers() {
+    public Map<String, Member> getReferenceMembers() {
         return members;
     }
 

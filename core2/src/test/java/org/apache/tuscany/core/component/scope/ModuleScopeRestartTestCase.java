@@ -5,13 +5,12 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
-import org.apache.tuscany.spi.context.WorkContext;
+import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -27,7 +26,7 @@ public class ModuleScopeRestartTestCase extends TestCase {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(InitDestroyOnce.class);
         SystemAtomicComponent context = MockContextFactory.createSystemAtomicContext("InitDestroy", scope, interfaces,
-                InitDestroyOnce.class, false, initInvoker, destroyInvoker, null,null);
+                InitDestroyOnce.class, false, initInvoker, destroyInvoker, null, null);
         context.start();
 
         scope.onEvent(new CompositeStart(this, null));

@@ -16,34 +16,25 @@
  */
 package org.apache.tuscany.core.loader;
 
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.loader.StAXPropertyFactory;
-import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.core.injection.JNDIObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.StAXPropertyFactory;
+import org.apache.tuscany.spi.model.Property;
 
 /**
- * A StAXPropertyFactory that creates property values by looking them
- * up in the default JNDI InitialContext.
- *
- * This can be used to locate resources in a J2EE environment and inject
- * them as configuration properties. For example, to access a database
- * a component could write:
- * <code>
- *     &at;Property DataSource myDB;
- * </code>
- * and configure with
- * <code>
- *     &lt;properties&gt;
- *       &lt;v:myDb&gt;java:comp/env/jdbc/MyDatabase&lt;/v:myDB&gt;
- *     &lt;/properties&gt;
- * </code>
+ * A StAXPropertyFactory that creates property values by looking them up in the default JNDI InitialContext.
+ * <p/>
+ * This can be used to locate resources in a J2EE environment and inject them as configuration properties. For
+ * example, to access a database a component could write: <code> &at;Property DataSource myDB; </code> and
+ * configure with <code> &lt;properties&gt; &lt;v:myDb&gt;java:comp/env/jdbc/MyDatabase&lt;/v:myDB&gt;
+ * &lt;/properties&gt; </code>
  *
  * @version $Rev$ $Date$
  */

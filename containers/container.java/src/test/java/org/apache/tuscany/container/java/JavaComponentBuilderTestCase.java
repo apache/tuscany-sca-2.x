@@ -6,13 +6,13 @@ import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.core.component.CompositeComponentImpl;
 import org.apache.tuscany.core.component.scope.ModuleScopeContext;
 import org.apache.tuscany.core.model.PojoComponentType;
-import org.apache.tuscany.spi.context.CompositeComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.JavaServiceContract;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.test.ArtifactFactory;
 import org.jmock.MockObjectTestCase;
 

@@ -1,7 +1,7 @@
 package org.apache.tuscany.spi.policy;
 
-import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.InboundWire;
 
 /**
@@ -10,7 +10,7 @@ import org.apache.tuscany.spi.wire.InboundWire;
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface TargetPolicyBuilder{
+public interface TargetPolicyBuilder {
 
     public void build(ServiceDefinition serviceDefinition, InboundWire<?> wire) throws BuilderException;
 

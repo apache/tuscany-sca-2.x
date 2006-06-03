@@ -16,9 +16,9 @@
  */
 package org.apache.tuscany.core.wire;
 
-import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageHandler;
 
 /**
  * A message handler that dispatches the message through an interceptor stack and the uses the response

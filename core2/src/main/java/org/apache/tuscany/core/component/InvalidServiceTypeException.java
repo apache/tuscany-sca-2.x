@@ -1,6 +1,6 @@
 package org.apache.tuscany.core.component;
 
-import org.apache.tuscany.spi.context.TargetException;
+import org.apache.tuscany.spi.component.TargetException;
 
 /**
  * @version $$Rev$$ $$Date$$

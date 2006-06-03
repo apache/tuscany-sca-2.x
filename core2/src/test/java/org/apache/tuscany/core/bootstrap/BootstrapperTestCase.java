@@ -21,6 +21,8 @@ import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 
 /**
+ * Verifies the default bootstrapper can be instantiated
+ *
  * @version $Rev$ $Date$
  */
 public class BootstrapperTestCase extends TestCase {

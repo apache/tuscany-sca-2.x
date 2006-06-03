@@ -17,8 +17,8 @@
 package org.apache.tuscany.core.wire;
 
 import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.MessageChannel;
 import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageChannel;
 
 /**
  * An interceptor that sends the wire Message down its request channel and does not expect a response.

@@ -17,8 +17,8 @@
 package org.apache.tuscany.spi.loader;
 
 /**
- * Exception that indicates an expected resource could not be found.
- * The message should be set to the name of the resource.
+ * Exception that indicates an expected resource could not be found. The message should be set to the name of
+ * the resource.
  *
  * @version $Rev: 392764 $ $Date: 2006-04-09 09:13:55 -0700 (Sun, 09 Apr 2006) $
  */
@@ -26,8 +26,8 @@ public class MissingResourceException extends LoaderException {
     private static final long serialVersionUID = 3775013318397916445L;
 
     /**
-     * Constructor that indicates which resource could not be found.
-     * The supplied parameter is also returned as the message.
+     * Constructor that indicates which resource could not be found. The supplied parameter is also returned
+     * as the message.
      *
      * @param resource the resource that could not be found
      */
@@ -36,8 +36,8 @@ public class MissingResourceException extends LoaderException {
     }
 
     /**
-     * Constructor that indicates which resource could not be found.
-     * The supplied parameter is also returned as the message.
+     * Constructor that indicates which resource could not be found. The supplied parameter is also returned
+     * as the message.
      *
      * @param resource the resource that could not be found
      */
