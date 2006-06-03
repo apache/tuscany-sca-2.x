@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 /**
  * A system annotation to inject a monitor
  *
- * @version $Rev: 392146 $ $Date: 2006-04-06 18:11:28 -0700 (Thu, 06 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

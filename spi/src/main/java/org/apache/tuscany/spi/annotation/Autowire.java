@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 /**
  * A system annotation to inject an autowired instance
  *
- * @version $Rev: 395110 $ $Date: 2006-04-18 19:32:30 -0700 (Tue, 18 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 @Target({METHOD, FIELD, PARAMETER})
 @Retention(RUNTIME)

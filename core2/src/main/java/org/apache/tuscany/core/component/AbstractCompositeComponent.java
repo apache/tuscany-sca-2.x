@@ -26,7 +26,7 @@ import org.apache.tuscany.spi.wire.WireService;
 /**
  * The base implementation of a composite context
  *
- * @version $Rev: 399348 $ $Date: 2006-05-03 09:33:22 -0700 (Wed, 03 May 2006) $
+ * @version $Rev$ $Date$
  */
 @SuppressWarnings({"FieldAccessedSynchronizedAndUnsynchronized", "RawUseOfParameterizedType", "NonPrivateFieldAccessedInSynchronizedContext"})
 public abstract class AbstractCompositeComponent<T> extends CompositeComponentExtension<T> implements AutowireComponent<T> {

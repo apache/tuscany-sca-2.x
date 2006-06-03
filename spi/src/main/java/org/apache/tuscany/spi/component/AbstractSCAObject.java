@@ -27,7 +27,7 @@ import org.apache.tuscany.spi.event.TrueFilter;
 /**
  * Functionality common to all <code>SCAObject<code> implementations
  *
- * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
+ * @version $Rev$ $Date$
  */
 public abstract class AbstractSCAObject<T> extends AbstractLifecycle implements SCAObject<T> {
     private final String name;

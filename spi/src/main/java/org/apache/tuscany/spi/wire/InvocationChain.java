@@ -25,7 +25,7 @@ import java.util.List;
  * may be cached on the client-side. Caching allows various optimizations such as avoiding target instance
  * resolution when the client-side lifecycle scope is a shorter duration than the target.
  *
- * @version $Rev: 396284 $ $Date: 2006-04-23 08:27:42 -0700 (Sun, 23 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public interface InvocationChain {
     /**

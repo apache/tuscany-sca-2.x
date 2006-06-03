@@ -5,7 +5,7 @@ import org.apache.tuscany.spi.TuscanyRuntimeException;
 /**
  * Root unchecked exception for the injection package
  *
- * @version $Rev: 380032 $ $Date: 2006-02-22 19:19:11 -0800 (Wed, 22 Feb 2006) $
+ * @version $Rev$ $Date$
  */
 public abstract class InjectionRuntimeException extends TuscanyRuntimeException {
 

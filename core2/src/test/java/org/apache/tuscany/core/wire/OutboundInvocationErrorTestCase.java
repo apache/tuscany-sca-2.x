@@ -31,7 +31,7 @@ import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 /**
  * Tests handling of exceptions thrown during an outbound wire invocation
  *
- * @version $Rev: 377006 $ $Date: 2006-02-11 09:41:59 -0800 (Sat, 11 Feb 2006) $
+ * @version $Rev$ $Date$
  */
 public class OutboundInvocationErrorTestCase extends TestCase {
 

@@ -15,7 +15,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  * Base class for dispatching to a Java based component implementation. Subclasses implement a strategy for
  * resolving implementation instances.
  *
- * @version $Rev: 408473 $ $Date: 2006-05-21 12:46:01 -0700 (Sun, 21 May 2006) $
+ * @version $Rev$ $Date$
  */
 public abstract class PojoTargetInvoker implements TargetInvoker {
 

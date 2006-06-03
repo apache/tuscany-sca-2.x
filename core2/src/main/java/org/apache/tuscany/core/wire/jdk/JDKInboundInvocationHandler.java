@@ -19,7 +19,7 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  * Receives a request from a proxy and performs an invocation on an {@link org.apache.tuscany.spi.wire.InboundWire}
  * via an {@link InboundInvocationChain}
  *
- * @version $Rev: 406016 $ $Date: 2006-05-12 22:45:22 -0700 (Fri, 12 May 2006) $
+ * @version $Rev$ $Date$
  */
 public class JDKInboundInvocationHandler implements WireInvocationHandler, InvocationHandler {
 

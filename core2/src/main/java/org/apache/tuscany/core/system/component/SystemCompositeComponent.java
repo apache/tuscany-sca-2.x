@@ -6,7 +6,7 @@ import org.apache.tuscany.core.component.AutowireComponent;
  * Marker type for a specialized composite component. System composites are used by the runtime to manage
  * system components that offer services used by the runtime
  *
- * @version $Rev: 392199 $ $Date: 2006-04-06 23:32:29 -0700 (Thu, 06 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public interface SystemCompositeComponent<T> extends AutowireComponent<T> {
 

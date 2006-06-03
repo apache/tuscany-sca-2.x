@@ -24,7 +24,7 @@ import org.apache.tuscany.spi.model.Scope;
 /**
  * Manages the lifecycle and visibility of instances associated with a set of {@link AtomicComponent}s.
  *
- * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
+ * @version $Rev$ $Date$
  * @see SCAObject
  */
 public interface ScopeContext extends Lifecycle, RuntimeEventListener {

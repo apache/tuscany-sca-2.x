@@ -10,7 +10,7 @@ import org.apache.tuscany.spi.component.WorkContext;
  * An implementation of an {@link org.apache.tuscany.spi.component.WorkContext} that handles event-to-thread
  * associations using an <code>InheritableThreadLocal</code>
  *
- * @version $Rev: 393567 $ $Date: 2006-04-12 11:28:58 -0700 (Wed, 12 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public class WorkContextImpl implements WorkContext {
 

@@ -18,7 +18,7 @@ import org.apache.tuscany.spi.CoreRuntimeException;
 /**
  * An unchecked exception encountered by an {@link SCAObject}
  *
- * @version $Rev: 392190 $ $Date: 2006-04-06 22:37:58 -0700 (Thu, 06 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public class ComponentRuntimeException extends CoreRuntimeException {
 

@@ -20,7 +20,7 @@ import org.apache.tuscany.spi.component.WorkContext;
 /**
  * Tests dependencies are initalized and destroyed in the proper order (i.e. LIFO)
  *
- * @version $Rev: 393992 $ $Date: 2006-04-13 18:01:05 -0700 (Thu, 13 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public class DependencyLifecycleTestCase extends TestCase {
 

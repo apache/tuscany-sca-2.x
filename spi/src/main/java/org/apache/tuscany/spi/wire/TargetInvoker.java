@@ -22,7 +22,7 @@ import java.lang.reflect.InvocationTargetException;
  * Implementations are responsible for resolving a target and performing the actual invocation on it, for
  * example, a component implementation instance or a service client.
  *
- * @version $Rev: 395162 $ $Date: 2006-04-19 01:07:36 -0700 (Wed, 19 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public interface TargetInvoker extends Cloneable {
 

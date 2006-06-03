@@ -21,7 +21,7 @@ import java.util.EventListener;
 /**
  * Listeners observe events fired in the SCA runtime.
  *
- * @version $Rev: 393369 $ $Date: 2006-04-11 19:36:42 -0700 (Tue, 11 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public interface RuntimeEventListener extends EventListener {
 

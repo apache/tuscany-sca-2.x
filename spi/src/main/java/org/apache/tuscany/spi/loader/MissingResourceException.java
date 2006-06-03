@@ -20,7 +20,7 @@ package org.apache.tuscany.spi.loader;
  * Exception that indicates an expected resource could not be found. The message should be set to the name of
  * the resource.
  *
- * @version $Rev: 392764 $ $Date: 2006-04-09 09:13:55 -0700 (Sun, 09 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public class MissingResourceException extends LoaderException {
     private static final long serialVersionUID = 3775013318397916445L;

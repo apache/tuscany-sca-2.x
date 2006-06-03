@@ -21,7 +21,7 @@ import javax.xml.namespace.QName;
 /**
  * Exception that indicates an element was encountered that could not be handled.
  *
- * @version $Rev: 392764 $ $Date: 2006-04-09 09:13:55 -0700 (Sun, 09 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public class UnrecognizedElementException extends LoaderException {
     private static final long serialVersionUID = 2549543622209829032L;

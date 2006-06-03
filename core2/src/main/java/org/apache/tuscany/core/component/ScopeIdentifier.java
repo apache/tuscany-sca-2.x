@@ -5,7 +5,7 @@ package org.apache.tuscany.core.component;
  * context) do not have to be generated if the scope is never accessed. Identifiers are associated with the
  * current request thread and keyed on scope type.
  *
- * @version $Rev: 395110 $ $Date: 2006-04-18 19:32:30 -0700 (Tue, 18 Apr 2006) $
+ * @version $Rev$ $Date$
  * @see org.apache.tuscany.spi.component.WorkContext
  */
 public interface ScopeIdentifier {

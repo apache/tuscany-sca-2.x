@@ -3,7 +3,7 @@ package org.apache.tuscany.spi;
 /**
  * Implementations create new instances of a particular type
  *
- * @version $Rev: 380903 $ $Date: 2006-02-25 00:53:26 -0800 (Sat, 25 Feb 2006) $
+ * @version $Rev$ $Date$
  */
 public interface ObjectFactory<T> {
 

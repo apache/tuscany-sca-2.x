@@ -14,7 +14,7 @@ import org.osoa.sca.ServiceUnavailableException;
  * The standard implementation of a composite component. Autowiring is performed by delegating to the parent
  * composite.
  *
- * @version $Rev: 399348 $ $Date: 2006-05-03 09:33:22 -0700 (Wed, 03 May 2006) $
+ * @version $Rev$ $Date$
  */
 public class CompositeComponentImpl<T> extends AbstractCompositeComponent<T> {
 

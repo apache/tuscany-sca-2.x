@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * Annotation that can be applied to methods in a monitoring interface to indicate to logging frameworks the
  * severity of the event.
  *
- * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
+ * @version $Rev$ $Date$
  */
 @Target({METHOD})
 @Retention(RUNTIME)

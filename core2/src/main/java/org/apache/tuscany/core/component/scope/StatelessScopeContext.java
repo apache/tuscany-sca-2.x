@@ -23,7 +23,7 @@ import org.apache.tuscany.spi.model.Scope;
 /**
  * A scope context which manages stateless atomic component instances in a non-pooled fashion
  *
- * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
+ * @version $Rev$ $Date$
  */
 public class StatelessScopeContext extends AbstractScopeContext {
 

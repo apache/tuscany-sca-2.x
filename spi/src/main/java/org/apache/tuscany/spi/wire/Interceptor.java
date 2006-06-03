@@ -19,7 +19,7 @@ package org.apache.tuscany.spi.wire;
 /**
  * Synchronous, around-style mediation associated with a client- or target- side wire.
  *
- * @version $Rev: 394379 $ $Date: 2006-04-15 15:01:36 -0700 (Sat, 15 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public interface Interceptor {
 

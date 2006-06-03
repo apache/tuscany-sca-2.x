@@ -31,7 +31,7 @@ import org.apache.tuscany.spi.monitor.MonitorFactory;
 /**
  * Test case for the JavaLoggingMonitorFactory.
  *
- * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
+ * @version $Rev$ $Date$
  */
 public class JavaLoggingTestCase extends TestCase {
     private static final Logger logger = Logger.getLogger(Monitor.class.getName());

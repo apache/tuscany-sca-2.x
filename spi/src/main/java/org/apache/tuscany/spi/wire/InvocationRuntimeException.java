@@ -21,7 +21,7 @@ import org.osoa.sca.ServiceRuntimeException;
 /**
  * Denotes a runtime exception thrown during an invocation over a wire
  *
- * @version $Rev: 396284 $ $Date: 2006-04-23 16:27:42 +0100 (Sun, 23 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public class InvocationRuntimeException extends ServiceRuntimeException {
 

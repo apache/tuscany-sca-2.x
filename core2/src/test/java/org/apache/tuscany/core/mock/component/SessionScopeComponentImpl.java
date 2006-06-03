@@ -19,7 +19,7 @@ package org.apache.tuscany.core.mock.component;
 import org.osoa.sca.annotations.Scope;
 
 /**
- * @version $Rev: 398107 $ $Date: 2006-04-29 01:38:27 -0700 (Sat, 29 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 @Scope("SESSION")
 public class SessionScopeComponentImpl extends AbstractGenericComponent implements

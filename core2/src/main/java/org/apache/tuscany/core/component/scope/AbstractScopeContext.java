@@ -20,7 +20,7 @@ import org.apache.tuscany.spi.event.TrueFilter;
 /**
  * Implements functionality common to scope contexts.
  *
- * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
+ * @version $Rev$ $Date$
  */
 public abstract class AbstractScopeContext extends AbstractLifecycle implements ScopeContext {
     private final String name;

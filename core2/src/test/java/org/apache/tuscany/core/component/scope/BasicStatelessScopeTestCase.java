@@ -12,7 +12,7 @@ import org.apache.tuscany.spi.component.WorkContext;
 /**
  * Unit tests for the module scope container
  *
- * @version $Rev: 396284 $ $Date: 2006-04-23 08:27:42 -0700 (Sun, 23 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public class BasicStatelessScopeTestCase extends TestCase {
 

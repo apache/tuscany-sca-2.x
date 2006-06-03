@@ -3,7 +3,7 @@ package org.apache.tuscany.spi.builder;
 /**
  * Represents an error processing an assembly model
  *
- * @version $Rev: 398248 $ $Date: 2006-04-29 23:02:47 +0100 (Sat, 29 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public class BuilderConfigException extends BuilderException {
 

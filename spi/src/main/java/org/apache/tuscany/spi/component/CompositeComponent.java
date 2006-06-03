@@ -24,7 +24,7 @@ import org.apache.tuscany.spi.event.RuntimeEventListener;
  * The runtime instantiation of an SCA composite component. Composites may contain child components, offer
  * services, and have references
  *
- * @version $Rev: 393708 $ $Date: 2006-04-12 21:29:05 -0700 (Wed, 12 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public interface CompositeComponent<T> extends Component<T>, RuntimeEventListener {
     /**

@@ -23,7 +23,7 @@ import org.apache.tuscany.spi.ObjectFactory;
 /**
  * Creates new instances of a Java class, calling a given set of injectors to configure the instance
  *
- * @version $Rev: 399488 $ $Date: 2006-05-03 16:20:27 -0700 (Wed, 03 May 2006) $
+ * @version $Rev$ $Date$
  * @see Injector
  */
 public class PojoObjectFactory<T> implements ObjectFactory<T> {

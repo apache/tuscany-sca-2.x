@@ -18,7 +18,7 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  * Default implementation of a reference context configured with the {@link
  * org.apache.tuscany.core.system.model.SystemBinding}
  *
- * @version $Rev: 399991 $ $Date: 2006-05-04 23:44:07 -0700 (Thu, 04 May 2006) $
+ * @version $Rev$ $Date$
  */
 public class SystemReferenceImpl<T> extends AbstractSCAObject<T> implements SystemReference<T> {
 

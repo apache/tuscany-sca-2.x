@@ -25,7 +25,7 @@ import org.apache.tuscany.spi.monitor.MonitorFactory;
 /**
  * Implementation of a {@link MonitorFactory} that produces implementations that simply return.
  *
- * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
+ * @version $Rev$ $Date$
  */
 public class NullMonitorFactory implements MonitorFactory {
     public <T> T getMonitor(Class<T> monitorInterface) {

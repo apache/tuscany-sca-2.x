@@ -19,7 +19,7 @@ package org.apache.tuscany.spi.loader;
 /**
  * Exception that indicates that an implementation was not provided.
  *
- * @version $Rev: 392764 $ $Date: 2006-04-09 09:13:55 -0700 (Sun, 09 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public class MissingImplementationException extends LoaderException {
     private static final long serialVersionUID = -2917278473974880124L;

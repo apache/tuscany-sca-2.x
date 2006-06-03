@@ -21,7 +21,7 @@ package org.apache.tuscany.spi.monitor;
  * monitoring scheme. For example, a implementation may create versions that emit appropriate logging events
  * or which send notifications to a management API.
  *
- * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
+ * @version $Rev$ $Date$
  */
 public interface MonitorFactory {
     /**

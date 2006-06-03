@@ -12,7 +12,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  * Caches component instances that do not need to be resolved for every wire, e.g. an wire originating from a
  * lesser scope intended for a target with a wider scope
  *
- * @version $Rev: 377006 $ $Date: 2006-02-11 09:41:59 -0800 (Sat, 11 Feb 2006) $
+ * @version $Rev$ $Date$
  */
 public class MockStaticInvoker implements TargetInvoker {
 

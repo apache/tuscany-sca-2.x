@@ -21,7 +21,7 @@ import org.apache.tuscany.spi.wire.MessageHandler;
 /**
  * Contains a target-side invocation chain
  *
- * @version $Rev: 394379 $ $Date: 2006-04-15 15:01:36 -0700 (Sat, 15 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public class InboundInvocationChainImpl extends InvocationChainImpl implements InboundInvocationChain {
 

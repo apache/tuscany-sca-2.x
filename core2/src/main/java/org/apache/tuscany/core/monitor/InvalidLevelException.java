@@ -19,7 +19,7 @@ package org.apache.tuscany.core.monitor;
 /**
  * Exception indicating an invalid log level has been passed.
  *
- * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
+ * @version $Rev$ $Date$
  */
 public class InvalidLevelException extends IllegalArgumentException {
     private static final long serialVersionUID = 7767234706427841915L;

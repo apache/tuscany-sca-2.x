@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 /**
  * Default implementation of an outbound wire
  *
- * @version $Rev: 394431 $ $Date: 2006-04-15 21:27:44 -0700 (Sat, 15 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public class OutboundWireImpl<T> implements OutboundWire<T> {
 

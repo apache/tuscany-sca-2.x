@@ -21,7 +21,7 @@ import org.apache.tuscany.spi.CoreRuntimeException;
 /**
  * Denotes an error while performing an operation on a target component implementation instance or proxy
  *
- * @version $Rev: 368822 $ $Date: 2006-01-13 10:54:38 -0800 (Fri, 13 Jan 2006) $
+ * @version $Rev$ $Date$
  */
 public class TargetException extends CoreRuntimeException {
 

@@ -3,7 +3,7 @@ package org.apache.tuscany.spi;
 /**
  * Denotes an error creating a new object instance
  *
- * @version $Rev: 368822 $ $Date: 2006-01-13 10:54:38 -0800 (Fri, 13 Jan 2006) $
+ * @version $Rev$ $Date$
  */
 public class ObjectCreationException extends TuscanyRuntimeException {
     private static final long serialVersionUID = -6423113430265944499L;
