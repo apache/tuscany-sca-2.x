@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
-import org.apache.tuscany.core.context.AutowireComponent;
+import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.wire.OutboundAutowire;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.context.TargetException;

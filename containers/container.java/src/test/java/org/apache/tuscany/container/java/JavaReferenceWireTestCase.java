@@ -11,7 +11,7 @@ import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.container.java.mock.components.TargetImpl;
-import org.apache.tuscany.core.context.scope.ModuleScopeContext;
+import org.apache.tuscany.core.component.scope.ModuleScopeContext;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;

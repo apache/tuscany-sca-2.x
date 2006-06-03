@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.core.composite.builder;
 
-import org.apache.tuscany.core.context.CompositeComponentImpl;
+import org.apache.tuscany.core.component.CompositeComponentImpl;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.context.Component;
 import org.apache.tuscany.spi.context.CompositeComponent;

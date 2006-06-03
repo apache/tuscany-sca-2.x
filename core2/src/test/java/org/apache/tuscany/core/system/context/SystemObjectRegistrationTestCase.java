@@ -2,8 +2,8 @@ package org.apache.tuscany.core.system.context;
 
 import javax.naming.ConfigurationException;
 
-import org.apache.tuscany.core.context.event.ModuleStart;
-import org.apache.tuscany.core.context.event.ModuleStop;
+import org.apache.tuscany.core.component.event.ModuleStart;
+import org.apache.tuscany.core.component.event.ModuleStop;
 import org.apache.tuscany.spi.context.DuplicateNameException;
 import junit.framework.TestCase;
 

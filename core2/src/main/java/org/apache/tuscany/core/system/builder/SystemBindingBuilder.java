@@ -1,6 +1,6 @@
 package org.apache.tuscany.core.system.builder;
 
-import org.apache.tuscany.core.context.AutowireComponent;
+import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.system.context.SystemReferenceImpl;
 import org.apache.tuscany.core.system.context.SystemService;
 import org.apache.tuscany.core.system.context.SystemServiceImpl;

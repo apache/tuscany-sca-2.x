@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 
 import junit.framework.Assert;
 import org.apache.tuscany.container.java.mock.MockContextFactory;
-import org.apache.tuscany.core.context.scope.ModuleScopeContext;
+import org.apache.tuscany.core.component.scope.ModuleScopeContext;
 import org.apache.tuscany.spi.context.ScopeContext;
 import org.apache.tuscany.spi.model.Scope;
 import org.jmock.MockObjectTestCase;

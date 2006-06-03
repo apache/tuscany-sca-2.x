@@ -1,6 +1,6 @@
 package org.apache.tuscany.core.system.context;
 
-import org.apache.tuscany.core.context.AutowireComponent;
+import org.apache.tuscany.core.component.AutowireComponent;
 
 /**
  * Marker type for system composite contexts

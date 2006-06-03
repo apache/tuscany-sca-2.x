@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.core.context.AutowireComponent;
+import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.injection.ContextInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;

@@ -1,8 +1,8 @@
 package org.apache.tuscany.core.system.context;
 
-import org.apache.tuscany.core.context.AbstractCompositeComponent;
-import org.apache.tuscany.core.context.AutowireComponent;
-import org.apache.tuscany.core.context.AutowireResolutionException;
+import org.apache.tuscany.core.component.AbstractCompositeComponent;
+import org.apache.tuscany.core.component.AutowireComponent;
+import org.apache.tuscany.core.component.AutowireResolutionException;
 import org.apache.tuscany.spi.context.CompositeComponent;
 
 /**

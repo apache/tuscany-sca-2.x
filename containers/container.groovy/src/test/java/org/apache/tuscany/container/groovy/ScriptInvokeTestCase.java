@@ -5,7 +5,7 @@ import java.util.List;
 
 import groovy.lang.GroovyObject;
 import org.apache.tuscany.container.groovy.mock.Greeting;
-import org.apache.tuscany.core.context.scope.ModuleScopeContext;
+import org.apache.tuscany.core.component.scope.ModuleScopeContext;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.test.ArtifactFactory;
 import org.jmock.MockObjectTestCase;

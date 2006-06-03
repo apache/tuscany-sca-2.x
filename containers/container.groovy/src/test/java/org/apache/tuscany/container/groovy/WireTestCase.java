@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.container.groovy.mock.Greeting;
-import org.apache.tuscany.core.context.scope.ModuleScopeContext;
+import org.apache.tuscany.core.component.scope.ModuleScopeContext;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
