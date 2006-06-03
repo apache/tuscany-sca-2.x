@@ -25,24 +25,11 @@
     <name>Tuscany Jetty HTTP Service</name>
     <description>Tuscany Jetty HTTP Service</description>
     <version>SNAPSHOT</version>
-   <!-- <repositories>
-	 <repository>
-		<id>mortbay-release-repo</id>
-		<name>MortBay Release Repo</name>
-		<url>http://jetty.mortbay.org/maven2/release</url>	
-	 </repository>
-    </repositories>
--->
+
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany</groupId>
-            <artifactId>tuscany-core</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany</groupId>
-            <artifactId>launcher</artifactId>
+            <artifactId>tuscany-spi</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
@@ -52,10 +39,16 @@
             <version>6.0.0beta16</version>
             <scope>compile</scope>
         </dependency>
-		  <dependency>
+        <dependency>
             <groupId>tomcat</groupId>
             <artifactId>servlet-api</artifactId>
             <version>5.0.18</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
+            <version>1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
