@@ -15,8 +15,6 @@ public class EquinoxStartTestCase extends TestCase {
         FrameworkAdaptor adaptor = new DefaultAdaptor(new String[]{});
         OSGi osgi = new OSGi(adaptor);
         osgi.launch();
-//        FileInputStream stream = new FileInputStream("/Users/jmarino/workspace/tuscany/tuscany/tuscany/sandbox/jboynes/sca/runtime/equinox/src/test/resources/http.jar");
-//        osgi.getBundleContext().installBundle("foo", stream);
         for (Bundle bundle : osgi.getBundleContext().getBundles()) {
 
         }
