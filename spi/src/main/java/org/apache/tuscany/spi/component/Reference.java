@@ -8,7 +8,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
- * Manages an SCA reference configured for a binding
+ * Manages an SCA reference configured with a binding
  *
  * @version $Rev: 399161 $ $Date: 2006-05-02 23:09:37 -0700 (Tue, 02 May 2006) $
  */
