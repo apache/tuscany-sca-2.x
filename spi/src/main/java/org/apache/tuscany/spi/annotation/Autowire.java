@@ -15,6 +15,7 @@ package org.apache.tuscany.spi.annotation;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
@@ -24,7 +25,7 @@ import java.lang.annotation.Target;
  *
  * @version $Rev: 395110 $ $Date: 2006-04-18 19:32:30 -0700 (Tue, 18 Apr 2006) $
  */
-@Target({METHOD, FIELD})
+@Target({METHOD, FIELD, PARAMETER})
 @Retention(RUNTIME)
 public @interface Autowire {
 
