@@ -33,6 +33,7 @@
         <module>containers</module>
         <module>commands/launcher</module>
         <module>runtime/standalone</module>
+        <module>runtime/equinox</module>
         <!--
         <module>databinding</module>
         <module>bindings</module>
