@@ -23,7 +23,7 @@ import org.apache.tuscany.spi.model.Scope;
 /**
  * Represents the base SCA artifact type in an assembly
  *
- * @version $Rev: 396520 $ $Date: 2006-04-24 12:38:07 +0100 (Mon, 24 Apr 2006) $
+ * @version $Rev$ $Date$
  */
 public interface SCAObject<T> extends EventPublisher, Lifecycle {
 
