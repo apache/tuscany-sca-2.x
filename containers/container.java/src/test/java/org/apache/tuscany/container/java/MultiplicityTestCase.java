@@ -27,7 +27,7 @@ public class MultiplicityTestCase extends TestCase {
 //        CompositeComponent context = createContext();
 //        context.start();
 //        context.registerModelObject(MockContextFactory.createModuleWithWiredComponents(Scope.MODULE, Scope.MODULE));
-//        context.publish(new ModuleStart(this));
+//        context.publish(new CompositeStart(this));
 //        Source source = (Source) ((AtomicComponent) context.getContext("source")).getTargetInstance();
 //        Assert.assertNotNull(source);
 //        Target target = (Target) ((AtomicComponent)context.getContext("target")).getTargetInstance();

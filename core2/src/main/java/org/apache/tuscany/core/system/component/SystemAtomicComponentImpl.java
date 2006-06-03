@@ -1,4 +1,4 @@
-package org.apache.tuscany.core.system.context;
+package org.apache.tuscany.core.system.component;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -16,6 +16,7 @@ import org.apache.tuscany.core.injection.InvalidAccessorException;
 import org.apache.tuscany.core.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.system.wire.SystemOutboundWire;
+import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.context.CompositeComponent;
 import org.apache.tuscany.spi.context.ScopeContext;

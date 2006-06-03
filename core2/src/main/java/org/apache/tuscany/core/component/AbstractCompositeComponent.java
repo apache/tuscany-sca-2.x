@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.tuscany.core.system.context.SystemService;
+import org.apache.tuscany.core.system.component.SystemService;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.context.AtomicComponent;

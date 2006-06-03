@@ -17,8 +17,8 @@
 package org.apache.tuscany.core.system.builder;
 
 import org.apache.tuscany.core.component.AutowireComponent;
-import org.apache.tuscany.core.system.context.SystemCompositeComponent;
-import org.apache.tuscany.core.system.context.SystemCompositeComponentImpl;
+import org.apache.tuscany.core.system.component.SystemCompositeComponent;
+import org.apache.tuscany.core.system.component.SystemCompositeComponentImpl;
 import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;

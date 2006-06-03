@@ -5,15 +5,15 @@ import org.apache.tuscany.core.builder.Connector;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.ModuleScopeContext;
-import org.apache.tuscany.core.component.event.ModuleStart;
-import org.apache.tuscany.core.component.event.ModuleStop;
+import org.apache.tuscany.core.component.event.CompositeStart;
+import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.factories.MockComponentFactory;
 import org.apache.tuscany.core.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.system.builder.SystemComponentBuilder;
-import org.apache.tuscany.core.system.context.SystemCompositeComponent;
-import org.apache.tuscany.core.system.context.SystemCompositeComponentImpl;
+import org.apache.tuscany.core.system.component.SystemCompositeComponent;
+import org.apache.tuscany.core.system.component.SystemCompositeComponentImpl;
 import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.model.SystemImplementation;
 import org.apache.tuscany.spi.context.AtomicComponent;
@@ -59,13 +59,13 @@ public class SystemBuildersTestCase extends TestCase {
         connector.connect(sourceComponent);
         connector.connect(targetComponent);
         parent.start();
-        scope.onEvent(new ModuleStart(this, parent));
+        scope.onEvent(new CompositeStart(this, parent));
         Source source = (Source) parent.getChild("source").getService();
         assertNotNull(source);
         Target target = (Target) parent.getChild("target").getService();
         assertNotNull(target);
         assertSame(target, source.getTarget());
-        scope.onEvent(new ModuleStop(this, parent));
+        scope.onEvent(new CompositeStop(this, parent));
         parent.stop();
         scope.stop();
     }
@@ -102,13 +102,13 @@ public class SystemBuildersTestCase extends TestCase {
         connector.connect(sourceComponent);
         grandParent.register(parent);
         grandParent.start();
-        scope.onEvent(new ModuleStart(this, parent));
+        scope.onEvent(new CompositeStart(this, parent));
         Source source = (Source) parent.getChild("source").getService();
         assertNotNull(source);
         Target target = (Target) parent.getChild("target").getService();
         assertNotNull(target);
         assertSame(target, source.getTarget());
-        scope.onEvent(new ModuleStop(this, parent));
+        scope.onEvent(new CompositeStop(this, parent));
         grandParent.stop();
         scope.stop();
     }
@@ -143,13 +143,13 @@ public class SystemBuildersTestCase extends TestCase {
         String serviceName = service.getOutboundWire().getTargetName().getPortName();
         connector.connect(service.getOutboundWire(), sourceComponent.getInboundWire(serviceName), parent, true);
         parent.start();
-        scope.onEvent(new ModuleStart(this, parent));
+        scope.onEvent(new CompositeStart(this, parent));
         Target target = (Target) parent.getChild("serviceDefinition").getService();
         assertNotNull(target);
         Target target2 = (Target) parent.getChild("target").getService();
         assertNotNull(target);
         assertSame(target, target2);
-        scope.onEvent(new ModuleStop(this, parent));
+        scope.onEvent(new CompositeStop(this, parent));
         parent.stop();
         scope.stop();
 
@@ -188,13 +188,13 @@ public class SystemBuildersTestCase extends TestCase {
 //        connector.connect(serviceContext.getOutboundWire(), referenceContext.getInboundWire(),true);
 //        grandParent.registerContext(parent);
 //        grandParent.start();
-//        scope.onEvent(new ModuleStart(this, parent));
+//        scope.onEvent(new CompositeStart(this, parent));
 //        Target target = (Target) parent.getContext("service").getService();
 //        assertNotNull(target);
 //        Target target2 = (Target) parent.getContext("target").getService();
 //        assertNotNull(target);
 //        assertSame(target, target2);
-//        scope.onEvent(new ModuleStop(this, parent));
+//        scope.onEvent(new CompositeStop(this, parent));
 //        parent.stop();
 //        scope.stop();
 

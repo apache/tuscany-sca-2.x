@@ -7,7 +7,7 @@ import org.apache.tuscany.core.component.scope.StatelessScopeContext;
 import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.mock.component.StatelessComponent;
 import org.apache.tuscany.core.mock.component.StatelessComponentImpl;
-import org.apache.tuscany.core.system.context.SystemAtomicComponent;
+import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.context.WorkContext;
 
 /**

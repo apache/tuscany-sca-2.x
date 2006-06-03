@@ -1,4 +1,4 @@
-package org.apache.tuscany.core.system.context;
+package org.apache.tuscany.core.system.component;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -14,6 +14,7 @@ import org.apache.tuscany.spi.context.CompositeComponent;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 
 /**
  * An {@link org.apache.tuscany.spi.context.AtomicComponent} used when registering objects directly into a

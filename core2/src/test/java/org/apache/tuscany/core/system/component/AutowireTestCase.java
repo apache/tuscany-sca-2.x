@@ -1,10 +1,15 @@
-package org.apache.tuscany.core.system.context;
+package org.apache.tuscany.core.system.component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
+import org.apache.tuscany.core.system.component.SystemAtomicComponent;
+import org.apache.tuscany.core.system.component.SystemCompositeComponent;
+import org.apache.tuscany.core.system.component.SystemCompositeComponentImpl;
+import org.apache.tuscany.core.system.component.SystemReference;
+import org.apache.tuscany.core.system.component.SystemService;
 
 /**
  * Performs basic autowiring tests to composite artifacts

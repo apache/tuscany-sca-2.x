@@ -9,7 +9,7 @@ import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.RequestScopeContext;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.system.context.SystemAtomicComponent;
+import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.mock.factories.MockContextFactory;
 
 /**

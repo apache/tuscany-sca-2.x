@@ -6,11 +6,11 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.ModuleScopeContext;
-import org.apache.tuscany.core.component.event.ModuleStart;
-import org.apache.tuscany.core.component.event.ModuleStop;
+import org.apache.tuscany.core.component.event.CompositeStart;
+import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.mock.factories.MockContextFactory;
-import org.apache.tuscany.core.system.context.SystemAtomicComponent;
+import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.context.WorkContext;
 
 /**
@@ -30,20 +30,20 @@ public class ModuleScopeRestartTestCase extends TestCase {
                 InitDestroyOnce.class, false, initInvoker, destroyInvoker, null,null);
         context.start();
 
-        scope.onEvent(new ModuleStart(this, null));
+        scope.onEvent(new CompositeStart(this, null));
         Object instance = context.getService();
         assertSame(instance, context.getService());
 
-        scope.onEvent(new ModuleStop(this, null));
+        scope.onEvent(new CompositeStop(this, null));
         scope.stop();
         context.stop();
 
         scope.start();
-        scope.onEvent(new ModuleStart(this, null));
+        scope.onEvent(new CompositeStart(this, null));
         scope.register(context);
         context.start();
         assertNotSame(instance, context.getService());
-        scope.onEvent(new ModuleStop(this, null));
+        scope.onEvent(new CompositeStop(this, null));
         scope.stop();
         context.stop();
     }

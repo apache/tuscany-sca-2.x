@@ -1,4 +1,4 @@
-package org.apache.tuscany.core.system.context;
+package org.apache.tuscany.core.system.component;
 
 import org.apache.tuscany.core.system.wire.SystemOutboundWire;
 import org.apache.tuscany.spi.ObjectCreationException;

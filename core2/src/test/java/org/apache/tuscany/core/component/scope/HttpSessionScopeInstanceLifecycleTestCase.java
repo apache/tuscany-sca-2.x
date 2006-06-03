@@ -13,7 +13,7 @@ import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;
 import org.apache.tuscany.core.mock.component.RequestScopeDestroyOnlyComponent;
 import org.apache.tuscany.core.mock.component.RequestScopeInitDestroyComponent;
 import org.apache.tuscany.core.mock.component.RequestScopeInitOnlyComponent;
-import org.apache.tuscany.core.system.context.SystemAtomicComponent;
+import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.context.WorkContext;
 
 /**

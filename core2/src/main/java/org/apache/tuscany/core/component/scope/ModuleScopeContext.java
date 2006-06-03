@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.AbstractLifecycle;
-import org.apache.tuscany.core.component.event.ModuleStart;
-import org.apache.tuscany.core.component.event.ModuleStop;
+import org.apache.tuscany.core.component.event.CompositeStart;
+import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.component.scope.AbstractScopeContext;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.CoreRuntimeException;
@@ -47,10 +47,10 @@ public class ModuleScopeContext extends AbstractScopeContext {
 
     public void onEvent(Event event) {
         checkInit();
-        if (event instanceof ModuleStart) {
+        if (event instanceof CompositeStart) {
             eagerInitContexts();
             lifecycleState = RUNNING;
-        } else if (event instanceof ModuleStop) {
+        } else if (event instanceof CompositeStop) {
             shutdownContexts();
         }
      }

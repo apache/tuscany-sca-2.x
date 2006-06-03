@@ -16,8 +16,8 @@ import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.HttpSessionScopeContext;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
-import org.apache.tuscany.core.component.event.ModuleStart;
-import org.apache.tuscany.core.component.event.ModuleStop;
+import org.apache.tuscany.core.component.event.CompositeStart;
+import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
 import org.apache.tuscany.core.component.scope.ModuleScopeContext;
@@ -134,7 +134,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
 
         ModuleScopeContext scope = new ModuleScopeContext(workContext);
         scope.start();
-        scope.onEvent(new ModuleStart(this, null));
+        scope.onEvent(new CompositeStart(this, null));
         final OutboundWire<Target> wire = getWire(scope);
         Target service = wireService.createProxy(wire);
         Target target = wireService.createProxy(wire);
@@ -142,7 +142,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
         service.setString("foo");
         assertEquals("foo", service.getString());
         assertEquals("foo", target.getString());
-        scope.onEvent(new ModuleStop(this, null));
+        scope.onEvent(new CompositeStop(this, null));
         scope.stop();
     }
 

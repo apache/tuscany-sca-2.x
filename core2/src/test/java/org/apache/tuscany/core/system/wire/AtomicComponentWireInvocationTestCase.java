@@ -12,7 +12,7 @@ import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.apache.tuscany.core.mock.factories.MockContextFactory;
-import org.apache.tuscany.core.system.context.SystemAtomicComponent;
+import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.jmock.Mock;

@@ -1,7 +1,8 @@
-package org.apache.tuscany.core.system.context;
+package org.apache.tuscany.core.system.component;
 
 import org.apache.tuscany.core.system.wire.SystemInboundWire;
 import org.apache.tuscany.core.system.wire.SystemOutboundWire;
+import org.apache.tuscany.core.system.component.SystemService;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.context.AbstractSCAObject;
 import org.apache.tuscany.spi.context.CompositeComponent;

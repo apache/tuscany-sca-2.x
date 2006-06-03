@@ -1,9 +1,11 @@
-package org.apache.tuscany.core.system.context;
+package org.apache.tuscany.core.system.component;
 
 import javax.naming.ConfigurationException;
 
-import org.apache.tuscany.core.component.event.ModuleStart;
-import org.apache.tuscany.core.component.event.ModuleStop;
+import org.apache.tuscany.core.component.event.CompositeStart;
+import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.system.component.SystemCompositeComponent;
+import org.apache.tuscany.core.system.component.SystemCompositeComponentImpl;
 import org.apache.tuscany.spi.context.DuplicateNameException;
 import junit.framework.TestCase;
 
@@ -42,11 +44,11 @@ public class SystemObjectRegistrationTestCase extends TestCase {
         super.setUp();
         systemContext = new SystemCompositeComponentImpl(null, null, null);
         systemContext.start();
-        systemContext.publish(new ModuleStart(this,null));
+        systemContext.publish(new CompositeStart(this,null));
     }
 
     protected void tearDown() throws Exception {
-        systemContext.publish(new ModuleStop(this,null));
+        systemContext.publish(new CompositeStop(this,null));
         systemContext.stop();
         super.tearDown();
     }

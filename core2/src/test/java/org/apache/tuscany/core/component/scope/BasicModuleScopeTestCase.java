@@ -3,13 +3,13 @@ package org.apache.tuscany.core.component.scope;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.ModuleScopeContext;
-import org.apache.tuscany.core.component.event.ModuleStop;
+import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.mock.component.ModuleScopeInitDestroyComponent;
-import org.apache.tuscany.core.system.context.SystemAtomicComponent;
-import org.apache.tuscany.core.system.context.SystemAtomicComponentImpl;
+import org.apache.tuscany.core.system.component.SystemAtomicComponent;
+import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.context.WorkContext;
 import org.apache.tuscany.spi.context.ScopeContext;
@@ -34,7 +34,7 @@ public class BasicModuleScopeTestCase extends TestCase {
         assertFalse(o1.isDestroyed());
         ModuleScopeInitDestroyComponent o2 = (ModuleScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertEquals(o1, o2);
-        scopeContext.onEvent(new ModuleStop(this, null));
+        scopeContext.onEvent(new CompositeStop(this, null));
         assertTrue(o1.isDestroyed());
         scopeContext.stop();
     }
@@ -53,7 +53,7 @@ public class BasicModuleScopeTestCase extends TestCase {
 
         ModuleScopeInitDestroyComponent o2 = (ModuleScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertSame(o1, o2);
-        scopeContext.onEvent(new ModuleStop(this, null));
+        scopeContext.onEvent(new CompositeStop(this, null));
         assertTrue(o1.isDestroyed());
         scopeContext.stop();
     }

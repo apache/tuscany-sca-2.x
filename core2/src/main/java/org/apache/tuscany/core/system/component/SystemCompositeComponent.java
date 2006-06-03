@@ -1,6 +1,7 @@
-package org.apache.tuscany.core.system.context;
+package org.apache.tuscany.core.system.component;
 
 import org.apache.tuscany.core.component.AutowireComponent;
+import org.apache.tuscany.core.system.component.ObjectRegistrationException;
 
 /**
  * Marker type for system composite contexts

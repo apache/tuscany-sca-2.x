@@ -2,8 +2,8 @@ package org.apache.tuscany.core.system.wire;
 
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
-import org.apache.tuscany.core.system.context.SystemService;
-import org.apache.tuscany.core.system.context.SystemServiceImpl;
+import org.apache.tuscany.core.system.component.SystemService;
+import org.apache.tuscany.core.system.component.SystemServiceImpl;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 

@@ -1,9 +1,9 @@
 package org.apache.tuscany.core.system.builder;
 
 import org.apache.tuscany.core.component.AutowireComponent;
-import org.apache.tuscany.core.system.context.SystemReferenceImpl;
-import org.apache.tuscany.core.system.context.SystemService;
-import org.apache.tuscany.core.system.context.SystemServiceImpl;
+import org.apache.tuscany.core.system.component.SystemReferenceImpl;
+import org.apache.tuscany.core.system.component.SystemService;
+import org.apache.tuscany.core.system.component.SystemServiceImpl;
 import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.wire.SystemInboundWireImpl;
 import org.apache.tuscany.core.system.wire.SystemOutboundAutowire;

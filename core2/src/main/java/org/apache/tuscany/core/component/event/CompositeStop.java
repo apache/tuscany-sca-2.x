@@ -2,14 +2,14 @@ package org.apache.tuscany.core.component.event;
 
 import org.apache.tuscany.spi.context.CompositeComponent;
 import org.apache.tuscany.core.component.event.AbstractEvent;
-import org.apache.tuscany.core.component.event.ModuleEvent;
+import org.apache.tuscany.core.component.event.CompositeEvent;
 
 /**
- * Propagated when a module stops
+ * Propagated when a composite stops
  *
  * @version $$Rev$$ $$Date$$
  */
-public class ModuleStop extends AbstractEvent implements ModuleEvent {
+public class CompositeStop extends AbstractEvent implements CompositeEvent {
 
     private CompositeComponent component;
 
@@ -18,12 +18,12 @@ public class ModuleStop extends AbstractEvent implements ModuleEvent {
      * @param source the source of the event
      * @param ctx the composite component associated the module being stopped
      */
-    public ModuleStop(Object source, CompositeComponent ctx) {
+    public CompositeStop(Object source, CompositeComponent ctx) {
         super(source);
         component = ctx;
     }
 
-    public CompositeComponent getContext(){
+    public CompositeComponent getComposite(){
         return component;
     }
 }

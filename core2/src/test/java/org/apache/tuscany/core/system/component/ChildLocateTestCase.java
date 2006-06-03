@@ -1,4 +1,4 @@
-package org.apache.tuscany.core.system.context;
+package org.apache.tuscany.core.system.component;
 
 import junit.framework.TestCase;
 
@@ -19,7 +19,7 @@ public class ChildLocateTestCase extends TestCase {
 //         SystemAtomicComponent context = MockContextFactory.createSystemAtomicContext("source", SourceImpl.class);
 //         scopeContext.register(context);
 //         context.setScopeContext(scopeContext);
-//         scopeContext.publish(new ModuleStart(this, parent));
+//         scopeContext.publish(new CompositeStart(this, parent));
 //
 //         assertNotNull(source);
 //         CompositeComponent composite1 = (CompositeComponent) parent.getContext("child1");
@@ -27,7 +27,7 @@ public class ChildLocateTestCase extends TestCase {
 //         AtomicComponent ctx2 = (AtomicComponent) composite2.getContext("source");
 //         Source source2 = (Source) ctx2.getInstance();
 //         assertSame(source, source2);
-//         scopeContext.onEvent(new ModuleStop(this, parent));
+//         scopeContext.onEvent(new CompositeStop(this, parent));
 //         parent.stop();
 //         scopeContext.stop();
 /////
@@ -42,8 +42,8 @@ public class ChildLocateTestCase extends TestCase {
 //        EntryPoint ep = MockContextFactory.createEPSystemBinding("TestService1EP", ModuleScopeSystemComponent.class, "TestService1", component);
 //        childContext.registerModelObject(component);
 //        childContext.registerModelObject(ep);
-//        childContext.publish(new ModuleStart(this));
+//        childContext.publish(new CompositeStart(this));
 //        Assert.assertNotNull(system.getContext("system.child").getInstance(new QualifiedName("./TestService1EP")));
-//        childContext.publish(new ModuleStop(this));
+//        childContext.publish(new CompositeStop(this));
     }
 }
