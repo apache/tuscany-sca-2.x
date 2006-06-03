@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A specialization of component type for composite components
+ *
  * @version $Rev$ $Date$
  */
 public class CompositeComponentType<S extends ServiceDefinition, R extends ReferenceDefinition, P extends Property<?>> extends ComponentType<S, R, P> {

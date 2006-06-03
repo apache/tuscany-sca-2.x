@@ -26,6 +26,8 @@ import javax.wsdl.extensions.ExtensionRegistry;
 import javax.xml.namespace.QName;
 
 /**
+ * A service for caching WSDLs
+ *
  * @version $Rev$ $Date$
  */
 public interface WSDLDefinitionRegistry {

@@ -12,7 +12,7 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 
 /**
- * An outbound wire that relies on the runtime autowire algorithm to resolve a target instance
+ * A specialization of <code>OutboundAutowire</code> that returns a direct reference to the target
  *
  * @version $$Rev$$ $$Date$$
  */

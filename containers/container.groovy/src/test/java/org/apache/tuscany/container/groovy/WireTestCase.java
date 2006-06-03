@@ -76,7 +76,7 @@ public class WireTestCase extends MockObjectTestCase {
         }
         scope.register(context);
         context.addOutboundWire(wire);
-        Greeting greeting = context.getService();
+        Greeting greeting = context.getServiceInstance();
         assertEquals("foo", greeting.greet("foo"));
         scope.stop();
     }

@@ -16,7 +16,7 @@ public class SystemObjectRegistrationTestCase extends TestCase {
     public void testRegistration() throws Exception {
         MockComponent instance = new MockComponent();
         systemContext.registerJavaObject("foo", MockComponent.class, instance);
-        MockComponent resolvedInstance = (MockComponent) systemContext.getChild("foo").getService();
+        MockComponent resolvedInstance = (MockComponent) systemContext.getChild("foo").getServiceInstance();
         assertSame(instance, resolvedInstance);
     }
 

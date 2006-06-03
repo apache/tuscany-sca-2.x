@@ -17,6 +17,8 @@
 package org.apache.tuscany.spi.model;
 
 /**
+ * Represents a component implementation
+ *
  * @version $Rev$ $Date$
  */
 public abstract class Implementation<T extends ComponentType> extends ModelObject {

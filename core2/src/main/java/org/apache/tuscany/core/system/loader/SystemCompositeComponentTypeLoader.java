@@ -26,6 +26,8 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 
 /**
+ * Loads a system composite component type
+ *
  * @version $Rev$ $Date$
  */
 public class SystemCompositeComponentTypeLoader extends ComponentTypeLoaderExtension<SystemCompositeImplementation> {

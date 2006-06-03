@@ -85,7 +85,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
             if (context == null) {
                 throw new NoSuchBeanDefinitionException("SCA service not found [" + name + "]");
             }
-            return context.getService();
+            return context.getServiceInstance();
         }
 
         public Object getBean(String name, Class requiredType) throws BeansException {
@@ -105,7 +105,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
                 // need null check since Spring may pass in a null
                 throw new BeanNotOfRequiredTypeException(name, requiredType, type);
             }
-            return context.getService();
+            return context.getServiceInstance();
         }
 
         public boolean containsBean(String name) {

@@ -22,7 +22,7 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 
 /**
- * Represents a system composite type.
+ * Represents a system composite type
  *
  * @version $Rev$ $Date$
  */

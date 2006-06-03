@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.composite.loader;
+package org.apache.tuscany.core.composite;
 
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -36,6 +36,8 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
+ * Loads a composite component definition from an XML-based assembly file
+ *
  * @version $Rev$ $Date$
  */
 public class CompositeLoader extends LoaderExtension<CompositeComponentType> {

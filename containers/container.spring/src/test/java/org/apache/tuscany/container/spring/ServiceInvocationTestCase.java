@@ -38,7 +38,7 @@ public class ServiceInvocationTestCase extends TestCase {
             chain.setTargetInvoker(context.createTargetInvoker("foo", chain.getMethod()));
         }
         context.register(service);
-        assertEquals("bar", ((TestBean) context.getChild("fooService").getService()).echo("bar"));
+        assertEquals("bar", ((TestBean) context.getChild("fooService").getServiceInstance()).echo("bar"));
     }
 
 

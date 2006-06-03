@@ -26,6 +26,8 @@ import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 
 /**
+ * Loads a system component type
+ *
  * @version $Rev$ $Date$
  */
 public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<SystemImplementation> {

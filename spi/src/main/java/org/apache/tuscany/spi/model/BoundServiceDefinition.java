@@ -19,6 +19,8 @@ package org.apache.tuscany.spi.model;
 import java.net.URI;
 
 /**
+ * Represents a component service specified in an assembly
+ *
  * @version $Rev$ $Date$
  */
 public class BoundServiceDefinition<B extends Binding> extends ServiceDefinition {

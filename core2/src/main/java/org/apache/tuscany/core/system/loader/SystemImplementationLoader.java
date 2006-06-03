@@ -28,6 +28,8 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 
 /**
+ * Loads information for a system implementation
+ *
  * @version $Rev$ $Date$
  */
 public class SystemImplementationLoader extends LoaderExtension<SystemImplementation> {

@@ -14,6 +14,8 @@ import org.jmock.core.Invocation;
 import org.jmock.core.Stub;
 
 /**
+ * Verfies basic async invocations
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class AsyncInterceptorTestCase extends MockObjectTestCase {

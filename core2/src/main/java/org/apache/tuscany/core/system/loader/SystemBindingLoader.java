@@ -28,6 +28,8 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 
 /**
+ * Loads a system binding specified in an XML-based assembly
+ *
  * @version $Rev$ $Date$
  */
 public class SystemBindingLoader extends LoaderExtension<SystemBinding> {

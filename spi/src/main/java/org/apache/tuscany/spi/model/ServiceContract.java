@@ -17,6 +17,8 @@
 package org.apache.tuscany.spi.model;
 
 /**
+ * Base class representing service contract information
+ *
  * @version $Rev$ $Date$
  */
 public abstract class ServiceContract extends ModelObject {

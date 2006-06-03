@@ -17,6 +17,8 @@
 package org.apache.tuscany.spi.model;
 
 /**
+ * Represents a reference configured with a binding in a composite
+ *
  * @version $Rev$ $Date$
  */
 public class BoundReferenceDefinition<B extends Binding> extends ReferenceDefinition {

@@ -8,6 +8,8 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
 
 /**
+ * Verifies retrieval of standard scope contexts from the default scope registry
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class ScopeRegistryTestCase extends TestCase {

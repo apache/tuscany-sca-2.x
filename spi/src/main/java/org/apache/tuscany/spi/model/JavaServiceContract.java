@@ -17,6 +17,8 @@
 package org.apache.tuscany.spi.model;
 
 /**
+ * Represents a service contract specified using a Java interface
+ *
  * @version $Rev$ $Date$
  */
 public class JavaServiceContract extends ServiceContract {

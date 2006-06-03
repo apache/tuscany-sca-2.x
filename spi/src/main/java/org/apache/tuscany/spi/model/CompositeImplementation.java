@@ -19,6 +19,8 @@ package org.apache.tuscany.spi.model;
 import java.net.URL;
 
 /**
+ * A specialization of an implementation associated with composite components
+ *
  * @version $Rev$ $Date$
  */
 public class CompositeImplementation extends Implementation<CompositeComponentType> {

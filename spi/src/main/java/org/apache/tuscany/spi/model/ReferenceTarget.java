@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Represents the set of targets configured on a reference
+ *
  * @version $Rev$ $Date$
  */
 public class ReferenceTarget extends ModelObject {

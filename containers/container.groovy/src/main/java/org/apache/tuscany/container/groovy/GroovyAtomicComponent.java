@@ -103,7 +103,7 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public T getService() throws TargetException {
+    public T getServiceInstance() throws TargetException {
         //TODO this should return a default service from a wire
         return (T) getTargetInstance();
     }

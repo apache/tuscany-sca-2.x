@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Represents a component specified in an assembly
+ *
  * @version $Rev$ $Date$
  */
 public class ComponentDefinition<I extends Implementation<?>> extends ModelObject {

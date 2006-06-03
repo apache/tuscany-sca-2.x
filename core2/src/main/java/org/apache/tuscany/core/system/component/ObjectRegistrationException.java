@@ -3,6 +3,8 @@ package org.apache.tuscany.core.system.component;
 import org.apache.tuscany.spi.component.ComponentRuntimeException;
 
 /**
+ * Thrown when an error is encountered registering an object
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class ObjectRegistrationException extends ComponentRuntimeException {

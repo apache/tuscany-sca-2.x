@@ -4,6 +4,8 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 
 /**
+ * Creates a new stateless scope context
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class StatelessScopeObjectFactory implements ObjectFactory<StatelessScopeContext> {

@@ -22,9 +22,11 @@ import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
 /**
+ * Verfies specific autowire resolution scenarios
+ *
  * @version $Rev$ $Date$
  */
-public class SystemCompositeComponentTestCase extends MockObjectTestCase {
+public class AutowireResolutionTestCase extends MockObjectTestCase {
     private SystemCompositeComponentImpl<?> context;
     private Mock parent;
     private Mock autowire;

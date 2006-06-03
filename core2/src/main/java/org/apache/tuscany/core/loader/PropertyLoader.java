@@ -28,6 +28,8 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.Property;
 
 /**
+ * Loads a property from an XML-based assembly file
+ *
  * @version $Rev$ $Date$
  */
 public class PropertyLoader extends LoaderExtension<Property> {

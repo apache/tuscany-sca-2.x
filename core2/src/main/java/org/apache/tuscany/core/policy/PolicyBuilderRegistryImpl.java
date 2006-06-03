@@ -13,6 +13,8 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
+ * The default policy builder
+ *
  * @version $Rev$ $Date$
  */
 public class PolicyBuilderRegistryImpl implements PolicyBuilderRegistry {

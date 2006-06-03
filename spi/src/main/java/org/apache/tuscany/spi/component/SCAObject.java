@@ -47,7 +47,7 @@ public interface SCAObject<T> extends EventPublisher, Lifecycle {
      *
      * @throws TargetException if an error occurs retrieving the instance
      */
-    T getService() throws TargetException;
+    T getServiceInstance() throws TargetException;
 
     /**
      * Called to signal that the parent composite has been activated and that the artifact should perform any

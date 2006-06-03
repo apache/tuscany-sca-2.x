@@ -53,7 +53,7 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
         builder.setBuilderRegistry((BuilderRegistry) mock.proxy());
         CompositeComponent component = (CompositeComponent) builder.build(null, componentDefinition, null);
         Service service = (Service) component.getChild("fooService");
-        TestBean bean = (TestBean) service.getService();
+        TestBean bean = (TestBean) service.getServiceInstance();
         assertEquals("foo", bean.echo("foo"));
     }
 

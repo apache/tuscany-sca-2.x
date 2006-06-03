@@ -27,6 +27,8 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.JavaServiceContract;
 
 /**
+ * Loads a Java interface definition from an XML-based assembly file
+ * 
  * @version $Rev$ $Date$
  */
 public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {

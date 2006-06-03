@@ -36,6 +36,8 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.spi.services.wsdl.WSDLDefinitionRegistry;
 
 /**
+ * The default implementation of the runtime WSDL registry
+ *
  * @version $Rev$ $Date$
  */
 public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {

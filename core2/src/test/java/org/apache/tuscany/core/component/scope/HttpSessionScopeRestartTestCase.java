@@ -13,6 +13,7 @@ import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**
+ * Verifies the scope container properly disposes resources and canbe restarted
  * @version $$Rev$$ $$Date$$
  */
 public class HttpSessionScopeRestartTestCase extends TestCase {
@@ -32,8 +33,8 @@ public class HttpSessionScopeRestartTestCase extends TestCase {
         Object session = new Object();
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session);
         scope.onEvent(new HttpSessionStart(this, session));
-        Object instance = context.getService();
-        assertSame(instance, context.getService());
+        Object instance = context.getServiceInstance();
+        assertSame(instance, context.getServiceInstance());
 
         scope.onEvent(new HttpSessionEnd(this, session));
         scope.stop();
@@ -41,9 +42,8 @@ public class HttpSessionScopeRestartTestCase extends TestCase {
 
         scope.start();
         scope.onEvent(new HttpSessionStart(this, session));
-        scope.register(context);
         context.start();
-        assertNotSame(instance, context.getService());
+        assertNotSame(instance, context.getServiceInstance());
         scope.onEvent(new HttpSessionEnd(this, session));
         scope.stop();
         context.stop();

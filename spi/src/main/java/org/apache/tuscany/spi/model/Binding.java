@@ -17,6 +17,8 @@
 package org.apache.tuscany.spi.model;
 
 /**
+ * The base representation of a binding specified in an assembly
+ *
  * @version $Rev$ $Date$
  */
 public abstract class Binding extends ModelObject {

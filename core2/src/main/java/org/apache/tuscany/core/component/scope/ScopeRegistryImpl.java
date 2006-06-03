@@ -11,6 +11,8 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
 
 /**
+ * The default implementation of a scope registry
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class ScopeRegistryImpl implements ScopeRegistry {

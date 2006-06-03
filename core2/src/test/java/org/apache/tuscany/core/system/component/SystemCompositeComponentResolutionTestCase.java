@@ -10,11 +10,13 @@ import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
 /**
+ * Verifies an atomic component can be resolved from its parent
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class SystemCompositeComponentResolutionTestCase extends MockObjectTestCase {
 
-    public void testContextResolution() throws NoSuchMethodException {
+    public void testComponentResolution() throws NoSuchMethodException {
         SystemCompositeComponent parent = new SystemCompositeComponentImpl("foo", null, null);
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -22,12 +24,12 @@ public class SystemCompositeComponentResolutionTestCase extends MockObjectTestCa
         Source originalSource = new SourceImpl();
         Mock mock = mock(SystemAtomicComponent.class);
         mock.stubs().method("getName").will(returnValue("source"));
-        mock.stubs().method("getService").will(returnValue(originalSource));
+        mock.stubs().method("getServiceInstance").will(returnValue(originalSource));
         mock.stubs().method("getServiceInterfaces").will(returnValue(interfaces));
         SystemAtomicComponent context = (SystemAtomicComponent) mock.proxy();
         parent.register(context);
         AtomicComponent ctx = (AtomicComponent) parent.getChild("source");
-        Source source = (Source) ctx.getService();
+        Source source = (Source) ctx.getServiceInstance();
         assertNotNull(source);
     }
 

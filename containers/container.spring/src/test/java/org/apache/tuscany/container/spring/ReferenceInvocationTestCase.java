@@ -28,7 +28,7 @@ public class ReferenceInvocationTestCase extends MockObjectTestCase {
         Mock mock = mock(Reference.class);
         mock.stubs().method("getName").will(returnValue("bar"));
         mock.stubs().method("getInterface").will(returnValue(TestBean.class));
-        mock.expects(atLeastOnce()).method("getService").will(returnValue(referenceTarget));
+        mock.expects(atLeastOnce()).method("getServiceInstance").will(returnValue(referenceTarget));
         Reference reference = (Reference) mock.proxy();
         parent.register(reference);
         ctx.getBean("foo");

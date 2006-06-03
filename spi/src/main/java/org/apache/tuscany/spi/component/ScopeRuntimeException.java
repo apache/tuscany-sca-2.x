@@ -19,7 +19,7 @@ package org.apache.tuscany.spi.component;
 import org.apache.tuscany.spi.CoreRuntimeException;
 
 /**
- * Denotes a general runtime exception encountered by a scope container
+ * Denotes a general runtime exception encountered by a scope context
  *
  * @version $Rev$ $Date$
  */

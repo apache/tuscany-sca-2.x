@@ -4,7 +4,7 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetException;
 
 /**
- * Implementations manage system atomic components
+ * Implementations are specialized atomic components used to provide system services by the runtime
  *
  * @version $$Rev$$ $$Date$$
  */

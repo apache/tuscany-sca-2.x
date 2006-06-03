@@ -17,6 +17,8 @@
 package org.apache.tuscany.spi.model;
 
 /**
+ * The base representation of an atomic component implementation
+ *
  * @version $Rev$ $Date$
  */
 public abstract class AtomicImplementation<T extends ComponentType> extends Implementation<T> {

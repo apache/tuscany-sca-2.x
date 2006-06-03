@@ -60,7 +60,7 @@ public class JavaReferenceWireTestCase extends MockObjectTestCase {
 
         sourceContext.addOutboundWire(wire);
         sourceContext.start();
-        Source source = (Source) sourceContext.getService();
+        Source source = (Source) sourceContext.getServiceInstance();
         assertSame(target, source.getTarget());
         scope.stop();
     }

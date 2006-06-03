@@ -19,6 +19,8 @@ package org.apache.tuscany.spi.model;
 import org.apache.tuscany.spi.ObjectFactory;
 
 /**
+ * Represents a configured component property
+ *
  * @version $Rev$ $Date$
  */
 public class PropertyValue<T> extends ModelObject {

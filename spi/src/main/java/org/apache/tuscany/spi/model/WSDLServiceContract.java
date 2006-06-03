@@ -19,6 +19,8 @@ package org.apache.tuscany.spi.model;
 import javax.wsdl.PortType;
 
 /**
+ * Represents a service contract specified by a WSDL
+ *
  * @version $Rev$ $Date$
  */
 public class WSDLServiceContract extends ServiceContract {

@@ -28,7 +28,7 @@ public class AutowireTestCase extends MockObjectTestCase {
         Source originalSource = new SourceImpl();
         Mock mock = mock(SystemAtomicComponent.class);
         mock.stubs().method("getName").will(returnValue("source"));
-        mock.stubs().method("getService").will(returnValue(originalSource));
+        mock.stubs().method("getServiceInstance").will(returnValue(originalSource));
         mock.stubs().method("getServiceInterfaces").will(returnValue(interfaces));
         SystemAtomicComponent context = (SystemAtomicComponent) mock.proxy();
         parent.register(context);
@@ -54,7 +54,7 @@ public class AutowireTestCase extends MockObjectTestCase {
         Source serviceSource = new SourceImpl();
         Mock mock = mock(SystemService.class);
         mock.stubs().method("getName").will(returnValue("service"));
-        mock.stubs().method("getService").will(returnValue(serviceSource));
+        mock.stubs().method("getServiceInstance").will(returnValue(serviceSource));
         mock.stubs().method("getInterface").will(returnValue(Source.class));
         SystemService serviceContext = (SystemService) mock.proxy();
         parent.register(serviceContext);
@@ -62,7 +62,7 @@ public class AutowireTestCase extends MockObjectTestCase {
         Source atomicSource = new SourceImpl();
         Mock mock2 = mock(SystemAtomicComponent.class);
         mock2.stubs().method("getName").will(returnValue("source"));
-        mock2.stubs().method("getService").will(returnValue(atomicSource));
+        mock2.stubs().method("getServiceInstance").will(returnValue(atomicSource));
         mock2.stubs().method("getServiceInterfaces").will(returnValue(interfaces));
         SystemAtomicComponent context = (SystemAtomicComponent) mock2.proxy();
         parent.register(context);
@@ -83,7 +83,7 @@ public class AutowireTestCase extends MockObjectTestCase {
         Source refSource = new SourceImpl();
         Mock mock = mock(SystemReference.class);
         mock.stubs().method("getName").will(returnValue("service"));
-        mock.stubs().method("getService").will(returnValue(refSource));
+        mock.stubs().method("getServiceInstance").will(returnValue(refSource));
         mock.stubs().method("getInterface").will(returnValue(Source.class));
         SystemReference referenceContext = (SystemReference) mock.proxy();
         parent.register(referenceContext);

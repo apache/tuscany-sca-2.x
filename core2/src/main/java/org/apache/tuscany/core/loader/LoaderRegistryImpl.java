@@ -36,6 +36,8 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
 
 /**
+ * The default implementation of a loader registry
+ *
  * @version $Rev$ $Date$
  */
 public class LoaderRegistryImpl implements LoaderRegistry {

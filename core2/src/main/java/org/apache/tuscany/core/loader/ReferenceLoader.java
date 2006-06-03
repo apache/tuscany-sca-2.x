@@ -32,6 +32,8 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
+ * Loads a reference from an XML-based assembly file
+ *
  * @version $Rev$ $Date$
  */
 public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {

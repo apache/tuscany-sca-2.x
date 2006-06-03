@@ -69,7 +69,7 @@ public class SystemAtomicComponentImpl<T> extends PojoAtomicComponent<T> impleme
         return getTargetInstance();
     }
 
-    public T getService() throws TargetException {
+    public T getServiceInstance() throws TargetException {
         return getTargetInstance();
     }
 

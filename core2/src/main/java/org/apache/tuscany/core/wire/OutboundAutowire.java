@@ -3,7 +3,7 @@ package org.apache.tuscany.core.wire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
- * The source side of an wire configured to autowire
+ * A specialized outbound wire that uses an autowire algorithm to return reference to the target.
  *
  * @version $$Rev$$ $$Date$$
  */

@@ -70,7 +70,7 @@ public class SystemReferenceImpl<T> extends AbstractSCAObject<T> implements Syst
         }
     }
 
-    public T getService() throws TargetException {
+    public T getServiceInstance() throws TargetException {
         return referenceInterface.cast(inboundWire.getTargetService());
     }
 

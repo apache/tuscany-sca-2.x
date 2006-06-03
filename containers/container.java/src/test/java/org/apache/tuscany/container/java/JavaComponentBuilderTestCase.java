@@ -47,7 +47,7 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
         JavaAtomicComponent<Source> ctx = (JavaAtomicComponent<Source>) builder.build(parent, sourceComponentDefinition, deploymentContext);
         deploymentContext.getModuleScope().start();
         ctx.start();
-        Source source = ctx.getService();
+        Source source = ctx.getServiceInstance();
         assertNotNull(source);
         ctx.stop();
     }

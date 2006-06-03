@@ -13,6 +13,8 @@ import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**
+ * Verifies the scope container properly disposes resources and canbe restarted
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class ModuleScopeRestartTestCase extends TestCase {
@@ -30,8 +32,8 @@ public class ModuleScopeRestartTestCase extends TestCase {
         context.start();
 
         scope.onEvent(new CompositeStart(this, null));
-        Object instance = context.getService();
-        assertSame(instance, context.getService());
+        Object instance = context.getServiceInstance();
+        assertSame(instance, context.getServiceInstance());
 
         scope.onEvent(new CompositeStop(this, null));
         scope.stop();
@@ -39,9 +41,8 @@ public class ModuleScopeRestartTestCase extends TestCase {
 
         scope.start();
         scope.onEvent(new CompositeStart(this, null));
-        scope.register(context);
         context.start();
-        assertNotSame(instance, context.getService());
+        assertNotSame(instance, context.getServiceInstance());
         scope.onEvent(new CompositeStop(this, null));
         scope.stop();
         context.stop();

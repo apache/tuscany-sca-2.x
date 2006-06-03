@@ -19,6 +19,8 @@ package org.apache.tuscany.spi.model;
 import java.net.URI;
 
 /**
+ * Represents a wire specified in an assembly
+ *
  * @version $Rev$ $Date$
  */
 public class WireDefinition extends ModelObject {

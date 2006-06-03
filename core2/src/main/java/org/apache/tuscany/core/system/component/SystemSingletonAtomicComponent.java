@@ -56,7 +56,7 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
         return getTargetInstance();
     }
 
-    public S getService() throws TargetException {
+    public S getServiceInstance() throws TargetException {
         return getTargetInstance();
     }
 

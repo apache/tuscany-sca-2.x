@@ -1,6 +1,8 @@
 package org.apache.tuscany.spi.component;
 
 /**
+ * Implementations track information associated with a request as it is processed by the runtime
+ *
  * @version $Rev: 393567 $ $Date: 2006-04-12 11:28:58 -0700 (Wed, 12 Apr 2006) $
  */
 public interface WorkContext {

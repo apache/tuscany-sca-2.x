@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * The base representation of a component type
+ *
  * @version $Rev$ $Date$
  */
 public class ComponentType<S extends ServiceDefinition, R extends ReferenceDefinition, P extends Property<?>> extends ModelObject {

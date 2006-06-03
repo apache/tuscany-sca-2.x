@@ -44,7 +44,7 @@ public class CompositeComponentImpl<T> extends AbstractCompositeComponent<T> {
             if (context instanceof AtomicComponent) {
                 return ((AtomicComponent) context).getServiceInstance(qName.getPortName());
             } else if (context instanceof Service || context instanceof Reference) {
-                return context.getService();
+                return context.getServiceInstance();
             } else {
                 throw new ServiceUnavailableException("Illegal target type [" + name + "]");
             }

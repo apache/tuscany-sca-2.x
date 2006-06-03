@@ -56,7 +56,7 @@ public class SystemServiceImpl<T> extends AbstractSCAObject<T> implements System
         throw new UnsupportedOperationException();
     }
 
-    public T getService() throws TargetException {
+    public T getServiceInstance() throws TargetException {
         return inboundWire.getTargetService();
     }
 

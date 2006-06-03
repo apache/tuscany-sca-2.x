@@ -17,6 +17,8 @@
 package org.apache.tuscany.spi;
 
 /**
+ * Implementations adhere to runtime lifecycle semantics
+ *
  * @version $Rev$ $Date$
  */
 public interface Lifecycle {

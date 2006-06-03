@@ -29,6 +29,8 @@ import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
 /**
+ * Verifies the default loader registry
+ *
  * @version $Rev$ $Date$
  */
 @SuppressWarnings({"CastToIncompatibleInterface"})

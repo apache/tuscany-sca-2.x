@@ -17,6 +17,8 @@
 package org.apache.tuscany.spi.model;
 
 /**
+ * Represents a component reference
+ *
  * @version $Rev$ $Date$
  */
 public class ReferenceDefinition extends ModelObject {

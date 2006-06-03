@@ -19,6 +19,8 @@ package org.apache.tuscany.spi.model;
 import javax.xml.namespace.QName;
 
 /**
+ * A component property
+ *
  * @version $Rev$ $Date$
  */
 public class Property<T> extends ModelObject {

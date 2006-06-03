@@ -112,7 +112,7 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
         return Collections.unmodifiableList(references);
     }
 
-    public T getService() throws TargetException {
+    public T getServiceInstance() throws TargetException {
         return null;  //TODO implement
     }
 
@@ -123,7 +123,7 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
             e.addContextName(getName());
             throw e;
         } else if (context instanceof Service) {
-            return context.getService();
+            return context.getServiceInstance();
         } else {
             IllegalTargetException e = new IllegalTargetException("Target must be a service");
             e.setIdentifier(name);

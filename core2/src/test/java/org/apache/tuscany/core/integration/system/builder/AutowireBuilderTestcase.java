@@ -66,12 +66,12 @@ public class AutowireBuilderTestcase extends TestCase {
 
         grandParent.start();
         scope.onEvent(new CompositeStart(this, parent));
-        Source source = (Source) parent.getChild("source").getService();
+        Source source = (Source) parent.getChild("source").getServiceInstance();
         assertNotNull(source);
-        Target target = (Target) parent.getChild("target").getService();
+        Target target = (Target) parent.getChild("target").getServiceInstance();
         assertNotNull(target);
         assertSame(target, source.getTarget());
-        assertSame(target, grandParent.getChild("target").getService());
+        assertSame(target, grandParent.getChild("target").getServiceInstance());
         scope.onEvent(new CompositeStop(this, parent));
         grandParent.stop();
         scope.stop();
@@ -100,9 +100,9 @@ public class AutowireBuilderTestcase extends TestCase {
 
         parent.start();
         scope.onEvent(new CompositeStart(this, parent));
-        Source source = (Source) parent.getChild("source").getService();
+        Source source = (Source) parent.getChild("source").getServiceInstance();
         assertNotNull(source);
-        Target target = (Target) parent.getChild("target").getService();
+        Target target = (Target) parent.getChild("target").getServiceInstance();
         assertNotNull(target);
         assertSame(target, source.getTarget());
         scope.onEvent(new CompositeStop(this, parent));

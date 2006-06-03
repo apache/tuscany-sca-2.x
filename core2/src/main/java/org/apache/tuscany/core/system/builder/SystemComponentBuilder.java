@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
@@ -33,11 +34,13 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
+ * Produces system atomic components by evaluating an assembly
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class SystemComponentBuilder implements ComponentBuilder<SystemImplementation> {
 
-    public Component<?> build(CompositeComponent<?> parent, ComponentDefinition<SystemImplementation> componentDefinition, DeploymentContext deploymentContext) throws BuilderConfigException {
+    public AtomicComponent<?> build(CompositeComponent<?> parent, ComponentDefinition<SystemImplementation> componentDefinition, DeploymentContext deploymentContext) throws BuilderConfigException {
         assert(parent instanceof AutowireComponent): "Parent must implement " + AutowireComponent.class.getName();
         AutowireComponent autowireContext = (AutowireComponent) parent;
         PojoComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();

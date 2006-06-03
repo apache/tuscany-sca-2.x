@@ -15,6 +15,8 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
+ * A component type specialization for POJO implementations
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceDefinition, P extends Property<?>> extends ComponentType<S, R, P> {

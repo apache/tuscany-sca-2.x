@@ -33,18 +33,18 @@ public class SystemCompositeLifecycleTestCase extends MockObjectTestCase {
         mock.expects(atLeastOnce()).method("start");
         mock.expects(atLeastOnce()).method("stop");
         mock.stubs().method("getName").will(returnValue("source"));
-        mock.stubs().method("getService").will(returnValue(originalSource));
+        mock.stubs().method("getServiceInstance").will(returnValue(originalSource));
         mock.stubs().method("getServiceInterfaces").will(returnValue(interfaces));
         SystemAtomicComponent context = (SystemAtomicComponent) mock.proxy();
         composite.register(context);
 
         AtomicComponent ctx = (AtomicComponent) composite.getChild("source");
-        Source source = (Source) ctx.getService();
+        Source source = (Source) ctx.getServiceInstance();
         assertNotNull(source);
         composite.stop();
         composite.start();
         ctx = (AtomicComponent) composite.getChild("source");
-        Source source2 = (Source) ctx.getService();
+        Source source2 = (Source) ctx.getServiceInstance();
         assertNotNull(source2);
         composite.stop();
 

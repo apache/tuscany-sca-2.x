@@ -34,6 +34,8 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
+ * Verifies the default boostrap deployer
+ *
  * @version $Rev$ $Date$
  */
 public class BootstrapDeployerTestCase extends TestCase {

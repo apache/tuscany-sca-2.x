@@ -9,6 +9,8 @@ import javax.resource.spi.work.Work;
 import junit.framework.TestCase;
 
 /**
+ * Verifies the default work manager implementation used by the runtime
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class DefaultWorkManagerTestCase extends TestCase {

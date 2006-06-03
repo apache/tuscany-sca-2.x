@@ -10,8 +10,7 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 
 /**
- * An outbound wire configured to use the {@link org.apache.tuscany.core.system.model.SystemBinding}. System
- * wires bind directly to their targets without prxying or interposing invocation chains.
+ * Default implementation of a system outbound wire
  *
  * @version $$Rev$$ $$Date$$
  */

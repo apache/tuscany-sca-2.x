@@ -7,6 +7,8 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.spi.ObjectFactory;
 
 /**
+ * Verifies a system atomic component can be started and initialized
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class SystemAtomicComponentTestCase extends TestCase {

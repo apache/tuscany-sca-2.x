@@ -19,6 +19,8 @@ package org.apache.tuscany.core.loader;
 import javax.xml.namespace.QName;
 
 /**
+ * Defines standard constants encountered in an XML-based assembly files
+ *
  * @version $Rev$ $Date$
  */
 public final class AssemblyConstants {

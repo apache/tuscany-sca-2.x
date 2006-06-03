@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.composite.builder;
+package org.apache.tuscany.core.composite;
 
 import org.apache.tuscany.core.component.CompositeComponentImpl;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -34,6 +34,8 @@ import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
+ * Instantiates a composite component from an assembly definition
+ *
  * @version $Rev$ $Date$
  */
 public class CompositeBuilder extends ComponentBuilderExtension<CompositeImplementation> {

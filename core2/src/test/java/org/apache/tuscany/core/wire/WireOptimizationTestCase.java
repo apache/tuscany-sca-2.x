@@ -13,6 +13,8 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
+ * Verifies wire optimization analysis
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class WireOptimizationTestCase extends TestCase {

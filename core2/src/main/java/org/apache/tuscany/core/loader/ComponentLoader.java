@@ -43,6 +43,8 @@ import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 
 /**
+ * Loads a component definition from an XML-based assembly file
+ *
  * @version $Rev$ $Date$
  */
 public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {

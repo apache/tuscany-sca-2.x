@@ -17,6 +17,8 @@
 package org.apache.tuscany.spi.model;
 
 /**
+ * Represents a service offered by a component
+ *
  * @version $Rev$ $Date$
  */
 public class ServiceDefinition extends ModelObject {

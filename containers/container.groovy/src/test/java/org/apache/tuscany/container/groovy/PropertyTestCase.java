@@ -36,7 +36,7 @@ public class PropertyTestCase extends MockObjectTestCase {
         GroovyAtomicComponent<Greeting> context = new GroovyAtomicComponent<Greeting>("source", PropertyTestCase.SCRIPT,
                 services, Scope.MODULE, injectors, null, scope, ArtifactFactory.createWireService());
         scope.register(context);
-        Greeting greeting = context.getService();
+        Greeting greeting = context.getServiceInstance();
         assertEquals("bar", greeting.greet("foo"));
         scope.stop();
     }

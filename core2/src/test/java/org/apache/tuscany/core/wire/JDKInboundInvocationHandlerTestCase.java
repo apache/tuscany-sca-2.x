@@ -14,6 +14,8 @@ import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.jmock.MockObjectTestCase;
 
 /**
+ * Verifies invocations on inbound wires
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class JDKInboundInvocationHandlerTestCase extends MockObjectTestCase {

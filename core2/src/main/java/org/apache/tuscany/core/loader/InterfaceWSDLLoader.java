@@ -31,6 +31,8 @@ import org.apache.tuscany.spi.model.WSDLServiceContract;
 import org.apache.tuscany.spi.services.wsdl.WSDLDefinitionRegistry;
 
 /**
+ * Loads a WSDL interface definition from an XML-based assembly file
+ *
  * @version $Rev$ $Date$
  */
 public class InterfaceWSDLLoader extends LoaderExtension {

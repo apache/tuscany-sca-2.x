@@ -21,7 +21,7 @@ import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 
 /**
- * Contains a source-side invocation pipeline for a service operation.
+ * Contains a outgoing invocation pipeline for a service operation.
  *
  * @version $Rev: 394379 $ $Date: 2006-04-15 15:01:36 -0700 (Sat, 15 Apr 2006) $
  */

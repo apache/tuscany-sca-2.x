@@ -33,6 +33,8 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
+ * Loads a service definition from an XML-based assembly file
+ *
  * @version $Rev$ $Date$
  */
 public class ServiceLoader extends LoaderExtension<ServiceDefinition> {

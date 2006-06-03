@@ -3,6 +3,8 @@ package org.apache.tuscany.spi.wire;
 import org.apache.tuscany.spi.component.TargetException;
 
 /**
+ * The base wire type used to connect references and services
+ *
  * @version $$Rev$$ $$Date$$
  */
 public interface RuntimeWire<T> {

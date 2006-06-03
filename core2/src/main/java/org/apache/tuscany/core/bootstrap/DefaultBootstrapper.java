@@ -21,7 +21,7 @@ import org.apache.tuscany.core.builder.Connector;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
-import org.apache.tuscany.core.composite.loader.CompositeLoader;
+import org.apache.tuscany.core.composite.CompositeLoader;
 import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.core.loader.AssemblyConstants;
 import org.apache.tuscany.core.loader.ComponentLoader;

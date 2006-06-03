@@ -26,6 +26,6 @@ public class SystemServiceComponentWireTestCase extends MockObjectTestCase {
         serviceContext.setInboundWire(wire);
         serviceContext.setOutboundWire(outboundWire);
         wire.setTargetWire(outboundWire);
-        assertSame(target, serviceContext.getService());
+        assertSame(target, serviceContext.getServiceInstance());
     }
 }

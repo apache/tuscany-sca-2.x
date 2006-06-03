@@ -148,7 +148,7 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
             try {
                 if (context instanceof AtomicComponent || context instanceof Reference
                         || context instanceof SystemService) {
-                    return instanceInterface.cast(context.getService());
+                    return instanceInterface.cast(context.getServiceInstance());
                 } else {
                     IllegalTargetException e = new IllegalTargetException("Autowire target must be a system service, atomic, or reference context");
                     e.setIdentifier(instanceInterface.getName());
@@ -176,7 +176,7 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
         SystemService context = autowireExternal.get(instanceInterface);
         if (context != null) {
             try {
-                return instanceInterface.cast(context.getService());
+                return instanceInterface.cast(context.getServiceInstance());
             } catch (CoreRuntimeException e) {
                 e.addContextName(getName());
                 throw e;

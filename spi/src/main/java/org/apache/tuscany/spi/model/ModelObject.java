@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * The base class for assembly model subtypes
+ *
  * @version $Rev$ $Date$
  */
 public abstract class ModelObject {

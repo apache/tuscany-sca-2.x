@@ -48,7 +48,7 @@ public class ServiceExtension<T> extends AbstractSCAObject<T> implements Service
         this.outboundWire = outboundWire;
     }
 
-    public T getService() throws TargetException {
+    public T getServiceInstance() throws TargetException {
         return wireService.createProxy(inboundWire);
 //        if (target == null) {
 //            target = inboundWire.getTargetService();

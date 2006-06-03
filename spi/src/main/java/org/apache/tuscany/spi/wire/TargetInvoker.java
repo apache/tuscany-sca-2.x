@@ -20,17 +20,25 @@ import java.lang.reflect.InvocationTargetException;
 
 /**
  * Implementations are responsible for resolving a target and performing the actual invocation on it, for
- * example, a service component implementation instance or an external service client.
+ * example, a component implementation instance or a service client.
  *
  * @version $Rev: 395162 $ $Date: 2006-04-19 01:07:36 -0700 (Wed, 19 Apr 2006) $
  */
 public interface TargetInvoker extends Cloneable {
 
     /**
-     * Responsible for invoking an operation on a target with the given message
+     * Invokes an operation on a target with the given payload. Used in optmized cases where messagesdo not
+     * need to be flowed such as in non-proxied wires.
+     *
+     * @throws InvocationTargetException
      */
     public Object invokeTarget(Object payload) throws InvocationTargetException;
 
+    /**
+     * Invokes an operation on a target with the given message
+     *
+     * @throws InvocationRuntimeException
+     */
     public Message invoke(Message msg) throws InvocationRuntimeException;
 
 

@@ -17,6 +17,7 @@
 package org.apache.tuscany.spi.model;
 
 /**
+ * Represents the interaction scope specifed for a service
  * @version $Rev$ $Date$
  */
 public enum InteractionScope {

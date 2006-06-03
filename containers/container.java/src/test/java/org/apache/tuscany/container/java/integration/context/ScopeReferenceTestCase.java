@@ -65,8 +65,8 @@ public class ScopeReferenceTestCase extends TestCase {
         scope.onEvent(new CompositeStart(this, null));
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getService();
-        Target target = targetComponent.getService();
+        Source source = sourceComponent.getServiceInstance();
+        Target target = targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -95,8 +95,8 @@ public class ScopeReferenceTestCase extends TestCase {
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getService();
-        Target target = targetComponent.getService();
+        Source source = sourceComponent.getServiceInstance();
+        Target target = targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -110,7 +110,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
-        Target target2 = targetComponent.getService();
+        Target target2 = targetComponent.getServiceInstance();
         assertFalse("foo".equals(target2.getString()));
 
         assertFalse("foo".equals(source.getTarget().getString()));
@@ -143,8 +143,8 @@ public class ScopeReferenceTestCase extends TestCase {
 
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        final Source source = sourceComponent.getService();
-        Target target = targetComponent.getService();
+        final Source source = sourceComponent.getServiceInstance();
+        Target target = targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -156,7 +156,7 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Target target2 = targetComponent.getService();
+                Target target2 = targetComponent.getServiceInstance();
                 assertFalse("foo".equals(target2.getString()));
                 assertFalse("foo".equals(source.getTarget().getString()));
                 source.getTarget().setString("bar");
@@ -191,14 +191,14 @@ public class ScopeReferenceTestCase extends TestCase {
 
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getService();
-        Target target = targetComponent.getService();
+        Source source = sourceComponent.getServiceInstance();
+        Target target = targetComponent.getServiceInstance();
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
         assertFalse("foo".equals(source.getTarget().getString()));
-        Target target2 = targetComponent.getService();
+        Target target2 = targetComponent.getServiceInstance();
         assertFalse("foo".equals(target2.getString()));
         source.getTarget().setString("bar");
         assertFalse("bar".equals(source.getTarget().getString()));
@@ -225,8 +225,8 @@ public class ScopeReferenceTestCase extends TestCase {
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getService();
-        Target target = targetComponent.getService();
+        Source source = sourceComponent.getServiceInstance();
+        Target target = targetComponent.getServiceInstance();
         source.getTarget().setString("foo");
         source.getTarget().setString("foo");
         assertEquals("foo", target.getString());
@@ -239,9 +239,9 @@ public class ScopeReferenceTestCase extends TestCase {
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
-        Source source2 = sourceComponent.getService();
+        Source source2 = sourceComponent.getServiceInstance();
         assertNotNull(source2);
-        Target target2 = targetComponent.getService();
+        Target target2 = targetComponent.getServiceInstance();
 
         assertNotNull(target2);
         assertNull(target2.getString());
@@ -274,8 +274,8 @@ public class ScopeReferenceTestCase extends TestCase {
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getService();
-        Target target = targetComponent.getService();
+        Source source = sourceComponent.getServiceInstance();
+        Target target = targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -289,8 +289,8 @@ public class ScopeReferenceTestCase extends TestCase {
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
-        Target target2 = targetComponent.getService();
-        Source source2 = sourceComponent.getService();
+        Target target2 = targetComponent.getServiceInstance();
+        Source source2 = sourceComponent.getServiceInstance();
         assertEquals("foo", target2.getString());
         assertEquals("foo", source2.getTarget().getString());
         source2.getTarget().setString("baz");
@@ -322,8 +322,8 @@ public class ScopeReferenceTestCase extends TestCase {
         requestScope.onEvent(new RequestStart(this));
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        final Source source = sourceComponent.getService();
-        Target target = targetComponent.getService();
+        final Source source = sourceComponent.getServiceInstance();
+        Target target = targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -335,7 +335,7 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Target target2 = targetComponent.getService();
+                Target target2 = targetComponent.getServiceInstance();
                 assertFalse("foo".equals(target2.getString()));
                 assertFalse("foo".equals(source.getTarget().getString()));
                 source.getTarget().setString("bar");
@@ -375,14 +375,14 @@ public class ScopeReferenceTestCase extends TestCase {
 
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getService();
-        Target target = targetComponent.getService();
+        Source source = sourceComponent.getServiceInstance();
+        Target target = targetComponent.getServiceInstance();
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
         assertFalse("foo".equals(source.getTarget().getString()));
-        Target target2 = targetComponent.getService();
+        Target target2 = targetComponent.getServiceInstance();
         assertFalse("foo".equals(target2.getString()));
         source.getTarget().setString("bar");
         assertFalse("bar".equals(source.getTarget().getString()));
@@ -408,8 +408,8 @@ public class ScopeReferenceTestCase extends TestCase {
 
         final AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getService();
-        Target target = targetComponent.getService();
+        Source source = sourceComponent.getServiceInstance();
+        Target target = targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -421,8 +421,8 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Source source2 = sourceComponent.getService();
-                Target target2 = targetComponent.getService();
+                Source source2 = sourceComponent.getServiceInstance();
+                Target target2 = targetComponent.getServiceInstance();
                 assertFalse("foo".equals(target2.getString()));
                 assertFalse("foo".equals(source2.getTarget().getString()));
                 source2.getTarget().setString("bar");
@@ -455,8 +455,8 @@ public class ScopeReferenceTestCase extends TestCase {
 
         final AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getService();
-        Target target = targetComponent.getService();
+        Source source = sourceComponent.getServiceInstance();
+        Target target = targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -468,8 +468,8 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Source source2 = sourceComponent.getService();
-                Target target2 = targetComponent.getService();
+                Source source2 = sourceComponent.getServiceInstance();
+                Target target2 = targetComponent.getServiceInstance();
                 assertEquals("foo", target2.getString());
                 assertEquals("foo", source2.getTarget().getString());
                 source2.getTarget().setString("bar");
@@ -508,8 +508,8 @@ public class ScopeReferenceTestCase extends TestCase {
         final AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
         requestScope.onEvent(new RequestStart(this));
-        Source source = sourceComponent.getService();
-        Target target = targetComponent.getService();
+        Source source = sourceComponent.getServiceInstance();
+        Target target = targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -521,8 +521,8 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Source source2 = sourceComponent.getService();
-                Target target2 = targetComponent.getService();
+                Source source2 = sourceComponent.getServiceInstance();
+                Target target2 = targetComponent.getServiceInstance();
                 assertEquals("foo", target2.getString());
                 assertEquals("foo", source2.getTarget().getString());
                 source2.getTarget().setString("bar");
@@ -560,14 +560,14 @@ public class ScopeReferenceTestCase extends TestCase {
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
         requestScope.onEvent(new RequestStart(this));
-        Source source = sourceComponent.getService();
-        Target target = targetComponent.getService();
+        Source source = sourceComponent.getServiceInstance();
+        Target target = targetComponent.getServiceInstance();
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
         assertFalse("foo".equals(source.getTarget().getString()));
-        Target target2 = targetComponent.getService();
+        Target target2 = targetComponent.getServiceInstance();
         assertFalse("foo".equals(target2.getString()));
         source.getTarget().setString("bar");
         assertFalse("bar".equals(source.getTarget().getString()));
@@ -591,14 +591,14 @@ public class ScopeReferenceTestCase extends TestCase {
 
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getService();
-        Target target = targetComponent.getService();
+        Source source = sourceComponent.getServiceInstance();
+        Target target = targetComponent.getServiceInstance();
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
         assertFalse("foo".equals(source.getTarget().getString()));
-        Target target2 = targetComponent.getService();
+        Target target2 = targetComponent.getServiceInstance();
         assertFalse("foo".equals(target2.getString()));
         source.getTarget().setString("bar");
         assertFalse("bar".equals(source.getTarget().getString()));
@@ -621,8 +621,8 @@ public class ScopeReferenceTestCase extends TestCase {
         requestScope.onEvent(new RequestStart(this));
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        final Source source = sourceComponent.getService();
-        Target target = targetComponent.getService();
+        final Source source = sourceComponent.getServiceInstance();
+        Target target = targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -634,7 +634,7 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Target target2 = targetComponent.getService();
+                Target target2 = targetComponent.getServiceInstance();
                 assertFalse("foo".equals(target2.getString()));
                 assertFalse("foo".equals(source.getTarget().getString()));
                 source.getTarget().setString("bar");
@@ -667,8 +667,8 @@ public class ScopeReferenceTestCase extends TestCase {
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getService();
-        Target target = targetComponent.getService();
+        Source source = sourceComponent.getServiceInstance();
+        Target target = targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -682,7 +682,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
-        Target target2 = targetComponent.getService();
+        Target target2 = targetComponent.getServiceInstance();
         assertFalse("foo".equals(target2.getString()));
 
         assertFalse("foo".equals(source.getTarget().getString()));
@@ -713,8 +713,8 @@ public class ScopeReferenceTestCase extends TestCase {
         moduleScope.onEvent(new CompositeStart(this, null));
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getService();
-        Target target = targetComponent.getService();
+        Source source = sourceComponent.getServiceInstance();
+        Target target = targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -726,7 +726,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
         moduleScope.onEvent(new HttpSessionStart(this, session2));
 
-        Target target2 = targetComponent.getService();
+        Target target2 = targetComponent.getServiceInstance();
         assertEquals("foo", target2.getString());
 
         assertEquals("foo", source.getTarget().getString());

@@ -9,6 +9,8 @@ import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
 /**
+ * Verfies children with the same name cannot be registered in the same composite
+ *
  * @version $Rev$ $Date$
  */
 public class DuplicateRegistrationTestCase extends MockObjectTestCase {

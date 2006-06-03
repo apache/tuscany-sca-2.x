@@ -35,6 +35,8 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
+ * Produces system compisite components by evaluating an assembly
+ *
  * @version $Rev$ $Date$
  */
 public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemCompositeImplementation> {

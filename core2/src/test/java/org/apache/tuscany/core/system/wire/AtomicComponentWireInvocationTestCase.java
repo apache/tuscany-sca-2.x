@@ -41,6 +41,6 @@ public class AtomicComponentWireInvocationTestCase extends MockObjectTestCase {
         outboundWire.setTargetWire(inboundWire);
         sourceContext.addOutboundWire(outboundWire);
         sourceContext.start();
-        assertSame(((Source) sourceContext.getService()).getTarget(), target); // wires should pass back direct ref
+        assertSame(((Source) sourceContext.getServiceInstance()).getTarget(), target); // wires should pass back direct ref
     }
 }

@@ -12,6 +12,8 @@ import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**
+ * Verifies the scope container properly disposes resources and canbe restarted
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class RequestScopeRestartTestCase extends TestCase {
@@ -28,17 +30,16 @@ public class RequestScopeRestartTestCase extends TestCase {
                 RequestScopeRestartTestCase.InitDestroyOnce.class, false, initInvoker, destroyInvoker, null, null);
         context.start();
 
-        Object instance = context.getService();
-        assertSame(instance, context.getService());
+        Object instance = context.getServiceInstance();
+        assertSame(instance, context.getServiceInstance());
 
         scope.onEvent(new RequestEnd(this));
         scope.stop();
         context.stop();
 
         scope.start();
-        scope.register(context);
         context.start();
-        assertNotSame(instance, context.getService());
+        assertNotSame(instance, context.getServiceInstance());
         scope.onEvent(new RequestEnd(this));
         scope.stop();
         context.stop();

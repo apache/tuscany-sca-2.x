@@ -60,9 +60,9 @@ public class SystemBuildersTestCase extends TestCase {
         connector.connect(targetComponent);
         parent.start();
         scope.onEvent(new CompositeStart(this, parent));
-        Source source = (Source) parent.getChild("source").getService();
+        Source source = (Source) parent.getChild("source").getServiceInstance();
         assertNotNull(source);
-        Target target = (Target) parent.getChild("target").getService();
+        Target target = (Target) parent.getChild("target").getServiceInstance();
         assertNotNull(target);
         assertSame(target, source.getTarget());
         scope.onEvent(new CompositeStop(this, parent));
@@ -103,9 +103,9 @@ public class SystemBuildersTestCase extends TestCase {
         grandParent.register(parent);
         grandParent.start();
         scope.onEvent(new CompositeStart(this, parent));
-        Source source = (Source) parent.getChild("source").getService();
+        Source source = (Source) parent.getChild("source").getServiceInstance();
         assertNotNull(source);
-        Target target = (Target) parent.getChild("target").getService();
+        Target target = (Target) parent.getChild("target").getServiceInstance();
         assertNotNull(target);
         assertSame(target, source.getTarget());
         scope.onEvent(new CompositeStop(this, parent));
@@ -144,9 +144,9 @@ public class SystemBuildersTestCase extends TestCase {
         connector.connect(service.getOutboundWire(), sourceComponent.getInboundWire(serviceName), parent, true);
         parent.start();
         scope.onEvent(new CompositeStart(this, parent));
-        Target target = (Target) parent.getChild("serviceDefinition").getService();
+        Target target = (Target) parent.getChild("serviceDefinition").getServiceInstance();
         assertNotNull(target);
-        Target target2 = (Target) parent.getChild("target").getService();
+        Target target2 = (Target) parent.getChild("target").getServiceInstance();
         assertNotNull(target);
         assertSame(target, target2);
         scope.onEvent(new CompositeStop(this, parent));

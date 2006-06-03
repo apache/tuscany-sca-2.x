@@ -25,6 +25,8 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 /**
+ * Verifies the default WSDL registry implementation
+ *
  * @version $Rev$ $Date$
  */
 public class WSDLDefinitionRegistryTestCase extends TestCase {

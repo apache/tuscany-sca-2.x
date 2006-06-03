@@ -30,6 +30,8 @@ import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
 /**
+ * Verifies loading of a service definition from an XML-based assembly
+ *
  * @version $Rev$ $Date$
  */
 public class ServiceLoaderTestCase extends MockObjectTestCase {
