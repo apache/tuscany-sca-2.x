@@ -94,7 +94,7 @@ public class ModuleScopeContext extends AbstractScopeContext {
     }
 
 
-    public InstanceWrapper getInstanceContext(AtomicComponent component) throws TargetException {
+    public InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
         checkInit();
         InstanceWrapper ctx = instanceContexts.get(component);
         assert ctx != null : "SCAObject not registered with scope: " + component;

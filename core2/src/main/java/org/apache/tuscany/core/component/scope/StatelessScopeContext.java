@@ -61,7 +61,7 @@ public class StatelessScopeContext extends AbstractScopeContext {
         checkInit();
     }
 
-    public InstanceWrapper getInstanceContext(AtomicComponent component) throws TargetException {
+    public InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
         return component.createInstance();
     }
 

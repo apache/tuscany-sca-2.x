@@ -57,7 +57,7 @@ public interface ScopeContext extends Lifecycle, RuntimeEventListener {
      *
      * @throws TargetException
      */
-    InstanceWrapper getInstanceContext(AtomicComponent component) throws TargetException;
+    InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException;
 
 
 }

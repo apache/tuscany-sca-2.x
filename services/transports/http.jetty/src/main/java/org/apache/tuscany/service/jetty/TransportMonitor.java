@@ -1,9 +1,11 @@
 package org.apache.tuscany.service.jetty;
 
+import org.mortbay.jetty.RequestLog;
+
 /**
  * @version $$Rev$$ $$Date$$
  */
-public interface TransportMonitor {
+public interface TransportMonitor extends RequestLog {
 
     void started(int port);
 

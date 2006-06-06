@@ -84,7 +84,7 @@ public abstract class AbstractScopeContext extends AbstractLifecycle implements 
     }
 
     public Object getInstance(AtomicComponent component) throws TargetException {
-        InstanceWrapper ctx = getInstanceContext(component);
+        InstanceWrapper ctx = getInstanceWrapper(component);
         if (ctx != null) {
             if (ctx.getLifecycleState() == UNINITIALIZED) {
                 ctx.start();

@@ -71,7 +71,7 @@ public class RequestScopeContext extends AbstractScopeContext {
         contexts.put(component, new ConcurrentHashMap<Thread, InstanceWrapper>());
     }
 
-    public InstanceWrapper getInstanceContext(AtomicComponent component) throws TargetException {
+    public InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
         Map<Thread, InstanceWrapper> instanceContextMap = contexts.get(component);
         assert(instanceContextMap != null):"Atomic component not registered";
         InstanceWrapper ctx = instanceContextMap.get(Thread.currentThread());

@@ -76,7 +76,7 @@ public class HttpSessionScopeContext extends AbstractScopeContext {
 
     }
 
-    public InstanceWrapper getInstanceContext(AtomicComponent component) throws TargetException {
+    public InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
         Object key = workContext.getIdentifier(HTTP_IDENTIFIER);
         assert(key != null):"HTTP session key not bound in work component";
         return getInstance(component, key);

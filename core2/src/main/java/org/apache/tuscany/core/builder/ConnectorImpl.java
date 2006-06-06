@@ -151,7 +151,7 @@ public class ConnectorImpl implements Connector {
                     MessageChannel channel = new MessageChannelImpl(handlers);
                     sourceChain.setTargetRequestChannel(channel);
                 } else {
-                    BuilderConfigException e = new BuilderConfigException("ServiceDefinition chain must have an interceptor");
+                    BuilderConfigException e = new BuilderConfigException("Service chain must have an interceptor");
                     e.setIdentifier(targetChain.getMethod().getName());
                     throw e;
                 }

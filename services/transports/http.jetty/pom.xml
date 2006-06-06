@@ -35,7 +35,13 @@
         </dependency>
         <dependency>
             <groupId>jetty</groupId>
-            <artifactId>embedded</artifactId>
+            <artifactId>jetty</artifactId>
+            <version>6.0.0beta16</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>jetty</groupId>
+            <artifactId>jetty-util</artifactId>
             <version>6.0.0beta16</version>
             <scope>compile</scope>
         </dependency>
