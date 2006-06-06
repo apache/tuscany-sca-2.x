@@ -6,7 +6,7 @@ import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
+import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.factories.MockComponentFactory;
@@ -18,7 +18,7 @@ import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.model.SystemImplementation;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -39,7 +39,7 @@ public class SystemBuildersTestCase extends TestCase {
      */
     public void testAtomicWireBuild() throws Exception {
         WorkContext work = new WorkContextImpl();
-        ScopeContext scope = new ModuleScopeContext(work);
+        ScopeContainer scope = new ModuleScopeContainer(work);
         scope.start();
 
         Connector connector = new ConnectorImpl();
@@ -75,7 +75,7 @@ public class SystemBuildersTestCase extends TestCase {
      */
     public void testAtomicToReferenceWireBuild() throws Exception {
         WorkContext work = new WorkContextImpl();
-        ScopeContext scope = new ModuleScopeContext(work);
+        ScopeContainer scope = new ModuleScopeContainer(work);
         scope.start();
 
         Connector connector = new ConnectorImpl();
@@ -120,7 +120,7 @@ public class SystemBuildersTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testServiceToAtomicWireBuild() throws Exception {
         WorkContext work = new WorkContextImpl();
-        ScopeContext scope = new ModuleScopeContext(work);
+        ScopeContainer scope = new ModuleScopeContainer(work);
         scope.start();
 
         ConnectorImpl connector = new ConnectorImpl();
@@ -161,7 +161,7 @@ public class SystemBuildersTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testServiceToReferenceWireBuild() throws Exception {
 //        WorkContext work = new WorkContextImpl();
-//        ScopeContext scope = new ModuleScopeContext(work);
+//        ScopeContainer scope = new ModuleScopeContainer(work);
 //        scope.start();
 //
 //        Connector connector = new ConnectorImpl();
@@ -202,7 +202,7 @@ public class SystemBuildersTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        ModuleScopeContext moduleScope = new ModuleScopeContext();
+        ModuleScopeContainer moduleScope = new ModuleScopeContainer();
         moduleScope.start();
         deploymentContext = new DeploymentContext(null, null, moduleScope);
 

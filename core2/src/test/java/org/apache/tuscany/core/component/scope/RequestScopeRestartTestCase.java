@@ -20,7 +20,7 @@ public class RequestScopeRestartTestCase extends TestCase {
 
     public void testRestart() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        RequestScopeContext scope = new RequestScopeContext(ctx);
+        RequestScopeContainer scope = new RequestScopeContainer(ctx);
         scope.start();
         MethodEventInvoker<Object> initInvoker = new MethodEventInvoker<Object>(RequestScopeRestartTestCase.InitDestroyOnce.class.getMethod("init"));
         MethodEventInvoker<Object> destroyInvoker = new MethodEventInvoker<Object>(RequestScopeRestartTestCase.InitDestroyOnce.class.getMethod("destroy"));

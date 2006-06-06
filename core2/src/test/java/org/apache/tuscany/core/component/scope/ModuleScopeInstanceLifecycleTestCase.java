@@ -25,7 +25,7 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
 
     public void testInitDestroy() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ModuleScopeContext scope = new ModuleScopeContext(ctx);
+        ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
         scope.start();
 
         SystemAtomicComponent initDestroyContext = MockContextFactory.createSystemAtomicContext("InitDestroy", scope, ModuleScopeInitDestroyComponent.class);
@@ -63,7 +63,7 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
 
     public void testDestroyOrder() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ModuleScopeContext scope = new ModuleScopeContext(ctx);
+        ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
         scope.start();
 
         SystemAtomicComponent oneCtx = MockContextFactory.createSystemAtomicContext("one", scope, OrderedInitPojoImpl.class);
@@ -97,7 +97,7 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
 
     public void testEagerInitDestroyOrder() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ModuleScopeContext scope = new ModuleScopeContext(ctx);
+        ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
         scope.start();
 
         SystemAtomicComponent oneCtx = MockContextFactory.createSystemAtomicContext("one", scope, OrderedEagerInitPojo.class);

@@ -4,7 +4,7 @@ import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.core.component.CompositeComponentImpl;
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
+import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -25,7 +25,7 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
         CompositeComponent parent = new CompositeComponentImpl(null, null, null, ArtifactFactory.createWireService());
-        ModuleScopeContext scope = new ModuleScopeContext(null);
+        ModuleScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         PojoComponentType sourceType = new PojoComponentType();
         sourceType.setLifecycleScope(Scope.MODULE);
@@ -54,6 +54,6 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        deploymentContext = new DeploymentContext(null, null, new ModuleScopeContext());
+        deploymentContext = new DeploymentContext(null, null, new ModuleScopeContainer());
     }
 }

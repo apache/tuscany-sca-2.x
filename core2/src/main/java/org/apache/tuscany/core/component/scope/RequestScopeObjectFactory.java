@@ -8,9 +8,9 @@ import org.apache.tuscany.spi.ObjectFactory;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class RequestScopeObjectFactory implements ObjectFactory<RequestScopeContext> {
+public class RequestScopeObjectFactory implements ObjectFactory<RequestScopeContainer> {
 
-    public RequestScopeContext getInstance() throws ObjectCreationException {
-        return new RequestScopeContext();
+    public RequestScopeContainer getInstance() throws ObjectCreationException {
+        return new RequestScopeContainer();
     }
 }

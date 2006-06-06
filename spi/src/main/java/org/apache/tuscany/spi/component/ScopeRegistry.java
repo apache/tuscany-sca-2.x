@@ -17,15 +17,15 @@ import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.model.Scope;
 
 /**
- * Manages {@link ScopeContext}s in the runtime
+ * Manages {@link ScopeContainer}s in the runtime
  *
  * @version $$Rev$$ $$Date$$
  */
 public interface ScopeRegistry {
 
-    ScopeContext getScopeContext(Scope scope) throws ScopeNotFoundException;
+    ScopeContainer getScopeContainer(Scope scope) throws ScopeNotFoundException;
 
-    <T extends ScopeContext> void registerFactory(Scope scope, ObjectFactory<T> factory);
+    <T extends ScopeContainer> void registerFactory(Scope scope, ObjectFactory<T> factory);
 
     void deregisterFactory(Scope scope);
 

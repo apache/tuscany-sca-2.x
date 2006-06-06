@@ -46,7 +46,7 @@ public interface AtomicComponent<T> extends Component<T> {
 
     /**
      * Creates a new implementation instance, generally used as a callback by a {@link
-     * org.apache.tuscany.spi.component.ScopeContext}
+     * org.apache.tuscany.spi.component.ScopeContainer}
      *
      * @throws ObjectCreationException
      */

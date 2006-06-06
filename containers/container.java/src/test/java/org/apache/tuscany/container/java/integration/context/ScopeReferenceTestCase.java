@@ -35,13 +35,13 @@ import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
-import org.apache.tuscany.core.component.scope.HttpSessionScopeContext;
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
-import org.apache.tuscany.core.component.scope.RequestScopeContext;
-import org.apache.tuscany.core.component.scope.StatelessScopeContext;
+import org.apache.tuscany.core.component.scope.HttpSessionScopeContainer;
+import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.core.component.scope.RequestScopeContainer;
+import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**
@@ -58,7 +58,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     @SuppressWarnings("unchecked")
     public void testModuleToModule() throws Exception {
-        ScopeContext scope = new ModuleScopeContext(null);
+        ScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
 
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, scope, members, "target", Target.class, TargetImpl.class, scope);
@@ -82,16 +82,16 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testModuleToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext moduleScope = new ModuleScopeContext(ctx);
+        ScopeContainer moduleScope = new ModuleScopeContainer(ctx);
         moduleScope.start();
-        ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
+        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx);
         sessionScope.start();
 
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 moduleScope, members, "target", Target.class, TargetImpl.class, sessionScope);
         moduleScope.onEvent(new CompositeStart(this, null));
         Object session1 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
@@ -102,12 +102,12 @@ public class ScopeReferenceTestCase extends TestCase {
         target.setString("foo");
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertEquals("foo", source.getTarget().getString());
-        ctx.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
         sessionScope.onEvent(new HttpSessionEnd(this, session1));
 
         //second session
         Object session2 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
         Target target2 = targetComponent.getServiceInstance();
@@ -119,7 +119,7 @@ public class ScopeReferenceTestCase extends TestCase {
         assertEquals("bar", source.getTarget().getString());
         sessionScope.onEvent(new HttpSessionEnd(this, session2));
 
-        ctx.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
         moduleScope.onEvent(new CompositeStop(this, null));
         sessionScope.stop();
         moduleScope.stop();
@@ -131,9 +131,9 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testModuleToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext moduleScope = new ModuleScopeContext(ctx);
+        ScopeContainer moduleScope = new ModuleScopeContainer(ctx);
         moduleScope.start();
-        final ScopeContext requestScope = new RequestScopeContext(ctx);
+        final ScopeContainer requestScope = new RequestScopeContainer(ctx);
         requestScope.start();
 
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -180,9 +180,9 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testModuleToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext moduleScope = new ModuleScopeContext(ctx);
+        ScopeContainer moduleScope = new ModuleScopeContainer(ctx);
         moduleScope.start();
-        ScopeContext statelessScope = new StatelessScopeContext(ctx);
+        ScopeContainer statelessScope = new StatelessScopeContainer(ctx);
         statelessScope.start();
 
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -214,14 +214,14 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testSessionToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
+        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx);
         sessionScope.start();
 
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 sessionScope, members, "target", Target.class, TargetImpl.class, sessionScope);
 
         Object session1 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
@@ -231,12 +231,12 @@ public class ScopeReferenceTestCase extends TestCase {
         source.getTarget().setString("foo");
         assertEquals("foo", target.getString());
 
-        ctx.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
         sessionScope.onEvent(new HttpSessionEnd(this, session1));
 
         //second session
         Object session2 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
         Source source2 = sourceComponent.getServiceInstance();
@@ -249,7 +249,7 @@ public class ScopeReferenceTestCase extends TestCase {
         source2.getTarget().setString("baz");
         assertEquals("baz", source2.getTarget().getString());
         assertEquals("baz", target2.getString());
-        ctx.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
         sessionScope.onEvent(new HttpSessionEnd(this, session2));
         sessionScope.stop();
     }
@@ -261,16 +261,16 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testSessionToModule() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext moduleScope = new ModuleScopeContext(ctx);
+        ScopeContainer moduleScope = new ModuleScopeContainer(ctx);
         moduleScope.start();
-        ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
+        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx);
         sessionScope.start();
 
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 sessionScope, members, "target", Target.class, TargetImpl.class, moduleScope);
         moduleScope.onEvent(new CompositeStart(this, null));
         Object session1 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
@@ -281,12 +281,12 @@ public class ScopeReferenceTestCase extends TestCase {
         target.setString("foo");
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertEquals("foo", source.getTarget().getString());
-        ctx.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
         sessionScope.onEvent(new HttpSessionEnd(this, session1));
 
         //second session
         Object session2 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
         Target target2 = targetComponent.getServiceInstance();
@@ -297,7 +297,7 @@ public class ScopeReferenceTestCase extends TestCase {
         assertEquals("baz", source2.getTarget().getString());
         assertEquals("baz", target2.getString());
         assertEquals("baz", target.getString());
-        ctx.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
         sessionScope.onEvent(new HttpSessionEnd(this, session2));
         moduleScope.stop();
         sessionScope.stop();
@@ -309,15 +309,15 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testSessionToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        final ScopeContext requestScope = new RequestScopeContext(ctx);
+        final ScopeContainer requestScope = new RequestScopeContainer(ctx);
         requestScope.start();
-        ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
+        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx);
         sessionScope.start();
 
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 sessionScope, members, "target", Target.class, TargetImpl.class, requestScope);
         Object session1 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         requestScope.onEvent(new RequestStart(this));
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
@@ -348,7 +348,7 @@ public class ScopeReferenceTestCase extends TestCase {
         future.get();
         assertEquals("foo", source.getTarget().getString());
         requestScope.onEvent(new RequestEnd(this));
-        ctx.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
         sessionScope.onEvent(new HttpSessionEnd(this, session1));
         requestScope.stop();
         sessionScope.stop();
@@ -361,16 +361,16 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testSessionToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
+        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx);
         sessionScope.start();
-        ScopeContext statelessScope = new StatelessScopeContext(ctx);
+        ScopeContainer statelessScope = new StatelessScopeContainer(ctx);
         statelessScope.start();
 
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 sessionScope, members, "target", Target.class, TargetImpl.class, statelessScope);
 
         Object session1 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
 
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
@@ -387,7 +387,7 @@ public class ScopeReferenceTestCase extends TestCase {
         source.getTarget().setString("bar");
         assertFalse("bar".equals(source.getTarget().getString()));
 
-        ctx.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
         sessionScope.onEvent(new HttpSessionEnd(this, session1));
         sessionScope.stop();
         statelessScope.stop();
@@ -399,7 +399,7 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testRequestToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        final ScopeContext requestScope = new RequestScopeContext(ctx);
+        final ScopeContainer requestScope = new RequestScopeContainer(ctx);
         requestScope.start();
 
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -443,8 +443,8 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testRequestToModule() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        final ScopeContext requestScope = new RequestScopeContext(ctx);
-        final ScopeContext moduleScope = new ModuleScopeContext(ctx);
+        final ScopeContainer requestScope = new RequestScopeContainer(ctx);
+        final ScopeContainer moduleScope = new ModuleScopeContainer(ctx);
         requestScope.start();
         moduleScope.start();
         moduleScope.onEvent(new CompositeStart(this, null));
@@ -494,13 +494,13 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testRequestToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        final ScopeContext requestScope = new RequestScopeContext(ctx);
-        final ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
+        final ScopeContainer requestScope = new RequestScopeContainer(ctx);
+        final ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx);
         requestScope.start();
         sessionScope.start();
 
         Object session1 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 requestScope, members, "target", Target.class, TargetImpl.class, sessionScope);
@@ -537,7 +537,7 @@ public class ScopeReferenceTestCase extends TestCase {
 
         requestScope.onEvent(new RequestEnd(this));
         requestScope.stop();
-        ctx.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
         sessionScope.onEvent(new HttpSessionEnd(this, session1));
         sessionScope.stop();
     }
@@ -549,9 +549,9 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testRequestToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext requestScope = new RequestScopeContext(ctx);
+        ScopeContainer requestScope = new RequestScopeContainer(ctx);
         requestScope.start();
-        ScopeContext statelessScope = new StatelessScopeContext(ctx);
+        ScopeContainer statelessScope = new StatelessScopeContainer(ctx);
         statelessScope.start();
 
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -583,7 +583,7 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testStatelessToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext statelessScope = new StatelessScopeContext(ctx);
+        ScopeContainer statelessScope = new StatelessScopeContainer(ctx);
         statelessScope.start();
 
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -611,9 +611,9 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testStatelessToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        final ScopeContext requestScope = new RequestScopeContext(ctx);
+        final ScopeContainer requestScope = new RequestScopeContainer(ctx);
         requestScope.start();
-        ScopeContext statelessScope = new StatelessScopeContext(ctx);
+        ScopeContainer statelessScope = new StatelessScopeContainer(ctx);
         statelessScope.start();
 
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -655,15 +655,15 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testStatelessToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext statelessScope = new StatelessScopeContext(ctx);
+        ScopeContainer statelessScope = new StatelessScopeContainer(ctx);
         statelessScope.start();
-        ScopeContext sessionScope = new HttpSessionScopeContext(ctx);
+        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx);
         sessionScope.start();
 
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
                 statelessScope, members, "target", Target.class, TargetImpl.class, sessionScope);
         Object session1 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
         AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
@@ -674,12 +674,12 @@ public class ScopeReferenceTestCase extends TestCase {
         target.setString("foo");
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertEquals("foo", source.getTarget().getString());
-        ctx.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
         sessionScope.onEvent(new HttpSessionEnd(this, session1));
 
         //second session
         Object session2 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
         Target target2 = targetComponent.getServiceInstance();
@@ -691,7 +691,7 @@ public class ScopeReferenceTestCase extends TestCase {
         assertEquals("bar", source.getTarget().getString());
         sessionScope.onEvent(new HttpSessionEnd(this, session2));
 
-        ctx.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
         sessionScope.stop();
         statelessScope.stop();
     }
@@ -703,9 +703,9 @@ public class ScopeReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testStatelessToModule() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContext statelessScope = new StatelessScopeContext(ctx);
+        ScopeContainer statelessScope = new StatelessScopeContainer(ctx);
         statelessScope.start();
-        ScopeContext moduleScope = new ModuleScopeContext(ctx);
+        ScopeContainer moduleScope = new ModuleScopeContainer(ctx);
         moduleScope.start();
 
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class,
@@ -723,7 +723,7 @@ public class ScopeReferenceTestCase extends TestCase {
 
         //second session
         Object session2 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
         moduleScope.onEvent(new HttpSessionStart(this, session2));
 
         Target target2 = targetComponent.getServiceInstance();

@@ -9,7 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
@@ -22,14 +22,14 @@ import org.apache.tuscany.spi.event.TrueFilter;
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractScopeContext extends AbstractLifecycle implements ScopeContext {
+public abstract class AbstractScopeContainer extends AbstractLifecycle implements ScopeContainer {
     private final String name;
     // The event context the scope container is associated with
     protected WorkContext workContext;
     private Map<EventFilter, List<RuntimeEventListener>> listeners;
     private static final EventFilter TRUE_FILTER = new TrueFilter();
 
-    public AbstractScopeContext(String name, WorkContext workContext) {
+    public AbstractScopeContainer(String name, WorkContext workContext) {
         this.name = name;
         this.workContext = workContext;
     }
@@ -112,6 +112,6 @@ public abstract class AbstractScopeContext extends AbstractLifecycle implements 
     }
 
     public String toString() {
-        return "ScopeContext [" + name + "] in state [" + super.toString() + ']';
+        return "ScopeContainer [" + name + "] in state [" + super.toString() + ']';
     }
 }

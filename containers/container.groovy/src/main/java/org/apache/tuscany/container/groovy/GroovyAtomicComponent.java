@@ -27,7 +27,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -50,9 +50,9 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
                                  Scope scope,
                                  List<PropertyInjector> injectors,
                                  CompositeComponent parent,
-                                 ScopeContext scopeContext,
+                                 ScopeContainer scopeContainer,
                                  WireService wireService) {
-        super(name, parent, scopeContext,wireService);
+        super(name, parent, scopeContainer,wireService);
         this.script = script;
         this.services = services;
         this.scope = scope;
@@ -99,7 +99,7 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
 
     @SuppressWarnings("unchecked")
     public GroovyObject getTargetInstance() throws TargetException {
-        return (GroovyObject) scopeContext.getInstance(this);
+        return (GroovyObject) scopeContainer.getInstance(this);
     }
 
     @SuppressWarnings("unchecked")

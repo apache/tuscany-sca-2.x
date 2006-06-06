@@ -8,9 +8,9 @@ import org.apache.tuscany.spi.ObjectFactory;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class StatelessScopeObjectFactory implements ObjectFactory<StatelessScopeContext> {
+public class StatelessScopeObjectFactory implements ObjectFactory<StatelessScopeContainer> {
 
-    public StatelessScopeContext getInstance() throws ObjectCreationException {
-        return new StatelessScopeContext();
+    public StatelessScopeContainer getInstance() throws ObjectCreationException {
+        return new StatelessScopeContainer();
     }
 }

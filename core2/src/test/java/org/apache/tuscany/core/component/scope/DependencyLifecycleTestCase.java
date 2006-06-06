@@ -26,7 +26,7 @@ public class DependencyLifecycleTestCase extends TestCase {
 
     public void testInitDestroyOrderModuleScope() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ModuleScopeContext scopeCtx = new ModuleScopeContext(ctx);
+        ModuleScopeContainer scopeCtx = new ModuleScopeContainer(ctx);
         scopeCtx.start();
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
                 scopeCtx, "target", OrderedInitPojoImpl.class, scopeCtx);
@@ -50,7 +50,7 @@ public class DependencyLifecycleTestCase extends TestCase {
 
     public void testInitDestroyOrderAfterStartModuleScope() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ModuleScopeContext scopeCtx = new ModuleScopeContext(ctx);
+        ModuleScopeContainer scopeCtx = new ModuleScopeContainer(ctx);
         scopeCtx.start();
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
                 scopeCtx, "target", OrderedInitPojoImpl.class, scopeCtx);
@@ -72,7 +72,7 @@ public class DependencyLifecycleTestCase extends TestCase {
 
     public void testInitDestroyOrderSessionScope() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        HttpSessionScopeContext scopeCtx = new HttpSessionScopeContext(ctx);
+        HttpSessionScopeContainer scopeCtx = new HttpSessionScopeContainer(ctx);
         scopeCtx.start();
         Object session = new Object();
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
@@ -81,7 +81,7 @@ public class DependencyLifecycleTestCase extends TestCase {
         AtomicComponent targetComponent = contexts.get("target");
         scopeCtx.register(sourceComponent);
         scopeCtx.register(targetComponent);
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session);
         OrderedDependentPojo source = (OrderedDependentPojo) scopeCtx.getInstance(sourceComponent);
         assertNotNull(source.getPojo());
         assertEquals(2, source.getNumberInstantiated());
@@ -93,14 +93,14 @@ public class DependencyLifecycleTestCase extends TestCase {
 
     public void testInitDestroyOrderAfterStartSessionScope() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        HttpSessionScopeContext scopeCtx = new HttpSessionScopeContext(ctx);
+        HttpSessionScopeContainer scopeCtx = new HttpSessionScopeContainer(ctx);
         scopeCtx.start();
         Object session = new Object();
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
                 scopeCtx, "target", OrderedInitPojoImpl.class, scopeCtx);
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session);
         scopeCtx.register(sourceComponent);
         scopeCtx.register(targetComponent);
         OrderedDependentPojo source = (OrderedDependentPojo) scopeCtx.getInstance(sourceComponent);
@@ -113,7 +113,7 @@ public class DependencyLifecycleTestCase extends TestCase {
 
     public void testInitDestroyOrderRequestScope() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        RequestScopeContext scopeCtx = new RequestScopeContext(ctx);
+        RequestScopeContainer scopeCtx = new RequestScopeContainer(ctx);
         scopeCtx.start();
         scopeCtx.onEvent(new RequestStart(this));
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,

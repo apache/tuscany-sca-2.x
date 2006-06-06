@@ -12,9 +12,9 @@ import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.container.java.mock.components.TargetImpl;
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
+import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -24,7 +24,7 @@ public class ReferenceInjectionTestCase extends TestCase {
     private Map<String, Member> members;
 
     public void testProxiedReferenceInjection() throws Exception {
-        ScopeContext scope = new ModuleScopeContext(null);
+        ScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, scope,
                 members, "target", Target.class, TargetImpl.class, scope);

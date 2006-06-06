@@ -27,9 +27,9 @@ import org.apache.tuscany.container.java.mock.components.OtherTargetImpl;
 import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
+import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 
 
 /**
@@ -43,7 +43,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         Map<String, Member> members = new HashMap<String, Member>();
         Method m = SourceImpl.class.getMethod("setTarget", Target.class);
         members.put("target", m);
-        ScopeContext scope = new ModuleScopeContext(null);
+        ScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, Target.class, scope,
                 members, "target", OtherTarget.class, OtherTargetImpl.class, scope);
@@ -59,7 +59,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         Map<String, Member> members = new HashMap<String, Member>();
         Method m = SourceImpl.class.getMethod("setTargets", List.class);
         members.put("target", m);
-        ScopeContext scope = new ModuleScopeContext(null);
+        ScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         Map<String, AtomicComponent> contexts = MockContextFactory.createWiredMultiplicity("source", SourceImpl.class, Target.class, scope,
                 "target", OtherTarget.class, OtherTargetImpl.class, members, scope);

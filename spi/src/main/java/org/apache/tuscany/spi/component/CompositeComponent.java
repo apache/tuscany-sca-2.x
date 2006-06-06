@@ -63,7 +63,7 @@ public interface CompositeComponent<T> extends Component<T>, RuntimeEventListene
     List<Reference> getReferences();
 
     /**
-     * @param scopeContext
+     * @param scopeContainer
      */
-    void setScopeContext(ScopeContext scopeContext);
+    void setScopeContext(ScopeContainer scopeContainer);
 }

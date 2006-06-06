@@ -22,7 +22,7 @@ import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.InstanceWrapper;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -45,7 +45,7 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
 
     public PojoAtomicComponent(String name,
                                CompositeComponent<?> parent,
-                               ScopeContext scopeContext,
+                               ScopeContainer scopeContainer,
                                Class<?> serviceInterface,
                                ObjectFactory<?> objectFactory,
                                boolean eagerInit,
@@ -54,7 +54,7 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
                                List<Injector> injectors,
                                Map<String, Member> members,
                                WireService wireService) {
-        super(name, parent, scopeContext, wireService);
+        super(name, parent, scopeContainer, wireService);
         assert (objectFactory != null) : "Object factory was null";
         if (eagerInit && initInvoker == null) {
             throw new AssertionError("No intialization method found for eager init implementation");
@@ -73,7 +73,7 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
 
     public PojoAtomicComponent(String name,
                                CompositeComponent<?> parent,
-                               ScopeContext scopeContext,
+                               ScopeContainer scopeContainer,
                                List<Class<?>> serviceInterfaces,
                                ObjectFactory<?> objectFactory,
                                boolean eagerInit,
@@ -82,7 +82,7 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
                                List<Injector> injectors,
                                Map<String, Member> members,
                                WireService wireService) {
-        super(name, parent, scopeContext, wireService);
+        super(name, parent, scopeContainer, wireService);
         assert (objectFactory != null) : "Object factory was null";
         if (eagerInit && initInvoker == null) {
             throw new AssertionError("No intialization method found for eager init implementation");
@@ -118,7 +118,7 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
 
     @SuppressWarnings("unchecked")
     public T getTargetInstance() throws TargetException {
-        return (T) scopeContext.getInstance(this);
+        return (T) scopeContainer.getInstance(this);
     }
 
     public InstanceWrapper createInstance() throws ObjectCreationException {

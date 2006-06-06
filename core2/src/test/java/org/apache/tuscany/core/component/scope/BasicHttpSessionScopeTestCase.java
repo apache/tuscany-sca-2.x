@@ -10,7 +10,7 @@ import org.apache.tuscany.core.mock.component.SessionScopeInitDestroyComponent;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**
@@ -24,12 +24,12 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     public void testLifecycleManagement() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        HttpSessionScopeContext scopeContext = new HttpSessionScopeContext(workContext);
+        HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext);
         scopeContext.start();
         SystemAtomicComponent atomicContext = createContext(scopeContext);
         // start the request
         Object session = new Object();
-        workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session);
+        workContext.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session);
         SessionScopeInitDestroyComponent o1 = (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertTrue(o1.isInitialized());
         assertFalse(o1.isDestroyed());
@@ -42,18 +42,18 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     public void testSessionIsolation() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        HttpSessionScopeContext scopeContext = new HttpSessionScopeContext(workContext);
+        HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext);
         scopeContext.start();
 
         SystemAtomicComponent atomicContext = createContext(scopeContext);
 
         Object session1 = new Object();
-        workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
+        workContext.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
         SessionScopeInitDestroyComponent o1 = (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertTrue(o1.isInitialized());
 
         Object session2 = new Object();
-        workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
+        workContext.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
         SessionScopeInitDestroyComponent o2 = (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertNotSame(o1, o2);
 
@@ -76,8 +76,8 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         super.tearDown();
     }
 
-    private SystemAtomicComponent createContext(ScopeContext scopeContext) {
-        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo", null, scopeContext, SessionScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null, null);
+    private SystemAtomicComponent createContext(ScopeContainer scopeContainer) {
+        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo", null, scopeContainer, SessionScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null, null);
         context.start();
         return context;
     }

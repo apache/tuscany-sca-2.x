@@ -20,7 +20,7 @@ public class HttpSessionScopeRestartTestCase extends TestCase {
 
     public void testRestart() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
+        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(ctx);
         scope.start();
         MethodEventInvoker<Object> initInvoker = new MethodEventInvoker<Object>(HttpSessionScopeRestartTestCase.InitDestroyOnce.class.getMethod("init"));
         MethodEventInvoker<Object> destroyInvoker = new MethodEventInvoker<Object>(HttpSessionScopeRestartTestCase.InitDestroyOnce.class.getMethod("destroy"));
@@ -31,7 +31,7 @@ public class HttpSessionScopeRestartTestCase extends TestCase {
         context.start();
 
         Object session = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session);
         scope.onEvent(new HttpSessionStart(this, session));
         Object instance = context.getServiceInstance();
         assertSame(instance, context.getServiceInstance());

@@ -24,7 +24,7 @@ public class HttpSessionScopeInstanceLifecycleTestCase extends TestCase {
 
     public void testInitDestroy() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
+        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(ctx);
         scope.start();
 
         SystemAtomicComponent initDestroyContext = MockContextFactory.createSystemAtomicContext("InitDestroy", scope, RequestScopeInitDestroyComponent.class);
@@ -37,7 +37,7 @@ public class HttpSessionScopeInstanceLifecycleTestCase extends TestCase {
         destroyOnlyContext.start();
 
         Object session = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session);
         scope.onEvent(new HttpSessionStart(this, session));
         RequestScopeInitDestroyComponent initDestroy = (RequestScopeInitDestroyComponent) scope.getInstance(initDestroyContext);
         Assert.assertNotNull(initDestroy);
@@ -64,7 +64,7 @@ public class HttpSessionScopeInstanceLifecycleTestCase extends TestCase {
 
     public void testDestroyOrder() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
+        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(ctx);
         scope.start();
 
         SystemAtomicComponent oneCtx = MockContextFactory.createSystemAtomicContext("one", scope, OrderedInitPojoImpl.class);
@@ -75,7 +75,7 @@ public class HttpSessionScopeInstanceLifecycleTestCase extends TestCase {
         scope.register(threeCtx);
 
         Object session = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session);
         scope.onEvent(new HttpSessionStart(this, session));
         OrderedInitPojo one = (OrderedInitPojo) scope.getInstance(oneCtx);
         Assert.assertNotNull(one);
@@ -100,7 +100,7 @@ public class HttpSessionScopeInstanceLifecycleTestCase extends TestCase {
 
     public void testEagerInitDestroyOrder() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        HttpSessionScopeContext scope = new HttpSessionScopeContext(ctx);
+        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(ctx);
         scope.start();
 
         SystemAtomicComponent oneCtx = MockContextFactory.createSystemAtomicContext("one", scope, OrderedEagerInitPojo.class);
@@ -111,7 +111,7 @@ public class HttpSessionScopeInstanceLifecycleTestCase extends TestCase {
         scope.register(threeCtx);
 
         Object session = new Object();
-        ctx.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session);
+        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session);
         scope.onEvent(new HttpSessionStart(this, session));
         OrderedEagerInitPojo one = (OrderedEagerInitPojo) scope.getInstance(oneCtx);
         Assert.assertNotNull(one);

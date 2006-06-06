@@ -27,7 +27,7 @@ import org.apache.tuscany.spi.model.Scope;
  * @version $Rev$ $Date$
  * @see SCAObject
  */
-public interface ScopeContext extends Lifecycle, RuntimeEventListener {
+public interface ScopeContainer extends Lifecycle, RuntimeEventListener {
 
     /**
      * Returns the scope value representing the scope context

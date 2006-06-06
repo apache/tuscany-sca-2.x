@@ -20,18 +20,18 @@ import org.apache.tuscany.spi.model.Scope;
  *
  * @version $Rev$ $Date$
  */
-public class HttpSessionScopeContext extends AbstractScopeContext {
+public class HttpSessionScopeContainer extends AbstractScopeContainer {
 
     public static final Object HTTP_IDENTIFIER = new Object();
 
     private final Map<AtomicComponent, Map<Object, InstanceWrapper>> contexts;
     private final Map<Object, List<InstanceWrapper>> destroyQueues;
 
-    public HttpSessionScopeContext() {
+    public HttpSessionScopeContainer() {
         this(null);
     }
 
-    public HttpSessionScopeContext(WorkContext workContext) {
+    public HttpSessionScopeContainer(WorkContext workContext) {
         super("Session Scope", workContext);
         contexts = new ConcurrentHashMap<AtomicComponent, Map<Object, InstanceWrapper>>();
         destroyQueues = new ConcurrentHashMap<Object, List<InstanceWrapper>>();

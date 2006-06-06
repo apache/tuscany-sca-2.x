@@ -10,7 +10,7 @@ import org.apache.tuscany.core.mock.component.ModuleScopeInitDestroyComponent;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**
@@ -24,7 +24,7 @@ public class BasicModuleScopeTestCase extends TestCase {
 
     public void testLifecycleManagement() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContainer scopeContext = new ModuleScopeContainer(workContext);
         scopeContext.start();
         SystemAtomicComponent atomicContext = createContext(scopeContext);
         // start the request
@@ -40,7 +40,7 @@ public class BasicModuleScopeTestCase extends TestCase {
 
     public void testModuleIsolation() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
+        ModuleScopeContainer scopeContext = new ModuleScopeContainer(workContext);
         scopeContext.start();
 
         SystemAtomicComponent atomicContext = createContext(scopeContext);
@@ -68,8 +68,8 @@ public class BasicModuleScopeTestCase extends TestCase {
         super.tearDown();
     }
 
-    private SystemAtomicComponent createContext(ScopeContext scopeContext) {
-        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo", null, scopeContext, ModuleScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null, null);
+    private SystemAtomicComponent createContext(ScopeContainer scopeContainer) {
+        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo", null, scopeContainer, ModuleScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null, null);
         context.start();
         return context;
     }

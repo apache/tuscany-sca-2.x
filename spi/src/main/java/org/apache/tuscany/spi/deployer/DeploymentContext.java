@@ -18,7 +18,7 @@ package org.apache.tuscany.spi.deployer;
 
 import javax.xml.stream.XMLInputFactory;
 
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 
 /**
  * An holder that can be used during the load process to store information that is not part of the logical
@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.component.ScopeContext;
 public class DeploymentContext {
     private final ClassLoader classLoader;
     private final XMLInputFactory xmlFactory;
-    private final ScopeContext moduleScope;
+    private final ScopeContainer moduleScope;
 
     /**
      * Constructor specifying the loader for application resources.
@@ -39,7 +39,7 @@ public class DeploymentContext {
      * @param xmlFactory  a factory that can be used to obtain an StAX XMLStreamReader
      * @param moduleScope the scope context representing this deployment's MODULE scope
      */
-    public DeploymentContext(ClassLoader classLoader, XMLInputFactory xmlFactory, ScopeContext moduleScope) {
+    public DeploymentContext(ClassLoader classLoader, XMLInputFactory xmlFactory, ScopeContainer moduleScope) {
         this.classLoader = classLoader;
         this.xmlFactory = xmlFactory;
         this.moduleScope = moduleScope;
@@ -64,11 +64,11 @@ public class DeploymentContext {
     }
 
     /**
-     * Returns the ScopeContext for the MODULE scope that will be associated with this deployment unit.
+     * Returns the ScopeContainer for the MODULE scope that will be associated with this deployment unit.
      *
-     * @return the ScopeContext for the MODULE scope that will be associated with this deployment unit
+     * @return the ScopeContainer for the MODULE scope that will be associated with this deployment unit
      */
-    public ScopeContext getModuleScope() {
+    public ScopeContainer getModuleScope() {
         return moduleScope;
     }
 }

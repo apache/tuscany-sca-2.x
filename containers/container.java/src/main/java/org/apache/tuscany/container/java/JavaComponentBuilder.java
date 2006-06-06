@@ -13,7 +13,7 @@ import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -59,16 +59,16 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             }
         }
 
-        ScopeContext scopeContext;
+        ScopeContainer scopeContainer;
         Scope scope = componentType.getLifecycleScope();
         if (Scope.MODULE == scope) {
-            scopeContext = deploymentContext.getModuleScope();
+            scopeContainer = deploymentContext.getModuleScope();
         } else {
-            scopeContext = scopeRegistry.getScopeContext(scope);
+            scopeContainer = scopeRegistry.getScopeContainer(scope);
         }
         return new JavaAtomicComponent(componentDefinition.getName(),
                 parent,
-                scopeContext,
+                scopeContainer,
                 serviceInterfaces,
                 factory,
                 scope,

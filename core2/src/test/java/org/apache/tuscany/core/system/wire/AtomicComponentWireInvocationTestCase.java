@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
+import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Target;
@@ -26,7 +26,7 @@ import org.jmock.MockObjectTestCase;
 public class AtomicComponentWireInvocationTestCase extends MockObjectTestCase {
 
     public void testWireResolution() throws NoSuchMethodException {
-        ModuleScopeContext scope = new ModuleScopeContext(null);
+        ModuleScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         Target target = new TargetImpl();
         Mock mockWire = mock(SystemInboundWire.class);

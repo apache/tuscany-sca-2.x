@@ -9,7 +9,7 @@ import org.apache.tuscany.core.mock.component.RequestScopeInitDestroyComponent;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -21,7 +21,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     private ObjectFactory<?> factory;
 
     public void testLifecycleManagement() throws Exception {
-        RequestScopeContext scopeContext = new RequestScopeContext(null);
+        RequestScopeContainer scopeContext = new RequestScopeContainer(null);
         scopeContext.start();
         SystemAtomicComponent atomicContext = createContext(scopeContext);
         // start the request
@@ -36,7 +36,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     }
 
     public void testRequestIsolation() throws Exception {
-        RequestScopeContext scopeContext = new RequestScopeContext(null);
+        RequestScopeContainer scopeContext = new RequestScopeContainer(null);
         scopeContext.start();
 
         SystemAtomicComponent atomicContext = createContext(scopeContext);
@@ -64,8 +64,8 @@ public class BasicRequestScopeTestCase extends TestCase {
         super.tearDown();
     }
 
-    private SystemAtomicComponent createContext(ScopeContext scopeContext) {
-        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo", null, scopeContext, RequestScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null, null);
+    private SystemAtomicComponent createContext(ScopeContainer scopeContainer) {
+        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo", null, scopeContainer, RequestScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null, null);
         context.start();
         return context;
     }

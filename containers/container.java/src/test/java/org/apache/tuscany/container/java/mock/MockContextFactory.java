@@ -24,7 +24,7 @@ import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -43,19 +43,19 @@ public class MockContextFactory {
 
     private static final WireService wireService = ArtifactFactory.createWireService();
 
-    public static JavaAtomicComponent<?> createJavaAtomicContext(String name, ScopeContext scopeContext, Class<?> clazz, Scope scope) throws NoSuchMethodException {
-        return createJavaAtomicContext(name, null, scopeContext, clazz, clazz, scope, false, null, null, null, null);
+    public static JavaAtomicComponent<?> createJavaAtomicContext(String name, ScopeContainer scopeContainer, Class<?> clazz, Scope scope) throws NoSuchMethodException {
+        return createJavaAtomicContext(name, null, scopeContainer, clazz, clazz, scope, false, null, null, null, null);
 
     }
 
-    public static JavaAtomicComponent<?> createJavaAtomicContext(String name, ScopeContext scopeContext, Class<?> clazz, Class<?> service, Scope scope) throws NoSuchMethodException {
-        return createJavaAtomicContext(name, null, scopeContext, clazz, service, scope, false, null, null, null, null);
+    public static JavaAtomicComponent<?> createJavaAtomicContext(String name, ScopeContainer scopeContainer, Class<?> clazz, Class<?> service, Scope scope) throws NoSuchMethodException {
+        return createJavaAtomicContext(name, null, scopeContainer, clazz, service, scope, false, null, null, null, null);
 
     }
 
     public static JavaAtomicComponent<?> createJavaAtomicContext(String name,
                                                                  CompositeComponent<?> parent,
-                                                                 ScopeContext scopeContext,
+                                                                 ScopeContainer scopeContainer,
                                                                  Class<?> clazz,
                                                                  Class<?> service,
                                                                  Scope scope,
@@ -67,7 +67,7 @@ public class MockContextFactory {
             throws NoSuchMethodException {
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         serviceInterfaces.add(service);
-        return new JavaAtomicComponent(name, parent, scopeContext, serviceInterfaces, createObjectFactory(clazz),
+        return new JavaAtomicComponent(name, parent, scopeContainer, serviceInterfaces, createObjectFactory(clazz),
                 scope, eagerInit, initInvoker, destroyInvoker, injectors, members, wireService);
     }
 
@@ -86,9 +86,9 @@ public class MockContextFactory {
      * @throws Exception
      */
     public static Map<String, AtomicComponent> createWiredContexts(String sourceName, Class<?> sourceClass,
-                                                                   ScopeContext sourceScope,
+                                                                   ScopeContainer sourceScope,
                                                                    Map<String, Member> members, String targetName, Class<?> targetService, Class<?> targetClass,
-                                                                   ScopeContext targetScope) throws Exception {
+                                                                   ScopeContainer targetScope) throws Exception {
         return createWiredContexts(sourceName, sourceClass, targetService, sourceScope, members, targetName, targetService, targetClass, targetScope);
 
     }
@@ -97,22 +97,22 @@ public class MockContextFactory {
      * Wires two contexts together where the reference interface may be different from the target service
      */
     public static Map<String, AtomicComponent> createWiredContexts(String sourceName, Class<?> sourceClass, Class<?> sourceReferenceClass,
-                                                                   ScopeContext sourceScope,
+                                                                   ScopeContainer sourceScope,
                                                                    Map<String, Member> members, String targetName,
                                                                    Class<?> targetService, Class<?> targetClass,
-                                                                   ScopeContext targetScope) throws Exception {
+                                                                   ScopeContainer targetScope) throws Exception {
         return createWiredContexts(sourceName, sourceClass, sourceReferenceClass, sourceScope, null, null, null, members, targetName, targetService,
                 targetClass, targetScope, null, null, null);
     }
 
     public static Map<String, AtomicComponent> createWiredContexts(String sourceName, Class<?> sourceClass, Class<?> sourceReferenceClass,
-                                                                   ScopeContext sourceScope,
+                                                                   ScopeContainer sourceScope,
                                                                    Interceptor sourceHeadInterceptor,
                                                                    MessageHandler sourceHeadRequestHandler,
                                                                    MessageHandler sourceHeadResponseHandler,
                                                                    Map<String, Member> members,
                                                                    String targetName, Class<?> targetService, Class<?> targetClass,
-                                                                   ScopeContext targetScope,
+                                                                   ScopeContainer targetScope,
                                                                    Interceptor targetHeadInterceptor,
                                                                    MessageHandler targetRequestHeadHandler,
                                                                    MessageHandler targetResponseHeadHandler) throws Exception {
@@ -151,9 +151,9 @@ public class MockContextFactory {
      * @throws Exception
      */
     public static Map<String, AtomicComponent> createWiredMultiplicity(String sourceName, Class<?> sourceClass, Class<?> sourceReferenceClass,
-                                                                       ScopeContext sourceScope,
+                                                                       ScopeContainer sourceScope,
                                                                        String targetName, Class<?> targetService, Class<?> targetClass,
-                                                                       Map<String, Member> members, ScopeContext targetScope) throws Exception {
+                                                                       Map<String, Member> members, ScopeContainer targetScope) throws Exception {
         JavaAtomicComponent targetContext = createJavaAtomicContext(targetName, targetScope, targetClass, targetScope.getScope());
         InboundWire inboundWire = createServiceWire(targetService.getName().substring(
                 targetService.getName().lastIndexOf('.') + 1), targetService, null, null, null);

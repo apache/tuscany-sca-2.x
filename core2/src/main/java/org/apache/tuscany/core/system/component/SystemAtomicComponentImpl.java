@@ -18,7 +18,7 @@ import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.system.wire.SystemOutboundWire;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -34,7 +34,7 @@ public class SystemAtomicComponentImpl<T> extends PojoAtomicComponent<T> impleme
 
     public SystemAtomicComponentImpl(String name,
                                      CompositeComponent<?> parent,
-                                     ScopeContext scopeContext,
+                                     ScopeContainer scopeContainer,
                                      Class<?> serviceInterface,
                                      ObjectFactory<?> objectFactory,
                                      boolean eagerInit,
@@ -42,13 +42,13 @@ public class SystemAtomicComponentImpl<T> extends PojoAtomicComponent<T> impleme
                                      EventInvoker<Object> destroyInvoker,
                                      List<Injector> injectors,
                                      Map<String, Member> members) {
-        super(name, parent, scopeContext, serviceInterface, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members, null);
+        super(name, parent, scopeContainer, serviceInterface, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members, null);
         scope = Scope.MODULE;
     }
 
     public SystemAtomicComponentImpl(String name,
                                      CompositeComponent<?> parent,
-                                     ScopeContext scopeContext,
+                                     ScopeContainer scopeContainer,
                                      List<Class<?>> serviceInterfaces,
                                      ObjectFactory<?> objectFactory,
                                      boolean eagerInit,
@@ -56,13 +56,13 @@ public class SystemAtomicComponentImpl<T> extends PojoAtomicComponent<T> impleme
                                      EventInvoker<Object> destroyInvoker,
                                      List<Injector> injectors,
                                      Map<String, Member> members) {
-        super(name, parent, scopeContext, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members, null);
+        super(name, parent, scopeContainer, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members, null);
         scope = Scope.MODULE;
     }
 
     @SuppressWarnings("unchecked")
     public T getTargetInstance() throws TargetException {
-        return (T) scopeContext.getInstance(this);
+        return (T) scopeContainer.getInstance(this);
     }
 
     public Object getServiceInstance(String name) throws TargetException {

@@ -19,16 +19,16 @@ import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
-import org.apache.tuscany.core.component.scope.HttpSessionScopeContext;
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
-import org.apache.tuscany.core.component.scope.RequestScopeContext;
-import org.apache.tuscany.core.component.scope.StatelessScopeContext;
+import org.apache.tuscany.core.component.scope.HttpSessionScopeContainer;
+import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.core.component.scope.RequestScopeContainer;
+import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
@@ -46,7 +46,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
     private WireService wireService = ArtifactFactory.createWireService();
 
     public void testToStatelessScope() throws Exception {
-        StatelessScopeContext scope = new StatelessScopeContext(workContext);
+        StatelessScopeContainer scope = new StatelessScopeContainer(workContext);
         scope.start();
         final OutboundWire<Target> wire = getWire(scope);
         Target service = wireService.createProxy(wire);
@@ -57,7 +57,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
     }
 
     public void testToRequestScope() throws Exception {
-        final RequestScopeContext scope = new RequestScopeContext(workContext);
+        final RequestScopeContainer scope = new RequestScopeContainer(workContext);
         scope.start();
 
         scope.onEvent(new RequestStart(this));
@@ -90,10 +90,10 @@ public class OutboundWireToJavaTestCase extends TestCase {
     }
 
     public void testToSessionScope() throws Exception {
-        HttpSessionScopeContext scope = new HttpSessionScopeContext(workContext);
+        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(workContext);
         scope.start();
         Object session1 = new Object();
-        workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
+        workContext.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
         scope.onEvent(new HttpSessionStart(this, session1));
 
         final OutboundWire<Target> wire = getWire(scope);
@@ -104,11 +104,11 @@ public class OutboundWireToJavaTestCase extends TestCase {
         assertEquals("foo", service.getString());
         assertEquals("foo", target.getString());
 
-        workContext.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
+        workContext.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
 
         //second session
         Object session2 = new Object();
-        workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session2);
+        workContext.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
         scope.onEvent(new HttpSessionStart(this, session2));
 
         Target service2 = wireService.createProxy(wire);
@@ -120,9 +120,9 @@ public class OutboundWireToJavaTestCase extends TestCase {
         assertEquals("bar", target2.getString());
 
         scope.onEvent(new HttpSessionEnd(this, session2));
-        workContext.clearIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER);
+        workContext.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
 
-        workContext.setIdentifier(HttpSessionScopeContext.HTTP_IDENTIFIER, session1);
+        workContext.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
         assertEquals("foo", service.getString());
 
         scope.onEvent(new HttpSessionEnd(this, session1));
@@ -132,7 +132,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
 
     public void testToModuleScope() throws Exception {
 
-        ModuleScopeContext scope = new ModuleScopeContext(workContext);
+        ModuleScopeContainer scope = new ModuleScopeContainer(workContext);
         scope.start();
         scope.onEvent(new CompositeStart(this, null));
         final OutboundWire<Target> wire = getWire(scope);
@@ -147,7 +147,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    private OutboundWire<Target> getWire(ScopeContext scope) throws NoSuchMethodException {
+    private OutboundWire<Target> getWire(ScopeContainer scope) throws NoSuchMethodException {
         Connector connector = new ConnectorImpl();
         OutboundWire<Target> wire = createOutboundWire(new QualifiedName("target/Target"), Target.class);
 

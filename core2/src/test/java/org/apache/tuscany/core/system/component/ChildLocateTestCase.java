@@ -9,17 +9,17 @@ public class ChildLocateTestCase extends TestCase {
 
     public void testChildLocate() throws Exception {
 //         WorkContext workContext = new WorkContextImpl();
-//         ModuleScopeContext scopeContext = new ModuleScopeContext(workContext);
-//         scopeContext.start();
+//         ModuleScopeContainer scopeContainer = new ModuleScopeContainer(workContext);
+//         scopeContainer.start();
 //         SystemCompositeComponent parent = new SystemCompositeComponentImpl("parent", null, null);
 //         SystemCompositeComponent child1 = new SystemCompositeComponentImpl("child1", null, null);
 //         child1.setParent(parent);
 //         parent.registerContext(child1);
 //         parent.start();
 //         SystemAtomicComponent context = MockContextFactory.createSystemAtomicContext("source", SourceImpl.class);
-//         scopeContext.register(context);
-//         context.setScopeContext(scopeContext);
-//         scopeContext.publish(new CompositeStart(this, parent));
+//         scopeContainer.register(context);
+//         context.setScopeContext(scopeContainer);
+//         scopeContainer.publish(new CompositeStart(this, parent));
 //
 //         assertNotNull(source);
 //         CompositeComponent composite1 = (CompositeComponent) parent.getContext("child1");
@@ -27,9 +27,9 @@ public class ChildLocateTestCase extends TestCase {
 //         AtomicComponent ctx2 = (AtomicComponent) composite2.getContext("source");
 //         Source source2 = (Source) ctx2.getInstance();
 //         assertSame(source, source2);
-//         scopeContext.onEvent(new CompositeStop(this, parent));
+//         scopeContainer.onEvent(new CompositeStop(this, parent));
 //         parent.stop();
-//         scopeContext.stop();
+//         scopeContainer.stop();
 /////
 
 //        system.start();

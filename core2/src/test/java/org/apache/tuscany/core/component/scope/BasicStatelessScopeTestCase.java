@@ -21,7 +21,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
      */
     public void testInstanceManagement() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        StatelessScopeContext scope = new StatelessScopeContext(ctx);
+        StatelessScopeContainer scope = new StatelessScopeContainer(ctx);
         scope.start();
         SystemAtomicComponent context1 = MockContextFactory.createSystemAtomicContext("comp1", scope, StatelessComponentImpl.class);
         scope.register(context1);
@@ -37,7 +37,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
 
     public void testRegisterContextAfterRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        StatelessScopeContext scope = new StatelessScopeContext(ctx);
+        StatelessScopeContainer scope = new StatelessScopeContainer(ctx);
 
         scope.start();
         SystemAtomicComponent context1 = MockContextFactory.createSystemAtomicContext("comp1", scope, StatelessComponentImpl.class);
@@ -57,7 +57,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
      */
     public void testSetNullComponents() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        StatelessScopeContext scope = new StatelessScopeContext(ctx);
+        StatelessScopeContainer scope = new StatelessScopeContainer(ctx);
         scope.start();
         scope.stop();
     }

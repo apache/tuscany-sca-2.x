@@ -20,16 +20,16 @@ import org.apache.tuscany.spi.model.Scope;
  *
  * @version $Rev$ $Date$
  */
-public class RequestScopeContext extends AbstractScopeContext {
+public class RequestScopeContainer extends AbstractScopeContainer {
 
     private final Map<AtomicComponent, Map<Thread, InstanceWrapper>> contexts;
     private final Map<Thread, List<InstanceWrapper>> destroyQueues;
 
-    public RequestScopeContext() {
+    public RequestScopeContainer() {
         this(null);
     }
 
-    public RequestScopeContext(WorkContext workContext) {
+    public RequestScopeContainer(WorkContext workContext) {
         super("Request Scope", workContext);
         contexts = new ConcurrentHashMap<AtomicComponent, Map<Thread, InstanceWrapper>>();
         destroyQueues = new ConcurrentHashMap<Thread, List<InstanceWrapper>>();

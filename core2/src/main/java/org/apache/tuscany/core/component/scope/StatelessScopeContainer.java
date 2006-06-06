@@ -25,13 +25,13 @@ import org.apache.tuscany.spi.model.Scope;
  *
  * @version $Rev$ $Date$
  */
-public class StatelessScopeContext extends AbstractScopeContext {
+public class StatelessScopeContainer extends AbstractScopeContainer {
 
-    public StatelessScopeContext() {
+    public StatelessScopeContainer() {
         this(null);
     }
 
-    public StatelessScopeContext(WorkContext workContext) {
+    public StatelessScopeContainer(WorkContext workContext) {
         super("Stateless scope", workContext);
         assert(workContext != null): "Work context was null";
     }

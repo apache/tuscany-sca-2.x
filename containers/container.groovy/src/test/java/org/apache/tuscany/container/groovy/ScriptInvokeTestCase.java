@@ -5,7 +5,7 @@ import java.util.List;
 
 import groovy.lang.GroovyObject;
 import org.apache.tuscany.container.groovy.mock.Greeting;
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
+import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.test.ArtifactFactory;
 import org.jmock.MockObjectTestCase;
@@ -21,7 +21,7 @@ public class ScriptInvokeTestCase extends MockObjectTestCase {
      * Tests the invocation of a Groovy "script" as opposed to a class
      */
     public void testBasicScriptInvocation() throws Exception {
-        ModuleScopeContext scope = new ModuleScopeContext(null);
+        ModuleScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);

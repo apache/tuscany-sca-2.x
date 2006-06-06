@@ -17,12 +17,12 @@
 package org.apache.tuscany.core.deployer;
 
 import org.apache.tuscany.core.builder.Connector;
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
+import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.Loader;
@@ -56,7 +56,7 @@ public class DeployerImpl implements Deployer {
     }
 
     public <I extends Implementation<?>> SCAObject<?> deploy(CompositeComponent<?> parent, ComponentDefinition<I> componentDefinition) throws LoaderException {
-        ScopeContext moduleScope = new ModuleScopeContext();
+        ScopeContainer moduleScope = new ModuleScopeContainer();
         DeploymentContext deploymentContext = new DeploymentContext(null, null, moduleScope);
         load(componentDefinition, deploymentContext);
         SCAObject<?> context = build(parent, componentDefinition, deploymentContext);

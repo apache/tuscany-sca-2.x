@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeNotFoundException;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -17,22 +17,22 @@ import org.apache.tuscany.spi.model.Scope;
  */
 public class ScopeRegistryImpl implements ScopeRegistry {
 
-    private final Map<Scope, ScopeContext> scopeCache;
-    private final Map<Scope, ObjectFactory<? extends ScopeContext>> factoryCache;
+    private final Map<Scope, ScopeContainer> scopeCache;
+    private final Map<Scope, ObjectFactory<? extends ScopeContainer>> factoryCache;
     private final WorkContext workContext;
 
     public ScopeRegistryImpl(WorkContext workContext) {
         assert(workContext != null);
-        scopeCache = new ConcurrentHashMap<Scope, ScopeContext>();
-        factoryCache = new ConcurrentHashMap<Scope, ObjectFactory<? extends ScopeContext>>();
+        scopeCache = new ConcurrentHashMap<Scope, ScopeContainer>();
+        factoryCache = new ConcurrentHashMap<Scope, ObjectFactory<? extends ScopeContainer>>();
         this.workContext = workContext;
     }
 
-    public ScopeContext getScopeContext(Scope scope) {
+    public ScopeContainer getScopeContainer(Scope scope) {
         assert Scope.MODULE != scope: "Cannot get MODULE scope from the registry";
-        ScopeContext context = scopeCache.get(scope);
-        if (context == null) {
-            ObjectFactory<? extends ScopeContext> factory = factoryCache.get(scope);
+        ScopeContainer container = scopeCache.get(scope);
+        if (container == null) {
+            ObjectFactory<? extends ScopeContainer> factory = factoryCache.get(scope);
             if (factory == null) {
                 ScopeNotFoundException e = new ScopeNotFoundException("Scope object factory not registered for scope");
                 switch (scope) {
@@ -51,15 +51,15 @@ public class ScopeRegistryImpl implements ScopeRegistry {
                 }
                 throw e;
             }
-            context = factory.getInstance();
-            context.setWorkContext(workContext);
-            context.start();
-            scopeCache.put(scope, context);
+            container = factory.getInstance();
+            container.setWorkContext(workContext);
+            container.start();
+            scopeCache.put(scope, container);
         }
-        return context;
+        return container;
     }
 
-    public <T extends ScopeContext> void registerFactory(Scope scope, ObjectFactory<T> factory) {
+    public <T extends ScopeContainer> void registerFactory(Scope scope, ObjectFactory<T> factory) {
         factoryCache.put(scope, factory);
     }
 

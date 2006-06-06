@@ -16,7 +16,7 @@ import org.apache.tuscany.spi.component.DuplicateNameException;
 import org.apache.tuscany.spi.component.IllegalTargetException;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
@@ -47,7 +47,7 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
 
     protected AutowireComponent<?> autowireContext;
 
-    protected ScopeContext scopeContext;
+    protected ScopeContainer scopeContainer;
 
     public AbstractCompositeComponent(String name, CompositeComponent parent, AutowireComponent autowireContext, WireService wireService) {
         super(name, parent, wireService);
@@ -59,8 +59,8 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
         autowireContext = context;
     }
 
-    public void setScopeContext(ScopeContext scopeContext) {
-        this.scopeContext = scopeContext;
+    public void setScopeContext(ScopeContainer scopeContainer) {
+        this.scopeContainer = scopeContainer;
     }
 
     public void start() {
@@ -69,8 +69,8 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
                 throw new IllegalStateException("SCAObject not in UNINITIALIZED state");
             }
 
-            if (scopeContext != null) {
-                scopeContext.start();
+            if (scopeContainer != null) {
+                scopeContainer.start();
             }
             for (SCAObject child : children.values()) {
                 child.start();
@@ -88,8 +88,8 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
         for (SCAObject child : children.values()) {
             child.stop();
         }
-        if (scopeContext != null) {
-            scopeContext.stop();
+        if (scopeContainer != null) {
+            scopeContainer.stop();
         }
 
         // need to block a start until reset is complete

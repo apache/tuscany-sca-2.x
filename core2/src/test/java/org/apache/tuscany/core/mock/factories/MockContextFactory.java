@@ -24,7 +24,7 @@ import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.osoa.sca.annotations.Destroy;
@@ -38,8 +38,8 @@ public class MockContextFactory {
     private MockContextFactory() {
     }
 
-    public static Map<String, AtomicComponent> createWiredContexts(String source, Class<?> sourceClass, ScopeContext sourceScopeCtx,
-                                                                   String target, Class<?> targetClass, ScopeContext targetScopeCtx) throws NoSuchMethodException {
+    public static Map<String, AtomicComponent> createWiredContexts(String source, Class<?> sourceClass, ScopeContainer sourceScopeCtx,
+                                                                   String target, Class<?> targetClass, ScopeContainer targetScopeCtx) throws NoSuchMethodException {
         List<Class<?>> sourceClasses = new ArrayList<Class<?>>();
         sourceClasses.add(sourceClass);
         return createWiredContexts(source, sourceClasses, sourceClass, sourceScopeCtx, target, targetClass, targetScopeCtx);
@@ -55,10 +55,10 @@ public class MockContextFactory {
     public static Map<String, AtomicComponent> createWiredContexts(String source,
                                                                    List<Class<?>> sourceInterfaces,
                                                                    Class<?> sourceClass,
-                                                                   ScopeContext sourceScopeCtx,
+                                                                   ScopeContainer sourceScopeCtx,
                                                                    String target,
                                                                    Class<?> targetClass,
-                                                                   ScopeContext targetScopeCtx) throws NoSuchMethodException {
+                                                                   ScopeContainer targetScopeCtx) throws NoSuchMethodException {
 
         Map<String, AtomicComponent> contexts = new HashMap<String, AtomicComponent>();
         SystemAtomicComponent targetCtx = createSystemAtomicContext(target, targetScopeCtx, targetClass);//, targetEager, targetInitInvoker, targetDestroyInvoker, null);
@@ -98,18 +98,18 @@ public class MockContextFactory {
         return contexts;
     }
 
-    public static SystemAtomicComponent createSystemAtomicContext(String name, ScopeContext scopeContext, Class<?> clazz) throws NoSuchMethodException {
+    public static SystemAtomicComponent createSystemAtomicContext(String name, ScopeContainer scopeContainer, Class<?> clazz) throws NoSuchMethodException {
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
         serviceInterfaces.add(clazz);
-        return createSystemAtomicContext(name, scopeContext, serviceInterfaces, clazz);
+        return createSystemAtomicContext(name, scopeContainer, serviceInterfaces, clazz);
     }
 
-    public static SystemAtomicComponent createSystemAtomicContext(String name, ScopeContext scopeContext, List<Class<?>> interfaces, Class<?> clazz) throws NoSuchMethodException {
-        return createSystemAtomicContext(name, scopeContext, interfaces, clazz, null, null);
+    public static SystemAtomicComponent createSystemAtomicContext(String name, ScopeContainer scopeContainer, List<Class<?>> interfaces, Class<?> clazz) throws NoSuchMethodException {
+        return createSystemAtomicContext(name, scopeContainer, interfaces, clazz, null, null);
     }
 
     public static SystemAtomicComponent createSystemAtomicContext(String name,
-                                                                  ScopeContext scopeContext,
+                                                                  ScopeContainer scopeContainer,
                                                                   List<Class<?>> serviceInterfaces,
                                                                   Class<?> clazz,
                                                                   List<Injector> injectors,
@@ -128,7 +128,7 @@ public class MockContextFactory {
                 destroyInvoker = new MethodEventInvoker<Object>(method);
             }
         }
-        return createSystemAtomicContext(name, scopeContext, serviceInterfaces, clazz, eager, initInvoker, destroyInvoker, injectors, members);
+        return createSystemAtomicContext(name, scopeContainer, serviceInterfaces, clazz, eager, initInvoker, destroyInvoker, injectors, members);
     }
 
     /**
@@ -143,7 +143,7 @@ public class MockContextFactory {
      * @throws NoSuchMethodException
      */
     public static SystemAtomicComponentImpl createSystemAtomicContext(String name,
-                                                                      ScopeContext scopeContext,
+                                                                      ScopeContainer scopeContainer,
                                                                       List<Class<?>> serviceInterfaces,
                                                                       Class<?> clazz,
                                                                       boolean eagerInit,
@@ -151,7 +151,7 @@ public class MockContextFactory {
                                                                       EventInvoker<Object> destroyInvoker,
                                                                       List<Injector> injectors,
                                                                       Map<String, Member> members) throws NoSuchMethodException {
-        return new SystemAtomicComponentImpl(name, null, scopeContext, serviceInterfaces, createObjectFactory(clazz), eagerInit, initInvoker, destroyInvoker, injectors, members);
+        return new SystemAtomicComponentImpl(name, null, scopeContainer, serviceInterfaces, createObjectFactory(clazz), eagerInit, initInvoker, destroyInvoker, injectors, members);
     }
 
     public static <T> InboundWire<T> createTargetWireFactory(String serviceName, Class<T> interfaze) {

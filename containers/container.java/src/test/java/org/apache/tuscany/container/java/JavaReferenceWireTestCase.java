@@ -11,7 +11,7 @@ import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.container.java.mock.components.TargetImpl;
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
+import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
@@ -28,7 +28,7 @@ import org.jmock.core.Stub;
 public class JavaReferenceWireTestCase extends MockObjectTestCase {
 
     public void testReferenceSet() throws Exception {
-        ModuleScopeContext scope = new ModuleScopeContext(null);
+        ModuleScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         final Target target = new TargetImpl();
         Map<String, Member> members = new HashMap<String, Member>();

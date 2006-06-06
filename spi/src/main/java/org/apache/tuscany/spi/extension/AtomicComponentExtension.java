@@ -9,7 +9,7 @@ import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
@@ -24,15 +24,15 @@ import org.apache.tuscany.spi.wire.WireService;
  */
 public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> implements AtomicComponent<T> {
 
-    protected ScopeContext scopeContext;
+    protected ScopeContainer scopeContainer;
     protected Scope scope;
     protected Map<String, InboundWire> serviceWires = new HashMap<String, InboundWire>();
     protected Map<String, List<OutboundWire>> referenceWires = new HashMap<String, List<OutboundWire>>();
     protected WireService wireService;
 
-    protected AtomicComponentExtension(String name, CompositeComponent<?> parent, ScopeContext scopeContext, WireService wireService) {
+    protected AtomicComponentExtension(String name, CompositeComponent<?> parent, ScopeContainer scopeContainer, WireService wireService) {
         super(name, parent);
-        this.scopeContext = scopeContext;
+        this.scopeContainer = scopeContainer;
         this.wireService = wireService;
     }
 
@@ -46,7 +46,7 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
 
     public void start() throws CoreRuntimeException {
         super.start();
-        scopeContext.register(this);
+        scopeContainer.register(this);
     }
 
     public void init(Object instance) throws TargetException {

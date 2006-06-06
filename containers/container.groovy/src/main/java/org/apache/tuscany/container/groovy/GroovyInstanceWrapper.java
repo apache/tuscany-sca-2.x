@@ -7,7 +7,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.InstanceWrapper;
 
 /**
- * Wraps a <code>GroovyObject</code> so it can be managed by a <code>ScopeContext</code>
+ * Wraps a <code>GroovyObject</code> so it can be managed by a <code>ScopeContainer</code>
  * 
  * @version $$Rev$$ $$Date$$
  */

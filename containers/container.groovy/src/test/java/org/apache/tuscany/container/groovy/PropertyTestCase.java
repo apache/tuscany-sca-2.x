@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.tuscany.container.groovy.injectors.SingletonInjector;
 import org.apache.tuscany.container.groovy.mock.Greeting;
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
+import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.test.ArtifactFactory;
 import org.jmock.MockObjectTestCase;
@@ -27,7 +27,7 @@ public class PropertyTestCase extends MockObjectTestCase {
      * Tests injecting a simple property type on a Groovy implementation instance
      */
     public void testPropertyInjection() throws Exception {
-        ModuleScopeContext scope = new ModuleScopeContext(null);
+        ModuleScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);

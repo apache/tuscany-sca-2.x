@@ -22,18 +22,18 @@ import org.apache.tuscany.spi.model.Scope;
  *
  * @version $Rev$ $Date$
  */
-public class ModuleScopeContext extends AbstractScopeContext {
+public class ModuleScopeContainer extends AbstractScopeContainer {
 
     private final Map<AtomicComponent, InstanceWrapper> instanceContexts;
     // the queue of instanceContexts to destroy, in the order that their instances were created
     private final List<InstanceWrapper> destroyQueue;
     private static final InstanceWrapper EMPTY = new EmptyWrapper();
 
-    public ModuleScopeContext() {
+    public ModuleScopeContainer() {
         this(null);
     }
 
-    public ModuleScopeContext(WorkContext workContext) {
+    public ModuleScopeContainer(WorkContext workContext) {
         super("Module Scope", workContext);
         instanceContexts = new ConcurrentHashMap<AtomicComponent, InstanceWrapper>();
         destroyQueue = new ArrayList<InstanceWrapper>();

@@ -8,9 +8,9 @@ import org.apache.tuscany.spi.ObjectFactory;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class ModuleScopeObjectFactory implements ObjectFactory<ModuleScopeContext> {
+public class ModuleScopeObjectFactory implements ObjectFactory<ModuleScopeContainer> {
 
-    public ModuleScopeContext getInstance() throws ObjectCreationException {
-        return new ModuleScopeContext();
+    public ModuleScopeContainer getInstance() throws ObjectCreationException {
+        return new ModuleScopeContainer();
     }
 }

@@ -26,7 +26,7 @@ import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.model.Scope;
@@ -43,7 +43,7 @@ public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
 
     public JavaAtomicComponent(String name,
                                CompositeComponent<?> parent,
-                               ScopeContext scopeContext,
+                               ScopeContainer scopeContainer,
                                List<Class<?>> serviceInterfaces,
                                ObjectFactory<?> objectFactory,
                                Scope scope,
@@ -53,7 +53,7 @@ public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
                                List<Injector> injectors,
                                Map<String, Member> members,
                                WireService wireService) {
-        super(name, parent, scopeContext, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members, wireService);
+        super(name, parent, scopeContainer, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members, wireService);
         this.scope = scope;
     }
 

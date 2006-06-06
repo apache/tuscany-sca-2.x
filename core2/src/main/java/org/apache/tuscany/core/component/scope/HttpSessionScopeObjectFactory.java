@@ -8,9 +8,9 @@ import org.apache.tuscany.spi.ObjectFactory;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class HttpSessionScopeObjectFactory implements ObjectFactory<HttpSessionScopeContext> {
+public class HttpSessionScopeObjectFactory implements ObjectFactory<HttpSessionScopeContainer> {
 
-    public HttpSessionScopeContext getInstance() throws ObjectCreationException {
-        return new HttpSessionScopeContext();
+    public HttpSessionScopeContainer getInstance() throws ObjectCreationException {
+        return new HttpSessionScopeContainer();
     }
 }

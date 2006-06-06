@@ -20,8 +20,8 @@ import java.lang.reflect.Method;
 
 import junit.framework.Assert;
 import org.apache.tuscany.container.java.mock.MockContextFactory;
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.model.Scope;
 import org.jmock.MockObjectTestCase;
 
@@ -43,7 +43,7 @@ public class JavaTargetInvokerTestCase extends MockObjectTestCase {
     }
 
     public void testScopedInvoke() throws Exception {
-        ScopeContext scope = new ModuleScopeContext(null);
+        ScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         JavaAtomicComponent context = MockContextFactory.createJavaAtomicContext("foo", scope, Echo.class, Scope.MODULE);
         scope.register(context);

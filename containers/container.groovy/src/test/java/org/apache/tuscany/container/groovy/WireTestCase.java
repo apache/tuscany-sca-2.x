@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.container.groovy.mock.Greeting;
-import org.apache.tuscany.core.component.scope.ModuleScopeContext;
+import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -48,7 +48,7 @@ public class WireTestCase extends MockObjectTestCase {
      * Tests a basic invocation down a source wire
      */
     public void testReferenceWireInvocation() throws Exception {
-        ModuleScopeContext scope = new ModuleScopeContext(null);
+        ModuleScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
 
         List<Class<?>> services = new ArrayList<Class<?>>();
@@ -86,7 +86,7 @@ public class WireTestCase extends MockObjectTestCase {
      * Tests a basic invocation to a target
      */
     public void testTargetInvocation() throws Exception {
-        ModuleScopeContext scope = new ModuleScopeContext(null);
+        ModuleScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
@@ -103,7 +103,7 @@ public class WireTestCase extends MockObjectTestCase {
      * Tests a basic invocation down a target wire
      */
     public void testTargetWireInvocation() throws Exception {
-        ModuleScopeContext scope = new ModuleScopeContext(null);
+        ModuleScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);

@@ -8,7 +8,7 @@ import java.util.Map;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.ScopeContext;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -54,7 +54,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
         return new SpringInvoker(serviceName, method, springContext);
     }
 
-    public void setScopeContext(ScopeContext scopeContext) {
+    public void setScopeContext(ScopeContainer scopeContainer) {
         // not needed
     }
 
