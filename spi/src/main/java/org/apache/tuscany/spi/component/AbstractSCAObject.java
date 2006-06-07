@@ -101,6 +101,6 @@ public abstract class AbstractSCAObject<T> extends AbstractLifecycle implements 
     }
 
     public String toString() {
-        return "SCAObject [" + name + "] in state [" + super.toString() + ']';
+        return "[" + name + "] in state [" + super.toString() + ']';
     }
 }

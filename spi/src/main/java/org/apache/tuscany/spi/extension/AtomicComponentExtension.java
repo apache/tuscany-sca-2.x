@@ -64,6 +64,9 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
 
     public InboundWire getInboundWire(String serviceName) {
         if (serviceName == null) {
+            if (serviceWires.size() <1){
+                return null;
+            }
             return serviceWires.values().iterator().next();
         } else {
             return serviceWires.get(serviceName);

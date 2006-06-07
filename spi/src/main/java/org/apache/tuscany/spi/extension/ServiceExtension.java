@@ -50,10 +50,6 @@ public class ServiceExtension<T> extends AbstractSCAObject<T> implements Service
 
     public T getServiceInstance() throws TargetException {
         return wireService.createProxy(inboundWire);
-//        if (target == null) {
-//            target = inboundWire.getTargetService();
-//        }
-//        return target;
     }
 
     public WireInvocationHandler getHandler() {
@@ -61,6 +57,7 @@ public class ServiceExtension<T> extends AbstractSCAObject<T> implements Service
     }
 
     public Class<T> getInterface() {
+        assert(inboundWire != null): "Inbound wire not set";
         return inboundWire.getBusinessInterface();
     }
 
