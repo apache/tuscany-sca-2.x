@@ -25,14 +25,13 @@ import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.InstanceWrapper;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 import org.codehaus.groovy.control.CompilationFailedException;
 
@@ -52,7 +51,7 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
                                  CompositeComponent parent,
                                  ScopeContainer scopeContainer,
                                  WireService wireService) {
-        super(name, parent, scopeContainer,wireService);
+        super(name, parent, scopeContainer, wireService);
         this.script = script;
         this.services = services;
         this.scope = scope;
@@ -71,7 +70,7 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
         return new GroovyInvoker(method.getName(), this);
     }
 
-    public InstanceWrapper createInstance() throws ObjectCreationException {
+    public Object createInstance() throws ObjectCreationException {
         try {
             ClassLoader parent = getClass().getClassLoader();
             GroovyClassLoader loader = new GroovyClassLoader(parent);
@@ -87,7 +86,7 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
                     object.setProperty(wire.getReferenceName(), wireService.createProxy(wire));
                 }
             }
-            return new GroovyInstanceWrapper(this, object);
+            return object;
         } catch (CompilationFailedException e) {
             throw new ObjectCreationException(e);
         } catch (IllegalAccessException e) {
@@ -111,7 +110,7 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
     public Object getServiceInstance(String service) throws TargetException {
         InboundWire<?> wire = getInboundWire(service);
         if (wire == null) {
-            TargetException e =  new TargetException("ServiceDefinition not found"); // TODO better error message
+            TargetException e = new TargetException("ServiceDefinition not found"); // TODO better error message
             e.setIdentifier(service);
             throw e;
         }

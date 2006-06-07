@@ -14,13 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.spi.component;
+package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.Lifecycle;
 
 /**
- * Provides lifecycle management for an implementation instance associated with an {@link AtomicComponent} for
- * use by the atomic context's associated {@link ScopeContainer}
+ * Provides lifecycle management for an implementation instance associated with an {@link org.apache.tuscany.spi.component.AtomicComponent} for
+ * use by the atomic context's associated {@link org.apache.tuscany.spi.component.ScopeContainer}
  *
  * @version $Rev$ $Date$
  */

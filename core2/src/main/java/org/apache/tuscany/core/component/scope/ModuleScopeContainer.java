@@ -11,7 +11,6 @@ import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
@@ -94,12 +93,13 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
     }
 
 
-    public InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
+    protected InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
         checkInit();
         InstanceWrapper ctx = instanceContexts.get(component);
         assert ctx != null : "SCAObject not registered with scope: " + component;
         if (ctx == EMPTY) {
-            ctx = component.createInstance();
+            ctx = new InstanceWrapperImpl(component, component.createInstance());
+            ctx.start();
             instanceContexts.put(component, ctx);
             synchronized (destroyQueue) {
                 destroyQueue.add(ctx);
@@ -112,9 +112,10 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
         for (Map.Entry<AtomicComponent, InstanceWrapper> entry : instanceContexts.entrySet()) {
             AtomicComponent component = entry.getKey();
             if (component.isEagerInit()) {
-                InstanceWrapper instanceCtx = component.createInstance();
-                instanceContexts.put(component, instanceCtx);
-                destroyQueue.add(instanceCtx);
+                InstanceWrapper ctx = new InstanceWrapperImpl(component, component.createInstance());
+                ctx.start();
+                instanceContexts.put(component, ctx);
+                destroyQueue.add(ctx);
             }
         }
 

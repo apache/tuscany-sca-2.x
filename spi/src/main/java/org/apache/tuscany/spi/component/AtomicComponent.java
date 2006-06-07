@@ -50,7 +50,7 @@ public interface AtomicComponent<T> extends Component<T> {
      *
      * @throws ObjectCreationException
      */
-    InstanceWrapper createInstance() throws ObjectCreationException;
+    Object createInstance() throws ObjectCreationException;
 
 
 }

@@ -8,7 +8,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -114,4 +113,6 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
     public String toString() {
         return "ScopeContainer [" + name + "] in state [" + super.toString() + ']';
     }
+
+    protected abstract InstanceWrapper getInstanceWrapper(AtomicComponent component);
 }

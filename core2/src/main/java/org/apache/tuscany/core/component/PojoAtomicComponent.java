@@ -21,7 +21,6 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
@@ -121,15 +120,14 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
         return (T) scopeContainer.getInstance(this);
     }
 
-    public InstanceWrapper createInstance() throws ObjectCreationException {
+    public Object createInstance() throws ObjectCreationException {
         Object instance = objectFactory.getInstance();
-        InstanceWrapper ctx = new PojoInstanceWrapper(this, instance);
+        //InstanceWrapper ctx = new InstanceWrapperImpl(this, instance);
         // inject the instance with properties and references
         for (Injector<Object> injector : injectors) {
             injector.inject(instance);
         }
-        ctx.start();
-        return ctx;
+        return instance;
     }
 
     public void onReferenceWire(OutboundWire wire) {

@@ -11,24 +11,23 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.component;
+package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.InstanceWrapper;
 
 /**
- * Manages a Java class-based implementation instance
+ * Default implementation of an <code>InstanceWrapper</code>
  *
  * @version $$Rev$$ $$Date$$
  */
-public class PojoInstanceWrapper extends AbstractLifecycle implements InstanceWrapper {
+public class InstanceWrapperImpl extends AbstractLifecycle implements InstanceWrapper {
 
     private Object instance;
     private AtomicComponent component;
 
-    public PojoInstanceWrapper(AtomicComponent component, Object instance) {
+    public InstanceWrapperImpl(AtomicComponent component, Object instance) {
         assert(component != null);
         assert(instance != null);
         this.component = component;

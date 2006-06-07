@@ -14,7 +14,6 @@
 package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
@@ -61,8 +60,10 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
         checkInit();
     }
 
-    public InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
-        return component.createInstance();
+    protected InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
+        InstanceWrapper ctx = new InstanceWrapperImpl(component, component.createInstance());
+        ctx.start();
+        return ctx;
     }
 
 }

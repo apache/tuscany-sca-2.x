@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
@@ -71,12 +70,13 @@ public class RequestScopeContainer extends AbstractScopeContainer {
         contexts.put(component, new ConcurrentHashMap<Thread, InstanceWrapper>());
     }
 
-    public InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
+    protected InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
         Map<Thread, InstanceWrapper> instanceContextMap = contexts.get(component);
         assert(instanceContextMap != null):"Atomic component not registered";
         InstanceWrapper ctx = instanceContextMap.get(Thread.currentThread());
         if (ctx == null) {
-            ctx = component.createInstance();
+            ctx = new InstanceWrapperImpl(component, component.createInstance());
+            ctx.start();
             instanceContextMap.put(Thread.currentThread(), ctx);
             List<InstanceWrapper> destroyQueue = destroyQueues.get(Thread.currentThread());
             if (destroyQueue == null) {

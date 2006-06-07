@@ -18,7 +18,8 @@ public class SystemAtomicComponentTestCase extends TestCase {
     public void testContextCreationAndInit() throws Exception {
         ObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor((Class[]) null), null);
         SystemAtomicComponent context = new SystemAtomicComponentImpl("foo", null, null, Foo.class, factory, false, initInvoker, null, null, null);
-        Foo foo = (Foo) context.createInstance().getInstance();
+        Foo foo = (Foo) context.createInstance();
+        context.init(foo);
         assertNotNull(foo);
         assertTrue(foo.initialized);
     }

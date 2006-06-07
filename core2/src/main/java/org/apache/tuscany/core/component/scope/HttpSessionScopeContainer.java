@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
@@ -76,7 +75,7 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
 
     }
 
-    public InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
+    protected InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
         Object key = workContext.getIdentifier(HTTP_IDENTIFIER);
         assert(key != null):"HTTP session key not bound in work component";
         return getInstance(component, key);
@@ -86,7 +85,8 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
         Map<Object, InstanceWrapper> wrappers = contexts.get(component);
         InstanceWrapper ctx = wrappers.get(key);
         if (ctx == null) {
-            ctx = component.createInstance();
+            ctx = new InstanceWrapperImpl(component, component.createInstance());
+            ctx.start();
             wrappers.put(key, ctx);
             List<InstanceWrapper> destroyQueue = destroyQueues.get(key);
             if (destroyQueue == null) {

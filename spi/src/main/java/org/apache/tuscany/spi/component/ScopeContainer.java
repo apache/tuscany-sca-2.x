@@ -51,13 +51,4 @@ public interface ScopeContainer extends Lifecycle, RuntimeEventListener {
      */
     Object getInstance(AtomicComponent component) throws TargetException;
 
-
-    /**
-     * Returns the instance wrapper associated with the current component
-     *
-     * @throws TargetException
-     */
-    InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException;
-
-
 }

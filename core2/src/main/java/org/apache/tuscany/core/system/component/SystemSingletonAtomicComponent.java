@@ -8,7 +8,6 @@ import java.util.Map;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.InstanceWrapper;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -68,7 +67,7 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
 
     }
 
-    public InstanceWrapper createInstance() throws ObjectCreationException {
+    public Object createInstance() throws ObjectCreationException {
         throw new UnsupportedOperationException();
     }
 
