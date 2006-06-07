@@ -1,18 +1,19 @@
 package org.apache.tuscany.core.component.scope;
 
-import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.ScopeNotFoundException;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
+import org.jmock.MockObjectTestCase;
 
 /**
  * Verifies retrieval of standard scope contexts from the default scope registry
  *
  * @version $$Rev$$ $$Date$$
  */
-public class ScopeRegistryTestCase extends TestCase {
+public class ScopeRegistryTestCase extends MockObjectTestCase {
     public void testScopeContextCreation() throws Exception {
         WorkContext workContext = new WorkContextImpl();
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl(workContext);
@@ -26,4 +27,43 @@ public class ScopeRegistryTestCase extends TestCase {
         assertSame(session, scopeRegistry.getScopeContainer(Scope.SESSION));
         assertNotSame(request, session);
     }
+
+    public void testDeregisterFactory() throws Exception {
+        WorkContext workContext = new WorkContextImpl();
+        ScopeRegistry scopeRegistry = new ScopeRegistryImpl(workContext);
+        RequestScopeObjectFactory factory = new RequestScopeObjectFactory();
+        scopeRegistry.registerFactory(Scope.REQUEST, factory);
+        scopeRegistry.deregisterFactory(Scope.REQUEST);
+        try {
+            scopeRegistry.getScopeContainer(Scope.REQUEST);
+            fail();
+        } catch (ScopeNotFoundException e) {
+            // expected
+        }
+    }
+
+    public void testScopeNotRegistered() throws Exception {
+        WorkContext workContext = new WorkContextImpl();
+        ScopeRegistry scopeRegistry = new ScopeRegistryImpl(workContext);
+        try {
+            scopeRegistry.getScopeContainer(Scope.REQUEST);
+            fail();
+        } catch (ScopeNotFoundException e) {
+            // expected
+        }
+        try {
+            scopeRegistry.getScopeContainer(Scope.SESSION);
+            fail();
+        } catch (ScopeNotFoundException e) {
+            // expected
+        }
+        try {
+            scopeRegistry.getScopeContainer(Scope.STATELESS);
+            fail();
+        } catch (ScopeNotFoundException e) {
+            // expected
+        }
+    }
+
+
 }

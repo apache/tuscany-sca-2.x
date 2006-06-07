@@ -15,11 +15,11 @@ public class CompositeStart extends AbstractEvent implements CompositeEvent {
      * Creates a module stop event
      *
      * @param source the source of the event
-     * @param ctx    the composite component associated the module being stopped
+     * @param component    the composite component associated the module being stopped
      */
-    public CompositeStart(Object source, CompositeComponent ctx) {
+    public CompositeStart(Object source, CompositeComponent component) {
         super(source);
-        component = ctx;
+        this.component = component;
     }
 
     public CompositeComponent getComposite() {

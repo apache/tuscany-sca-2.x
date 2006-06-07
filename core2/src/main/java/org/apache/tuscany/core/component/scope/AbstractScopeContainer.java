@@ -106,7 +106,7 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
         }
     }
 
-    protected WorkContext getEventContext() {
+    protected WorkContext getWorkContext() {
         return workContext;
     }
 

@@ -32,7 +32,6 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
 
     public StatelessScopeContainer(WorkContext workContext) {
         super("Stateless scope", workContext);
-        assert(workContext != null): "Work context was null";
     }
 
     public Scope getScope() {

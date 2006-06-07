@@ -16,7 +16,7 @@ public class WorkContextImpl implements WorkContext {
 
     private static final Object REMOTE_CONTEXT = new Object();
 
-    // @TODO design a proper propagation strategy for creating new threads
+    // TODO implement propagation strategy for creating new threads
     /*
      * a map ( associated with the current thread) of scope identifiers keyed on the event context id type. the scope identifier
      * may be a {@link ScopeIdentifier} or an opaque id
