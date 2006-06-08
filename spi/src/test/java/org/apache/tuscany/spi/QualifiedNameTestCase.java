@@ -29,11 +29,21 @@ public class QualifiedNameTestCase extends TestCase {
 
     public void testInvalidName() throws Exception {
         try {
-            QualifiedName name = new QualifiedName("/Foo/Bar");
+            new QualifiedName("/Foo/Bar");
             fail("Invalid name exception not thrown");
         } catch (InvalidNameException e) {
 
         }
+    }
+
+    public void testQualifiedName() throws Exception {
+        QualifiedName name = new QualifiedName("Foo/Bar");
+        assertEquals("Foo/Bar", name.getQualifiedName());
+    }
+
+    public void testToString() throws Exception {
+        QualifiedName name = new QualifiedName("Foo/Bar");
+        assertEquals("Foo/Bar", name.toString());
     }
 
 }
