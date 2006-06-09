@@ -28,8 +28,8 @@ import java.net.URLClassLoader;
  */
 public abstract class LauncherSupport {
     private ClassLoader applicationLoader = ClassLoader.getSystemClassLoader();
-    protected String className;
-    protected String[] args;
+    private String className;
+    private String[] args;
 
     /**
      * Returns the classloader for application classes.

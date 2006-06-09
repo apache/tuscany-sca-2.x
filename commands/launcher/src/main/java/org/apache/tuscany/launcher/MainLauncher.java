@@ -83,21 +83,21 @@ public class MainLauncher extends LauncherSupport {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(getApplicationLoader());
         try {
-            if (className == null) {
+            if (getClassName() == null) {
                 throw new InvalidMainException("Main-Class not specified");
             }
-            Class<?> mainClass = Class.forName(className, true, getApplicationLoader());
+            Class<?> mainClass = Class.forName(getClassName(), true, getApplicationLoader());
             Method main;
             try {
                 main = mainClass.getMethod("main", String[].class);
             } catch (NoSuchMethodException e) {
-                throw new InvalidMainException(className);
+                throw new InvalidMainException(getClassName());
             }
             if (!Modifier.isStatic(main.getModifiers())) {
                 throw new InvalidMainException(main.toString());
             }
             try {
-                main.invoke(null, (Object) args);
+                main.invoke(null, (Object) getArgs());
             } catch (IllegalAccessException e) {
                 // assertion as getMethod() should not have returned a method that is not accessible
                 throw new AssertionError();
@@ -130,6 +130,7 @@ public class MainLauncher extends LauncherSupport {
     }
 
     protected void parseArguments(String... args) {
+    	String specifiedMain = null;
         int i = 0;
         while (i < args.length) {
             int left = args.length - i;
@@ -138,7 +139,7 @@ public class MainLauncher extends LauncherSupport {
                 setClassPath(args[i + 1]);
                 i += 2;
             } else if ("--main".equals(arg) && left > 1) {
-                setClassName(args[i + 1]);
+                specifiedMain = args[i + 1];
                 i += 2;
             } else if (arg.startsWith("--")) {
                 usage();
@@ -146,6 +147,11 @@ public class MainLauncher extends LauncherSupport {
                 break;
             }
         }
+        
+        // Specified main-class overrides anything found on classpath
+        if (specifiedMain != null)
+        	setClassName(specifiedMain);
+        
         String[] mainArgs = new String[args.length - i];
         System.arraycopy(args, i, mainArgs, 0, mainArgs.length);
         setArgs(mainArgs);
@@ -153,7 +159,7 @@ public class MainLauncher extends LauncherSupport {
 
     protected void usage() {
         ResourceBundle bundle = ResourceBundle.getBundle(MainLauncher.class.getName());
-        System.err.print(bundle.getString("org.apache.tuscany.standalone.Usage"));
+        System.err.print(bundle.getString("org.apache.tuscany.launcher.Usage"));
         System.exit(1);
     }
 }
