@@ -149,8 +149,9 @@ public class MainLauncher extends LauncherSupport {
         }
         
         // Specified main-class overrides anything found on classpath
-        if (specifiedMain != null)
+        if (specifiedMain != null) {
         	setClassName(specifiedMain);
+        }
         
         String[] mainArgs = new String[args.length - i];
         System.arraycopy(args, i, mainArgs, 0, mainArgs.length);
