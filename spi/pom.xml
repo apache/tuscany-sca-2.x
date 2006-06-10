@@ -25,7 +25,6 @@
     <name>Tuscany SPI</name>
     <description>Tuscany Service Provider Interfaces.</description>
     <version>SNAPSHOT</version>
-
     <dependencies>
         <dependency>
             <groupId>org.osoa</groupId>
@@ -68,4 +67,39 @@
         </dependency>
 
     </dependencies>
+	 
+	<build>
+		<plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <configuration>
+                    <rulesets>
+                        <ruleset>${basedir}/.ruleset</ruleset>
+                    </rulesets>
+                    <linkXRef>false</linkXRef>
+
+                    <targetJdk>1.5</targetJdk>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>process-sources</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+		</plugins>
+	</build>
+   
+
 </project>

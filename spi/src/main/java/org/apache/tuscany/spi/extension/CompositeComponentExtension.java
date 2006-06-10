@@ -53,9 +53,9 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
     }
 
     public void register(SCAObject child) {
-        assert(child != null): "SCAObject was null";
+        assert child != null : "SCAObject was null";
         if (children.get(child.getName()) != null) {
-            DuplicateNameException e = new DuplicateNameException("A context is already registered with name");
+            DuplicateNameException e = new DuplicateNameException("A context is anlready registered with name");
             e.setIdentifier(child.getName());
             e.addContextName(getName());
             throw e;
@@ -80,7 +80,7 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
     }
 
     public SCAObject getChild(String name) {
-        assert (name != null) : "Name was null";
+        assert name != null : "Name was null";
         return children.get(name);
     }
 
@@ -113,7 +113,8 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
     }
 
     public T getServiceInstance() throws TargetException {
-        return null;  //TODO implement
+        //TODO implement
+        return null;
     }
 
     public Object getServiceInstance(String name) throws TargetException {
@@ -160,7 +161,7 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
 
     public InboundWire getInboundWire(String serviceName) {
         SCAObject context = children.get(serviceName);
-        if (context == null || !(context instanceof Service)) {
+        if (!(context instanceof Service)) {
             throw new ComponentNotFoundException(serviceName);
         }
         return ((Service) context).getInboundWire();

@@ -43,7 +43,8 @@ public interface Loader {
      * @return the model object obtained by parsing the current element on the stream
      * @throws XMLStreamException if there was a problem reading the stream
      */
-    ModelObject load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException;
+    ModelObject load(XMLStreamReader reader, DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException;
 
     /**
      * Load a model object from a specified location.
@@ -54,7 +55,8 @@ public interface Loader {
      * @return the model ojbect loaded from the document
      * @throws LoaderException if there was a problem loading the document
      */
-    <MO extends ModelObject> MO load(URL url, Class<MO> type, DeploymentContext deploymentContext) throws LoaderException;
+    <MO extends ModelObject> MO load(URL url, Class<MO> type, DeploymentContext deploymentContext)
+        throws LoaderException;
 
     /**
      * Load the component type definition for a given implementation. How the component type information is
@@ -66,5 +68,6 @@ public interface Loader {
      * @param deploymentContext the current deployment context
      * @throws LoaderException if there was a problem loading the component type definition
      */
-    <I extends Implementation<?>> void loadComponentType(I implementation, DeploymentContext deploymentContext) throws LoaderException;
+    <I extends Implementation<?>> void loadComponentType(I implementation, DeploymentContext deploymentContext)
+        throws LoaderException;
 }

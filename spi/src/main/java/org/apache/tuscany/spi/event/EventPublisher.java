@@ -20,23 +20,23 @@ package org.apache.tuscany.spi.event;
  */
 public interface EventPublisher {
 
-    public void publish(Event object);
+    void publish(Event object);
 
     /**
      * Registers a listener to receive notifications for the context
      */
-    public void addListener(RuntimeEventListener listener);
+    void addListener(RuntimeEventListener listener);
 
     /**
      * Registers a listener to receive notifications for the context
      */
-    public void addListener(EventFilter filter, RuntimeEventListener listener);
+    void addListener(EventFilter filter, RuntimeEventListener listener);
 
 
     /**
      * Removes a previously registered listener
      */
-    public void removeListener(RuntimeEventListener listener);
+    void removeListener(RuntimeEventListener listener);
 
 
 }

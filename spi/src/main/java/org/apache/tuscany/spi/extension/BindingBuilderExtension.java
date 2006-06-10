@@ -39,11 +39,15 @@ public abstract class BindingBuilderExtension<B extends Binding> implements Bind
         builderRegistry.register(getBindingType(), this);
     }
 
-    public SCAObject build(CompositeComponent parent, BoundServiceDefinition<B> boundServiceDefinition, DeploymentContext deploymentContext) {
+    public SCAObject build(CompositeComponent parent,
+                           BoundServiceDefinition<B> boundServiceDefinition,
+                           DeploymentContext deploymentContext) {
         return null;
     }
 
-    public SCAObject build(CompositeComponent parent, BoundReferenceDefinition<B> boundReferenceDefinition, DeploymentContext deploymentContext) {
+    public SCAObject build(CompositeComponent parent,
+                           BoundReferenceDefinition<B> boundReferenceDefinition,
+                           DeploymentContext deploymentContext) {
         return null;
     }
 

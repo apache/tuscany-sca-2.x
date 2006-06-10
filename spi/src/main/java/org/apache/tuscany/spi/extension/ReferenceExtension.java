@@ -70,7 +70,7 @@ public abstract class ReferenceExtension<T> extends AbstractSCAObject<T> impleme
     }
 
     public T getServiceInstance() throws TargetException {
-        return wireService.createProxy(inboundWire);// inboundWire.getTargetService();
+        return wireService.createProxy(inboundWire);
     }
 
     public WireInvocationHandler getHandler() throws TargetException {
@@ -80,9 +80,10 @@ public abstract class ReferenceExtension<T> extends AbstractSCAObject<T> impleme
     }
 
     public void prepare() {
-        assert(inboundWire != null) :"Inbound wire not set";
+        assert inboundWire != null : "Inbound wire not set";
         for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
-            chain.setTargetInvoker(createTargetInvoker(outboundWire.getTargetName().getQualifiedName(), chain.getMethod()));
+            chain.setTargetInvoker(createTargetInvoker(outboundWire.getTargetName().getQualifiedName(),
+                    chain.getMethod()));
             chain.build();
         }
     }

@@ -22,9 +22,6 @@ package org.apache.tuscany.spi.bootstrap;
  * @version $Rev$ $Date$
  */
 public final class ComponentNames {
-    private ComponentNames() {
-    }
-
     /**
      * The name of the component that forms the root of the runtime tree.
      */
@@ -44,4 +41,8 @@ public final class ComponentNames {
      * The name of the component that contains the deployer.
      */
     public static final String TUSCANY_DEPLOYER = "tuscany.deployer";
+
+    private ComponentNames() {
+    }
+
 }

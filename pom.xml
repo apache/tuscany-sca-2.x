@@ -27,6 +27,7 @@
     <version>SNAPSHOT</version>
 
     <modules>
+		  <module>buildtools</module>
         <module>spi</module>
         <module>core2</module>
         <module>test</module>
@@ -35,7 +36,7 @@
         <module>commands/launcher</module>
         <module>runtime/standalone</module>
         <module>runtime/equinox</module>
-        <!--
+  <!--
         <module>databinding</module>
         <module>bindings</module>
         <module>containers</module>
@@ -76,5 +77,43 @@
                 </includes>
             </testResource>
         </testResources>
+		  
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.tuscany</groupId>
+                            <artifactId>tuscany-buildtools</artifactId>
+                            <version>${pom.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <id>process-sources</id>
+                            <phase>process-sources</phase>
+                            <configuration>
+                                <configLocation>tuscany-checkstyle.xml</configLocation>
+                                <consoleOutput>true</consoleOutput>
+                                <failsOnError>true</failsOnError>
+                                <linkXRef>false</linkXRef>
+                                <sourceDirectory>${basedir}/src</sourceDirectory>
+                                <propertyExpansion>
+                                ${checkstyle.properties}
+                                </propertyExpansion>
+                            </configuration>
+                            <goals>
+                                <goal>checkstyle</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+
+		  
     </build>
 </project>

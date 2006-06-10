@@ -7,9 +7,9 @@ import junit.framework.TestCase;
  */
 public class LoaderExceptionTestCase extends TestCase {
 
-    public void testResourceURI() throws Exception{
+    public void testResourceURI() throws Exception {
         LoaderException e = new LoaderException();
         e.setResourceURI("test");
-        assertEquals("test",e.getResourceURI());
+        assertEquals("test", e.getResourceURI());
     }
 }

@@ -32,7 +32,7 @@ public class QualifiedNameTestCase extends TestCase {
             new QualifiedName("/Foo/Bar");
             fail("Invalid name exception not thrown");
         } catch (InvalidNameException e) {
-
+            //expected
         }
     }
 

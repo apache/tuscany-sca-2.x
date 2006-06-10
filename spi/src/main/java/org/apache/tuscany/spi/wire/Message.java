@@ -37,21 +37,21 @@ public interface Message {
      * Sets the target invoker to dispatch to when the message passes through the request side of the
      * invocation chain
      */
-    public void setTargetInvoker(TargetInvoker invoker);
+    void setTargetInvoker(TargetInvoker invoker);
 
     /**
      * Sets the target invoker to dispatch to when the message passes through the request side of the
      * invocation chain
      */
-    public TargetInvoker getTargetInvoker();
+    TargetInvoker getTargetInvoker();
 
     /**
      * Returns the callback channel
      */
-    public MessageChannel getCallbackChannel();
+    MessageChannel getCallbackChannel();
 
     /**
      * 
      */
-    public Message getRelatedCallbackMessage();
+    Message getRelatedCallbackMessage();
 }

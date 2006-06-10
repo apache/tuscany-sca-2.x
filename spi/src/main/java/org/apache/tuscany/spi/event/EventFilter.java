@@ -23,6 +23,6 @@ public interface EventFilter {
     /**
      * Performs the actual evaluation on an event
      */
-    public boolean match(Event event);
+    boolean match(Event event);
 
 }

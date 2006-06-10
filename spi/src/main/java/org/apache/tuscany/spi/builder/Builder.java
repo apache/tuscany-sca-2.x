@@ -40,15 +40,21 @@ public interface Builder {
      * @param deploymentContext   the current deployment context
      * @return a newly created component
      */
-    <I extends Implementation<?>> Component<?> build(CompositeComponent<?> parent, ComponentDefinition<I> componentDefinition, DeploymentContext deploymentContext);
+    <I extends Implementation<?>> Component<?> build(CompositeComponent<?> parent,
+                                                     ComponentDefinition<I> componentDefinition,
+                                                     DeploymentContext deploymentContext);
 
     /**
      * TODO: JavaDoc this when we know if we will still register Services as contexts
      */
-    <B extends Binding> SCAObject build(CompositeComponent parent, BoundServiceDefinition<B> boundServiceDefinition, DeploymentContext deploymentContext);
+    <B extends Binding> SCAObject build(CompositeComponent parent,
+                                        BoundServiceDefinition<B> boundServiceDefinition,
+                                        DeploymentContext deploymentContext);
 
     /**
      * TODO: JavaDoc this when we know if we will still register References as contexts
      */
-    <B extends Binding> SCAObject build(CompositeComponent parent, BoundReferenceDefinition<B> boundReferenceDefinition, DeploymentContext deploymentContext);
+    <B extends Binding> SCAObject build(CompositeComponent parent,
+                                        BoundReferenceDefinition<B> boundReferenceDefinition,
+                                        DeploymentContext deploymentContext);
 }

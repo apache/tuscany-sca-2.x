@@ -29,5 +29,7 @@ import org.apache.tuscany.spi.model.Implementation;
  * @version $Rev$ $Date$
  */
 public interface ComponentBuilder<I extends Implementation<?>> {
-    Component<?> build(CompositeComponent<?> parent, ComponentDefinition<I> componentDefinition, DeploymentContext deploymentContext) throws BuilderConfigException;
+    Component<?> build(CompositeComponent<?> parent,
+                       ComponentDefinition<I> componentDefinition,
+                       DeploymentContext deploymentContext) throws BuilderConfigException;
 }

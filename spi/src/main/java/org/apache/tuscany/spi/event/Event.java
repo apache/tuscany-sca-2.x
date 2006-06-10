@@ -23,6 +23,6 @@ public interface Event {
     /**
      * Returns the source of the event
      */
-    public Object getSource();
+    Object getSource();
 
 }

@@ -22,7 +22,8 @@ public class ServiceExtension<T> extends AbstractSCAObject<T> implements Service
     protected OutboundWire<T> outboundWire;
     protected WireService wireService;
 
-    public ServiceExtension(String name, CompositeComponent parent, WireService wireService) throws CoreRuntimeException {
+    public ServiceExtension(String name, CompositeComponent parent, WireService wireService)
+        throws CoreRuntimeException {
         super(name, parent);
         this.wireService = wireService;
     }
@@ -57,7 +58,7 @@ public class ServiceExtension<T> extends AbstractSCAObject<T> implements Service
     }
 
     public Class<T> getInterface() {
-        assert(inboundWire != null): "Inbound wire not set";
+        assert inboundWire != null : "Inbound wire not set";
         return inboundWire.getBusinessInterface();
     }
 

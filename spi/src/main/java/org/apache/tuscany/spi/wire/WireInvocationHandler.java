@@ -9,6 +9,6 @@ import java.lang.reflect.Method;
  */
 public interface WireInvocationHandler {
 
-    public Object invoke(Method method, Object[] args) throws Throwable;
+    Object invoke(Method method, Object[] args) throws Throwable;
 
 }

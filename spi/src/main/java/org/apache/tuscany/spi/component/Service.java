@@ -16,20 +16,20 @@ public interface Service<T> extends SCAObject<T> {
      *
      * @throws TargetException
      */
-    public WireInvocationHandler getHandler() throws TargetException;
+    WireInvocationHandler getHandler() throws TargetException;
 
     /**
      * Returns the service interface configured for the service
      */
-    public Class<T> getInterface();
+    Class<T> getInterface();
 
-    public InboundWire<T> getInboundWire();
+    InboundWire<T> getInboundWire();
 
-    public void setInboundWire(InboundWire<T> wire);
+    void setInboundWire(InboundWire<T> wire);
 
-    public OutboundWire<T> getOutboundWire();
+    OutboundWire<T> getOutboundWire();
 
-    public void setOutboundWire(OutboundWire<T> wire);
+    void setOutboundWire(OutboundWire<T> wire);
 
 
 }

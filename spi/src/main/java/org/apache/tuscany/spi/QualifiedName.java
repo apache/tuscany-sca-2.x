@@ -23,14 +23,11 @@ package org.apache.tuscany.spi;
  * @version $Rev$ $Date$
  */
 public class QualifiedName {
+    public static final String NAME_SEPARATOR = "/";
 
     private String qName;
-
     private String partName;
-
     private String portName;
-
-    public static final String NAME_SEPARATOR = "/";
 
     /**
      * Constructs a new qualified name in the form of part/port where part is the parent context and port

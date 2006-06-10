@@ -56,12 +56,12 @@ public interface InvocationChain {
     /**
      * Returns the request channel for the chain
      */
-    public MessageChannel getRequestChannel();
+    MessageChannel getRequestChannel();
 
     /**
      * Returns the response channel for the chain
      */
-    public MessageChannel getResponseChannel();
+    MessageChannel getResponseChannel();
 
     /**
      * Sets the target invoker to pass down the chain
@@ -111,12 +111,12 @@ public interface InvocationChain {
     /**
      * Returns the target-side request channel when two chains are bridged
      */
-    public MessageChannel getTargetRequestChannel();
+    MessageChannel getTargetRequestChannel();
 
     /**
      * Returns the target-side response channel when two chains are bridged
      */
-    public MessageChannel getTargetResponseChannel();
+    MessageChannel getTargetResponseChannel();
 
     /**
      * Signals to the chain that its configuration is complete. Implementations may use this callback to

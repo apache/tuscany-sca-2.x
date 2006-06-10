@@ -39,7 +39,7 @@ public class ConstructorAnnotationTest extends TestCase {
     }
 
     public static class Foo1 {
-        @Constructor({"prop", "ref"})
+        @Constructor({"prop", "ref" })
         public Foo1(String prop, String ref) {
         }
 

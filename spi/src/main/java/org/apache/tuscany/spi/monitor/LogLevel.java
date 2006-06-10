@@ -16,10 +16,10 @@
  */
 package org.apache.tuscany.spi.monitor;
 
-import static java.lang.annotation.ElementType.METHOD;
 import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Annotation that can be applied to methods in a monitoring interface to indicate to logging frameworks the

@@ -31,7 +31,11 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
  * @version $Rev$ $Date$
  */
 public interface BindingBuilder<B extends Binding> {
-    SCAObject build(CompositeComponent parent, BoundServiceDefinition<B> boundServiceDefinition, DeploymentContext deploymentContext);
+    SCAObject build(CompositeComponent parent,
+                    BoundServiceDefinition<B> boundServiceDefinition,
+                    DeploymentContext deploymentContext);
 
-    SCAObject build(CompositeComponent parent, BoundReferenceDefinition<B> boundReferenceDefinition, DeploymentContext deploymentContext);
+    SCAObject build(CompositeComponent parent,
+                    BoundReferenceDefinition<B> boundReferenceDefinition,
+                    DeploymentContext deploymentContext);
 }

@@ -14,9 +14,9 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  */
 public interface PolicyBuilderRegistry {
 
-    public static final int INITIAL = 0;
-    public static final int EXTENSION = 1;
-    public static final int FINAL = 2;
+    int INITIAL = 0;
+    int EXTENSION = 1;
+    int FINAL = 2;
 
     /**
      * Registers a target-side policy builder. Called by extensions to register their builders.
@@ -24,7 +24,7 @@ public interface PolicyBuilderRegistry {
      * @param phase   the phase hwne the builder must be run
      * @param builder the builder to register
      */
-    public void registerTargetBuilder(int phase, TargetPolicyBuilder builder);
+    void registerTargetBuilder(int phase, TargetPolicyBuilder builder);
 
     /**
      * Registers a source-side policy builder. Called by extensions to register their builders.
@@ -32,7 +32,7 @@ public interface PolicyBuilderRegistry {
      * @param phase   the phase hwne the builder must be run
      * @param builder the builder to register
      */
-    public void registerSourceBuilder(int phase, SourcePolicyBuilder builder);
+    void registerSourceBuilder(int phase, SourcePolicyBuilder builder);
 
     /**
      * Evaluates source-side policy metadata for referenceDefinition and updates the curresponding collection
@@ -40,13 +40,13 @@ public interface PolicyBuilderRegistry {
      *
      * @throws BuilderException
      */
-    public void buildSource(ReferenceDefinition referenceDefinition, OutboundWire wire) throws BuilderException;
+    void buildSource(ReferenceDefinition referenceDefinition, OutboundWire wire) throws BuilderException;
 
     /**
-     * Evaluates target-side policy metadata for configured reference and updates the curresponding collection
-     * of wire configurations
+     * Evaluates target-side policy metadata for configured reference and updates the curresponding
+     * collection of wire configurations
      *
      * @throws BuilderException
      */
-    public void buildTarget(ServiceDefinition serviceDefinition, InboundWire wire) throws BuilderException;
+    void buildTarget(ServiceDefinition serviceDefinition, InboundWire wire) throws BuilderException;
 }

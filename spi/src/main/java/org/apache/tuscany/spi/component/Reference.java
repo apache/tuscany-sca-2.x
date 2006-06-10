@@ -17,18 +17,18 @@ public interface Reference<T> extends SCAObject<T> {
     /**
      * Returns the service interface configured for the reference
      */
-    public Class<T> getInterface();
+    Class<T> getInterface();
 
     /**
      * Returns the handler responsible for flowing a request through the reference
      *
      * @throws TargetException
      */
-    public WireInvocationHandler getHandler() throws TargetException;
+    WireInvocationHandler getHandler() throws TargetException;
 
-    public InboundWire<T> getInboundWire();
+    InboundWire<T> getInboundWire();
 
-    public OutboundWire<T> getOutboundWire();
+    OutboundWire<T> getOutboundWire();
 
     /**
      * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to the target

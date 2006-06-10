@@ -30,10 +30,11 @@ import org.apache.tuscany.spi.event.TrueFilter;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractSCAObject<T> extends AbstractLifecycle implements SCAObject<T> {
+    protected static final EventFilter TRUE_FILTER = new TrueFilter();
+
+    protected Map<EventFilter, List<RuntimeEventListener>> listeners;
     private final String name;
     private final CompositeComponent parent;
-    protected Map<EventFilter, List<RuntimeEventListener>> listeners;
-    protected static final EventFilter TRUE_FILTER = new TrueFilter();
 
     public AbstractSCAObject(String name, CompositeComponent<?> parent) {
         this.name = name;
@@ -53,7 +54,7 @@ public abstract class AbstractSCAObject<T> extends AbstractLifecycle implements 
     }
 
     public void removeListener(RuntimeEventListener listener) {
-        assert (listener != null) : "Listener cannot be null";
+        assert listener != null : "Listener cannot be null";
         synchronized (getListeners()) {
             for (List<RuntimeEventListener> currentList : getListeners().values()) {
                 for (RuntimeEventListener current : currentList) {
@@ -67,7 +68,7 @@ public abstract class AbstractSCAObject<T> extends AbstractLifecycle implements 
     }
 
     public void addListener(EventFilter filter, RuntimeEventListener listener) {
-        assert (listener != null) : "Listener cannot be null";
+        assert listener != null : "Listener cannot be null";
         synchronized (getListeners()) {
             List<RuntimeEventListener> list = getListeners().get(filter);
             if (list == null) {
@@ -79,7 +80,7 @@ public abstract class AbstractSCAObject<T> extends AbstractLifecycle implements 
     }
 
     public void publish(Event event) {
-        assert(event != null): "Event object was null";
+        assert event != null : "Event object was null";
         for (Map.Entry<EventFilter, List<RuntimeEventListener>> entry : getListeners().entrySet()) {
             if (entry.getKey().match(event)) {
                 for (RuntimeEventListener listener : entry.getValue()) {

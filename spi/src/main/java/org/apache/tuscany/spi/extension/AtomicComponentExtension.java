@@ -30,7 +30,10 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
     protected Map<String, List<OutboundWire>> referenceWires = new HashMap<String, List<OutboundWire>>();
     protected WireService wireService;
 
-    protected AtomicComponentExtension(String name, CompositeComponent<?> parent, ScopeContainer scopeContainer, WireService wireService) {
+    protected AtomicComponentExtension(String name,
+                                       CompositeComponent<?> parent,
+                                       ScopeContainer scopeContainer,
+                                       WireService wireService) {
         super(name, parent);
         this.scopeContainer = scopeContainer;
         this.wireService = wireService;
@@ -64,7 +67,7 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
 
     public InboundWire getInboundWire(String serviceName) {
         if (serviceName == null) {
-            if (serviceWires.size() <1){
+            if (serviceWires.size() < 1) {
                 return null;
             }
             return serviceWires.values().iterator().next();
@@ -85,7 +88,7 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
     }
 
     public void addOutboundWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
-        assert(wires != null && wires.size() > 0);
+        assert wires != null && wires.size() > 0;
         referenceWires.put(wires.get(0).getReferenceName(), wires);
         onReferenceWires(multiplicityClass, wires);
     }

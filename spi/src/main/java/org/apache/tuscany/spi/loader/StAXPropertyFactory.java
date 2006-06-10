@@ -40,5 +40,6 @@ public interface StAXPropertyFactory {
      * @throws XMLStreamException if there is a problem reading the stream
      * @throws LoaderException    if there is a problem creating the ObjectFactory
      */
-    <T> ObjectFactory<T> createObjectFactory(XMLStreamReader reader, Property<T> property) throws XMLStreamException, LoaderException;
+    <T> ObjectFactory<T> createObjectFactory(XMLStreamReader reader, Property<T> property)
+        throws XMLStreamException, LoaderException;
 }
