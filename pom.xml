@@ -27,16 +27,16 @@
     <version>SNAPSHOT</version>
 
     <modules>
-		  <module>buildtools</module>
+        <module>buildtools</module>
         <module>spi</module>
         <module>core2</module>
         <module>test</module>
         <module>containers</module>
         <module>services</module>
         <module>commands/launcher</module>
+  <!--
         <module>runtime/standalone</module>
         <module>runtime/equinox</module>
-  <!--
         <module>databinding</module>
         <module>bindings</module>
         <module>containers</module>
