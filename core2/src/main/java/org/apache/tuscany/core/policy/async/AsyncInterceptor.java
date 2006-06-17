@@ -4,14 +4,15 @@ import javax.resource.spi.work.Work;
 import javax.resource.spi.work.WorkException;
 import javax.resource.spi.work.WorkManager;
 
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageChannel;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.osoa.sca.CurrentModuleContext;
 import org.osoa.sca.ModuleContext;
 import org.osoa.sca.SCA;
 import org.osoa.sca.ServiceRuntimeException;
+
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageChannel;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Uses a <code>WorkManager</code> to schedule asynchronous execution of invocations

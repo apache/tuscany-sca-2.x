@@ -6,7 +6,7 @@ import org.osoa.sca.annotations.Scope;
 @Scope("REQUEST")
 public class RequestScopeDestroyOnlyComponent extends SessionScopeComponentImpl {
 
-    boolean destroyed = false;
+    boolean destroyed;
 
     public boolean isDestroyed() {
         return destroyed;

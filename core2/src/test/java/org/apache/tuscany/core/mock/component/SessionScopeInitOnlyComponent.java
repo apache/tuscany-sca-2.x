@@ -20,7 +20,7 @@ import org.osoa.sca.annotations.Init;
 
 public class SessionScopeInitOnlyComponent extends SessionScopeComponentImpl {
 
-    boolean initialized = false;
+    private boolean initialized;
 
     public boolean isInitialized() {
         return initialized;

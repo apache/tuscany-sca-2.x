@@ -24,7 +24,7 @@ import org.osoa.sca.annotations.Scope;
  */
 @Scope("MODULE")
 public class ModuleScopeComponentImpl extends AbstractGenericComponent implements
-        ModuleScopeComponent {
+    ModuleScopeComponent {
 
     private String foo;
 

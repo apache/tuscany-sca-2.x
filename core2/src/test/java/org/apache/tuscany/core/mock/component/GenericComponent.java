@@ -26,117 +26,101 @@ import org.osoa.sca.ModuleContext;
  *
  * @version $Rev$ $Date$
  */
-public interface GenericComponent {
+interface GenericComponent {
 
-    public String getName();
+    String getName();
 
-    public ModuleContext getModuleContext();
+    ModuleContext getModuleContext();
 
-    // ----------------------------------
-    // Collections
-    // ----------------------------------
+    Map getTestMap();
 
-    public Map getTestMap();
+    void setTestMap(Map pTestMap);
 
-    public void setTestMap(Map pTestMap);
+    List getTestList();
 
-    public List getTestList();
+    void setTestList(List pTestList);
 
-    public void setTestList(List pTestList);
+    int[] getArrayInt();
 
-    // ----------------------------------
-    // Arrays
-    // ----------------------------------
+    void setArrayInt(int[] pArrayInt);
 
-    public int[] getArrayInt();
+    float[] getArrayFloat();
 
-    public void setArrayInt(int[] pArrayInt);
+    void setArrayFloat(float[] pArrayFloat);
 
-    public float[] getArrayFloat();
+    double[] getArrayDouble();
 
-    public void setArrayFloat(float[] pArrayFloat);
+    void setArrayDouble(double[] pArrayDouble);
 
-    public double[] getArrayDouble();
+    long[] getArrayLong();
 
-    public void setArrayDouble(double[] pArrayDouble);
+    void setArrayLong(long[] pArrayLong);
 
-    public long[] getArrayLong();
+    short[] getArrayShort();
 
-    public void setArrayLong(long[] pArrayLong);
+    void setArrayShort(short[] pArrayShort);
 
-    public short[] getArrayShort();
+    boolean[] getArrayBoolean();
 
-    public void setArrayShort(short[] pArrayShort);
+    void setArrayBoolean(boolean[] pArrayBoolean);
 
-    public boolean[] getArrayBoolean();
+    String[] getArrayString();
 
-    public void setArrayBoolean(boolean[] pArrayBoolean);
+    void setArrayString(String[] pArrayString);
 
-    public String[] getArrayString();
+    boolean getBoolean();
 
-    public void setArrayString(String[] pArrayString);
+    void setBoolean(boolean pBoolean);
 
-    // ----------------------------------
-    // Primitives
-    // ----------------------------------
+    short getShort();
 
-    public boolean getBoolean();
+    void setShort(short pShort);
 
-    public void setBoolean(boolean pBoolean);
+    int getInt();
 
-    public short getShort();
+    void setInt(int pInt);
 
-    public void setShort(short pShort);
+    long getLong();
 
-    public int getInt();
+    void setLong(long pLong);
 
-    public void setInt(int pInt);
+    double getDouble();
 
-    public long getLong();
+    void setDouble(double pDouble);
 
-    public void setLong(long pLong);
+    float getFloat();
 
-    public double getDouble();
+    void setFloat(float pFloat);
 
-    public void setDouble(double pDouble);
+    char getChar();
 
-    public float getFloat();
+    void setChar(char pChar);
 
-    public void setFloat(float pFloat);
+    String getString();
 
-    public char getChar();
+    void setString(String pString);
 
-    public void setChar(char pChar);
+    Short getOShort();
 
-    // ----------------------------------
-    // Object types
-    // ----------------------------------
+    void setOShort(Short pOShort);
 
-    public String getString();
+    Integer getOInteger();
 
-    public void setString(String pString);
+    void setOInteger(Integer pOInteger);
 
-    public Short getOShort();
+    Long getOLong();
 
-    public void setOShort(Short pOShort);
+    void setOLong(Long pOLong);
 
-    public Integer getOInteger();
+    Float getOFloat();
 
-    public void setOInteger(Integer pOInteger);
+    void setOFloat(Float pOFloat);
 
-    public Long getOLong();
+    Double getODouble();
 
-    public void setOLong(Long pOLong);
+    void setODouble(Double pODouble);
 
-    public Float getOFloat();
+    GenericComponent getGenericComponent();
 
-    public void setOFloat(Float pOFloat);
-
-    public Double getODouble();
-
-    public void setODouble(Double pODouble);
-
-    public GenericComponent getGenericComponent();
-
-    public void setGenericComponent(GenericComponent pGenericComponent);
+    void setGenericComponent(GenericComponent pGenericComponent);
 }

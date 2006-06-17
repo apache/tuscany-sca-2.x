@@ -44,7 +44,7 @@ public class PropertyLoader extends LoaderExtension<Property> {
         return PROPERTY;
     }
 
-    public Property<?> load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public Property<?> load(XMLStreamReader reader, DeploymentContext ctx) throws XMLStreamException, LoaderException {
         assert PROPERTY.equals(reader.getName());
         Property<?> property = new Property();
         property.setName(reader.getAttributeValue(null, "name"));

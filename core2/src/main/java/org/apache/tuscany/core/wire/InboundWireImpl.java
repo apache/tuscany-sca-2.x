@@ -88,20 +88,16 @@ public class InboundWireImpl<T> implements InboundWire<T> {
                 }
             }
             if (chain.getRequestHandlers() != null && !chain.getRequestHandlers().isEmpty()) {
-                if (chain.getRequestHandlers() != null) {
-                    for (MessageHandler handler : chain.getRequestHandlers()) {
-                        if (!handler.isOptimizable()) {
-                            return false;
-                        }
+                for (MessageHandler handler : chain.getRequestHandlers()) {
+                    if (!handler.isOptimizable()) {
+                        return false;
                     }
                 }
             }
             if (chain.getResponseHandlers() != null && !chain.getResponseHandlers().isEmpty()) {
-                if (chain.getResponseHandlers() != null) {
-                    for (MessageHandler handler : chain.getResponseHandlers()) {
-                        if (!handler.isOptimizable()) {
-                            return false;
-                        }
+                for (MessageHandler handler : chain.getResponseHandlers()) {
+                    if (!handler.isOptimizable()) {
+                        return false;
                     }
                 }
             }

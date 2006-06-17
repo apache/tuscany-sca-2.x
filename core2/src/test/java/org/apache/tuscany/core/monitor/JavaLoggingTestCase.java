@@ -34,17 +34,17 @@ import org.apache.tuscany.spi.monitor.MonitorFactory;
  * @version $Rev$ $Date$
  */
 public class JavaLoggingTestCase extends TestCase {
-    private static final Logger logger = Logger.getLogger(Monitor.class.getName());
-    private static final MockHandler handler = new MockHandler();
+    private static final Logger LOGGER = Logger.getLogger(Monitor.class.getName());
+    private static final MockHandler HANDLER = new MockHandler();
 
     private MonitorFactory factory;
 
     /**
-     * Smoke test to ensure the logger is working.
+     * Smoke test to ensure the LOGGER is working.
      */
     public void testLogger() {
-        logger.info("test");
-        assertEquals(1, handler.logs.size());
+        LOGGER.info("test");
+        assertEquals(1, HANDLER.logs.size());
     }
 
     /**
@@ -53,7 +53,7 @@ public class JavaLoggingTestCase extends TestCase {
     public void testUnloggedEvent() {
         Monitor mon = factory.getMonitor(Monitor.class);
         mon.eventNotToLog();
-        assertEquals(0, handler.logs.size());
+        assertEquals(0, HANDLER.logs.size());
     }
 
     /**
@@ -62,10 +62,10 @@ public class JavaLoggingTestCase extends TestCase {
     public void testEventWithNoArgs() {
         Monitor mon = factory.getMonitor(Monitor.class);
         mon.eventWithNoArgs();
-        assertEquals(1, handler.logs.size());
-        LogRecord record = handler.logs.get(0);
+        assertEquals(1, HANDLER.logs.size());
+        LogRecord record = HANDLER.logs.get(0);
         assertEquals(Level.INFO, record.getLevel());
-        assertEquals(logger.getName(), record.getLoggerName());
+        assertEquals(LOGGER.getName(), record.getLoggerName());
         assertEquals(Monitor.class.getName() + "#eventWithNoArgs", record.getMessage());
     }
 
@@ -75,10 +75,10 @@ public class JavaLoggingTestCase extends TestCase {
     public void testEventWithAnnotation() {
         Monitor mon = factory.getMonitor(Monitor.class);
         mon.eventWithAnnotation();
-        assertEquals(1, handler.logs.size());
-        LogRecord record = handler.logs.get(0);
+        assertEquals(1, HANDLER.logs.size());
+        LogRecord record = HANDLER.logs.get(0);
         assertEquals(Level.INFO, record.getLevel());
-        assertEquals(logger.getName(), record.getLoggerName());
+        assertEquals(LOGGER.getName(), record.getLoggerName());
         assertEquals(Monitor.class.getName() + "#eventWithAnnotation", record.getMessage());
     }
 
@@ -89,10 +89,10 @@ public class JavaLoggingTestCase extends TestCase {
         Exception e = new Exception();
         Monitor mon = factory.getMonitor(Monitor.class);
         mon.eventWithThrowable(e);
-        assertEquals(1, handler.logs.size());
-        LogRecord record = handler.logs.get(0);
+        assertEquals(1, HANDLER.logs.size());
+        LogRecord record = HANDLER.logs.get(0);
         assertEquals(Level.WARNING, record.getLevel());
-        assertEquals(logger.getName(), record.getLoggerName());
+        assertEquals(LOGGER.getName(), record.getLoggerName());
         assertEquals(Monitor.class.getName() + "#eventWithThrowable", record.getMessage());
         assertSame(e, record.getThrown());
     }
@@ -103,16 +103,16 @@ public class JavaLoggingTestCase extends TestCase {
     public void testEventWithOneArg() {
         Monitor mon = factory.getMonitor(Monitor.class);
         mon.eventWithOneArg("ARG");
-        assertEquals(1, handler.logs.size());
-        LogRecord record = handler.logs.get(0);
+        assertEquals(1, HANDLER.logs.size());
+        LogRecord record = HANDLER.logs.get(0);
         assertEquals(Monitor.class.getName() + "#eventWithOneArg", record.getMessage());
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        logger.setUseParentHandlers(false);
-        logger.addHandler(handler);
-        handler.flush();
+        LOGGER.setUseParentHandlers(false);
+        LOGGER.addHandler(HANDLER);
+        HANDLER.flush();
 
         String sourceClass = Monitor.class.getName();
         Properties levels = new Properties();
@@ -123,13 +123,13 @@ public class JavaLoggingTestCase extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        logger.removeHandler(handler);
-        handler.flush();
+        LOGGER.removeHandler(HANDLER);
+        HANDLER.flush();
         super.tearDown();
     }
 
     /**
-     * Mock log handler to capture records.
+     * Mock log HANDLER to capture records.
      */
     public static class MockHandler extends Handler {
         List<LogRecord> logs = new ArrayList<LogRecord>();

@@ -31,13 +31,21 @@ import junit.framework.TestCase;
  */
 public class WSDLDefinitionRegistryTestCase extends TestCase {
     private static final String NS = "http://www.example.org";
+    private static final WSDLDefinitionRegistryImpl.Monitor NULL_MONITOR = new WSDLDefinitionRegistryImpl.Monitor() {
+        public void readingWSDL(String namespace, URL location) {
+        }
+
+        public void cachingDefinition(String namespace, URL location) {
+        }
+    };
     private WSDLDefinitionRegistryImpl wsdlRegistry;
     private ClassLoader rl;
 
 
     public void testLoadFromAbsoluteWSDLLocation() {
         try {
-            Definition def = wsdlRegistry.loadDefinition(NS + ' ' + rl.getResource("org/apache/tuscany/core/services/wsdl/example.wsdl"), rl);
+            Definition def = wsdlRegistry.loadDefinition(
+                NS + ' ' + rl.getResource("org/apache/tuscany/core/services/wsdl/example.wsdl"), rl);
             assertNotNull(def.getPortType(new QName(NS, "HelloWorld")));
         } catch (IOException e) {
             fail(e.getMessage());
@@ -48,7 +56,8 @@ public class WSDLDefinitionRegistryTestCase extends TestCase {
 
     public void testLoadFromRelativeWSDLLocation() {
         try {
-            Definition def = wsdlRegistry.loadDefinition(NS + " org/apache/tuscany/core/services/wsdl/example.wsdl", rl);
+            Definition def =
+                wsdlRegistry.loadDefinition(NS + " org/apache/tuscany/core/services/wsdl/example.wsdl", rl);
             assertNotNull(def.getPortType(new QName(NS, "HelloWorld")));
         } catch (IOException e) {
             fail(e.getMessage());
@@ -64,11 +73,4 @@ public class WSDLDefinitionRegistryTestCase extends TestCase {
         rl = getClass().getClassLoader();
     }
 
-    private static final WSDLDefinitionRegistryImpl.Monitor NULL_MONITOR = new WSDLDefinitionRegistryImpl.Monitor() {
-        public void readingWSDL(String namespace, URL location) {
-        }
-
-        public void cachingDefinition(String namespace, URL location) {
-        }
-    };
 }

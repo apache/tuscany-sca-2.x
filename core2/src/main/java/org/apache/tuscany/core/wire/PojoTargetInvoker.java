@@ -12,8 +12,8 @@ import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * Base class for dispatching to a Java based component implementation. Subclasses implement a strategy for
- * resolving implementation instances.
+ * Base class for dispatching to a Java based component implementation. Subclasses implement a strategy for resolving
+ * implementation instances.
  *
  * @version $Rev$ $Date$
  */
@@ -23,7 +23,7 @@ public abstract class PojoTargetInvoker implements TargetInvoker {
     protected boolean cacheable;
 
     public PojoTargetInvoker(Method operation) {
-        assert (operation != null) : "Operation method cannot be null";
+        assert operation != null : "Operation method cannot be null";
         this.operation = operation;
     }
 
@@ -32,10 +32,11 @@ public abstract class PojoTargetInvoker implements TargetInvoker {
             Object instance = getInstance();
             if (!operation.getDeclaringClass().isInstance(instance)) {
                 Set<Method> methods = JavaIntrospectionHelper.getAllUniqueMethods(instance.getClass());
-                Method newOperation = JavaIntrospectionHelper.findClosestMatchingMethod(operation.getName(), operation
-                        .getParameterTypes(), methods);
-                if (newOperation != null)
+                Method newOperation = JavaIntrospectionHelper.findClosestMatchingMethod(operation.getName(),
+                    operation.getParameterTypes(), methods);
+                if (newOperation != null) {
                     operation = newOperation;
+                }
             }
             if (payload != null && !payload.getClass().isArray()) {
                 return operation.invoke(instance, payload);
@@ -58,8 +59,6 @@ public abstract class PojoTargetInvoker implements TargetInvoker {
         }
         return msg;
     }
-
-    protected abstract Object getInstance() throws TargetException;
 
     public void setNext(Interceptor next) {
         throw new IllegalStateException("This interceptor must be the last interceptor in an interceptor chain");
@@ -87,4 +86,7 @@ public abstract class PojoTargetInvoker implements TargetInvoker {
             return null; // will not happen
         }
     }
+
+    protected abstract Object getInstance() throws TargetException;
+
 }

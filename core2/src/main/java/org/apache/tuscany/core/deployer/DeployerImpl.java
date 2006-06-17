@@ -55,7 +55,9 @@ public class DeployerImpl implements Deployer {
         this.connector = connector;
     }
 
-    public <I extends Implementation<?>> SCAObject<?> deploy(CompositeComponent<?> parent, ComponentDefinition<I> componentDefinition) throws LoaderException {
+    public <I extends Implementation<?>> SCAObject<?> deploy(CompositeComponent<?> parent,
+                                                             ComponentDefinition<I> componentDefinition)
+        throws LoaderException {
         ScopeContainer moduleScope = new ModuleScopeContainer();
         DeploymentContext deploymentContext = new DeploymentContext(null, null, moduleScope);
         load(componentDefinition, deploymentContext);
@@ -72,7 +74,8 @@ public class DeployerImpl implements Deployer {
      * @param componentDefinition the componentDefinition being deployed
      * @param deploymentContext   the current deployment context
      */
-    protected <I extends Implementation<?>> void load(ComponentDefinition<I> componentDefinition, DeploymentContext deploymentContext) throws LoaderException {
+    protected <I extends Implementation<?>> void load(ComponentDefinition<I> componentDefinition,
+                                                      DeploymentContext deploymentContext) throws LoaderException {
         loader.loadComponentType(componentDefinition.getImplementation(), deploymentContext);
     }
 
@@ -84,7 +87,9 @@ public class DeployerImpl implements Deployer {
      * @param deploymentContext   the current deployment context
      * @return the new runtime context
      */
-    protected <I extends Implementation<?>> SCAObject<?> build(CompositeComponent<?> parent, ComponentDefinition<I> componentDefinition, DeploymentContext deploymentContext) {
+    protected <I extends Implementation<?>> SCAObject<?> build(CompositeComponent<?> parent,
+                                                               ComponentDefinition<I> componentDefinition,
+                                                               DeploymentContext deploymentContext) {
         return builder.build(parent, componentDefinition, deploymentContext);
     }
 

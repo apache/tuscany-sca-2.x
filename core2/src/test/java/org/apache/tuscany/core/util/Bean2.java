@@ -7,6 +7,7 @@ import junit.framework.AssertionFailedError;
 public class Bean2 {
 
     private List methodList;
+    private List fieldList;
 
     public List getMethodList() {
         return methodList;
@@ -15,8 +16,6 @@ public class Bean2 {
     public void setMethodList(List list) {
         methodList = list;
     }
-
-    private List fieldList;
 
     public List getfieldList() {
         return fieldList;

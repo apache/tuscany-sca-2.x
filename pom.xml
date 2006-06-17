@@ -96,6 +96,7 @@
                             <phase>process-sources</phase>
                             <configuration>
                                 <configLocation>tuscany-checkstyle.xml</configLocation>
+										  <suppressionsLocation>tuscany-suppressions.xml</suppressionsLocation>
                                 <consoleOutput>true</consoleOutput>
                                 <failsOnError>true</failsOnError>
                                 <linkXRef>false</linkXRef>

@@ -19,7 +19,6 @@ import org.apache.tuscany.core.injection.NoAccessorException;
 import org.apache.tuscany.core.injection.WireObjectFactory;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
@@ -28,7 +27,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 
 /**
- * Base implementation of an {@link AtomicComponent} whose type is a Java class
+ * Base implementation of an {@link org.apache.tuscany.spi.component.AtomicComponent} whose type is a Java class
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -54,7 +53,7 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
                                Map<String, Member> members,
                                WireService wireService) {
         super(name, parent, scopeContainer, wireService);
-        assert (objectFactory != null) : "Object factory was null";
+        assert objectFactory != null : "Object factory was null";
         if (eagerInit && initInvoker == null) {
             throw new AssertionError("No intialization method found for eager init implementation");
         }
@@ -82,7 +81,7 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
                                Map<String, Member> members,
                                WireService wireService) {
         super(name, parent, scopeContainer, wireService);
-        assert (objectFactory != null) : "Object factory was null";
+        assert objectFactory != null : "Object factory was null";
         if (eagerInit && initInvoker == null) {
             throw new AssertionError("No intialization method found for eager init implementation");
         }
@@ -140,7 +139,7 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
     }
 
     public void onReferenceWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
-        assert(wires.size() > 0): "Wires were empty";
+        assert wires.size() > 0 : "Wires were empty";
         String referenceName = wires.get(0).getReferenceName();
         Member member = members.get(referenceName);
         if (member == null) {
@@ -152,9 +151,9 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
     protected Injector createInjector(Member member, OutboundWire wire) {
         ObjectFactory<?> factory = new WireObjectFactory(wire, wireService);
         if (member instanceof Field) {
-            return new FieldInjector(((Field) member), factory);
+            return new FieldInjector((Field) member, factory);
         } else if (member instanceof Method) {
-            return new MethodInjector(((Method) member), factory);
+            return new MethodInjector((Method) member, factory);
         } else {
             InvalidAccessorException e = new InvalidAccessorException("Member must be a field or method");
             e.setIdentifier(member.getName());
@@ -162,7 +161,9 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
         }
     }
 
-    protected Injector createMultiplicityInjector(Member member, Class<?> interfaceType, List<OutboundWire> wireFactories) {
+    protected Injector createMultiplicityInjector(Member member,
+                                                  Class<?> interfaceType,
+                                                  List<OutboundWire> wireFactories) {
         List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
         for (OutboundWire wire : wireFactories) {
             factories.add(new WireObjectFactory(wire, wireService));

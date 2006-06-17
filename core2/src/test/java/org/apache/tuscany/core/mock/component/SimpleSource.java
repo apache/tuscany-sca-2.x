@@ -18,10 +18,10 @@ package org.apache.tuscany.core.mock.component;
 
 public interface SimpleSource {
 
-    public void invokeHello() throws Exception;
+    void invokeHello() throws Exception;
 
-    public void invokeGoodbye() throws Exception;
+    void invokeGoodbye() throws Exception;
 
-    public SimpleTarget getTarget();
+    SimpleTarget getTarget();
 }
 

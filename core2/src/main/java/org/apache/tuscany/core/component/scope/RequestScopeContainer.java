@@ -72,7 +72,7 @@ public class RequestScopeContainer extends AbstractScopeContainer {
 
     protected InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
         Map<Thread, InstanceWrapper> instanceContextMap = contexts.get(component);
-        assert(instanceContextMap != null):"Atomic component not registered";
+        assert instanceContextMap != null : "Atomic component not registered";
         InstanceWrapper ctx = instanceContextMap.get(Thread.currentThread());
         if (ctx == null) {
             ctx = new InstanceWrapperImpl(component, component.createInstance());
@@ -93,23 +93,20 @@ public class RequestScopeContainer extends AbstractScopeContainer {
     private void shutdownInstances(Thread key) {
         List<InstanceWrapper> destroyQueue = destroyQueues.remove(key);
         if (destroyQueue != null && destroyQueue.size() > 0) {
-            if (destroyQueue != null) {
-                Thread thread = Thread.currentThread();
-                for (Map<Thread, InstanceWrapper> map : contexts.values()) {
-                    map.remove(thread);
-                }
-                ListIterator<InstanceWrapper> iter = destroyQueue.listIterator(destroyQueue.size());
-                synchronized (destroyQueue) {
-                    while (iter.hasPrevious()) {
-                        try {
-                            iter.previous().stop();
-                        } catch (TargetException e) {
-                            // TODO send a monitoring event
-                        }
+            Thread thread = Thread.currentThread();
+            for (Map<Thread, InstanceWrapper> map : contexts.values()) {
+                map.remove(thread);
+            }
+            ListIterator<InstanceWrapper> iter = destroyQueue.listIterator(destroyQueue.size());
+            synchronized (destroyQueue) {
+                while (iter.hasPrevious()) {
+                    try {
+                        iter.previous().stop();
+                    } catch (TargetException e) {
+                        // TODO send a monitoring event
                     }
                 }
             }
-
         }
     }
 

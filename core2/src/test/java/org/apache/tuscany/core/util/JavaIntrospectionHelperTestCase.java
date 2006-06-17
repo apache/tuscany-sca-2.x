@@ -12,6 +12,12 @@ import org.apache.tuscany.core.mock.component.Target;
 
 public class JavaIntrospectionHelperTestCase extends TestCase {
 
+    private List testNoGenericsList;
+    private List<String> testList;
+    private Map<String, Bean1> testMap;
+    private Target[] testArray;
+    private String[] testStringArray;
+
     public JavaIntrospectionHelperTestCase() {
         super();
     }
@@ -42,7 +48,7 @@ public class JavaIntrospectionHelperTestCase extends TestCase {
 
     public void testGetBean1AllMethods() throws Exception {
         Set<Method> beanMethods = JavaIntrospectionHelper.getAllUniqueMethods(Bean1.class);
-        assertEquals(Bean1.ALL__BEAN1_METHODS, beanMethods.size());
+        assertEquals(Bean1.ALL_BEAN1_METHODS, beanMethods.size());
     }
 
     public void testOverrideMethod() throws Exception {
@@ -106,7 +112,8 @@ public class JavaIntrospectionHelperTestCase extends TestCase {
         assertEquals(1, classes.size());
         assertEquals(String.class, classes.get(0));
 
-        classes = JavaIntrospectionHelper.getGenerics(getClass().getDeclaredField("testNoGenericsList").getGenericType());
+        classes =
+            JavaIntrospectionHelper.getGenerics(getClass().getDeclaredField("testNoGenericsList").getGenericType());
         assertEquals(0, classes.size());
 
         classes = JavaIntrospectionHelper.getGenerics(getClass().getDeclaredField("testMap").getGenericType());
@@ -114,22 +121,18 @@ public class JavaIntrospectionHelperTestCase extends TestCase {
         assertEquals(String.class, classes.get(0));
         assertEquals(Bean1.class, classes.get(1));
 
-        classes = JavaIntrospectionHelper.getGenerics(getClass().getDeclaredMethod("fooMethod", Map.class).getGenericParameterTypes()[0]);
+        classes = JavaIntrospectionHelper
+            .getGenerics(getClass().getDeclaredMethod("fooMethod", Map.class).getGenericParameterTypes()[0]);
         assertEquals(2, classes.size());
         assertEquals(String.class, classes.get(0));
         assertEquals(Bean1.class, classes.get(1));
 
-        classes = JavaIntrospectionHelper.getGenerics(getClass().getDeclaredMethod("fooMethod", List.class).getGenericParameterTypes()[0]);
+        classes = JavaIntrospectionHelper
+            .getGenerics(getClass().getDeclaredMethod("fooMethod", List.class).getGenericParameterTypes()[0]);
         assertEquals(1, classes.size());
         assertEquals(String.class, classes.get(0));
 
     }
-
-    private List testNoGenericsList;
-
-    private List<String> testList;
-
-    private Map<String, Bean1> testMap;
 
     private void fooMethod(List<String> foo) {
 
@@ -138,9 +141,6 @@ public class JavaIntrospectionHelperTestCase extends TestCase {
     private void fooMethod(Map<String, Bean1> foo) {
 
     }
-
-    private Target[] testArray;
-    private String[] testStringArray;
 
     public void setTestArray(Target[] array) {
     }

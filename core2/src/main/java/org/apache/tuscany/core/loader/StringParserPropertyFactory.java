@@ -35,7 +35,8 @@ import org.apache.tuscany.spi.model.Property;
  * @version $Rev$ $Date$
  */
 public class StringParserPropertyFactory implements StAXPropertyFactory {
-    public <T> ObjectFactory<T> createObjectFactory(XMLStreamReader reader, Property<T> property) throws XMLStreamException, LoaderException {
+    public <T> ObjectFactory<T> createObjectFactory(XMLStreamReader reader, Property<T> property)
+        throws XMLStreamException, LoaderException {
         Class<T> type = property.getJavaType();
         assert type != null : "property type is null";
         String text = reader.getElementText();
@@ -49,7 +50,8 @@ public class StringParserPropertyFactory implements StAXPropertyFactory {
         if (byte[].class.equals(type)) {
             byte[] instance = new byte[text.length() >> 1];
             for (int i = 0; i < instance.length; i++) {
-                instance[i] = (byte) (Character.digit(text.charAt(i << 1), 16) << 4 | Character.digit(text.charAt((i << 1) + 1), 16));
+                instance[i] = (byte) (Character.digit(text.charAt(i << 1), 16) << 4
+                    | Character.digit(text.charAt((i << 1) + 1), 16));
             }
             return new SingletonObjectFactory<T>(type.cast(instance));
         }

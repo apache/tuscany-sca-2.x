@@ -48,8 +48,7 @@ public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<Syst
     }
 
     protected PojoComponentType loadByIntrospection(SystemImplementation implementation) {
-        PojoComponentType componentType = new PojoComponentType();
-        return componentType;
+        return new PojoComponentType();
     }
 
 

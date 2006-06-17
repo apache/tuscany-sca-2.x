@@ -53,7 +53,7 @@ public class GeronimoWorkManagerTestCase extends TestCase {
     }
 
     private class TestThread extends Thread {
-        public final TestWorkListener listener;
+        private final TestWorkListener listener;
         private final int timeout;
         private final int delay;
 
@@ -94,10 +94,10 @@ public class GeronimoWorkManagerTestCase extends TestCase {
     }
 
     public class TestWorkListener implements WorkListener {
-        public WorkEvent acceptedEvent;
-        public WorkEvent rejectedEvent;
-        public WorkEvent startedEvent;
-        public WorkEvent completedEvent;
+        private WorkEvent acceptedEvent;
+        private WorkEvent rejectedEvent;
+        private WorkEvent startedEvent;
+        private WorkEvent completedEvent;
 
         public void workAccepted(WorkEvent e) {
             acceptedEvent = e;

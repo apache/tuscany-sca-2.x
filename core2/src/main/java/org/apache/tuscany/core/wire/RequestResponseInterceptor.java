@@ -21,8 +21,8 @@ import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageChannel;
 
 /**
- * An interceptor that first sends a message down its request channel then extracts the response from the
- * message and sends it down the response channel before returning it up the interceptor stack.
+ * An interceptor that first sends a message down its request channel then extracts the response from the message and
+ * sends it down the response channel before returning it up the interceptor stack.
  *
  * @version $Rev$ $Date$
  */

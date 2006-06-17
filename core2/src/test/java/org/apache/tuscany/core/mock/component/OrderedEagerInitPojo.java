@@ -23,13 +23,13 @@ import org.osoa.sca.annotations.Scope;
 @Scope("MODULE")
 public class OrderedEagerInitPojo {
 
-    private static final Object lock = new Object();
+    private static final Object LOCK = new Object();
     private static int numberInstantied;
     private int initOrder;
 
     @Init(eager = true)
     public void init() {
-        synchronized (lock) {
+        synchronized (LOCK) {
             ++numberInstantied;
             initOrder = numberInstantied;
         }
@@ -37,7 +37,7 @@ public class OrderedEagerInitPojo {
 
     @Destroy
     public void destroy() throws OrderException {
-        synchronized (lock) {
+        synchronized (LOCK) {
             if (initOrder != numberInstantied) {
                 throw new OrderException("Instance shutdown done out of order");
             }

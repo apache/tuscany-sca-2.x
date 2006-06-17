@@ -30,10 +30,12 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         // start the request
         Object session = new Object();
         workContext.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session);
-        SessionScopeInitDestroyComponent o1 = (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
+        SessionScopeInitDestroyComponent o1 =
+            (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertTrue(o1.isInitialized());
         assertFalse(o1.isDestroyed());
-        SessionScopeInitDestroyComponent o2 = (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
+        SessionScopeInitDestroyComponent o2 =
+            (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertSame(o1, o2);
         scopeContext.onEvent(new HttpSessionEnd(this, session));
         assertTrue(o1.isDestroyed());
@@ -49,12 +51,14 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
         Object session1 = new Object();
         workContext.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
-        SessionScopeInitDestroyComponent o1 = (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
+        SessionScopeInitDestroyComponent o1 =
+            (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertTrue(o1.isInitialized());
 
         Object session2 = new Object();
         workContext.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
-        SessionScopeInitDestroyComponent o2 = (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
+        SessionScopeInitDestroyComponent o2 =
+            (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertNotSame(o1, o2);
 
         scopeContext.onEvent(new HttpSessionEnd(this, session1));
@@ -67,9 +71,12 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        factory = new PojoObjectFactory<SessionScopeInitDestroyComponent>(SessionScopeInitDestroyComponent.class.getConstructor((Class[]) null), null);
-        initInvoker = new MethodEventInvoker<Object>(SessionScopeInitDestroyComponent.class.getMethod("init", (Class[]) null));
-        destroyInvoker = new MethodEventInvoker<Object>(SessionScopeInitDestroyComponent.class.getMethod("destroy", (Class[]) null));
+        factory = new PojoObjectFactory<SessionScopeInitDestroyComponent>(
+            SessionScopeInitDestroyComponent.class.getConstructor((Class[]) null), null);
+        initInvoker = new MethodEventInvoker<Object>(
+            SessionScopeInitDestroyComponent.class.getMethod("init", (Class[]) null));
+        destroyInvoker = new MethodEventInvoker<Object>(
+            SessionScopeInitDestroyComponent.class.getMethod("destroy", (Class[]) null));
     }
 
     protected void tearDown() throws Exception {
@@ -77,7 +84,16 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     }
 
     private SystemAtomicComponent createContext(ScopeContainer scopeContainer) {
-        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo", null, scopeContainer, SessionScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null, null);
+        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo",
+            null,
+            scopeContainer,
+            SessionScopeInitDestroyComponent.class,
+            factory,
+            false,
+            initInvoker,
+            destroyInvoker,
+            null,
+            null);
         context.start();
         return context;
     }

@@ -19,7 +19,8 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceDefinition, P extends Property<?>> extends ComponentType<S, R, P> {
+public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceDefinition,  P extends Property<?>>
+    extends ComponentType<S, R, P> {
 
     private Scope lifecycleScope = Scope.UNDEFINED;
     private EventInvoker<Object> initInvoker;

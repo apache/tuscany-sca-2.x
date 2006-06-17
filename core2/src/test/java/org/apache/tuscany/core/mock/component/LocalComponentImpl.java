@@ -32,20 +32,24 @@ public class LocalComponentImpl {
 
     @ComponentName
     protected String name;
+    @Context
+    protected ModuleContext moduleCtx;
+    boolean mSetByMethod;
+    @Property(name = "fieldSetter", required = true)
+    private String mfieldSetter;
+    private String mMethodSetter;
+    @Reference(name = "requiredDataObject", required = true)
+    private DataObject mRequiredDataObject;
+    @Reference(name = "optionalDataObject")
+    private DataObject mOptionalDataObject;
 
     public String getName() {
         return name;
     }
 
-    @Context
-    protected ModuleContext moduleCtx;
-
     public ModuleContext getModuleContext() {
         return moduleCtx;
     }
-
-    @Property(name = "fieldSetter", required = true)
-    private String mfieldSetter;
 
     public String getfieldSetter() {
         return mfieldSetter;
@@ -54,9 +58,6 @@ public class LocalComponentImpl {
     public void setfieldSetter(String pfieldSetter) throws Exception {
         throw new Exception("Set method instead of field");
     }
-
-    private String mMethodSetter;
-    boolean mSetByMethod;
 
     public String getMethodSetter() throws Exception {
         if (mSetByMethod) {
@@ -72,9 +73,6 @@ public class LocalComponentImpl {
         mMethodSetter = pMethodSetter;
     }
 
-    @Reference(name = "requiredDataObject", required = true)
-    private DataObject mRequiredDataObject;
-
     public DataObject getRequiredDataObject() {
         return mRequiredDataObject;
     }
@@ -82,9 +80,6 @@ public class LocalComponentImpl {
     public void setRequiredDataObject(DataObject pRequiredDataObject) {
         mRequiredDataObject = pRequiredDataObject;
     }
-
-    @Reference(name = "optionalDataObject")
-    private DataObject mOptionalDataObject;
 
     public DataObject getOptionalDataObject() {
         return mOptionalDataObject;

@@ -22,11 +22,11 @@ import java.util.List;
  */
 public interface Source {
 
-    public Target getTarget();
+    Target getTarget();
 
-    public List<Target> getTargets();
+    List<Target> getTargets();
 
-    public List<Target> getTargetsThroughField();
+    List<Target> getTargetsThroughField();
 
 }
 

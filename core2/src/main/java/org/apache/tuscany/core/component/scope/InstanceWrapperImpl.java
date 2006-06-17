@@ -28,8 +28,8 @@ public class InstanceWrapperImpl extends AbstractLifecycle implements InstanceWr
     private AtomicComponent component;
 
     public InstanceWrapperImpl(AtomicComponent component, Object instance) {
-        assert(component != null);
-        assert(instance != null);
+        assert component != null;
+        assert instance != null;
         this.component = component;
         this.instance = instance;
     }

@@ -28,10 +28,12 @@ public class BasicModuleScopeTestCase extends TestCase {
         scopeContext.start();
         SystemAtomicComponent atomicContext = createContext(scopeContext);
         // start the request
-        ModuleScopeInitDestroyComponent o1 = (ModuleScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
+        ModuleScopeInitDestroyComponent o1 =
+            (ModuleScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertTrue(o1.isInitialized());
         assertFalse(o1.isDestroyed());
-        ModuleScopeInitDestroyComponent o2 = (ModuleScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
+        ModuleScopeInitDestroyComponent o2 =
+            (ModuleScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertEquals(o1, o2);
         scopeContext.onEvent(new CompositeStop(this, null));
         assertTrue(o1.isDestroyed());
@@ -44,13 +46,14 @@ public class BasicModuleScopeTestCase extends TestCase {
         scopeContext.start();
 
         SystemAtomicComponent atomicContext = createContext(scopeContext);
-        SystemAtomicComponent atomicContext2 = createContext(scopeContext);
 
-        ModuleScopeInitDestroyComponent o1 = (ModuleScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
+        ModuleScopeInitDestroyComponent o1 =
+            (ModuleScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertTrue(o1.isInitialized());
         assertFalse(o1.isDestroyed());
 
-        ModuleScopeInitDestroyComponent o2 = (ModuleScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
+        ModuleScopeInitDestroyComponent o2 =
+            (ModuleScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertSame(o1, o2);
         scopeContext.onEvent(new CompositeStop(this, null));
         assertTrue(o1.isDestroyed());
@@ -59,9 +62,12 @@ public class BasicModuleScopeTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        factory = new PojoObjectFactory<ModuleScopeInitDestroyComponent>(ModuleScopeInitDestroyComponent.class.getConstructor((Class[]) null), null);
-        initInvoker = new MethodEventInvoker<Object>(ModuleScopeInitDestroyComponent.class.getMethod("init", (Class[]) null));
-        destroyInvoker = new MethodEventInvoker<Object>(ModuleScopeInitDestroyComponent.class.getMethod("destroy", (Class[]) null));
+        factory = new PojoObjectFactory<ModuleScopeInitDestroyComponent>(
+            ModuleScopeInitDestroyComponent.class.getConstructor((Class[]) null), null);
+        initInvoker = new MethodEventInvoker<Object>(ModuleScopeInitDestroyComponent.class.getMethod(
+            "init", (Class[]) null));
+        destroyInvoker = new MethodEventInvoker<Object>(ModuleScopeInitDestroyComponent.class.getMethod(
+            "destroy", (Class[]) null));
     }
 
     protected void tearDown() throws Exception {
@@ -69,7 +75,16 @@ public class BasicModuleScopeTestCase extends TestCase {
     }
 
     private SystemAtomicComponent createContext(ScopeContainer scopeContainer) {
-        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo", null, scopeContainer, ModuleScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null, null);
+        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo",
+            null,
+            scopeContainer,
+            ModuleScopeInitDestroyComponent.class,
+            factory,
+            false,
+            initInvoker,
+            destroyInvoker,
+            null,
+            null);
         context.start();
         return context;
     }

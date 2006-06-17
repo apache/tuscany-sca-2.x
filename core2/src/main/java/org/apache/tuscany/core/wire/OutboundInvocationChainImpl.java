@@ -48,7 +48,7 @@ public class OutboundInvocationChainImpl extends InvocationChainImpl implements 
 
         if (requestHandlers != null || responseHandlers != null) {
             Interceptor channelInterceptor = new RequestResponseInterceptor(requestChannel, targetRequestChannel,
-                    responseChannel, targetResponseChannel);
+                responseChannel, targetResponseChannel);
             if (interceptorChainHead != null) {
                 interceptorChainTail.setNext(channelInterceptor);
             } else {
@@ -64,7 +64,7 @@ public class OutboundInvocationChainImpl extends InvocationChainImpl implements 
                 } else if (!(interceptorChainTail instanceof InvokerInterceptor)) {
                     // Connect source interceptor chain to the target request channel
                     Interceptor channelInterceptor = new RequestResponseInterceptor(null, targetRequestChannel, null,
-                            targetResponseChannel);
+                        targetResponseChannel);
                     interceptorChainTail.setNext(channelInterceptor);
                 }
             } else {
@@ -74,7 +74,7 @@ public class OutboundInvocationChainImpl extends InvocationChainImpl implements 
                     interceptorChainTail = targetInterceptorChainHead;
                 } else {
                     Interceptor channelInterceptor = new RequestResponseInterceptor(null, targetRequestChannel, null,
-                            targetResponseChannel);
+                        targetResponseChannel);
                     interceptorChainHead = channelInterceptor;
                     interceptorChainTail = channelInterceptor;
                 }

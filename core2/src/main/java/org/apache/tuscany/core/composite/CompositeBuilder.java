@@ -45,22 +45,28 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
                               DeploymentContext deploymentContext) throws BuilderConfigException {
         CompositeImplementation implementation = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = implementation.getComponentType();
-        CompositeComponentImpl<?> context = new CompositeComponentImpl(componentDefinition.getName(), parent, null, wireService);
+        CompositeComponentImpl<?> context = new CompositeComponentImpl(componentDefinition.getName(),
+            parent,
+            null,
+            wireService);
         for (ReferenceTarget target : componentDefinition.getReferenceTargets().values()) {
             ReferenceDefinition referenceDefinition = target.getReference();
             if (referenceDefinition instanceof BoundReferenceDefinition) {
-                SCAObject<?> refereceSCAObject = builderRegistry.build(context, (BoundReferenceDefinition) referenceDefinition, deploymentContext);
+                SCAObject<?> refereceSCAObject = builderRegistry.build(context,
+                    (BoundReferenceDefinition) referenceDefinition,
+                    deploymentContext);
                 context.register(refereceSCAObject);
             }
         }
-        for (ComponentDefinition<? extends Implementation<?>> child : componentType.getComponents().values())
-        {
+        for (ComponentDefinition<? extends Implementation<?>> child : componentType.getComponents().values()) {
             SCAObject<?> childSCAObject = builderRegistry.build(context, child, deploymentContext);
             context.register(childSCAObject);
         }
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             if (serviceDefinition instanceof BoundServiceDefinition) {
-                SCAObject<?> serviceSCAObject = builderRegistry.build(context, (BoundServiceDefinition) serviceDefinition, deploymentContext);
+                SCAObject<?> serviceSCAObject = builderRegistry.build(context,
+                    (BoundServiceDefinition) serviceDefinition,
+                    deploymentContext);
                 context.register(serviceSCAObject);
             }
         }

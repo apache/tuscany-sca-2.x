@@ -18,11 +18,11 @@ package org.apache.tuscany.core.mock.component;
 
 public interface SimpleTarget {
 
-    public String hello(String message) throws Exception;
+    String hello(String message) throws Exception;
 
-    public String goodbye(String message) throws Exception;
+    String goodbye(String message) throws Exception;
 
-    public String echo(String message) throws Exception;
+    String echo(String message) throws Exception;
 
 }
 

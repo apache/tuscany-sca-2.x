@@ -2,6 +2,9 @@ package org.apache.tuscany.core.policy.async;
 
 import javax.resource.spi.work.WorkManager;
 
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.OneWay;
+
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderException;
@@ -11,8 +14,6 @@ import static org.apache.tuscany.spi.policy.PolicyBuilderRegistry.INITIAL;
 import org.apache.tuscany.spi.policy.TargetPolicyBuilder;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.OneWay;
 
 /**
  * A policy builder for handling the {@link OneWay} annotation

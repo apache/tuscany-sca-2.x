@@ -7,9 +7,9 @@ import junit.framework.TestCase;
  */
 public class SingletonObjectFactoryTestCase extends TestCase {
 
-    public void testSingleton() throws Exception{
+    public void testSingleton() throws Exception {
         Object o = new Object();
         SingletonObjectFactory<Object> factory = new SingletonObjectFactory<Object>(o);
-        assertEquals(o,factory.getInstance());
+        assertEquals(o, factory.getInstance());
     }
 }

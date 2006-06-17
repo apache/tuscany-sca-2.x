@@ -11,8 +11,8 @@ import org.apache.tuscany.spi.component.TargetException;
 public interface SystemAtomicComponent<T> extends AtomicComponent<T> {
 
     /**
-     * Returns the target instance associated with the component. A target instance is the actual object a
-     * request is dispatched to sans wire chain.
+     * Returns the target instance associated with the component. A target instance is the actual object a request is
+     * dispatched to sans wire chain.
      *
      * @throws org.apache.tuscany.spi.component.TargetException
      *

@@ -19,8 +19,8 @@ package org.apache.tuscany.core.wire;
 import java.lang.reflect.Method;
 
 /**
- * Caches component instances that do not need to be resolved for every wire, e.g. an wire originating from a
- * lesser scope intended for a target with a wider scope
+ * Caches component instances that do not need to be resolved for every wire, e.g. an wire originating from a lesser
+ * scope intended for a target with a wider scope
  *
  * @version $Rev$ $Date$
  */
@@ -30,7 +30,7 @@ public class StaticPojoTargetInvoker extends PojoTargetInvoker {
 
     public StaticPojoTargetInvoker(Method operation, Object instance) {
         super(operation);
-        assert (instance != null) : "Instance cannot be null";
+        assert instance != null : "Instance cannot be null";
         this.instance = instance;
     }
 

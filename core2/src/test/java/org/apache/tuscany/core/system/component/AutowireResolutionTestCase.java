@@ -52,7 +52,9 @@ public class AutowireResolutionTestCase extends MockObjectTestCase {
         super.setUp();
         parent = mock(CompositeComponent.class);
         autowire = mock(AutowireComponent.class);
-        context = new SystemCompositeComponentImpl("test", (CompositeComponent) parent.proxy(), (AutowireComponent) autowire.proxy());
+        context = new SystemCompositeComponentImpl("test",
+            (CompositeComponent) parent.proxy(),
+            (AutowireComponent) autowire.proxy());
     }
 
     public static interface Foo {

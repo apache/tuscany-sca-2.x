@@ -43,9 +43,10 @@ import org.apache.tuscany.spi.model.ModelObject;
 public class LoaderRegistryImpl implements LoaderRegistry {
     private Monitor monitor;
     private final Map<QName, StAXElementLoader<? extends ModelObject>> loaders =
-            new HashMap<QName, StAXElementLoader<? extends ModelObject>>();
-    private final Map<Class<? extends Implementation<?>>, ComponentTypeLoader<? extends Implementation<?>>> componentTypeLoaders =
-            new HashMap<Class<? extends Implementation<?>>, ComponentTypeLoader<? extends Implementation<?>>>();
+        new HashMap<QName, StAXElementLoader<? extends ModelObject>>();
+    private final Map<Class<? extends Implementation<?>>,
+        ComponentTypeLoader<? extends Implementation<?>>> componentTypeLoaders =
+        new HashMap<Class<? extends Implementation<?>>, ComponentTypeLoader<? extends Implementation<?>>>();
 
 
     @org.apache.tuscany.spi.annotation.Monitor
@@ -63,7 +64,8 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         loaders.remove(element);
     }
 
-    public ModelObject load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ModelObject load(XMLStreamReader reader,
+                            DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         QName name = reader.getName();
         monitor.elementLoad(name);
         StAXElementLoader<? extends ModelObject> loader = loaders.get(name);
@@ -73,18 +75,18 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         return loader.load(reader, deploymentContext);
     }
 
-    public <MO extends ModelObject> MO load(URL url, Class<MO> type, DeploymentContext deploymentContext) throws LoaderException {
+    public <MO extends ModelObject> MO load(URL url, Class<MO> type, DeploymentContext ctx) throws LoaderException {
         try {
             XMLStreamReader reader;
             InputStream is;
             is = url.openStream();
             try {
-                XMLInputFactory factory = deploymentContext.getXmlFactory();
+                XMLInputFactory factory = ctx.getXmlFactory();
                 reader = factory.createXMLStreamReader(is);
                 try {
                     reader.nextTag();
                     QName name = reader.getName();
-                    ModelObject mo = load(reader, deploymentContext);
+                    ModelObject mo = load(reader, ctx);
                     if (type.isInstance(mo)) {
                         return type.cast(mo);
                     } else {
@@ -126,7 +128,9 @@ public class LoaderRegistryImpl implements LoaderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <I extends Implementation<?>> void loadComponentType(I implementation, DeploymentContext deploymentContext) throws LoaderException {
+    public <I extends Implementation<?>> void loadComponentType(I implementation,
+                                                                DeploymentContext deploymentContext)
+        throws LoaderException {
         Class<I> key = (Class<I>) implementation.getClass();
         ComponentTypeLoader<I> loader = (ComponentTypeLoader<I>) componentTypeLoaders.get(key);
         if (loader == null) {

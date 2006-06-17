@@ -28,7 +28,8 @@ import org.apache.tuscany.spi.deployer.Deployer;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultRuntime extends SystemCompositeComponentImpl<Void> implements RuntimeComponent<SystemCompositeComponent> {
+public class DefaultRuntime extends SystemCompositeComponentImpl<Void>
+    implements RuntimeComponent<SystemCompositeComponent> {
     private final CompositeComponent rootComponent;
     private final SystemCompositeComponent systemContext;
     private final Deployer deployer;

@@ -50,7 +50,9 @@ public class InterfaceWSDLLoader extends LoaderExtension {
         return AssemblyConstants.INTERFACE_WSDL;
     }
 
-    public WSDLServiceContract load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public WSDLServiceContract load(XMLStreamReader reader,
+                                    DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException {
         assert AssemblyConstants.INTERFACE_WSDL.equals(reader.getName());
         WSDLServiceContract serviceContract = new WSDLServiceContract();
         serviceContract.setInteractionScope(StAXUtil.interactionScope(reader.getAttributeValue(null, "scope")));

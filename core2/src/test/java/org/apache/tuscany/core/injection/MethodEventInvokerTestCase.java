@@ -3,8 +3,6 @@ package org.apache.tuscany.core.injection;
 import java.lang.reflect.Method;
 
 import org.jmock.MockObjectTestCase;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.ObjectCreationException;
 
 /**
  * @version $Rev$ $Date$
@@ -45,9 +43,10 @@ public class MethodEventInvokerTestCase extends MockObjectTestCase {
         public void foo() {
         }
 
-        private void hidden(){}
+        private void hidden() {
+        }
 
-        public void exception(){
+        public void exception() {
             throw new RuntimeException();
         }
 

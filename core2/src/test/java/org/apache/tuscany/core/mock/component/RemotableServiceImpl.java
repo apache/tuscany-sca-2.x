@@ -16,8 +16,9 @@
  */
 package org.apache.tuscany.core.mock.component;
 
-import junit.framework.Assert;
 import org.osoa.sca.annotations.Property;
+
+import junit.framework.Assert;
 
 
 /**

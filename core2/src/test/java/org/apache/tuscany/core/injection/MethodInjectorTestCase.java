@@ -60,9 +60,10 @@ public class MethodInjectorTestCase extends MockObjectTestCase {
         public void foo(String bar) {
         }
 
-        private void hidden(String bar){}
+        private void hidden(String bar) {
+        }
 
-        public void exception(String bar){
+        public void exception(String bar) {
             throw new RuntimeException();
         }
 

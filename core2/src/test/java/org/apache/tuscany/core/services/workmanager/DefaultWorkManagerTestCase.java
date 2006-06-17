@@ -36,8 +36,8 @@ public class DefaultWorkManagerTestCase extends TestCase {
         doneSignal.await();
 
         assertFalse(done.contains(Thread.currentThread()));
-        assert(done.size() == workManager.getScheduledMaximumPoolSize());
-        assert(count == max);
+        assert done.size() == workManager.getScheduledMaximumPoolSize();
+        assert count == max;
         done = null;
         count = 0;
         workManager.destroy();

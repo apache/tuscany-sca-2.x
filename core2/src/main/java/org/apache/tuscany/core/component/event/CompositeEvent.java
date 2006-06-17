@@ -10,6 +10,6 @@ import org.apache.tuscany.spi.event.Event;
  */
 public interface CompositeEvent extends Event {
 
-    public CompositeComponent getComposite();
+    CompositeComponent getComposite();
 
 }

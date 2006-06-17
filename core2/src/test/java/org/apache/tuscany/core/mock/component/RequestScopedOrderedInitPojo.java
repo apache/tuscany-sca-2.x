@@ -7,13 +7,13 @@ import org.osoa.sca.annotations.Scope;
 @Scope("REQUEST")
 public class RequestScopedOrderedInitPojo {
 
-    private static final Object lock = new Object();
+    private static final Object LOCK = new Object();
     private static int numberInstantied;
     private int initOrder;
 
     @Init
     public void init() {
-        synchronized (lock) {
+        synchronized (LOCK) {
             ++RequestScopedOrderedInitPojo.numberInstantied;
             initOrder = RequestScopedOrderedInitPojo.numberInstantied;
         }
@@ -21,7 +21,7 @@ public class RequestScopedOrderedInitPojo {
 
     @Destroy
     public void destroy() throws OrderException {
-        synchronized (lock) {
+        synchronized (LOCK) {
             if (initOrder != RequestScopedOrderedInitPojo.numberInstantied) {
                 throw new OrderException("Instance shutdown done out of order");
             }

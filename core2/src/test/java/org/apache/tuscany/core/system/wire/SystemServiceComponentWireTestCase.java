@@ -8,8 +8,7 @@ import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
 /**
- * Verifies that a system context interacts correctly with configured, connected inbound and outbound system
- * wires
+ * Verifies that a system context interacts correctly with configured, connected inbound and outbound system wires
  *
  * @version $$Rev$$ $$Date$$
  */

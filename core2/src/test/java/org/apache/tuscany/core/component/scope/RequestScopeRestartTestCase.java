@@ -22,12 +22,14 @@ public class RequestScopeRestartTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         RequestScopeContainer scope = new RequestScopeContainer(ctx);
         scope.start();
-        MethodEventInvoker<Object> initInvoker = new MethodEventInvoker<Object>(RequestScopeRestartTestCase.InitDestroyOnce.class.getMethod("init"));
-        MethodEventInvoker<Object> destroyInvoker = new MethodEventInvoker<Object>(RequestScopeRestartTestCase.InitDestroyOnce.class.getMethod("destroy"));
+        MethodEventInvoker<Object> initInvoker =
+            new MethodEventInvoker<Object>(RequestScopeRestartTestCase.InitDestroyOnce.class.getMethod("init"));
+        MethodEventInvoker<Object> destroyInvoker =
+            new MethodEventInvoker<Object>(RequestScopeRestartTestCase.InitDestroyOnce.class.getMethod("destroy"));
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(RequestScopeRestartTestCase.InitDestroyOnce.class);
         SystemAtomicComponent context = MockContextFactory.createSystemAtomicContext("InitDestroy", scope, interfaces,
-                RequestScopeRestartTestCase.InitDestroyOnce.class, false, initInvoker, destroyInvoker, null, null);
+            RequestScopeRestartTestCase.InitDestroyOnce.class, false, initInvoker, destroyInvoker, null, null);
         context.start();
 
         Object instance = context.getServiceInstance();

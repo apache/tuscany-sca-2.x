@@ -59,7 +59,7 @@ public class OutboundInvocationErrorTestCase extends TestCase {
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(chains);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-                    new Class[]{TestBean.class}, handler);
+                new Class[]{TestBean.class}, handler);
             proxy.checkedException();
         } catch (TestException e) {
             return;
@@ -73,7 +73,7 @@ public class OutboundInvocationErrorTestCase extends TestCase {
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(chains);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-                    new Class[]{TestBean.class}, handler);
+                new Class[]{TestBean.class}, handler);
             proxy.runtimeException();
         } catch (TestRuntimeException e) {
             return;
@@ -94,9 +94,9 @@ public class OutboundInvocationErrorTestCase extends TestCase {
 
     public interface TestBean {
 
-        public void checkedException() throws TestException;
+        void checkedException() throws TestException;
 
-        public void runtimeException() throws TestRuntimeException;
+        void runtimeException() throws TestRuntimeException;
 
     }
 

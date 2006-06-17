@@ -7,6 +7,6 @@ package org.apache.tuscany.core.policy.async;
  */
 public interface AsyncMonitor {
 
-    public void executionError(Exception e);
+    void executionError(Exception e);
 
 }

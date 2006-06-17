@@ -23,10 +23,10 @@ import org.apache.tuscany.spi.model.Scope;
  */
 public class ModuleScopeContainer extends AbstractScopeContainer {
 
+    private static final InstanceWrapper EMPTY = new EmptyWrapper();
     private final Map<AtomicComponent, InstanceWrapper> instanceContexts;
     // the queue of instanceContexts to destroy, in the order that their instances were created
     private final List<InstanceWrapper> destroyQueue;
-    private static final InstanceWrapper EMPTY = new EmptyWrapper();
 
     public ModuleScopeContainer() {
         this(null);

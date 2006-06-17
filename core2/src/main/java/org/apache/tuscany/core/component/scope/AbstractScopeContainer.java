@@ -22,11 +22,12 @@ import org.apache.tuscany.spi.event.TrueFilter;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractScopeContainer extends AbstractLifecycle implements ScopeContainer {
-    private final String name;
+    private static final EventFilter TRUE_FILTER = new TrueFilter();
+
     // The event context the scope container is associated with
     protected WorkContext workContext;
+    private final String name;
     private Map<EventFilter, List<RuntimeEventListener>> listeners;
-    private static final EventFilter TRUE_FILTER = new TrueFilter();
 
     public AbstractScopeContainer(String name, WorkContext workContext) {
         this.name = name;
@@ -46,7 +47,7 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
     }
 
     public void removeListener(RuntimeEventListener listener) {
-        assert (listener != null) : "Listener cannot be null";
+        assert listener != null : "Listener cannot be null";
         synchronized (getListeners()) {
             for (List<RuntimeEventListener> currentList : getListeners().values()) {
                 for (RuntimeEventListener current : currentList) {
@@ -60,7 +61,7 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
     }
 
     public void addListener(EventFilter filter, RuntimeEventListener listener) {
-        assert (listener != null) : "Listener cannot be null";
+        assert listener != null : "Listener cannot be null";
         synchronized (getListeners()) {
             List<RuntimeEventListener> list = getListeners().get(filter);
             if (list == null) {
@@ -72,7 +73,7 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
     }
 
     public void publish(Event event) {
-        assert(event != null): "Event object was null";
+        assert event != null : "Event object was null";
         for (Map.Entry<EventFilter, List<RuntimeEventListener>> entry : getListeners().entrySet()) {
             if (entry.getKey().match(event)) {
                 for (RuntimeEventListener listener : entry.getValue()) {

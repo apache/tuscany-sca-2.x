@@ -50,7 +50,7 @@ public abstract class InvocationChainImpl implements InvocationChain {
     protected Interceptor targetInterceptorChainHead;
 
     public InvocationChainImpl(Method operation) {
-        assert (operation != null) : "No operation type specified";
+        assert operation != null : "No operation type specified";
         this.operation = operation;
     }
 

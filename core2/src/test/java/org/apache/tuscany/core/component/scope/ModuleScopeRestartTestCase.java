@@ -23,12 +23,14 @@ public class ModuleScopeRestartTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
         scope.start();
-        MethodEventInvoker<Object> initInvoker = new MethodEventInvoker<Object>(InitDestroyOnce.class.getMethod("init"));
-        MethodEventInvoker<Object> destroyInvoker = new MethodEventInvoker<Object>(InitDestroyOnce.class.getMethod("destroy"));
+        MethodEventInvoker<Object> initInvoker =
+            new MethodEventInvoker<Object>(InitDestroyOnce.class.getMethod("init"));
+        MethodEventInvoker<Object> destroyInvoker =
+            new MethodEventInvoker<Object>(InitDestroyOnce.class.getMethod("destroy"));
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(InitDestroyOnce.class);
         SystemAtomicComponent context = MockContextFactory.createSystemAtomicContext("InitDestroy", scope, interfaces,
-                InitDestroyOnce.class, false, initInvoker, destroyInvoker, null, null);
+            InitDestroyOnce.class, false, initInvoker, destroyInvoker, null, null);
         context.start();
 
         scope.onEvent(new CompositeStart(this, null));

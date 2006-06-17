@@ -42,7 +42,17 @@ public class SystemAtomicComponentImpl<T> extends PojoAtomicComponent<T> impleme
                                      EventInvoker<Object> destroyInvoker,
                                      List<Injector> injectors,
                                      Map<String, Member> members) {
-        super(name, parent, scopeContainer, serviceInterface, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members, null);
+        super(name,
+            parent,
+            scopeContainer,
+            serviceInterface,
+            objectFactory,
+            eagerInit,
+            initInvoker,
+            destroyInvoker,
+            injectors,
+            members,
+            null);
         scope = Scope.MODULE;
     }
 
@@ -56,7 +66,17 @@ public class SystemAtomicComponentImpl<T> extends PojoAtomicComponent<T> impleme
                                      EventInvoker<Object> destroyInvoker,
                                      List<Injector> injectors,
                                      Map<String, Member> members) {
-        super(name, parent, scopeContainer, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members, null);
+        super(name,
+            parent,
+            scopeContainer,
+            serviceInterfaces,
+            objectFactory,
+            eagerInit,
+            initInvoker,
+            destroyInvoker,
+            injectors,
+            members,
+            null);
         scope = Scope.MODULE;
     }
 
@@ -78,13 +98,13 @@ public class SystemAtomicComponentImpl<T> extends PojoAtomicComponent<T> impleme
     }
 
     protected Injector createInjector(Member member, OutboundWire wire) {
-        assert(wire instanceof SystemOutboundWire): "wire must be an instance of " + SystemOutboundWire.class.getName();
+        assert wire instanceof SystemOutboundWire : "wire must be an instance of " + SystemOutboundWire.class.getName();
         SystemOutboundWire systemWire = (SystemOutboundWire) wire;
         ObjectFactory<?> factory = new SystemWireObjectFactory(systemWire);
         if (member instanceof Field) {
-            return new FieldInjector(((Field) member), factory);
+            return new FieldInjector((Field) member, factory);
         } else if (member instanceof Method) {
-            return new MethodInjector(((Method) member), factory);
+            return new MethodInjector((Method) member, factory);
         } else {
             InvalidAccessorException e = new InvalidAccessorException("Member must be a field or method");
             e.setIdentifier(member.getName());
@@ -92,10 +112,10 @@ public class SystemAtomicComponentImpl<T> extends PojoAtomicComponent<T> impleme
         }
     }
 
-    protected Injector createMultiplicityInjector(Member member, Class<?> interfaceType, List<OutboundWire> wireFactories) {
+    protected Injector createMultiplicityInjector(Member member, Class<?> interfaceType, List<OutboundWire> wires) {
         List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
-        for (OutboundWire wire : wireFactories) {
-            assert(wire instanceof SystemOutboundWire): "wire must be an instance of " + SystemOutboundWire.class.getName();
+        for (OutboundWire wire : wires) {
+            assert wire instanceof SystemOutboundWire : "wire must be a "  + SystemOutboundWire.class.getName();
             SystemOutboundWire systemWire = (SystemOutboundWire) wire;
             factories.add(new SystemWireObjectFactory(systemWire));
         }

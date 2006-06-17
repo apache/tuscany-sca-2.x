@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.model.JavaServiceContract;
 
 /**
  * Loads a Java interface definition from an XML-based assembly file
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
@@ -43,7 +43,10 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
         return AssemblyConstants.INTERFACE_JAVA;
     }
 
-    public JavaServiceContract load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public JavaServiceContract load(XMLStreamReader reader,
+                                    DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException {
+
         assert AssemblyConstants.INTERFACE_JAVA.equals(reader.getName());
         JavaServiceContract serviceContract = new JavaServiceContract();
         serviceContract.setInteractionScope(StAXUtil.interactionScope(reader.getAttributeValue(null, "scope")));

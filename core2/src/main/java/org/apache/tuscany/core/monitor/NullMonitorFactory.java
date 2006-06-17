@@ -28,15 +28,6 @@ import org.apache.tuscany.spi.monitor.MonitorFactory;
  * @version $Rev$ $Date$
  */
 public class NullMonitorFactory implements MonitorFactory {
-    public <T> T getMonitor(Class<T> monitorInterface) {
-        /*
-         * This uses a reflection proxy to implement the monitor interface which
-         * is a simple but perhaps not very performant solution. Performance
-         * might be improved by code generating an implementation with empty methods.
-         */
-        return monitorInterface.cast(Proxy.newProxyInstance(monitorInterface.getClassLoader(), new Class<?>[]{monitorInterface}, NULL_MONITOR));
-    }
-
     /**
      * Singleton wire hander that does nothing.
      */
@@ -45,4 +36,15 @@ public class NullMonitorFactory implements MonitorFactory {
             return null;
         }
     };
+
+    public <T> T getMonitor(Class<T> monitorInterface) {
+        /*
+         * This uses a reflection proxy to implement the monitor interface which
+         * is a simple but perhaps not very performant solution. Performance
+         * might be improved by code generating an implementation with empty methods.
+         */
+        return monitorInterface.cast(
+            Proxy.newProxyInstance(monitorInterface.getClassLoader(), new Class<?>[]{monitorInterface}, NULL_MONITOR));
+    }
+
 }

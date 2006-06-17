@@ -33,6 +33,9 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
  * @version $Rev$ $Date$
  */
 public class SystemImplementationLoader extends LoaderExtension<SystemImplementation> {
+    public static final QName SYSTEM_IMPLEMENTATION =
+        new QName("http://tuscany.apache.org/xmlns/system/0.9", "implementation.system");
+
     public SystemImplementationLoader() {
     }
 
@@ -40,13 +43,8 @@ public class SystemImplementationLoader extends LoaderExtension<SystemImplementa
         super(registry);
     }
 
-    public static final QName SYSTEM_IMPLEMENTATION = new QName("http://tuscany.apache.org/xmlns/system/0.9", "implementation.system");
-
-    protected QName getXMLType() {
-        return SYSTEM_IMPLEMENTATION;
-    }
-
-    public SystemImplementation load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public SystemImplementation load(XMLStreamReader reader, DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException {
         assert SYSTEM_IMPLEMENTATION.equals(reader.getName());
         SystemImplementation implementation = new SystemImplementation();
         String implClass = reader.getAttributeValue(null, "class");
@@ -56,4 +54,9 @@ public class SystemImplementationLoader extends LoaderExtension<SystemImplementa
         StAXUtil.skipToEndElement(reader);
         return implementation;
     }
+
+    protected QName getXMLType() {
+        return SYSTEM_IMPLEMENTATION;
+    }
+
 }

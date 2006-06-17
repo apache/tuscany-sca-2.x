@@ -52,7 +52,9 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
         return AssemblyConstants.COMPOSITE;
     }
 
-    public CompositeComponentType load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public CompositeComponentType load(XMLStreamReader reader,
+                                       DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException {
         CompositeComponentType composite = new CompositeComponentType();
         composite.setName(reader.getAttributeValue(null, "name"));
         while (true) {

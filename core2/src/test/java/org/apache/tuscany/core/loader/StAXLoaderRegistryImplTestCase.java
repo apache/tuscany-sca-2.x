@@ -57,7 +57,8 @@ public class StAXLoaderRegistryImplTestCase extends MockObjectTestCase {
         mockReader.expects(once()).method("getName").will(returnValue(name));
         mockMonitor.expects(once()).method("registeringLoader").with(eq(name));
         mockMonitor.expects(once()).method("elementLoad").with(eq(name));
-        mockLoader.expects(once()).method("load").with(eq(mockReader.proxy()), eq(deploymentContext)).will(returnValue(modelObject));
+        mockLoader.expects(once()).method("load").with(eq(mockReader.proxy()), eq(deploymentContext))
+            .will(returnValue(modelObject));
 
         registry.registerLoader(name, (StAXElementLoader<ModelObject>) mockLoader.proxy());
         assertSame(modelObject, registry.load((XMLStreamReader) mockReader.proxy(), deploymentContext));

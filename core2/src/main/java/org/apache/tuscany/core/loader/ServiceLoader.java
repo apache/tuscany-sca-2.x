@@ -49,7 +49,8 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
         return AssemblyConstants.SERVICE;
     }
 
-    public ServiceDefinition load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ServiceDefinition load(XMLStreamReader reader, DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException {
         assert AssemblyConstants.SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         Binding binding = null;

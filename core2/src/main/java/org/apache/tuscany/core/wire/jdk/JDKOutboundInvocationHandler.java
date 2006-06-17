@@ -31,8 +31,8 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
- * Receives a request from a proxy and performs an invocation on an {@link org.apache.tuscany.spi.wire.OutboundWire}
- * via an {@link org.apache.tuscany.spi.wire.OutboundInvocationChain}
+ * Receives a request from a proxy and performs an invocation on an {@link org.apache.tuscany.spi.wire.OutboundWire} via
+ * an {@link org.apache.tuscany.spi.wire.OutboundInvocationChain}
  *
  * @version $Rev$ $Date$
  */
@@ -88,7 +88,7 @@ public class JDKOutboundInvocationHandler implements WireInvocationHandler, Invo
             invoker = chain.getTargetInvoker();
         }
         if (chain.getTargetRequestChannel() == null && chain.getTargetResponseChannel() == null
-                && headInterceptor == null) {
+            && headInterceptor == null) {
             try {
                 // short-circuit the dispatch and invoke the target directly
                 if (chain.getTargetInvoker() == null) {
@@ -135,8 +135,8 @@ public class JDKOutboundInvocationHandler implements WireInvocationHandler, Invo
     }
 
     /**
-     * A holder used to associate an wire chain with a local copy of a target invoker that was previously
-     * cloned from the chain master
+     * A holder used to associate an wire chain with a local copy of a target invoker that was previously cloned from
+     * the chain master
      */
     private class ChainHolder {
 

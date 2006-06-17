@@ -24,7 +24,7 @@ public abstract class HttpSessionEvent extends AbstractEvent {
 
     public HttpSessionEvent(Object source, Object id) {
         super(source);
-        assert (id != null): "Session id was null";
+        assert id != null : "Session id was null";
         this.id = id;
     }
 

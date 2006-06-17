@@ -23,10 +23,9 @@ import java.util.List;
 public class SourceImpl implements Source {
 
     private Target target;
-
     private List<Target> targets;
-
     private List<Target> targetsThroughField;
+    private Target[] targetsArray;
 
     public void setTarget(Target target) {
         this.target = target;
@@ -48,9 +47,6 @@ public class SourceImpl implements Source {
         return targetsThroughField;
     }
 
-
-    private Target[] targetsArray;
-
     public Target[] getArrayOfTargets() {
         return targetsArray;
     }
@@ -58,6 +54,5 @@ public class SourceImpl implements Source {
     public void setArrayOfTargets(Target[] targets) {
         targetsArray = targets;
     }
-
 
 }

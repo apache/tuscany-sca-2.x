@@ -9,8 +9,8 @@ import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * Caches component instances that do not need to be resolved for every wire, e.g. an wire originating from a
- * lesser scope intended for a target with a wider scope
+ * Caches component instances that do not need to be resolved for every wire, e.g. an wire originating from a lesser
+ * scope intended for a target with a wider scope
  *
  * @version $Rev$ $Date$
  */

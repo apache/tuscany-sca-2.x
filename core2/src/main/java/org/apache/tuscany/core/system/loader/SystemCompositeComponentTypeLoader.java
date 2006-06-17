@@ -42,14 +42,16 @@ public class SystemCompositeComponentTypeLoader extends ComponentTypeLoaderExten
         return SystemCompositeImplementation.class;
     }
 
-    public void load(SystemCompositeImplementation implementation, DeploymentContext deploymentContext) throws LoaderException {
+    public void load(SystemCompositeImplementation implementation, DeploymentContext deploymentContext)
+        throws LoaderException {
         URL scdlLocation = implementation.getScdlLocation();
         CompositeComponentType componentType = loadFromSidefile(scdlLocation, deploymentContext);
         implementation.setComponentType(componentType);
     }
 
 
-    protected CompositeComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext) throws LoaderException {
+    protected CompositeComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext)
+        throws LoaderException {
         return loaderRegistry.load(url, CompositeComponentType.class, deploymentContext);
     }
 }

@@ -28,8 +28,12 @@ public class DependencyLifecycleTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         ModuleScopeContainer scopeCtx = new ModuleScopeContainer(ctx);
         scopeCtx.start();
-        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
-                scopeCtx, "target", OrderedInitPojoImpl.class, scopeCtx);
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source",
+            OrderedDependentPojoImpl.class,
+            scopeCtx,
+            "target",
+            OrderedInitPojoImpl.class,
+            scopeCtx);
         for (AtomicComponent component : contexts.values()) {
             scopeCtx.register(component);
         }
@@ -52,8 +56,12 @@ public class DependencyLifecycleTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         ModuleScopeContainer scopeCtx = new ModuleScopeContainer(ctx);
         scopeCtx.start();
-        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
-                scopeCtx, "target", OrderedInitPojoImpl.class, scopeCtx);
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source",
+            OrderedDependentPojoImpl.class,
+            scopeCtx,
+            "target",
+            OrderedInitPojoImpl.class,
+            scopeCtx);
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");
         scopeCtx.onEvent(new CompositeStart(this, null));
@@ -75,8 +83,12 @@ public class DependencyLifecycleTestCase extends TestCase {
         HttpSessionScopeContainer scopeCtx = new HttpSessionScopeContainer(ctx);
         scopeCtx.start();
         Object session = new Object();
-        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
-                scopeCtx, "target", OrderedInitPojoImpl.class, scopeCtx);
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source",
+            OrderedDependentPojoImpl.class,
+            scopeCtx,
+            "target",
+            OrderedInitPojoImpl.class,
+            scopeCtx);
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");
         scopeCtx.register(sourceComponent);
@@ -96,8 +108,12 @@ public class DependencyLifecycleTestCase extends TestCase {
         HttpSessionScopeContainer scopeCtx = new HttpSessionScopeContainer(ctx);
         scopeCtx.start();
         Object session = new Object();
-        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
-                scopeCtx, "target", OrderedInitPojoImpl.class, scopeCtx);
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source",
+            OrderedDependentPojoImpl.class,
+            scopeCtx,
+            "target",
+            OrderedInitPojoImpl.class,
+            scopeCtx);
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");
         ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session);
@@ -116,8 +132,12 @@ public class DependencyLifecycleTestCase extends TestCase {
         RequestScopeContainer scopeCtx = new RequestScopeContainer(ctx);
         scopeCtx.start();
         scopeCtx.onEvent(new RequestStart(this));
-        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", OrderedDependentPojoImpl.class,
-                scopeCtx, "target", OrderedInitPojoImpl.class, scopeCtx);
+        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source",
+            OrderedDependentPojoImpl.class,
+            scopeCtx,
+            "target",
+            OrderedInitPojoImpl.class,
+            scopeCtx);
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");
         scopeCtx.register(sourceComponent);

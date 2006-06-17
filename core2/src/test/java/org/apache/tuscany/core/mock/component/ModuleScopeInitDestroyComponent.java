@@ -20,7 +20,7 @@ import org.osoa.sca.annotations.Destroy;
 
 public class ModuleScopeInitDestroyComponent extends ModuleScopeInitOnlyComponent {
 
-    boolean destroyed = false;
+    boolean destroyed;
 
     public boolean isDestroyed() {
         return destroyed;

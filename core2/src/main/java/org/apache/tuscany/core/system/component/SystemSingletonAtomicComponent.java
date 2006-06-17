@@ -15,21 +15,21 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * An {@link org.apache.tuscany.spi.component.AtomicComponent} used when registering objects directly into a
- * composite
+ * An {@link org.apache.tuscany.spi.component.AtomicComponent} used when registering objects directly into a composite
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAObject<S> implements SystemAtomicComponent<S> {
+public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAObject<S>
+    implements SystemAtomicComponent<S> {
 
     private T instance;
     private List<Class<?>> serviceInterfaces;
 
-    public SystemSingletonAtomicComponent(String name, CompositeComponent<?> parent, Class<S> serviceInterface, T instance) {
+    public SystemSingletonAtomicComponent(String name, CompositeComponent<?> parent, Class<S> interfaze, T instance) {
         super(name, parent);
         this.instance = instance;
         serviceInterfaces = new ArrayList<Class<?>>(1);
-        serviceInterfaces.add(serviceInterface);
+        serviceInterfaces.add(interfaze);
     }
 
     public List<Class<?>> getServiceInterfaces() {

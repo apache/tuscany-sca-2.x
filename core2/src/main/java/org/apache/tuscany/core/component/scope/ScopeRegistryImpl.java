@@ -22,14 +22,14 @@ public class ScopeRegistryImpl implements ScopeRegistry {
     private final WorkContext workContext;
 
     public ScopeRegistryImpl(WorkContext workContext) {
-        assert(workContext != null);
+        assert workContext != null;
         scopeCache = new ConcurrentHashMap<Scope, ScopeContainer>();
         factoryCache = new ConcurrentHashMap<Scope, ObjectFactory<? extends ScopeContainer>>();
         this.workContext = workContext;
     }
 
     public ScopeContainer getScopeContainer(Scope scope) {
-        assert Scope.MODULE != scope: "Cannot get MODULE scope from the registry";
+        assert Scope.MODULE != scope : "Cannot get MODULE scope from the registry";
         ScopeContainer container = scopeCache.get(scope);
         if (container == null) {
             ObjectFactory<? extends ScopeContainer> factory = factoryCache.get(scope);

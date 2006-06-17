@@ -15,8 +15,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
- * Default implementation of a reference context configured with the {@link
- * org.apache.tuscany.core.system.model.SystemBinding}
+ * Default implementation of a reference configured with the {@link org.apache.tuscany.core.system.model.SystemBinding}
  *
  * @version $Rev$ $Date$
  */
@@ -29,7 +28,7 @@ public class SystemReferenceImpl<T> extends AbstractSCAObject<T> implements Syst
 
     public SystemReferenceImpl(String name, Class<T> referenceInterface, CompositeComponent parent) {
         super(name, parent);
-        assert (referenceInterface != null) : "ReferenceDefinition interface was null";
+        assert referenceInterface != null : "ReferenceDefinition interface was null";
         this.referenceInterface = referenceInterface;
     }
 
@@ -38,7 +37,7 @@ public class SystemReferenceImpl<T> extends AbstractSCAObject<T> implements Syst
     }
 
     public void setInboundWire(InboundWire<T> wire) {
-        assert(wire instanceof SystemInboundWire): "wire must be a " + SystemInboundWire.class.getName();
+        assert wire instanceof SystemInboundWire : "Wire must be a " + SystemInboundWire.class.getName();
         this.inboundWire = (SystemInboundWire<T>) wire;
     }
 
@@ -51,7 +50,7 @@ public class SystemReferenceImpl<T> extends AbstractSCAObject<T> implements Syst
     }
 
     public void setOutboundWire(OutboundWire<T> wire) {
-        assert(wire instanceof SystemOutboundWire): "wire must be a " + SystemOutboundWire.class.getName();
+        assert wire instanceof SystemOutboundWire : "wire must be a " + SystemOutboundWire.class.getName();
         this.outboundWire = (SystemOutboundWire<T>) wire;
     }
 
@@ -65,7 +64,9 @@ public class SystemReferenceImpl<T> extends AbstractSCAObject<T> implements Syst
 
     public void prepare() {
         for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
-            chain.setTargetInvoker(createTargetInvoker(outboundWire.getTargetName().getQualifiedName(), chain.getMethod()));
+            TargetInvoker targetInvoker = createTargetInvoker(outboundWire.getTargetName().getQualifiedName(),
+                chain.getMethod());
+            chain.setTargetInvoker(targetInvoker);
             chain.build();
         }
     }

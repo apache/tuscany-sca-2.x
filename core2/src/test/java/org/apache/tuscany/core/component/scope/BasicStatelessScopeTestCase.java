@@ -23,9 +23,11 @@ public class BasicStatelessScopeTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         StatelessScopeContainer scope = new StatelessScopeContainer(ctx);
         scope.start();
-        SystemAtomicComponent context1 = MockContextFactory.createSystemAtomicContext("comp1", scope, StatelessComponentImpl.class);
+        SystemAtomicComponent context1 =
+            MockContextFactory.createSystemAtomicContext("comp1", scope, StatelessComponentImpl.class);
         scope.register(context1);
-        SystemAtomicComponent context2 = MockContextFactory.createSystemAtomicContext("comp2", scope, StatelessComponentImpl.class);
+        SystemAtomicComponent context2 =
+            MockContextFactory.createSystemAtomicContext("comp2", scope, StatelessComponentImpl.class);
         scope.register(context2);
         StatelessComponentImpl comp1 = (StatelessComponentImpl) scope.getInstance(context1);
         Assert.assertNotNull(comp1);
@@ -40,11 +42,13 @@ public class BasicStatelessScopeTestCase extends TestCase {
         StatelessScopeContainer scope = new StatelessScopeContainer(ctx);
 
         scope.start();
-        SystemAtomicComponent context1 = MockContextFactory.createSystemAtomicContext("comp1", scope, StatelessComponentImpl.class);
+        SystemAtomicComponent context1 =
+            MockContextFactory.createSystemAtomicContext("comp1", scope, StatelessComponentImpl.class);
         scope.register(context1);
         StatelessComponent comp1 = (StatelessComponentImpl) scope.getInstance(context1);
         Assert.assertNotNull(comp1);
-        SystemAtomicComponent context2 = MockContextFactory.createSystemAtomicContext("comp2", scope, StatelessComponentImpl.class);
+        SystemAtomicComponent context2 =
+            MockContextFactory.createSystemAtomicContext("comp2", scope, StatelessComponentImpl.class);
         scope.register(context2);
         StatelessComponentImpl comp2 = (StatelessComponentImpl) scope.getInstance(context2);
         Assert.assertNotNull(comp2);

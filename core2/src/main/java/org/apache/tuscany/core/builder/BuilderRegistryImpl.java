@@ -36,6 +36,7 @@ import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 
 /**
@@ -44,11 +45,16 @@ import org.apache.tuscany.spi.model.Implementation;
  * @version $Rev$ $Date$
  */
 public class BuilderRegistryImpl implements BuilderRegistry {
-    private final Map<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>> componentBuilders = new HashMap<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>();
-    private final Map<Class<? extends Binding>, BindingBuilder<? extends Binding>> bindingBuilders = new HashMap<Class<? extends Binding>, BindingBuilder<? extends Binding>>();
 
     //protected WireService wireService;
     protected ScopeRegistry scopeRegistry;
+
+    private final Map<Class<? extends Implementation<?>>,
+        ComponentBuilder<? extends Implementation<?>>> componentBuilders =
+        new HashMap<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>();
+    private final Map<Class<? extends Binding>,
+        BindingBuilder<? extends Binding>> bindingBuilders =
+        new HashMap<Class<? extends Binding>, BindingBuilder<? extends Binding>>();
 
     public BuilderRegistryImpl() {
     }
@@ -80,7 +86,9 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <I extends Implementation<?>> Component<?> build(CompositeComponent<?> parent, ComponentDefinition<I> componentDefinition, DeploymentContext deploymentContext) {
+    public <I extends Implementation<?>> Component<?> build(CompositeComponent<?> parent,
+                                                            ComponentDefinition<I> componentDefinition,
+                                                            DeploymentContext deploymentContext) {
         Class<I> implClass = (Class<I>) componentDefinition.getImplementation().getClass();
         ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>) componentBuilders.get(implClass);
         if (componentBuilder == null) {
@@ -91,14 +99,15 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         }
 
         Component<?> context = componentBuilder.build(parent, componentDefinition, deploymentContext);
-        assert(componentDefinition.getImplementation().getComponentType() != null): "ComponentDefinition type must be set";
+        ComponentType componentType = componentDefinition.getImplementation().getComponentType();
+        assert componentType != null : "ComponentDefinition type must be set";
         return context;
     }
 
     public <B extends Binding> void register(BindingBuilder<B> builder) {
         Type[] interfaces = builder.getClass().getGenericInterfaces();
         for (Type type : interfaces) {
-            if (! (type instanceof ParameterizedType)) {
+            if (!(type instanceof ParameterizedType)) {
                 continue;
             }
             ParameterizedType interfaceType = (ParameterizedType) type;
@@ -117,14 +126,18 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <B extends Binding> SCAObject build(CompositeComponent parent, BoundServiceDefinition<B> boundServiceDefinition, DeploymentContext deploymentContext) {
+    public <B extends Binding> SCAObject build(CompositeComponent parent,
+                                               BoundServiceDefinition<B> boundServiceDefinition,
+                                               DeploymentContext deploymentContext) {
         Class<B> bindingClass = (Class<B>) boundServiceDefinition.getBinding().getClass();
         BindingBuilder<B> bindingBuilder = (BindingBuilder<B>) bindingBuilders.get(bindingClass);
         return bindingBuilder.build(parent, boundServiceDefinition, deploymentContext);
     }
 
     @SuppressWarnings("unchecked")
-    public <B extends Binding> SCAObject build(CompositeComponent parent, BoundReferenceDefinition<B> boundReferenceDefinition, DeploymentContext deploymentContext) {
+    public <B extends Binding> SCAObject build(CompositeComponent parent,
+                                               BoundReferenceDefinition<B> boundReferenceDefinition,
+                                               DeploymentContext deploymentContext) {
         Class<B> bindingClass = (Class<B>) boundReferenceDefinition.getBinding().getClass();
         BindingBuilder<B> bindingBuilder = (BindingBuilder<B>) bindingBuilders.get(bindingClass);
         return bindingBuilder.build(parent, boundReferenceDefinition, deploymentContext);

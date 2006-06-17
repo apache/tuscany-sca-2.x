@@ -20,7 +20,7 @@ import org.osoa.sca.annotations.Destroy;
 
 public class SessionScopeInitDestroyComponent extends SessionScopeInitOnlyComponent {
 
-    boolean destroyed = false;
+    private boolean destroyed;
 
     public boolean isDestroyed() {
         return destroyed;

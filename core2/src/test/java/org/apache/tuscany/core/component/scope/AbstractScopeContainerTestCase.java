@@ -1,5 +1,6 @@
 package org.apache.tuscany.core.component.scope;
 
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
@@ -7,7 +8,6 @@ import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.event.TrueFilter;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.core.component.WorkContextImpl;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
@@ -16,13 +16,14 @@ import org.jmock.MockObjectTestCase;
  */
 public class AbstractScopeContainerTestCase extends MockObjectTestCase {
 
-    public void testSetWorkContext(){
+    public void testSetWorkContext() {
         TestContainer container = new TestContainer("foo");
         WorkContext ctx = new WorkContextImpl();
         container.setWorkContext(ctx);
-        assertEquals(ctx,container.getWorkContext());
+        assertEquals(ctx, container.getWorkContext());
 
     }
+
     public void testFireListener() {
         TestContainer container = new TestContainer("foo");
         Mock mock = mock(RuntimeEventListener.class);
@@ -75,11 +76,10 @@ public class AbstractScopeContainerTestCase extends MockObjectTestCase {
     }
 
 
-
     private class TestContainer extends AbstractScopeContainer {
 
         public TestContainer(String name) {
-            super(name,null);
+            super(name, null);
         }
 
         protected InstanceWrapper getInstanceWrapper(AtomicComponent component) {
@@ -98,7 +98,7 @@ public class AbstractScopeContainerTestCase extends MockObjectTestCase {
 
         }
 
-        public WorkContext getWorkContext(){
+        public WorkContext getWorkContext() {
             return super.getWorkContext();
         }
     }

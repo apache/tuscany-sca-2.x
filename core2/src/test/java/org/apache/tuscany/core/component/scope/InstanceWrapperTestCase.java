@@ -1,7 +1,7 @@
 package org.apache.tuscany.core.component.scope;
 
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.Lifecycle;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.jmock.core.Invocation;
@@ -13,7 +13,6 @@ import org.jmock.core.Stub;
 public class InstanceWrapperTestCase extends MockObjectTestCase {
 
 
-
     public void testExceptionInit() throws Exception {
         AtomicComponent component = getComponent();
         InstanceWrapper wrapper = new InstanceWrapperImpl(component, new Object());
@@ -23,7 +22,7 @@ public class InstanceWrapperTestCase extends MockObjectTestCase {
         } catch (SomeException e) {
             // expected
         }
-        assertEquals(Lifecycle.ERROR,wrapper.getLifecycleState());
+        assertEquals(Lifecycle.ERROR, wrapper.getLifecycleState());
     }
 
     public void testNonStart() throws Exception {
@@ -50,7 +49,7 @@ public class InstanceWrapperTestCase extends MockObjectTestCase {
                 return stringBuffer.append("bad init");
             }
         });
-       return (AtomicComponent) mock.proxy();
+        return (AtomicComponent) mock.proxy();
     }
 
     private class SomeException extends RuntimeException {

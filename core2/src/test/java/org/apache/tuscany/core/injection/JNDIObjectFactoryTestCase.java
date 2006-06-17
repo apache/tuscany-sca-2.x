@@ -6,8 +6,6 @@ import javax.naming.NamingException;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
-import org.jmock.core.Invocation;
-import org.jmock.core.Stub;
 
 /**
  * @version $Rev$ $Date$

@@ -27,14 +27,14 @@ import org.osoa.sca.annotations.Remotable;
 @Remotable
 public interface RemotableService {
 
-    public void syncOneWay(String msg);
+    void syncOneWay(String msg);
 
-    public String syncTwoWay(String msg);
+    String syncTwoWay(String msg);
 
-    public DataObject syncTwoWayCustomType(DataObject val);
+    DataObject syncTwoWayCustomType(DataObject val);
 
-    public String getString();
+    String getString();
 
-    public void setString(String string);
+    void setString(String string);
 
 }

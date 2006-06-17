@@ -33,7 +33,8 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
  * @version $Rev$ $Date$
  */
 public class SystemBindingLoader extends LoaderExtension<SystemBinding> {
-    public static final QName SYSTEM_BINDING = new QName("http://tuscany.apache.org/xmlns/system/0.9", "binding.system");
+    public static final QName SYSTEM_BINDING =
+        new QName("http://tuscany.apache.org/xmlns/system/0.9", "binding.system");
 
     public SystemBindingLoader() {
     }
@@ -46,7 +47,8 @@ public class SystemBindingLoader extends LoaderExtension<SystemBinding> {
         return SYSTEM_BINDING;
     }
 
-    public SystemBinding load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public SystemBinding load(XMLStreamReader reader, DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException {
         StAXUtil.skipToEndElement(reader);
         return new SystemBinding();
     }

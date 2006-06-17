@@ -39,7 +39,7 @@ public class MediationTestCase extends TestCase {
 
     public interface Hello {
 
-        public String hello(String message) throws Exception;
+        String hello(String message) throws Exception;
 
     }
 }

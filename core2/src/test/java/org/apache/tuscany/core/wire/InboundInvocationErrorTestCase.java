@@ -31,8 +31,10 @@ public class InboundInvocationErrorTestCase extends TestCase {
     }
 
     public void setUp() throws Exception {
-        checkedMethod = InboundInvocationErrorTestCase.TestBean.class.getDeclaredMethod("checkedException", (Class[]) null);
-        runtimeMethod = InboundInvocationErrorTestCase.TestBean.class.getDeclaredMethod("runtimeException", (Class[]) null);
+        checkedMethod =
+            InboundInvocationErrorTestCase.TestBean.class.getDeclaredMethod("checkedException", (Class[]) null);
+        runtimeMethod =
+            InboundInvocationErrorTestCase.TestBean.class.getDeclaredMethod("runtimeException", (Class[]) null);
         assertNotNull(checkedMethod);
         assertNotNull(runtimeMethod);
     }
@@ -42,7 +44,8 @@ public class InboundInvocationErrorTestCase extends TestCase {
         chains.put(checkedMethod, createChain(checkedMethod));
         JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
         try {
-            InboundInvocationErrorTestCase.TestBean proxy = (InboundInvocationErrorTestCase.TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+            InboundInvocationErrorTestCase.TestBean proxy = (InboundInvocationErrorTestCase.TestBean) Proxy
+                .newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{InboundInvocationErrorTestCase.TestBean.class}, handler);
             proxy.checkedException();
         } catch (InboundInvocationErrorTestCase.TestException e) {
@@ -56,7 +59,8 @@ public class InboundInvocationErrorTestCase extends TestCase {
         chains.put(runtimeMethod, createChain(runtimeMethod));
         JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
         try {
-            InboundInvocationErrorTestCase.TestBean proxy = (InboundInvocationErrorTestCase.TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+            InboundInvocationErrorTestCase.TestBean proxy = (InboundInvocationErrorTestCase.TestBean) Proxy
+                .newProxyInstance(Thread.currentThread().getContextClassLoader(),
                     new Class[]{InboundInvocationErrorTestCase.TestBean.class}, handler);
             proxy.runtimeException();
         } catch (InboundInvocationErrorTestCase.TestRuntimeException e) {
@@ -78,9 +82,9 @@ public class InboundInvocationErrorTestCase extends TestCase {
 
     public interface TestBean {
 
-        public void checkedException() throws InboundInvocationErrorTestCase.TestException;
+        void checkedException() throws InboundInvocationErrorTestCase.TestException;
 
-        public void runtimeException() throws InboundInvocationErrorTestCase.TestRuntimeException;
+        void runtimeException() throws InboundInvocationErrorTestCase.TestRuntimeException;
 
     }
 

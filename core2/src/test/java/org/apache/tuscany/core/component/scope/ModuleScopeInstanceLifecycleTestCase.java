@@ -28,23 +28,31 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
         ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
         scope.start();
 
-        SystemAtomicComponent initDestroyContext = MockContextFactory.createSystemAtomicContext("InitDestroy", scope, ModuleScopeInitDestroyComponent.class);
+        SystemAtomicComponent initDestroyContext = MockContextFactory.createSystemAtomicContext("InitDestroy",
+            scope,
+            ModuleScopeInitDestroyComponent.class);
         initDestroyContext.start();
 
-        SystemAtomicComponent initOnlyContext = MockContextFactory.createSystemAtomicContext("InitOnly", scope, ModuleScopeInitOnlyComponent.class);
+        SystemAtomicComponent initOnlyContext = MockContextFactory.createSystemAtomicContext("InitOnly",
+            scope,
+            ModuleScopeInitOnlyComponent.class);
         initOnlyContext.start();
 
-        SystemAtomicComponent destroyOnlyContext = MockContextFactory.createSystemAtomicContext("DestroyOnly", scope, ModuleScopeDestroyOnlyComponent.class);
+        SystemAtomicComponent destroyOnlyContext = MockContextFactory.createSystemAtomicContext("DestroyOnly",
+            scope,
+            ModuleScopeDestroyOnlyComponent.class);
         destroyOnlyContext.start();
 
         scope.onEvent(new CompositeStart(this, null));
-        ModuleScopeInitDestroyComponent initDestroy = (ModuleScopeInitDestroyComponent) scope.getInstance(initDestroyContext);
+        ModuleScopeInitDestroyComponent initDestroy =
+            (ModuleScopeInitDestroyComponent) scope.getInstance(initDestroyContext);
         Assert.assertNotNull(initDestroy);
 
         ModuleScopeInitOnlyComponent initOnly = (ModuleScopeInitOnlyComponent) scope.getInstance(initOnlyContext);
         Assert.assertNotNull(initOnly);
 
-        ModuleScopeDestroyOnlyComponent destroyOnly = (ModuleScopeDestroyOnlyComponent) scope.getInstance(destroyOnlyContext);
+        ModuleScopeDestroyOnlyComponent destroyOnly =
+            (ModuleScopeDestroyOnlyComponent) scope.getInstance(destroyOnlyContext);
         Assert.assertNotNull(destroyOnly);
 
         Assert.assertTrue(initDestroy.isInitialized());
@@ -66,11 +74,17 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
         ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
         scope.start();
 
-        SystemAtomicComponent oneCtx = MockContextFactory.createSystemAtomicContext("one", scope, OrderedInitPojoImpl.class);
+        SystemAtomicComponent oneCtx = MockContextFactory.createSystemAtomicContext("one",
+            scope,
+            OrderedInitPojoImpl.class);
         scope.register(oneCtx);
-        SystemAtomicComponent twoCtx = MockContextFactory.createSystemAtomicContext("two", scope, OrderedInitPojoImpl.class);
+        SystemAtomicComponent twoCtx = MockContextFactory.createSystemAtomicContext("two",
+            scope,
+            OrderedInitPojoImpl.class);
         scope.register(twoCtx);
-        SystemAtomicComponent threeCtx = MockContextFactory.createSystemAtomicContext("three", scope, OrderedInitPojoImpl.class);
+        SystemAtomicComponent threeCtx = MockContextFactory.createSystemAtomicContext("three",
+            scope,
+            OrderedInitPojoImpl.class);
         scope.register(threeCtx);
 
         scope.onEvent(new CompositeStart(this, null));
@@ -100,11 +114,17 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
         ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
         scope.start();
 
-        SystemAtomicComponent oneCtx = MockContextFactory.createSystemAtomicContext("one", scope, OrderedEagerInitPojo.class);
+        SystemAtomicComponent oneCtx = MockContextFactory.createSystemAtomicContext("one",
+            scope,
+            OrderedEagerInitPojo.class);
         scope.register(oneCtx);
-        SystemAtomicComponent twoCtx = MockContextFactory.createSystemAtomicContext("two", scope, OrderedEagerInitPojo.class);
+        SystemAtomicComponent twoCtx = MockContextFactory.createSystemAtomicContext("two",
+            scope,
+            OrderedEagerInitPojo.class);
         scope.register(twoCtx);
-        SystemAtomicComponent threeCtx = MockContextFactory.createSystemAtomicContext("three", scope, OrderedEagerInitPojo.class);
+        SystemAtomicComponent threeCtx = MockContextFactory.createSystemAtomicContext("three",
+            scope,
+            OrderedEagerInitPojo.class);
         scope.register(threeCtx);
 
         scope.onEvent(new CompositeStart(this, null));

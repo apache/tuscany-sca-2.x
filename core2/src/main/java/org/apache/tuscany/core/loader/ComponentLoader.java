@@ -67,7 +67,9 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         return AssemblyConstants.COMPONENT;
     }
 
-    public ComponentDefinition<?> load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ComponentDefinition<?> load(XMLStreamReader reader,
+                                       DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException {
         assert AssemblyConstants.COMPONENT.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         reader.nextTag();
@@ -104,7 +106,9 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         }
     }
 
-    protected void loadProperty(XMLStreamReader reader, DeploymentContext deploymentContext, ComponentDefinition<?> componentDefinition) throws XMLStreamException, LoaderException {
+    protected void loadProperty(XMLStreamReader reader, DeploymentContext deploymentContext,
+                                ComponentDefinition<?> componentDefinition)
+        throws XMLStreamException, LoaderException {
         String name = reader.getAttributeValue(null, "name");
         Implementation<?> implementation = componentDefinition.getImplementation();
         ComponentType<?, ?, ?> componentType = implementation.getComponentType();
@@ -117,13 +121,18 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         componentDefinition.add(createPropertyValue(reader, property, name));
     }
 
-    private <T> PropertyValue<T> createPropertyValue(XMLStreamReader reader, Property<T> property, String name) throws XMLStreamException, LoaderException {
+    private <T> PropertyValue<T> createPropertyValue(XMLStreamReader reader,
+                                                     Property<T> property,
+                                                     String name) throws XMLStreamException, LoaderException {
         // todo allow property to specify the factory to use
         ObjectFactory<T> factory = defaultPropertyFactory.createObjectFactory(reader, property);
         return new PropertyValue<T>(name, factory);
     }
 
-    protected void loadReference(XMLStreamReader reader, DeploymentContext deploymentContext, ComponentDefinition<?> componentDefinition) throws XMLStreamException, LoaderException {
+    protected void loadReference(XMLStreamReader reader,
+                                 DeploymentContext deploymentContext,
+                                 ComponentDefinition<?> componentDefinition)
+        throws XMLStreamException, LoaderException {
         String name = reader.getAttributeValue(null, "name");
         String target = reader.getAttributeValue(null, "target");
         ReferenceTarget referenceTarget = new ReferenceTarget();
@@ -139,7 +148,8 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
     }
 
 /*
-    protected StAXPropertyFactory<?> getPropertyFactory(String factoryName, ResourceLoader resourceLoader) throws InvalidPropertyFactoryException {
+    protected StAXPropertyFactory<?> getPropertyFactory(String factoryName,
+        ResourceLoader resourceLoader) throws InvalidPropertyFactoryException {
         Class<?> impl;
         try {
             // try to load factory from application classloader

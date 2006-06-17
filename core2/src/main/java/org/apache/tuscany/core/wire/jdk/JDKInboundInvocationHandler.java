@@ -16,8 +16,8 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
- * Receives a request from a proxy and performs an invocation on an {@link org.apache.tuscany.spi.wire.InboundWire}
- * via an {@link InboundInvocationChain}
+ * Receives a request from a proxy and performs an invocation on an {@link org.apache.tuscany.spi.wire.InboundWire} via
+ * an {@link InboundInvocationChain}
  *
  * @version $Rev$ $Date$
  */
@@ -118,8 +118,8 @@ public class JDKInboundInvocationHandler implements WireInvocationHandler, Invoc
     }
 
     /**
-     * A holder used to associate an wire chain with a local copy of a target invoker that was previously
-     * cloned from the chain master
+     * A holder used to associate an wire chain with a local copy of a target invoker that was previously cloned from
+     * the chain master
      */
     private class ChainHolder {
 

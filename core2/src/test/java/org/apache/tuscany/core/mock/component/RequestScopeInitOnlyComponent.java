@@ -6,7 +6,7 @@ import org.osoa.sca.annotations.Scope;
 @Scope("REQUEST")
 public class RequestScopeInitOnlyComponent extends SessionScopeComponentImpl {
 
-    boolean initialized = false;
+    private boolean initialized;
 
     public boolean isInitialized() {
         return initialized;

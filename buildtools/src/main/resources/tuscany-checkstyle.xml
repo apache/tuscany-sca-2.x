@@ -28,9 +28,12 @@ lengths, if/try depths, etc...
 -->
 
 <module name="Checker">
+
+	
     <property name="severity"
              value="${checkstyle.severity}"
              default="warning"/>
+
 
     <!-- Checks whether files end with a new line.                        -->
     <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
@@ -88,10 +91,10 @@ lengths, if/try depths, etc...
         <!-- defaults to sun.* packages -->
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
-        <module name="ImportOrder">
-            <property name="groups" value="java,javax,org.w3c,org.xml,w3c"/>
+        <!--<module name="ImportOrder">
+            <property name="groups" value="java,javax,org.w3c,org.xml,w3c,org.osoa"/>
             <property name="ordered" value="true"/>
-        </module>
+        </module>-->
         <!--
         <module name="ImportControl">
             <property name="file" value="etc/import-control.xml"/>
@@ -116,7 +119,7 @@ lengths, if/try depths, etc...
             <property name="countEmpty" value="false"/>
         </module>
         <module name="ParameterNumber">
-            <property name="max" value="7"/>
+            <property name="max" value="15"/>
         </module>
 
         <!-- Checks for whitespace                               -->
@@ -179,7 +182,7 @@ lengths, if/try depths, etc...
         <!--<module name="IllegalTokenText"/>-->
         <!--<module name="InnerAssignment"/>-->
         <!--<module name="MagicNumber"/>-->
-        <module name="MissingSwitchDefault"/>
+        <!--<module name="MissingSwitchDefault"/>-->
         <module name="ModifiedControlVariable"/>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
@@ -224,7 +227,7 @@ lengths, if/try depths, etc...
         <module name="FinalClass"/>
         <module name="HideUtilityClassConstructor"/>
         <module name="InterfaceIsType"/>
-        <module name="MutableException"/>
+        <!--<module name="MutableException"/>-->
         <module name="ThrowsCount">
             <property name="max" value="5"/>
         </module>

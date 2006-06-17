@@ -99,7 +99,7 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
     public boolean isOptimizable() {
         for (OutboundInvocationChain chain : invocationChains.values()) {
             if (chain.getHeadInterceptor() != null || !chain.getRequestHandlers().isEmpty()
-                    || !chain.getResponseHandlers().isEmpty()) {
+                || !chain.getResponseHandlers().isEmpty()) {
                 Interceptor current = chain.getHeadInterceptor();
                 while (current != null && current != chain.getTargetInterceptor()) {
                     if (!current.isOptimizable()) {

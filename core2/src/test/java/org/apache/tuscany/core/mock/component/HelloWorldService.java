@@ -6,6 +6,6 @@ package org.apache.tuscany.core.mock.component;
 public interface HelloWorldService {
     String hello(String name);
 
-    public int count();
+    int count();
 
 }

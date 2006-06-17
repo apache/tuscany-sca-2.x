@@ -27,25 +27,34 @@ public class HttpSessionScopeInstanceLifecycleTestCase extends TestCase {
         HttpSessionScopeContainer scope = new HttpSessionScopeContainer(ctx);
         scope.start();
 
-        SystemAtomicComponent initDestroyContext = MockContextFactory.createSystemAtomicContext("InitDestroy", scope, RequestScopeInitDestroyComponent.class);
+        SystemAtomicComponent initDestroyContext = MockContextFactory.createSystemAtomicContext("InitDestroy",
+            scope,
+            RequestScopeInitDestroyComponent.class);
         initDestroyContext.start();
 
-        SystemAtomicComponent initOnlyContext = MockContextFactory.createSystemAtomicContext("InitOnly", scope, RequestScopeInitOnlyComponent.class);
+        SystemAtomicComponent initOnlyContext = MockContextFactory.createSystemAtomicContext("InitOnly",
+            scope,
+            RequestScopeInitOnlyComponent.class);
         initOnlyContext.start();
 
-        SystemAtomicComponent destroyOnlyContext = MockContextFactory.createSystemAtomicContext("DestroyOnly", scope, RequestScopeDestroyOnlyComponent.class);
+        SystemAtomicComponent destroyOnlyContext = MockContextFactory.createSystemAtomicContext("DestroyOnly",
+            scope,
+            RequestScopeDestroyOnlyComponent.class);
         destroyOnlyContext.start();
 
         Object session = new Object();
         ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session);
         scope.onEvent(new HttpSessionStart(this, session));
-        RequestScopeInitDestroyComponent initDestroy = (RequestScopeInitDestroyComponent) scope.getInstance(initDestroyContext);
+        RequestScopeInitDestroyComponent initDestroy =
+            (RequestScopeInitDestroyComponent) scope.getInstance(initDestroyContext);
         Assert.assertNotNull(initDestroy);
 
-        RequestScopeInitOnlyComponent initOnly = (RequestScopeInitOnlyComponent) scope.getInstance(initOnlyContext);
+        RequestScopeInitOnlyComponent initOnly =
+            (RequestScopeInitOnlyComponent) scope.getInstance(initOnlyContext);
         Assert.assertNotNull(initOnly);
 
-        RequestScopeDestroyOnlyComponent destroyOnly = (RequestScopeDestroyOnlyComponent) scope.getInstance(destroyOnlyContext);
+        RequestScopeDestroyOnlyComponent destroyOnly =
+            (RequestScopeDestroyOnlyComponent) scope.getInstance(destroyOnlyContext);
         Assert.assertNotNull(destroyOnly);
 
         Assert.assertTrue(initDestroy.isInitialized());
@@ -67,11 +76,14 @@ public class HttpSessionScopeInstanceLifecycleTestCase extends TestCase {
         HttpSessionScopeContainer scope = new HttpSessionScopeContainer(ctx);
         scope.start();
 
-        SystemAtomicComponent oneCtx = MockContextFactory.createSystemAtomicContext("one", scope, OrderedInitPojoImpl.class);
+        SystemAtomicComponent oneCtx =
+            MockContextFactory.createSystemAtomicContext("one", scope, OrderedInitPojoImpl.class);
         scope.register(oneCtx);
-        SystemAtomicComponent twoCtx = MockContextFactory.createSystemAtomicContext("two", scope, OrderedInitPojoImpl.class);
+        SystemAtomicComponent twoCtx =
+            MockContextFactory.createSystemAtomicContext("two", scope, OrderedInitPojoImpl.class);
         scope.register(twoCtx);
-        SystemAtomicComponent threeCtx = MockContextFactory.createSystemAtomicContext("three", scope, OrderedInitPojoImpl.class);
+        SystemAtomicComponent threeCtx =
+            MockContextFactory.createSystemAtomicContext("three", scope, OrderedInitPojoImpl.class);
         scope.register(threeCtx);
 
         Object session = new Object();
@@ -103,11 +115,14 @@ public class HttpSessionScopeInstanceLifecycleTestCase extends TestCase {
         HttpSessionScopeContainer scope = new HttpSessionScopeContainer(ctx);
         scope.start();
 
-        SystemAtomicComponent oneCtx = MockContextFactory.createSystemAtomicContext("one", scope, OrderedEagerInitPojo.class);
+        SystemAtomicComponent oneCtx =
+            MockContextFactory.createSystemAtomicContext("one", scope, OrderedEagerInitPojo.class);
         scope.register(oneCtx);
-        SystemAtomicComponent twoCtx = MockContextFactory.createSystemAtomicContext("two", scope, OrderedEagerInitPojo.class);
+        SystemAtomicComponent twoCtx =
+            MockContextFactory.createSystemAtomicContext("two", scope, OrderedEagerInitPojo.class);
         scope.register(twoCtx);
-        SystemAtomicComponent threeCtx = MockContextFactory.createSystemAtomicContext("three", scope, OrderedEagerInitPojo.class);
+        SystemAtomicComponent threeCtx =
+            MockContextFactory.createSystemAtomicContext("three", scope, OrderedEagerInitPojo.class);
         scope.register(threeCtx);
 
         Object session = new Object();

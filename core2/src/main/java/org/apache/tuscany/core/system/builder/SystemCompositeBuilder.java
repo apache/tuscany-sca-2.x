@@ -58,17 +58,22 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
         this.builderRegistry = builderRegistry;
     }
 
-    public Component<?> build(CompositeComponent<?> parent, ComponentDefinition<SystemCompositeImplementation> componentDefinition, DeploymentContext deploymentContext) throws BuilderConfigException {
+    public Component<?> build(CompositeComponent<?> parent,
+                              ComponentDefinition<SystemCompositeImplementation> componentDefinition,
+                              DeploymentContext deploymentContext) throws BuilderConfigException {
         SystemCompositeImplementation impl = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = impl.getComponentType();
-        SystemCompositeComponent<?> context = new SystemCompositeComponentImpl(componentDefinition.getName(), parent, getAutowireContext(parent));
+        SystemCompositeComponent<?> context =
+            new SystemCompositeComponentImpl(componentDefinition.getName(), parent, getAutowireContext(parent));
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             if (serviceDefinition instanceof BoundServiceDefinition) {
-                context.register(builderRegistry.build(context, (BoundServiceDefinition<? extends Binding>) serviceDefinition, deploymentContext));
+                context.register(builderRegistry.build(context,
+                    (BoundServiceDefinition<? extends Binding>) serviceDefinition,
+                    deploymentContext));
             }
         }
-        for (ComponentDefinition<? extends Implementation> childComponentDefinition : componentType.getComponents().values())
-        {
+        for (ComponentDefinition<? extends Implementation> childComponentDefinition
+            : componentType.getComponents().values()) {
             context.register(builderRegistry.build(context, childComponentDefinition, deploymentContext));
         }
         return context;

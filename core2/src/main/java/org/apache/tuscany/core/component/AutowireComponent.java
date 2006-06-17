@@ -17,16 +17,16 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 
 
 /**
- * A specialization of a CompositeComponent that is able to automatically resolve references for its children
- * using service interfaces exposed by it or, recursively, any of it parents.
+ * A specialization of a CompositeComponent that is able to automatically resolve references for its children using
+ * service interfaces exposed by it or, recursively, any of it parents.
  *
  * @version $Rev$ $Date$
  */
 public interface AutowireComponent<S> extends CompositeComponent<S> {
 
     /**
-     * Invoked by child components to return an an autowire target. Resolved targets may be services or
-     * components in the parent or its ancestors, or references in a sibling component
+     * Invoked by child components to return an an autowire target. Resolved targets may be services or components in
+     * the parent or its ancestors, or references in a sibling component
      *
      * @param instanceInterface the type of service being requested
      * @return a reference to the requested service or null if none can be found
@@ -35,10 +35,10 @@ public interface AutowireComponent<S> extends CompositeComponent<S> {
     <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException;
 
     /**
-     * Invoked by a parent component to return an autowire target in a child. Resolved targets must be
-     * services. For example, given a parent P and two siblings, A and B, A would request an autowire by
-     * invoking {@link #resolveInstance(Class<T>)} on P, which in turn could invoke the present method on B in
-     * order to resolve a target.
+     * Invoked by a parent component to return an autowire target in a child. Resolved targets must be services. For
+     * example, given a parent P and two siblings, A and B, A would request an autowire by invoking {@link
+     * #resolveInstance(Class<T>)} on P, which in turn could invoke the present method on B in order to resolve a
+     * target.
      *
      * @param instanceInterface the type of service being requested
      * @return a reference to the requested service or null if none can be found

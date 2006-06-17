@@ -24,7 +24,8 @@ public class AsyncInterceptorTestCase extends MockObjectTestCase {
 
     @SuppressWarnings("unchecked")
     public void testInvocation() throws Exception {
-        AsyncInterceptor asyncInterceptor = new AsyncInterceptor(workManager, new NullMonitorFactory().getMonitor(AsyncMonitor.class));
+        AsyncInterceptor asyncInterceptor =
+            new AsyncInterceptor(workManager, new NullMonitorFactory().getMonitor(AsyncMonitor.class));
         Message msg = new MessageImpl();
         msg.setBody("foo");
         final CountDownLatch startSignal = new CountDownLatch(1);

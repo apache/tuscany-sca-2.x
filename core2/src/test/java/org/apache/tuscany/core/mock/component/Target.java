@@ -20,8 +20,8 @@ package org.apache.tuscany.core.mock.component;
  */
 public interface Target {
 
-    public String getString();
+    String getString();
 
-    public void setString(String val);
+    void setString(String val);
 }
 

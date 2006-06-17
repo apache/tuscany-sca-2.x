@@ -42,8 +42,8 @@ public class MessageChannelImpl implements MessageChannel {
     }
 
     /**
-     * Send a message down the channel. The message will be processed by all handlers in order until one
-     * returns false to indicate processing is complete or all handlers have been called.
+     * Send a message down the channel. The message will be processed by all handlers in order until one returns false
+     * to indicate processing is complete or all handlers have been called.
      *
      * @param msg a Message to send down the channel
      */

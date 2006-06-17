@@ -19,11 +19,10 @@ package org.apache.tuscany.core.mock.component;
 public class HelloWorldClient implements HelloWorldService {
 
     private int count;
+    private HelloWorldService service;
 
     public HelloWorldClient() {
     }
-
-    private HelloWorldService service;
 
     public void setHelloWorldService(HelloWorldService service) {
         this.service = service;

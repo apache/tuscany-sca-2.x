@@ -19,9 +19,9 @@ import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * Serves as a tail interceptor on a target wire chain. This implementation dispatches to the target invoker
- * passed inside the wire message. Target invokers are passed from the source in order to allow for caching of
- * target instances.
+ * Serves as a tail interceptor on a target wire chain. This implementation dispatches to the target invoker passed
+ * inside the wire message. Target invokers are passed from the source in order to allow for caching of target
+ * instances.
  *
  * @version $Rev$ $Date$
  * @see org.apache.tuscany.spi.wire.TargetInvoker

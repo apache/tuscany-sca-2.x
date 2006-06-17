@@ -61,13 +61,16 @@ public class ConnectorImpl implements Connector {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> void connect(OutboundWire<T> sourceWire, CompositeComponent<?> parent, Scope sourceScope) throws BuilderConfigException {
-        assert(sourceScope != null): "Source scope was null";
-        assert(sourceWire.getTargetName() != null): "WireDefinition target name was null";
+    public <T> void connect(OutboundWire<T> sourceWire,
+                            CompositeComponent<?> parent,
+                            Scope sourceScope) throws BuilderConfigException {
+        assert sourceScope != null : "Source scope was null";
+        assert sourceWire.getTargetName() != null : "WireDefinition target name was null";
         QualifiedName targetName = sourceWire.getTargetName();
         SCAObject<?> target = parent.getChild(targetName.getPartName());
         if (target == null) {
-            BuilderConfigException e = new BuilderConfigException("Target not found for reference" + sourceWire.getReferenceName());
+            BuilderConfigException e = new BuilderConfigException("Target not found for reference"
+                + sourceWire.getReferenceName());
             e.setIdentifier(targetName.getQualifiedName());
             throw e;
         }
@@ -76,7 +79,8 @@ public class ConnectorImpl implements Connector {
             AtomicComponent<?> targetComponent = (AtomicComponent<?>) target;
             InboundWire<T> targetWire = targetComponent.getInboundWire(targetName.getPortName());
             if (targetWire == null) {
-                BuilderConfigException e = new BuilderConfigException("Target service not found for reference " + sourceWire.getReferenceName());
+                BuilderConfigException e = new BuilderConfigException("Target service not found for reference "
+                    + sourceWire.getReferenceName());
                 e.setIdentifier(targetName.getPortName());
                 throw e;
             }
@@ -86,18 +90,21 @@ public class ConnectorImpl implements Connector {
             connect(sourceWire, targetWire, target, isOptimizable(sourceScope, target.getScope()));
         } else if (target instanceof Reference) {
             InboundWire<T> targetWire = ((Reference) target).getInboundWire();
-            assert(targetWire != null);
+            assert targetWire != null;
             if (!sourceWire.getBusinessInterface().isAssignableFrom(targetWire.getBusinessInterface())) {
                 throw new BuilderConfigException("Incompatible source and target interfaces");
             }
             connect(sourceWire, targetWire, target, isOptimizable(sourceScope, target.getScope()));
         } else {
-            BuilderConfigException e = new BuilderConfigException("Invalid wire target type for reference " + sourceWire.getReferenceName());
+            BuilderConfigException e = new BuilderConfigException("Invalid wire target type for reference "
+                + sourceWire.getReferenceName());
             e.setIdentifier(targetName.getQualifiedName());
         }
     }
 
-    public <T> void connect(InboundWire<T> sourceWire, OutboundWire<T> targetWire, boolean optimizable) throws BuilderConfigException {
+    public <T> void connect(InboundWire<T> sourceWire,
+                            OutboundWire<T> targetWire,
+                            boolean optimizable) throws BuilderConfigException {
         Map<Method, OutboundInvocationChain> targetChains = targetWire.getInvocationChains();
         // perform optimization, if possible
         if (optimizable && sourceWire.getInvocationChains().isEmpty() && targetChains.isEmpty()) {
@@ -117,7 +124,10 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    public <T> void connect(OutboundWire<T> sourceWire, InboundWire<T> targetWire, SCAObject<?> context, boolean optimizable) {
+    public <T> void connect(OutboundWire<T> sourceWire,
+                            InboundWire<T> targetWire,
+                            SCAObject<?> context,
+                            boolean optimizable) {
         Map<Method, InboundInvocationChain> targetChains = targetWire.getInvocationChains();
         // perform optimization, if possible
         if (optimizable && sourceWire.getInvocationChains().isEmpty() && targetChains.isEmpty()) {
@@ -128,19 +138,28 @@ public class ConnectorImpl implements Connector {
             // match wire chains
             InboundInvocationChain inboundChain = targetChains.get(outboundChain.getMethod());
             if (inboundChain == null) {
-                BuilderConfigException e = new BuilderConfigException("Incompatible sourceWire and target chain interfaces for reference");
+                BuilderConfigException e =
+                    new BuilderConfigException("Incompatible source and target chain interfaces for reference");
                 e.setIdentifier(sourceWire.getReferenceName());
                 throw e;
             }
             if (context instanceof Component) {
-                connect(outboundChain, inboundChain, ((Component) context).createTargetInvoker(targetWire.getServiceName(), inboundChain.getMethod()));
+                connect(outboundChain,
+                    inboundChain,
+                    ((Component) context).createTargetInvoker(targetWire.getServiceName(),
+                        inboundChain.getMethod()));
             } else if (context instanceof Reference) {
-                connect(outboundChain, inboundChain, ((Reference) context).createTargetInvoker(targetWire.getServiceName(), inboundChain.getMethod()));
+                Reference reference = (Reference) context;
+                TargetInvoker invoker = reference.createTargetInvoker(targetWire.getServiceName(),
+                    inboundChain.getMethod());
+                connect(outboundChain, inboundChain, invoker);
             }
         }
     }
 
-    public void connect(OutboundInvocationChain sourceChain, InboundInvocationChain targetChain, TargetInvoker invoker) {
+    public void connect(OutboundInvocationChain sourceChain,
+                        InboundInvocationChain targetChain,
+                        TargetInvoker invoker) {
         // if handlers are configured, add them
         if (targetChain.getRequestHandlers() != null || targetChain.getResponseHandlers() != null) {
             if (targetChain.getRequestHandlers() == null) {
@@ -167,7 +186,7 @@ public class ConnectorImpl implements Connector {
                 throw e;
             }
             if (!(sourceChain.getTailInterceptor() instanceof InvokerInterceptor && targetChain
-                    .getHeadInterceptor() instanceof InvokerInterceptor)) {
+                .getHeadInterceptor() instanceof InvokerInterceptor)) {
                 // check that we do not have the case where the only interceptors are invokers since we just need one
                 sourceChain.setTargetInterceptor(targetChain.getHeadInterceptor());
             }
@@ -205,7 +224,9 @@ public class ConnectorImpl implements Connector {
         } else if (pReferrer == Scope.COMPOSITE && pReferee == Scope.MODULE) {
             // case where a service context points to a module scoped component
             return true;
-        } else return pReferrer == Scope.MODULE && pReferee == Scope.COMPOSITE;
+        } else {
+            return pReferrer == Scope.MODULE && pReferee == Scope.COMPOSITE;
+        }
     }
 
 }

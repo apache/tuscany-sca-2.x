@@ -21,8 +21,8 @@ import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
 /**
- * Verifies connection strategies between {@link org.apache.tuscany.spi.wire.OutboundInvocationChain}s and
- * {@link org.apache.tuscany.spi.wire.InboundInvocationChain}s
+ * Verifies connection strategies between {@link org.apache.tuscany.spi.wire.OutboundInvocationChain}s and {@link
+ * org.apache.tuscany.spi.wire.InboundInvocationChain}s
  *
  * @version $$Rev$$ $$Date$$
  */

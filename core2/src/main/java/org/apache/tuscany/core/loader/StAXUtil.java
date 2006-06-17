@@ -77,8 +77,8 @@ public final class StAXUtil {
     }
 
     /**
-     * Convert a "scope" attribute to the equivalent enum value. Returns CONVERSATIONAL if the value equals
-     * (ignoring case) "conversational", otherwise returns NONCONVERSATIONAL.
+     * Convert a "scope" attribute to the equivalent enum value. Returns CONVERSATIONAL if the value equals (ignoring
+     * case) "conversational", otherwise returns NONCONVERSATIONAL.
      *
      * @param scope the attribute to convert
      * @return the enum equivalent

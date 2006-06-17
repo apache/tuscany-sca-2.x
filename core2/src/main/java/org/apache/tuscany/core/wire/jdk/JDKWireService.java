@@ -2,6 +2,9 @@ package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.Proxy;
 
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -10,8 +13,6 @@ import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 import org.apache.tuscany.spi.wire.WireService;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -19,18 +20,18 @@ import org.osoa.sca.annotations.Scope;
 @Scope("MODULE")
 public class JDKWireService implements WireService {
 
-    private PolicyBuilderRegistry policyRegistry;
+    //private PolicyBuilderRegistry policyRegistry;
 
     public JDKWireService() {
     }
 
     public JDKWireService(PolicyBuilderRegistry policyRegistry) {
-        this.policyRegistry = policyRegistry;
+        //this.policyRegistry = policyRegistry;
     }
 
     @Autowire
     public void setPolicyRegistry(PolicyBuilderRegistry policyRegistry) {
-        this.policyRegistry = policyRegistry;
+        //this.policyRegistry = policyRegistry;
     }
 
     @Init(eager = true)
@@ -39,17 +40,19 @@ public class JDKWireService implements WireService {
 
 
     public <T> T createProxy(RuntimeWire<T> wire) throws ProxyCreationException {
-        assert(wire != null): "WireDefinition was null";
+        assert wire != null : "WireDefinition was null";
         if (wire instanceof InboundWire) {
             InboundWire<T> inbound = (InboundWire<T>) wire;
             JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(inbound.getInvocationChains());
             Class<T> interfaze = inbound.getBusinessInterface();
-            return interfaze.cast(Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{interfaze}, handler));
+            return interfaze.cast(Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                new Class[]{interfaze}, handler));
         } else if (wire instanceof OutboundWire) {
             OutboundWire<T> inbound = (OutboundWire<T>) wire;
             JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(inbound.getInvocationChains());
             Class<T> interfaze = inbound.getBusinessInterface();
-            return interfaze.cast(Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{interfaze}, handler));
+            return interfaze.cast(Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                new Class[]{interfaze}, handler));
         } else {
             ProxyCreationException e = new ProxyCreationException("Invalid wire type");
             e.setIdentifier(wire.getClass().getName());
@@ -58,7 +61,7 @@ public class JDKWireService implements WireService {
     }
 
     public WireInvocationHandler createHandler(RuntimeWire<?> wire) {
-        assert(wire != null): "WireDefinition was null";
+        assert wire != null : "WireDefinition was null";
         if (wire instanceof InboundWire) {
             InboundWire<?> inbound = (InboundWire) wire;
             return new JDKInboundInvocationHandler(inbound.getInvocationChains());

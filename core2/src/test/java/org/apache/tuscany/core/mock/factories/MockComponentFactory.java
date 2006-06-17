@@ -22,7 +22,10 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class MockComponentFactory {
+public final class MockComponentFactory {
+
+    private MockComponentFactory() {
+    }
 
     /**
      * Creates a component named "source" with a reference to target/Target
@@ -44,7 +47,8 @@ public class MockComponentFactory {
         }
         impl.setComponentType(componentType);
         impl.setImplementationClass(SourceImpl.class);
-        ComponentDefinition<SystemImplementation> sourceComponentDefinition = new ComponentDefinition<SystemImplementation>(impl);
+        ComponentDefinition<SystemImplementation> sourceComponentDefinition =
+            new ComponentDefinition<SystemImplementation>(impl);
         sourceComponentDefinition.setName("source");
 
         ReferenceTarget referenceTarget = new ReferenceTarget();
@@ -80,7 +84,8 @@ public class MockComponentFactory {
         }
         impl.setComponentType(componentType);
         impl.setImplementationClass(SourceImpl.class);
-        ComponentDefinition<SystemImplementation> sourceComponentDefinition = new ComponentDefinition<SystemImplementation>(impl);
+        ComponentDefinition<SystemImplementation> sourceComponentDefinition =
+            new ComponentDefinition<SystemImplementation>(impl);
         sourceComponentDefinition.setName("source");
 
         ReferenceTarget referenceTarget = new ReferenceTarget();
@@ -105,7 +110,8 @@ public class MockComponentFactory {
         componentType.add(targetServiceDefinition);
         impl.setComponentType(componentType);
         impl.setImplementationClass(TargetImpl.class);
-        ComponentDefinition<SystemImplementation> targetComponentDefinition = new ComponentDefinition<SystemImplementation>(impl);
+        ComponentDefinition<SystemImplementation> targetComponentDefinition =
+            new ComponentDefinition<SystemImplementation>(impl);
         targetComponentDefinition.setName("target");
         return targetComponentDefinition;
     }
@@ -123,8 +129,7 @@ public class MockComponentFactory {
     }
 
     /**
-     * Creates a bound service with the name "service" that is configured to be wired to a target named
-     * "target/Target"
+     * Creates a bound service with the name "service" that is configured to be wired to a target named "target/Target"
      */
     public static BoundServiceDefinition<SystemBinding> createBoundService() {
         SystemBinding binding = new SystemBinding();

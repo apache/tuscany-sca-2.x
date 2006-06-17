@@ -102,7 +102,8 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         definition = reader.readWSDL(location.toString());
         String definitionNamespace = definition.getTargetNamespace();
         if (namespace != null && !namespace.equals(definitionNamespace)) {
-            throw new WSDLException(WSDLException.CONFIGURATION_ERROR, namespace + " != " + definition.getTargetNamespace());
+            throw new WSDLException(WSDLException.CONFIGURATION_ERROR,
+                namespace + " != " + definition.getTargetNamespace());
         }
 
         monitor.cachingDefinition(definitionNamespace, location);
@@ -149,8 +150,8 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
 
     public static interface Monitor {
         /**
-         * Monitor event emitted immediately before an attempt is made to read WSDL for the supplied namespace
-         * from the supplied location.
+         * Monitor event emitted immediately before an attempt is made to read WSDL for the supplied namespace from the
+         * supplied location.
          *
          * @param namespace the target namespace expected in the WSDL; may be null
          * @param location  the location where we will attempt to read the WSDL definition from

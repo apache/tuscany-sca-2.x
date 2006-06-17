@@ -97,6 +97,7 @@ public class StaticPojoInvokerTestCase extends TestCase {
                 return;
             }
         } catch (Throwable e) {
+            //ok
         }
         fail(TestException.class.getName() + " should have been thrown");
     }

@@ -20,6 +20,6 @@ package org.apache.tuscany.core.mock.component;
  * @version $Rev$ $Date$
  */
 public class StatelessComponentImpl extends AbstractGenericComponent implements
-        StatelessComponent {
+    StatelessComponent {
 
 }

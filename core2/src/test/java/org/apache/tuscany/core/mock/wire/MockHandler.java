@@ -11,7 +11,7 @@ import org.apache.tuscany.spi.wire.MessageHandler;
  */
 public class MockHandler implements MessageHandler {
 
-    private int count = 0;
+    private int count;
 
     public boolean processMessage(Message message) {
         //System.out.println("Invoking handler");

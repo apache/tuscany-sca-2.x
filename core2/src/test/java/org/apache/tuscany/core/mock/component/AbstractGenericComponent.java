@@ -33,19 +33,40 @@ public class AbstractGenericComponent implements GenericComponent {
 
     @ComponentName
     protected String name;
+    @Context
+    protected ModuleContext context;
+    Map testMap;
+    List testList;
+    private int[] arrayInt;
+    private float[] arrayFloat;
+    private double[] arrayDouble;
+    private long[] arrayLong;
+    private short[] arrayShort;
+    private boolean[] arrayBoolean;
+    private String[] arrayString;
+    private boolean mBoolean;
+    private short mShort;
+    private int mInt;
+    private long mLong;
+    private double mDouble;
+    private float mFloat;
+    private char mChar;
+    private String mString;
+    private Short mOShort;
+    private Integer mOInteger;
+    private Long mOLong;
+    private Float mOFloat;
+    private Double mODouble;
+    @Property(name = "genericComponent")
+    private GenericComponent mGenericComponent;
 
     public String getName() {
         return name;
     }
 
-    @Context
-    protected ModuleContext context;
-
     public ModuleContext getModuleContext() {
         return context;
     }
-
-    Map testMap;
 
     public Map getTestMap() {
         return testMap;
@@ -55,8 +76,6 @@ public class AbstractGenericComponent implements GenericComponent {
         this.testMap = testMap;
     }
 
-    List testList;
-
     public List getTestList() {
         return testList;
     }
@@ -64,8 +83,6 @@ public class AbstractGenericComponent implements GenericComponent {
     public void setTestList(List testList) {
         this.testList = testList;
     }
-
-    private int[] arrayInt;
 
     public int[] getArrayInt() {
         return arrayInt;
@@ -75,8 +92,6 @@ public class AbstractGenericComponent implements GenericComponent {
         this.arrayInt = arrayInt;
     }
 
-    private float[] arrayFloat;
-
     public float[] getArrayFloat() {
         return arrayFloat;
     }
@@ -84,8 +99,6 @@ public class AbstractGenericComponent implements GenericComponent {
     public void setArrayFloat(float[] pArrayFloat) {
         arrayFloat = pArrayFloat;
     }
-
-    private double[] arrayDouble;
 
     public double[] getArrayDouble() {
         return arrayDouble;
@@ -95,8 +108,6 @@ public class AbstractGenericComponent implements GenericComponent {
         arrayDouble = pArrayDouble;
     }
 
-    private long[] arrayLong;
-
     public long[] getArrayLong() {
         return arrayLong;
     }
@@ -104,8 +115,6 @@ public class AbstractGenericComponent implements GenericComponent {
     public void setArrayLong(long[] arrayLong) {
         this.arrayLong = arrayLong;
     }
-
-    private short[] arrayShort;
 
     public short[] getArrayShort() {
         return arrayShort;
@@ -115,8 +124,6 @@ public class AbstractGenericComponent implements GenericComponent {
         this.arrayShort = arrayShort;
     }
 
-    private boolean[] arrayBoolean;
-
     public boolean[] getArrayBoolean() {
         return arrayBoolean;
     }
@@ -124,8 +131,6 @@ public class AbstractGenericComponent implements GenericComponent {
     public void setArrayBoolean(boolean[] arrayBoolean) {
         this.arrayBoolean = arrayBoolean;
     }
-
-    private String[] arrayString;
 
     public String[] getArrayString() {
         return arrayString;
@@ -135,8 +140,6 @@ public class AbstractGenericComponent implements GenericComponent {
         this.arrayString = arrayString;
     }
 
-    private boolean mBoolean;
-
     public boolean getBoolean() {
         return mBoolean;
     }
@@ -144,8 +147,6 @@ public class AbstractGenericComponent implements GenericComponent {
     public void setBoolean(boolean pBoolean) {
         mBoolean = pBoolean;
     }
-
-    private short mShort;
 
     public short getShort() {
         return mShort;
@@ -155,8 +156,6 @@ public class AbstractGenericComponent implements GenericComponent {
         mShort = pShort;
     }
 
-    private int mInt;
-
     public int getInt() {
         return mInt;
     }
@@ -164,8 +163,6 @@ public class AbstractGenericComponent implements GenericComponent {
     public void setInt(int pInt) {
         mInt = pInt;
     }
-
-    private long mLong;
 
     public long getLong() {
         return mLong;
@@ -175,8 +172,6 @@ public class AbstractGenericComponent implements GenericComponent {
         mLong = pLong;
     }
 
-    private double mDouble;
-
     public double getDouble() {
         return mDouble;
     }
@@ -184,8 +179,6 @@ public class AbstractGenericComponent implements GenericComponent {
     public void setDouble(double pDouble) {
         mDouble = pDouble;
     }
-
-    private float mFloat;
 
     public float getFloat() {
         return mFloat;
@@ -195,8 +188,6 @@ public class AbstractGenericComponent implements GenericComponent {
         mFloat = pFloat;
     }
 
-    private char mChar;
-
     public char getChar() {
         return mChar;
     }
@@ -204,8 +195,6 @@ public class AbstractGenericComponent implements GenericComponent {
     public void setChar(char pChar) {
         mChar = pChar;
     }
-
-    private String mString;
 
     public String getString() {
         return mString;
@@ -215,8 +204,6 @@ public class AbstractGenericComponent implements GenericComponent {
         mString = pString;
     }
 
-    private Short mOShort;
-
     public Short getOShort() {
         return mOShort;
     }
@@ -224,8 +211,6 @@ public class AbstractGenericComponent implements GenericComponent {
     public void setOShort(Short pOShort) {
         mOShort = pOShort;
     }
-
-    private Integer mOInteger;
 
     public Integer getOInteger() {
         return mOInteger;
@@ -235,8 +220,6 @@ public class AbstractGenericComponent implements GenericComponent {
         mOInteger = pOInteger;
     }
 
-    private Long mOLong;
-
     public Long getOLong() {
         return mOLong;
     }
@@ -244,8 +227,6 @@ public class AbstractGenericComponent implements GenericComponent {
     public void setOLong(Long pOLong) {
         mOLong = pOLong;
     }
-
-    private Float mOFloat;
 
     public Float getOFloat() {
         return mOFloat;
@@ -255,8 +236,6 @@ public class AbstractGenericComponent implements GenericComponent {
         mOFloat = pOFloat;
     }
 
-    private Double mODouble;
-
     public Double getODouble() {
         return mODouble;
     }
@@ -264,9 +243,6 @@ public class AbstractGenericComponent implements GenericComponent {
     public void setODouble(Double pODouble) {
         mODouble = pODouble;
     }
-
-    @Property(name = "genericComponent")
-    private GenericComponent mGenericComponent;
 
     public GenericComponent getGenericComponent() {
         return mGenericComponent;

@@ -9,7 +9,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
  * @see MethodInjector
  * @see FieldInjector
  */
-public interface ContextInjector<S,T> extends Injector<T> {
+public interface ContextInjector<S, T> extends Injector<T> {
 
     void setContext(S context) throws ObjectCreationException;
 

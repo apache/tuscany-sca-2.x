@@ -20,21 +20,18 @@ package org.apache.tuscany.core.mock.component;
  * @version $Rev$ $Date$
  */
 public class BasicInterfaceImpl implements BasicInterface {
-    protected String protectedProperty;
 
     public String publicProperty;
-
+    public BasicInterface publicReference;
+    protected String protectedProperty;
+    protected BasicInterface protectedReference;
     private String privateProperty;
+    private BasicInterface privateReference;
 
     public void setPrivateProperty(String privateProperty) {
         this.privateProperty = privateProperty;
     }
 
-    protected BasicInterface protectedReference;
-
-    public BasicInterface publicReference;
-
-    private BasicInterface privateReference;
 
     public void setPrivateReference(BasicInterface privateReference) {
         this.privateReference = privateReference;

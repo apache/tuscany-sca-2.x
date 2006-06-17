@@ -14,6 +14,7 @@ import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * Verifies the scope container properly disposes resources and canbe restarted
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class HttpSessionScopeRestartTestCase extends TestCase {
@@ -22,12 +23,22 @@ public class HttpSessionScopeRestartTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         HttpSessionScopeContainer scope = new HttpSessionScopeContainer(ctx);
         scope.start();
-        MethodEventInvoker<Object> initInvoker = new MethodEventInvoker<Object>(HttpSessionScopeRestartTestCase.InitDestroyOnce.class.getMethod("init"));
-        MethodEventInvoker<Object> destroyInvoker = new MethodEventInvoker<Object>(HttpSessionScopeRestartTestCase.InitDestroyOnce.class.getMethod("destroy"));
+        MethodEventInvoker<Object> initInvoker = new MethodEventInvoker<Object>(
+            HttpSessionScopeRestartTestCase.InitDestroyOnce.class.getMethod("init"));
+        MethodEventInvoker<Object> destroyInvoker = new MethodEventInvoker<Object>(
+            HttpSessionScopeRestartTestCase.InitDestroyOnce.class.getMethod("destroy"));
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(HttpSessionScopeRestartTestCase.InitDestroyOnce.class);
-        SystemAtomicComponent context = MockContextFactory.createSystemAtomicContext("InitDestroy", scope, interfaces,
-                HttpSessionScopeRestartTestCase.InitDestroyOnce.class, false, initInvoker, destroyInvoker, null, null);
+        SystemAtomicComponent context = MockContextFactory.createSystemAtomicContext(
+            "InitDestroy",
+            scope,
+            interfaces,
+            HttpSessionScopeRestartTestCase.InitDestroyOnce.class,
+            false,
+            initInvoker,
+            destroyInvoker,
+            null,
+            null);
         context.start();
 
         Object session = new Object();

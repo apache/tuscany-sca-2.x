@@ -48,11 +48,13 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
         return AssemblyConstants.REFERENCE;
     }
 
-    public ReferenceDefinition load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ReferenceDefinition load(XMLStreamReader reader, DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException {
         assert AssemblyConstants.REFERENCE.equals(reader.getName());
         ReferenceDefinition referenceDefinition = new ReferenceDefinition();
         referenceDefinition.setName(reader.getAttributeValue(null, "name"));
-        referenceDefinition.setMultiplicity(StAXUtil.multiplicity(reader.getAttributeValue(null, "multiplicity"), Multiplicity.ONE_ONE));
+        referenceDefinition.setMultiplicity(
+            StAXUtil.multiplicity(reader.getAttributeValue(null, "multiplicity"), Multiplicity.ONE_ONE));
 
         while (true) {
             switch (reader.next()) {

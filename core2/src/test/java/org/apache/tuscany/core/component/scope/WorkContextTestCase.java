@@ -31,14 +31,14 @@ public class WorkContextTestCase extends MockObjectTestCase {
     public void testIndentifier() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         Object id = new Object();
-        ctx.setIdentifier(this,id);
-        assertEquals(id,ctx.getIdentifier(this));
+        ctx.setIdentifier(this, id);
+        assertEquals(id, ctx.getIdentifier(this));
     }
 
     public void testClearIndentifier() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         Object id = new Object();
-        ctx.setIdentifier(this,id);
+        ctx.setIdentifier(this, id);
         ctx.clearIdentifier(this);
         assertNull(ctx.getIdentifier(this));
     }
@@ -47,8 +47,8 @@ public class WorkContextTestCase extends MockObjectTestCase {
         WorkContext ctx = new WorkContextImpl();
         Object id = new Object();
         Object id2 = new Object();
-        ctx.setIdentifier(id,id);
-        ctx.setIdentifier(id2,id2);
+        ctx.setIdentifier(id, id);
+        ctx.setIdentifier(id2, id2);
         ctx.clearIdentifiers();
         assertNull(ctx.getIdentifier(id));
         assertNull(ctx.getIdentifier(id2));
@@ -62,9 +62,9 @@ public class WorkContextTestCase extends MockObjectTestCase {
     public void testNullIndentifier() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         Object id = new Object();
-        ctx.setIdentifier(this,id);
+        ctx.setIdentifier(this, id);
         ctx.clearIdentifier(null);
-        assertEquals(id,ctx.getIdentifier(this));
+        assertEquals(id, ctx.getIdentifier(this));
     }
 
     public void testNoIndentifier() throws Exception {

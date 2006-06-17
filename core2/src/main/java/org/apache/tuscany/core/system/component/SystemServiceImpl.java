@@ -34,7 +34,7 @@ public class SystemServiceImpl<T> extends AbstractSCAObject<T> implements System
     }
 
     public void setInboundWire(InboundWire<T> wire) {
-        assert(wire instanceof SystemInboundWire): "wire must be a " + SystemInboundWire.class.getName();
+        assert wire instanceof SystemInboundWire : "wire must be a " + SystemInboundWire.class.getName();
         this.inboundWire = (SystemInboundWire<T>) wire;
     }
 
@@ -43,7 +43,7 @@ public class SystemServiceImpl<T> extends AbstractSCAObject<T> implements System
     }
 
     public void setOutboundWire(OutboundWire<T> wire) {
-        assert(wire instanceof SystemOutboundWire): "wire must be a " + SystemOutboundWire.class.getName();
+        assert wire instanceof SystemOutboundWire : "wire must be a " + SystemOutboundWire.class.getName();
         this.outboundWire = (SystemOutboundWire<T>) wire;
     }
 

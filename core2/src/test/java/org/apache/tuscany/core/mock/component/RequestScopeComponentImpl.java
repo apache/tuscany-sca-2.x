@@ -21,6 +21,6 @@ package org.apache.tuscany.core.mock.component;
  * @version $Rev$ $Date$
  */
 public class RequestScopeComponentImpl extends AbstractGenericComponent implements
-        RequestScopeComponent {
+    RequestScopeComponent {
 
 }

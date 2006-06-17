@@ -23,6 +23,6 @@ import org.osoa.sca.annotations.Scope;
  */
 @Scope("SESSION")
 public class SessionScopeComponentImpl extends AbstractGenericComponent implements
-        SessionScopeComponent {
+    SessionScopeComponent {
 
 }

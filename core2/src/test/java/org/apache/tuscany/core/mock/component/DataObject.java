@@ -25,9 +25,8 @@ import java.io.Serializable;
  */
 @SuppressWarnings({"SerializableHasSerializationMethods"})
 public class DataObject implements Serializable {
-
-    private String stringValue;
     private static final long serialVersionUID = 5168705836784756017L;
+    private String stringValue;
 
     public String getStringValue() {
         return stringValue;

@@ -23,9 +23,8 @@ import org.apache.tuscany.spi.wire.InvocationChain;
 
 /**
  * A <code>Map</code> implementation that performs a lookup on a collection of methods by method name. This
- * implementation is used to map methods on one interface to compatible methods on another interface, for
- * example, when flowing an invocation from a proxy injected on a source reference to a target service
- * instance.
+ * implementation is used to map methods on one interface to compatible methods on another interface, for example, when
+ * flowing an invocation from a proxy injected on a source reference to a target service instance.
  *
  * @version $Rev$ $Date$
  */
@@ -46,7 +45,9 @@ public class MethodHashMap<T extends InvocationChain> extends HashMap<Method, T>
         if (key instanceof Method) {
             Method m = (Method) key;
             //FIXME find a more efficient way to find a matching method
-            Method closestMethod = JavaIntrospectionHelper.findClosestMatchingMethod(m.getName(), m.getParameterTypes(), super.keySet());
+            Method closestMethod = JavaIntrospectionHelper.findClosestMatchingMethod(m.getName(),
+                m.getParameterTypes(),
+                super.keySet());
             return super.get(closestMethod);
         } else {
             throw new IllegalArgumentException("Key must be a method");

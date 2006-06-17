@@ -31,15 +31,16 @@ import org.apache.tuscany.spi.model.Property;
 /**
  * A StAXPropertyFactory that creates property values by looking them up in the default JNDI InitialContext.
  * <p/>
- * This can be used to locate resources in a J2EE environment and inject them as configuration properties. For
- * example, to access a database a component could write: <code> &at;Property DataSource myDB; </code> and
- * configure with <code> &lt;properties&gt; &lt;v:myDb&gt;java:comp/env/jdbc/MyDatabase&lt;/v:myDB&gt;
- * &lt;/properties&gt; </code>
+ * This can be used to locate resources in a J2EE environment and inject them as configuration properties. For example,
+ * to access a database a component could write: <code> &at;Property DataSource myDB; </code> and configure with <code>
+ * &lt;properties&gt; &lt;v:myDb&gt;java:comp/env/jdbc/MyDatabase&lt;/v:myDB&gt; &lt;/properties&gt; </code>
  *
  * @version $Rev$ $Date$
  */
 public class JNDIPropertyFactory implements StAXPropertyFactory {
-    public <T> ObjectFactory<T> createObjectFactory(XMLStreamReader reader, Property<T> property) throws XMLStreamException, LoaderException {
+    public <T> ObjectFactory<T> createObjectFactory(XMLStreamReader reader,
+                                                    Property<T> property)
+        throws XMLStreamException, LoaderException {
         Class<T> type = property.getJavaType();
         assert type != null : "property type is null";
         String text = reader.getElementText();

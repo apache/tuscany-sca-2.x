@@ -23,9 +23,9 @@ import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
@@ -39,8 +39,10 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  */
 public class SystemComponentBuilder implements ComponentBuilder<SystemImplementation> {
 
-    public AtomicComponent<?> build(CompositeComponent<?> parent, ComponentDefinition<SystemImplementation> componentDefinition, DeploymentContext deploymentContext) throws BuilderConfigException {
-        assert(parent instanceof AutowireComponent): "Parent must implement " + AutowireComponent.class.getName();
+    public AtomicComponent<?> build(CompositeComponent<?> parent,
+                                    ComponentDefinition<SystemImplementation> componentDefinition,
+                                    DeploymentContext deploymentContext) throws BuilderConfigException {
+        assert parent instanceof AutowireComponent : "Parent must implement " + AutowireComponent.class.getName();
         AutowireComponent autowireContext = (AutowireComponent) parent;
         PojoComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
@@ -49,7 +51,8 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
         }
         Constructor<?> constr;
         try {
-            constr = JavaIntrospectionHelper.getDefaultConstructor(componentDefinition.getImplementation().getImplementationClass());
+            constr = JavaIntrospectionHelper.getDefaultConstructor(
+                componentDefinition.getImplementation().getImplementationClass());
         } catch (NoSuchMethodException e) {
             BuilderConfigException bce = new BuilderConfigException("Error building componentDefinition", e);
             bce.setIdentifier(componentDefinition.getName());
@@ -75,20 +78,21 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
         }
         ScopeContainer scopeContainer = deploymentContext.getModuleScope();
         SystemAtomicComponent systemContext =
-                new SystemAtomicComponentImpl(componentDefinition.getName(),
-                        parent,
-                        scopeContainer,
-                        serviceInterfaces,
-                        factory,
-                        componentType.isEagerInit(),
-                        componentType.getInitInvoker(),
-                        componentType.getDestroyInvoker(),
-                        injectors,
-                        members);
+            new SystemAtomicComponentImpl(componentDefinition.getName(),
+                parent,
+                scopeContainer,
+                serviceInterfaces,
+                factory,
+                componentType.isEagerInit(),
+                componentType.getInitInvoker(),
+                componentType.getDestroyInvoker(),
+                injectors,
+                members);
 
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             Class interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
-            SystemInboundWire<?> wire = new SystemInboundWireImpl(serviceDefinition.getName(), interfaze, systemContext);
+            SystemInboundWire<?> wire =
+                new SystemInboundWireImpl(serviceDefinition.getName(), interfaze, systemContext);
             systemContext.addInboundWire(wire);
         }
         for (ReferenceTarget target : componentDefinition.getReferenceTargets().values()) {
@@ -107,7 +111,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
                 wire = new SystemOutboundAutowire(referenceName, interfaze, autowireContext);
             } else {
                 //FIXME support multiplicity!
-                assert(target.getTargets().size() == 1): "Multiplicity not yet implemented";
+                assert target.getTargets().size() == 1 : "Multiplicity not yet implemented";
                 QualifiedName targetName = new QualifiedName(target.getTargets().get(0).getPath());
                 wire = new SystemOutboundWireImpl(referenceName, targetName, interfaze);
             }

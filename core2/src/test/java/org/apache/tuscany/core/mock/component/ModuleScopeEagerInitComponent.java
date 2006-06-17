@@ -20,16 +20,15 @@ import org.osoa.sca.annotations.Init;
 
 public class ModuleScopeEagerInitComponent extends ModuleScopeComponentImpl {
 
-    boolean initialized = false;
-
-    public boolean isInitialized() {
-        return initialized;
-    }
-
+    boolean initialized;
     // this value tests to ensure introspection can find the init() method even
     // if a field is named the same. Ultimately, this should be in the
     // introspection tests
     private boolean init;
+
+    public boolean isInitialized() {
+        return initialized;
+    }
 
     @Init(eager = true)
     public void init() {

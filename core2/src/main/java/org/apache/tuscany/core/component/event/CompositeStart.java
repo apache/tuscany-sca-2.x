@@ -14,8 +14,8 @@ public class CompositeStart extends AbstractEvent implements CompositeEvent {
     /**
      * Creates a module stop event
      *
-     * @param source the source of the event
-     * @param component    the composite component associated the module being stopped
+     * @param source    the source of the event
+     * @param component the composite component associated the module being stopped
      */
     public CompositeStart(Object source, CompositeComponent component) {
         super(source);

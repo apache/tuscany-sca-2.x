@@ -28,8 +28,12 @@ import org.apache.tuscany.spi.wire.WireService;
  *
  * @version $Rev$ $Date$
  */
-@SuppressWarnings({"FieldAccessedSynchronizedAndUnsynchronized", "RawUseOfParameterizedType", "NonPrivateFieldAccessedInSynchronizedContext"})
-public abstract class AbstractCompositeComponent<T> extends CompositeComponentExtension<T> implements AutowireComponent<T> {
+@SuppressWarnings({
+    "FieldAccessedSynchronizedAndUnsynchronized",
+    "RawUseOfParameterizedType",
+    "NonPrivateFieldAccessedInSynchronizedContext"})
+public abstract class AbstractCompositeComponent<T> extends CompositeComponentExtension<T>
+    implements AutowireComponent<T> {
 
     public static final int DEFAULT_WAIT = 1000 * 60;
 
@@ -49,7 +53,10 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
 
     protected ScopeContainer scopeContainer;
 
-    public AbstractCompositeComponent(String name, CompositeComponent parent, AutowireComponent autowireContext, WireService wireService) {
+    public AbstractCompositeComponent(String name,
+                                      CompositeComponent parent,
+                                      AutowireComponent autowireContext,
+                                      WireService wireService) {
         super(name, parent, wireService);
         this.autowireContext = autowireContext;
     }
@@ -147,10 +154,11 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
         if (context != null) {
             try {
                 if (context instanceof AtomicComponent || context instanceof Reference
-                        || context instanceof SystemService) {
+                    || context instanceof SystemService) {
                     return instanceInterface.cast(context.getServiceInstance());
                 } else {
-                    IllegalTargetException e = new IllegalTargetException("Autowire target must be a system service, atomic, or reference context");
+                    IllegalTargetException e = new IllegalTargetException("Autowire target must be a system "
+                        + "service, atomic component, or reference");
                     e.setIdentifier(instanceInterface.getName());
                     e.addContextName(getName());
                     throw e;
@@ -187,7 +195,7 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
     }
 
     public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
-        return null;// new BridgingInvoker(serviceName, operation, this);
+        return null;
     }
 
     protected void registerAutowireExternal(Class<?> interfaze, SystemService context) {
@@ -199,7 +207,7 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
     }
 
     protected void registerAutowireInternal(Class<?> interfaze, SCAObject context) {
-        assert interfaze != null: "Interface was null";
+        assert interfaze != null : "Interface was null";
         if (autowireInternal.containsKey(interfaze)) {
             return;
         }
@@ -238,7 +246,8 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
         if (!initialized) {
             try {
                 /* block until the module has initialized */
-                boolean success = initializeLatch.await(AbstractCompositeComponent.DEFAULT_WAIT, TimeUnit.MILLISECONDS);
+                boolean success = initializeLatch.await(AbstractCompositeComponent.DEFAULT_WAIT,
+                    TimeUnit.MILLISECONDS);
                 if (!success) {
                     throw new ComponentInitException("Timeout waiting for context to initialize");
                 }

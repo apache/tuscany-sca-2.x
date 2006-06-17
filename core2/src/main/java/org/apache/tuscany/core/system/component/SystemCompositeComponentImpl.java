@@ -6,20 +6,21 @@ import org.apache.tuscany.core.component.AutowireResolutionException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 
 /**
- * Implements an composite context for system components. In addition, it implements an autowire policy A
- * system context may contain child composite contexts but an entry point in a child context will only be
- * outwardly accessible if there is an entry point that exposes it configured in the top-level system
- * context.
+ * Implements an composite context for system components. In addition, it implements an autowire policy A system context
+ * may contain child composite contexts but an entry point in a child context will only be outwardly accessible if there
+ * is an entry point that exposes it configured in the top-level system context.
  *
  * @version $Rev$ $Date$
  */
-public class SystemCompositeComponentImpl<S> extends AbstractCompositeComponent<S> implements SystemCompositeComponent<S> {
+public class SystemCompositeComponentImpl<S> extends AbstractCompositeComponent<S>
+    implements SystemCompositeComponent<S> {
 
     public SystemCompositeComponentImpl(String name, CompositeComponent parent, AutowireComponent autowireContext) {
         super(name, parent, autowireContext, null);
     }
 
-    public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance) throws ObjectRegistrationException {
+    public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance)
+        throws ObjectRegistrationException {
         register(new SystemSingletonAtomicComponent<S, I>(name, this, service, instance));
     }
 

@@ -79,7 +79,7 @@ public class SystemOutboundWireImpl<T> implements SystemOutboundWire<T> {
     }
 
     public void setTargetWire(InboundWire<T> wire) {
-        assert(wire instanceof SystemInboundWire): "wire must be a " + SystemInboundWire.class.getName();
+        assert wire instanceof SystemInboundWire : "wire must be a " + SystemInboundWire.class.getName();
         this.targetWire = (SystemInboundWire<T>) wire;
     }
 
