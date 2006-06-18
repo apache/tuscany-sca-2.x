@@ -14,9 +14,10 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  -->
+
 <!DOCTYPE module PUBLIC
         "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
-        "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+        "configuration_1_2.dtd">
 
 <!--
 Checks to make sure the code meets the Tuscany coding guidelines
