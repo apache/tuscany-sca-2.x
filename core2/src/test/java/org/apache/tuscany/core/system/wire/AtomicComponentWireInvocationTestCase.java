@@ -1,16 +1,17 @@
 package org.apache.tuscany.core.system.wire;
 
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.PojoConfiguration;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.spi.injection.PojoObjectFactory;
+import org.apache.tuscany.spi.wire.OutboundWire;
+
+import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
-import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 

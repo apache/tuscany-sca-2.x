@@ -17,9 +17,9 @@
 package org.apache.tuscany.spi.monitor;
 
 /**
- * A MonitorFactory creates implementations of components' monitor interfaces that interface with a its
- * monitoring scheme. For example, a implementation may create versions that emit appropriate logging events
- * or which send notifications to a management API.
+ * A MonitorFactory creates implementations of components' monitor interfaces that interface with a its monitoring
+ * scheme. For example, a implementation may create versions that emit appropriate logging events or which send
+ * notifications to a management API.
  *
  * @version $Rev$ $Date$
  */

@@ -21,9 +21,8 @@ import javax.xml.stream.XMLInputFactory;
 import org.apache.tuscany.spi.component.ScopeContainer;
 
 /**
- * An holder that can be used during the load process to store information that is not part of the logical
- * assembly model. This should be regarded as transient and references to this context should not be stored
- * inside the model.
+ * An holder that can be used during the load process to store information that is not part of the logical assembly
+ * model. This should be regarded as transient and references to this context should not be stored inside the model.
  *
  * @version $Rev$ $Date$
  */

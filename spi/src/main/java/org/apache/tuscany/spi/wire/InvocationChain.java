@@ -4,26 +4,25 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 /**
- * A source- or target-side invocation pipeline for a service operation. Invocation chains are associated with
- * the source or target side of a wire and are bridged when an assembly is processed.
+ * A source- or target-side invocation pipeline for a service operation. Invocation chains are associated with the
+ * source or target side of a wire and are bridged when an assembly is processed.
  * <p/>
- * Invocation configurations contain at least one {@link Interceptor} and may have 0 to N {@link
- * MessageHandler}s. <code>Interceptors>/code> process invocations in a synchronous, around style manner while
+ * Invocation configurations contain at least one {@link Interceptor} and may have 0 to N {@link MessageHandler}s.
+ * <code>Interceptors>/code> process invocations in a synchronous, around style manner while
  * <code>MessageHandler</code>s do so in a one-way manner.
  * <p/>
- * Source-side chains may only connect to target-side chains. Target-side chains may connect to other
- * target-side chains, for example, when invoking from a {@link org.apache.tuscany.spi.component.Service} to
- * an {@link org.apache.tuscany.spi.component.AtomicComponent}.
+ * Source-side chains may only connect to target-side chains. Target-side chains may connect to other target-side
+ * chains, for example, when invoking from a {@link org.apache.tuscany.spi.component.Service} to an {@link
+ * org.apache.tuscany.spi.component.AtomicComponent}.
  * <p/>
- * In some scenarios, a service proxy may only contain target-side invocaton chains, for example, when a
- * service is resolved through a locate operation by a non-component client. In this case, there will be no
- * source-side wire chains and the target invoker will be held by the target-side and passed down the
- * pipeline.
+ * In some scenarios, a service proxy may only contain target-side invocaton chains, for example, when a service is
+ * resolved through a locate operation by a non-component client. In this case, there will be no source-side wire chains
+ * and the target invoker will be held by the target-side and passed down the pipeline.
  * <p/>
- * A {@link Message} is used to pass data associated with an invocation through the chain.
- * <code>Message</code>s contain a {@link TargetInvoker} responsible for dispatching to a target instance and
- * may be cached on the client-side. Caching allows various optimizations such as avoiding target instance
- * resolution when the client-side lifecycle scope is a shorter duration than the target.
+ * A {@link Message} is used to pass data associated with an invocation through the chain. <code>Message</code>s contain
+ * a {@link TargetInvoker} responsible for dispatching to a target instance and may be cached on the client-side.
+ * Caching allows various optimizations such as avoiding target instance resolution when the client-side lifecycle scope
+ * is a shorter duration than the target.
  *
  * @version $Rev$ $Date$
  */
@@ -119,8 +118,8 @@ public interface InvocationChain {
     MessageChannel getTargetResponseChannel();
 
     /**
-     * Signals to the chain that its configuration is complete. Implementations may use this callback to
-     * prepare there invocation chains.
+     * Signals to the chain that its configuration is complete. Implementations may use this callback to prepare there
+     * invocation chains.
      */
     void build();
 }

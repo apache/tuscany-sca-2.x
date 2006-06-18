@@ -24,8 +24,8 @@ import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 
 /**
- * Responsible for processing a service or reference in an assembly configured with a particular binding. The
- * builder will create and return corresponding {@link org.apache.tuscany.spi.component.Service} or {@link
+ * Responsible for processing a service or reference in an assembly configured with a particular binding. The builder
+ * will create and return corresponding {@link org.apache.tuscany.spi.component.Service} or {@link
  * org.apache.tuscany.spi.component.Reference}
  *
  * @version $Rev$ $Date$

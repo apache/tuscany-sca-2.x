@@ -1,11 +1,12 @@
 package org.apache.tuscany.core.component.scope;
 
-import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeNotFoundException;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
+
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.jmock.MockObjectTestCase;
 
 /**

@@ -21,8 +21,8 @@ import java.util.List;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 
 /**
- * The runtime instantiation of an SCA composite component. Composites may contain child components, offer
- * services, and have references
+ * The runtime instantiation of an SCA composite component. Composites may contain child components, offer services, and
+ * have references
  *
  * @version $Rev$ $Date$
  */

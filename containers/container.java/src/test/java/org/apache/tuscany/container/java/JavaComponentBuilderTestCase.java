@@ -3,10 +3,6 @@ package org.apache.tuscany.container.java;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.container.java.mock.components.Source;
-import org.apache.tuscany.container.java.mock.components.SourceImpl;
-import org.apache.tuscany.container.java.mock.components.Target;
-import org.apache.tuscany.core.component.CompositeComponentImpl;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -17,6 +13,11 @@ import org.apache.tuscany.spi.model.PojoComponentType;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+
+import org.apache.tuscany.container.java.mock.components.Source;
+import org.apache.tuscany.container.java.mock.components.SourceImpl;
+import org.apache.tuscany.container.java.mock.components.Target;
+import org.apache.tuscany.core.component.CompositeComponentImpl;
 import org.apache.tuscany.test.ArtifactFactory;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;

@@ -3,9 +3,10 @@ package org.apache.tuscany.core.system.component;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
+
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 

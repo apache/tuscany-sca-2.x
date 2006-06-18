@@ -4,17 +4,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+
 /**
  * Base class for dispatching to a Java based component implementation. Subclasses implement a strategy for resolving
- * implementation instances.
- * FIXME Needs to be moved to spi once JavaIntrospectionHelper is eliminated
+ * implementation instances. FIXME Needs to be moved to spi once JavaIntrospectionHelper is eliminated
  *
  * @version $Rev$ $Date$
  */

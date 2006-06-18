@@ -8,21 +8,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
+import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.component.PojoConfiguration;
+import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.injection.EventInvoker;
-import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.spi.injection.Injector;
+import org.apache.tuscany.spi.wire.OutboundWire;
+
+import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
+import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.InvalidAccessorException;
 import org.apache.tuscany.core.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.NoAccessorException;
 import org.apache.tuscany.core.injection.WireObjectFactory;
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.component.PojoConfiguration;
-import org.apache.tuscany.spi.extension.AtomicComponentExtension;
-import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * Base implementation of an {@link org.apache.tuscany.spi.component.AtomicComponent} whose type is a Java class

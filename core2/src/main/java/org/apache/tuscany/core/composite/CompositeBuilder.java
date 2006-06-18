@@ -16,7 +16,6 @@
  */
 package org.apache.tuscany.core.composite;
 
-import org.apache.tuscany.core.component.CompositeComponentImpl;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -32,6 +31,8 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+
+import org.apache.tuscany.core.component.CompositeComponentImpl;
 
 /**
  * Instantiates a composite component from an assembly definition

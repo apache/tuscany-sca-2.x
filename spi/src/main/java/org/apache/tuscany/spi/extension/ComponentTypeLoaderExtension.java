@@ -16,12 +16,13 @@
  */
 package org.apache.tuscany.spi.extension;
 
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.loader.ComponentTypeLoader;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.Implementation;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
 
 /**
  * @version $Rev$ $Date$

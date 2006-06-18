@@ -20,15 +20,15 @@ import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.model.Implementation;
 
 /**
- * Maintains a registry of builders in the runtime, dispatching to the appropriate one as an assembly model is
- * processed into runtime artifacts
+ * Maintains a registry of builders in the runtime, dispatching to the appropriate one as an assembly model is processed
+ * into runtime artifacts
  *
  * @version $Rev$ $Date$
  */
 public interface BuilderRegistry extends Builder {
     /**
-     * Register a builder based on an implementation type specified in an annotation. The implementation type
-     * is obtained by reflecting the generic definition.
+     * Register a builder based on an implementation type specified in an annotation. The implementation type is
+     * obtained by reflecting the generic definition.
      *
      * @param builder the builder to register
      */

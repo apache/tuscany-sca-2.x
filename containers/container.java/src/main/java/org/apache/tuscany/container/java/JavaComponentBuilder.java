@@ -4,7 +4,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.util.Map;
 
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -19,11 +18,14 @@ import org.apache.tuscany.spi.model.PojoComponentType;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplementation> {
 
+    @SuppressWarnings("unchecked")
     public Component<?> build(CompositeComponent<?> parent,
                               ComponentDefinition<JavaImplementation> definition,
                               DeploymentContext deployment)

@@ -18,11 +18,12 @@ package org.apache.tuscany.container.java;
 
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.model.Scope;
+
 import junit.framework.Assert;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.model.Scope;
 import org.jmock.MockObjectTestCase;
 
 public class JavaTargetInvokerTestCase extends MockObjectTestCase {

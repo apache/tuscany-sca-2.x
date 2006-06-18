@@ -1,9 +1,10 @@
 package org.apache.tuscany.core.system.component;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
+
 import org.apache.tuscany.core.component.AbstractCompositeComponent;
 import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.component.AutowireResolutionException;
-import org.apache.tuscany.spi.component.CompositeComponent;
 
 /**
  * Implements an composite context for system components. In addition, it implements an autowire policy A system context

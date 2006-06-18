@@ -6,20 +6,21 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.core.component.PojoAtomicComponent;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.PojoConfiguration;
+import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.injection.Injector;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
+
+import org.apache.tuscany.core.component.PojoAtomicComponent;
 import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.FieldInjector;
-import org.apache.tuscany.spi.injection.Injector;
 import org.apache.tuscany.core.injection.InvalidAccessorException;
 import org.apache.tuscany.core.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.system.wire.SystemOutboundWire;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Default implementation of a system atomic context

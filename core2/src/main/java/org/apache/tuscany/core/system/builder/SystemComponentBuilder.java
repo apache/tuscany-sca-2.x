@@ -4,12 +4,23 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.util.Map;
 
-import org.apache.tuscany.core.component.AutowireComponent;
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
+import org.apache.tuscany.spi.builder.ComponentBuilder;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.PojoConfiguration;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.injection.ContextInjector;
 import org.apache.tuscany.spi.injection.Injector;
 import org.apache.tuscany.spi.injection.PojoObjectFactory;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.PojoComponentType;
+import org.apache.tuscany.spi.model.ReferenceTarget;
+import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.wire.OutboundWire;
+
+import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.system.model.SystemImplementation;
@@ -18,16 +29,6 @@ import org.apache.tuscany.core.system.wire.SystemInboundWireImpl;
 import org.apache.tuscany.core.system.wire.SystemOutboundAutowire;
 import org.apache.tuscany.core.system.wire.SystemOutboundWireImpl;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
-import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.builder.ComponentBuilder;
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.ReferenceTarget;
-import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * Produces system atomic components by evaluating an assembly

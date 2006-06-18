@@ -17,8 +17,7 @@
 package org.apache.tuscany.spi;
 
 /**
- * The root exception for the runtime package. Exceptions occurring in the runtime are generally
- * non-recoverable
+ * The root exception for the runtime package. Exceptions occurring in the runtime are generally non-recoverable
  *
  * @version $Rev$ $Date$
  */

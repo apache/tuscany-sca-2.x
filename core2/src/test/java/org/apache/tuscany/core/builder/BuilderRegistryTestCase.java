@@ -16,7 +16,6 @@
  */
 package org.apache.tuscany.core.builder;
 
-import junit.framework.TestCase;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.component.Component;
@@ -25,6 +24,8 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
+
+import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$

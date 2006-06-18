@@ -1,8 +1,9 @@
 package org.apache.tuscany.core.component.scope;
 
-import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.WorkContext;
+
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 

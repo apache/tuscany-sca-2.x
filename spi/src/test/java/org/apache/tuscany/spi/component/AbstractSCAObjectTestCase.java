@@ -5,6 +5,7 @@ import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.event.TrueFilter;
 import org.apache.tuscany.spi.model.Scope;
+
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 

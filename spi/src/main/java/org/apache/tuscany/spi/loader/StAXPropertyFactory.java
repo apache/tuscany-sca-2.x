@@ -29,10 +29,10 @@ import org.apache.tuscany.spi.model.Property;
  */
 public interface StAXPropertyFactory {
     /**
-     * Return an ObjectFactory for instances of a property defined in an XML stream. The ObjectFactory must
-     * return instances that can safely be supplied to component implementations. If the instance is mutable
-     * and isolation between components is required, then the factory must clone or otherwise protect the
-     * implementation from unexpected modifications by other implementation instances.
+     * Return an ObjectFactory for instances of a property defined in an XML stream. The ObjectFactory must return
+     * instances that can safely be supplied to component implementations. If the instance is mutable and isolation
+     * between components is required, then the factory must clone or otherwise protect the implementation from
+     * unexpected modifications by other implementation instances.
      *
      * @param reader   the reader to use to access the XML stream
      * @param property the Property definition that the resulting ObjectFactory must be able to assign to

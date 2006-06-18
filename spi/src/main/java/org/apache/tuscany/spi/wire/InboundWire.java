@@ -17,10 +17,9 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * Implementations are responsible for managing the service side of a wire, including the invocation chains
- * associated with each service operation. A <Code>InboundWire</code> can be connected to another
- * <code>InboundWire</code> when connecting a {@link org.apache.tuscany.spi.component.Service} to an {@link
- * org.apache.tuscany.spi.component.AtomicComponent}.
+ * Implementations are responsible for managing the service side of a wire, including the invocation chains associated
+ * with each service operation. A <Code>InboundWire</code> can be connected to another <code>InboundWire</code> when
+ * connecting a {@link org.apache.tuscany.spi.component.Service} to an {@link org.apache.tuscany.spi.component.AtomicComponent}.
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -37,8 +36,8 @@ public interface InboundWire<T> extends RuntimeWire<T> {
     void setServiceName(String name);
 
     /**
-     * Returns the invocation configuration for each operation on a service specified by a reference or a
-     * target service.
+     * Returns the invocation configuration for each operation on a service specified by a reference or a target
+     * service.
      */
     Map<Method, InboundInvocationChain> getInvocationChains();
 

@@ -16,8 +16,9 @@
  */
 package org.apache.tuscany.core.system.component;
 
-import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
+
+import org.apache.tuscany.core.component.AutowireComponent;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 

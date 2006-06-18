@@ -1,6 +1,7 @@
 package org.apache.tuscany.core.component.event;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
+
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 

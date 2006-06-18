@@ -1,5 +1,7 @@
 package org.apache.tuscany.core.component.scope;
 
+import org.apache.tuscany.spi.component.WorkContext;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
@@ -7,7 +9,6 @@ import org.apache.tuscany.core.mock.component.StatelessComponent;
 import org.apache.tuscany.core.mock.component.StatelessComponentImpl;
 import org.apache.tuscany.core.mock.factories.MockFactory;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
-import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * Unit tests for the module scope container

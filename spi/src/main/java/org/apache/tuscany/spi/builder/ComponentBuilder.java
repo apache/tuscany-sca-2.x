@@ -23,8 +23,7 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 
 /**
- * Responsible for building a {@link Component} from an atomic or composite component configured in an
- * assembly
+ * Responsible for building a {@link Component} from an atomic or composite component configured in an assembly
  *
  * @version $Rev$ $Date$
  */

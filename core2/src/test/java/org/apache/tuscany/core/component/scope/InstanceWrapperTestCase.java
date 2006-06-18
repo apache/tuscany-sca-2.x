@@ -2,6 +2,7 @@ package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.Lifecycle;
 import org.apache.tuscany.spi.component.AtomicComponent;
+
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.jmock.core.Invocation;

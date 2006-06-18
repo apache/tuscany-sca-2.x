@@ -3,10 +3,11 @@ package org.apache.tuscany.spi.extension;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import junit.framework.TestCase;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+
+import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$

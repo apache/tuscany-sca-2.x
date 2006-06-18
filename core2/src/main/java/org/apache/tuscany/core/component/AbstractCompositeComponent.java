@@ -7,7 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.tuscany.core.system.component.SystemService;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -22,6 +21,8 @@ import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
+
+import org.apache.tuscany.core.system.component.SystemService;
 
 /**
  * The base implementation of a composite context

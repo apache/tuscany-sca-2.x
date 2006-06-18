@@ -2,6 +2,9 @@ package org.apache.tuscany.core.component.scope;
 
 import java.util.Map;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.WorkContext;
+
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.CompositeStart;
@@ -14,8 +17,6 @@ import org.apache.tuscany.core.mock.component.OrderedDependentPojoImpl;
 import org.apache.tuscany.core.mock.component.OrderedInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;
 import org.apache.tuscany.core.mock.factories.MockFactory;
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * Tests dependencies are initalized and destroyed in the proper order (i.e. LIFO)

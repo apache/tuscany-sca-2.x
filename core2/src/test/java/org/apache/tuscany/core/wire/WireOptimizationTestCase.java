@@ -2,7 +2,6 @@ package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
 
-import junit.framework.TestCase;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -11,6 +10,8 @@ import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+
+import junit.framework.TestCase;
 
 /**
  * Verifies wire optimization analysis

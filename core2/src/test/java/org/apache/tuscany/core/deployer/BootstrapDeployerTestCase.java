@@ -20,18 +20,19 @@ import java.net.URL;
 import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 
-import junit.framework.TestCase;
-import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
-import org.apache.tuscany.core.mock.component.BasicInterface;
-import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.apache.tuscany.core.system.model.SystemBinding;
-import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
+import org.apache.tuscany.core.mock.component.BasicInterface;
+import org.apache.tuscany.core.monitor.NullMonitorFactory;
+import org.apache.tuscany.core.system.model.SystemBinding;
+import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
 
 /**
  * Verifies the default boostrap deployer

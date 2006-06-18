@@ -2,8 +2,6 @@ package org.apache.tuscany.core.system.component;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.system.wire.SystemInboundWire;
-import org.apache.tuscany.core.system.wire.SystemOutboundWire;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetException;
@@ -13,6 +11,9 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+
+import org.apache.tuscany.core.system.wire.SystemInboundWire;
+import org.apache.tuscany.core.system.wire.SystemOutboundWire;
 
 /**
  * Default implementation of a reference configured with the {@link org.apache.tuscany.core.system.model.SystemBinding}

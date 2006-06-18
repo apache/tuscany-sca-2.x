@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  *
  * @version $Rev$ $Date$
  */
-@Target({ElementType.METHOD, ElementType.FIELD })
+@Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Monitor {
 }

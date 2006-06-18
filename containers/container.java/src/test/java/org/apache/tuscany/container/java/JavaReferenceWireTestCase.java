@@ -4,10 +4,6 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.container.java.mock.components.Source;
-import org.apache.tuscany.container.java.mock.components.SourceImpl;
-import org.apache.tuscany.container.java.mock.components.Target;
-import org.apache.tuscany.container.java.mock.components.TargetImpl;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.PojoConfiguration;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -15,6 +11,11 @@ import org.apache.tuscany.spi.injection.PojoObjectFactory;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
+
+import org.apache.tuscany.container.java.mock.components.Source;
+import org.apache.tuscany.container.java.mock.components.SourceImpl;
+import org.apache.tuscany.container.java.mock.components.Target;
+import org.apache.tuscany.container.java.mock.components.TargetImpl;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.jmock.core.Invocation;

@@ -22,11 +22,12 @@ import javax.naming.NamingException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.core.injection.JNDIObjectFactory;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.StAXPropertyFactory;
 import org.apache.tuscany.spi.model.Property;
+
+import org.apache.tuscany.core.injection.JNDIObjectFactory;
 
 /**
  * A StAXPropertyFactory that creates property values by looking them up in the default JNDI InitialContext.

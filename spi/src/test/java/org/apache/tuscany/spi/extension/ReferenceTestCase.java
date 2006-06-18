@@ -2,11 +2,12 @@ package org.apache.tuscany.spi.extension;
 
 import java.lang.reflect.Method;
 
-import junit.framework.TestCase;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
+
+import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$

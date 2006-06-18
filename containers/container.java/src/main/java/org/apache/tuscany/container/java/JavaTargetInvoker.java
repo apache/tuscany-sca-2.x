@@ -18,8 +18,9 @@ package org.apache.tuscany.container.java;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.wire.PojoTargetInvoker;
 import org.apache.tuscany.spi.component.TargetException;
+
+import org.apache.tuscany.core.wire.PojoTargetInvoker;
 
 /**
  * Uses a scope context to resolve an implementation instance based on the current thread context

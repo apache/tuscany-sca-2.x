@@ -1,8 +1,9 @@
 package org.apache.tuscany.core.system.component;
 
-import org.apache.tuscany.core.system.wire.SystemOutboundWire;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
+
+import org.apache.tuscany.core.system.wire.SystemOutboundWire;
 
 /**
  * Uses a system wire to return an object instance

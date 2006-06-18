@@ -2,13 +2,14 @@ package org.apache.tuscany.container.java;
 
 import java.util.Collections;
 
-import org.apache.tuscany.container.java.mock.components.Target;
-import org.apache.tuscany.container.java.mock.components.TargetImpl;
 import org.apache.tuscany.spi.component.PojoConfiguration;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.injection.PojoObjectFactory;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
+
+import org.apache.tuscany.container.java.mock.components.Target;
+import org.apache.tuscany.container.java.mock.components.TargetImpl;
 import org.apache.tuscany.test.ArtifactFactory;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;

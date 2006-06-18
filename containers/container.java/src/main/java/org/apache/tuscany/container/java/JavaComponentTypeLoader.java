@@ -18,11 +18,12 @@ package org.apache.tuscany.container.java;
 
 import java.net.URL;
 
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.PojoComponentType;
+
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
  * @version $Rev$ $Date$

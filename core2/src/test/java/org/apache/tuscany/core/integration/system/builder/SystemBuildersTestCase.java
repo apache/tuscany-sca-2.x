@@ -1,5 +1,15 @@
 package org.apache.tuscany.core.integration.system.builder;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+
 import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.Connector;
 import org.apache.tuscany.core.builder.ConnectorImpl;
@@ -16,15 +26,6 @@ import org.apache.tuscany.core.system.component.SystemCompositeComponent;
 import org.apache.tuscany.core.system.component.SystemCompositeComponentImpl;
 import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.model.SystemImplementation;
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
-import org.apache.tuscany.spi.model.ComponentDefinition;
 
 /**
  * Validates that system builders and the default connector create properly wired contexts

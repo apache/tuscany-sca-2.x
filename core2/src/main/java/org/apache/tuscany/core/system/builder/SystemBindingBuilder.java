@@ -1,5 +1,14 @@
 package org.apache.tuscany.core.system.builder;
 
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.builder.BindingBuilder;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.wire.OutboundWire;
+
 import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.system.component.SystemReference;
 import org.apache.tuscany.core.system.component.SystemReferenceImpl;
@@ -11,14 +20,6 @@ import org.apache.tuscany.core.system.wire.SystemInboundWireImpl;
 import org.apache.tuscany.core.system.wire.SystemOutboundAutowire;
 import org.apache.tuscany.core.system.wire.SystemOutboundWire;
 import org.apache.tuscany.core.system.wire.SystemOutboundWireImpl;
-import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.builder.BindingBuilder;
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
-import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * Creates {@link SystemService}s and {@link SystemReference}s by evaluating an assembly definition

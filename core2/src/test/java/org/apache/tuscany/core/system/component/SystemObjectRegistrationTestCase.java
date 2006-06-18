@@ -2,10 +2,11 @@ package org.apache.tuscany.core.system.component;
 
 import javax.naming.ConfigurationException;
 
+import org.apache.tuscany.spi.component.DuplicateNameException;
+
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
-import org.apache.tuscany.spi.component.DuplicateNameException;
 
 /**
  * @version $Rev$ $Date$

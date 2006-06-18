@@ -16,14 +16,14 @@
  */
 package org.apache.tuscany.spi.monitor;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.METHOD;
+import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.lang.annotation.Target;
 
 /**
- * Annotation that can be applied to methods in a monitoring interface to indicate to logging frameworks the
- * severity of the event.
+ * Annotation that can be applied to methods in a monitoring interface to indicate to logging frameworks the severity of
+ * the event.
  *
  * @version $Rev$ $Date$
  */

@@ -102,8 +102,8 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-	<build>
-		<plugins>
+    <build>
+        <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -132,7 +132,7 @@
                 </executions>
             </plugin>
 
-		</plugins>
-	</build>
+        </plugins>
+    </build>
 
 </project>

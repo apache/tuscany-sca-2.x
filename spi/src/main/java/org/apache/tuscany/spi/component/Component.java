@@ -28,8 +28,8 @@ public interface Component<T> extends SCAObject<T> {
     List<Class<?>> getServiceInterfaces();
 
     /**
-     * Adds a target-side wire. Target-side wire factories contain the invocation chains associated with the
-     * destination service of a wire
+     * Adds a target-side wire. Target-side wire factories contain the invocation chains associated with the destination
+     * service of a wire
      */
     void addInboundWire(InboundWire wire);
 
@@ -39,15 +39,14 @@ public interface Component<T> extends SCAObject<T> {
     InboundWire getInboundWire(String serviceName);
 
     /**
-     * Adds a source-side wire for the given reference. Source-side wires contain the invocation chains for a
-     * reference in the implementation associated with the instance wrapper created by this configuration.
+     * Adds a source-side wire for the given reference. Source-side wires contain the invocation chains for a reference
+     * in the implementation associated with the instance wrapper created by this configuration.
      */
     void addOutboundWire(OutboundWire wire);
 
     /**
-     * Adds a set of source-side multiplicity wires for the given reference. Source-side wires contain the
-     * invocation chains for a reference in the implementation associated with the instance wrapper created by
-     * this configuration.
+     * Adds a set of source-side multiplicity wires for the given reference. Source-side wires contain the invocation
+     * chains for a reference in the implementation associated with the instance wrapper created by this configuration.
      */
     void addOutboundWires(Class<?> multiplicityClass, List<OutboundWire> wires);
 
@@ -57,8 +56,8 @@ public interface Component<T> extends SCAObject<T> {
     Map<String, List<OutboundWire>> getOutboundWires();
 
     /**
-     * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to a service
-     * offered by the component
+     * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to a service offered by
+     * the component
      *
      * @param serviceName the name of the service
      * @param operation   the operation to invoke

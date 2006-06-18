@@ -4,12 +4,13 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
-import org.apache.tuscany.core.component.AutowireComponent;
-import org.apache.tuscany.core.wire.OutboundAutowire;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+
+import org.apache.tuscany.core.component.AutowireComponent;
+import org.apache.tuscany.core.wire.OutboundAutowire;
 
 /**
  * A specialization of <code>OutboundAutowire</code> that returns a direct reference to the target

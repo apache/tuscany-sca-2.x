@@ -16,6 +16,13 @@
  */
 package org.apache.tuscany.core.bootstrap;
 
+import org.apache.tuscany.spi.builder.BuilderRegistry;
+import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.StAXPropertyFactory;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
+
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.Connector;
 import org.apache.tuscany.core.builder.ConnectorImpl;
@@ -42,12 +49,6 @@ import org.apache.tuscany.core.system.loader.SystemImplementationLoader;
 import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.system.model.SystemImplementation;
-import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.StAXPropertyFactory;
-import org.apache.tuscany.spi.monitor.MonitorFactory;
 
 /**
  * A Tuscany runtime bootstrapper responsible for instantiating the runtime with the default primordial configuration

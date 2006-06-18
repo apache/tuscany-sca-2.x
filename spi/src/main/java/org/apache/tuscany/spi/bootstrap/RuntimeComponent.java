@@ -26,25 +26,24 @@ import org.apache.tuscany.spi.deployer.Deployer;
  */
 public interface RuntimeComponent<S extends CompositeComponent> extends CompositeComponent<Void> {
     /**
-     * Returns the component that forms the root of the user component tree. All user components will be
-     * managed by composites that are children of this root.
+     * Returns the component that forms the root of the user component tree. All user components will be managed by
+     * composites that are children of this root.
      *
      * @return the root of the user component tree
      */
     CompositeComponent getRootComponent();
 
     /**
-     * Returns the component that forms the root of the system component tree. All system components,
-     * components that provide system services needed by the Tuscany runtime itself, will be managed by
-     * composites that are children of this root.
+     * Returns the component that forms the root of the system component tree. All system components, components that
+     * provide system services needed by the Tuscany runtime itself, will be managed by composites that are children of
+     * this root.
      *
      * @return the root of the system component tree
      */
     S getSystemComponent();
 
     /**
-     * Returns the deployer for this runtime. This interface can be used to deploy new SCA bundles to the
-     * runtime.
+     * Returns the deployer for this runtime. This interface can be used to deploy new SCA bundles to the runtime.
      *
      * @return the deployer for this runtime
      */

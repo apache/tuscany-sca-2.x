@@ -1,7 +1,8 @@
 package org.apache.tuscany.spi.extension;
 
-import junit.framework.TestCase;
 import org.apache.tuscany.spi.model.Scope;
+
+import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$

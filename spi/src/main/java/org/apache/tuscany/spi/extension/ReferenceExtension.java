@@ -83,7 +83,7 @@ public abstract class ReferenceExtension<T> extends AbstractSCAObject<T> impleme
         assert inboundWire != null : "Inbound wire not set";
         for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
             chain.setTargetInvoker(createTargetInvoker(outboundWire.getTargetName().getQualifiedName(),
-                    chain.getMethod()));
+                chain.getMethod()));
             chain.build();
         }
     }

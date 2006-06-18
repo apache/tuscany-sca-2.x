@@ -23,10 +23,10 @@ package org.apache.tuscany.spi.model;
  * @version $Rev$ $Date$
  */
 public class JavaMappedComponentType<
-        S extends JavaMappedService,
-        R extends JavaMappedReference,
-        P extends JavaMappedProperty<?>
-        > extends ComponentType<S, R, P> {
+    S extends JavaMappedService,
+    R extends JavaMappedReference,
+    P extends JavaMappedProperty<?>
+    > extends ComponentType<S, R, P> {
 
     private Class<?> implClass;
 

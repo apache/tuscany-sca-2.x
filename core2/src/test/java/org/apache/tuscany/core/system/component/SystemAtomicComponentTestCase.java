@@ -1,11 +1,12 @@
 package org.apache.tuscany.core.system.component;
 
-import junit.framework.TestCase;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.PojoConfiguration;
 import org.apache.tuscany.spi.injection.EventInvoker;
-import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.spi.injection.PojoObjectFactory;
-import org.apache.tuscany.spi.ObjectFactory;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.injection.MethodEventInvoker;
 
 /**
  * Verifies a system atomic component can be started and initialized

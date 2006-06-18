@@ -17,10 +17,10 @@
 package org.apache.tuscany.spi.model;
 
 /**
- * A ServiceDefinition definition that is mapped to a Java interface. The mapped interface is not required to
- * be the same as the interface specified in the service contract. This is to allow the service contract to be
- * specified using different interface definition languages or, in the case were the IDL is Java, to allow the
- * service definition to be loaded from a different classloader.
+ * A ServiceDefinition definition that is mapped to a Java interface. The mapped interface is not required to be the
+ * same as the interface specified in the service contract. This is to allow the service contract to be specified using
+ * different interface definition languages or, in the case were the IDL is Java, to allow the service definition to be
+ * loaded from a different classloader.
  *
  * @version $Rev$ $Date$
  */
@@ -44,8 +44,8 @@ public class JavaMappedService extends ServiceDefinition {
     }
 
     /**
-     * Returns the Java interface for this service. This may be different from the interface that defines the
-     * service contract.
+     * Returns the Java interface for this service. This may be different from the interface that defines the service
+     * contract.
      *
      * @return the Java interface for this service
      */
@@ -54,8 +54,8 @@ public class JavaMappedService extends ServiceDefinition {
     }
 
     /**
-     * Sets the Java interface for this service. This may be different from the interface used to define the
-     * service contract.
+     * Sets the Java interface for this service. This may be different from the interface used to define the service
+     * contract.
      *
      * @param serviceInterface the Java interface for this service
      */

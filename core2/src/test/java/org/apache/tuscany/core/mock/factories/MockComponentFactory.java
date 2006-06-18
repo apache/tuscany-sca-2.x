@@ -3,21 +3,22 @@ package org.apache.tuscany.core.mock.factories;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.tuscany.core.mock.component.SourceImpl;
-import org.apache.tuscany.core.mock.component.Target;
-import org.apache.tuscany.core.mock.component.TargetImpl;
-import org.apache.tuscany.spi.model.PojoComponentType;
-import org.apache.tuscany.core.system.model.SystemBinding;
-import org.apache.tuscany.core.system.model.SystemImplementation;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.JavaServiceContract;
+import org.apache.tuscany.spi.model.PojoComponentType;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+
+import org.apache.tuscany.core.mock.component.SourceImpl;
+import org.apache.tuscany.core.mock.component.Target;
+import org.apache.tuscany.core.mock.component.TargetImpl;
+import org.apache.tuscany.core.system.model.SystemBinding;
+import org.apache.tuscany.core.system.model.SystemImplementation;
 
 /**
  * @version $$Rev$$ $$Date$$

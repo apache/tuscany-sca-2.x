@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
+
 import org.jmock.MockObjectTestCase;
 
 /**

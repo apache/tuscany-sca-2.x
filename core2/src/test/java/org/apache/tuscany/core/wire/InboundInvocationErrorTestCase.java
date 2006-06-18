@@ -4,13 +4,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
+
 import junit.framework.TestCase;
 import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.jdk.JDKInboundInvocationHandler;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
 
 /**
  * Tests handling of exceptions thrown during an inbound wire invocation

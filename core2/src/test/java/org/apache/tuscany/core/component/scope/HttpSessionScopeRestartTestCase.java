@@ -2,16 +2,17 @@ package org.apache.tuscany.core.component.scope;
 
 import java.lang.reflect.Constructor;
 
-import junit.framework.TestCase;
 import org.apache.tuscany.spi.component.PojoConfiguration;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.injection.PojoObjectFactory;
+
+import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.spi.injection.PojoObjectFactory;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
-import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * Verifies the scope container properly disposes resources and canbe restarted

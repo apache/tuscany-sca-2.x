@@ -6,13 +6,14 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.core.component.event.RequestEnd;
-import org.apache.tuscany.core.component.event.RequestStart;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
+
+import org.apache.tuscany.core.component.event.RequestEnd;
+import org.apache.tuscany.core.component.event.RequestStart;
 
 /**
  * A scope context which manages atomic component instances keyed on the current request context

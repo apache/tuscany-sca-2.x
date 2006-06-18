@@ -6,6 +6,16 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.component.PojoConfiguration;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.injection.PojoObjectFactory;
+import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.WireService;
+
 import junit.framework.TestCase;
 import org.apache.tuscany.container.java.JavaAtomicComponent;
 import org.apache.tuscany.container.java.mock.MockFactory;
@@ -27,15 +37,6 @@ import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
-import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.component.PojoConfiguration;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.injection.PojoObjectFactory;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.test.ArtifactFactory;
 
 /**

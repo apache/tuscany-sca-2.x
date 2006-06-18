@@ -19,16 +19,16 @@ package org.apache.tuscany.spi.wire;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Implementations are responsible for resolving a target and performing the actual invocation on it, for
- * example, a component implementation instance or a service client.
+ * Implementations are responsible for resolving a target and performing the actual invocation on it, for example, a
+ * component implementation instance or a service client.
  *
  * @version $Rev$ $Date$
  */
 public interface TargetInvoker extends Cloneable {
 
     /**
-     * Invokes an operation on a target with the given payload. Used in optmized cases where messagesdo not
-     * need to be flowed such as in non-proxied wires.
+     * Invokes an operation on a target with the given payload. Used in optmized cases where messagesdo not need to be
+     * flowed such as in non-proxied wires.
      *
      * @throws InvocationTargetException
      */
@@ -48,9 +48,9 @@ public interface TargetInvoker extends Cloneable {
     boolean isCacheable();
 
     /**
-     * Sets whether the target service instance may be cached by the invoker. This is a possible optimization
-     * when a wire is configured for a "down-scope" reference, i.e. a reference from a source of a shorter
-     * lifetime to a source of greater lifetime.
+     * Sets whether the target service instance may be cached by the invoker. This is a possible optimization when a
+     * wire is configured for a "down-scope" reference, i.e. a reference from a source of a shorter lifetime to a source
+     * of greater lifetime.
      */
     void setCacheable(boolean cacheable);
 

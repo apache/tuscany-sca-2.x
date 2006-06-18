@@ -31,8 +31,8 @@ public interface Reference<T> extends SCAObject<T> {
     OutboundWire<T> getOutboundWire();
 
     /**
-     * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to the target
-     * service of the reference
+     * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to the target service of
+     * the reference
      *
      * @param serviceName the name of the service
      * @param operation   the operation to invoke

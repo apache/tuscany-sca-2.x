@@ -16,6 +16,7 @@ import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
@@ -161,7 +162,7 @@ public class CompositeComponentExtensionTestCase extends MockObjectTestCase {
         };
         Mock mock = mock(RuntimeEventListener.class);
         mock.expects(once()).method("onEvent").with(eq(event));
-        composite.addListener((RuntimeEventListener)mock.proxy());
+        composite.addListener((RuntimeEventListener) mock.proxy());
         composite.onEvent(event);
     }
 

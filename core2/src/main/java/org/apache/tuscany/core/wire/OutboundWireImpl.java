@@ -16,7 +16,6 @@ package org.apache.tuscany.core.wire;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -24,6 +23,8 @@ import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
+
+import org.apache.tuscany.core.util.MethodHashMap;
 
 /**
  * Default implementation of an outbound wire

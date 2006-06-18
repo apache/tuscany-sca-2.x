@@ -16,12 +16,13 @@
  */
 package org.apache.tuscany.core.bootstrap;
 
-import org.apache.tuscany.core.system.component.SystemCompositeComponent;
-import org.apache.tuscany.core.system.component.SystemCompositeComponentImpl;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
+
+import org.apache.tuscany.core.system.component.SystemCompositeComponent;
+import org.apache.tuscany.core.system.component.SystemCompositeComponentImpl;
 
 /**
  * The default implementation of the Tuscany runtime component
