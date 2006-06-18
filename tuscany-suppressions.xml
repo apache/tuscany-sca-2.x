@@ -23,4 +23,8 @@
     <suppress checks="VisibilityModifier"
               files="^.*TestCase$.java|BasicInterfaceImpl.java|Bean1.java|SuperBean.java"
               />
+	<suppress checks="ParameterNumber"
+	           files="MockFactory.java"
+              />
+				  
 </suppressions>

@@ -16,23 +16,14 @@
  */
 package org.apache.tuscany.container.java;
 
-import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.core.component.PojoAtomicComponent;
-import org.apache.tuscany.core.injection.EventInvoker;
-import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.core.component.PojoConfiguration;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * The runtime instantiation of Java component implementations
@@ -41,21 +32,9 @@ import org.apache.tuscany.spi.wire.WireService;
  */
 public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
 
-    public JavaAtomicComponent(String name,
-                               CompositeComponent<?> parent,
-                               ScopeContainer scopeContainer,
-                               List<Class<?>> serviceInterfaces,
-                               ObjectFactory<?> objectFactory,
-                               Scope scope,
-                               boolean eagerInit,
-                               EventInvoker<Object> initInvoker,
-                               EventInvoker<Object> destroyInvoker,
-                               List<Injector> injectors,
-                               Map<String, Member> members,
-                               WireService wireService) {
-        super(name, parent, scopeContainer, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker,
-            injectors, members, wireService);
-        this.scope = scope;
+    public JavaAtomicComponent(String name, PojoConfiguration configuration) {
+        super(name, configuration);
+        this.scope = configuration.getScopeContainer().getScope();
     }
 
     public Object getServiceInstance(String name) throws TargetException {

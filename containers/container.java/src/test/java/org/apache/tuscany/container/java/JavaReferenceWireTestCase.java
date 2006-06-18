@@ -1,16 +1,12 @@
 package org.apache.tuscany.container.java;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Member;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.container.java.mock.components.TargetImpl;
+import org.apache.tuscany.core.component.PojoConfiguration;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -31,12 +27,12 @@ public class JavaReferenceWireTestCase extends MockObjectTestCase {
         ModuleScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         final Target target = new TargetImpl();
-        Map<String, Member> members = new HashMap<String, Member>();
-        members.put("target", SourceImpl.class.getMethod("setTarget", Target.class));
-        List<Class<?>> interfaces = new ArrayList<Class<?>>();
-        interfaces.add(Source.class);
+        PojoConfiguration configuration = new PojoConfiguration();
+        configuration.addMember("target", SourceImpl.class.getMethod("setTarget", Target.class));
+        configuration.addServiceInterface(Source.class);
         Constructor<SourceImpl> ctr = SourceImpl.class.getConstructor();
-
+        configuration.setObjectFactory(new PojoObjectFactory<SourceImpl>(ctr));
+        configuration.setScopeContainer(scope);
         Mock mock = mock(OutboundWire.class);
         mock.expects(atLeastOnce()).method("getInvocationChains");
         mock.expects(atLeastOnce()).method("getReferenceName").will(returnValue("target"));
@@ -54,10 +50,8 @@ public class JavaReferenceWireTestCase extends MockObjectTestCase {
                 return null;
             }
         });
-        WireService wireService = (WireService) mockService.proxy();
-        JavaAtomicComponent sourceContext = new JavaAtomicComponent("source", null, scope, interfaces,
-            new PojoObjectFactory<SourceImpl>(ctr), scope.getScope(), false, null, null, null, members, wireService);
-
+        configuration.setWireService((WireService) mockService.proxy());
+        JavaAtomicComponent sourceContext = new JavaAtomicComponent("source", configuration);
         sourceContext.addOutboundWire(wire);
         sourceContext.start();
         Source source = (Source) sourceContext.getServiceInstance();

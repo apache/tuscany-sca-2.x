@@ -5,11 +5,10 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.core.component.PojoAtomicComponent;
+import org.apache.tuscany.core.component.PojoConfiguration;
 import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
-import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.InvalidAccessorException;
@@ -17,8 +16,6 @@ import org.apache.tuscany.core.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.system.wire.SystemOutboundWire;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -31,52 +28,8 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public class SystemAtomicComponentImpl<T> extends PojoAtomicComponent<T> implements SystemAtomicComponent<T> {
 
-
-    public SystemAtomicComponentImpl(String name,
-                                     CompositeComponent<?> parent,
-                                     ScopeContainer scopeContainer,
-                                     Class<?> serviceInterface,
-                                     ObjectFactory<?> objectFactory,
-                                     boolean eagerInit,
-                                     EventInvoker<Object> initInvoker,
-                                     EventInvoker<Object> destroyInvoker,
-                                     List<Injector> injectors,
-                                     Map<String, Member> members) {
-        super(name,
-            parent,
-            scopeContainer,
-            serviceInterface,
-            objectFactory,
-            eagerInit,
-            initInvoker,
-            destroyInvoker,
-            injectors,
-            members,
-            null);
-        scope = Scope.MODULE;
-    }
-
-    public SystemAtomicComponentImpl(String name,
-                                     CompositeComponent<?> parent,
-                                     ScopeContainer scopeContainer,
-                                     List<Class<?>> serviceInterfaces,
-                                     ObjectFactory<?> objectFactory,
-                                     boolean eagerInit,
-                                     EventInvoker<Object> initInvoker,
-                                     EventInvoker<Object> destroyInvoker,
-                                     List<Injector> injectors,
-                                     Map<String, Member> members) {
-        super(name,
-            parent,
-            scopeContainer,
-            serviceInterfaces,
-            objectFactory,
-            eagerInit,
-            initInvoker,
-            destroyInvoker,
-            injectors,
-            members,
-            null);
+    public SystemAtomicComponentImpl(String name, PojoConfiguration configuration) {
+        super(name, configuration);
         scope = Scope.MODULE;
     }
 
@@ -115,7 +68,7 @@ public class SystemAtomicComponentImpl<T> extends PojoAtomicComponent<T> impleme
     protected Injector createMultiplicityInjector(Member member, Class<?> interfaceType, List<OutboundWire> wires) {
         List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
         for (OutboundWire wire : wires) {
-            assert wire instanceof SystemOutboundWire : "wire must be a "  + SystemOutboundWire.class.getName();
+            assert wire instanceof SystemOutboundWire : "wire must be a " + SystemOutboundWire.class.getName();
             SystemOutboundWire systemWire = (SystemOutboundWire) wire;
             factories.add(new SystemWireObjectFactory(systemWire));
         }

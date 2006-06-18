@@ -1,18 +1,14 @@
 package org.apache.tuscany.core.system.wire;
 
-import java.lang.reflect.Member;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.apache.tuscany.core.component.PojoConfiguration;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
-import org.apache.tuscany.core.mock.factories.MockContextFactory;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
+import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.jmock.Mock;
@@ -32,12 +28,13 @@ public class AtomicComponentWireInvocationTestCase extends MockObjectTestCase {
         Mock mockWire = mock(SystemInboundWire.class);
         mockWire.expects(atLeastOnce()).method("getTargetService").will(returnValue(target));
         SystemInboundWire<Target> inboundWire = (SystemInboundWire<Target>) mockWire.proxy();
-        Map<String, Member> members = new HashMap<String, Member>();
-        members.put("setTarget", SourceImpl.class.getMethod("setTarget", Target.class));
-        List<Class<?>> interfaces = new ArrayList<Class<?>>();
-        interfaces.add(Source.class);
-        SystemAtomicComponent sourceContext = MockContextFactory
-            .createSystemAtomicContext("source", scope, interfaces, SourceImpl.class, null, members);
+
+        PojoConfiguration configuration = new PojoConfiguration();
+        configuration.setScopeContainer(scope);
+        configuration.addMember("setTarget", SourceImpl.class.getMethod("setTarget", Target.class));
+        configuration.addServiceInterface(Source.class);
+        configuration.setObjectFactory(new PojoObjectFactory(SourceImpl.class.getConstructor()));
+        SystemAtomicComponent sourceContext = new SystemAtomicComponentImpl("source", configuration);
         OutboundWire<Target> outboundWire =
             new SystemOutboundWireImpl<Target>("setTarget", new QualifiedName("service"), Target.class);
         outboundWire.setTargetWire(inboundWire);

@@ -1,6 +1,7 @@
 package org.apache.tuscany.core.component.scope;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.component.PojoConfiguration;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.injection.EventInvoker;
@@ -84,16 +85,13 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     }
 
     private SystemAtomicComponent createContext(ScopeContainer scopeContainer) {
-        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo",
-            null,
-            scopeContainer,
-            SessionScopeInitDestroyComponent.class,
-            factory,
-            false,
-            initInvoker,
-            destroyInvoker,
-            null,
-            null);
+        PojoConfiguration configuration = new PojoConfiguration();
+        configuration.setScopeContainer(scopeContainer);
+        configuration.addServiceInterface(SessionScopeInitDestroyComponent.class);
+        configuration.setObjectFactory(factory);
+        configuration.setInitInvoker(initInvoker);
+        configuration.setDestroyInvoker(destroyInvoker);
+        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo", configuration);
         context.start();
         return context;
     }

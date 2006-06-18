@@ -11,7 +11,7 @@ import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;
 import org.apache.tuscany.core.mock.component.RequestScopeDestroyOnlyComponent;
 import org.apache.tuscany.core.mock.component.RequestScopeInitDestroyComponent;
 import org.apache.tuscany.core.mock.component.RequestScopeInitOnlyComponent;
-import org.apache.tuscany.core.mock.factories.MockContextFactory;
+import org.apache.tuscany.core.mock.factories.MockFactory;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
 
@@ -27,16 +27,16 @@ public class RequestScopeInstanceLifecycleTestCase extends TestCase {
         RequestScopeContainer scope = new RequestScopeContainer(ctx);
         scope.start();
 
-        SystemAtomicComponent initDestroyContext = MockContextFactory
-            .createSystemAtomicContext("InitDestroy", scope, RequestScopeInitDestroyComponent.class);
+        SystemAtomicComponent initDestroyContext = MockFactory
+            .createAtomicComponent("InitDestroy", scope, RequestScopeInitDestroyComponent.class);
         initDestroyContext.start();
 
         SystemAtomicComponent initOnlyContext =
-            MockContextFactory.createSystemAtomicContext("InitOnly", scope, RequestScopeInitOnlyComponent.class);
+            MockFactory.createAtomicComponent("InitOnly", scope, RequestScopeInitOnlyComponent.class);
         initOnlyContext.start();
 
-        SystemAtomicComponent destroyOnlyContext = MockContextFactory
-            .createSystemAtomicContext("DestroyOnly", scope, RequestScopeDestroyOnlyComponent.class);
+        SystemAtomicComponent destroyOnlyContext = MockFactory
+            .createAtomicComponent("DestroyOnly", scope, RequestScopeDestroyOnlyComponent.class);
         destroyOnlyContext.start();
 
         scope.onEvent(new RequestStart(this));
@@ -71,13 +71,13 @@ public class RequestScopeInstanceLifecycleTestCase extends TestCase {
         scope.start();
 
         SystemAtomicComponent oneCtx =
-            MockContextFactory.createSystemAtomicContext("one", scope, OrderedInitPojoImpl.class);
+            MockFactory.createAtomicComponent("one", scope, OrderedInitPojoImpl.class);
         scope.register(oneCtx);
         SystemAtomicComponent twoCtx =
-            MockContextFactory.createSystemAtomicContext("two", scope, OrderedInitPojoImpl.class);
+            MockFactory.createAtomicComponent("two", scope, OrderedInitPojoImpl.class);
         scope.register(twoCtx);
         SystemAtomicComponent threeCtx =
-            MockContextFactory.createSystemAtomicContext("three", scope, OrderedInitPojoImpl.class);
+            MockFactory.createAtomicComponent("three", scope, OrderedInitPojoImpl.class);
         scope.register(threeCtx);
 
         scope.onEvent(new RequestStart(this));
@@ -108,13 +108,13 @@ public class RequestScopeInstanceLifecycleTestCase extends TestCase {
         scope.start();
 
         SystemAtomicComponent oneCtx =
-            MockContextFactory.createSystemAtomicContext("one", scope, OrderedEagerInitPojo.class);
+            MockFactory.createAtomicComponent("one", scope, OrderedEagerInitPojo.class);
         scope.register(oneCtx);
         SystemAtomicComponent twoCtx =
-            MockContextFactory.createSystemAtomicContext("two", scope, OrderedEagerInitPojo.class);
+            MockFactory.createAtomicComponent("two", scope, OrderedEagerInitPojo.class);
         scope.register(twoCtx);
         SystemAtomicComponent threeCtx =
-            MockContextFactory.createSystemAtomicContext("three", scope, OrderedEagerInitPojo.class);
+            MockFactory.createAtomicComponent("three", scope, OrderedEagerInitPojo.class);
         scope.register(threeCtx);
 
         scope.onEvent(new RequestStart(this));

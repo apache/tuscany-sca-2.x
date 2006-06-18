@@ -19,12 +19,9 @@ import org.apache.tuscany.core.injection.NoAccessorException;
 import org.apache.tuscany.core.injection.WireObjectFactory;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * Base implementation of an {@link org.apache.tuscany.spi.component.AtomicComponent} whose type is a Java class
@@ -41,57 +38,19 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
     protected List<Injector> injectors;
     protected Map<String, Member> members;
 
-    public PojoAtomicComponent(String name,
-                               CompositeComponent<?> parent,
-                               ScopeContainer scopeContainer,
-                               Class<?> serviceInterface,
-                               ObjectFactory<?> objectFactory,
-                               boolean eagerInit,
-                               EventInvoker<Object> initInvoker,
-                               EventInvoker<Object> destroyInvoker,
-                               List<Injector> injectors,
-                               Map<String, Member> members,
-                               WireService wireService) {
-        super(name, parent, scopeContainer, wireService);
-        assert objectFactory != null : "Object factory was null";
+    public PojoAtomicComponent(String name, PojoConfiguration configuration) {
+        super(name, configuration.getParent(), configuration.getScopeContainer(), configuration.getWireService());
+        assert configuration.getObjectFactory() != null : "Object factory was null";
         if (eagerInit && initInvoker == null) {
             throw new AssertionError("No intialization method found for eager init implementation");
         }
-        List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
-        serviceInterfaces.add(serviceInterface);
-        this.serviceInterfaces = serviceInterfaces;
-        this.objectFactory = objectFactory;
-        this.eagerInit = eagerInit;
-        this.initInvoker = initInvoker;
-        this.destroyInvoker = destroyInvoker;
+        eagerInit = configuration.isEagerInit();
+        initInvoker = configuration.getInitInvoker();
+        destroyInvoker = configuration.getDestroyInvoker();
+        objectFactory = configuration.getObjectFactory();
+        serviceInterfaces = configuration.getServiceInterfaces();
         this.injectors = (injectors == null) ? new ArrayList<Injector>() : injectors;
-        this.members = members != null ? members : new HashMap<String, Member>();
-
-    }
-
-    public PojoAtomicComponent(String name,
-                               CompositeComponent<?> parent,
-                               ScopeContainer scopeContainer,
-                               List<Class<?>> serviceInterfaces,
-                               ObjectFactory<?> objectFactory,
-                               boolean eagerInit,
-                               EventInvoker<Object> initInvoker,
-                               EventInvoker<Object> destroyInvoker,
-                               List<Injector> injectors,
-                               Map<String, Member> members,
-                               WireService wireService) {
-        super(name, parent, scopeContainer, wireService);
-        assert objectFactory != null : "Object factory was null";
-        if (eagerInit && initInvoker == null) {
-            throw new AssertionError("No intialization method found for eager init implementation");
-        }
-        this.objectFactory = objectFactory;
-        this.eagerInit = eagerInit;
-        this.initInvoker = initInvoker;
-        this.destroyInvoker = destroyInvoker;
-        this.serviceInterfaces = serviceInterfaces;
-        this.injectors = (injectors == null) ? new ArrayList<Injector>() : injectors;
-        this.members = members != null ? members : new HashMap<String, Member>();
+        this.members = configuration.getMembers() != null ? configuration.getMembers() : new HashMap<String, Member>();
     }
 
     public List<Class<?>> getServiceInterfaces() {

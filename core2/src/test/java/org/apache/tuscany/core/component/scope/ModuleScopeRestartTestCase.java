@@ -1,15 +1,16 @@
 package org.apache.tuscany.core.component.scope;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Constructor;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.component.PojoConfiguration;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.mock.factories.MockContextFactory;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
+import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**
@@ -27,10 +28,14 @@ public class ModuleScopeRestartTestCase extends TestCase {
             new MethodEventInvoker<Object>(InitDestroyOnce.class.getMethod("init"));
         MethodEventInvoker<Object> destroyInvoker =
             new MethodEventInvoker<Object>(InitDestroyOnce.class.getMethod("destroy"));
-        List<Class<?>> interfaces = new ArrayList<Class<?>>();
-        interfaces.add(InitDestroyOnce.class);
-        SystemAtomicComponent context = MockContextFactory.createSystemAtomicContext("InitDestroy", scope, interfaces,
-            InitDestroyOnce.class, false, initInvoker, destroyInvoker, null, null);
+        PojoConfiguration configuration = new PojoConfiguration();
+        configuration.setScopeContainer(scope);
+        configuration.addServiceInterface(InitDestroyOnce.class);
+        configuration.setInitInvoker(initInvoker);
+        configuration.setDestroyInvoker(destroyInvoker);
+        Constructor<InitDestroyOnce> ctr = InitDestroyOnce.class.getConstructor((Class<?>[]) null);
+        configuration.setObjectFactory(new PojoObjectFactory<InitDestroyOnce>(ctr));
+        SystemAtomicComponent context = new SystemAtomicComponentImpl("InitDestroy", configuration);
         context.start();
 
         scope.onEvent(new CompositeStart(this, null));

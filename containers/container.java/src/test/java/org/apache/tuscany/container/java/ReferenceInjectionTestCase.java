@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.container.java.mock.MockContextFactory;
+import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
@@ -27,7 +27,7 @@ public class ReferenceInjectionTestCase extends TestCase {
         ScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         Map<String, AtomicComponent> contexts =
-            MockContextFactory.createWiredContexts("source", SourceImpl.class, scope,
+            MockFactory.createWiredContexts("source", SourceImpl.class, scope,
                 members, "target", Target.class, TargetImpl.class, scope);
         AtomicComponent sourceComponent = contexts.get("source");
         Source source = (Source) sourceComponent.getServiceInstance();

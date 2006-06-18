@@ -26,7 +26,7 @@ public class MultiplicityTestCase extends TestCase {
     public void testMultiplicity() throws Exception {
 //        CompositeComponent context = createContext();
 //        context.start();
-//        context.registerModelObject(MockContextFactory.createModuleWithWiredComponents(Scope.MODULE, Scope.MODULE));
+//        context.registerModelObject(MockFactory.createModuleWithWiredComponents(Scope.MODULE, Scope.MODULE));
 //        context.publish(new CompositeStart(this));
 //        Source source = (Source) ((AtomicComponent) context.getContext("source")).getTargetInstance();
 //        Assert.assertNotNull(source);
@@ -44,7 +44,7 @@ public class MultiplicityTestCase extends TestCase {
 //    private CompositeComponent createContext() {
 //        CompositeComponentImpl context = new CompositeComponentImpl();
 //        context.setName("system.context");
-//        List<ContextFactoryBuilder>builders = MockContextFactory.createSystemBuilders();
+//        List<ContextFactoryBuilder>builders = MockFactory.createSystemBuilders();
 //        WireService wireService = new DefaultWireFactoryService(new MessageFactoryImpl(),
 // new JDKWireFactoryService(), new DefaultPolicyBuilderRegistry());
 //        builders.add(new JavaContextFactoryBuilder(wireService));

@@ -1,19 +1,18 @@
 package org.apache.tuscany.container.java;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Member;
+import java.util.Map;
 
+import org.apache.tuscany.core.component.PojoConfiguration;
 import org.apache.tuscany.core.injection.ContextInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -25,29 +24,38 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  */
 public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplementation> {
 
-    public Component<?> build(CompositeComponent<?> parent, ComponentDefinition<JavaImplementation> componentDefinition,
-                              DeploymentContext deploymentContext)
+    public Component<?> build(CompositeComponent<?> parent, 
+                              ComponentDefinition<JavaImplementation> definition, 
+                              DeploymentContext deployment)
         throws BuilderConfigException {
-        PojoComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
+        PojoComponentType<?, ?, ?> componentType = definition.getImplementation().getComponentType();
 
-        List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
+        PojoConfiguration configuration = new PojoConfiguration();
+        configuration.setParent(parent);
+        configuration.setEagerInit(componentType.isEagerInit());
+        configuration.setInitInvoker(componentType.getInitInvoker());
+        configuration.setDestroyInvoker(componentType.getDestroyInvoker());
+        configuration.setWireService(wireService);
+        for (Map.Entry<String, Member> entry : componentType.getReferenceMembers().entrySet()) {
+            configuration.addMember(entry.getKey(), entry.getValue());
+        }
+
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
-            serviceInterfaces.add(serviceDefinition.getServiceContract().getInterfaceClass());
+            configuration.addServiceInterface(serviceDefinition.getServiceContract().getInterfaceClass());
         }
         Constructor<?> constr;
         try {
             constr = JavaIntrospectionHelper
-                .getDefaultConstructor(componentDefinition.getImplementation().getImplementationClass());
+                .getDefaultConstructor(definition.getImplementation().getImplementationClass());
         } catch (NoSuchMethodException e) {
-            BuilderConfigException bce = new BuilderConfigException("Error building componentDefinition", e);
-            bce.setIdentifier(componentDefinition.getName());
+            BuilderConfigException bce = new BuilderConfigException("Error building definition", e);
+            bce.setIdentifier(definition.getName());
             bce.addContextName(parent.getName());
             throw bce;
         }
-        ObjectFactory<?> factory = new PojoObjectFactory(constr);
-        List<Injector> injectors = new ArrayList<Injector>();
-        injectors.addAll(componentType.getInjectors());
-        for (Injector injector : injectors) {
+        configuration.setObjectFactory(new PojoObjectFactory(constr));
+        configuration.getInjectors().addAll(componentType.getInjectors());
+        for (Injector injector : configuration.getInjectors()) {
             if (injector instanceof ContextInjector) {
                 //iterate and determine if the parent context implements the interface
                 Class contextType = JavaIntrospectionHelper.introspectGeneric(injector.getClass(), 0);
@@ -61,25 +69,13 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             }
         }
 
-        ScopeContainer scopeContainer;
         Scope scope = componentType.getLifecycleScope();
         if (Scope.MODULE == scope) {
-            scopeContainer = deploymentContext.getModuleScope();
+            configuration.setScopeContainer(deployment.getModuleScope());
         } else {
-            scopeContainer = scopeRegistry.getScopeContainer(scope);
+            configuration.setScopeContainer(scopeRegistry.getScopeContainer(scope));
         }
-        return new JavaAtomicComponent(componentDefinition.getName(),
-            parent,
-            scopeContainer,
-            serviceInterfaces,
-            factory,
-            scope,
-            componentType.isEagerInit(),
-            componentType.getInitInvoker(),
-            componentType.getDestroyInvoker(),
-            injectors,
-            componentType.getReferenceMembers(),
-            wireService);
+        return new JavaAtomicComponent(definition.getName(), configuration);
     }
 
 

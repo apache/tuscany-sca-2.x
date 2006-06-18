@@ -2,11 +2,10 @@ package org.apache.tuscany.core.system.builder;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.core.component.AutowireComponent;
+import org.apache.tuscany.core.component.PojoConfiguration;
 import org.apache.tuscany.core.injection.ContextInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
@@ -19,13 +18,11 @@ import org.apache.tuscany.core.system.wire.SystemInboundWireImpl;
 import org.apache.tuscany.core.system.wire.SystemOutboundAutowire;
 import org.apache.tuscany.core.system.wire.SystemOutboundWireImpl;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
@@ -40,30 +37,26 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 public class SystemComponentBuilder implements ComponentBuilder<SystemImplementation> {
 
     public AtomicComponent<?> build(CompositeComponent<?> parent,
-                                    ComponentDefinition<SystemImplementation> componentDefinition,
+                                    ComponentDefinition<SystemImplementation> definition,
                                     DeploymentContext deploymentContext) throws BuilderConfigException {
         assert parent instanceof AutowireComponent : "Parent must implement " + AutowireComponent.class.getName();
         AutowireComponent autowireContext = (AutowireComponent) parent;
-        PojoComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
-        List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
+
+        PojoComponentType<?, ?, ?> componentType = definition.getImplementation().getComponentType();
+        PojoConfiguration configuration = new PojoConfiguration();
+        configuration.setParent(parent);
+        configuration.setEagerInit(componentType.isEagerInit());
+        configuration.setInitInvoker(componentType.getInitInvoker());
+        configuration.setDestroyInvoker(componentType.getDestroyInvoker());
+        configuration.setScopeContainer(deploymentContext.getModuleScope());
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
-            serviceInterfaces.add(serviceDefinition.getServiceContract().getInterfaceClass());
+            configuration.addServiceInterface(serviceDefinition.getServiceContract().getInterfaceClass());
         }
-        Constructor<?> constr;
-        try {
-            constr = JavaIntrospectionHelper.getDefaultConstructor(
-                componentDefinition.getImplementation().getImplementationClass());
-        } catch (NoSuchMethodException e) {
-            BuilderConfigException bce = new BuilderConfigException("Error building componentDefinition", e);
-            bce.setIdentifier(componentDefinition.getName());
-            bce.addContextName(parent.getName());
-            throw bce;
+        configuration.getInjectors().addAll(componentType.getInjectors());
+        for (Map.Entry<String, Member> entry : componentType.getReferenceMembers().entrySet()) {
+            configuration.addMember(entry.getKey(), entry.getValue());
         }
-        ObjectFactory<?> factory = new PojoObjectFactory(constr);
-        List<Injector> injectors = new ArrayList<Injector>();
-        injectors.addAll(componentType.getInjectors());
-        Map<String, Member> members = componentType.getReferenceMembers();
-        for (Injector injector : injectors) {
+        for (Injector injector : configuration.getInjectors()) {
             if (injector instanceof ContextInjector) {
                 // a context injector is found; determine if the parent context implements the interface
                 Class contextType = JavaIntrospectionHelper.introspectGeneric(injector.getClass(), 0);
@@ -76,18 +69,19 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
                 }
             }
         }
-        ScopeContainer scopeContainer = deploymentContext.getModuleScope();
-        SystemAtomicComponent systemContext =
-            new SystemAtomicComponentImpl(componentDefinition.getName(),
-                parent,
-                scopeContainer,
-                serviceInterfaces,
-                factory,
-                componentType.isEagerInit(),
-                componentType.getInitInvoker(),
-                componentType.getDestroyInvoker(),
-                injectors,
-                members);
+
+        Constructor<?> constr;
+        try {
+            constr =
+                JavaIntrospectionHelper.getDefaultConstructor(definition.getImplementation().getImplementationClass());
+        } catch (NoSuchMethodException e) {
+            BuilderConfigException bce = new BuilderConfigException("Error building component", e);
+            bce.setIdentifier(definition.getName());
+            bce.addContextName(parent.getName());
+            throw bce;
+        }
+        configuration.setObjectFactory(new PojoObjectFactory(constr));
+        SystemAtomicComponent systemContext = new SystemAtomicComponentImpl(definition.getName(), configuration);
 
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             Class interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
@@ -95,14 +89,14 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
                 new SystemInboundWireImpl(serviceDefinition.getName(), interfaze, systemContext);
             systemContext.addInboundWire(wire);
         }
-        for (ReferenceTarget target : componentDefinition.getReferenceTargets().values()) {
+        for (ReferenceTarget target : definition.getReferenceTargets().values()) {
             String referenceName = target.getReferenceName();
             Class interfaze = target.getReference().getServiceContract().getInterfaceClass();
             Member member = componentType.getReferenceMember(referenceName);
             if (member == null) {
                 BuilderConfigException e = new BuilderConfigException("ReferenceDefinition not found");
                 e.setIdentifier(target.getReferenceName());
-                e.addContextName(componentDefinition.getName());
+                e.addContextName(definition.getName());
                 e.addContextName(parent.getName());
                 throw e;
             }

@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.mock.component.StatelessComponent;
 import org.apache.tuscany.core.mock.component.StatelessComponentImpl;
-import org.apache.tuscany.core.mock.factories.MockContextFactory;
+import org.apache.tuscany.core.mock.factories.MockFactory;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
 
@@ -24,10 +24,10 @@ public class BasicStatelessScopeTestCase extends TestCase {
         StatelessScopeContainer scope = new StatelessScopeContainer(ctx);
         scope.start();
         SystemAtomicComponent context1 =
-            MockContextFactory.createSystemAtomicContext("comp1", scope, StatelessComponentImpl.class);
+            MockFactory.createAtomicComponent("comp1", scope, StatelessComponentImpl.class);
         scope.register(context1);
         SystemAtomicComponent context2 =
-            MockContextFactory.createSystemAtomicContext("comp2", scope, StatelessComponentImpl.class);
+            MockFactory.createAtomicComponent("comp2", scope, StatelessComponentImpl.class);
         scope.register(context2);
         StatelessComponentImpl comp1 = (StatelessComponentImpl) scope.getInstance(context1);
         Assert.assertNotNull(comp1);
@@ -43,12 +43,12 @@ public class BasicStatelessScopeTestCase extends TestCase {
 
         scope.start();
         SystemAtomicComponent context1 =
-            MockContextFactory.createSystemAtomicContext("comp1", scope, StatelessComponentImpl.class);
+            MockFactory.createAtomicComponent("comp1", scope, StatelessComponentImpl.class);
         scope.register(context1);
         StatelessComponent comp1 = (StatelessComponentImpl) scope.getInstance(context1);
         Assert.assertNotNull(comp1);
         SystemAtomicComponent context2 =
-            MockContextFactory.createSystemAtomicContext("comp2", scope, StatelessComponentImpl.class);
+            MockFactory.createAtomicComponent("comp2", scope, StatelessComponentImpl.class);
         scope.register(context2);
         StatelessComponentImpl comp2 = (StatelessComponentImpl) scope.getInstance(context2);
         Assert.assertNotNull(comp2);

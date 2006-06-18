@@ -7,11 +7,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.container.java.mock.MockContextFactory;
+import org.apache.tuscany.container.java.JavaAtomicComponent;
+import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.container.java.mock.components.TargetImpl;
 import org.apache.tuscany.core.builder.Connector;
 import org.apache.tuscany.core.builder.ConnectorImpl;
+import org.apache.tuscany.core.component.PojoConfiguration;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
@@ -23,11 +25,11 @@ import org.apache.tuscany.core.component.scope.HttpSessionScopeContainer;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.component.scope.RequestScopeContainer;
 import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -151,9 +153,12 @@ public class OutboundWireToJavaTestCase extends TestCase {
         Connector connector = new ConnectorImpl();
         OutboundWire<Target> wire = createOutboundWire(new QualifiedName("target/Target"), Target.class);
 
-        AtomicComponent<?> atomicComponent = MockContextFactory
-            .createJavaAtomicContext("target", scope, TargetImpl.class, Target.class, scope.getScope());
-        InboundWire targetWire = MockContextFactory.createTargetWire("Target", Target.class);
+        PojoConfiguration configuration = new PojoConfiguration();
+        configuration.setScopeContainer(scope);
+        configuration.setObjectFactory(new PojoObjectFactory<TargetImpl>(TargetImpl.class.getConstructor()));
+        configuration.addServiceInterface(Target.class);
+        JavaAtomicComponent<?> atomicComponent = new JavaAtomicComponent("target", configuration);
+        InboundWire targetWire = MockFactory.createTargetWire("Target", Target.class);
         atomicComponent.addInboundWire(targetWire);
         connector.connect(wire, atomicComponent.getInboundWire("Target"), atomicComponent, false);
         atomicComponent.start();

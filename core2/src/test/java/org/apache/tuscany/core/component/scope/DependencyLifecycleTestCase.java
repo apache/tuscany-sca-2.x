@@ -13,7 +13,7 @@ import org.apache.tuscany.core.mock.component.OrderedDependentPojo;
 import org.apache.tuscany.core.mock.component.OrderedDependentPojoImpl;
 import org.apache.tuscany.core.mock.component.OrderedInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;
-import org.apache.tuscany.core.mock.factories.MockContextFactory;
+import org.apache.tuscany.core.mock.factories.MockFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
 
@@ -28,7 +28,7 @@ public class DependencyLifecycleTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         ModuleScopeContainer scopeCtx = new ModuleScopeContainer(ctx);
         scopeCtx.start();
-        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source",
+        Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source",
             OrderedDependentPojoImpl.class,
             scopeCtx,
             "target",
@@ -56,7 +56,7 @@ public class DependencyLifecycleTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         ModuleScopeContainer scopeCtx = new ModuleScopeContainer(ctx);
         scopeCtx.start();
-        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source",
+        Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source",
             OrderedDependentPojoImpl.class,
             scopeCtx,
             "target",
@@ -83,7 +83,7 @@ public class DependencyLifecycleTestCase extends TestCase {
         HttpSessionScopeContainer scopeCtx = new HttpSessionScopeContainer(ctx);
         scopeCtx.start();
         Object session = new Object();
-        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source",
+        Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source",
             OrderedDependentPojoImpl.class,
             scopeCtx,
             "target",
@@ -108,7 +108,7 @@ public class DependencyLifecycleTestCase extends TestCase {
         HttpSessionScopeContainer scopeCtx = new HttpSessionScopeContainer(ctx);
         scopeCtx.start();
         Object session = new Object();
-        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source",
+        Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source",
             OrderedDependentPojoImpl.class,
             scopeCtx,
             "target",
@@ -132,7 +132,7 @@ public class DependencyLifecycleTestCase extends TestCase {
         RequestScopeContainer scopeCtx = new RequestScopeContainer(ctx);
         scopeCtx.start();
         scopeCtx.onEvent(new RequestStart(this));
-        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source",
+        Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source",
             OrderedDependentPojoImpl.class,
             scopeCtx,
             "target",

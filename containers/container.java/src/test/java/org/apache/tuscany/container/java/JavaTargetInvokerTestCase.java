@@ -19,7 +19,7 @@ package org.apache.tuscany.container.java;
 import java.lang.reflect.Method;
 
 import junit.framework.Assert;
-import org.apache.tuscany.container.java.mock.MockContextFactory;
+import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.model.Scope;
@@ -46,7 +46,7 @@ public class JavaTargetInvokerTestCase extends MockObjectTestCase {
         ScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         JavaAtomicComponent context =
-            MockContextFactory.createJavaAtomicContext("foo", scope, Echo.class, Scope.MODULE);
+            MockFactory.createJavaAtomicContext("foo", scope, Echo.class, Scope.MODULE);
         scope.register(context);
         JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, context);
         invoker.setCacheable(false);

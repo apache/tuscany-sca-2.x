@@ -1,6 +1,7 @@
 package org.apache.tuscany.core.component.scope;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.component.PojoConfiguration;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
@@ -72,9 +73,14 @@ public class BasicRequestScopeTestCase extends TestCase {
     }
 
     private SystemAtomicComponent createContext(ScopeContainer scopeContainer) {
-        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo", null, scopeContainer,
-            RequestScopeInitDestroyComponent.class, factory, false, initInvoker, destroyInvoker, null, null);
-        context.start();
-        return context;
+        PojoConfiguration configuration = new PojoConfiguration();
+        configuration.setScopeContainer(scopeContainer);
+        configuration.addServiceInterface(RequestScopeInitDestroyComponent.class);
+        configuration.setObjectFactory(factory);
+        configuration.setInitInvoker(initInvoker);
+        configuration.setDestroyInvoker(destroyInvoker);
+        SystemAtomicComponentImpl component = new SystemAtomicComponentImpl("foo", configuration);
+        scopeContainer.register(component);
+        return component;
     }
 }

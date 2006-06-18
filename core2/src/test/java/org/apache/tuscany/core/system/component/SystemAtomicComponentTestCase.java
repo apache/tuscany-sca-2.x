@@ -1,6 +1,7 @@
 package org.apache.tuscany.core.system.component;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.component.PojoConfiguration;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
@@ -17,8 +18,11 @@ public class SystemAtomicComponentTestCase extends TestCase {
 
     public void testContextCreationAndInit() throws Exception {
         ObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor((Class[]) null), null);
-        SystemAtomicComponent context = new SystemAtomicComponentImpl("foo", null, null, Foo.class, factory, false,
-            initInvoker, null, null, null);
+        PojoConfiguration configuration = new PojoConfiguration();
+        configuration.addServiceInterface(Foo.class);
+        configuration.setObjectFactory(factory);
+        configuration.setInitInvoker(initInvoker);
+        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo", configuration);
         Foo foo = (Foo) context.createInstance();
         context.init(foo);
         assertNotNull(foo);

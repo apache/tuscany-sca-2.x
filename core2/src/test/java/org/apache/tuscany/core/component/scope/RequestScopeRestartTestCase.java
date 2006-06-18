@@ -1,14 +1,15 @@
 package org.apache.tuscany.core.component.scope;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Constructor;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.component.PojoConfiguration;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.mock.factories.MockContextFactory;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
+import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**
@@ -23,13 +24,17 @@ public class RequestScopeRestartTestCase extends TestCase {
         RequestScopeContainer scope = new RequestScopeContainer(ctx);
         scope.start();
         MethodEventInvoker<Object> initInvoker =
-            new MethodEventInvoker<Object>(RequestScopeRestartTestCase.InitDestroyOnce.class.getMethod("init"));
+            new MethodEventInvoker<Object>(InitDestroyOnce.class.getMethod("init"));
         MethodEventInvoker<Object> destroyInvoker =
-            new MethodEventInvoker<Object>(RequestScopeRestartTestCase.InitDestroyOnce.class.getMethod("destroy"));
-        List<Class<?>> interfaces = new ArrayList<Class<?>>();
-        interfaces.add(RequestScopeRestartTestCase.InitDestroyOnce.class);
-        SystemAtomicComponent context = MockContextFactory.createSystemAtomicContext("InitDestroy", scope, interfaces,
-            RequestScopeRestartTestCase.InitDestroyOnce.class, false, initInvoker, destroyInvoker, null, null);
+            new MethodEventInvoker<Object>(InitDestroyOnce.class.getMethod("destroy"));
+        PojoConfiguration configuration = new PojoConfiguration();
+        configuration.setScopeContainer(scope);
+        configuration.addServiceInterface(InitDestroyOnce.class);
+        configuration.setInitInvoker(initInvoker);
+        configuration.setDestroyInvoker(destroyInvoker);
+        Constructor<InitDestroyOnce> ctr = InitDestroyOnce.class.getConstructor((Class<?>[]) null);
+        configuration.setObjectFactory(new PojoObjectFactory<InitDestroyOnce>(ctr));
+        SystemAtomicComponent context = new SystemAtomicComponentImpl("InitDestroy", configuration);
         context.start();
 
         Object instance = context.getServiceInstance();

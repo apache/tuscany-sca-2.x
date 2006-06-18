@@ -35,7 +35,7 @@ public class JavaAtomicComponentNegativeMetadataTestCase extends TestCase {
 //        CompositeComponent mc = new CompositeComponentImpl();
 //        mc.setName("mc");
 //        try {
-//            MockContextFactory.createPojoContext("BadNamePojo", BadNamePojo.class, Scope.MODULE, mc);
+//            MockFactory.createPojoContext("BadNamePojo", BadNamePojo.class, Scope.MODULE, mc);
 //        } catch (NoSuchMethodException e) {
 //            if (e.getMessage().indexOf("@ComponentName") < 0) {
 //                throw e;
@@ -53,7 +53,7 @@ public class JavaAtomicComponentNegativeMetadataTestCase extends TestCase {
 //        CompositeComponent mc = new CompositeComponentImpl();
 //        mc.setName("mc");
 //        try {
-//            MockContextFactory.createPojoContext("BadContextPojo", BadContextPojo.class, Scope.MODULE, mc);
+//            MockFactory.createPojoContext("BadContextPojo", BadContextPojo.class, Scope.MODULE, mc);
 //        } catch (NoSuchMethodException e) {
 //            if (e.getMessage().indexOf("@SCAObject") < 0) {
 //                throw e;

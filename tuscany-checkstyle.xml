@@ -121,7 +121,7 @@ lengths, if/try depths, etc...
             <property name="countEmpty" value="false"/>
         </module>
         <module name="ParameterNumber">
-            <property name="max" value="15"/>
+            <property name="max" value="5"/>
         </module>
 
         <!-- Checks for whitespace                               -->
