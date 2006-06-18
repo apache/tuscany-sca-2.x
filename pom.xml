@@ -34,6 +34,7 @@
         <module>containers</module>
         <module>services</module>
         <module>commands/launcher</module>
+        <module>bindings</module>
   <!--
         <module>runtime/standalone</module>
         <module>runtime/equinox</module>

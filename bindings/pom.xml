@@ -31,10 +31,10 @@
 
     <modules>
         <!-- temporary project to download and install the celtix required sun jars.   The jars
-        are all CDDL so will be available on ibiblio when Sun releases them.   This is just temporary.
+        are all CDDL so will be available on ibiblio when Sun releases them.   This is just temporary.-->
          
         <module>sunjars</module>
-        <module>binding.celtix</module>-->
+        <module>binding.celtix</module>
     </modules>
 
 </project>
