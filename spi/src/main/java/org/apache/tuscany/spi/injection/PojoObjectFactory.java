@@ -11,7 +11,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.injection;
+package org.apache.tuscany.spi.injection;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -24,7 +24,7 @@ import org.apache.tuscany.spi.ObjectFactory;
  * Creates new instances of a Java class, calling a given set of injectors to configure the instance
  *
  * @version $Rev$ $Date$
- * @see Injector
+ * @see org.apache.tuscany.spi.injection.Injector
  */
 public class PojoObjectFactory<T> implements ObjectFactory<T> {
 

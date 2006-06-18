@@ -1,8 +1,8 @@
 package org.apache.tuscany.core.system.wire;
 
-import org.apache.tuscany.core.component.PojoConfiguration;
+import org.apache.tuscany.spi.component.PojoConfiguration;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.spi.injection.PojoObjectFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Target;

@@ -18,7 +18,7 @@ package org.apache.tuscany.core.system.loader;
 
 import java.net.URL;
 
-import org.apache.tuscany.core.model.PojoComponentType;
+import org.apache.tuscany.spi.model.PojoComponentType;
 import org.apache.tuscany.core.system.model.SystemImplementation;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.deployer.DeploymentContext;

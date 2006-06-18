@@ -3,6 +3,9 @@ package org.apache.tuscany.core.injection;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.spi.injection.EventInvoker;
+import org.apache.tuscany.spi.injection.ObjectCallbackException;
+
 /**
  * Performs an wire on a method of a given instance
  *

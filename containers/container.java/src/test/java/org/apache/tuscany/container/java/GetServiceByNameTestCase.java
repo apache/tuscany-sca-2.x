@@ -4,9 +4,10 @@ import java.util.Collections;
 
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.container.java.mock.components.TargetImpl;
-import org.apache.tuscany.core.component.PojoConfiguration;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.spi.component.PojoConfiguration;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.injection.PojoObjectFactory;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.test.ArtifactFactory;
 import org.jmock.Mock;
@@ -18,8 +19,11 @@ import org.jmock.MockObjectTestCase;
 public class GetServiceByNameTestCase extends MockObjectTestCase {
 
     public void testServiceLocate() throws Exception {
-        ModuleScopeContainer scope = new ModuleScopeContainer(null);
-        scope.start();
+        Mock mockScope = mock(ScopeContainer.class);
+        mockScope.expects(atLeastOnce()).method("register");
+        mockScope.expects(atLeastOnce()).method("getScope").will(returnValue(Scope.MODULE));
+        ScopeContainer scope = (ScopeContainer) mockScope.proxy();
+
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scope);
         configuration.setObjectFactory(new PojoObjectFactory<TargetImpl>(TargetImpl.class.getConstructor()));
@@ -38,6 +42,4 @@ public class GetServiceByNameTestCase extends MockObjectTestCase {
         component.start();
         assertTrue(component.getServiceInstance("Target") instanceof Target);
     }
-
-
 }

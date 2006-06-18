@@ -4,18 +4,18 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.util.Map;
 
-import org.apache.tuscany.core.component.PojoConfiguration;
-import org.apache.tuscany.core.injection.ContextInjector;
-import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.PojoConfiguration;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
+import org.apache.tuscany.spi.injection.ContextInjector;
+import org.apache.tuscany.spi.injection.Injector;
+import org.apache.tuscany.spi.injection.PojoObjectFactory;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.PojoComponentType;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
@@ -24,8 +24,8 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  */
 public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplementation> {
 
-    public Component<?> build(CompositeComponent<?> parent, 
-                              ComponentDefinition<JavaImplementation> definition, 
+    public Component<?> build(CompositeComponent<?> parent,
+                              ComponentDefinition<JavaImplementation> definition,
                               DeploymentContext deployment)
         throws BuilderConfigException {
         PojoComponentType<?, ?, ?> componentType = definition.getImplementation().getComponentType();

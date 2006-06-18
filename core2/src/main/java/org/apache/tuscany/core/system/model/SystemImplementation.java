@@ -16,7 +16,7 @@
  */
 package org.apache.tuscany.core.system.model;
 
-import org.apache.tuscany.core.model.PojoComponentType;
+import org.apache.tuscany.spi.model.PojoComponentType;
 import org.apache.tuscany.spi.model.AtomicImplementation;
 
 /**

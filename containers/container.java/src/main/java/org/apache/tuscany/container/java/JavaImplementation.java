@@ -1,7 +1,7 @@
 package org.apache.tuscany.container.java;
 
-import org.apache.tuscany.core.model.PojoComponentType;
 import org.apache.tuscany.spi.model.AtomicImplementation;
+import org.apache.tuscany.spi.model.PojoComponentType;
 
 /**
  * @version $$Rev$$ $$Date$$

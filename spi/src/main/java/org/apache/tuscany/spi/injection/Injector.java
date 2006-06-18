@@ -11,7 +11,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.injection;
+package org.apache.tuscany.spi.injection;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 
@@ -19,8 +19,6 @@ import org.apache.tuscany.spi.ObjectCreationException;
  * Implementations inject a pre-configured value on an instance
  *
  * @version $Rev$ $Date$
- * @see MethodInjector
- * @see FieldInjector
  */
 public interface Injector<T> {
 

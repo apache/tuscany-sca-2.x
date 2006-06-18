@@ -1,4 +1,4 @@
-package org.apache.tuscany.core.model;
+package org.apache.tuscany.spi.model;
 
 import java.lang.reflect.Member;
 import java.util.ArrayList;
@@ -6,13 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.core.injection.EventInvoker;
-import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.spi.model.ComponentType;
-import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.injection.EventInvoker;
+import org.apache.tuscany.spi.injection.Injector;
 
 /**
  * A component type specialization for POJO implementations

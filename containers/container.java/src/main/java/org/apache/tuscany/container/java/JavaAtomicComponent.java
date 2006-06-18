@@ -19,7 +19,7 @@ package org.apache.tuscany.container.java;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.core.component.PojoAtomicComponent;
-import org.apache.tuscany.core.component.PojoConfiguration;
+import org.apache.tuscany.spi.component.PojoConfiguration;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.wire.InboundWire;

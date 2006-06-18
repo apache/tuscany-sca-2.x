@@ -6,7 +6,7 @@ import java.net.URISyntaxException;
 import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
-import org.apache.tuscany.core.model.PojoComponentType;
+import org.apache.tuscany.spi.model.PojoComponentType;
 import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.model.SystemImplementation;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;

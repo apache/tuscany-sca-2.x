@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.core.component.PojoAtomicComponent;
-import org.apache.tuscany.core.component.PojoConfiguration;
+import org.apache.tuscany.spi.component.PojoConfiguration;
 import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.FieldInjector;
-import org.apache.tuscany.core.injection.Injector;
+import org.apache.tuscany.spi.injection.Injector;
 import org.apache.tuscany.core.injection.InvalidAccessorException;
 import org.apache.tuscany.core.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.MethodInjector;

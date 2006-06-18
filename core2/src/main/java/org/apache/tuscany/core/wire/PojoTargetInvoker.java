@@ -14,6 +14,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 /**
  * Base class for dispatching to a Java based component implementation. Subclasses implement a strategy for resolving
  * implementation instances.
+ * FIXME Needs to be moved to spi once JavaIntrospectionHelper is eliminated
  *
  * @version $Rev$ $Date$
  */

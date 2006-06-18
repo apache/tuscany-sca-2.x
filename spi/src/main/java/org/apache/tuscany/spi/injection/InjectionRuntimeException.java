@@ -1,4 +1,4 @@
-package org.apache.tuscany.core.injection;
+package org.apache.tuscany.spi.injection;
 
 import org.apache.tuscany.spi.TuscanyRuntimeException;
 

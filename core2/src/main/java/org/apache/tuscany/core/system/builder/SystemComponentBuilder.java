@@ -5,11 +5,11 @@ import java.lang.reflect.Member;
 import java.util.Map;
 
 import org.apache.tuscany.core.component.AutowireComponent;
-import org.apache.tuscany.core.component.PojoConfiguration;
-import org.apache.tuscany.core.injection.ContextInjector;
-import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.model.PojoComponentType;
+import org.apache.tuscany.spi.component.PojoConfiguration;
+import org.apache.tuscany.spi.injection.ContextInjector;
+import org.apache.tuscany.spi.injection.Injector;
+import org.apache.tuscany.spi.injection.PojoObjectFactory;
+import org.apache.tuscany.spi.model.PojoComponentType;
 import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.system.model.SystemImplementation;

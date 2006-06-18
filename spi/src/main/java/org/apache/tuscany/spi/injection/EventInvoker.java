@@ -1,10 +1,9 @@
-package org.apache.tuscany.core.injection;
+package org.apache.tuscany.spi.injection;
 
 /**
  * Performs an invocation on an instance
  *
  * @version $Rev$ $Date$
- * @see MethodEventInvoker
  */
 public interface EventInvoker<T> {
 

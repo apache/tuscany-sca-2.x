@@ -1,20 +1,27 @@
 package org.apache.tuscany.container.java;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
 import org.apache.tuscany.core.component.CompositeComponentImpl;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
-import org.apache.tuscany.core.model.PojoComponentType;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.JavaServiceContract;
+import org.apache.tuscany.spi.model.PojoComponentType;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.test.ArtifactFactory;
+import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
+import org.jmock.core.Invocation;
+import org.jmock.core.Stub;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -25,8 +32,7 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
         CompositeComponent parent = new CompositeComponentImpl(null, null, null, ArtifactFactory.createWireService());
-        ModuleScopeContainer scope = new ModuleScopeContainer(null);
-        scope.start();
+
         PojoComponentType sourceType = new PojoComponentType();
         sourceType.setLifecycleScope(Scope.MODULE);
         sourceType.addReferenceMember("target", SourceImpl.class.getMethod("setTarget", Target.class));
@@ -56,6 +62,32 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        deploymentContext = new DeploymentContext(null, null, new ModuleScopeContainer());
+        deploymentContext = new DeploymentContext(null, null, createMock());
     }
+
+    private ScopeContainer createMock() {
+        Mock mock = mock(ScopeContainer.class);
+        mock.expects(once()).method("start");
+        mock.expects(atLeastOnce()).method("register");
+        mock.expects(atLeastOnce()).method("getScope").will(returnValue(Scope.MODULE));
+        mock.expects(atLeastOnce()).method("getInstance").will(new Stub() {
+            private Map<AtomicComponent, Object> cache = new HashMap<AtomicComponent, Object>();
+
+            public Object invoke(Invocation invocation) throws Throwable {
+                AtomicComponent component = (AtomicComponent) invocation.parameterValues.get(0);
+                Object instance = cache.get(component);
+                if (instance == null) {
+                    instance = component.createInstance();
+                    cache.put(component, instance);
+                }
+                return instance;
+            }
+
+            public StringBuffer describeTo(StringBuffer stringBuffer) {
+                return null;
+            }
+        });
+        return (ScopeContainer) mock.proxy();
+    }
+
 }

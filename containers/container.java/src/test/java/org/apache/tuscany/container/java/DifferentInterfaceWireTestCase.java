@@ -20,16 +20,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
 import org.apache.tuscany.container.java.mock.MockFactory;
 import org.apache.tuscany.container.java.mock.components.OtherTarget;
 import org.apache.tuscany.container.java.mock.components.OtherTargetImpl;
 import org.apache.tuscany.container.java.mock.components.Source;
 import org.apache.tuscany.container.java.mock.components.SourceImpl;
 import org.apache.tuscany.container.java.mock.components.Target;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.model.Scope;
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
+import org.jmock.core.Invocation;
+import org.jmock.core.Stub;
 
 
 /**
@@ -37,17 +40,24 @@ import org.apache.tuscany.spi.component.ScopeContainer;
  *
  * @version $Rev$ $Date$
  */
-public class DifferentInterfaceWireTestCase extends TestCase {
+public class DifferentInterfaceWireTestCase extends MockObjectTestCase {
 
     public void testDifferentInterfaceInjection() throws Exception {
         Map<String, Member> members = new HashMap<String, Member>();
         Method m = SourceImpl.class.getMethod("setTarget", Target.class);
         members.put("target", m);
-        ScopeContainer scope = new ModuleScopeContainer(null);
+        ScopeContainer scope = createMock();
         scope.start();
         Map<String, AtomicComponent> contexts =
-            MockFactory.createWiredComponents("source", SourceImpl.class, Target.class, scope,
-                members, "target", OtherTarget.class, OtherTargetImpl.class, scope);
+            MockFactory.createWiredComponents("source",
+                SourceImpl.class,
+                Target.class,
+                scope,
+                members,
+                "target",
+                OtherTarget.class,
+                OtherTargetImpl.class,
+                scope);
         AtomicComponent sourceComponent = contexts.get("source");
         Source source = (Source) sourceComponent.getServiceInstance();
         Target target = source.getTarget();
@@ -60,7 +70,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         Map<String, Member> members = new HashMap<String, Member>();
         Method m = SourceImpl.class.getMethod("setTargets", List.class);
         members.put("target", m);
-        ScopeContainer scope = new ModuleScopeContainer(null);
+        ScopeContainer scope = createMock();
         scope.start();
         Map<String, AtomicComponent> contexts =
             MockFactory.createWiredMultiplicity("source", SourceImpl.class, Target.class, scope,
@@ -84,4 +94,29 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         super.tearDown();
     }
 
+    private ScopeContainer createMock() {
+        Mock mock = mock(ScopeContainer.class);
+        mock.expects(once()).method("start");
+        mock.expects(once()).method("stop");
+        mock.expects(atLeastOnce()).method("register");
+        mock.expects(atLeastOnce()).method("getScope").will(returnValue(Scope.MODULE));
+        mock.expects(atLeastOnce()).method("getInstance").will(new Stub() {
+            private Map<AtomicComponent, Object> cache = new HashMap<AtomicComponent, Object>();
+
+            public Object invoke(Invocation invocation) throws Throwable {
+                AtomicComponent component = (AtomicComponent) invocation.parameterValues.get(0);
+                Object instance = cache.get(component);
+                if (instance == null) {
+                    instance = component.createInstance();
+                    cache.put(component, instance);
+                }
+                return instance;
+            }
+
+            public StringBuffer describeTo(StringBuffer stringBuffer) {
+                return null;
+            }
+        });
+        return (ScopeContainer) mock.proxy();
+    }
 }

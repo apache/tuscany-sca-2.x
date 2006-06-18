@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.injection.Injector;
 
 /**
  * Injects a value created by an {@link org.apache.tuscany.spi.ObjectFactory} on a given field
