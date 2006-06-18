@@ -39,7 +39,7 @@ public class JavaTargetInvoker extends PojoTargetInvoker {
      */
     public JavaTargetInvoker(Method operation, JavaAtomicComponent context) {
         super(operation);
-        assert (context != null) : "No atomic context specified";
+        assert context != null : "No atomic context specified";
         this.context = context;
     }
 

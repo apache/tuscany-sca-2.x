@@ -20,7 +20,7 @@ public class GetServiceByNameTestCase extends MockObjectTestCase {
         ModuleScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         final JavaAtomicComponent<?> context =
-                MockContextFactory.createJavaAtomicContext("target", scope, TargetImpl.class, Target.class, Scope.MODULE);
+            MockContextFactory.createJavaAtomicContext("target", scope, TargetImpl.class, Target.class, Scope.MODULE);
 
         Mock mock = mock(InboundWire.class);
         mock.stubs().method("getBusinessInterface").will(returnValue(Target.class));

@@ -45,7 +45,8 @@ public class JavaTargetInvokerTestCase extends MockObjectTestCase {
     public void testScopedInvoke() throws Exception {
         ScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
-        JavaAtomicComponent context = MockContextFactory.createJavaAtomicContext("foo", scope, Echo.class, Scope.MODULE);
+        JavaAtomicComponent context =
+            MockContextFactory.createJavaAtomicContext("foo", scope, Echo.class, Scope.MODULE);
         scope.register(context);
         JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, context);
         invoker.setCacheable(false);

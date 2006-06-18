@@ -45,7 +45,8 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         members.put("target", m);
         ScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
-        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, Target.class, scope,
+        Map<String, AtomicComponent> contexts =
+            MockContextFactory.createWiredContexts("source", SourceImpl.class, Target.class, scope,
                 members, "target", OtherTarget.class, OtherTargetImpl.class, scope);
         AtomicComponent sourceComponent = contexts.get("source");
         Source source = (Source) sourceComponent.getServiceInstance();
@@ -61,7 +62,8 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         members.put("target", m);
         ScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
-        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredMultiplicity("source", SourceImpl.class, Target.class, scope,
+        Map<String, AtomicComponent> contexts =
+            MockContextFactory.createWiredMultiplicity("source", SourceImpl.class, Target.class, scope,
                 "target", OtherTarget.class, OtherTargetImpl.class, members, scope);
         AtomicComponent sourceComponent = contexts.get("source");
         Source source = (Source) sourceComponent.getServiceInstance();

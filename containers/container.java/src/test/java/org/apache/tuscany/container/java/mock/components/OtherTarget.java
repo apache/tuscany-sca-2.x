@@ -7,7 +7,7 @@ package org.apache.tuscany.container.java.mock.components;
  */
 public interface OtherTarget {
 
-    public String getString();
+    String getString();
 
-    public void setString(String val);
+    void setString(String val);
 }

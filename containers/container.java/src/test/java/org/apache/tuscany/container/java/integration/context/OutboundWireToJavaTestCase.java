@@ -151,7 +151,8 @@ public class OutboundWireToJavaTestCase extends TestCase {
         Connector connector = new ConnectorImpl();
         OutboundWire<Target> wire = createOutboundWire(new QualifiedName("target/Target"), Target.class);
 
-        AtomicComponent<?> atomicComponent = MockContextFactory.createJavaAtomicContext("target", scope, TargetImpl.class, Target.class, scope.getScope());
+        AtomicComponent<?> atomicComponent = MockContextFactory
+            .createJavaAtomicContext("target", scope, TargetImpl.class, Target.class, scope.getScope());
         InboundWire targetWire = MockContextFactory.createTargetWire("Target", Target.class);
         atomicComponent.addInboundWire(targetWire);
         connector.connect(wire, atomicComponent.getInboundWire("Target"), atomicComponent, false);

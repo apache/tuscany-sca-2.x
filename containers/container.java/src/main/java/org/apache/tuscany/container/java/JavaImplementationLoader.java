@@ -19,7 +19,8 @@ public class JavaImplementationLoader extends LoaderExtension {
         return IMPLEMENTATION_JAVA;
     }
 
-    public ModelObject load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ModelObject load(XMLStreamReader reader, DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException {
         assert IMPLEMENTATION_JAVA.equals(reader.getName());
         JavaImplementation implementation = new JavaImplementation();
         String implClass = reader.getAttributeValue(null, "class");

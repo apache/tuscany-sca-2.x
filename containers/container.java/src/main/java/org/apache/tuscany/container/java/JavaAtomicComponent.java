@@ -53,7 +53,8 @@ public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
                                List<Injector> injectors,
                                Map<String, Member> members,
                                WireService wireService) {
-        super(name, parent, scopeContainer, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker, injectors, members, wireService);
+        super(name, parent, scopeContainer, serviceInterfaces, objectFactory, eagerInit, initInvoker, destroyInvoker,
+            injectors, members, wireService);
         this.scope = scope;
     }
 

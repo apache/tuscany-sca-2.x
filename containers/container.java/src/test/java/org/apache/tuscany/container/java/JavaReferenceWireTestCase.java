@@ -56,7 +56,7 @@ public class JavaReferenceWireTestCase extends MockObjectTestCase {
         });
         WireService wireService = (WireService) mockService.proxy();
         JavaAtomicComponent sourceContext = new JavaAtomicComponent("source", null, scope, interfaces,
-                new PojoObjectFactory<SourceImpl>(ctr), scope.getScope(), false, null, null, null, members, wireService);
+            new PojoObjectFactory<SourceImpl>(ctr), scope.getScope(), false, null, null, null, members, wireService);
 
         sourceContext.addOutboundWire(wire);
         sourceContext.start();

@@ -26,7 +26,8 @@ public class ReferenceInjectionTestCase extends TestCase {
     public void testProxiedReferenceInjection() throws Exception {
         ScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
-        Map<String, AtomicComponent> contexts = MockContextFactory.createWiredContexts("source", SourceImpl.class, scope,
+        Map<String, AtomicComponent> contexts =
+            MockContextFactory.createWiredContexts("source", SourceImpl.class, scope,
                 members, "target", Target.class, TargetImpl.class, scope);
         AtomicComponent sourceComponent = contexts.get("source");
         Source source = (Source) sourceComponent.getServiceInstance();

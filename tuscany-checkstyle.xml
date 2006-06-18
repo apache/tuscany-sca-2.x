@@ -87,7 +87,9 @@ lengths, if/try depths, etc...
             <property name="excludes"
                       value="java.io,java.util,java.net,java.nio,java.nio.channels,java.lang.reflect,org.w3c.dom,org.xml.sax,java.awt,javax.swing,junit.framework"/>
         </module>
-        <module name="IllegalImport"/>
+        <!--<module name="IllegalImport">
+				<property name="illegalPkgs" value="org.apache.tuscany.core"/>
+		  </module>-->
         <!-- defaults to sun.* packages -->
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>

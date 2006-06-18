@@ -41,10 +41,12 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
         JavaImplementation sourceImpl = new JavaImplementation();
         sourceImpl.setComponentType(sourceType);
         sourceImpl.setImplementationClass(SourceImpl.class);
-        ComponentDefinition<JavaImplementation> sourceComponentDefinition = new ComponentDefinition<JavaImplementation>(sourceImpl);
+        ComponentDefinition<JavaImplementation> sourceComponentDefinition =
+            new ComponentDefinition<JavaImplementation>(sourceImpl);
 
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        JavaAtomicComponent<Source> ctx = (JavaAtomicComponent<Source>) builder.build(parent, sourceComponentDefinition, deploymentContext);
+        JavaAtomicComponent<Source> ctx =
+            (JavaAtomicComponent<Source>) builder.build(parent, sourceComponentDefinition, deploymentContext);
         deploymentContext.getModuleScope().start();
         ctx.start();
         Source source = ctx.getServiceInstance();

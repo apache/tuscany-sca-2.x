@@ -25,8 +25,9 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  */
 public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplementation> {
 
-    public Component<?> build(CompositeComponent<?> parent, ComponentDefinition<JavaImplementation> componentDefinition, DeploymentContext deploymentContext)
-            throws BuilderConfigException {
+    public Component<?> build(CompositeComponent<?> parent, ComponentDefinition<JavaImplementation> componentDefinition,
+                              DeploymentContext deploymentContext)
+        throws BuilderConfigException {
         PojoComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
 
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
@@ -35,7 +36,8 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         }
         Constructor<?> constr;
         try {
-            constr = JavaIntrospectionHelper.getDefaultConstructor(componentDefinition.getImplementation().getImplementationClass());
+            constr = JavaIntrospectionHelper
+                .getDefaultConstructor(componentDefinition.getImplementation().getImplementationClass());
         } catch (NoSuchMethodException e) {
             BuilderConfigException bce = new BuilderConfigException("Error building componentDefinition", e);
             bce.setIdentifier(componentDefinition.getName());
@@ -67,17 +69,17 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             scopeContainer = scopeRegistry.getScopeContainer(scope);
         }
         return new JavaAtomicComponent(componentDefinition.getName(),
-                parent,
-                scopeContainer,
-                serviceInterfaces,
-                factory,
-                scope,
-                componentType.isEagerInit(),
-                componentType.getInitInvoker(),
-                componentType.getDestroyInvoker(),
-                injectors,
-                componentType.getReferenceMembers(),
-                wireService);
+            parent,
+            scopeContainer,
+            serviceInterfaces,
+            factory,
+            scope,
+            componentType.isEagerInit(),
+            componentType.getInitInvoker(),
+            componentType.getDestroyInvoker(),
+            injectors,
+            componentType.getReferenceMembers(),
+            wireService);
     }
 
 
