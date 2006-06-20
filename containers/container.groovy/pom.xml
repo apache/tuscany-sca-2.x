@@ -46,6 +46,12 @@
             <artifactId>groovy</artifactId>
             <version>1.0-jsr-05</version>
             <scope>provided</scope>
+            <exclusions>
+              <exclusion>
+                <groupId>cglib</groupId>
+                <artifactId>cglib-full</artifactId>
+              </exclusion>
+            </exclusions>
         </dependency>
         
         <dependency>
