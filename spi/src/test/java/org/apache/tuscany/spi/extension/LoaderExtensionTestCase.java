@@ -29,9 +29,9 @@ public class LoaderExtensionTestCase extends MockObjectTestCase {
     }
 
 
-    private class Extension extends LoaderExtension {
+    private static class Extension extends LoaderExtension {
 
-        protected QName getXMLType() {
+        public QName getXMLType() {
             return null;
         }
 

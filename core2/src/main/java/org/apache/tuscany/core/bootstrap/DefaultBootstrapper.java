@@ -16,13 +16,6 @@
  */
 package org.apache.tuscany.core.bootstrap;
 
-import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.StAXPropertyFactory;
-import org.apache.tuscany.spi.monitor.MonitorFactory;
-
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.Connector;
 import org.apache.tuscany.core.builder.ConnectorImpl;
@@ -30,7 +23,6 @@ import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
 import org.apache.tuscany.core.composite.CompositeLoader;
 import org.apache.tuscany.core.deployer.DeployerImpl;
-import org.apache.tuscany.core.loader.AssemblyConstants;
 import org.apache.tuscany.core.loader.ComponentLoader;
 import org.apache.tuscany.core.loader.ComponentTypeElementLoader;
 import org.apache.tuscany.core.loader.InterfaceJavaLoader;
@@ -49,6 +41,13 @@ import org.apache.tuscany.core.system.loader.SystemImplementationLoader;
 import org.apache.tuscany.core.system.model.SystemBinding;
 import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.system.model.SystemImplementation;
+import org.apache.tuscany.spi.builder.BuilderRegistry;
+import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.extension.LoaderExtension;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.StAXPropertyFactory;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
 
 /**
  * A Tuscany runtime bootstrapper responsible for instantiating the runtime with the default primordial configuration
@@ -60,18 +59,16 @@ public class DefaultBootstrapper {
     private final LoaderRegistry loaderRegistry;
     private final Connector connector;
 
-    public DefaultBootstrapper(LoaderRegistry loaderRegistry,
-                               BuilderRegistry builderRegistry,
-                               Connector connector) {
+    public DefaultBootstrapper(LoaderRegistry loaderRegistry, BuilderRegistry builderRegistry, Connector connector) {
         this.builderRegistry = builderRegistry;
         this.loaderRegistry = loaderRegistry;
         this.connector = connector;
     }
 
     public DefaultBootstrapper(MonitorFactory monitorFactory) {
-        this.builderRegistry = getDefaultBuilderRegistry();
-        this.loaderRegistry = getDefaultLoaderRegistry(monitorFactory, new StringParserPropertyFactory());
-        this.connector = getDefaultConnector();
+        this(getDefaultLoaderRegistry(monitorFactory, new StringParserPropertyFactory()),
+                getDefaultBuilderRegistry(),
+                getDefaultConnector());
     }
 
     public Deployer createDeployer() {
@@ -82,46 +79,44 @@ public class DefaultBootstrapper {
         return deployer;
     }
 
-    private BuilderRegistry getDefaultBuilderRegistry() {
+    protected static BuilderRegistry getDefaultBuilderRegistry() {
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl(new WorkContextImpl());
         BuilderRegistry builderRegistry = new BuilderRegistryImpl(scopeRegistry);
-        builderRegistry.register(SystemCompositeImplementation.class,
-            new SystemCompositeBuilder(builderRegistry));
+        builderRegistry.register(SystemCompositeImplementation.class, new SystemCompositeBuilder(builderRegistry));
         builderRegistry.register(SystemImplementation.class, new SystemComponentBuilder());
         builderRegistry.register(SystemBinding.class, new SystemBindingBuilder());
         return builderRegistry;
     }
 
-    private LoaderRegistry getDefaultLoaderRegistry(MonitorFactory monitorFactory,
-                                                    StAXPropertyFactory propertyFactory) {
+    protected static LoaderRegistry getDefaultLoaderRegistry(MonitorFactory monitorFactory, StAXPropertyFactory propertyFactory) {
         LoaderRegistryImpl loaderRegistry = new LoaderRegistryImpl();
         loaderRegistry.setMonitor(monitorFactory.getMonitor(LoaderRegistryImpl.Monitor.class));
 
         // register component type loaders
-        loaderRegistry.registerLoader(SystemImplementation.class, new SystemComponentTypeLoader());
+        loaderRegistry.registerLoader(SystemImplementation.class,
+                new SystemComponentTypeLoader());
         loaderRegistry.registerLoader(SystemCompositeImplementation.class,
-            new SystemCompositeComponentTypeLoader(loaderRegistry));
+                new SystemCompositeComponentTypeLoader(loaderRegistry));
 
         // register element loaders
-        loaderRegistry.registerLoader(AssemblyConstants.COMPONENT, new ComponentLoader(loaderRegistry,
-            propertyFactory));
-        loaderRegistry.registerLoader(AssemblyConstants.COMPONENT_TYPE,
-            new ComponentTypeElementLoader(loaderRegistry));
-        loaderRegistry.registerLoader(AssemblyConstants.COMPOSITE, new CompositeLoader(loaderRegistry));
-        loaderRegistry.registerLoader(AssemblyConstants.INTERFACE_JAVA,
-            new InterfaceJavaLoader(loaderRegistry));
-        loaderRegistry.registerLoader(AssemblyConstants.PROPERTY, new PropertyLoader(loaderRegistry));
-        loaderRegistry.registerLoader(AssemblyConstants.REFERENCE, new ReferenceLoader(loaderRegistry));
-        loaderRegistry.registerLoader(AssemblyConstants.SERVICE, new ServiceLoader(loaderRegistry));
+        registerLoader(loaderRegistry, new ComponentLoader(loaderRegistry, propertyFactory));
+        registerLoader(loaderRegistry, new ComponentTypeElementLoader(loaderRegistry));
+        registerLoader(loaderRegistry, new CompositeLoader(loaderRegistry));
+        registerLoader(loaderRegistry, new InterfaceJavaLoader(loaderRegistry));
+        registerLoader(loaderRegistry, new PropertyLoader(loaderRegistry));
+        registerLoader(loaderRegistry, new ReferenceLoader(loaderRegistry));
+        registerLoader(loaderRegistry, new ServiceLoader(loaderRegistry));
 
-        loaderRegistry.registerLoader(SystemImplementationLoader.SYSTEM_IMPLEMENTATION,
-            new SystemImplementationLoader(loaderRegistry));
-        loaderRegistry.registerLoader(SystemBindingLoader.SYSTEM_BINDING,
-            new SystemBindingLoader(loaderRegistry));
+        registerLoader(loaderRegistry, new SystemImplementationLoader(loaderRegistry));
+        registerLoader(loaderRegistry, new SystemBindingLoader(loaderRegistry));
         return loaderRegistry;
     }
 
-    private Connector getDefaultConnector() {
+    protected static void registerLoader(LoaderRegistry registry, LoaderExtension<?> loader) {
+        registry.registerLoader(loader.getXMLType(), loader);
+    }
+
+    protected static Connector getDefaultConnector() {
         return new ConnectorImpl();
     }
 }

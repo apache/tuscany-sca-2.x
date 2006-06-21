@@ -56,7 +56,7 @@ public class SystemImplementationLoader extends LoaderExtension<SystemImplementa
         return implementation;
     }
 
-    protected QName getXMLType() {
+    public QName getXMLType() {
         return SYSTEM_IMPLEMENTATION;
     }
 

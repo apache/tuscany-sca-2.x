@@ -49,7 +49,7 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
         super(registry);
     }
 
-    protected QName getXMLType() {
+    public QName getXMLType() {
         return AssemblyConstants.COMPOSITE;
     }
 

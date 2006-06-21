@@ -59,7 +59,7 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
         }
     }
 
-    protected QName getXMLType() {
+    public QName getXMLType() {
         return BINDING_WS;
     }
 

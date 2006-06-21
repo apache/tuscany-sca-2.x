@@ -87,5 +87,5 @@ public abstract class LoaderExtension<T extends ModelObject> implements StAXElem
      *
      * @return the QName of the element that this implementation handles
      */
-    protected abstract QName getXMLType();
+    public abstract QName getXMLType();
 }

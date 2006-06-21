@@ -16,7 +16,7 @@ public class JavaImplementationLoader extends LoaderExtension {
     public static final QName IMPLEMENTATION_JAVA = new QName(AssemblyConstants.SCA_NAMESPACE, "implementation.java");
 
     @Override
-    protected QName getXMLType() {
+    public QName getXMLType() {
         return IMPLEMENTATION_JAVA;
     }
 

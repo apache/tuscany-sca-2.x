@@ -44,7 +44,7 @@ public class SystemBindingLoader extends LoaderExtension<SystemBinding> {
         super(registry);
     }
 
-    protected QName getXMLType() {
+    public QName getXMLType() {
         return SYSTEM_BINDING;
     }
 
