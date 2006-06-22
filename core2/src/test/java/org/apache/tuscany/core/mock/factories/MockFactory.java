@@ -11,18 +11,18 @@ import org.osoa.sca.annotations.Init;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.PojoConfiguration;
+import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.injection.PojoObjectFactory;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 
 import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.system.component.SystemAtomicComponent;
-import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
-import org.apache.tuscany.core.system.wire.SystemInboundWireImpl;
-import org.apache.tuscany.core.system.wire.SystemOutboundWire;
-import org.apache.tuscany.core.system.wire.SystemOutboundWireImpl;
+import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponent;
+import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
+import org.apache.tuscany.core.implementation.system.wire.SystemInboundWireImpl;
+import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
+import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWireImpl;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;

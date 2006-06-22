@@ -12,7 +12,7 @@ import org.jmock.MockObjectTestCase;
 /**
  * Verifies retrieval of standard scope contexts from the default scope registry
  *
- * @version $$Rev$$ $$Date$$
+ * @version $$Rev: 415162 $$ $$Date: 2006-06-18 11:19:43 -0700 (Sun, 18 Jun 2006) $$
  */
 public class ScopeRegistryTestCase extends MockObjectTestCase {
     public void testScopeContextCreation() throws Exception {

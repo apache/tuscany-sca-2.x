@@ -20,7 +20,7 @@ import org.apache.tuscany.core.component.event.CompositeStop;
 /**
  * A scope context which manages atomic component instances keyed by module
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 415162 $ $Date: 2006-06-18 11:19:43 -0700 (Sun, 18 Jun 2006) $
  */
 public class ModuleScopeContainer extends AbstractScopeContainer {
 

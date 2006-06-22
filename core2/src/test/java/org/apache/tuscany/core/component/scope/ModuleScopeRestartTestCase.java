@@ -2,22 +2,22 @@ package org.apache.tuscany.core.component.scope;
 
 import java.lang.reflect.Constructor;
 
-import org.apache.tuscany.spi.component.PojoConfiguration;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.injection.PojoObjectFactory;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.implementation.PojoConfiguration;
+import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponent;
+import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.system.component.SystemAtomicComponent;
-import org.apache.tuscany.core.system.component.SystemAtomicComponentImpl;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
 
 /**
  * Verifies the scope container properly disposes resources and canbe restarted
  *
- * @version $$Rev$$ $$Date$$
+ * @version $$Rev: 415162 $$ $$Date: 2006-06-18 11:19:43 -0700 (Sun, 18 Jun 2006) $$
  */
 public class ModuleScopeRestartTestCase extends TestCase {
 

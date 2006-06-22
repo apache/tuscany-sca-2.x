@@ -16,7 +16,7 @@ package org.apache.tuscany.core.component.event;
 /**
  * A base implementation of HTTP-based session events in the runtime
  *
- * @version $$Rev$$ $$Date$$
+ * @version $$Rev: 415032 $$ $$Date: 2006-06-17 10:28:07 -0700 (Sat, 17 Jun 2006) $$
  */
 public abstract class HttpSessionEvent extends AbstractEvent {
 

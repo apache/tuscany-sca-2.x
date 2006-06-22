@@ -20,12 +20,12 @@ import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.factories.MockComponentFactory;
-import org.apache.tuscany.core.system.builder.SystemBindingBuilder;
-import org.apache.tuscany.core.system.builder.SystemComponentBuilder;
-import org.apache.tuscany.core.system.component.SystemCompositeComponent;
-import org.apache.tuscany.core.system.component.SystemCompositeComponentImpl;
-import org.apache.tuscany.core.system.model.SystemBinding;
-import org.apache.tuscany.core.system.model.SystemImplementation;
+import org.apache.tuscany.core.implementation.system.builder.SystemBindingBuilder;
+import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
+import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
+import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponentImpl;
+import org.apache.tuscany.core.implementation.system.model.SystemBinding;
+import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 
 /**
  * Validates that system builders and the default connector create properly wired contexts

@@ -19,7 +19,7 @@ import org.apache.tuscany.spi.event.TrueFilter;
 /**
  * Implements functionality common to scope contexts.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 415032 $ $Date: 2006-06-17 10:28:07 -0700 (Sat, 17 Jun 2006) $
  */
 public abstract class AbstractScopeContainer extends AbstractLifecycle implements ScopeContainer {
     private static final EventFilter TRUE_FILTER = new TrueFilter();

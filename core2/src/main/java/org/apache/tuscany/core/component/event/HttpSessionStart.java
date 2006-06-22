@@ -3,7 +3,7 @@ package org.apache.tuscany.core.component.event;
 /**
  * Propagated when an HTTP-based session has started
  *
- * @version $$Rev$$ $$Date$$
+ * @version $$Rev: 411441 $$ $$Date: 2006-06-03 07:52:56 -0700 (Sat, 03 Jun 2006) $$
  */
 public class HttpSessionStart extends HttpSessionEvent {
 

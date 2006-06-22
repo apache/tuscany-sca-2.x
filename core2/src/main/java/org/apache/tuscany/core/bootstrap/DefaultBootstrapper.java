@@ -16,13 +16,31 @@
  */
 package org.apache.tuscany.core.bootstrap;
 
+import org.apache.tuscany.spi.builder.BuilderRegistry;
+import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.extension.LoaderExtension;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.StAXPropertyFactory;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
+
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.Connector;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
-import org.apache.tuscany.core.composite.CompositeLoader;
 import org.apache.tuscany.core.deployer.DeployerImpl;
+import org.apache.tuscany.core.implementation.composite.CompositeLoader;
+import org.apache.tuscany.core.implementation.system.builder.SystemBindingBuilder;
+import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
+import org.apache.tuscany.core.implementation.system.builder.SystemCompositeBuilder;
+import org.apache.tuscany.core.implementation.system.loader.SystemBindingLoader;
+import org.apache.tuscany.core.implementation.system.loader.SystemComponentTypeLoader;
+import org.apache.tuscany.core.implementation.system.loader.SystemCompositeComponentTypeLoader;
+import org.apache.tuscany.core.implementation.system.loader.SystemImplementationLoader;
+import org.apache.tuscany.core.implementation.system.model.SystemBinding;
+import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
+import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.loader.ComponentLoader;
 import org.apache.tuscany.core.loader.ComponentTypeElementLoader;
 import org.apache.tuscany.core.loader.InterfaceJavaLoader;
@@ -31,23 +49,6 @@ import org.apache.tuscany.core.loader.PropertyLoader;
 import org.apache.tuscany.core.loader.ReferenceLoader;
 import org.apache.tuscany.core.loader.ServiceLoader;
 import org.apache.tuscany.core.loader.StringParserPropertyFactory;
-import org.apache.tuscany.core.system.builder.SystemBindingBuilder;
-import org.apache.tuscany.core.system.builder.SystemComponentBuilder;
-import org.apache.tuscany.core.system.builder.SystemCompositeBuilder;
-import org.apache.tuscany.core.system.loader.SystemBindingLoader;
-import org.apache.tuscany.core.system.loader.SystemComponentTypeLoader;
-import org.apache.tuscany.core.system.loader.SystemCompositeComponentTypeLoader;
-import org.apache.tuscany.core.system.loader.SystemImplementationLoader;
-import org.apache.tuscany.core.system.model.SystemBinding;
-import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
-import org.apache.tuscany.core.system.model.SystemImplementation;
-import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.StAXPropertyFactory;
-import org.apache.tuscany.spi.monitor.MonitorFactory;
 
 /**
  * A Tuscany runtime bootstrapper responsible for instantiating the runtime with the default primordial configuration
@@ -67,8 +68,8 @@ public class DefaultBootstrapper {
 
     public DefaultBootstrapper(MonitorFactory monitorFactory) {
         this(getDefaultLoaderRegistry(monitorFactory, new StringParserPropertyFactory()),
-                getDefaultBuilderRegistry(),
-                getDefaultConnector());
+            getDefaultBuilderRegistry(),
+            getDefaultConnector());
     }
 
     public Deployer createDeployer() {
@@ -88,15 +89,16 @@ public class DefaultBootstrapper {
         return builderRegistry;
     }
 
-    protected static LoaderRegistry getDefaultLoaderRegistry(MonitorFactory monitorFactory, StAXPropertyFactory propertyFactory) {
+    protected static LoaderRegistry getDefaultLoaderRegistry(MonitorFactory monitorFactory,
+                                                             StAXPropertyFactory propertyFactory) {
         LoaderRegistryImpl loaderRegistry = new LoaderRegistryImpl();
         loaderRegistry.setMonitor(monitorFactory.getMonitor(LoaderRegistryImpl.Monitor.class));
 
         // register component type loaders
         loaderRegistry.registerLoader(SystemImplementation.class,
-                new SystemComponentTypeLoader());
+            new SystemComponentTypeLoader());
         loaderRegistry.registerLoader(SystemCompositeImplementation.class,
-                new SystemCompositeComponentTypeLoader(loaderRegistry));
+            new SystemCompositeComponentTypeLoader(loaderRegistry));
 
         // register element loaders
         registerLoader(loaderRegistry, new ComponentLoader(loaderRegistry, propertyFactory));

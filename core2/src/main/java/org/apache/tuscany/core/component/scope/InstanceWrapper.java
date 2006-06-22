@@ -23,7 +23,7 @@ import org.apache.tuscany.spi.Lifecycle;
  * org.apache.tuscany.spi.component.AtomicComponent} for use by the atomic context's associated {@link
  * org.apache.tuscany.spi.component.ScopeContainer}
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 415032 $ $Date: 2006-06-17 10:28:07 -0700 (Sat, 17 Jun 2006) $
  */
 public interface InstanceWrapper extends Lifecycle {
 

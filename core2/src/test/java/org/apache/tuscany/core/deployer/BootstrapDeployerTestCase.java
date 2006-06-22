@@ -24,20 +24,20 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ComponentType;
-import org.apache.tuscany.spi.model.PropertyValue;
+import org.apache.tuscany.spi.model.CompositeComponentType;
+import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
+import org.apache.tuscany.core.implementation.system.model.SystemBinding;
+import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.mock.component.BasicInterface;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.apache.tuscany.core.system.model.SystemBinding;
-import org.apache.tuscany.core.system.model.SystemCompositeImplementation;
 
 /**
  * Verifies the default boostrap deployer
@@ -76,7 +76,7 @@ public class BootstrapDeployerTestCase extends TestCase {
         assertEquals("propval", propVal.getValueFactory().getInstance());
 
         // check introspection of implementation
-        ComponentType<?,?,?> componentType = component.getImplementation().getComponentType();
+        ComponentType<?, ?, ?> componentType = component.getImplementation().getComponentType();
         ServiceDefinition service = componentType.getServices().get(BasicInterface.class.getName());
         assertEquals(BasicInterface.class, service.getServiceContract().getInterfaceClass());
         Property<?> property = componentType.getProperties().get("publicProperty");

@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
+import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.mock.component.OrderedEagerInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;
@@ -14,12 +15,11 @@ import org.apache.tuscany.core.mock.component.RequestScopeDestroyOnlyComponent;
 import org.apache.tuscany.core.mock.component.RequestScopeInitDestroyComponent;
 import org.apache.tuscany.core.mock.component.RequestScopeInitOnlyComponent;
 import org.apache.tuscany.core.mock.factories.MockFactory;
-import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 
 /**
  * Lifecycle unit tests for the module scope container
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 415162 $ $Date: 2006-06-18 11:19:43 -0700 (Sun, 18 Jun 2006) $
  */
 public class RequestScopeInstanceLifecycleTestCase extends TestCase {
 

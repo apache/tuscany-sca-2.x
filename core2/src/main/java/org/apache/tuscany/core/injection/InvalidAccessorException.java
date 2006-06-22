@@ -1,7 +1,5 @@
 package org.apache.tuscany.core.injection;
 
-import org.apache.tuscany.spi.injection.InjectionRuntimeException;
-
 /**
  * @version $$Rev$$ $$Date$$
  */

@@ -5,15 +5,15 @@ import org.apache.tuscany.spi.component.WorkContext;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
+import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.mock.component.StatelessComponent;
 import org.apache.tuscany.core.mock.component.StatelessComponentImpl;
 import org.apache.tuscany.core.mock.factories.MockFactory;
-import org.apache.tuscany.core.system.component.SystemAtomicComponent;
 
 /**
  * Unit tests for the module scope container
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 415162 $ $Date: 2006-06-18 11:19:43 -0700 (Sun, 18 Jun 2006) $
  */
 public class BasicStatelessScopeTestCase extends TestCase {
 

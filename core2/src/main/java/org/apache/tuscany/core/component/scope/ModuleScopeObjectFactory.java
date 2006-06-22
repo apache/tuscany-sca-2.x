@@ -6,7 +6,7 @@ import org.apache.tuscany.spi.ObjectFactory;
 /**
  * Creates a new module scope context
  *
- * @version $$Rev$$ $$Date$$
+ * @version $$Rev: 412208 $$ $$Date: 2006-06-06 13:47:19 -0700 (Tue, 06 Jun 2006) $$
  */
 public class ModuleScopeObjectFactory implements ObjectFactory<ModuleScopeContainer> {
 
