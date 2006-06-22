@@ -27,6 +27,14 @@ import java.lang.reflect.Member;
 public class JavaMappedReference extends ReferenceDefinition {
     private Member member;
 
+    public JavaMappedReference() {
+    }
+
+    public JavaMappedReference(String name, ServiceContract serviceContract, Member member) {
+        super(name, serviceContract);
+        this.member = member;
+    }
+
     /**
      * Returns the Member that this reference is mapped to.
      *

@@ -31,10 +31,6 @@ public class JavaMappedProperty<T> extends Property<T> {
     public JavaMappedProperty() {
     }
 
-    public JavaMappedProperty(Member member) {
-        this.member = member;
-    }
-
     public JavaMappedProperty(String name, QName xmlType, Class<T> javaType) {
         super(name, xmlType, javaType);
     }

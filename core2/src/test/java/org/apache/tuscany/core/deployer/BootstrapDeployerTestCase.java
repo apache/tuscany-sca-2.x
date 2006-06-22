@@ -26,6 +26,11 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.PropertyValue;
+import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
@@ -45,20 +50,39 @@ public class BootstrapDeployerTestCase extends TestCase {
     private ComponentDefinition<SystemCompositeImplementation> componentDefinition;
     private SystemCompositeImplementation implementation;
 
-    public void testBoot1() throws LoaderException {
+    public void testBoot1Load() throws LoaderException {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
         implementation.setScdlLocation(scdl);
         deployer.load(componentDefinition, deploymentContext);
-        CompositeComponentType componentType = implementation.getComponentType();
-        assertNotNull(componentType);
-        assertEquals("simple", componentType.getName());
-        Map<String, ServiceDefinition> services = componentType.getServices();
+        CompositeComponentType composite = implementation.getComponentType();
+        assertNotNull(composite);
+        assertEquals("simple", composite.getName());
+
+        // check parse of <service>
+        Map<String, ServiceDefinition> services = composite.getServices();
         assertEquals(1, services.size());
         BoundServiceDefinition serviceDefinition = (BoundServiceDefinition) services.get("service");
         assertNotNull(serviceDefinition);
         assertEquals("service", serviceDefinition.getName());
         assertEquals(BasicInterface.class, serviceDefinition.getServiceContract().getInterfaceClass());
         assertTrue(serviceDefinition.getBinding() instanceof SystemBinding);
+
+        // check parse of <component>
+        Map<String, ComponentDefinition<? extends Implementation<?>>> components = composite.getComponents();
+        assertEquals(1, components.size());
+        ComponentDefinition<? extends Implementation<?>> component = components.get("component");
+        assertNotNull(component);
+        PropertyValue<?> propVal = component.getPropertyValues().get("publicProperty");
+        assertEquals("propval", propVal.getValueFactory().getInstance());
+
+        // check introspection of implementation
+        ComponentType<?,?,?> componentType = component.getImplementation().getComponentType();
+        ServiceDefinition service = componentType.getServices().get(BasicInterface.class.getName());
+        assertEquals(BasicInterface.class, service.getServiceContract().getInterfaceClass());
+        Property<?> property = componentType.getProperties().get("publicProperty");
+        assertEquals(String.class, property.getJavaType());
+        ReferenceDefinition referenceDefinition = componentType.getReferences().get("publicReference");
+        assertEquals(BasicInterface.class, referenceDefinition.getServiceContract().getInterfaceClass());
     }
 
     protected void setUp() throws Exception {

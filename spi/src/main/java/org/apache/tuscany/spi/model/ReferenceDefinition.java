@@ -27,6 +27,14 @@ public class ReferenceDefinition extends ModelObject {
     private Multiplicity multiplicity;
     private boolean autowire;
 
+    public ReferenceDefinition() {
+    }
+
+    public ReferenceDefinition(String name, ServiceContract serviceContract) {
+        this.name = name;
+        this.serviceContract = serviceContract;
+    }
+
     public String getName() {
         return name;
     }

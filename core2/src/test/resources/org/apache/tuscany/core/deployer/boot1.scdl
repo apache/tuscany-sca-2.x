@@ -24,9 +24,7 @@
 
     <component name="component">
         <system:implementation.system class="org.apache.tuscany.core.mock.component.BasicInterfaceImpl"/>
-<!--
         <property name="publicProperty">propval</property>
         <reference name="publicReference" target="target"/>
--->
     </component>
 </composite>
