@@ -9,6 +9,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
@@ -46,6 +47,12 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         JavaMappedReference reference = new JavaMappedReference();
         reference.setMember(method);
         reference.setRequired(annotation.required());
+        JavaServiceContract contract = new JavaServiceContract();
+        Class<?> interfaceType = method.getParameterTypes()[0];
+        String interfaceName = JavaIntrospectionHelper.getBaseName(interfaceType);
+        contract.setInterfaceName(interfaceName);
+        contract.setInterfaceClass(interfaceType);
+        reference.setServiceContract(contract);
         type.getReferences().put(name, reference);
     }
 
@@ -61,10 +68,16 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         if (type.getReferences().get(name) != null) {
             throw new DuplicateReferenceException(name);
         }
-        JavaMappedReference property = new JavaMappedReference();
-        property.setMember(field);
-        property.setRequired(annotation.required());
-        type.getReferences().put(name, property);
+        JavaMappedReference reference = new JavaMappedReference();
+        reference.setMember(field);
+        reference.setRequired(annotation.required());
+        JavaServiceContract contract = new JavaServiceContract();
+        Class<?> interfaceType = field.getType();
+        String interfaceName = JavaIntrospectionHelper.getBaseName(interfaceType);
+        contract.setInterfaceName(interfaceName);
+        contract.setInterfaceClass(interfaceType);
+        reference.setServiceContract(contract);
+        type.getReferences().put(name, reference);
     }
 
 }

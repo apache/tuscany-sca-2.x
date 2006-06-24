@@ -17,6 +17,8 @@
 package org.apache.tuscany.core.implementation.system.loader;
 
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.Property;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
@@ -44,11 +46,10 @@ public class SystemComponentTypeLoaderTestCase extends TestCase {
         PojoComponentType<?, ?, ?> componentType = loader.loadByIntrospection(impl, null);
         ServiceDefinition service = componentType.getServices().get("BasicInterface");
         assertEquals(BasicInterface.class, service.getServiceContract().getInterfaceClass());
-// FIXME temporarily comment out until heuristic property and reference processor finished
-//        Property<?> property = componentType.getProperties().get("publicProperty");
-//        assertEquals(String.class, property.getJavaType());
-//        ReferenceDefinition referenceDefinition = componentType.getReferences().get("publicReference");
-//        assertEquals(BasicInterface.class, referenceDefinition.getServiceContract().getInterfaceClass());
+        Property<?> property = componentType.getProperties().get("publicProperty");
+        assertEquals(String.class, property.getJavaType());
+        ReferenceDefinition referenceDefinition = componentType.getReferences().get("protectedReference");
+        assertEquals(BasicInterface.class, referenceDefinition.getServiceContract().getInterfaceClass());
     }
 
     protected void setUp() throws Exception {
