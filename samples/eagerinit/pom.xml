@@ -34,12 +34,12 @@
             <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.apache.tuscany.sca.containers</groupId>
             <artifactId>tuscany-container-java</artifactId>
             <version>${pom.version}</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>junit</groupId>

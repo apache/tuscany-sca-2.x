@@ -36,10 +36,7 @@ public class EagerInitImpl implements EagerInitService {
     }
 
     public String getGreetings(String name) {
-
-        String ret = "Hello " + name;
-
-        return ret;
+        return "Hello " + name;
     }
 
 }

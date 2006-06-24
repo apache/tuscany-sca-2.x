@@ -16,8 +16,8 @@
  */
 package eagerinit;
 
-import org.osoa.sca.CurrentModuleContext;
-import org.osoa.sca.ModuleContext;
+import org.osoa.sca.CompositeContext;
+import org.osoa.sca.CurrentCompositeContext;
 
 /**
  * This client program shows how to create an SCA runtime, start it, locate the Eager Init service and invoke it.
@@ -40,11 +40,11 @@ public class EagerInitClient {
         // Start the Tuscany runtime and associate it with this thread
         // NOT AVAILABLE tuscany.start();
 
-        // Get the SCA module context.
-        ModuleContext moduleContext = CurrentModuleContext.getContext();
+        // Get the SCA composite context.
+        CompositeContext compositeContext = CurrentCompositeContext.getContext();
 
         // Locate the Eager init service
-        EagerInitService eagerInitService = (EagerInitService) moduleContext.locateService("EagerInitComponent");
+        EagerInitService eagerInitService = compositeContext.locateService(EagerInitService.class, "EagerInitComponent");
 
         // Invoke the HelloWorld service
         String value = eagerInitService.getGreetings(name);
