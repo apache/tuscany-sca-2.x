@@ -54,6 +54,7 @@ public class PojoObjectFactory<T> implements ObjectFactory<T> {
             initargs[i] = objectFactory.getInstance();
         }
         try {
+            ctr.setAccessible(true);
             return ctr.newInstance(initargs);
         } catch (InstantiationException e) {
             throw new AssertionError("Class is not instantiable [" + ctr.getDeclaringClass().getName() + "]");

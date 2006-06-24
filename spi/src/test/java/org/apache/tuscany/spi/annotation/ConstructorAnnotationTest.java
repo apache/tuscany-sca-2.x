@@ -18,6 +18,8 @@ package org.apache.tuscany.spi.annotation;
 
 import java.util.Arrays;
 
+import org.osoa.sca.annotations.Constructor;
+
 import junit.framework.TestCase;
 
 /**

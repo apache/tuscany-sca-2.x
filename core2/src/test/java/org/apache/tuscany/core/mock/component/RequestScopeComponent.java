@@ -22,7 +22,7 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev$ $Date$
  */
 @Scope("REQUEST")
-public interface RequestScopeComponent extends GenericComponent {
+public interface RequestScopeComponent {
 
 }
 

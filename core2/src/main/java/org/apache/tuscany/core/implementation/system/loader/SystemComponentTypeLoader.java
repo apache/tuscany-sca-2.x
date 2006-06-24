@@ -24,9 +24,9 @@ import java.net.URL;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.model.JavaMappedProperty;
-import org.apache.tuscany.spi.model.JavaMappedReference;
-import org.apache.tuscany.spi.model.JavaServiceContract;
+import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import org.apache.tuscany.core.implementation.PojoComponentType;
@@ -62,7 +62,7 @@ public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<Syst
         Class<?> implClass = implementation.getImplementationClass();
         for (Class<?> serviceIntf : implClass.getInterfaces()) {
             JavaServiceContract serviceContract = new JavaServiceContract(serviceIntf);
-            ServiceDefinition service = new ServiceDefinition(serviceIntf.getName(), serviceContract);
+            ServiceDefinition service = new ServiceDefinition(serviceIntf.getName(), serviceContract, false);
             componentType.add(service);
         }
         for (Field field : implClass.getFields()) {

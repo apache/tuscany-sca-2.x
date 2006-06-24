@@ -50,8 +50,11 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
         destroyInvoker = configuration.getDestroyInvoker();
         objectFactory = configuration.getObjectFactory();
         serviceInterfaces = configuration.getServiceInterfaces();
-        this.injectors = (injectors == null) ? new ArrayList<Injector>() : injectors;
-        this.members = configuration.getMembers() != null ? configuration.getMembers() : new HashMap<String, Member>();
+        this.injectors =
+            (configuration.getPropertyInjectors() == null) ? new ArrayList<Injector>() :
+                configuration.getPropertyInjectors();
+        this.members = configuration.getReferenceMembers() != null ? configuration.getReferenceMembers() :
+            new HashMap<String, Member>();
     }
 
     public List<Class<?>> getServiceInterfaces() {

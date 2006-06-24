@@ -26,17 +26,6 @@ public class MethodInjectorTestCase extends MockObjectTestCase {
         }
     }
 
-    public void testIllegalAccess() throws Exception {
-        ObjectFactory<Object> factory = new SingletonObjectFactory<Object>("foo");
-        MethodInjector<Foo> injector = new MethodInjector<Foo>(privateMethod, factory);
-        try {
-            injector.inject(new Foo());
-            fail();
-        } catch (AssertionError e) {
-            // expected
-        }
-    }
-
     public void testException() throws Exception {
         ObjectFactory<Object> factory = new SingletonObjectFactory<Object>("foo");
         MethodInjector<Foo> injector = new MethodInjector<Foo>(exceptionMethod, factory);

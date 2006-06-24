@@ -22,7 +22,7 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev$ $Date$
  */
 @Scope("STATELESS")
-public interface StatelessComponent extends GenericComponent {
+public interface StatelessComponent {
 
 }
 

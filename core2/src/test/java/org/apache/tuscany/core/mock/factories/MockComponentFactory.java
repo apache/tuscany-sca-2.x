@@ -6,19 +6,19 @@ import java.net.URISyntaxException;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.JavaServiceContract;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaServiceContract;
+import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.core.implementation.system.model.SystemBinding;
+import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
-import org.apache.tuscany.core.implementation.system.model.SystemBinding;
-import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -35,14 +35,15 @@ public final class MockComponentFactory {
         SystemImplementation impl = new SystemImplementation();
         PojoComponentType componentType = new PojoComponentType();
         componentType.setLifecycleScope(Scope.MODULE);
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition();
-        referenceDefinition.setName("target");
-        ServiceContract contract = new JavaServiceContract();
-        contract.setInterfaceClass(Target.class);
-        referenceDefinition.setServiceContract(contract);
-        componentType.add(referenceDefinition);
+        JavaMappedReference reference;
         try {
-            componentType.addReferenceMember("target", SourceImpl.class.getMethod("setTarget", Target.class));
+            reference = new JavaMappedReference();
+            reference.setName("target");
+            reference.setMember(SourceImpl.class.getMethod("setTarget", Target.class));
+            ServiceContract contract = new JavaServiceContract();
+            contract.setInterfaceClass(Target.class);
+            reference.setServiceContract(contract);
+            componentType.add(reference);
         } catch (NoSuchMethodException e) {
             throw new AssertionError(e);
         }
@@ -53,7 +54,7 @@ public final class MockComponentFactory {
         sourceComponentDefinition.setName("source");
 
         ReferenceTarget referenceTarget = new ReferenceTarget();
-        referenceTarget.setReference(referenceDefinition);
+        referenceTarget.setReference(reference);
         referenceTarget.setReferenceName("target");
         try {
             referenceTarget.addTarget(new URI("target/Target"));
@@ -71,15 +72,16 @@ public final class MockComponentFactory {
         SystemImplementation impl = new SystemImplementation();
         PojoComponentType componentType = new PojoComponentType();
         componentType.setLifecycleScope(Scope.MODULE);
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition();
-        referenceDefinition.setName("target");
-        referenceDefinition.setAutowire(true);
-        ServiceContract contract = new JavaServiceContract();
-        contract.setInterfaceClass(Target.class);
-        referenceDefinition.setServiceContract(contract);
-        componentType.add(referenceDefinition);
+        JavaMappedReference reference;
         try {
-            componentType.addReferenceMember("target", SourceImpl.class.getMethod("setTarget", Target.class));
+            reference = new JavaMappedReference();
+            reference.setName("target");
+            reference.setMember(SourceImpl.class.getMethod("setTarget", Target.class));
+            reference.setAutowire(true);
+            ServiceContract contract = new JavaServiceContract();
+            contract.setInterfaceClass(Target.class);
+            reference.setServiceContract(contract);
+            componentType.add(reference);
         } catch (NoSuchMethodException e) {
             throw new AssertionError(e);
         }
@@ -90,7 +92,7 @@ public final class MockComponentFactory {
         sourceComponentDefinition.setName("source");
 
         ReferenceTarget referenceTarget = new ReferenceTarget();
-        referenceTarget.setReference(referenceDefinition);
+        referenceTarget.setReference(reference);
         referenceTarget.setReferenceName("target");
         sourceComponentDefinition.add(referenceTarget);
         return sourceComponentDefinition;

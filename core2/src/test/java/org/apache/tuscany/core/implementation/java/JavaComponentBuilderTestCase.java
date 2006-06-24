@@ -8,7 +8,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.JavaServiceContract;
+import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
@@ -18,6 +18,7 @@ import org.apache.tuscany.core.implementation.java.mock.components.Source;
 import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
 import org.apache.tuscany.core.implementation.java.mock.components.Target;
 import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
@@ -36,7 +37,10 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
 
         PojoComponentType sourceType = new PojoComponentType();
         sourceType.setLifecycleScope(Scope.MODULE);
-        sourceType.addReferenceMember("target", SourceImpl.class.getMethod("setTarget", Target.class));
+        JavaMappedReference reference = new JavaMappedReference();
+        reference.setName("target");
+        reference.setMember(SourceImpl.class.getMethod("setTarget", Target.class));
+        sourceType.add(reference);
 
         ServiceContract sourceContract = new JavaServiceContract();
         sourceContract.setInterfaceClass(Source.class);

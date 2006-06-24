@@ -1,82 +1,97 @@
+/**
+ *
+ * Copyright 2006 The Apache Software Foundation or its licensors, as applicable.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
 package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Member;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
-import org.apache.tuscany.core.injection.ContextInjector;
-import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
+import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.core.implementation.PojoConfiguration;
+import org.apache.tuscany.core.injection.FieldInjector;
+import org.apache.tuscany.core.injection.MethodInjector;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
+ * Builds an <code>AtomicContext</code> for a Java-based component
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplementation> {
 
     @SuppressWarnings("unchecked")
-    public Component<?> build(CompositeComponent<?> parent,
-                              ComponentDefinition<JavaImplementation> definition,
-                              DeploymentContext deployment)
+    public AtomicComponent<?> build(CompositeComponent<?> parent,
+                                    ComponentDefinition<JavaImplementation> definition,
+                                    DeploymentContext deployment)
         throws BuilderConfigException {
-        PojoComponentType<?, ?, ?> componentType = definition.getImplementation().getComponentType();
+        PojoComponentType<ServiceDefinition, JavaMappedReference, JavaMappedProperty<?>> componentType =
+            definition.getImplementation().getComponentType();
 
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setParent(parent);
-        configuration.setEagerInit(componentType.isEagerInit());
-        configuration.setInitInvoker(componentType.getInitInvoker());
-        configuration.setDestroyInvoker(componentType.getDestroyInvoker());
-        configuration.setWireService(wireService);
-        for (Map.Entry<String, Member> entry : componentType.getReferenceMembers().entrySet()) {
-            configuration.addMember(entry.getKey(), entry.getValue());
-        }
-
-        for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
-            configuration.addServiceInterface(serviceDefinition.getServiceContract().getInterfaceClass());
-        }
-        Constructor<?> constr;
-        try {
-            constr = JavaIntrospectionHelper
-                .getDefaultConstructor(definition.getImplementation().getImplementationClass());
-        } catch (NoSuchMethodException e) {
-            BuilderConfigException bce = new BuilderConfigException("Error building definition", e);
-            bce.setIdentifier(definition.getName());
-            bce.addContextName(parent.getName());
-            throw bce;
-        }
-        configuration.setObjectFactory(new PojoObjectFactory(constr));
-        configuration.getInjectors().addAll(componentType.getInjectors());
-        for (Injector injector : configuration.getInjectors()) {
-            if (injector instanceof ContextInjector) {
-                //iterate and determine if the parent context implements the interface
-                Class contextType = JavaIntrospectionHelper.introspectGeneric(injector.getClass(), 0);
-                if (contextType.isAssignableFrom(parent.getClass())) {
-                    ((ContextInjector) injector).setContext(parent);
-                } else {
-                    BuilderConfigException e = new BuilderConfigException("SCAObject not found for type");
-                    e.setIdentifier(contextType.getName());
-                    throw e;
-                }
-            }
-        }
-
         Scope scope = componentType.getLifecycleScope();
         if (Scope.MODULE == scope) {
             configuration.setScopeContainer(deployment.getModuleScope());
         } else {
             configuration.setScopeContainer(scopeRegistry.getScopeContainer(scope));
         }
+        configuration.setEagerInit(componentType.isEagerInit());
+        configuration.setWireService(wireService);
+        try {
+            Constructor<?> constr = JavaIntrospectionHelper
+                .getDefaultConstructor(definition.getImplementation().getImplementationClass());
+            configuration.setObjectFactory(new PojoObjectFactory(constr));
+        } catch (NoSuchMethodException e) {
+            BuilderConfigException bce = new BuilderConfigException("Error building definition", e);
+            bce.setIdentifier(definition.getName());
+            bce.addContextName(parent.getName());
+            throw bce;
+        }
+        for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
+            configuration.addServiceInterface(serviceDefinition.getServiceContract().getInterfaceClass());
+        }
+
+        // handle properties
+        for (JavaMappedProperty<?> property : componentType.getProperties().values()) {
+            ObjectFactory<?> factory = property.getDefaultValueFactory();
+            if (property.getMember() instanceof Field) {
+                configuration.addPropertyInjector(new FieldInjector((Field) property.getMember(), factory));
+            } else if (property.getMember() instanceof Method) {
+                configuration.addPropertyInjector(new MethodInjector((Method) property.getMember(), factory));
+            } else {
+                BuilderConfigException e = new BuilderConfigException("Invalid property injection site");
+                e.setIdentifier(property.getName());
+                throw e;
+            }
+        }
+        for (JavaMappedReference reference : componentType.getReferences().values()) {
+            configuration.addReferenceMember(reference.getName(), reference.getMember());
+        }
+
         return new JavaAtomicComponent(definition.getName(), configuration);
     }
 
@@ -84,4 +99,5 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
     protected Class<JavaImplementation> getImplementationType() {
         return JavaImplementation.class;
     }
+
 }

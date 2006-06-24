@@ -130,7 +130,7 @@ public final class MockFactory {
         configuration.addServiceInterface(sourceClass);
         configuration.setWireService(WIRE_SERVICE);
         for (Map.Entry<String, Member> entry : members.entrySet()) {
-            configuration.addMember(entry.getKey(), entry.getValue());
+            configuration.addReferenceMember(entry.getKey(), entry.getValue());
         }
         JavaAtomicComponent sourceContext = new JavaAtomicComponent(sourceName, configuration);
         OutboundWire outboundWire = createReferenceWire(targetName, sourceReferenceClass, sourceHeadInterceptor,
@@ -181,7 +181,7 @@ public final class MockFactory {
         configuration.addServiceInterface(sourceClass);
         configuration.setWireService(WIRE_SERVICE);
         for (Map.Entry<String, Member> entry : members.entrySet()) {
-            configuration.addMember(entry.getKey(), entry.getValue());
+            configuration.addReferenceMember(entry.getKey(), entry.getValue());
         }
         JavaAtomicComponent sourceContext = new JavaAtomicComponent(sourceName, configuration);
         OutboundWire outboundWire = createReferenceWire(targetName, sourceReferenceClass, null, null, null);

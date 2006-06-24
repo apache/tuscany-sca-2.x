@@ -26,33 +26,23 @@ public class JavaIntrospectionHelperTestCase extends TestCase {
         super(arg0);
     }
 
-    public void testGetSuperAllFields() throws Exception {
-        Set<Field> superBeanFields = JavaIntrospectionHelper.getAllFields(SuperBean.class);
-        assertEquals(SuperBean.ALL_SUPER_FIELDS, superBeanFields.size());
-    }
-
     public void testBean1AllPublicProtectedFields() throws Exception {
         Set<Field> beanFields = JavaIntrospectionHelper.getAllPublicAndProtectedFields(Bean1.class);
         assertEquals(4, beanFields.size());                //Bean1.ALL_BEAN1_PUBLIC_PROTECTED_FIELDS
     }
 
-    public void testBean1AllFields() throws Exception {
-        Set<Field> beanFields = JavaIntrospectionHelper.getAllFields(Bean1.class);
-        assertEquals(Bean1.ALL_BEAN1_FIELDS, beanFields.size());
-    }
-
     public void testGetSuperAllMethods() throws Exception {
-        Set<Method> superBeanMethods = JavaIntrospectionHelper.getAllUniqueMethods(SuperBean.class);
+        Set<Method> superBeanMethods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(SuperBean.class);
         assertEquals(SuperBean.ALL_SUPER_METHODS, superBeanMethods.size());
     }
 
     public void testGetBean1AllMethods() throws Exception {
-        Set<Method> beanMethods = JavaIntrospectionHelper.getAllUniqueMethods(Bean1.class);
+        Set<Method> beanMethods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(Bean1.class);
         assertEquals(Bean1.ALL_BEAN1_METHODS, beanMethods.size());
     }
 
     public void testOverrideMethod() throws Exception {
-        Set<Method> beanFields = JavaIntrospectionHelper.getAllUniqueMethods(Bean1.class);
+        Set<Method> beanFields = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(Bean1.class);
         boolean invoked = false;
         for (Method method : beanFields) {
             if (method.getName().equals("override")) {
@@ -66,7 +56,7 @@ public class JavaIntrospectionHelperTestCase extends TestCase {
     }
 
     public void testNoOverrideMethod() throws Exception {
-        Set<Method> beanFields = JavaIntrospectionHelper.getAllUniqueMethods(Bean1.class);
+        Set<Method> beanFields = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(Bean1.class);
         boolean found = false;
         for (Method method : beanFields) {
             if (method.getName().equals("noOverride") && method.getParameterTypes().length == 0) {
@@ -78,29 +68,10 @@ public class JavaIntrospectionHelperTestCase extends TestCase {
         }
     }
 
-    public void testGetBean1AllFields() throws Exception {
-        Set<Field> bean1 = JavaIntrospectionHelper.getAllFields(Bean1.class);
-        assertEquals(Bean1.ALL_BEAN1_FIELDS, bean1.size());
-    }
-
     public void testDefaultConstructor() throws Exception {
         Constructor ctr = JavaIntrospectionHelper.getDefaultConstructor(Bean2.class);
         assertEquals(ctr, Bean2.class.getConstructor());
         assertTrue(Bean2.class == ctr.newInstance((Object[]) null).getClass());
-    }
-
-
-    public void testFindMultiplicityByFieldName() throws Exception {
-        Set<Field> fields = JavaIntrospectionHelper.getAllFields(getClass());
-        Set<Method> methods = JavaIntrospectionHelper.getAllUniqueMethods(getClass());
-
-        assertNotNull(JavaIntrospectionHelper.findMultiplicityFieldByName("testList", fields));
-        assertNotNull(JavaIntrospectionHelper.findMultiplicityMethodByName("fooMethod", methods));
-
-        // this array is not an interface
-        assertNull(JavaIntrospectionHelper.findMultiplicityFieldByName("testStringArray", fields));
-        assertNotNull(JavaIntrospectionHelper.findMultiplicityFieldByName("testArray", fields));
-        assertNotNull(JavaIntrospectionHelper.findMultiplicityMethodByName("setTestArray", methods));
     }
 
     /**

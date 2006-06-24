@@ -26,6 +26,7 @@ public class ReferenceDefinition extends ModelObject {
     private ServiceContract serviceContract;
     private Multiplicity multiplicity;
     private boolean autowire;
+    private boolean required;
 
     public ReferenceDefinition() {
     }
@@ -65,5 +66,13 @@ public class ReferenceDefinition extends ModelObject {
 
     public void setAutowire(boolean autowire) {
         this.autowire = autowire;
+    }
+
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
     }
 }

@@ -16,7 +16,10 @@ public class MethodInjector<T> implements Injector<T> {
     private final ObjectFactory<?> objectFactory;
 
     public MethodInjector(Method method, ObjectFactory<?> objectFactory) {
+        assert method != null;
+        assert objectFactory != null;
         this.method = method;
+        this.method.setAccessible(true);
         this.objectFactory = objectFactory;
     }
 

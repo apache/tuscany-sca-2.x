@@ -68,9 +68,11 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                     break;
                 case END_ELEMENT:
                     if (binding != null) {
-                        return new BoundServiceDefinition<Binding>(name, serviceContract, binding, null);
+                        //FIXME need a way to specify "remotable" on a service
+                        return new BoundServiceDefinition<Binding>(name, serviceContract, false, binding, null);
                     } else {
-                        return new ServiceDefinition(name, serviceContract);
+                        //FIXME need a way to specify "remotable" on a service
+                        return new ServiceDefinition(name, serviceContract, false);
                     }
             }
         }

@@ -22,7 +22,7 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
-public interface ModuleScopeComponent extends GenericComponent {
+public interface ModuleScopeComponent {
 
     //public boolean isInit();
 }

@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.osoa</groupId>
             <artifactId>sca-api</artifactId>
-            <version>incubating-M1</version>
+            <version>SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 

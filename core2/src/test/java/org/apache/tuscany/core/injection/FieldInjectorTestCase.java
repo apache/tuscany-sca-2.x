@@ -9,22 +9,19 @@ import junit.framework.TestCase;
  */
 public class FieldInjectorTestCase extends TestCase {
 
-    private Field privateField;
+    protected Field protectedField;
 
     public void testIllegalAccess() throws Exception {
-        FieldInjector<Foo> injector = new FieldInjector<Foo>(privateField, new SingletonObjectFactory<String>("foo"));
-        try {
-            injector.inject(new Foo());
-            fail();
-        } catch (AssertionError e) {
-            //expected
-        }
+        FieldInjector<Foo> injector = new FieldInjector<Foo>(protectedField, new SingletonObjectFactory<String>("foo"));
+        Foo foo = new Foo();
+        injector.inject(foo);
+        assertEquals("foo", foo.hidden);
     }
 
 
     protected void setUp() throws Exception {
         super.setUp();
-        privateField = Foo.class.getDeclaredField("hidden");
+        protectedField = Foo.class.getDeclaredField("hidden");
     }
 
     private class Foo {

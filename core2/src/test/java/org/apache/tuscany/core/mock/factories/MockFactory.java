@@ -99,7 +99,7 @@ public final class MockFactory {
             throw new IllegalArgumentException("No setter found on source for target");
         }
 
-        sourceConfig.addMember(setter.getName(), setter);
+        sourceConfig.addReferenceMember(setter.getName(), setter);
         SystemAtomicComponent sourceCtx = new SystemAtomicComponentImpl(source, sourceConfig);
         QualifiedName targetName = new QualifiedName(target);
         SystemOutboundWire wire = new SystemOutboundWireImpl(setter.getName(), targetName, targetClass);

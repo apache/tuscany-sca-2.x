@@ -1,26 +1,26 @@
 package org.apache.tuscany.core.implementation.system.builder;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Member;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.core.injection.ContextInjector;
-import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 import org.apache.tuscany.core.component.AutowireComponent;
+import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
@@ -28,6 +28,10 @@ import org.apache.tuscany.core.implementation.system.wire.SystemInboundWire;
 import org.apache.tuscany.core.implementation.system.wire.SystemInboundWireImpl;
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundAutowire;
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWireImpl;
+import org.apache.tuscany.core.injection.FieldInjector;
+import org.apache.tuscany.core.injection.MethodEventInvoker;
+import org.apache.tuscany.core.injection.MethodInjector;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
@@ -42,65 +46,64 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
                                     DeploymentContext deploymentContext) throws BuilderConfigException {
         assert parent instanceof AutowireComponent : "Parent must implement " + AutowireComponent.class.getName();
         AutowireComponent autowireContext = (AutowireComponent) parent;
+        PojoComponentType<ServiceDefinition, JavaMappedReference, JavaMappedProperty<?>> componentType =
+            definition.getImplementation().getComponentType();
 
-        PojoComponentType<?, ?, ?> componentType = definition.getImplementation().getComponentType();
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setParent(parent);
-        configuration.setEagerInit(componentType.isEagerInit());
-        configuration.setInitInvoker(componentType.getInitInvoker());
-        configuration.setDestroyInvoker(componentType.getDestroyInvoker());
         configuration.setScopeContainer(deploymentContext.getModuleScope());
-        for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
-            configuration.addServiceInterface(serviceDefinition.getServiceContract().getInterfaceClass());
+        configuration.setEagerInit(componentType.isEagerInit());
+        Method initMethod = componentType.getInitMethod();
+        if (initMethod != null) {
+            configuration.setInitInvoker(new MethodEventInvoker(initMethod));
         }
-        configuration.getInjectors().addAll(componentType.getInjectors());
-        for (Map.Entry<String, Member> entry : componentType.getReferenceMembers().entrySet()) {
-            configuration.addMember(entry.getKey(), entry.getValue());
+        Method destroyMethod = componentType.getDestroyMethod();
+        if (destroyMethod != null) {
+            configuration.setDestroyInvoker(new MethodEventInvoker(destroyMethod));
         }
-        for (Injector injector : configuration.getInjectors()) {
-            if (injector instanceof ContextInjector) {
-                // a context injector is found; determine if the parent context implements the interface
-                Class contextType = JavaIntrospectionHelper.introspectGeneric(injector.getClass(), 0);
-                if (contextType.isAssignableFrom(parent.getClass())) {
-                    ((ContextInjector) injector).setContext(parent);
-                } else {
-                    BuilderConfigException e = new BuilderConfigException("SCAObject not found for type");
-                    e.setIdentifier(contextType.getName());
-                    throw e;
-                }
-            }
-        }
-
-        Constructor<?> constr;
         try {
-            constr =
-                JavaIntrospectionHelper.getDefaultConstructor(definition.getImplementation().getImplementationClass());
+            Class<?> implClass = definition.getImplementation().getImplementationClass();
+            Constructor<?> constr = JavaIntrospectionHelper.getDefaultConstructor(implClass);
+            configuration.setObjectFactory(new PojoObjectFactory(constr));
         } catch (NoSuchMethodException e) {
             BuilderConfigException bce = new BuilderConfigException("Error building component", e);
             bce.setIdentifier(definition.getName());
             bce.addContextName(parent.getName());
             throw bce;
         }
-        configuration.setObjectFactory(new PojoObjectFactory(constr));
+        for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
+            configuration.addServiceInterface(serviceDefinition.getServiceContract().getInterfaceClass());
+        }
+        // handle properties
+        for (JavaMappedProperty<?> property : componentType.getProperties().values()) {
+            ObjectFactory<?> factory = property.getDefaultValueFactory();
+            if (property.getMember() instanceof Field) {
+                configuration.addPropertyInjector(new FieldInjector((Field) property.getMember(), factory));
+            } else if (property.getMember() instanceof Method) {
+                configuration.addPropertyInjector(new MethodInjector((Method) property.getMember(), factory));
+            } else {
+                BuilderConfigException e = new BuilderConfigException("Invalid property injection site");
+                e.setIdentifier(property.getName());
+                throw e;
+            }
+        }
+        // setup reference injection sites
+        for (JavaMappedReference reference : componentType.getReferences().values()) {
+            configuration.addReferenceMember(reference.getName(), reference.getMember());
+        }
         SystemAtomicComponent systemContext = new SystemAtomicComponentImpl(definition.getName(), configuration);
 
+        // handle inbound wires
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             Class interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
             SystemInboundWire<?> wire =
                 new SystemInboundWireImpl(serviceDefinition.getName(), interfaze, systemContext);
             systemContext.addInboundWire(wire);
         }
+        // handle references directly with no proxies
         for (ReferenceTarget target : definition.getReferenceTargets().values()) {
             String referenceName = target.getReferenceName();
             Class interfaze = target.getReference().getServiceContract().getInterfaceClass();
-            Member member = componentType.getReferenceMember(referenceName);
-            if (member == null) {
-                BuilderConfigException e = new BuilderConfigException("ReferenceDefinition not found");
-                e.setIdentifier(target.getReferenceName());
-                e.addContextName(definition.getName());
-                e.addContextName(parent.getName());
-                throw e;
-            }
             OutboundWire<?> wire;
             if (target.getReference().isAutowire()) {
                 wire = new SystemOutboundAutowire(referenceName, interfaze, autowireContext);

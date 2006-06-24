@@ -18,6 +18,8 @@ package org.apache.tuscany.spi.model;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.spi.ObjectFactory;
+
 /**
  * A component property
  *
@@ -25,7 +27,7 @@ import javax.xml.namespace.QName;
  */
 public class Property<T> extends ModelObject {
     private String name;
-    private T defaultValue;
+    private ObjectFactory<T> defaultValueFactory;
     private QName xmlType;
     private Class<T> javaType;
     private boolean many;
@@ -48,12 +50,12 @@ public class Property<T> extends ModelObject {
         this.name = name;
     }
 
-    public T getDefaultValue() {
-        return defaultValue;
+    public ObjectFactory<T> getDefaultValueFactory() {
+        return defaultValueFactory;
     }
 
-    public void setDefaultValue(T defaultValue) {
-        this.defaultValue = defaultValue;
+    public void setDefaultValueFactory(ObjectFactory<T> factory) {
+        this.defaultValueFactory = factory;
     }
 
     public QName getXmlType() {

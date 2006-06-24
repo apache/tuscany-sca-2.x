@@ -22,7 +22,7 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev$ $Date$
  */
 @Scope("SESSION")
-public interface SessionScopeComponent extends GenericComponent {
+public interface SessionScopeComponent {
 
 }
 

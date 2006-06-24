@@ -27,8 +27,8 @@ public class BoundServiceDefinition<B extends Binding> extends ServiceDefinition
     private B binding;
     private URI target;
 
-    public BoundServiceDefinition(String name, ServiceContract serviceContract, B binding, URI target) {
-        super(name, serviceContract);
+    public BoundServiceDefinition(String name, ServiceContract contract, boolean remotable, B binding, URI target) {
+        super(name, contract, remotable);
         this.binding = binding;
         this.target = target;
     }
@@ -51,4 +51,5 @@ public class BoundServiceDefinition<B extends Binding> extends ServiceDefinition
     public void setTarget(URI target) {
         this.target = target;
     }
+
 }

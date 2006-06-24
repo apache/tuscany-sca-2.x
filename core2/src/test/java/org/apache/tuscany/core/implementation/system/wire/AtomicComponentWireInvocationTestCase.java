@@ -32,7 +32,7 @@ public class AtomicComponentWireInvocationTestCase extends MockObjectTestCase {
 
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scope);
-        configuration.addMember("setTarget", SourceImpl.class.getMethod("setTarget", Target.class));
+        configuration.addReferenceMember("setTarget", SourceImpl.class.getMethod("setTarget", Target.class));
         configuration.addServiceInterface(Source.class);
         configuration.setObjectFactory(new PojoObjectFactory(SourceImpl.class.getConstructor()));
         SystemAtomicComponent sourceContext = new SystemAtomicComponentImpl("source", configuration);

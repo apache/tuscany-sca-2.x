@@ -24,10 +24,12 @@ package org.apache.tuscany.spi.model;
 public class ServiceDefinition extends ModelObject {
     private String name;
     private ServiceContract serviceContract;
+    private boolean remotable;
 
-    public ServiceDefinition(String name, ServiceContract serviceContract) {
+    public ServiceDefinition(String name, ServiceContract serviceContract, boolean remotable) {
         this.name = name;
         this.serviceContract = serviceContract;
+        this.remotable = remotable;
     }
 
     public ServiceDefinition() {
@@ -47,5 +49,13 @@ public class ServiceDefinition extends ModelObject {
 
     public void setServiceContract(ServiceContract serviceContract) {
         this.serviceContract = serviceContract;
+    }
+
+    public boolean isRemotable() {
+        return remotable;
+    }
+
+    public void setRemotable(boolean remotable) {
+        this.remotable = remotable;
     }
 }

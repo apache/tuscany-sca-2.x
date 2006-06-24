@@ -32,7 +32,7 @@ public abstract class PojoTargetInvoker implements TargetInvoker {
         try {
             Object instance = getInstance();
             if (!operation.getDeclaringClass().isInstance(instance)) {
-                Set<Method> methods = JavaIntrospectionHelper.getAllUniqueMethods(instance.getClass());
+                Set<Method> methods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(instance.getClass());
                 Method newOperation = JavaIntrospectionHelper.findClosestMatchingMethod(operation.getName(),
                     operation.getParameterTypes(), methods);
                 if (newOperation != null) {

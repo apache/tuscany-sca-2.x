@@ -101,19 +101,19 @@ public class PojoConfiguration {
         this.destroyInvoker = destroyInvoker;
     }
 
-    public List<Injector> getInjectors() {
+    public List<Injector> getPropertyInjectors() {
         return injectors;
     }
 
-    public void addInjectors(Injector injector) {
+    public void addPropertyInjector(Injector injector) {
         injectors.add(injector);
     }
 
-    public Map<String, Member> getMembers() {
+    public Map<String, Member> getReferenceMembers() {
         return members;
     }
 
-    public void addMember(String name, Member member) {
+    public void addReferenceMember(String name, Member member) {
         members.put(name, member);
     }
 

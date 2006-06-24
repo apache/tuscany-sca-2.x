@@ -1,0 +1,70 @@
+package org.apache.tuscany.core.implementation.processor;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
+import org.osoa.sca.annotations.Reference;
+
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+
+import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.core.implementation.ProcessingException;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+
+/**
+ * Processes an {@link @Reference} annotation, updating the component type with corresponding {@link
+ * org.apache.tuscany.core.implementation.JavaMappedReference}
+ *
+ * @version $Rev$ $Date$
+ */
+public class ReferenceProcessor extends ImplementationProcessorSupport {
+
+    public void visitMethod(Method method, PojoComponentType type, DeploymentContext context)
+        throws ProcessingException {
+        Reference annotation = method.getAnnotation(Reference.class);
+        if (annotation == null) {
+            return;
+        }
+        if (method.getParameterTypes().length != 1) {
+            IllegalReferenceException e = new IllegalReferenceException("Setter must have one parameter");
+            e.setIdentifier(method.getName());
+            throw e;
+        }
+        String name = annotation.name();
+        if (name.length() == 0) {
+            if (method.getName().startsWith("set")) {
+                name = JavaIntrospectionHelper.toPropertyName(method.getName());
+            } else {
+                name = method.getName();
+            }
+        }
+        if (type.getReferences().get(name) != null) {
+            throw new DuplicateReferenceException(name);
+        }
+        JavaMappedReference reference = new JavaMappedReference();
+        reference.setMember(method);
+        reference.setRequired(annotation.required());
+        type.getReferences().put(name, reference);
+    }
+
+    public void visitField(Field field, PojoComponentType type, DeploymentContext context) throws ProcessingException {
+        Reference annotation = field.getAnnotation(Reference.class);
+        if (annotation == null) {
+            return;
+        }
+        String name = annotation.name();
+        if (name.length() == 0) {
+            name = field.getName();
+        }
+        if (type.getReferences().get(name) != null) {
+            throw new DuplicateReferenceException(name);
+        }
+        JavaMappedReference property = new JavaMappedReference();
+        property.setMember(field);
+        property.setRequired(annotation.required());
+        type.getReferences().put(name, property);
+    }
+
+}

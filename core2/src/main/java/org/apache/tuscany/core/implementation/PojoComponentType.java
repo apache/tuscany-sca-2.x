@@ -1,18 +1,12 @@
 package org.apache.tuscany.core.implementation;
 
-import java.lang.reflect.Member;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.injection.EventInvoker;
-import org.apache.tuscany.core.injection.Injector;
-import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * A component type specialization for POJO implementations
@@ -23,10 +17,8 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
     extends ComponentType<S, R, P> {
 
     private Scope lifecycleScope = Scope.UNDEFINED;
-    private EventInvoker<Object> initInvoker;
-    private EventInvoker<Object> destroyInvoker;
-    private final List<Injector> injectors = new ArrayList<Injector>();
-    private final Map<String, Member> members = new HashMap<String, Member>();
+    private Method initMethod;
+    private Method destroyMethod;
 
     public Scope getLifecycleScope() {
         return lifecycleScope;
@@ -36,40 +28,20 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
         this.lifecycleScope = lifecycleScope;
     }
 
-    public EventInvoker<Object> getInitInvoker() {
-        return initInvoker;
+    public Method getInitMethod() {
+        return initMethod;
     }
 
-    public void setInitInvoker(EventInvoker<Object> initInvoker) {
-        this.initInvoker = initInvoker;
+    public void setInitMethod(Method initMethod) {
+        this.initMethod = initMethod;
     }
 
-    public EventInvoker<Object> getDestroyInvoker() {
-        return destroyInvoker;
+    public Method getDestroyMethod() {
+        return destroyMethod;
     }
 
-    public void setDestroyInvoker(EventInvoker<Object> destroyInvoker) {
-        this.destroyInvoker = destroyInvoker;
-    }
-
-    public List<Injector> getInjectors() {
-        return injectors;
-    }
-
-    public void addInjector(Injector injector) {
-        injectors.add(injector);
-    }
-
-    public Member getReferenceMember(String name) {
-        return members.get(name);
-    }
-
-    public void addReferenceMember(String name, Member member) {
-        members.put(name, member);
-    }
-
-    public Map<String, Member> getReferenceMembers() {
-        return members;
+    public void setDestroyMethod(Method destroyMethod) {
+        this.destroyMethod = destroyMethod;
     }
 
 }

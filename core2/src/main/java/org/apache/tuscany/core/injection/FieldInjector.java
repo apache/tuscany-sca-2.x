@@ -22,6 +22,7 @@ public class FieldInjector<T> implements Injector<T> {
      */
     public FieldInjector(Field field, ObjectFactory<?> objectFactory) {
         this.field = field;
+        this.field.setAccessible(true);
         this.objectFactory = objectFactory;
     }
 

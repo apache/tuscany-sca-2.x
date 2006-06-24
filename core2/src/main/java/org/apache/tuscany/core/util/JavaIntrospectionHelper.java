@@ -1,6 +1,5 @@
 package org.apache.tuscany.core.util;
 
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -27,29 +26,6 @@ public final class JavaIntrospectionHelper {
     private JavaIntrospectionHelper() {
     }
 
-    /**
-     * Returns a collection of public, private, protected, or default fields declared by a class or one of its
-     * supertypes
-     */
-    public static Set<Field> getAllFields(Class pClass) {
-        return getAllFields(pClass, new HashSet<Field>());
-    }
-
-    /**
-     * Recursively evaluates the type hierachy to return all fields on a given type
-     */
-    private static Set<Field> getAllFields(Class pClass, Set<Field> fields) {
-        if (pClass == null || pClass.isArray() || Object.class.equals(pClass)) {
-            return fields;
-        }
-        fields = getAllFields(pClass.getSuperclass(), fields);
-        Field[] declaredFields = pClass.getDeclaredFields();
-        for (Field field : declaredFields) {
-            field.setAccessible(true); // ignore Java accessibility
-            fields.add(field);
-        }
-        return fields;
-    }
 
     /**
      * Returns a collection of public, and protected fields declared by a class or one of its supertypes
@@ -67,8 +43,6 @@ public final class JavaIntrospectionHelper {
         }
         fields = getAllPublicAndProtectedFields(clazz.getSuperclass(), fields);
         Field[] declaredFields = clazz.getDeclaredFields();
-//        fields = new HashSet<Field>();
-//        Field[] declaredFields = clazz.getFields();
         for (Field field : declaredFields) {
             int modifiers = field.getModifiers();
             if ((Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) && !Modifier.isStatic(modifiers)) {
@@ -80,12 +54,12 @@ public final class JavaIntrospectionHelper {
     }
 
     /**
-     * Returns a collection of public, private, protected, or default methods declared by a class or one of its
-     * supertypes. Note that overriden methods will not be returned in the collection (i.e. only the method override
-     * will be). <p/> This method can potentially be expensive as reflection information is not cached. It is assumed
-     * that this method will be used during a configuration phase.
+     * Returns a collection of public and protected  methods declared by a class or one of its supertypes. Note that
+     * overriden methods will not be returned in the collection (i.e. only the method override will be). <p/> This
+     * method can potentially be expensive as reflection information is not cached. It is assumed that this method will
+     * be used during a configuration phase.
      */
-    public static Set<Method> getAllUniqueMethods(Class clazz) {
+    public static Set<Method> getAllUniquePublicProtectedMethods(Class clazz) {
         return getAllUniqueMethods(clazz, new HashSet<Method>());
     }
 
@@ -99,6 +73,10 @@ public final class JavaIntrospectionHelper {
         // we first evaluate methods of the subclass and then move to the parent
         Method[] declaredMethods = pClass.getDeclaredMethods();
         for (Method declaredMethod : declaredMethods) {
+            int modifiers = declaredMethod.getModifiers();
+            if ((!Modifier.isPublic(modifiers) && !Modifier.isProtected(modifiers)) || Modifier.isStatic(modifiers)) {
+                continue;
+            }
             if (methods.size() == 0) {
                 methods.add(declaredMethod);
             } else {
@@ -116,7 +94,6 @@ public final class JavaIntrospectionHelper {
                     // TODO ignore Java accessibility
                     declaredMethod.setAccessible(true);
                     temp.add(declaredMethod);
-
                 }
                 methods.addAll(temp);
                 temp.clear();
@@ -239,46 +216,6 @@ public final class JavaIntrospectionHelper {
                 && candidate.getParameterTypes()[0].getComponentType() != null
                 && candidate.getParameterTypes()[0].getComponentType().isInterface()))) {
                 return candidate;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns a field or method defined in the given class or its superclasses matching a literal name and parameter
-     * types <p/> This method can potentially be expensive as reflection information is not cached. It is assumed that
-     * this method will be used during a configuration phase.
-     *
-     * @param clazz       the class to introspect
-     * @param propertName the literal name of the property (i.e. JavaBean conventions are not applied)
-     * @param paramTypes  the parameter types for a method or null for fields or methods with no parameters
-     * @return the field, method or null
-     */
-    public static AccessibleObject getBeanProperty(Class clazz, String propertName, Class[] paramTypes) {
-
-        Set<Method> methods = getAllUniqueMethods(clazz);
-        for (Method method : methods) {
-            if (method.getName().equals(propertName)) {
-                Class[] types = method.getParameterTypes();
-                if (types.length == 0 && paramTypes == null) {
-                    return method;
-                } else if (types.length != 0 && paramTypes == null) {
-                    break;
-                } else if (types.length == paramTypes.length) {
-                    for (int n = 0; n < types.length - 1; n++) {
-                        if (!types[n].equals(paramTypes[n]) || !types[n].isAssignableFrom(paramTypes[n])) {
-                            break;
-                        }
-                    }
-                    return method;
-                }
-            }
-        }
-
-        Set<Field> fields = getAllFields(clazz);
-        for (Field field : fields) {
-            if (field.getName().equals(propertName)) {
-                return field;
             }
         }
         return null;
