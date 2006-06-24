@@ -16,18 +16,24 @@
  */
 package org.apache.tuscany.core.mock.component;
 
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
+
 /**
  * @version $Rev$ $Date$
  */
 public class BasicInterfaceImpl implements BasicInterface {
 
+    @Property
     public String publicProperty;
     public BasicInterface publicReference;
     protected String protectedProperty;
+    @Reference
     protected BasicInterface protectedReference;
     private String privateProperty;
     private BasicInterface privateReference;
 
+    @Property
     public void setPrivateProperty(String privateProperty) {
         this.privateProperty = privateProperty;
     }

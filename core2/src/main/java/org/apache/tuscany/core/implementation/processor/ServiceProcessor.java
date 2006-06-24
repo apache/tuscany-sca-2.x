@@ -68,6 +68,22 @@ public class ServiceProcessor extends ImplementationProcessorSupport {
         }
     }
 
+    public void visitEnd(Class<?> clazz, PojoComponentType type, DeploymentContext context) throws ProcessingException {
+        super.visitEnd(clazz, type, context);
+        if (!type.getServices().isEmpty()) {
+            return;
+        }
+        // heuristically determine the service
+        Class[] interfaces = clazz.getInterfaces();
+        if (interfaces.length == 0) {
+            // class is the interface
+            throw new UnsupportedOperationException("Classes not yet supported as interfaces");
+        } else if (interfaces.length == 1) {
+            JavaMappedService service = createService(interfaces[0]);
+            type.getServices().put(service.getName(), service);
+        }
+    }
+
     private JavaMappedService createService(Class<?> interfaze) {
         JavaMappedService service = new JavaMappedService();
         service.setName(JavaIntrospectionHelper.getBaseName(interfaze));

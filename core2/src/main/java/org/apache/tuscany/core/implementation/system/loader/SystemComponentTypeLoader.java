@@ -16,20 +16,17 @@
  */
 package org.apache.tuscany.core.implementation.system.loader;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.net.URL;
 
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.implementation.JavaServiceContract;
-import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
 
+import org.apache.tuscany.core.implementation.Introspector;
 import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.core.implementation.ProcessingException;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
@@ -39,8 +36,23 @@ import org.apache.tuscany.core.util.JavaIntrospectionHelper;
  * @version $Rev: 416228 $ $Date: 2006-06-21 19:53:17 -0700 (Wed, 21 Jun 2006) $
  */
 public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<SystemImplementation> {
-    protected Class<SystemImplementation> getImplementationClass() {
-        return SystemImplementation.class;
+    Introspector introspector;
+
+    public SystemComponentTypeLoader() {
+    }
+
+    public SystemComponentTypeLoader(Introspector introspector) {
+        this.introspector = introspector;
+    }
+
+    public SystemComponentTypeLoader(LoaderRegistry loaderRegistry, Introspector introspector) {
+        super(loaderRegistry);
+        this.introspector = introspector;
+    }
+
+    @Autowire
+    public void setIntrospector(Introspector introspector) {
+        this.introspector = introspector;
     }
 
     public void load(SystemImplementation implementation, DeploymentContext deploymentContext) throws LoaderException {
@@ -48,58 +60,64 @@ public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<Syst
         URL sidefile = implClass.getResource(JavaIntrospectionHelper.getBaseName(implClass) + ".componentType");
         PojoComponentType componentType;
         if (sidefile == null) {
-            componentType = loadByIntrospection(implementation);
+            componentType = loadByIntrospection(implementation, deploymentContext);
         } else {
             componentType = loadFromSidefile(sidefile, deploymentContext);
         }
         implementation.setComponentType(componentType);
     }
 
-    protected PojoComponentType loadByIntrospection(SystemImplementation implementation) {
+    protected Class<SystemImplementation> getImplementationClass() {
+        return SystemImplementation.class;
+    }
+
+    protected PojoComponentType loadByIntrospection(SystemImplementation implementation,
+                                                    DeploymentContext deploymentContext) throws ProcessingException {
         PojoComponentType componentType = new PojoComponentType();
 
         // FIXME: replace this rudimentary introspection mechanism
         Class<?> implClass = implementation.getImplementationClass();
-        for (Class<?> serviceIntf : implClass.getInterfaces()) {
-            JavaServiceContract serviceContract = new JavaServiceContract(serviceIntf);
-            ServiceDefinition service = new ServiceDefinition(serviceIntf.getName(), serviceContract, false);
-            componentType.add(service);
-        }
-        for (Field field : implClass.getFields()) {
-            if (Modifier.isStatic(field.getModifiers())) {
-                continue;
-            }
-            String name = field.getName();
-            Class<?> javaType = field.getType();
-            if (javaType.isInterface()) {
-                JavaMappedReference reference = new JavaMappedReference(name, new JavaServiceContract(javaType), field);
-                componentType.add(reference);
-            } else {
-                JavaMappedProperty<?> property = new JavaMappedProperty(name, null, javaType, field);
-                componentType.add(property);
-            }
-        }
-        for (Method method : implClass.getMethods()) {
-            if (Modifier.isStatic(method.getModifiers())
-                || !(Void.TYPE == method.getReturnType())
-                || method.getParameterTypes().length != 1
-                || !method.getName().startsWith("set")
-                || !(method.getName().length() > 3)
-                ) {
-                continue;
-            }
-            String name = method.getName();
-            name = Character.toLowerCase(name.charAt(3)) + name.substring(4);
-            Class<?> javaType = method.getParameterTypes()[0];
-            if (javaType.isInterface()) {
-                JavaMappedReference reference =
-                    new JavaMappedReference(name, new JavaServiceContract(javaType), method);
-                componentType.add(reference);
-            } else {
-                JavaMappedProperty<?> property = new JavaMappedProperty(name, null, javaType, method);
-                componentType.add(property);
-            }
-        }
+        introspector.introspect(implClass, componentType, deploymentContext);
+//        for (Class<?> serviceIntf : implClass.getInterfaces()) {
+//            JavaServiceContract serviceContract = new JavaServiceContract(serviceIntf);
+//            ServiceDefinition service = new ServiceDefinition(serviceIntf.getName(), serviceContract, false);
+//            componentType.add(service);
+//        }
+//        for (Field field : implClass.getFields()) {
+//            if (Modifier.isStatic(field.getModifiers())) {
+//                continue;
+//            }
+//            String name = field.getName();
+//            Class<?> javaType = field.getType();
+//            if (javaType.isInterface()) {
+//              JavaMappedReference reference = new JavaMappedReference(name, new JavaServiceContract(javaType), field);
+//                componentType.add(reference);
+//            } else {
+//                JavaMappedProperty<?> property = new JavaMappedProperty(name, null, javaType, field);
+//                componentType.add(property);
+//            }
+//        }
+//        for (Method method : implClass.getMethods()) {
+//            if (Modifier.isStatic(method.getModifiers())
+//                || !(Void.TYPE == method.getReturnType())
+//                || method.getParameterTypes().length != 1
+//                || !method.getName().startsWith("set")
+//                || !(method.getName().length() > 3)
+//                ) {
+//                continue;
+//            }
+//            String name = method.getName();
+//            name = Character.toLowerCase(name.charAt(3)) + name.substring(4);
+//            Class<?> javaType = method.getParameterTypes()[0];
+//            if (javaType.isInterface()) {
+//                JavaMappedReference reference =
+//                    new JavaMappedReference(name, new JavaServiceContract(javaType), method);
+//                componentType.add(reference);
+//            } else {
+//                JavaMappedProperty<?> property = new JavaMappedProperty(name, null, javaType, method);
+//                componentType.add(property);
+//            }
+//        }
 
         return componentType;
     }

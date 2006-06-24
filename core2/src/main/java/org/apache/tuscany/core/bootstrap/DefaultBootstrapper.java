@@ -30,7 +30,14 @@ import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
 import org.apache.tuscany.core.deployer.DeployerImpl;
+import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 import org.apache.tuscany.core.implementation.composite.CompositeLoader;
+import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
+import org.apache.tuscany.core.implementation.processor.InitProcessor;
+import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
+import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
+import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
+import org.apache.tuscany.core.implementation.processor.ServiceProcessor;
 import org.apache.tuscany.core.implementation.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemCompositeBuilder;
@@ -94,9 +101,20 @@ public class DefaultBootstrapper {
         LoaderRegistryImpl loaderRegistry = new LoaderRegistryImpl();
         loaderRegistry.setMonitor(monitorFactory.getMonitor(LoaderRegistryImpl.Monitor.class));
 
+        // load default processors
+        IntrospectionRegistryImpl introspectionRegistry = new IntrospectionRegistryImpl();
+        introspectionRegistry
+            .setMonitor(monitorFactory.getMonitor(IntrospectionRegistryImpl.IntrospectionMonitor.class));
+        introspectionRegistry.registerProcessor(new DestroyProcessor());
+        introspectionRegistry.registerProcessor(new InitProcessor());
+        introspectionRegistry.registerProcessor(new ScopeProcessor());
+        introspectionRegistry.registerProcessor(new PropertyProcessor());
+        introspectionRegistry.registerProcessor(new ReferenceProcessor());
+        introspectionRegistry.registerProcessor(new ServiceProcessor());
+
         // register component type loaders
         loaderRegistry.registerLoader(SystemImplementation.class,
-            new SystemComponentTypeLoader());
+            new SystemComponentTypeLoader(introspectionRegistry));
         loaderRegistry.registerLoader(SystemCompositeImplementation.class,
             new SystemCompositeComponentTypeLoader(loaderRegistry));
 
