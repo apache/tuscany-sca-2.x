@@ -44,7 +44,7 @@ import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
 
 /**
- * Temporary class to demonstrate component lifecyclPojoAtomicComponente
+ * Temporary class to demonstrate component lifcycle
  *
  * @version $Rev$ $Date$
  */
