@@ -18,6 +18,7 @@ public class InitProcessorTestCase extends TestCase {
         Method method = InitProcessorTestCase.Foo.class.getMethod("init");
         processor.visitMethod(method, type, null);
         assertNotNull(type.getInitMethod());
+        assertTrue(type.isEagerInit());
     }
 
     public void testBadInit() throws Exception {
@@ -48,7 +49,7 @@ public class InitProcessorTestCase extends TestCase {
 
 
     private class Foo {
-        @Init
+        @Init(eager = true)
         public void init() {
         }
     }

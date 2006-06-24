@@ -33,10 +33,10 @@ public class JavaReferenceWireTestCase extends MockObjectTestCase {
         scope.start();
         final Target target = new TargetImpl();
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.addReferenceMember("target", SourceImpl.class.getMethod("setTarget", Target.class));
+        configuration.addReferenceSite("target", SourceImpl.class.getMethod("setTarget", Target.class));
         configuration.addServiceInterface(Source.class);
         Constructor<SourceImpl> ctr = SourceImpl.class.getConstructor();
-        configuration.setObjectFactory(new PojoObjectFactory<SourceImpl>(ctr));
+        configuration.setInstanceFactory(new PojoObjectFactory<SourceImpl>(ctr));
         configuration.setScopeContainer(scope);
         Mock mock = mock(OutboundWire.class);
         mock.expects(atLeastOnce()).method("getInvocationChains");

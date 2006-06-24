@@ -36,14 +36,14 @@ public class PojoConfiguration {
 
     private CompositeComponent<?> parent;
     private ScopeContainer scopeContainer;
-    private ObjectFactory<?> objectFactory;
+    private ObjectFactory<?> instanceFactory;
     private boolean eagerInit;
     private EventInvoker<Object> initInvoker;
     private EventInvoker<Object> destroyInvoker;
-    private List<Injector> injectors = new ArrayList<Injector>();
-    private WireService wireService;
-    private Map<String, Member> members = new HashMap<String, Member>();
+    private List<Injector> propertyInjectors = new ArrayList<Injector>();
+    private Map<String, Member> referenceSites = new HashMap<String, Member>();
     private List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
+    private WireService wireService;
 
     public CompositeComponent<?> getParent() {
         return parent;
@@ -69,12 +69,12 @@ public class PojoConfiguration {
         serviceInterfaces.add(serviceInterface);
     }
 
-    public ObjectFactory<?> getObjectFactory() {
-        return objectFactory;
+    public ObjectFactory<?> getInstanceFactory() {
+        return instanceFactory;
     }
 
-    public void setObjectFactory(ObjectFactory<?> objectFactory) {
-        this.objectFactory = objectFactory;
+    public void setInstanceFactory(ObjectFactory<?> objectFactory) {
+        this.instanceFactory = objectFactory;
     }
 
     public boolean isEagerInit() {
@@ -102,19 +102,19 @@ public class PojoConfiguration {
     }
 
     public List<Injector> getPropertyInjectors() {
-        return injectors;
+        return propertyInjectors;
     }
 
     public void addPropertyInjector(Injector injector) {
-        injectors.add(injector);
+        propertyInjectors.add(injector);
     }
 
-    public Map<String, Member> getReferenceMembers() {
-        return members;
+    public Map<String, Member> getReferenceSite() {
+        return referenceSites;
     }
 
-    public void addReferenceMember(String name, Member member) {
-        members.put(name, member);
+    public void addReferenceSite(String name, Member member) {
+        referenceSites.put(name, member);
     }
 
     public WireService getWireService() {

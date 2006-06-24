@@ -13,6 +13,8 @@
  */
 package org.apache.tuscany.core.implementation;
 
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+
 /**
  * Implementations are responsible for walking a component implementation class, adding additional component type
  * information as appropriate
@@ -29,6 +31,7 @@ public interface Introspector {
      * @return the updated component type
      * @throws ProcessingException if an error is encountered evaluating the implementation class
      */
-    PojoComponentType introspect(Class<?> clazz, PojoComponentType type) throws ProcessingException;
+    PojoComponentType introspect(Class<?> clazz, PojoComponentType type, DeploymentContext context)
+        throws ProcessingException;
 
 }

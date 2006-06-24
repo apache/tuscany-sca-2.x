@@ -46,6 +46,7 @@ public class InitProcessor extends ImplementationProcessorSupport {
             throw new DuplicateInitException("More than one initializer found on implementaton");
         }
         method.setAccessible(true);
+        type.setEagerInit(annotation.eager());
         type.setInitMethod(method);
     }
 }

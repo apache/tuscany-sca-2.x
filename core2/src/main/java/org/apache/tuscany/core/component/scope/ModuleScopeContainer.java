@@ -25,8 +25,8 @@ import org.apache.tuscany.core.component.event.CompositeStop;
 public class ModuleScopeContainer extends AbstractScopeContainer {
 
     private static final InstanceWrapper EMPTY = new EmptyWrapper();
-    private final Map<AtomicComponent, InstanceWrapper> instanceContexts;
-    // the queue of instanceContexts to destroy, in the order that their instances were created
+    private final Map<AtomicComponent, InstanceWrapper> instanceWrappers;
+    // the queue of instanceWrappers to destroy, in the order that their instances were created
     private final List<InstanceWrapper> destroyQueue;
 
     public ModuleScopeContainer() {
@@ -35,7 +35,7 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
 
     public ModuleScopeContainer(WorkContext workContext) {
         super("Module Scope", workContext);
-        instanceContexts = new ConcurrentHashMap<AtomicComponent, InstanceWrapper>();
+        instanceWrappers = new ConcurrentHashMap<AtomicComponent, InstanceWrapper>();
         destroyQueue = new ArrayList<InstanceWrapper>();
     }
 
@@ -47,7 +47,7 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
     public void onEvent(Event event) {
         checkInit();
         if (event instanceof CompositeStart) {
-            eagerInitContexts();
+            eagerInitComponents();
             lifecycleState = RUNNING;
         } else if (event instanceof CompositeStop) {
             shutdownContexts();
@@ -63,7 +63,7 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
 
     public synchronized void stop() {
         checkInit();
-        instanceContexts.clear();
+        instanceWrappers.clear();
         synchronized (destroyQueue) {
             destroyQueue.clear();
         }
@@ -72,7 +72,7 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
 
 
     /**
-     * Notifies instanceContexts of a shutdown in reverse order to which they were started
+     * Notifies instanceWrappers of a shutdown in reverse order to which they were started
      */
     private void shutdownContexts() {
         if (destroyQueue.size() == 0) {
@@ -90,18 +90,18 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
 
     public void register(AtomicComponent component) {
         checkInit();
-        instanceContexts.put(component, EMPTY);
+        instanceWrappers.put(component, EMPTY);
     }
 
 
     protected InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
         checkInit();
-        InstanceWrapper ctx = instanceContexts.get(component);
+        InstanceWrapper ctx = instanceWrappers.get(component);
         assert ctx != null : "Component not registered with scope: " + component;
         if (ctx == EMPTY) {
             ctx = new InstanceWrapperImpl(component, component.createInstance());
             ctx.start();
-            instanceContexts.put(component, ctx);
+            instanceWrappers.put(component, ctx);
             synchronized (destroyQueue) {
                 destroyQueue.add(ctx);
             }
@@ -109,13 +109,13 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
         return ctx;
     }
 
-    private void eagerInitContexts() throws CoreRuntimeException {
-        for (Map.Entry<AtomicComponent, InstanceWrapper> entry : instanceContexts.entrySet()) {
+    private void eagerInitComponents() throws CoreRuntimeException {
+        for (Map.Entry<AtomicComponent, InstanceWrapper> entry : instanceWrappers.entrySet()) {
             AtomicComponent component = entry.getKey();
             if (component.isEagerInit()) {
                 InstanceWrapper ctx = new InstanceWrapperImpl(component, component.createInstance());
                 ctx.start();
-                instanceContexts.put(component, ctx);
+                instanceWrappers.put(component, ctx);
                 destroyQueue.add(ctx);
             }
         }

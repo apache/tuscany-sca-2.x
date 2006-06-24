@@ -89,7 +89,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scopeContainer);
         configuration.addServiceInterface(SessionScopeInitDestroyComponent.class);
-        configuration.setObjectFactory(factory);
+        configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);
         SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo", configuration);

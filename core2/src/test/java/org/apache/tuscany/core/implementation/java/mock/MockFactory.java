@@ -52,7 +52,7 @@ public final class MockFactory {
         scope.compareTo(scope); //FXIME
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scopeContainer);
-        configuration.setObjectFactory(new PojoObjectFactory(clazz.getConstructor()));
+        configuration.setInstanceFactory(new PojoObjectFactory(clazz.getConstructor()));
         configuration.addServiceInterface(clazz);
         configuration.setWireService(WIRE_SERVICE);
         return new JavaAtomicComponent(name, configuration);
@@ -126,11 +126,11 @@ public final class MockFactory {
 
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(sourceScope);
-        configuration.setObjectFactory(new PojoObjectFactory(sourceClass.getConstructor()));
+        configuration.setInstanceFactory(new PojoObjectFactory(sourceClass.getConstructor()));
         configuration.addServiceInterface(sourceClass);
         configuration.setWireService(WIRE_SERVICE);
         for (Map.Entry<String, Member> entry : members.entrySet()) {
-            configuration.addReferenceMember(entry.getKey(), entry.getValue());
+            configuration.addReferenceSite(entry.getKey(), entry.getValue());
         }
         JavaAtomicComponent sourceContext = new JavaAtomicComponent(sourceName, configuration);
         OutboundWire outboundWire = createReferenceWire(targetName, sourceReferenceClass, sourceHeadInterceptor,
@@ -177,11 +177,11 @@ public final class MockFactory {
 
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(sourceScope);
-        configuration.setObjectFactory(new PojoObjectFactory(sourceClass.getConstructor()));
+        configuration.setInstanceFactory(new PojoObjectFactory(sourceClass.getConstructor()));
         configuration.addServiceInterface(sourceClass);
         configuration.setWireService(WIRE_SERVICE);
         for (Map.Entry<String, Member> entry : members.entrySet()) {
-            configuration.addReferenceMember(entry.getKey(), entry.getValue());
+            configuration.addReferenceSite(entry.getKey(), entry.getValue());
         }
         JavaAtomicComponent sourceContext = new JavaAtomicComponent(sourceName, configuration);
         OutboundWire outboundWire = createReferenceWire(targetName, sourceReferenceClass, null, null, null);

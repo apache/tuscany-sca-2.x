@@ -34,10 +34,11 @@ import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
- * Builds an <code>AtomicContext</code> for a Java-based component
+ * Builds a Java-based atomic context from a component definition
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -60,11 +61,19 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             configuration.setScopeContainer(scopeRegistry.getScopeContainer(scope));
         }
         configuration.setEagerInit(componentType.isEagerInit());
+        Method initMethod = componentType.getInitMethod();
+        if (initMethod != null) {
+            configuration.setInitInvoker(new MethodEventInvoker(initMethod));
+        }
+        Method destroyMethod = componentType.getDestroyMethod();
+        if (destroyMethod != null) {
+            configuration.setDestroyInvoker(new MethodEventInvoker(destroyMethod));
+        }
         configuration.setWireService(wireService);
         try {
             Constructor<?> constr = JavaIntrospectionHelper
                 .getDefaultConstructor(definition.getImplementation().getImplementationClass());
-            configuration.setObjectFactory(new PojoObjectFactory(constr));
+            configuration.setInstanceFactory(new PojoObjectFactory(constr));
         } catch (NoSuchMethodException e) {
             BuilderConfigException bce = new BuilderConfigException("Error building definition", e);
             bce.setIdentifier(definition.getName());
@@ -89,7 +98,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             }
         }
         for (JavaMappedReference reference : componentType.getReferences().values()) {
-            configuration.addReferenceMember(reference.getName(), reference.getMember());
+            configuration.addReferenceSite(reference.getName(), reference.getMember());
         }
 
         return new JavaAtomicComponent(definition.getName(), configuration);

@@ -50,7 +50,7 @@ public class IntrospectionRegistryTestCase extends MockObjectTestCase {
         mock.expects(once()).method("visitEnd");
         ImplementationProcessor processor = (ImplementationProcessor) mock.proxy();
         registry.registerProcessor(processor);
-        registry.introspect(Bar.class, new PojoComponentType());
+        registry.introspect(Bar.class, new PojoComponentType(), null);
     }
 
 

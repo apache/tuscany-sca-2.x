@@ -41,20 +41,20 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
 
     public PojoAtomicComponent(String name, PojoConfiguration configuration) {
         super(name, configuration.getParent(), configuration.getScopeContainer(), configuration.getWireService());
-        assert configuration.getObjectFactory() != null : "Object factory was null";
+        assert configuration.getInstanceFactory() != null : "Object factory was null";
         if (eagerInit && initInvoker == null) {
             throw new AssertionError("No intialization method found for eager init implementation");
         }
         eagerInit = configuration.isEagerInit();
         initInvoker = configuration.getInitInvoker();
         destroyInvoker = configuration.getDestroyInvoker();
-        objectFactory = configuration.getObjectFactory();
+        objectFactory = configuration.getInstanceFactory();
         serviceInterfaces = configuration.getServiceInterfaces();
         this.injectors =
-            (configuration.getPropertyInjectors() == null) ? new ArrayList<Injector>() :
-                configuration.getPropertyInjectors();
-        this.members = configuration.getReferenceMembers() != null ? configuration.getReferenceMembers() :
-            new HashMap<String, Member>();
+            (configuration.getPropertyInjectors() == null) ? new ArrayList<Injector>()
+                : configuration.getPropertyInjectors();
+        this.members = configuration.getReferenceSite() != null ? configuration.getReferenceSite()
+            : new HashMap<String, Member>();
     }
 
     public List<Class<?>> getServiceInterfaces() {

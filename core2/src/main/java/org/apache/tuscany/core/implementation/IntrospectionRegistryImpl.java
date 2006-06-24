@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.tuscany.spi.annotation.Monitor;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
@@ -56,7 +57,8 @@ public class IntrospectionRegistryImpl implements IntrospectionRegistry {
         cache.remove(processor);
     }
 
-    public PojoComponentType introspect(Class<?> clazz, PojoComponentType type) throws ProcessingException {
+    public PojoComponentType introspect(Class<?> clazz, PojoComponentType type, DeploymentContext context)
+        throws ProcessingException {
         for (ImplementationProcessor processor : cache) {
             processor.visitClass(clazz, type, null);
         }

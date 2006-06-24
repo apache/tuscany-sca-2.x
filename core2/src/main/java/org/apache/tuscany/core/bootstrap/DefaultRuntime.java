@@ -32,12 +32,12 @@ import org.apache.tuscany.core.implementation.system.component.SystemCompositeCo
 public class DefaultRuntime extends SystemCompositeComponentImpl<Void>
     implements RuntimeComponent<SystemCompositeComponent> {
     private final CompositeComponent rootComponent;
-    private final SystemCompositeComponent systemContext;
+    private final SystemCompositeComponent systemComponent;
     private final Deployer deployer;
 
-    public DefaultRuntime(SystemCompositeComponent systemContext, CompositeComponent rootComponent) {
+    public DefaultRuntime(SystemCompositeComponent systemComponent, CompositeComponent rootComponent) {
         super(ComponentNames.TUSCANY_RUNTIME, null, null);
-        this.systemContext = systemContext;
+        this.systemComponent = systemComponent;
         this.rootComponent = rootComponent;
         deployer = null;
     }
@@ -47,7 +47,7 @@ public class DefaultRuntime extends SystemCompositeComponentImpl<Void>
     }
 
     public SystemCompositeComponent getSystemComponent() {
-        return systemContext;
+        return systemComponent;
     }
 
     public Deployer getDeployer() {

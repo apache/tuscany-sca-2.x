@@ -27,7 +27,7 @@ public class GetServiceByNameTestCase extends MockObjectTestCase {
 
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scope);
-        configuration.setObjectFactory(new PojoObjectFactory<TargetImpl>(TargetImpl.class.getConstructor()));
+        configuration.setInstanceFactory(new PojoObjectFactory<TargetImpl>(TargetImpl.class.getConstructor()));
         configuration.addServiceInterface(Target.class);
         configuration.setWireService(new JDKWireService());
         final JavaAtomicComponent<?> component = new JavaAtomicComponent("target", configuration);

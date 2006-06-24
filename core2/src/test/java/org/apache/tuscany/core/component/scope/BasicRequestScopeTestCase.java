@@ -77,7 +77,7 @@ public class BasicRequestScopeTestCase extends TestCase {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scopeContainer);
         configuration.addServiceInterface(RequestScopeInitDestroyComponent.class);
-        configuration.setObjectFactory(factory);
+        configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl("foo", configuration);

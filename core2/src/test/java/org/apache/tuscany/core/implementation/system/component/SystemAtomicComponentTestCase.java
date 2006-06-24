@@ -21,7 +21,7 @@ public class SystemAtomicComponentTestCase extends TestCase {
         ObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor((Class[]) null), null);
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.addServiceInterface(Foo.class);
-        configuration.setObjectFactory(factory);
+        configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
         SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo", configuration);
         Foo foo = (Foo) context.createInstance();

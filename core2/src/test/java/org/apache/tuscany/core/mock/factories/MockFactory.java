@@ -71,7 +71,7 @@ public final class MockFactory {
         PojoConfiguration sourceConfig = new PojoConfiguration();
         sourceConfig.getServiceInterfaces().addAll(sourceInterfaces);
         sourceConfig.setScopeContainer(sourceScopeContainer);
-        sourceConfig.setObjectFactory(new PojoObjectFactory(sourceClass.getConstructor()));
+        sourceConfig.setInstanceFactory(new PojoObjectFactory(sourceClass.getConstructor()));
 
         //create target wire
         Method[] sourceMethods = sourceClass.getMethods();
@@ -99,7 +99,7 @@ public final class MockFactory {
             throw new IllegalArgumentException("No setter found on source for target");
         }
 
-        sourceConfig.addReferenceMember(setter.getName(), setter);
+        sourceConfig.addReferenceSite(setter.getName(), setter);
         SystemAtomicComponent sourceCtx = new SystemAtomicComponentImpl(source, sourceConfig);
         QualifiedName targetName = new QualifiedName(target);
         SystemOutboundWire wire = new SystemOutboundWireImpl(setter.getName(), targetName, targetClass);
@@ -118,7 +118,7 @@ public final class MockFactory {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(container);
         configuration.addServiceInterface(clazz);
-        configuration.setObjectFactory(new PojoObjectFactory(clazz.getConstructor()));
+        configuration.setInstanceFactory(new PojoObjectFactory(clazz.getConstructor()));
         Method[] methods = clazz.getMethods();
         for (Method method : methods) {
             Init init;

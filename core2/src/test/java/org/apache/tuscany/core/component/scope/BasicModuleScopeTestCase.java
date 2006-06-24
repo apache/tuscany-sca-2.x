@@ -80,7 +80,7 @@ public class BasicModuleScopeTestCase extends TestCase {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scopeContainer);
         configuration.addServiceInterface(ModuleScopeInitDestroyComponent.class);
-        configuration.setObjectFactory(factory);
+        configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);
         SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo", configuration);

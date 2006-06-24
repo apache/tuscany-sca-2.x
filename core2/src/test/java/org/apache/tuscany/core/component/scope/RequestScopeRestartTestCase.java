@@ -34,7 +34,7 @@ public class RequestScopeRestartTestCase extends TestCase {
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);
         Constructor<InitDestroyOnce> ctr = InitDestroyOnce.class.getConstructor((Class<?>[]) null);
-        configuration.setObjectFactory(new PojoObjectFactory<InitDestroyOnce>(ctr));
+        configuration.setInstanceFactory(new PojoObjectFactory<InitDestroyOnce>(ctr));
         SystemAtomicComponent context = new SystemAtomicComponentImpl("InitDestroy", configuration);
         context.start();
 

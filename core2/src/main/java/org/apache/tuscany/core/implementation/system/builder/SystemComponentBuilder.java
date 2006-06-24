@@ -35,7 +35,7 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
- * Produces system atomic components by evaluating an assembly
+ * Produces system atomic components from a component definition
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -64,7 +64,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
         try {
             Class<?> implClass = definition.getImplementation().getImplementationClass();
             Constructor<?> constr = JavaIntrospectionHelper.getDefaultConstructor(implClass);
-            configuration.setObjectFactory(new PojoObjectFactory(constr));
+            configuration.setInstanceFactory(new PojoObjectFactory(constr));
         } catch (NoSuchMethodException e) {
             BuilderConfigException bce = new BuilderConfigException("Error building component", e);
             bce.setIdentifier(definition.getName());
@@ -89,7 +89,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
         }
         // setup reference injection sites
         for (JavaMappedReference reference : componentType.getReferences().values()) {
-            configuration.addReferenceMember(reference.getName(), reference.getMember());
+            configuration.addReferenceSite(reference.getName(), reference.getMember());
         }
         SystemAtomicComponent systemContext = new SystemAtomicComponentImpl(definition.getName(), configuration);
 

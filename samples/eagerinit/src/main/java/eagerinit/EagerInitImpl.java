@@ -19,11 +19,14 @@ package eagerinit;
 // TODO import org.apache.tuscany.core.system.annotation.Monitor;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Service;
+import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Destroy;
 
 /**
  * This class implements the Eager Init service.
  */
 @Service(EagerInitService.class)
+@Scope("MODULE")
 public class EagerInitImpl implements EagerInitService {
 
     {
@@ -33,6 +36,11 @@ public class EagerInitImpl implements EagerInitService {
     @Init(eager = true)
     public void init() throws Exception {
         System.out.println("Hello World, init");
+    }
+
+    @Destroy
+    public void destroy() throws Exception {
+        System.out.println("Goodbye World");
     }
 
     public String getGreetings(String name) {
