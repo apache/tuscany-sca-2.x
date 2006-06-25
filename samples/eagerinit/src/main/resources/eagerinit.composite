@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="ASCII"?>
-<composite      xmlns="http://www.osoa.org/xmlns/sca/1.0"
-                        name="EagerInitComposite" >
+<composite xmlns="http://www.osoa.org/xmlns/sca/0.9"
+           xmlns:system="http://tuscany.apache.org/xmlns/system/0.9"
+           name="EagerInitComposite">
 
-        <component name="EagerInitComponent">
-                <implementation.java class="eagerinit.EagerInitImpl"/>
-        </component>
+    <component name="EagerInitComponent">
+        <system:implementation.system class="eagerinit.EagerInitImpl"/>
+    </component>
 
 </composite>

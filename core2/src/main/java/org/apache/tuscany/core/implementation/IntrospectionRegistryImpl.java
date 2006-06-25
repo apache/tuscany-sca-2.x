@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.tuscany.spi.annotation.Monitor;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
@@ -32,18 +31,18 @@ import org.apache.tuscany.core.util.JavaIntrospectionHelper;
  */
 public class IntrospectionRegistryImpl implements IntrospectionRegistry {
 
-    private IntrospectionMonitor monitor;
+    private Monitor monitor;
     private List<ImplementationProcessor> cache = new ArrayList<ImplementationProcessor>();
 
     public IntrospectionRegistryImpl() {
     }
 
-    public IntrospectionRegistryImpl(IntrospectionMonitor monitor) {
+    public IntrospectionRegistryImpl(Monitor monitor) {
         this.monitor = monitor;
     }
 
-    @Monitor
-    public void setMonitor(IntrospectionMonitor monitor) {
+    @org.apache.tuscany.spi.annotation.Monitor
+    public void setMonitor(Monitor monitor) {
         this.monitor = monitor;
     }
 
@@ -119,7 +118,7 @@ public class IntrospectionRegistryImpl implements IntrospectionRegistry {
         }
     }
 
-    public static interface IntrospectionMonitor {
+    public static interface Monitor {
         void register(ImplementationProcessor processor);
 
         void unregister(ImplementationProcessor processor);

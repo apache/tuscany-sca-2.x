@@ -56,7 +56,7 @@ public class SystemComponentTypeLoaderTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         IntrospectionRegistryImpl registry = new IntrospectionRegistryImpl();
-        registry.setMonitor(new NullMonitorFactory().getMonitor(IntrospectionRegistryImpl.IntrospectionMonitor.class));
+        registry.setMonitor(new NullMonitorFactory().getMonitor(IntrospectionRegistryImpl.Monitor.class));
         registry.registerProcessor(new DestroyProcessor());
         registry.registerProcessor(new InitProcessor());
         registry.registerProcessor(new ScopeProcessor());

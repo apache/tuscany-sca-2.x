@@ -16,8 +16,11 @@
  */
 package org.apache.tuscany.core.deployer;
 
+import javax.xml.stream.XMLInputFactory;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.Builder;
+import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -28,7 +31,6 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 
-import org.apache.tuscany.core.builder.Connector;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 
 /**
@@ -37,9 +39,20 @@ import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
  * @version $Rev$ $Date$
  */
 public class DeployerImpl implements Deployer {
+    private XMLInputFactory xmlFactory;
     private Loader loader;
     private Builder builder;
     private Connector connector;
+
+    public DeployerImpl(XMLInputFactory xmlFactory, Loader loader, Builder builder, Connector connector) {
+        this.xmlFactory = xmlFactory;
+        this.loader = loader;
+        this.builder = builder;
+        this.connector = connector;
+    }
+
+    public DeployerImpl() {
+    }
 
     @Autowire
     public void setLoader(Loader loader) {
@@ -60,7 +73,7 @@ public class DeployerImpl implements Deployer {
                                                              ComponentDefinition<I> componentDefinition)
         throws LoaderException {
         ScopeContainer moduleScope = new ModuleScopeContainer();
-        DeploymentContext deploymentContext = new DeploymentContext(null, null, moduleScope);
+        DeploymentContext deploymentContext = new DeploymentContext(null, xmlFactory, moduleScope);
         load(componentDefinition, deploymentContext);
         SCAObject<?> context = build(parent, componentDefinition, deploymentContext);
         connect(context);

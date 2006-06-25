@@ -13,35 +13,20 @@
  */
 package eagerinit;
 
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.Scope;
+import java.net.URL;
 
-import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.event.CompositeStart;
-import org.apache.tuscany.core.component.event.CompositeStop;
-import org.apache.tuscany.core.component.scope.HttpSessionScopeObjectFactory;
-import org.apache.tuscany.core.component.scope.ModuleScopeObjectFactory;
-import org.apache.tuscany.core.component.scope.RequestScopeObjectFactory;
-import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
-import org.apache.tuscany.core.component.scope.StatelessScopeObjectFactory;
-import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.ProcessingException;
-import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
-import org.apache.tuscany.core.implementation.processor.InitProcessor;
-import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
-import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
-import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
+import javax.xml.stream.XMLInputFactory;
+
+import org.apache.tuscany.core.bootstrap.Bootstrapper;
+import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
-import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
-import org.apache.tuscany.core.implementation.java.JavaImplementation;
+import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 
 /**
  * Temporary class to demonstrate component lifcycle
@@ -50,25 +35,30 @@ import org.apache.tuscany.core.wire.jdk.JDKWireService;
  */
 public class LifecycleDemonstration {
 
-    public static void main(String args[]) throws ProcessingException {
+    public static void main(String args[]) throws LoaderException {
+        URL scdl = LifecycleDemonstration.class.getResource("/eagerinit.composite");
+        assert scdl != null;
+
+        Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), XMLInputFactory.newInstance());
+        Deployer deployer = bootstrapper.createDeployer();
+
+        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, new JDKWireService());
+
+        SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
+        moduleImplementation.setScdlLocation(scdl);
+        moduleImplementation.setClassLoader(EagerInitImpl.class.getClassLoader());
+        ComponentDefinition<SystemCompositeImplementation> moduleDefinition =
+                new ComponentDefinition<SystemCompositeImplementation>("parent", moduleImplementation);
+        deployer.deploy(parent, moduleDefinition);
+
+/*
+
+        Introspector introspector = bootstrapper.createIntrospector();
+        ScopeRegistry scopeRegistry = bootstrapper.createScopeRegistry(new WorkContextImpl());
 
         // the following is done by the runtime bootstrapper
         CompositeComponent composite = new CompositeComponentImpl("composite", null, null, new JDKWireService());
 
-        ScopeRegistry scopeRegistry = new ScopeRegistryImpl(new WorkContextImpl());
-        scopeRegistry.registerFactory(Scope.MODULE, new ModuleScopeObjectFactory());
-        scopeRegistry.registerFactory(Scope.SESSION, new HttpSessionScopeObjectFactory());
-        scopeRegistry.registerFactory(Scope.REQUEST, new RequestScopeObjectFactory());
-        scopeRegistry.registerFactory(Scope.STATELESS, new StatelessScopeObjectFactory());
-
-        IntrospectionRegistryImpl introspectionRegistry = new IntrospectionRegistryImpl();
-        introspectionRegistry
-            .setMonitor(new NullMonitorFactory().getMonitor(IntrospectionRegistryImpl.IntrospectionMonitor.class));
-        introspectionRegistry.registerProcessor(new DestroyProcessor());
-        introspectionRegistry.registerProcessor(new InitProcessor());
-        introspectionRegistry.registerProcessor(new ScopeProcessor());
-        introspectionRegistry.registerProcessor(new PropertyProcessor());
-        introspectionRegistry.registerProcessor(new ReferenceProcessor());
 
         // setup builders
         JavaComponentBuilder builder = new JavaComponentBuilder();
@@ -84,7 +74,7 @@ public class LifecycleDemonstration {
         impl.setComponentType(type);
         ComponentDefinition<JavaImplementation> definition =
             new ComponentDefinition<JavaImplementation>("EagerInitComponent", impl);
-        introspectionRegistry.introspect(EagerInitImpl.class,type,context);
+        introspector.introspect(EagerInitImpl.class,type,context);
 
         // build component and register it with its scope container and composite
         AtomicComponent<?> component = builder.build(composite, definition, context);
@@ -99,5 +89,6 @@ public class LifecycleDemonstration {
         System.out.println("Greeting: " +eager.getGreetings("Ciao"));
         // send stop event to the scope, which will trigger destroy
         moduleScope.onEvent(new CompositeStop(new Object(), composite));
+*/
     }
 }

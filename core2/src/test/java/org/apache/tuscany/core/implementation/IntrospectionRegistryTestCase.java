@@ -13,7 +13,7 @@
  */
 package org.apache.tuscany.core.implementation;
 
-import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl.IntrospectionMonitor;
+import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl.Monitor;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
@@ -23,7 +23,7 @@ import org.jmock.MockObjectTestCase;
  */
 public class IntrospectionRegistryTestCase extends MockObjectTestCase {
 
-    private IntrospectionMonitor monitor;
+    private Monitor monitor;
 
     public void testRegister() throws Exception {
         IntrospectionRegistryImpl registry = new IntrospectionRegistryImpl(monitor);
@@ -56,7 +56,7 @@ public class IntrospectionRegistryTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        monitor = new NullMonitorFactory().getMonitor(IntrospectionMonitor.class);
+        monitor = new NullMonitorFactory().getMonitor(Monitor.class);
     }
 
     private class Baz {

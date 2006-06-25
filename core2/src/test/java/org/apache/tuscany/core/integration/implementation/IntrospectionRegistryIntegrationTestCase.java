@@ -44,7 +44,7 @@ public class IntrospectionRegistryIntegrationTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         registry = new IntrospectionRegistryImpl();
-        registry.setMonitor(new NullMonitorFactory().getMonitor(IntrospectionRegistryImpl.IntrospectionMonitor.class));
+        registry.setMonitor(new NullMonitorFactory().getMonitor(IntrospectionRegistryImpl.Monitor.class));
         registry.registerProcessor(new DestroyProcessor());
         registry.registerProcessor(new InitProcessor());
         registry.registerProcessor(new ScopeProcessor());

@@ -5,8 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.core.wire.BridgingInterceptor;
+import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.apache.tuscany.core.wire.MessageChannelImpl;
+import org.apache.tuscany.core.wire.MessageDispatcher;
+import org.apache.tuscany.core.wire.OutboundAutowire;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
+import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -20,12 +26,6 @@ import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-
-import org.apache.tuscany.core.wire.BridgingInterceptor;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.MessageChannelImpl;
-import org.apache.tuscany.core.wire.MessageDispatcher;
-import org.apache.tuscany.core.wire.OutboundAutowire;
 
 /**
  * The default connector implmentation
@@ -52,6 +52,11 @@ public class ConnectorImpl implements Connector {
                         throw e;
                     }
                 }
+            }
+        } else if (source instanceof CompositeComponent) {
+            CompositeComponent composite = (CompositeComponent) source;
+            for (SCAObject child : (List<SCAObject>) composite.getChildren()) {
+                connect(child);
             }
         } else {
             BuilderConfigException e = new BuilderConfigException("Invalid source context type");

@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.model.Implementation;
  */
 public class SystemCompositeImplementation extends Implementation<CompositeComponentType> {
     private URL scdlLocation;
+    private ClassLoader classLoader;
 
     public SystemCompositeImplementation() {
     }
@@ -42,5 +43,13 @@ public class SystemCompositeImplementation extends Implementation<CompositeCompo
 
     public void setScdlLocation(URL scdlLocation) {
         this.scdlLocation = scdlLocation;
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 }

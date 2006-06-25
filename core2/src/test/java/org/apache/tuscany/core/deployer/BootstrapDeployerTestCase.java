@@ -23,6 +23,7 @@ import javax.xml.stream.XMLInputFactory;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
+import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.implementation.system.model.SystemBinding;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.mock.component.BasicInterface;
@@ -81,10 +82,11 @@ public class BootstrapDeployerTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
-        DefaultBootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory());
+        Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), xmlFactory);
         deployer = (DeployerImpl) bootstrapper.createDeployer();
-        deploymentContext = new DeploymentContext(getClass().getClassLoader(), xmlFactory, null);
+        deploymentContext = new DeploymentContext(null, xmlFactory, null);
         implementation = new SystemCompositeImplementation();
+        implementation.setClassLoader(getClass().getClassLoader());
         componentDefinition = new ComponentDefinition<SystemCompositeImplementation>(implementation);
     }
 }

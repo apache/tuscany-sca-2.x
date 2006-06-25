@@ -49,6 +49,13 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         new HashMap<Class<? extends Implementation<?>>, ComponentTypeLoader<? extends Implementation<?>>>();
 
 
+    public LoaderRegistryImpl() {
+    }
+
+    public LoaderRegistryImpl(Monitor monitor) {
+        this.monitor = monitor;
+    }
+
     @org.apache.tuscany.spi.annotation.Monitor
     public void setMonitor(Monitor monitor) {
         this.monitor = monitor;

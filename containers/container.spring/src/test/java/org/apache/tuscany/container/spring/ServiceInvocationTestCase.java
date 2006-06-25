@@ -3,7 +3,7 @@ package org.apache.tuscany.container.spring;
 import junit.framework.TestCase;
 import org.apache.tuscany.container.spring.mock.TestBean;
 import org.apache.tuscany.container.spring.mock.TestBeanImpl;
-import org.apache.tuscany.core.builder.Connector;
+import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;

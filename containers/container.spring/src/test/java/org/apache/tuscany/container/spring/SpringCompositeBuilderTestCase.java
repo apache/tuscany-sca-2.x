@@ -6,7 +6,7 @@ import java.net.URISyntaxException;
 import org.apache.tuscany.container.spring.mock.TestBean;
 import org.apache.tuscany.container.spring.mock.TestBeanImpl;
 import org.apache.tuscany.container.spring.mock.VMBinding;
-import org.apache.tuscany.core.builder.Connector;
+import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.CompositeComponent;

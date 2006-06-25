@@ -1,6 +1,5 @@
-package org.apache.tuscany.core.builder;
+package org.apache.tuscany.spi.builder;
 
-import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.model.Scope;

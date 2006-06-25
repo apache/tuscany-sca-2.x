@@ -17,6 +17,7 @@
 package org.apache.tuscany.core.bootstrap;
 
 import junit.framework.TestCase;
+
 import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 
@@ -26,7 +27,7 @@ import org.apache.tuscany.core.monitor.NullMonitorFactory;
  * @version $Rev$ $Date$
  */
 public class BootstrapperTestCase extends TestCase {
-    private DefaultBootstrapper bootstrapper;
+    private Bootstrapper bootstrapper;
 
     public void testDeployerBootstrap() {
         DeployerImpl deployer = (DeployerImpl) bootstrapper.createDeployer();
@@ -34,6 +35,6 @@ public class BootstrapperTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        bootstrapper = new DefaultBootstrapper(new NullMonitorFactory());
+        bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), null);
     }
 }
