@@ -38,8 +38,6 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
-
 /**
  * The default builder registry in the runtime
  *
@@ -67,15 +65,6 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     @Autowire
     public void setScopeRegistry(ScopeRegistry scopeRegistry) {
         this.scopeRegistry = scopeRegistry;
-    }
-
-    @SuppressWarnings("unchecked")
-    public <I extends Implementation<?>> void register(ComponentBuilder<I> builder) {
-        Class<I> implClass = (Class<I>) JavaIntrospectionHelper.introspectGeneric(builder.getClass(), 0);
-        if (implClass == null) {
-            throw new IllegalArgumentException("builder is not generified");
-        }
-        register(implClass, builder);
     }
 
     public <I extends Implementation<?>> void register(Class<I> implClass, ComponentBuilder<I> builder) {

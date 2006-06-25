@@ -30,6 +30,7 @@ import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
 import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
 import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
 import org.apache.tuscany.core.implementation.processor.ServiceProcessor;
+import org.apache.tuscany.core.implementation.processor.HeuristicPojoProcessor;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.mock.component.BasicInterface;
 import org.apache.tuscany.core.mock.component.BasicInterfaceImpl;
@@ -62,6 +63,7 @@ public class SystemComponentTypeLoaderTestCase extends TestCase {
         registry.registerProcessor(new PropertyProcessor());
         registry.registerProcessor(new ReferenceProcessor());
         registry.registerProcessor(new ServiceProcessor());
+        registry.registerProcessor(new HeuristicPojoProcessor());
         loader = new SystemComponentTypeLoader(registry);
     }
 }

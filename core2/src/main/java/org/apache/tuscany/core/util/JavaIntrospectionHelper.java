@@ -390,11 +390,8 @@ public final class JavaIntrospectionHelper {
                 ParameterizedType interfaceType = (ParameterizedType) itype;
                 return (Class) interfaceType.getActualTypeArguments()[0];
             }
-
-            throw new AssertionError(clazz.getName() + " must be genericized");
         }
-
+        return null;
     }
-
 
 }

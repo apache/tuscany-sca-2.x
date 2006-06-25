@@ -20,6 +20,9 @@ import org.osoa.sca.annotations.Destroy;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
+import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 
@@ -31,7 +34,9 @@ import org.apache.tuscany.core.implementation.ProcessingException;
  */
 public class DestroyProcessor extends ImplementationProcessorSupport {
 
-    public void visitMethod(Method method, PojoComponentType type, DeploymentContext context)
+    public void visitMethod(Method method,
+                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                            DeploymentContext context)
         throws ProcessingException {
         Destroy annotation = method.getAnnotation(Destroy.class);
         if (annotation == null) {

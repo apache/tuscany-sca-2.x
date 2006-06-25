@@ -34,15 +34,6 @@ public class BuilderRegistryTestCase extends TestCase {
     private DeploymentContext deploymentContext;
     private BuilderRegistryImpl registry;
 
-    public void testRegistrationWithGenerics() {
-        GenerifiedBuilder builder = new GenerifiedBuilder();
-        registry.register(builder);
-        ComponentDefinition<CompositeImplementation> componentDefinition
-            = new ComponentDefinition(new CompositeImplementation());
-        componentDefinition.getImplementation().setComponentType(new CompositeComponentType());
-        registry.build(null, componentDefinition, deploymentContext);
-    }
-
     public void testRegistrationWithoutGenerics() {
         RawBuilder builder = new RawBuilder();
         registry.register(CompositeImplementation.class, builder);

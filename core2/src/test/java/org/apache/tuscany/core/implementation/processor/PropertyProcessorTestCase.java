@@ -2,11 +2,10 @@ package org.apache.tuscany.core.implementation.processor;
 
 import org.osoa.sca.annotations.Property;
 
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ServiceDefinition;
-
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 
 /**
@@ -14,7 +13,7 @@ import org.apache.tuscany.core.implementation.PojoComponentType;
  */
 public class PropertyProcessorTestCase extends TestCase {
 
-    PojoComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>> type;
+    PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type;
     PropertyProcessor processor;
 
     public void testMethodAnnotation() throws Exception {
@@ -82,7 +81,7 @@ public class PropertyProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        type = new PojoComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>>();
+        type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         processor = new PropertyProcessor();
     }
 

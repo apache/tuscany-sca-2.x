@@ -26,26 +26,38 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  */
 public abstract class ImplementationProcessorSupport implements ImplementationProcessor {
 
-    public void visitClass(Class<?> clazz, PojoComponentType type, DeploymentContext context)
+    public void visitClass(Class<?> clazz,
+                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                           DeploymentContext context)
         throws ProcessingException {
     }
 
-    public void visitSuperClass(Class<?> clazz, PojoComponentType type, DeploymentContext context)
+    public void visitSuperClass(Class<?> clazz,
+                                PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                DeploymentContext context)
         throws ProcessingException {
     }
 
-    public void visitMethod(Method method, PojoComponentType type, DeploymentContext context)
+    public void visitMethod(Method method,
+                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                            DeploymentContext context)
         throws ProcessingException {
     }
 
-    public void visitConstructor(Constructor<?> constructor, PojoComponentType type, DeploymentContext context)
+    public void visitConstructor(Constructor<?> constructor,
+                                 PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                 DeploymentContext context)
         throws ProcessingException {
     }
 
-    public void visitField(Field field, PojoComponentType type, DeploymentContext context) throws ProcessingException {
+    public void visitField(Field field,
+                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                           DeploymentContext context) throws ProcessingException {
     }
 
-    public void visitEnd(Class<?> clazz, PojoComponentType type, DeploymentContext context) throws ProcessingException {
+    public void visitEnd(Class<?> clazz,
+                         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                         DeploymentContext context) throws ProcessingException {
 
     }
 }

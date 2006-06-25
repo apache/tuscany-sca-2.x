@@ -26,13 +26,6 @@ import org.apache.tuscany.spi.model.Implementation;
  * @version $Rev$ $Date$
  */
 public interface BuilderRegistry extends Builder {
-    /**
-     * Register a builder based on an implementation type specified in an annotation. The implementation type is
-     * obtained by reflecting the generic definition.
-     *
-     * @param builder the builder to register
-     */
-    <I extends Implementation<?>> void register(ComponentBuilder<I> builder);
 
     /**
      * Register a builder for an implementation type.

@@ -2,11 +2,10 @@ package org.apache.tuscany.core.implementation.processor;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.model.ServiceDefinition;
-
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 
@@ -15,8 +14,8 @@ import org.apache.tuscany.core.implementation.PojoComponentType;
  */
 public class ReferenceProcessorTestCase extends TestCase {
 
-    PojoComponentType<ServiceDefinition, JavaMappedReference, JavaMappedProperty<?>> type =
-        new PojoComponentType<ServiceDefinition, JavaMappedReference, JavaMappedProperty<?>>();
+    PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+        new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
     ReferenceProcessor processor = new ReferenceProcessor();
 
     public void testMethodAnnotation() throws Exception {
@@ -93,7 +92,7 @@ public class ReferenceProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        type = new PojoComponentType<ServiceDefinition, JavaMappedReference, JavaMappedProperty<?>>();
+        type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         processor = new ReferenceProcessor();
     }
 

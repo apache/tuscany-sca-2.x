@@ -8,11 +8,14 @@ import org.osoa.sca.annotations.Reference;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
+import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
 
 /**
  * Processes an {@link @Reference} annotation, updating the component type with corresponding {@link
@@ -22,7 +25,9 @@ import org.apache.tuscany.core.util.JavaIntrospectionHelper;
  */
 public class ReferenceProcessor extends ImplementationProcessorSupport {
 
-    public void visitMethod(Method method, PojoComponentType type, DeploymentContext context)
+    public void visitMethod(Method method,
+                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                            DeploymentContext context)
         throws ProcessingException {
         Reference annotation = method.getAnnotation(Reference.class);
         if (annotation == null) {
@@ -36,7 +41,7 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         String name = annotation.name();
         if (name.length() == 0) {
             if (method.getName().startsWith("set")) {
-                name = JavaIntrospectionHelper.toPropertyName(method.getName());
+                name = toPropertyName(method.getName());
             } else {
                 name = method.getName();
             }
@@ -49,14 +54,16 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         reference.setRequired(annotation.required());
         JavaServiceContract contract = new JavaServiceContract();
         Class<?> interfaceType = method.getParameterTypes()[0];
-        String interfaceName = JavaIntrospectionHelper.getBaseName(interfaceType);
+        String interfaceName = getBaseName(interfaceType);
         contract.setInterfaceName(interfaceName);
         contract.setInterfaceClass(interfaceType);
         reference.setServiceContract(contract);
         type.getReferences().put(name, reference);
     }
 
-    public void visitField(Field field, PojoComponentType type, DeploymentContext context) throws ProcessingException {
+    public void visitField(Field field,
+                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                           DeploymentContext context) throws ProcessingException {
         Reference annotation = field.getAnnotation(Reference.class);
         if (annotation == null) {
             return;
@@ -73,7 +80,7 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         reference.setRequired(annotation.required());
         JavaServiceContract contract = new JavaServiceContract();
         Class<?> interfaceType = field.getType();
-        String interfaceName = JavaIntrospectionHelper.getBaseName(interfaceType);
+        String interfaceName = getBaseName(interfaceType);
         contract.setInterfaceName(interfaceName);
         contract.setInterfaceClass(interfaceType);
         reference.setServiceContract(contract);

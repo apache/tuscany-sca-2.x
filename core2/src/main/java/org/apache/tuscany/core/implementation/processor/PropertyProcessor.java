@@ -9,9 +9,11 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
 
 /**
  * Processes an {@link @Property} annotation, updating the component type with corresponding {@link JavaMappedProperty}
@@ -20,7 +22,9 @@ import org.apache.tuscany.core.util.JavaIntrospectionHelper;
  */
 public class PropertyProcessor extends ImplementationProcessorSupport {
 
-    public void visitMethod(Method method, PojoComponentType type, DeploymentContext context)
+    public void visitMethod(Method method,
+                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                            DeploymentContext context)
         throws ProcessingException {
         Property annotation = method.getAnnotation(Property.class);
         if (annotation == null) {
@@ -34,7 +38,7 @@ public class PropertyProcessor extends ImplementationProcessorSupport {
         String name = annotation.name();
         if (name.length() == 0) {
             if (method.getName().startsWith("set")) {
-                name = JavaIntrospectionHelper.toPropertyName(method.getName());
+                name = toPropertyName(method.getName());
             } else {
                 name = method.getName();
             }
@@ -49,7 +53,9 @@ public class PropertyProcessor extends ImplementationProcessorSupport {
         type.getProperties().put(name, property);
     }
 
-    public void visitField(Field field, PojoComponentType type, DeploymentContext context) throws ProcessingException {
+    public void visitField(Field field,
+                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                           DeploymentContext context) throws ProcessingException {
         Property annotation = field.getAnnotation(Property.class);
         if (annotation == null) {
             return;

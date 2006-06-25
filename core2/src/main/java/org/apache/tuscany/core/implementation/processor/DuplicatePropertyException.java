@@ -17,7 +17,7 @@ import org.apache.tuscany.core.implementation.ProcessingException;
 
 /**
  * Thrown when an implementation has more than one property injection site with the same name
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class DuplicatePropertyException extends ProcessingException {

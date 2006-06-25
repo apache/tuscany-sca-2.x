@@ -4,6 +4,9 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Scope;
 
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
+import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 
@@ -14,7 +17,9 @@ import org.apache.tuscany.core.implementation.ProcessingException;
  */
 public class ScopeProcessor extends ImplementationProcessorSupport {
 
-    public void visitClass(Class<?> clazz, PojoComponentType type, DeploymentContext context)
+    public void visitClass(Class<?> clazz,
+                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                           DeploymentContext context)
         throws ProcessingException {
         org.osoa.sca.annotations.Scope annotation = clazz.getAnnotation(org.osoa.sca.annotations.Scope.class);
         if (annotation == null) {

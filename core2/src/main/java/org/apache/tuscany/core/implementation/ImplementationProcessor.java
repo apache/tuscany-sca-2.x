@@ -39,7 +39,9 @@ public interface ImplementationProcessor {
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    void visitClass(Class<?> clazz, PojoComponentType type, DeploymentContext context) throws ProcessingException;
+    void visitClass(Class<?> clazz,
+                    PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                    DeploymentContext context) throws ProcessingException;
 
     /**
      * A callback received as the component implementation class hierarchy is evaluated
@@ -49,7 +51,9 @@ public interface ImplementationProcessor {
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    void visitSuperClass(Class<?> clazz, PojoComponentType type, DeploymentContext context) throws ProcessingException;
+    void visitSuperClass(Class<?> clazz,
+                         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                         DeploymentContext context) throws ProcessingException;
 
     /**
      * A callback received as the component implementation's public and protected methods are evaluated
@@ -59,7 +63,9 @@ public interface ImplementationProcessor {
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    void visitMethod(Method method, PojoComponentType type, DeploymentContext context) throws ProcessingException;
+    void visitMethod(Method method,
+                     PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                     DeploymentContext context) throws ProcessingException;
 
     /**
      * A callback received as the component implementation's constructor used for instantiation by the runtime is
@@ -72,7 +78,7 @@ public interface ImplementationProcessor {
      * @throws ProcessingException if an error is encountered while processing metadata
      */
     void visitConstructor(Constructor<?> constructor,
-                          PojoComponentType type,
+                          PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                           DeploymentContext context)
         throws ProcessingException;
 
@@ -84,7 +90,9 @@ public interface ImplementationProcessor {
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    void visitField(Field field, PojoComponentType type, DeploymentContext context) throws ProcessingException;
+    void visitField(Field field,
+                    PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                    DeploymentContext context) throws ProcessingException;
 
     /**
      * The final callback received when all other callbacks during evaluation of the component implementation have been
@@ -95,6 +103,8 @@ public interface ImplementationProcessor {
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    void visitEnd(Class<?> clazz, PojoComponentType type, DeploymentContext context) throws ProcessingException;
+    void visitEnd(Class<?> clazz,
+                  PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                  DeploymentContext context) throws ProcessingException;
 
 }

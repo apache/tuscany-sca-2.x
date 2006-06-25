@@ -24,6 +24,8 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
@@ -36,7 +38,9 @@ import org.apache.tuscany.core.util.JavaIntrospectionHelper;
  */
 public class ContextProcessor extends ImplementationProcessorSupport {
 
-    public void visitMethod(Method method, PojoComponentType type, DeploymentContext context)
+    public void visitMethod(Method method,
+                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                            DeploymentContext context)
         throws ProcessingException {
         if (method.getAnnotation(Context.class) == null) {
             return;
@@ -78,7 +82,9 @@ public class ContextProcessor extends ImplementationProcessorSupport {
 
     }
 
-    public void visitField(Field field, PojoComponentType type, DeploymentContext context) throws ProcessingException {
+    public void visitField(Field field,
+                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                           DeploymentContext context) throws ProcessingException {
         super.visitField(field, type, context);
     }
 }
