@@ -46,8 +46,8 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
         CompositeComponentType<?, ?, ?> componentType = implementation.getComponentType();
         CompositeComponentImpl<?> context = new CompositeComponentImpl(componentDefinition.getName(),
             parent,
-            null,
-            wireService);
+            null
+        );
         for (ReferenceTarget target : componentDefinition.getReferenceTargets().values()) {
             ReferenceDefinition referenceDefinition = target.getReference();
             if (referenceDefinition instanceof BoundReferenceDefinition) {

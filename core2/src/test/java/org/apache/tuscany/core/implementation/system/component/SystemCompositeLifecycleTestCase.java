@@ -26,7 +26,6 @@ public class SystemCompositeLifecycleTestCase extends MockObjectTestCase {
     }
 
     public void testRestart() throws NoSuchMethodException {
-        SystemCompositeComponent composite = new SystemCompositeComponentImpl("foo", null, null);
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
         Source originalSource = new SourceImpl();
@@ -37,6 +36,9 @@ public class SystemCompositeLifecycleTestCase extends MockObjectTestCase {
         mock.stubs().method("getServiceInstance").will(returnValue(originalSource));
         mock.stubs().method("getServiceInterfaces").will(returnValue(interfaces));
         SystemAtomicComponent context = (SystemAtomicComponent) mock.proxy();
+
+        SystemCompositeComponent composite = new SystemCompositeComponentImpl("foo", null, null);
+        composite.start();
         composite.register(context);
 
         AtomicComponent ctx = (AtomicComponent) composite.getChild("source");

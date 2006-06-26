@@ -185,10 +185,10 @@ public class CompositeComponentExtensionTestCase extends MockObjectTestCase {
 
     private class Composite<T> extends CompositeComponentExtension<T> {
         public Composite() {
-            super(null, null, null);
+            super(null, null);
         }
 
-        public void setScopeContext(ScopeContainer scopeContainer) {
+        public void setScopeContainer(ScopeContainer scopeContainer) {
 
         }
 

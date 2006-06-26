@@ -18,6 +18,7 @@
     <id>bin</id>
     <includeBaseDirectory>false</includeBaseDirectory>
     <formats>
+        <format>dir</format>
         <format>zip</format>
         <format>tar.gz</format>
     </formats>
@@ -42,12 +43,12 @@
             <fileMode>755</fileMode>
         </dependencySet>
 
-        <!-- include other libraries in lib directory -->
+        <!-- libraries needed to boot the runtime -->
         <dependencySet>
-            <outputDirectory>lib</outputDirectory>
-            <excludes>
-                <exclude>org.apache.tuscany:launcher</exclude>
-            </excludes>
+            <outputDirectory>boot</outputDirectory>
+            <includes>
+                <include>org.apache.tuscany:tuscany-core</include>
+            </includes>
             <fileMode>644</fileMode>
         </dependencySet>
     </dependencySets>

@@ -22,7 +22,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 /**
- * Support class for launcher launchers.
+ * Support class for launcher implementations.
  *
  * @version $Rev$ $Date$
  */
@@ -36,7 +36,7 @@ public abstract class LauncherSupport {
      *
      * @return the classloader for application classes
      */
-    public ClassLoader getApplicationLoader() {
+    protected ClassLoader getApplicationLoader() {
         return applicationLoader;
     }
 
@@ -45,7 +45,7 @@ public abstract class LauncherSupport {
      *
      * @param applicationLoader the classloader to be used for application classes
      */
-    public void setApplicationLoader(ClassLoader applicationLoader) {
+    protected void setApplicationLoader(ClassLoader applicationLoader) {
         this.applicationLoader = applicationLoader;
     }
 
@@ -56,7 +56,7 @@ public abstract class LauncherSupport {
      * @param parent the parent for the new classloader
      * @return a classloader that will load classes from the supplied path
      */
-    public ClassLoader createClassLoader(ClassLoader parent, String path) {
+    protected ClassLoader createClassLoader(ClassLoader parent, String path) {
         String[] files = path.split(File.pathSeparator);
         return createClassLoader(parent, files);
     }
@@ -68,7 +68,7 @@ public abstract class LauncherSupport {
      * @param parent the parent for the new classloader
      * @return a classloader that will load classes from the supplied path
      */
-    public ClassLoader createClassLoader(ClassLoader parent, String[] files) {
+    protected ClassLoader createClassLoader(ClassLoader parent, String[] files) {
         URL[] urls = new URL[files.length];
         for (int i = 0; i < files.length; i++) {
             try {
@@ -83,11 +83,32 @@ public abstract class LauncherSupport {
     }
 
     /**
+     * Create a classloader for a classpath supplied as a list of files.
+     *
+     * @param files a list of files
+     * @param parent the parent for the new classloader
+     * @return a classloader that will load classes from the supplied path
+     */
+    protected ClassLoader createClassLoader(ClassLoader parent, File[] files) {
+        URL[] urls = new URL[files.length];
+        for (int i = 0; i < files.length; i++) {
+            try {
+                File file = files[i];
+                urls[i] = file.toURI().toURL();
+            } catch (MalformedURLException e) {
+                // just ignore this value
+                continue;
+            }
+        }
+        return new URLClassLoader(urls, parent);
+    }
+
+    /**
      * Returns the name of the application class.
      *
      * @return the name of the application class
      */
-    public String getClassName() {
+    protected String getClassName() {
         return className;
     }
 
@@ -96,15 +117,15 @@ public abstract class LauncherSupport {
      *
      * @param className the name of the application class
      */
-    public void setClassName(String className) {
+    protected void setClassName(String className) {
         this.className = className;
     }
 
-    public String[] getArgs() {
+    protected String[] getArgs() {
         return args;
     }
 
-    public void setArgs(String[] args) {
+    protected void setArgs(String[] args) {
         this.args = args;
     }
 }

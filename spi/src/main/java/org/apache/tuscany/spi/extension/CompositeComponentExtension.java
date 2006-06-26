@@ -21,7 +21,6 @@ import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * An extension point for composite components, which new types may extend
@@ -33,15 +32,9 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
     protected final Map<String, SCAObject> children = new ConcurrentHashMap<String, SCAObject>();
     protected final List<Service> services = new ArrayList<Service>();
     protected final List<Reference> references = new ArrayList<Reference>();
-    protected WireService wireService;
 
-    protected CompositeComponentExtension(String name, CompositeComponent<?> parent, WireService wireService) {
+    protected CompositeComponentExtension(String name, CompositeComponent<?> parent) {
         super(name, parent);
-        this.wireService = wireService;
-    }
-
-    public void setWireService(WireService wireService) {
-        this.wireService = wireService;
     }
 
     public Scope getScope() {

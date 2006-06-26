@@ -18,12 +18,15 @@ package org.apache.tuscany.core.implementation.system.loader;
 
 import java.net.URL;
 
+import javax.xml.stream.XMLInputFactory;
+
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.CompositeComponentType;
+import org.apache.tuscany.spi.component.ScopeContainer;
 
 /**
  * Loads a system composite component type
@@ -43,19 +46,19 @@ public class SystemCompositeComponentTypeLoader extends ComponentTypeLoaderExten
     }
 
     public void load(SystemCompositeImplementation implementation, DeploymentContext deploymentContext)
-            throws LoaderException {
+        throws LoaderException {
         URL scdlLocation = implementation.getScdlLocation();
         ClassLoader cl = implementation.getClassLoader();
-        deploymentContext = new DeploymentContext(cl,
-                deploymentContext.getXmlFactory(),
-                deploymentContext.getModuleScope());
+        XMLInputFactory xmlFactory = deploymentContext.getXmlFactory();
+        ScopeContainer moduleScope = deploymentContext.getModuleScope();
+        deploymentContext = new DeploymentContext(cl, xmlFactory, moduleScope);
         CompositeComponentType componentType = loadFromSidefile(scdlLocation, deploymentContext);
         implementation.setComponentType(componentType);
     }
 
 
     protected CompositeComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext)
-            throws LoaderException {
+        throws LoaderException {
         return loaderRegistry.load(url, CompositeComponentType.class, deploymentContext);
     }
 }

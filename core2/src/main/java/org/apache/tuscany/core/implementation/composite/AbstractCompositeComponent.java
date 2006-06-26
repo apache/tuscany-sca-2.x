@@ -7,6 +7,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.tuscany.core.component.AutowireComponent;
+import org.apache.tuscany.core.component.AutowireResolutionException;
+import org.apache.tuscany.core.component.ComponentInitException;
+import org.apache.tuscany.core.component.event.CompositeStart;
+import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.implementation.system.component.SystemService;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -20,12 +26,6 @@ import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
-
-import org.apache.tuscany.core.implementation.system.component.SystemService;
-import org.apache.tuscany.core.component.AutowireComponent;
-import org.apache.tuscany.core.component.AutowireResolutionException;
-import org.apache.tuscany.core.component.ComponentInitException;
 
 /**
  * The base implementation of a composite context
@@ -59,9 +59,9 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
 
     public AbstractCompositeComponent(String name,
                                       CompositeComponent parent,
-                                      AutowireComponent autowireContext,
-                                      WireService wireService) {
-        super(name, parent, wireService);
+                                      AutowireComponent autowireContext
+    ) {
+        super(name, parent);
         this.autowireContext = autowireContext;
     }
 
@@ -70,8 +70,10 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
         autowireContext = context;
     }
 
-    public void setScopeContext(ScopeContainer scopeContainer) {
+    public void setScopeContainer(ScopeContainer scopeContainer) {
+        assert this.scopeContainer == null;
         this.scopeContainer = scopeContainer;
+        addListener(scopeContainer);
     }
 
     public void start() {
@@ -90,12 +92,15 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
             initialized = true;
             lifecycleState = INITIALIZED;
         }
+        publish(new CompositeStart(this, this));
     }
 
     public void stop() {
         if (lifecycleState == STOPPED) {
             return;
         }
+
+        publish(new CompositeStop(this, this));
         for (SCAObject child : children.values()) {
             child.stop();
         }

@@ -14,19 +14,17 @@
 package eagerinit;
 
 import java.net.URL;
-
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
-import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 
 /**
  * Temporary class to demonstrate component lifcycle
@@ -36,59 +34,40 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 public class LifecycleDemonstration {
 
     public static void main(String args[]) throws LoaderException {
+        // locate the SCDL for the composite that we want to run
         URL scdl = LifecycleDemonstration.class.getResource("/eagerinit.composite");
         assert scdl != null;
 
         Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), XMLInputFactory.newInstance());
         Deployer deployer = bootstrapper.createDeployer();
 
-        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, new JDKWireService());
+        // create and start the core runtime
+        RuntimeComponent runtime = bootstrapper.createRuntime();
+        runtime.start();
 
+        // create a ComponentDefinition to represent the component we are going to deploy
         SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
         moduleImplementation.setScdlLocation(scdl);
         moduleImplementation.setClassLoader(EagerInitImpl.class.getClassLoader());
         ComponentDefinition<SystemCompositeImplementation> moduleDefinition =
-                new ComponentDefinition<SystemCompositeImplementation>("parent", moduleImplementation);
-        deployer.deploy(parent, moduleDefinition);
+                new ComponentDefinition<SystemCompositeImplementation>("eagerinit", moduleImplementation);
 
-/*
+        // deploy the component into the system under the application root
+        System.out.println("Deploying composite component");
+        CompositeComponent root = runtime.getRootComponent();
+        CompositeComponent<?> composite = (CompositeComponent<?>) deployer.deploy(root, moduleDefinition);
 
-        Introspector introspector = bootstrapper.createIntrospector();
-        ScopeRegistry scopeRegistry = bootstrapper.createScopeRegistry(new WorkContextImpl());
+        // start the composite (which will fire the init method)
+        System.out.println("Starting composite component");
+        composite.start();
 
-        // the following is done by the runtime bootstrapper
-        CompositeComponent composite = new CompositeComponentImpl("composite", null, null, new JDKWireService());
-
-
-        // setup builders
-        JavaComponentBuilder builder = new JavaComponentBuilder();
-        builder.setScopeRegistry(scopeRegistry);
-        ScopeContainer moduleScope = scopeRegistry.getScopeContainer(Scope.MODULE);
-        DeploymentContext context = new DeploymentContext(null, null, moduleScope);
-
-        // mock reading SCDL
-        PojoComponentType type = new PojoComponentType();
-        type.setLifecycleScope(Scope.MODULE);
-        JavaImplementation impl = new JavaImplementation();
-        impl.setImplementationClass(EagerInitImpl.class);
-        impl.setComponentType(type);
-        ComponentDefinition<JavaImplementation> definition =
-            new ComponentDefinition<JavaImplementation>("EagerInitComponent", impl);
-        introspector.introspect(EagerInitImpl.class,type,context);
-
-        // build component and register it with its scope container and composite
-        AtomicComponent<?> component = builder.build(composite, definition, context);
-        moduleScope.register(component);
-        composite.register(component);
-
-        // send start event to the scope, which will trigger the eager init
-        moduleScope.onEvent(new CompositeStart(new Object(), composite));
-        System.out.println("After composite start event");
-        // locate service
+        // locate and invoke the service
+        System.out.println("Locating and invoking service");
         EagerInitService eager = (EagerInitService) composite.getChild("EagerInitComponent").getServiceInstance();
-        System.out.println("Greeting: " +eager.getGreetings("Ciao"));
-        // send stop event to the scope, which will trigger destroy
-        moduleScope.onEvent(new CompositeStop(new Object(), composite));
-*/
+        System.out.println("Greeting returned: " + eager.getGreetings("Ciao"));
+
+        // stop the composite
+        System.out.println("Stopping composite component");
+        composite.stop();
     }
 }

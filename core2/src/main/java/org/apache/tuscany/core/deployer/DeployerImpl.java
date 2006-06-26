@@ -24,6 +24,7 @@ import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.Loader;
@@ -69,16 +70,20 @@ public class DeployerImpl implements Deployer {
         this.connector = connector;
     }
 
-    public <I extends Implementation<?>> SCAObject<?> deploy(CompositeComponent<?> parent,
+    public <I extends Implementation<?>> Component<?> deploy(CompositeComponent<?> parent,
                                                              ComponentDefinition<I> componentDefinition)
         throws LoaderException {
         ScopeContainer moduleScope = new ModuleScopeContainer();
         DeploymentContext deploymentContext = new DeploymentContext(null, xmlFactory, moduleScope);
         load(componentDefinition, deploymentContext);
-        SCAObject<?> context = build(parent, componentDefinition, deploymentContext);
-        connect(context);
-        parent.register(context);
-        return context;
+        Component<?> component = (Component<?>) build(parent, componentDefinition, deploymentContext);
+        if (component instanceof CompositeComponent) {
+            CompositeComponent composite = (CompositeComponent) component;
+            composite.setScopeContainer(moduleScope);
+        }
+        connect(component);
+        parent.register(component);
+        return component;
     }
 
     /**

@@ -2,6 +2,7 @@ package org.apache.tuscany.core.implementation.composite;
 
 import org.osoa.sca.ServiceUnavailableException;
 
+import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -9,9 +10,6 @@ import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.wire.WireService;
-
-import org.apache.tuscany.core.component.AutowireComponent;
 
 /**
  * The standard implementation of a composite component. Autowiring is performed by delegating to the parent composite.
@@ -23,9 +21,9 @@ public class CompositeComponentImpl<T> extends AbstractCompositeComponent<T> {
 
     public CompositeComponentImpl(String name,
                                   CompositeComponent parent,
-                                  AutowireComponent autowireContext,
-                                  WireService wireService) {
-        super(name, parent, autowireContext, wireService);
+                                  AutowireComponent autowireContext
+    ) {
+        super(name, parent, autowireContext);
     }
 
     public String getURI() {

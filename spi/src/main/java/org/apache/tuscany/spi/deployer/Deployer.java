@@ -16,8 +16,8 @@
  */
 package org.apache.tuscany.spi.deployer;
 
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
@@ -38,7 +38,7 @@ public interface Deployer {
      * @param componentDefinition the component definition as parsed from an assembly
      * @return the newly deployed component
      */
-    <I extends Implementation<?>> SCAObject<?> deploy(CompositeComponent<?> parent,
+    <I extends Implementation<?>> Component<?> deploy(CompositeComponent<?> parent,
                                                       ComponentDefinition<I> componentDefinition)
         throws LoaderException;
 }

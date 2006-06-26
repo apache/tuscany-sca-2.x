@@ -19,7 +19,6 @@ import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
 import org.apache.tuscany.core.implementation.java.mock.components.Target;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.jmock.core.Invocation;
@@ -33,7 +32,7 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
 
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl(null, null, null, new JDKWireService());
+        CompositeComponent parent = new CompositeComponentImpl(null, null, null);
 
         PojoComponentType sourceType = new PojoComponentType();
         sourceType.setLifecycleScope(Scope.MODULE);

@@ -29,17 +29,22 @@ import org.apache.tuscany.core.implementation.system.component.SystemCompositeCo
  *
  * @version $Rev$ $Date$
  */
-public class DefaultRuntime extends SystemCompositeComponentImpl<Void>
-    implements RuntimeComponent<SystemCompositeComponent> {
-    private final CompositeComponent rootComponent;
-    private final SystemCompositeComponent systemComponent;
-    private final Deployer deployer;
+public class DefaultRuntime
+        extends SystemCompositeComponentImpl<Void>
+        implements RuntimeComponent<SystemCompositeComponent<?>> {
+    private CompositeComponent rootComponent;
+    private SystemCompositeComponent<?> systemComponent;
 
-    public DefaultRuntime(SystemCompositeComponent systemComponent, CompositeComponent rootComponent) {
+    public DefaultRuntime() {
         super(ComponentNames.TUSCANY_RUNTIME, null, null);
-        this.systemComponent = systemComponent;
+    }
+
+    protected void setRootComponent(CompositeComponent rootComponent) {
         this.rootComponent = rootComponent;
-        deployer = null;
+    }
+
+    protected void setSystemComponent(SystemCompositeComponent<?> systemComponent) {
+        this.systemComponent = systemComponent;
     }
 
     public CompositeComponent getRootComponent() {
@@ -51,6 +56,6 @@ public class DefaultRuntime extends SystemCompositeComponentImpl<Void>
     }
 
     public Deployer getDeployer() {
-        return deployer;
+        return systemComponent.resolveExternalInstance(Deployer.class);
     }
 }

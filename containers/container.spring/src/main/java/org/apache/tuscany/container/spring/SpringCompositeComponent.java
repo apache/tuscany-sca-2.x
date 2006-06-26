@@ -44,7 +44,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
      * @param parent        the SCA composite parent
      */
     public SpringCompositeComponent(String name, GenericApplicationContext springContext, CompositeComponent parent, WireService wireService) {
-        super(name, parent, wireService);
+        super(name, parent);
         scaApplicationContext = new SCAApplicationContext();
         springContext.setParent(scaApplicationContext);
         this.springContext = springContext;
@@ -54,7 +54,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
         return new SpringInvoker(serviceName, method, springContext);
     }
 
-    public void setScopeContext(ScopeContainer scopeContainer) {
+    public void setScopeContainer(ScopeContainer scopeContainer) {
         // not needed
     }
 

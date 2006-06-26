@@ -17,7 +17,7 @@ public class SystemCompositeComponentImpl<S> extends AbstractCompositeComponent<
     implements SystemCompositeComponent<S> {
 
     public SystemCompositeComponentImpl(String name, CompositeComponent parent, AutowireComponent autowireContext) {
-        super(name, parent, autowireContext, null);
+        super(name, parent, autowireContext);
     }
 
     public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance)

@@ -75,49 +75,8 @@ public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<Syst
                                                     DeploymentContext deploymentContext) throws ProcessingException {
         PojoComponentType componentType = new PojoComponentType();
 
-        // FIXME: replace this rudimentary introspection mechanism
         Class<?> implClass = implementation.getImplementationClass();
         introspector.introspect(implClass, componentType, deploymentContext);
-//        for (Class<?> serviceIntf : implClass.getInterfaces()) {
-//            JavaServiceContract serviceContract = new JavaServiceContract(serviceIntf);
-//            ServiceDefinition service = new ServiceDefinition(serviceIntf.getName(), serviceContract, false);
-//            componentType.add(service);
-//        }
-//        for (Field field : implClass.getFields()) {
-//            if (Modifier.isStatic(field.getModifiers())) {
-//                continue;
-//            }
-//            String name = field.getName();
-//            Class<?> javaType = field.getType();
-//            if (javaType.isInterface()) {
-//              JavaMappedReference reference = new JavaMappedReference(name, new JavaServiceContract(javaType), field);
-//                componentType.add(reference);
-//            } else {
-//                JavaMappedProperty<?> property = new JavaMappedProperty(name, null, javaType, field);
-//                componentType.add(property);
-//            }
-//        }
-//        for (Method method : implClass.getMethods()) {
-//            if (Modifier.isStatic(method.getModifiers())
-//                || !(Void.TYPE == method.getReturnType())
-//                || method.getParameterTypes().length != 1
-//                || !method.getName().startsWith("set")
-//                || !(method.getName().length() > 3)
-//                ) {
-//                continue;
-//            }
-//            String name = method.getName();
-//            name = Character.toLowerCase(name.charAt(3)) + name.substring(4);
-//            Class<?> javaType = method.getParameterTypes()[0];
-//            if (javaType.isInterface()) {
-//                JavaMappedReference reference =
-//                    new JavaMappedReference(name, new JavaServiceContract(javaType), method);
-//                componentType.add(reference);
-//            } else {
-//                JavaMappedProperty<?> property = new JavaMappedProperty(name, null, javaType, method);
-//                componentType.add(property);
-//            }
-//        }
 
         return componentType;
     }
