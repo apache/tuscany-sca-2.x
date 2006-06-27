@@ -18,7 +18,6 @@
     <id>bin</id>
     <includeBaseDirectory>false</includeBaseDirectory>
     <formats>
-        <format>dir</format>
         <format>zip</format>
         <format>tar.gz</format>
     </formats>
@@ -47,7 +46,7 @@
         <dependencySet>
             <outputDirectory>boot</outputDirectory>
             <includes>
-                <include>org.apache.tuscany:tuscany-core</include>
+                <include>org.apache.tuscany:core</include>
             </includes>
             <fileMode>644</fileMode>
         </dependencySet>

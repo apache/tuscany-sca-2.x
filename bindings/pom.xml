@@ -18,16 +18,15 @@
 
     <parent>
         <groupId>org.apache.tuscany</groupId>
-        <artifactId>tuscany-sca</artifactId>
-        <version>SNAPSHOT</version>
+        <artifactId>sca</artifactId>
+        <version>1.0-sandbox-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.bindings</groupId>
-    <artifactId>tuscany-sca-bindings</artifactId>
+    <groupId>org.apache.tuscany.bindings</groupId>
+    <artifactId>bindings</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany SCA Bindings</name>
-    <version>SNAPSHOT</version>
 
     <modules>
         <!-- temporary project to download and install the celtix required sun jars.   The jars

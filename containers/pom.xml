@@ -15,24 +15,19 @@
  *  limitations under the License.
  -->
 <project>
-
     <parent>
         <groupId>org.apache.tuscany</groupId>
-        <artifactId>tuscany-sca</artifactId>
-        <version>SNAPSHOT</version>
+        <artifactId>sca</artifactId>
+        <version>1.0-sandbox-SNAPSHOT</version>
     </parent>
-
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.containers</groupId>
-    <artifactId>tuscany-sca-containers</artifactId>
+    <groupId>org.apache.tuscany.containers</groupId>
+    <artifactId>containers</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany SCA Containers</name>
-    <version>SNAPSHOT</version>
 
     <modules>
         <module>container.groovy</module>
-        <!--<module>container.java</module>-->
-        <!--<module>container.js</module>-->
         <module>container.spring</module>
     </modules>
 

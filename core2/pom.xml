@@ -17,20 +17,19 @@
 <project>
     <parent>
         <groupId>org.apache.tuscany</groupId>
-        <artifactId>tuscany-sca</artifactId>
-        <version>SNAPSHOT</version>
+        <artifactId>sca</artifactId>
+        <version>1.0-sandbox-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tuscany-core</artifactId>
-    <name>Tuscany Core</name>
+    <artifactId>core</artifactId>
+    <name>Tuscany SCA Core Implementation</name>
     <description>Core Tuscany runtime.</description>
-    <version>SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany</groupId>
-            <artifactId>tuscany-spi</artifactId>
-            <version>${pom.version}</version>
+            <artifactId>spi</artifactId>
+            <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -47,12 +46,17 @@
             <version>5.0.18</version>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
             <version>1.0</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -67,21 +71,12 @@
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
-            <version>1.0</version>
-            <scope>runtime</scope>
-        </dependency>
-
         <dependency>
             <groupId>concurrent</groupId>
             <artifactId>concurrent</artifactId>
             <version>1.3.4</version>
             <scope>runtime</scope>
         </dependency>
-
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
@@ -102,37 +97,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-            </plugin>
-
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <configuration>
-                    <rulesets>
-                        <ruleset>${basedir}/.ruleset</ruleset>
-                    </rulesets>
-                    <linkXRef>false</linkXRef>
-
-                    <targetJdk>1.5</targetJdk>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>process-sources</id>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-    </build>
-
 </project>

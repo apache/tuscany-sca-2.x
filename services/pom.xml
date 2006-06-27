@@ -17,14 +17,14 @@
 <project>
     <parent>
         <groupId>org.apache.tuscany</groupId>
-        <artifactId>tuscany-sca</artifactId>
-        <version>SNAPSHOT</version>
+        <artifactId>sca</artifactId>
+        <version>1.0-sandbox-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tuscany-services</artifactId>
+    <groupId>org.apache.tuscany.services</groupId>
+    <artifactId>services</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany SCA Services</name>
-    <version>SNAPSHOT</version>
 
     <modules>
         <module>transports/http.jetty</module>

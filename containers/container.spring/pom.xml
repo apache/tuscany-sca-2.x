@@ -17,13 +17,13 @@
 <project>
 
     <parent>
-        <groupId>org.apache.tuscany.sca.containers</groupId>
-        <artifactId>tuscany-sca-containers</artifactId>
-        <version>SNAPSHOT</version>
+        <groupId>org.apache.tuscany.containers</groupId>
+        <artifactId>containers</artifactId>
+        <version>1.0-sandbox-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tuscany-container-spring</artifactId>
+    <artifactId>spring</artifactId>
     <name>Tuscany Spring Framework Container</name>
     <description>Container for managing Spring composites</description>
     <version>SNAPSHOT</version>
@@ -31,8 +31,8 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany</groupId>
-            <artifactId>tuscany-core</artifactId>
-            <version>${pom.version}</version>
+            <artifactId>core</artifactId>
+            <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -44,25 +44,11 @@
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.tuscany</groupId>
-            <artifactId>tuscany-test</artifactId>
-            <version>${pom.version}</version>
+            <artifactId>test</artifactId>
+            <version>${sca.version}</version>
             <scope>test</scope>
         </dependency>
-
-			<dependency>
-            <groupId>jmock</groupId>
-            <artifactId>jmock</artifactId>
-            <version>1.0.1</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
 </project>

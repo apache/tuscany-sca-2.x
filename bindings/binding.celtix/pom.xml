@@ -15,20 +15,19 @@
  *  limitations under the License.
  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>org.apache.tuscany.sca.bindings</groupId>
-        <artifactId>tuscany-sca-bindings</artifactId>
-        <version>SNAPSHOT</version>
+        <groupId>org.apache.tuscany.bindings</groupId>
+        <artifactId>bindings</artifactId>
+        <version>1.0-sandbox-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tuscany-binding-celtix</artifactId>
+    <artifactId>celtix</artifactId>
     <name>Tuscany Celtix Binding</name>
     <description>Implementation of the SCA Web Services binding using Celtix.</description>
-    <version>SNAPSHOT</version>
 
     <properties>
         <celtix.version>1.0</celtix.version>
@@ -52,35 +51,16 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany</groupId>
-            <artifactId>tuscany-core</artifactId>
-            <version>${pom.version}</version>
+            <artifactId>core</artifactId>
+            <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
-        <!--<dependency>
-            <groupId>org.apache.tuscany.databinding</groupId>
-            <artifactId>tuscany-databinding-sdo</artifactId>
-            <version>${pom.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca.containers</groupId>
-            <artifactId>tuscany-container-java</artifactId>
-            <version>${pom.version}</version>
-            <scope>test</scope>
-        </dependency>-->
         <dependency>
             <groupId>woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
             <version>2.9.3</version>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>stax</groupId>
-            <artifactId>stax-api</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-
 
         <dependency>
             <groupId>junit</groupId>
@@ -88,10 +68,6 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
-									
-
-
-
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
@@ -106,88 +82,4 @@
             <version>${celtix.version}</version>
         </dependency>
     </dependencies>
-<!--
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-            </plugin>
-
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <configuration>
-                    <rulesets>
-                        <ruleset>${basedir}/.ruleset</ruleset>
-                    </rulesets>
-                    <linkXRef>false</linkXRef>
-
-                    <targetJdk>1.5</targetJdk>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>process-sources</id>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-eclipse-plugin</artifactId>
-                <configuration>
-                    <downloadSources>true</downloadSources>
-                    <buildcommands>
-                        <java.lang.String>org.eclipse.jdt.core.javabuilder</java.lang.String>
-                        <java.lang.String>com.atlassw.tools.eclipse.checkstyle.CheckstyleBuilder</java.lang.String>
-                        <java.lang.String>net.sourceforge.pmd.eclipse.pmdBuilder</java.lang.String>
-                    </buildcommands>
-                    <projectnatures>
-                        <nature>org.eclipse.jdt.core.javanature</nature>
-                        <nature>com.atlassw.tools.eclipse.checkstyle.CheckstyleNature</nature>
-                        <nature>net.sourceforge.pmd.eclipse.pmdNature</nature>
-                    </projectnatures>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
--->
-
- <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-            </plugin>
-
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <configuration>
-                    <rulesets>
-                        <ruleset>${basedir}/.ruleset</ruleset>
-                    </rulesets>
-                    <linkXRef>false</linkXRef>
-
-                    <targetJdk>1.5</targetJdk>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>process-sources</id>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-    </build>
-
 </project>

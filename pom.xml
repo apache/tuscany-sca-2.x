@@ -17,17 +17,20 @@
 <project>
     <parent>
         <groupId>org.apache.tuscany</groupId>
-        <artifactId>tuscany-project</artifactId>
-        <version>SNAPSHOT</version>
+        <artifactId>project</artifactId>
+        <version>1.0-sandbox-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tuscany-sca</artifactId>
+    <artifactId>sca</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany SCA Implementation Project</name>
-    <version>SNAPSHOT</version>
+    <version>1.0-sandbox-SNAPSHOT</version>
+    <properties>
+        <sca.version>1.0-sandbox-SNAPSHOT</sca.version>
+        <sca.spec.version>1.0-sandbox-r0.92-SNAPSHOT</sca.spec.version>
+    </properties>
 
     <modules>
-        <module>buildtools</module>
         <module>spi</module>
         <module>core2</module>
         <module>test</module>
@@ -35,87 +38,9 @@
         <module>services</module>
         <module>commands/launcher</module>
         <module>bindings</module>
-  <!--
+        <!--
         <module>runtime/standalone</module>
         <module>runtime/equinox</module>
-        <module>databinding</module>
-        <module>bindings</module>
-        <module>containers</module>
-        <module>tomcat</module>
-        <module>tools</module>
-        <module>plugin</module>
         -->
     </modules>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.1.3</version>
-                <configuration>
-                    <includes>
-                        <include>**/*TestCase.java</include>
-                    </includes>
-                    <reportFormat>brief</reportFormat>
-                    <useFile>false</useFile>
-                    <forkMode>once</forkMode>
-                    <argLine>-ea</argLine>
-                </configuration>
-            </plugin>
-        </plugins>
-        <testResources>
-            <testResource>
-                <directory>src/test/java</directory>
-                <includes>
-                    <include>**/*.componentType</include>
-                </includes>
-            </testResource>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </testResource>
-        </testResources>
-		  
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apache.tuscany</groupId>
-                            <artifactId>tuscany-buildtools</artifactId>
-                            <version>${pom.version}</version>
-                        </dependency>
-                    </dependencies>
-                    <executions>
-                        <execution>
-                            <id>process-sources</id>
-                            <phase>process-sources</phase>
-                            <configuration>
-                                <configLocation>tuscany-checkstyle.xml</configLocation>
-										  <suppressionsLocation>tuscany-suppressions.xml</suppressionsLocation>
-                                <consoleOutput>true</consoleOutput>
-                                <failsOnError>true</failsOnError>
-                                <linkXRef>false</linkXRef>
-                                <sourceDirectory>${basedir}/src</sourceDirectory>
-                                <propertyExpansion>
-                                ${checkstyle.properties}
-                                </propertyExpansion>
-                            </configuration>
-                            <goals>
-                                <goal>checkstyle</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-
-
-		  
-    </build>
 </project>

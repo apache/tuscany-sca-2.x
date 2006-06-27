@@ -17,19 +17,19 @@
 <project>
     <parent>
         <groupId>org.apache.tuscany</groupId>
-        <artifactId>tuscany-sca</artifactId>
-        <version>SNAPSHOT</version>
+        <artifactId>sca</artifactId>
+        <version>1.0-sandbox-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tuscany-spi</artifactId>
-    <name>Tuscany SPI</name>
+    <artifactId>spi</artifactId>
+    <name>Tuscany SCA SPI</name>
     <description>Tuscany Service Provider Interfaces.</description>
-    <version>SNAPSHOT</version>
+
     <dependencies>
         <dependency>
             <groupId>org.osoa</groupId>
             <artifactId>sca-api</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${sca.spec.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -65,41 +65,5 @@
             <version>1.0.1</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-            </plugin>
-
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <configuration>
-                    <rulesets>
-                        <ruleset>${basedir}/.ruleset</ruleset>
-                    </rulesets>
-                    <linkXRef>false</linkXRef>
-
-                    <targetJdk>1.5</targetJdk>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>process-sources</id>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-    </build>
-
-
 </project>
