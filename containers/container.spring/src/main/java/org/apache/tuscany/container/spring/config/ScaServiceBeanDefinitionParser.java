@@ -15,10 +15,10 @@ public class ScaServiceBeanDefinitionParser implements BeanDefinitionParser {
 
     public static final String SERVICE_ELEMENT = "service";
 
-    private CompositeComponentType componentType;
+//    private CompositeComponentType componentType;
 
     public ScaServiceBeanDefinitionParser(CompositeComponentType componentType) {
-        this.componentType = componentType;
+//        this.componentType = componentType;
     }
 
     public BeanDefinition parse(Element element, ParserContext parserContext) {

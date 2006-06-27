@@ -26,7 +26,6 @@
     <artifactId>spring</artifactId>
     <name>Tuscany Spring Framework Container</name>
     <description>Container for managing Spring composites</description>
-    <version>SNAPSHOT</version>
 
     <dependencies>
         <dependency>
