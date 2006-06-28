@@ -19,7 +19,7 @@ package org.apache.tuscany.spi.model;
 import java.net.URI;
 
 /**
- * Represents a component service specified in an assembly
+ * Represents a service offered by a component, that has a particular binding associated with it.
  *
  * @version $Rev$ $Date$
  */

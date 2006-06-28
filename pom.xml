@@ -17,8 +17,8 @@
 <project>
     <parent>
         <groupId>org.apache.tuscany</groupId>
-        <artifactId>project</artifactId>
-        <version>1.0-sandbox-SNAPSHOT</version>
+        <artifactId>tuscany-project</artifactId>
+        <version>incubating-M1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sca</artifactId>

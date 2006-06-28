@@ -12,8 +12,8 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.test.ArtifactFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * Tests a simple invocation through a service to a Spring bean
@@ -24,7 +24,6 @@ public class ServiceInvocationTestCase extends TestCase {
 
     public void testInvocation() {
         SpringCompositeComponent context = new SpringCompositeComponent("parent", createSpringContext(), null,ArtifactFactory.createWireService());
-        context.start();
         InboundWire<TestBean> inboundWire = ArtifactFactory.createInboundWire("fooService", TestBean.class);
         OutboundWire<TestBean> outboundWire = ArtifactFactory.createOutboundWire("fooService", TestBean.class);
         ArtifactFactory.terminateWire(outboundWire);
@@ -38,11 +37,11 @@ public class ServiceInvocationTestCase extends TestCase {
             chain.setTargetInvoker(context.createTargetInvoker("foo", chain.getMethod()));
         }
         context.register(service);
-        assertEquals("bar", ((TestBean) context.getChild("fooService").getServiceInstance()).echo("bar"));
+        assertEquals("bar", ((TestBean) context.getService("fooService").getServiceInstance()).echo("bar"));
     }
 
 
-    private GenericApplicationContext createSpringContext() {
+    private ConfigurableApplicationContext createSpringContext() {
         StaticApplicationContext beanFactory = new StaticApplicationContext();
         BeanDefinition definition = new RootBeanDefinition(TestBeanImpl.class);
         beanFactory.registerBeanDefinition("foo", definition);

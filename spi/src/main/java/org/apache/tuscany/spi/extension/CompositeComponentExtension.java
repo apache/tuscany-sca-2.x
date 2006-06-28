@@ -48,7 +48,7 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
     public void register(SCAObject child) {
         assert child != null : "SCAObject was null";
         if (children.get(child.getName()) != null) {
-            DuplicateNameException e = new DuplicateNameException("A context is anlready registered with name");
+            DuplicateNameException e = new DuplicateNameException("A context is already registered with name");
             e.setIdentifier(child.getName());
             e.addContextName(getName());
             throw e;

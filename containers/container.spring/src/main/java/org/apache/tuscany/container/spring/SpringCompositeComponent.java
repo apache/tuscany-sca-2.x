@@ -23,7 +23,6 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
-import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.Resource;
 
 /**
@@ -33,7 +32,7 @@ import org.springframework.core.io.Resource;
  */
 public class SpringCompositeComponent extends CompositeComponentExtension {
     private static final String[] EMPTY_ARRAY = new String[0];
-    private GenericApplicationContext springContext;
+    private ConfigurableApplicationContext springContext;
     private SCAApplicationContext scaApplicationContext;
 
     /**
@@ -43,7 +42,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
      * @param springContext the pre-instantiated Spring applicaiton context
      * @param parent        the SCA composite parent
      */
-    public SpringCompositeComponent(String name, GenericApplicationContext springContext, CompositeComponent parent, WireService wireService) {
+    public SpringCompositeComponent(String name, ConfigurableApplicationContext springContext, CompositeComponent parent, WireService wireService) {
         super(name, parent);
         scaApplicationContext = new SCAApplicationContext();
         springContext.setParent(scaApplicationContext);
@@ -51,6 +50,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
     }
 
     public TargetInvoker createTargetInvoker(String serviceName, Method method) {
+        // Treat the serviceName as the Spring bean name to look up
         return new SpringInvoker(serviceName, method, springContext);
     }
 

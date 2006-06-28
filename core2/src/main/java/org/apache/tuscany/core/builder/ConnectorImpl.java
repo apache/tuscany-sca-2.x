@@ -66,6 +66,15 @@ public class ConnectorImpl implements Connector {
         }
     }
 
+    /**
+     * Connects an outbound wire to its target in a CompositeComponent.  Valid targets are either AtomicComponents
+     * contained in the CompositeComponent, or References of the CompositeComponent.
+     *
+     * @param sourceWire
+     * @param parent
+     * @param sourceScope
+     * @throws BuilderConfigException
+     */
     @SuppressWarnings("unchecked")
     public <T> void connect(OutboundWire<T> sourceWire,
                             CompositeComponent<?> parent,
@@ -136,6 +145,8 @@ public class ConnectorImpl implements Connector {
                             boolean optimizable) {
         Map<Method, InboundInvocationChain> targetChains = targetWire.getInvocationChains();
         // perform optimization, if possible
+        // REVIEW: (kentaminator@gmail.com) shouldn't this check whether the interceptors in the
+        // source & target chains are marked as optimizable?  (and if so, optimize them away?)
         if (optimizable && sourceWire.getInvocationChains().isEmpty() && targetChains.isEmpty()) {
             sourceWire.setTargetWire(targetWire);
             return;

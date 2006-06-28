@@ -1,0 +1,3 @@
+http\://www.springframework.org/schema/sca=org.apache.tuscany.container.spring.config.SCANamespaceHandler
+
+

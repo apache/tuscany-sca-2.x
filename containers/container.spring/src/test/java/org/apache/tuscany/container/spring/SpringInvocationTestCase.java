@@ -15,10 +15,9 @@ public class SpringInvocationTestCase extends MockObjectTestCase {
 
     public void testSpringInvocation() throws Exception {
         Mock mock = mock(ConfigurableApplicationContext.class);
-        mock.expects(atLeastOnce()).method("getBean").will(returnValue(new TestBeanImpl()));
+        mock.expects(atLeastOnce()).method("getBean").with(eq("foo")).will(returnValue(new TestBeanImpl()));
         ConfigurableApplicationContext ctx = (ConfigurableApplicationContext) mock.proxy();
         SpringInvoker invoker = new SpringInvoker("foo", TestBean.class.getMethod("echo", String.class), ctx);
-        assertEquals("foo", invoker.invokeTarget(new String[]{"foo"}));
+        assertEquals("call foo", invoker.invokeTarget(new String[]{"call foo"}));
     }
-
 }

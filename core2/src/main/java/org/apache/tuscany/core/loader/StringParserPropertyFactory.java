@@ -33,6 +33,7 @@ import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 
 /**
+ * Implementation of StAXPropertyFactory that interprets the XML as 
  * @version $Rev$ $Date$
  */
 public class StringParserPropertyFactory implements StAXPropertyFactory {
@@ -42,7 +43,7 @@ public class StringParserPropertyFactory implements StAXPropertyFactory {
         assert type != null : "property type is null";
         String text = reader.getElementText();
 
-        // degenerate case where we are returning a String
+        // degenerate case where property type is a String
         if (String.class.equals(type)) {
             return new SingletonObjectFactory<T>(type.cast(text));
         }
