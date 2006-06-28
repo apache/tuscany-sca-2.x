@@ -1,8 +1,7 @@
 package org.apache.tuscany.container.spring.config;
 
 import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.container.spring.config.SCANamespaceHandlerResolver;
-import org.springframework.beans.factory.xml.DefaultXmlBeanDefinitionParser;
+import org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader;
 import org.springframework.beans.factory.xml.NamespaceHandlerResolver;
 
 /**
@@ -11,7 +10,7 @@ import org.springframework.beans.factory.xml.NamespaceHandlerResolver;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SCARootDefinitionParser extends DefaultXmlBeanDefinitionParser {
+public class SCARootDefinitionParser extends DefaultBeanDefinitionDocumentReader {
 
     private CompositeComponentType componentType;
 

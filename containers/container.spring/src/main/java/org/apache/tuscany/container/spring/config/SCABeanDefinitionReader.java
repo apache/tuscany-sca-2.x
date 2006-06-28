@@ -2,7 +2,7 @@ package org.apache.tuscany.container.spring.config;
 
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.xml.XmlBeanDefinitionParser;
+import org.springframework.beans.factory.xml.BeanDefinitionDocumentReader;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 
 /**
@@ -18,7 +18,7 @@ public class SCABeanDefinitionReader extends XmlBeanDefinitionReader {
     }
 
 
-    protected XmlBeanDefinitionParser createXmlBeanDefinitionParser() {
+    protected BeanDefinitionDocumentReader createXmlBeanDefinitionParser() {
         return new SCARootDefinitionParser(componentType);
     }
 
