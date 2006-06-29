@@ -25,22 +25,13 @@ import org.osoa.sca.CurrentCompositeContext;
 public class EagerInitClient {
 
     public static final void main(String[] args) throws Exception {
+        
         String name = "";
 
         name = name.trim();
         if (name.length() == 0)
             name = "World";// nothing specified use "World".
 
-        // Create a Tuscany runtime for the sample module component
-
-        // NOT AVAILABLE TuscanyRuntime tuscany = logging? new TuscanyRuntime("HelloWorldModuleComponent", "http://helloworld", new
-        // JavaLoggingMonitorFactory(levels, Level.FINEST, "MonitorMessages") ):
-        // NOT AVAILABLE new TuscanyRuntime("HelloWorldModuleComponent", "http://helloworld");
-
-        // Start the Tuscany runtime and associate it with this thread
-        // NOT AVAILABLE tuscany.start();
-
-        // Get the SCA composite context.
         CompositeContext compositeContext = CurrentCompositeContext.getContext();
 
         // Locate the Eager init service
@@ -52,10 +43,5 @@ public class EagerInitClient {
         System.out.println(value);
         System.out.flush();
 
-        // Disassociate the runtime from this thread
-        // NOT AVAILABLE tuscany.stop();
-
-        // Shut down the runtime
-        // NOT AVAILABLE tuscany.shutdown();
     }
 }

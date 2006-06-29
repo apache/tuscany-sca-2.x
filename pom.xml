@@ -38,6 +38,7 @@
         <module>services</module>
         <module>commands/launcher</module>
         <module>bindings</module>
+        <module>samples</module>
         <!--
         <module>runtime/standalone</module>
         <module>runtime/equinox</module>

@@ -31,6 +31,12 @@
             no Tuscany jars should be added as dependencies here.
         -->
         <dependency>
+            <groupId>org.osoa</groupId>
+            <artifactId>sca-api</artifactId>
+            <version>${sca.spec.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>3.8.1</version>

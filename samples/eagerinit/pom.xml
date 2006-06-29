@@ -18,22 +18,31 @@
     <parent>
         <groupId>org.apache.tuscany.samples.sca</groupId>
         <artifactId>tuscany-samples-sca</artifactId>
-        <version>SNAPSHOT</version>
+        <version>1.0-sandbox-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sample-eagerinit</artifactId>
     <packaging>jar</packaging>
     <name>Tuscany Eagerinit Sample</name>
     <description>A sample implementation showing Eager init using an SCA component.</description>
-    <version>SNAPSHOT</version>
+    <version>1.0-sandbox-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
+            <groupId>org.osoa</groupId>
+            <artifactId>sca-api</artifactId>
+            <version>${sca.spec.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+<!-- the below really shouldn't be needed except for the lifetime demo -->
+        <dependency>
             <groupId>org.apache.tuscany</groupId>
-            <artifactId>tuscany-core</artifactId>
+            <artifactId>core</artifactId>
             <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
+
         <!--<dependency>
             <groupId>org.apache.tuscany.sca.containers</groupId>
             <artifactId>tuscany-container-java</artifactId>

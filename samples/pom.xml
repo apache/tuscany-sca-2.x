@@ -17,8 +17,8 @@
 <project>
     <parent>
         <groupId>org.apache.tuscany</groupId>
-        <artifactId>tuscany-sca</artifactId>
-        <version>SNAPSHOT</version>
+        <artifactId>sca</artifactId>
+        <version>1.0-sandbox-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -26,7 +26,7 @@
     <artifactId>tuscany-samples-sca</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany SCA Samples</name>
-    <version>SNAPSHOT</version>
+    <version>1.0-sandbox-SNAPSHOT</version>
     <modules>
         <module>eagerinit</module>
     </modules>

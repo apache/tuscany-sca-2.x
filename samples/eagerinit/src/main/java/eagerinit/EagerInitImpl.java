@@ -44,6 +44,13 @@ public class EagerInitImpl implements EagerInitService {
     }
 
     public String getGreetings(String name) {
+        
+//        try {
+//            Class.forName("org.apache.tuscany.core.monitor.MonitorFactory");
+//        } catch (ClassNotFoundException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
         return "Hello " + name;
     }
 
