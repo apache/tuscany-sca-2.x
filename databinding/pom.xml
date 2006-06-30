@@ -18,16 +18,15 @@
 
     <parent>
         <groupId>org.apache.tuscany</groupId>
-        <artifactId>tuscany-sca</artifactId>
-        <version>SNAPSHOT</version>
+        <artifactId>sca</artifactId>
+        <version>1.0-sandbox-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.databinding</groupId>
-    <artifactId>tuscany-databinding</artifactId>
+    <artifactId>databinding</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany SCA Data Bindings</name>
-    <version>SNAPSHOT</version>
 
     <modules>
         <module>sdo</module>

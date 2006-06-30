@@ -2,8 +2,8 @@ package org.apache.tuscany.databinding.sdo;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.CopyHelper;
-import org.apache.tuscany.core.builder.ObjectFactory;
-import org.apache.tuscany.core.injection.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.ObjectCreationException;
 
 /**
  * Creates new instances of an SDO

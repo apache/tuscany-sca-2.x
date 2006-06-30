@@ -16,41 +16,56 @@
  */
 package org.apache.tuscany.databinding.sdo;
 
+import java.io.StringReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLInputFactory;
 
-import org.apache.tuscany.core.config.ConfigurationLoadException;
+import junit.framework.TestCase;
+
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ImportSDOLoaderTestCase extends LoaderTestSupport {
+public class ImportSDOLoaderTestCase extends TestCase {
     private ImportSDOLoader loader;
+    private XMLInputFactory xmlFactory;
+    private DeploymentContext deploymentContext;
 
-    public void testMinimal() throws XMLStreamException, ConfigurationLoadException {
+    public void testMinimal() throws XMLStreamException, LoaderException {
         String xml = "<import.sdo xmlns='http://www.osoa.org/xmlns/sca/0.9'/>";
         XMLStreamReader reader = getReader(xml);
         assertNull(loader.load(reader, null));
     }
 
-    public void testFactory() throws XMLStreamException, ConfigurationLoadException {
+    public void testFactory() throws XMLStreamException, LoaderException {
         String xml = "<import.sdo xmlns='http://www.osoa.org/xmlns/sca/0.9' factory='org.apache.tuscany.databinding.sdo.ImportSDOLoaderTestCase$MockFactory'/>";
         XMLStreamReader reader = getReader(xml);
         assertFalse(inited);
-        assertNull(loader.load(reader, loaderContext));
+        assertNull(loader.load(reader, deploymentContext));
         assertTrue(inited);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
         loader = new ImportSDOLoader();
+        xmlFactory = XMLInputFactory.newInstance();
+        deploymentContext = new DeploymentContext(getClass().getClassLoader(), xmlFactory, null);
+    }
+
+    protected XMLStreamReader getReader(String xml) throws XMLStreamException {
+        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(xml));
+        reader.next();
+        return reader;
     }
 
     private static boolean inited = false;
 
     public static class MockFactory {
         public static Object INSTANCE;
-        
+
         static {
             ImportSDOLoaderTestCase.inited = true;
         }

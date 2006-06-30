@@ -18,21 +18,32 @@
 
     <parent>
         <groupId>org.apache.tuscany.databinding</groupId>
-        <artifactId>tuscany-databinding</artifactId>
-        <version>SNAPSHOT</version>
+        <artifactId>databinding</artifactId>
+        <version>1.0-sandbox-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tuscany-databinding-sdo</artifactId>
+    <artifactId>databinding-sdo</artifactId>
     <name>Tuscany Data Binding based on SDO</name>
     <description>Data Binding based on SDO.</description>
-    <version>SNAPSHOT</version>
 
+    <repositories>
+        <repository>
+            <id>jsdelfino</id>
+            <url>http://people.apache.org/~jsdelfino/maven2</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany</groupId>
-            <artifactId>tuscany-core</artifactId>
-            <version>${pom.version}</version>
+            <artifactId>core</artifactId>
+            <version>${sca.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany</groupId>
+            <artifactId>tuscany-sdo-impl</artifactId>
+            <version>incubating-M1</version>
             <scope>compile</scope>
         </dependency>
 
