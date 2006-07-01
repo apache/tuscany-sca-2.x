@@ -31,8 +31,6 @@
         <dependency>
             <groupId>org.osoa</groupId>
             <artifactId>sca-api</artifactId>
-            <version>${sca.spec.version}</version>
-            <scope>compile</scope>
         </dependency>
 
 <!-- the below really shouldn't be needed except for the lifetime demo -->
@@ -41,20 +39,6 @@
             <artifactId>core</artifactId>
             <version>${pom.version}</version>
             <scope>provided</scope>
-        </dependency>
-
-        <!--<dependency>
-            <groupId>org.apache.tuscany.sca.containers</groupId>
-            <artifactId>tuscany-container-java</artifactId>
-            <version>${pom.version}</version>
-            <scope>provided</scope>
-        </dependency>-->
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

@@ -29,8 +29,6 @@
         <dependency>
             <groupId>org.osoa</groupId>
             <artifactId>sca-api</artifactId>
-            <version>${sca.spec.version}</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -39,7 +37,6 @@
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>wsdl4j</groupId>
             <artifactId>wsdl4j</artifactId>
@@ -49,21 +46,15 @@
         <dependency>
             <groupId>tomcat</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>5.0.18</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>jmock</groupId>
             <artifactId>jmock</artifactId>
-            <version>1.0.1</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
