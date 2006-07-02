@@ -98,8 +98,8 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         // connect the source to the target
         source.setTargetRequestChannel(new MessageChannelImpl(target.getRequestHandlers()));
         source.setTargetResponseChannel(new MessageChannelImpl(target.getResponseHandlers()));
-        source.build();
-        target.build();
+        source.prepare();
+        target.prepare();
         MockStaticInvoker invoker = new MockStaticInvoker(m, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
         return source;

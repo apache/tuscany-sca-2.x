@@ -70,8 +70,8 @@ public class InvocationConfigurationErrorTestCase extends TestCase {
         // connect the source to the target
         source.setTargetRequestChannel(new MessageChannelImpl(target.getRequestHandlers()));
         source.setTargetResponseChannel(new MessageChannelImpl(target.getResponseHandlers()));
-        source.build();
-        target.build();
+        source.prepare();
+        target.prepare();
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
@@ -104,8 +104,8 @@ public class InvocationConfigurationErrorTestCase extends TestCase {
         // connect the source to the target
         source.setTargetRequestChannel(new MessageChannelImpl(target.getRequestHandlers()));
         source.setTargetResponseChannel(new MessageChannelImpl(target.getResponseHandlers()));
-        source.build();
-        target.build();
+        source.prepare();
+        target.prepare();
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
@@ -134,8 +134,8 @@ public class InvocationConfigurationErrorTestCase extends TestCase {
 
         // connect the source to the target
         source.setTargetInterceptor(target.getHeadInterceptor());
-        source.build();
-        target.build();
+        source.prepare();
+        target.prepare();
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 

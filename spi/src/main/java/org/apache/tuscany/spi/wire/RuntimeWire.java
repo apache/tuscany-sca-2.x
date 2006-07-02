@@ -35,7 +35,7 @@ public interface RuntimeWire<T> {
     Class[] getImplementedInterfaces();
 
     /**
-     * Returns true if the wire and all of its interceptors can be optimized
+     * Returns true if the wire and all of its interceptors and handlers can be optimized
      */
     boolean isOptimizable();
 

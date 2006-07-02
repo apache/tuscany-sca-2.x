@@ -39,7 +39,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         mock.expects(once()).method("invokeTarget").with(eq(val)).will(returnValue(val));
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         connector.connect(outboundChain, inboundChain, invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         assertEquals(val, outboundChain.getTargetInvoker().invokeTarget(val));
     }
 
@@ -62,7 +62,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, interceptor.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
@@ -86,7 +86,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, interceptor.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
@@ -114,7 +114,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         assertEquals(0, sourceInterceptor.getCount());
         assertEquals(0, targetInterceptor.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, sourceInterceptor.getCount());
@@ -143,7 +143,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
@@ -172,7 +172,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
@@ -202,7 +202,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
@@ -231,7 +231,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
@@ -260,7 +260,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
@@ -289,7 +289,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
@@ -314,7 +314,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(2, handler.getCount());
@@ -338,7 +338,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(2, handler.getCount());
@@ -362,7 +362,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, handler.getCount());
@@ -386,7 +386,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, handler.getCount());
@@ -410,7 +410,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, handler.getCount());
@@ -434,7 +434,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, handler.getCount());

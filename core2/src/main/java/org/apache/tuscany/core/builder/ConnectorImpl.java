@@ -55,7 +55,7 @@ public class ConnectorImpl implements Connector {
             }
         } else if (source instanceof CompositeComponent) {
             CompositeComponent composite = (CompositeComponent) source;
-            for (SCAObject child : (List<SCAObject>) composite.getChildren()) {
+            for (SCAObject<?> child : (List<SCAObject<?>>) composite.getChildren()) {
                 connect(child);
             }
         } else {
@@ -208,7 +208,7 @@ public class ConnectorImpl implements Connector {
                 sourceChain.setTargetInterceptor(targetChain.getHeadInterceptor());
             }
         }
-        sourceChain.build(); //FIXME build should be moved out
+        sourceChain.prepare(); //FIXME prepare should be moved out
         sourceChain.setTargetInvoker(invoker);
     }
 

@@ -33,7 +33,7 @@ public class BasicReferenceInvocationHandlerTestCase extends MockObjectTestCase 
         MockHandler responseHandler = new MockHandler();
         chain.addResponseHandler(responseHandler);
         chain.setTargetInvoker(invoker);
-        chain.build();
+        chain.prepare();
         chains.put(echo, chain);
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(chains);
         assertEquals("foo", handler.invoke(null, echo, new String[]{"foo"}));

@@ -41,7 +41,6 @@ public interface TargetInvoker extends Cloneable {
      */
     Message invoke(Message msg) throws InvocationRuntimeException;
 
-
     /**
      * Determines whether the proxy can be cached on the client/source side
      */

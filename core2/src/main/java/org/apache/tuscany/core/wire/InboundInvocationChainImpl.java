@@ -32,7 +32,7 @@ public class InboundInvocationChainImpl extends InvocationChainImpl implements I
         super(operation);
     }
 
-    public void build() {
+    public void prepare() {
         if (requestHandlers != null && interceptorChainHead != null) {
             // on target-side, connect existing handlers and interceptors
             MessageHandler messageDispatcher = new MessageDispatcher(interceptorChainHead);

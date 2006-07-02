@@ -77,7 +77,7 @@ public class InboundInvocationErrorTestCase extends TestCase {
         chain.addRequestHandler(new MockHandler());
         chain.setTargetInvoker(invoker);
         chain.addInterceptor(new InvokerInterceptor());
-        chain.build();
+        chain.prepare();
         return chain;
     }
 

@@ -39,7 +39,7 @@ public class InboundtoOutboundConnectTestCase extends MockObjectTestCase {
         TargetInvoker invoker = (TargetInvoker) mock.proxy();
         connector.connect(inboundChain, outboundChain);
         inboundChain.setTargetInvoker(invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         assertEquals(val, inboundChain.getTargetInvoker().invokeTarget(val));
     }
 
@@ -63,7 +63,7 @@ public class InboundtoOutboundConnectTestCase extends MockObjectTestCase {
         assertEquals(0, interceptor.getCount());
         connector.connect(inboundChain, outboundChain);
         inboundChain.setTargetInvoker(invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(inboundChain.getTargetInvoker());
         assertEquals(msg, inboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
@@ -88,7 +88,7 @@ public class InboundtoOutboundConnectTestCase extends MockObjectTestCase {
         assertEquals(0, interceptor.getCount());
         connector.connect(inboundChain, outboundChain);
         inboundChain.setTargetInvoker(invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(inboundChain.getTargetInvoker());
         assertEquals(msg, inboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
@@ -117,7 +117,7 @@ public class InboundtoOutboundConnectTestCase extends MockObjectTestCase {
         assertEquals(0, targetInterceptor.getCount());
         connector.connect(inboundChain, outboundChain);
         inboundChain.setTargetInvoker(invoker);
-        inboundChain.build();
+        inboundChain.prepare();
         msg.setTargetInvoker(inboundChain.getTargetInvoker());
         assertEquals(msg, inboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, sourceInterceptor.getCount());

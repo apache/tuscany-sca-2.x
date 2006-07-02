@@ -97,7 +97,7 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
         for (InboundWire<T> inboundWire : serviceWires.values()) {
             for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
                 chain.setTargetInvoker(createTargetInvoker(inboundWire.getServiceName(), chain.getMethod()));
-                chain.build();
+                chain.prepare();
             }
         }
     }

@@ -89,7 +89,7 @@ public class OutboundInvocationErrorTestCase extends TestCase {
         chain.addRequestHandler(new MockHandler());
         chain.setTargetInvoker(invoker);
         chain.setTargetInterceptor(new InvokerInterceptor());
-        chain.build();
+        chain.prepare();
         return chain;
     }
 

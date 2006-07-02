@@ -69,7 +69,7 @@ public class SystemReferenceImpl<T> extends AbstractSCAObject<T> implements Syst
             TargetInvoker targetInvoker = createTargetInvoker(outboundWire.getTargetName().getQualifiedName(),
                 chain.getMethod());
             chain.setTargetInvoker(targetInvoker);
-            chain.build();
+            chain.prepare();
         }
     }
 

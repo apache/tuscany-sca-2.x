@@ -35,7 +35,7 @@ public class JDKInboundInvocationHandlerTestCase extends MockObjectTestCase {
         MockHandler responseHandler = new MockHandler();
         chain.addResponseHandler(responseHandler);
         chain.setTargetInvoker(invoker);
-        chain.build();
+        chain.prepare();
         chains.put(echo, chain);
         JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
         assertEquals("foo", handler.invoke(echo, new String[]{"foo"}));
@@ -52,7 +52,7 @@ public class JDKInboundInvocationHandlerTestCase extends MockObjectTestCase {
         chain.addInterceptor(interceptor);
         chain.addInterceptor(new InvokerInterceptor());
         chain.setTargetInvoker(invoker);
-        chain.build();
+        chain.prepare();
         chains.put(echo, chain);
         JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
         assertEquals("foo", handler.invoke(echo, new String[]{"foo"}));

@@ -34,7 +34,7 @@ public class OutboundInvocationChainImpl extends InvocationChainImpl implements 
         super(operation);
     }
 
-    public void build() {
+    public void prepare() {
         if ((requestHandlers != null || responseHandlers != null) && targetInterceptorChainHead != null) {
             MessageHandler messageDispatcher = new MessageDispatcher(targetInterceptorChainHead);
             if (requestHandlers == null) {

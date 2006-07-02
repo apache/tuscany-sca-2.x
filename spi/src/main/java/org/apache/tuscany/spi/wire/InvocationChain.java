@@ -118,8 +118,8 @@ public interface InvocationChain {
     MessageChannel getTargetResponseChannel();
 
     /**
-     * Signals to the chain that its configuration is complete. Implementations may use this callback to prepare there
+     * Signals to the chain that its configuration is complete. Implementations may use this callback to prepare their
      * invocation chains.
      */
-    void build();
+    void prepare();
 }

@@ -84,7 +84,7 @@ public abstract class ReferenceExtension<T> extends AbstractSCAObject<T> impleme
         for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
             chain.setTargetInvoker(createTargetInvoker(outboundWire.getTargetName().getQualifiedName(),
                 chain.getMethod()));
-            chain.build();
+            chain.prepare();
         }
     }
 
