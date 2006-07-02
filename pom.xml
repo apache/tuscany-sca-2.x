@@ -39,8 +39,8 @@
         <module>services</module>
         <module>commands/launcher</module>
         <module>samples</module>
-        <!--
         <module>runtime/standalone</module>
+        <!--
         <module>runtime/equinox</module>
         -->
     </modules>
