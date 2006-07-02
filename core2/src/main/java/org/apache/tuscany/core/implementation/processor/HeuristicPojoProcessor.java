@@ -13,12 +13,15 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,6 +38,7 @@ import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.createService;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllPublicAndProtectedFields;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
@@ -42,6 +46,10 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyNam
 /**
  * Heuristically evaluates an un-annotated Java implementation type to determine services, references, and properties
  * according to the algorithm described in the SCA Java Client and Implementation Model Specification
+ * <p/>
+ * TODO Implement:<p> When no service inteface is annotated, need to calculate a single service comprising all public
+ * methods that are not reference or property injection sites. If that service can be exactly mapped to an interface
+ * implemented by the class then the service interface will be defined in terms of that interface.
  *
  * @version $Rev$ $Date$
  */
@@ -62,24 +70,26 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
                 type.getServices().put(service.getName(), service);
             }
         }
-
+        Set<Method> methods = getAllUniquePublicProtectedMethods(clazz);
         if (!type.getReferences().isEmpty() || !type.getProperties().isEmpty()) {
             // references and properties have been explicitly defined
+            if (type.getServices().isEmpty()) {
+                calculateServiceInterface(clazz, type, methods);
+                if (type.getServices().isEmpty()) {
+                    throw new ServiceTypeNotFoundException(clazz.getName());
+                }
+            }
             return;
         }
 
         // heuristically determine the properties references
-        Set<Method> methods = getAllUniquePublicProtectedMethods(clazz);
         // make a first pass through all public methods with one param
         for (Method method : methods) {
             if (method.getParameterTypes().length != 1 || !Modifier.isPublic(method.getModifiers())) {
                 continue;
             }
             if (!isInServiceInterface(method, services)) {
-                String name = method.getName();
-                if (name.startsWith("set")) {
-                    name = toPropertyName(name);
-                }
+                String name = calcName(method.getName());
                 // avoid duplicate property or ref names
                 if (type.getProperties().get(name) == null && type.getReferences().get(name) == null) {
                     Class<?> param = method.getParameterTypes()[0];
@@ -98,10 +108,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
                 continue;
             }
             Class<?> param = method.getParameterTypes()[0];
-            String name = method.getName();
-            if (name.startsWith("set")) {
-                name = toPropertyName(name);
-            }
+            String name = calcName(method.getName());
             // avoid duplicate property or ref names
             if (type.getProperties().get(name) == null && type.getReferences().get(name) == null) {
                 if (isReferenceType(param)) {
@@ -109,6 +116,15 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
                 } else {
                     type.add(createProperty(name, method, param));
                 }
+            }
+        }
+        Set<Field> fields = getAllPublicAndProtectedFields(clazz);
+        for (Field field : fields) {
+            Class<?> paramType = field.getType();
+            if (isReferenceType(paramType)) {
+                type.add(createReference(field.getName(), field, paramType));
+            } else {
+                type.add(createProperty(field.getName(), field, paramType));
             }
         }
     }
@@ -184,13 +200,86 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
         return reference;
     }
 
-    private JavaMappedProperty createProperty(String name, Member member, Class<?> paramType) {
-        JavaMappedProperty property = new JavaMappedProperty();
+    private <T> JavaMappedProperty<T> createProperty(String name, Member member, Class<T> paramType) {
+        JavaMappedProperty<T> property = new JavaMappedProperty<T>();
         property.setName(name);
         property.setMember(member);
         property.setRequired(false);
         property.setJavaType(paramType);
         return property;
+    }
+
+    private void calculateServiceInterface(
+        Class<?> clazz,
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+        Set<Method> methods) {
+        List<Method> nonPropRefMethods = new ArrayList<Method>();
+        //Map<String, JavaMappedService> services = type.getServices();
+        Map<String, JavaMappedReference> references = type.getReferences();
+        Map<String, JavaMappedProperty<?>> properties = type.getProperties();
+        // calculate methods that are not properties or references
+        for (Method method : methods) {
+            String name = calcName(method.getName());
+            if (references.get(name) == null && properties.get(name) == null) {
+                nonPropRefMethods.add(method);
+            }
+        }
+        // determine if an implemented interface matches all of the non-property and non-reference methods
+        Class[] interfaces = clazz.getInterfaces();
+        if (interfaces.length == 0) {
+            return;
+        }
+        for (Class interfaze : interfaces) {
+            if (analyzeInterface(interfaze, nonPropRefMethods)) {
+                JavaMappedService service = createService(interfaze);
+                type.getServices().put(service.getName(), service);
+            }
+        }
+    }
+
+    private boolean analyzeInterface(Class<?> interfaze, List<Method> nonPropRefMethods) {
+        Method[] interfaceMethods = interfaze.getMethods();
+        if (nonPropRefMethods.size() != interfaceMethods.length) {
+            return false;
+        }
+        for (Method method : nonPropRefMethods) {
+            boolean found = false;
+            for (Method interfaceMethod : interfaceMethods) {
+                if (interfaceMethod.getName().equals(method.getName())) {
+                    Class<?>[] interfaceParamTypes = interfaceMethod.getParameterTypes();
+                    Class<?>[] methodParamTypes = method.getParameterTypes();
+                    if (interfaceParamTypes.length == methodParamTypes.length) {
+                        for (int i = 0; i < methodParamTypes.length; i++) {
+                            Class<?> param = methodParamTypes[i];
+                            if (!param.equals(interfaceParamTypes[i])) {
+                                break;
+                            }
+                            if (i == methodParamTypes.length - 1) {
+                                found = true;
+                            }
+                        }
+
+                    }
+                    if (found) {
+                        break;
+                    }
+                }
+            }
+            if (!found) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Calculates the setter name equivalent of the given string
+     */
+    private String calcName(String name) {
+        if (name.startsWith("set")) {
+            name = toPropertyName(name);
+        }
+        return name;
     }
 }
 

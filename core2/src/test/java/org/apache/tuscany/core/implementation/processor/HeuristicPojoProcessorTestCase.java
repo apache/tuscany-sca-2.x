@@ -3,6 +3,9 @@ package org.apache.tuscany.core.implementation.processor;
 import java.util.Collection;
 import java.util.List;
 
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
 
 import junit.framework.TestCase;
@@ -95,6 +98,16 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         assertEquals(4, type.getProperties().size());
     }
 
+    /**
+     * Verifies references are calculated when the type marked with is @Remotable
+     */
+    public void testRemotableRef() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        processor.visitEnd(RemotableRefImpl.class, type, null);
+        assertEquals(2, type.getReferences().size());
+        assertEquals(0, type.getProperties().size());
+    }
 
     private interface PropertyInterface {
         void setString1(String val);
@@ -108,18 +121,54 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         }
     }
 
-    private class ServiceImpl implements PropertyInterface, Interface1 {
+    private interface HeuristicServiceInterface {
+        void fooOperation(String ref);
+    }
+
+    private class ServiceImpl implements PropertyInterface, RefInterface, HeuristicServiceInterface {
+
+        @Property
         public void setString1(String val) {
         }
 
+        @Property
         public void setString2(String val) {
         }
 
-        public void setProperty(String val) {
-        }
-
+        @Reference
         public void setReference(Ref ref) {
         }
+
+        @Reference
+        public void setReference2(Ref ref) {
+        }
+
+        public void fooOperation(String ref) {
+
+        }
+
+    }
+
+    /**
+     * Verifies a service inteface is calculated when only props and refs are given
+     */
+    public void testExcludedPropertyAndReference() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        JavaMappedReference ref = new JavaMappedReference();
+        ref.setName("reference");
+        type.add(ref);
+        JavaMappedReference ref2 = new JavaMappedReference();
+        ref2.setName("reference2");
+        type.add(ref2);
+        JavaMappedProperty<?> prop1 = new JavaMappedProperty();
+        prop1.setName("string1");
+        type.add(prop1);
+        JavaMappedProperty<?> prop2 = new JavaMappedProperty();
+        prop2.setName("string2");
+        type.add(prop2);
+        processor.visitEnd(ServiceImpl.class, type, null);
+        assertEquals(1, type.getServices().size());
     }
 
     @Service
@@ -174,14 +223,17 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         }
     }
 
-//    public void test() throws Exception{
-//        Method m = ReferenceCollectionImpl.class.getMethod("setCollectionReference", Collection.class);
-//        Method m2 = ReferenceCollectionImpl.class.getMethod("setNonGenericCollectionReference", Collection.class);
-//        Type[] type = m.getGenericParameterTypes();
-//        Type[] type2 = m2.getGenericParameterTypes();
-//        Type t = ((ParameterizedType)type[0]).getRawType();
-//        Type t2 = ((ParameterizedType)type[0]).getActualTypeArguments()[0];
-//        System.out.println("");
-//    }
-//
+    @Remotable
+    private interface RemotableRef {
+    }
+
+    private class RemotableRefImpl implements Interface1 {
+
+        protected RemotableRef otherRef;
+
+        public void setRef(RemotableRef ref) {
+
+        }
+    }
+
 }
