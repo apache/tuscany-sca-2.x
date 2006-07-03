@@ -22,20 +22,18 @@ import org.osoa.sca.CurrentCompositeContext;
 /**
  * This client program shows how to create an SCA runtime, start it, locate the Eager Init service and invoke it.
  */
-public class EagerInitClient {
+public final class EagerInitClient {
+    private EagerInitClient() {
+    }
 
-    public static final void main(String[] args) throws Exception {
-        
-        String name = "";
-
-        name = name.trim();
-        if (name.length() == 0)
-            name = "World";// nothing specified use "World".
+    public static void main(String[] args) throws Exception {
+        String name = "World";
 
         CompositeContext compositeContext = CurrentCompositeContext.getContext();
 
         // Locate the Eager init service
-        EagerInitService eagerInitService = compositeContext.locateService(EagerInitService.class, "EagerInitComponent");
+        EagerInitService eagerInitService =
+                compositeContext.locateService(EagerInitService.class, "EagerInitComponent");
 
         // Invoke the HelloWorld service
         String value = eagerInitService.getGreetings(name);

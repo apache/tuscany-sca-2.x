@@ -20,18 +20,20 @@ import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
+import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 
 /**
  * Temporary class to demonstrate component lifcycle
  *
  * @version $Rev$ $Date$
  */
-public class LifecycleDemonstration {
+public final class LifecycleDemonstration {
+    private LifecycleDemonstration() {
+    }
 
     public static void main(String args[]) throws LoaderException {
         // locate the SCDL for the composite that we want to run

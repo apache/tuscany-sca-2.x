@@ -21,6 +21,6 @@ package eagerinit;
  */
 public interface EagerInitService {
 
-    public String getGreetings(String name);
+    String getGreetings(String name);
 
 }
