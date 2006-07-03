@@ -18,14 +18,12 @@ package org.apache.tuscany.core.launcher;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.jar.JarFile;
-
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
@@ -37,8 +35,6 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.osoa.sca.CompositeContextImpl;
-
 
 
 /**
@@ -91,62 +87,16 @@ public class MainLauncher extends LauncherSupport {
      * Calls the application's main class as defined by the MainClassName property.
      * The Thread's context ClassLoader is set to the application classloader before
      * the application class is loaded or the main method invoked.
-     * @throws InvalidMainException 
      *
+     * @throws InvalidMainException
      * @throws ClassNotFoundException    if the specified class could not be loaded using the application classloader
      * @throws InvalidMainException      if the main method does not exist or is invalid
-     * @throws ClassNotFoundException 
-     * @throws InvocationTargetException 
-     * @throws IllegalArgumentException 
      * @throws InvocationTargetException if the main method throws an exception
-     * @throws NoSuchMethodException 
-     * @throws SecurityException 
-     * @throws IllegalAccessException 
-     * @throws InstantiationException 
-     * @throws IllegalArgumentException 
-     * @throws LoaderException 
-     * @throws NoSuchMethodException 
-     * @throws IllegalAccessException 
      */
-    public void callApplication() throws InvalidMainException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, LoaderException, IllegalAccessException, NoSuchMethodException  {
-        
-        Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), XMLInputFactory.newInstance());
-        Deployer deployer = bootstrapper.createDeployer();
-
-        // create and start the core runtime
-        RuntimeComponent runtime = bootstrapper.createRuntime();
-        runtime.start();
-        
-        
-        // create a ComponentDefinition to represent the component we are going to deploy
-        SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
-        URL scdl =  getApplicationLoader().getResource("eagerinit.composite");
-        moduleImplementation.setScdlLocation(scdl);
-        moduleImplementation.setClassLoader(getApplicationLoader());
-        ComponentDefinition<SystemCompositeImplementation> moduleDefinition =
-                new ComponentDefinition<SystemCompositeImplementation>("eagerinit", moduleImplementation);
-
-        // deploy the component into the system under the application root
-        System.out.println("Deploying composite component");
-        CompositeComponent root = runtime.getRootComponent();
-        CompositeComponent<?> composite = (CompositeComponent<?>) deployer.deploy(root, moduleDefinition);
-
-        // start the composite (which will fire the init method)
-        System.out.println("Starting composite component");
-        composite.start();
-
-        //wrappwer in sca spec CompositeContext  but we need to do it in the class loaded 
-        // by the application loader!
+    public void callApplication() throws InvalidMainException, ClassNotFoundException, InvocationTargetException {
         final ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        
         Thread.currentThread().setContextClassLoader(getApplicationLoader());
         try {
-            
-            //wrappwer in sca spec CompositeContext  but we need to do it in the class loaded 
-            // by the application loader!
-            CompositeContextImpl holdon = new CompositeContextImpl(composite, getApplicationLoader());
-           
-            
             if (getClassName() == null) {
                 throw new InvalidMainException("Main-Class not specified");
             }
@@ -166,42 +116,49 @@ public class MainLauncher extends LauncherSupport {
                 // assertion as getMethod() should not have returned a method that is not accessible
                 throw new AssertionError();
             }
-        } catch (SecurityException e) {
-            
-            e.printStackTrace();
         } finally {
             Thread.currentThread().setContextClassLoader(cl);
         }
     }
 
-    protected Object createTuscanyInstance( String className,
-            Class<?>[] parmTypes, Object[] parms) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        ClassLoader tuscanyLoader = getTuscanyClassLoader();
-         Class nmfcl =  tuscanyLoader.loadClass(className);
-         Constructor contr = (Constructor) nmfcl.getConstructor(parmTypes);
-         return  contr.newInstance(parms);
-    }
-    protected Class createTuscanyClass( String className) throws ClassNotFoundException  {
-        ClassLoader tuscanyLoader = getTuscanyClassLoader();
-         return tuscanyLoader.loadClass(className);
-         
-    }
+    private CompositeComponent<?> bootRuntime() throws LoaderException {
+        Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), XMLInputFactory.newInstance());
+        Deployer deployer = bootstrapper.createDeployer();
 
+        // create and start the core runtime
+        RuntimeComponent runtime = bootstrapper.createRuntime();
+        runtime.start();
+
+        // create a ComponentDefinition to represent the component we are going to deploy
+        SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
+        URL scdl = getApplicationLoader().getResource("eagerinit.composite");
+        moduleImplementation.setScdlLocation(scdl);
+        moduleImplementation.setClassLoader(getApplicationLoader());
+        ComponentDefinition<SystemCompositeImplementation> moduleDefinition =
+                new ComponentDefinition<SystemCompositeImplementation>("eagerinit", moduleImplementation);
+
+        // deploy the component into the system under the application root
+        System.out.println("Deploying composite component");
+        CompositeComponent root = runtime.getRootComponent();
+        CompositeComponent<?> composite = (CompositeComponent<?>) deployer.deploy(root, moduleDefinition);
+
+        // start the composite (which will fire the init method)
+        System.out.println("Starting composite component");
+        composite.start();
+        return composite;
+    }
 
     /**
      * Main method.
      *
      * @param args the command line args
-     * @param launcherConstructor 
      */
     public static void main(String[] args) throws Throwable {
-        //The classpath to load the launcher should not contain any of
-        // Tuscany jar files except the launcher.
+        // The classpath to load the launcher should not contain any of Tuscany jar files except the launcher.
         try {
-       
-        
-        MainLauncher launcher = new MainLauncher();
-        launcher.parseArguments(args);
+            MainLauncher launcher = new MainLauncher();
+            launcher.parseArguments(args);
+            launcher.bootRuntime();
             launcher.callApplication();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -217,7 +174,7 @@ public class MainLauncher extends LauncherSupport {
     }
 
     protected void parseArguments(String... args) {
-    	String specifiedMain = null;
+        String specifiedMain = null;
         int i = 0;
         while (i < args.length) {
             int left = args.length - i;
@@ -234,18 +191,17 @@ public class MainLauncher extends LauncherSupport {
                 break;
             }
         }
-        
+
         // Specified main-class overrides anything found on classpath
         if (specifiedMain != null) {
-        	setClassName(specifiedMain);
+            setClassName(specifiedMain);
         }
-        
+
         String[] mainArgs = new String[args.length - i];
         System.arraycopy(args, i, mainArgs, 0, mainArgs.length);
         setArgs(mainArgs);
     }
-    
-    
+
 
     protected void usage() {
         ResourceBundle bundle = ResourceBundle.getBundle(MainLauncher.class.getName());

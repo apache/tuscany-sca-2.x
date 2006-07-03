@@ -27,19 +27,22 @@ import java.util.ResourceBundle;
 
 /**
  * Launcher for launcher runtime environment that invokes a jar's Main class.
- * 
+ *
  * @version $Rev: 412898 $ $Date: 2006-06-08 21:31:50 -0400 (Thu, 08 Jun 2006) $
  */
 public class MainLauncherBooter {
+    protected static final FilenameFilter FILE_FILTER = new FilenameFilter() {
+        public boolean accept(File dir, String name) {
+            return name.endsWith(".jar");
+        }
+    };
 
-    protected static ClassLoader tuscanyClassLoader = null;
+    protected static ClassLoader tuscanyClassLoader;
 
     /**
      * Main method.
-     * 
-     * @param args
-     *            the command line args
-     * @param launcherConstructor
+     *
+     * @param args the command line args
      */
     public static void main(String[] args) throws Throwable {
         // The classpath to load the launcher should not contain any of
@@ -52,7 +55,7 @@ public class MainLauncherBooter {
 
             Method mainMethod = launcherClass.getMethod("main", String[].class);
             Thread.currentThread().setContextClassLoader(tuscanyCL);
-            mainMethod.invoke(null, new Object[] { args });
+            mainMethod.invoke(null, new Object[]{args});
 
         } catch (ClassNotFoundException e) {
             System.err.println(e);
@@ -70,11 +73,9 @@ public class MainLauncherBooter {
 
     /**
      * Create a classloader for a classpath supplied as individual file names.
-     * 
-     * @param files
-     *            a list of file/directory names
-     * @param parent
-     *            the parent for the new classloader
+     *
+     * @param files  a list of file/directory names
+     * @param parent the parent for the new classloader
      * @return a classloader that will load classes from the supplied path
      */
     protected static ClassLoader createClassLoader(ClassLoader parent, String[] files) {
@@ -85,7 +86,6 @@ public class MainLauncherBooter {
                 urls[i] = file.toURI().toURL();
             } catch (MalformedURLException e) {
                 // just ignore this value
-                e.printStackTrace();
                 continue;
             }
         }
@@ -98,7 +98,7 @@ public class MainLauncherBooter {
             // assume that even though the the rest of tuscany jars are not loaded
             // it co-located with the rest of the tuscany jars.
             File tuscanylib = findLoadLocation();
-            String[] jars = tuscanylib.list(filter);
+            String[] jars = tuscanylib.list(FILE_FILTER);
             String[] urls = new String[jars.length];
             int i = 0;
             for (String jar : jars) {
@@ -128,7 +128,10 @@ public class MainLauncherBooter {
         if (location.startsWith("file:")) {
             location = location.substring(5);
         }
-        if (File.separatorChar == '\\' && location.length() > 2 && location.charAt(0) == '/' && location.charAt(2) == ':') {
+        if (File.separatorChar == '\\'
+                && location.length() > 2
+                && location.charAt(0) == '/'
+                && location.charAt(2) == ':') {
             location = location.substring(1);
         }
         File locfile = new File(location);
@@ -140,13 +143,4 @@ public class MainLauncherBooter {
         System.err.print(bundle.getString("org.apache.tuscany.launcher.Usage"));
         System.exit(1);
     }
-
-    protected static FilenameFilter filter = new FilenameFilter() {
-        public boolean accept(File dir, String name) {
-            if (name.endsWith(".jar")) {
-                return true;
-            }
-            return false;
-        }
-    };
 }

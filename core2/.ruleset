@@ -86,7 +86,7 @@
 <rule ref="rulesets/design.xml/SimplifyConditional"/>
 <!--<rule ref="rulesets/design.xml/SwitchDensity"/>-->
 <!--<rule ref="rulesets/design.xml/SwitchStmtsShouldHaveDefault"/>-->
-<rule ref="rulesets/design.xml/UnnecessaryLocalBeforeReturn"/>
+<!--<rule ref="rulesets/design.xml/UnnecessaryLocalBeforeReturn"/>-->
 <!--<rule ref="rulesets/design.xml/UseLocaleWithCaseConversions"/>-->
 <!--<rule ref="rulesets/design.xml/UseNotifyAllInsteadOfNotify"/>-->
 <!--<rule ref="rulesets/design.xml/UseSingleton"/>-->

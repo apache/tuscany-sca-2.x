@@ -28,6 +28,16 @@ import java.net.URLClassLoader;
  * @version $Rev: 417136 $ $Date: 2006-06-26 03:54:48 -0400 (Mon, 26 Jun 2006) $
  */
 public abstract class LauncherSupport {
+    protected static final FilenameFilter FILE_FILTER = new FilenameFilter() {
+
+        public boolean accept(File dir, String name) {
+            return name.endsWith(".jar");
+        }
+
+    };
+
+    protected static ClassLoader tuscanyClassLoader;
+
     private ClassLoader applicationLoader = ClassLoader.getSystemClassLoader();
     private String className;
     private String[] args;
@@ -53,7 +63,7 @@ public abstract class LauncherSupport {
     /**
      * Create a classloader for the supplied classpath.
      *
-     * @param path a list of file/directory names separated by the platform path separator
+     * @param path   a list of file/directory names separated by the platform path separator
      * @param parent the parent for the new classloader
      * @return a classloader that will load classes from the supplied path
      */
@@ -65,7 +75,7 @@ public abstract class LauncherSupport {
     /**
      * Create a classloader for a classpath supplied as individual file names.
      *
-     * @param files a list of file/directory names
+     * @param files  a list of file/directory names
      * @param parent the parent for the new classloader
      * @return a classloader that will load classes from the supplied path
      */
@@ -81,14 +91,14 @@ public abstract class LauncherSupport {
                 continue;
             }
         }
-        
+
         return new URLClassLoader(urls, parent);
     }
 
     /**
      * Create a classloader for a classpath supplied as a list of files.
      *
-     * @param files a list of files
+     * @param files  a list of files
      * @param parent the parent for the new classloader
      * @return a classloader that will load classes from the supplied path
      */
@@ -99,7 +109,7 @@ public abstract class LauncherSupport {
                 File file = files[i];
                 urls[i] = file.toURI().toURL();
             } catch (MalformedURLException e) {
-               
+
                 continue;
             }
         }
@@ -131,59 +141,49 @@ public abstract class LauncherSupport {
     protected void setArgs(String[] args) {
         this.args = args;
     }
-    
-    protected static FilenameFilter filter= new FilenameFilter(){
 
-        public boolean accept(File dir, String name) {
-           if( name.endsWith(".jar")){
-          
-               return true;
-           }
-           return false;
-           
+    protected static ClassLoader getTuscanyClassLoader() {
+        if (null == tuscanyClassLoader) {
+            //assume that even though the the rest of tuscany jars are not loaded
+            // it  co-located with the rest of the tuscany jars.
+            File tuscanylib = findLoadLocation();
+            String[] jars = tuscanylib.list(FILE_FILTER);
+            String[] urls = new String[jars.length];
+            int i = 0;
+            for (String jar : jars) {
+
+                urls[i++] = tuscanylib.getAbsolutePath() + "/" + jar;
+                System.err.println("classpath '" + urls[i - 1] + "'");
+            }
+
+            tuscanyClassLoader = createClassLoader(LauncherSupport.class.getClassLoader(), urls);
         }
-        
-    };
-    
-    protected static ClassLoader tuscanyClassLoader= null;
-    protected static ClassLoader getTuscanyClassLoader(){
-     if( null == tuscanyClassLoader){
-     //assume that even though the the rest of tuscany jars are not loaded
-     // it  co-located with the rest of the tuscany jars. 
-     File tuscanylib= findLoadLocation(); 
-     String[] jars = tuscanylib.list(filter);
-     String[] urls= new String[jars.length];
-     int i=0;
-     for(String jar : jars){
-      
-            urls[i++] =  tuscanylib.getAbsolutePath() + "/" + jar;
-   System.err.println("classpath '" + urls[i-1] + "'")   ;            
-     }
-     
-     tuscanyClassLoader=  createClassLoader(LauncherSupport.class.getClassLoader(), urls);
-     }
-     return tuscanyClassLoader;
+        return tuscanyClassLoader;
     }
-    protected static File findLoadLocation(){
 
-        String resourceName= LauncherSupport.class.getName().replace('.', '/') + ".class";
+    protected static File findLoadLocation() {
+
+        String resourceName = LauncherSupport.class.getName().replace('.', '/') + ".class";
         URL dirURL = LauncherSupport.class.getClassLoader().getResource(resourceName);
-        String location= dirURL.getFile();
+        String location = dirURL.getFile();
 //        boolean jarred = false;
-        if("jar".equals(dirURL.getProtocol())){
+        if ("jar".equals(dirURL.getProtocol())) {
 //            jarred = true;
-            int sep= location.indexOf('!');
-            if(sep != -1){
-                location= location.substring(0, sep);
+            int sep = location.indexOf('!');
+            if (sep != -1) {
+                location = location.substring(0, sep);
             }
         }
-        if(location.startsWith("file:")){
-            location= location.substring(5);
+        if (location.startsWith("file:")) {
+            location = location.substring(5);
         }
-        if(File.separatorChar == '\\' && location.length() >2 && location.charAt(0)== '/'  && location.charAt(2) == ':'){
-            location= location.substring(1);
+        if (File.separatorChar == '\\'
+                && location.length() > 2
+                && location.charAt(0) == '/'
+                && location.charAt(2) == ':') {
+            location = location.substring(1);
         }
-        File locfile= new File( location);
+        File locfile = new File(location);
         return locfile.getParentFile();
     }
 }
