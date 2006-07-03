@@ -4,15 +4,15 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
@@ -25,19 +25,19 @@ import org.apache.tuscany.spi.wire.WireService;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class ArtifactFactory {
+public final class ArtifactFactory {
 
     private ArtifactFactory() {
     }
 
-    public static Connector createConnector(){
+    public static Connector createConnector() {
         return new ConnectorImpl();
     }
 
-    public static WireService createWireService(){
+    public static WireService createWireService() {
         return new JDKWireService();
     }
-    
+
     /**
      * Creates an inbound wire. After a wire is returned, client code must call {@link
      * #terminateWire(org.apache.tuscany.spi.wire.InboundWire<T>)}. These two methods have been separated
