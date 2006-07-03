@@ -1,6 +1,6 @@
 package org.osoa.sca;
 
-public class LauncherCurrentCompositeContext {
+public final class LauncherCurrentCompositeContext {
     private LauncherCurrentCompositeContext() {
     }
 
