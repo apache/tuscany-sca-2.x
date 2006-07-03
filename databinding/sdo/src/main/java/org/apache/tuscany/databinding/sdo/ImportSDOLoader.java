@@ -45,7 +45,8 @@ public class ImportSDOLoader extends LoaderExtension {
         return IMPORT_SDO;
     }
 
-    public ModelObject load(XMLStreamReader reader, DeploymentContext loaderContext) throws XMLStreamException, LoaderException {
+    public ModelObject load(XMLStreamReader reader, DeploymentContext loaderContext)
+        throws XMLStreamException, LoaderException {
         assert IMPORT_SDO.equals(reader.getName());
         importFactory(reader, loaderContext);
         importWSDL(reader, loaderContext);

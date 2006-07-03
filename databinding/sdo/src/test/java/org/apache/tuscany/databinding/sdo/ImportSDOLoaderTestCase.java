@@ -30,6 +30,8 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  * @version $Rev$ $Date$
  */
 public class ImportSDOLoaderTestCase extends TestCase {
+    private static boolean inited;
+
     private ImportSDOLoader loader;
     private XMLInputFactory xmlFactory;
     private DeploymentContext deploymentContext;
@@ -41,7 +43,8 @@ public class ImportSDOLoaderTestCase extends TestCase {
     }
 
     public void testFactory() throws XMLStreamException, LoaderException {
-        String xml = "<import.sdo xmlns='http://www.osoa.org/xmlns/sca/0.9' factory='org.apache.tuscany.databinding.sdo.ImportSDOLoaderTestCase$MockFactory'/>";
+        String xml = "<import.sdo xmlns='http://www.osoa.org/xmlns/sca/0.9' "
+                + "factory='org.apache.tuscany.databinding.sdo.ImportSDOLoaderTestCase$MockFactory'/>";
         XMLStreamReader reader = getReader(xml);
         assertFalse(inited);
         assertNull(loader.load(reader, deploymentContext));
@@ -61,10 +64,8 @@ public class ImportSDOLoaderTestCase extends TestCase {
         return reader;
     }
 
-    private static boolean inited = false;
-
     public static class MockFactory {
-        public static Object INSTANCE;
+        public static final Object INSTANCE = null;
 
         static {
             ImportSDOLoaderTestCase.inited = true;
