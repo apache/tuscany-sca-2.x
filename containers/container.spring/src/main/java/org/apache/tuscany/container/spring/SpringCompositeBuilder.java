@@ -1,5 +1,7 @@
 package org.apache.tuscany.container.spring;
 
+import org.springframework.context.ConfigurableApplicationContext;
+
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
@@ -17,7 +19,6 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * Creates a {@link SpringCompositeComponent} from an assembly model
@@ -27,15 +28,19 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImplementation> {
 
 
-    public Component build(CompositeComponent<?> parent, ComponentDefinition<SpringImplementation> componentDefinition,
+    public Component build(CompositeComponent<?> parent,
+                           ComponentDefinition<SpringImplementation> componentDefinition,
                            DeploymentContext deploymentContext) throws BuilderConfigException {
         String name = componentDefinition.getName();
-        ConfigurableApplicationContext applicationContext = componentDefinition.getImplementation().getApplicationContext();
-        SpringCompositeComponent component = new SpringCompositeComponent(name, applicationContext, parent, wireService);
-        CompositeComponentType<BoundServiceDefinition, BoundReferenceDefinition, ? extends Property> componentType =
-            componentDefinition.getImplementation().getComponentType();
+        SpringImplementation implementation = componentDefinition.getImplementation();
+        ConfigurableApplicationContext applicationContext = implementation.getApplicationContext();
+        SpringCompositeComponent component =
+                new SpringCompositeComponent(name, applicationContext, parent);
+        CompositeComponentType<BoundServiceDefinition<? extends Binding>,
+                BoundReferenceDefinition<? extends Binding>,
+                ? extends Property> componentType = implementation.getComponentType();
 
-        for (BoundServiceDefinition serviceDefinition : componentType.getServices().values()) {
+        for (BoundServiceDefinition<? extends Binding> serviceDefinition : componentType.getServices().values()) {
             // call back into builder registry to handle building of services
             Service<?> service = (Service) builderRegistry.build(parent,
                     serviceDefinition,

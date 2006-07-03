@@ -5,14 +5,6 @@ import java.lang.reflect.Method;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.extension.CompositeComponentExtension;
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
@@ -25,6 +17,14 @@ import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.core.io.Resource;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.extension.CompositeComponentExtension;
+import org.apache.tuscany.spi.wire.TargetInvoker;
+
 /**
  * A composite implementation responsible for managing Spring application contexts.
  *
@@ -33,7 +33,6 @@ import org.springframework.core.io.Resource;
 public class SpringCompositeComponent extends CompositeComponentExtension {
     private static final String[] EMPTY_ARRAY = new String[0];
     private ConfigurableApplicationContext springContext;
-    private SCAApplicationContext scaApplicationContext;
 
     /**
      * Creates a new composite
@@ -42,9 +41,11 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
      * @param springContext the pre-instantiated Spring applicaiton context
      * @param parent        the SCA composite parent
      */
-    public SpringCompositeComponent(String name, ConfigurableApplicationContext springContext, CompositeComponent parent, WireService wireService) {
+    public SpringCompositeComponent(String name,
+                                    ConfigurableApplicationContext springContext,
+                                    CompositeComponent parent) {
         super(name, parent);
-        scaApplicationContext = new SCAApplicationContext();
+        SCAApplicationContext scaApplicationContext = new SCAApplicationContext();
         springContext.setParent(scaApplicationContext);
         this.springContext = springContext;
     }
@@ -81,7 +82,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
     private class SCAApplicationContext implements ApplicationContext {
 
         public Object getBean(String name) throws BeansException {
-            SCAObject context = (SCAObject) children.get(name); // keep cast for compiler error
+            SCAObject context = (SCAObject) children.get(name); // keep cast due to compiler error
             if (context == null) {
                 throw new NoSuchBeanDefinitionException("SCA service not found [" + name + "]");
             }
@@ -89,7 +90,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
         }
 
         public Object getBean(String name, Class requiredType) throws BeansException {
-            SCAObject context = (SCAObject) children.get(name);   // keep cast for compiler error
+            SCAObject context = (SCAObject) children.get(name);   // keep cast due to compiler error
             if (context == null) {
                 throw new NoSuchBeanDefinitionException("SCA service not found [" + name + "]");
             }
@@ -109,7 +110,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
         }
 
         public boolean containsBean(String name) {
-            return (children.get(name) != null);
+            return children.get(name) != null;
         }
 
         public boolean isSingleton(String name) throws NoSuchBeanDefinitionException {
@@ -164,7 +165,8 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
             return null;
         }
 
-        public Map getBeansOfType(Class type, boolean includePrototypes, boolean includeFactoryBeans) throws BeansException {
+        public Map getBeansOfType(Class type, boolean includePrototypes, boolean includeFactoryBeans)
+            throws BeansException {
             return null;
         }
 

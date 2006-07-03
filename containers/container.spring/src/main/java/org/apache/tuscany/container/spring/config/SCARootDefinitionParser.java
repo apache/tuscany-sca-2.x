@@ -5,8 +5,9 @@ import org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader
 import org.springframework.beans.factory.xml.NamespaceHandlerResolver;
 
 /**
- * Overrides the default top-level Spring parser to use {@link org.apache.tuscany.container.spring.config.SCANamespaceHandlerResolver} for resolving
- * namespace handlers
+ * Overrides the default top-level Spring parser to use
+ * {@link org.apache.tuscany.container.spring.config.SCANamespaceHandlerResolver}
+ * for resolving namespace handlers
  *
  * @version $$Rev$$ $$Date$$
  */

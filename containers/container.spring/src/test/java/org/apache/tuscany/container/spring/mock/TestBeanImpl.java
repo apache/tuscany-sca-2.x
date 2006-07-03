@@ -3,7 +3,7 @@ package org.apache.tuscany.container.spring.mock;
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class TestBeanImpl implements TestBean{
+public class TestBeanImpl implements TestBean {
 
     private TestBean bean;
 

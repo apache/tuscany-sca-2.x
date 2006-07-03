@@ -1,14 +1,14 @@
 package org.apache.tuscany.container.spring.config;
 
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.container.spring.config.SCANamespaceHandler;
 import org.springframework.beans.factory.xml.DefaultNamespaceHandlerResolver;
 import org.springframework.beans.factory.xml.NamespaceHandler;
+
+import org.apache.tuscany.spi.model.CompositeComponentType;
 
 /**
  * Overrides the default Spring namespace resolver to automatically register {@link SCANamespaceHandler} instead
  * of requiring a value to be supplied in a Spring configuration
- *
+ * <p/>
  * TODO: Figure out how to activate this impl
  *
  * @version $$Rev$$ $$Date$$

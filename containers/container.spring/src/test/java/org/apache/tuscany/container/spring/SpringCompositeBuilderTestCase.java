@@ -3,11 +3,20 @@ package org.apache.tuscany.container.spring;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
+import org.jmock.core.Constraint;
+import org.jmock.core.Formatting;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.StaticApplicationContext;
+
 import org.apache.tuscany.container.spring.mock.TestBean;
 import org.apache.tuscany.container.spring.mock.TestBeanImpl;
 import org.apache.tuscany.container.spring.mock.VMBinding;
-import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
+import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.extension.ServiceExtension;
@@ -19,15 +28,6 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.test.ArtifactFactory;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
-import org.jmock.core.Constraint;
-import org.jmock.core.Formatting;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.context.support.StaticApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -39,7 +39,8 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
         // Create an assembly model consisting of a component implemented by Spring
         SpringImplementation impl = new SpringImplementation(createComponentType());
         impl.setApplicationContext(createImplicitSpringContext());
-        ComponentDefinition<SpringImplementation> componentDefinition = new ComponentDefinition<SpringImplementation>("spring", impl);
+        ComponentDefinition<SpringImplementation> componentDefinition =
+                new ComponentDefinition<SpringImplementation>("spring", impl);
 
         // Create a service instance that the mock builder registry will return
         WireService wireService = ArtifactFactory.createWireService();
@@ -56,8 +57,8 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
 
         // Configure the mock builder registry
         Mock mock = mock(BuilderRegistry.class);
-        mock.expects(atLeastOnce()).method("build").with(ANYTHING, serviceIsNamed("fooService") , ANYTHING)
-                                                   .will(returnValue(serviceContext));
+        mock.expects(atLeastOnce()).method("build").with(ANYTHING, serviceIsNamed("fooService"), ANYTHING)
+                .will(returnValue(serviceContext));
 
         // Test the SpringCompositeBuilder
         SpringCompositeBuilder builder = new SpringCompositeBuilder();
@@ -69,7 +70,9 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
         assertEquals("call foo", bean.echo("call foo"));
     }
 
-    /** Return a Spring context w/ a single bean named "fooBean", implemented by TestBeanImpl */
+    /**
+     * Return a Spring context w/ a single bean named "fooBean", implemented by TestBeanImpl
+     */
     private ConfigurableApplicationContext createImplicitSpringContext() {
         StaticApplicationContext beanFactory = new StaticApplicationContext();
         BeanDefinition definition = new RootBeanDefinition(TestBeanImpl.class);
@@ -91,26 +94,30 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
         return componentType;
     }
 
-    /** JMock constraint class to test ServiceDefinition name */
+    /**
+     * JMock constraint class to test ServiceDefinition name
+     */
     private class ServiceIsNamed implements Constraint {
         private String name;
 
-        public ServiceIsNamed( String name ) {
+        public ServiceIsNamed(String name) {
             this.name = name;
         }
 
-        public boolean eval( Object o ) {
-            return o instanceof ServiceDefinition && ((ServiceDefinition)o).getName().equals(name);
+        public boolean eval(Object o) {
+            return o instanceof ServiceDefinition && ((ServiceDefinition) o).getName().equals(name);
         }
 
-        public StringBuffer describeTo( StringBuffer buffer ) {
+        public StringBuffer describeTo(StringBuffer buffer) {
             return buffer.append("a service named ")
-                         .append(Formatting.toReadableString(name));
+                    .append(Formatting.toReadableString(name));
         }
     }
 
-    /** JMock factory method for ServiceIsNamed constraint */
-    private Constraint serviceIsNamed( String name ) {
+    /**
+     * JMock factory method for ServiceIsNamed constraint
+     */
+    private Constraint serviceIsNamed(String name) {
         return new ServiceIsNamed(name);
     }
 }

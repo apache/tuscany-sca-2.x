@@ -4,10 +4,10 @@ package org.apache.tuscany.container.spring.mock;
  * @version $$Rev$$ $$Date$$
  */
 public interface TestBean {
-    public String echo(String msg);
+    String echo(String msg);
 
-    public TestBean getBean();
+    TestBean getBean();
 
-    public void setBean(TestBean bean);
+    void setBean(TestBean bean);
 
 }

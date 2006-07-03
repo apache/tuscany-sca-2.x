@@ -3,7 +3,6 @@ package org.apache.tuscany.container.spring;
 import org.apache.tuscany.container.spring.mock.TestBean;
 import org.apache.tuscany.container.spring.mock.TestBeanImpl;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.test.ArtifactFactory;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.springframework.beans.PropertyValue;
@@ -22,7 +21,7 @@ public class ReferenceInvocationTestCase extends MockObjectTestCase {
 
     public void testInvocation() throws Exception {
         ConfigurableApplicationContext ctx = createSpringContext();
-        SpringCompositeComponent parent = new SpringCompositeComponent("spring", ctx, null, ArtifactFactory.createWireService());
+        SpringCompositeComponent parent = new SpringCompositeComponent("spring", ctx, null);
         parent.start();
         TestBean referenceTarget = new TestBeanImpl();
         Mock mock = mock(Reference.class);
