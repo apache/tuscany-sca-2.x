@@ -6,17 +6,17 @@ import org.mortbay.jetty.Response;
 /**
  * @version $Rev$ $Date$
  */
-public class ConsoleMonitor implements TransportMonitor{
+public class ConsoleMonitor implements TransportMonitor {
     public void started(int port) {
-        System.out.println("Started Jetty port ["+port+"]");
+        System.out.println("Started Jetty port [" + port + "]");
     }
 
     public void shutdown(int port) {
-        System.out.println("Shutdown Jetty port ["+port+"]");
+        System.out.println("Shutdown Jetty port [" + port + "]");
     }
 
     public void startError(int port, Exception e) {
-        System.out.println("Error starting Jetty port ["+port+"]");
+        System.out.println("Error starting Jetty port [" + port + "]");
         System.out.println(e);
     }
 

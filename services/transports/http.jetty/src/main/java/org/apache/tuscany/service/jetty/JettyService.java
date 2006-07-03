@@ -3,8 +3,9 @@ package org.apache.tuscany.service.jetty;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.tuscany.spi.host.ServletHost;
 import org.mortbay.jetty.Server;
+
+import org.apache.tuscany.spi.host.ServletHost;
 
 /**
  * Implementations provide a Jetty transport service to the runtime

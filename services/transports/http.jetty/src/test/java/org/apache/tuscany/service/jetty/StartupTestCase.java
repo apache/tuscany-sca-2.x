@@ -1,7 +1,5 @@
 package org.apache.tuscany.service.jetty;
 
-import java.io.File;
-
 import junit.framework.TestCase;
 
 /**
@@ -9,7 +7,7 @@ import junit.framework.TestCase;
  */
 public class StartupTestCase extends TestCase {
 
-    public void testStartup() throws Exception{
+    public void testStartup() throws Exception {
 //        JettyServiceImpl service = new JettyServiceImpl(new ConsoleMonitor());
 //        service.init();
 //        service.registerComposite(new File(getClass().getResource("/webapps").toURI()));

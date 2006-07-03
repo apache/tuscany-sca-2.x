@@ -7,18 +7,15 @@ import javax.resource.spi.work.WorkException;
 import javax.resource.spi.work.WorkManager;
 import javax.servlet.Servlet;
 
-import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.annotation.Monitor;
-import org.apache.tuscany.spi.host.ServletHost;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
-import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.jetty.handler.ContextHandlerCollection;
 import org.mortbay.jetty.handler.DefaultHandler;
 import org.mortbay.jetty.handler.HandlerCollection;
 import org.mortbay.jetty.handler.RequestLogHandler;
 import org.mortbay.jetty.nio.SelectChannelConnector;
+import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.thread.BoundedThreadPool;
 import org.mortbay.thread.ThreadPool;
 import org.osoa.sca.annotations.Destroy;
@@ -26,6 +23,10 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
+
+import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.annotation.Monitor;
+import org.apache.tuscany.spi.host.ServletHost;
 
 /**
  * Implements an HTTP transport service using Jetty
@@ -68,11 +69,11 @@ public class JettyServiceImpl implements JettyService {
 
         server = new Server();
 
-        if (workManager == null){
+        if (workManager == null) {
             BoundedThreadPool threadPool = new BoundedThreadPool();
             threadPool.setMaxThreads(100);
             server.setThreadPool(threadPool);
-        }else{
+        } else {
             server.setThreadPool(new TuscanyThreadPool());
         }
         Connector connector = new SelectChannelConnector();
@@ -85,17 +86,19 @@ public class JettyServiceImpl implements JettyService {
         handlers.setHandlers(new Handler[]{contexts, new DefaultHandler(), requestLogHandler});
         server.setHandler(handlers);
 
-        // WebAppContext.addWebApplications(server, "./webapps", "org/mortbay/jetty/webapp/webdefault.xml", true, false);
+/*
+         WebAppContext.addWebApplications(server, "./webapps", "org/mortbay/jetty/webapp/webdefault.xml", true, false);
 
-        //HashUserRealm userRealm = new HashUserRealm();
-        //userRealm.setName("Test Realm");
-        //userRealm.setConfig("./etc/realm.properties");
-        //server.setUserRealms(new UserRealm[]{userRealm});
+        HashUserRealm userRealm = new HashUserRealm();
+        userRealm.setName("Test Realm");
+        userRealm.setConfig("./etc/realm.properties");
+        server.setUserRealms(new UserRealm[]{userRealm});
 
-        //NCSARequestLog requestLog = new NCSARequestLog("./logs/jetty-yyyy-mm-dd.log");
-        //requestLog.setExtended(false);
-        //requestLogHandler.setRequestLog(requestLog);
+        NCSARequestLog requestLog = new NCSARequestLog("./logs/jetty-yyyy-mm-dd.log");
+        requestLog.setExtended(false);
+        requestLogHandler.setRequestLog(requestLog);
         requestLogHandler.setRequestLog(monitor);
+*/
         server.setStopAtShutdown(true);
         server.setSendServerVersion(true);
         server.start();
@@ -116,7 +119,7 @@ public class JettyServiceImpl implements JettyService {
     }
 
     public void registerComposite(File compositeLocation) throws IOException {
-        WebAppContext.addWebApplications(server,compositeLocation.getAbsolutePath(),
+        WebAppContext.addWebApplications(server, compositeLocation.getAbsolutePath(),
                 "org/mortbay/jetty/webapp/webdefault.xml",
                 false,
                 false);
