@@ -44,7 +44,8 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
     private List<Class<?>> services;
     private List<PropertyInjector> injectors;
 
-    public GroovyAtomicComponent(String name, String script,
+    public GroovyAtomicComponent(String name,
+                                 String script,
                                  List<Class<?>>services,
                                  Scope scope,
                                  List<PropertyInjector> injectors,

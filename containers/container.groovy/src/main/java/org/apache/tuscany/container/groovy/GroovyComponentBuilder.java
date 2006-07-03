@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * Extension point for creating {@link GroovyAtomicComponent}s from an assembly configuration
@@ -24,16 +24,27 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
         return GroovyImplementation.class;
     }
 
-    public Component<?> build(CompositeComponent<?> parent, ComponentDefinition<GroovyImplementation> componentDefinition, DeploymentContext deploymentContext) throws BuilderConfigException {
+    public Component<?> build(CompositeComponent<?> parent,
+                              ComponentDefinition<GroovyImplementation> componentDefinition,
+                              DeploymentContext deploymentContext)
+        throws BuilderConfigException {
         List<Class<?>> services = new ArrayList<Class<?>>();
-        Collection<ServiceDefinition> collection = componentDefinition.getImplementation().getComponentType().getServices().values();
+        GroovyImplementation implementation = componentDefinition.getImplementation();
+        Collection<ServiceDefinition> collection = implementation.getComponentType().getServices().values();
         for (ServiceDefinition serviceDefinition : collection) {
             services.add(serviceDefinition.getServiceContract().getInterfaceClass());
         }
-        String script = componentDefinition.getImplementation().getScript();
+        String script = implementation.getScript();
         String name = componentDefinition.getName();
-        Scope scope = componentDefinition.getImplementation().getComponentType().getLifecycleScope();
-        return new GroovyAtomicComponent(name, script, services, scope, null,parent, deploymentContext.getModuleScope(),wireService);
+        Scope scope = implementation.getComponentType().getLifecycleScope();
+        return new GroovyAtomicComponent(name,
+                script,
+                services,
+                scope,
+                null,
+                parent,
+                deploymentContext.getModuleScope(),
+                wireService);
     }
 
 }

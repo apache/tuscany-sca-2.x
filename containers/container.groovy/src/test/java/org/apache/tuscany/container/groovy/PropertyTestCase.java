@@ -15,13 +15,13 @@ import org.jmock.MockObjectTestCase;
  */
 public class PropertyTestCase extends MockObjectTestCase {
 
-    private static final String SCRIPT = "import org.apache.tuscany.container.groovy.mock.Greeting;" +
-            "class Foo implements Greeting{" +
-            "   String property;" +
-            "   public String greet(String name){" +
-            "       return property;  " +
-            "   }" +
-            "}";
+    private static final String SCRIPT = "import org.apache.tuscany.container.groovy.mock.Greeting;"
+            + "class Foo implements Greeting{"
+            + "   String property;"
+            + "   public String greet(String name){"
+            + "       return property;  "
+            + "   }"
+            + "}";
 
     /**
      * Tests injecting a simple property type on a Groovy implementation instance

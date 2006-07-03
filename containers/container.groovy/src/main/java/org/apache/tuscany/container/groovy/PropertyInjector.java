@@ -9,6 +9,6 @@ import groovy.lang.GroovyObject;
  */
 public interface PropertyInjector {
 
-    public void inject(GroovyObject instance) throws InjectionException;
+    void inject(GroovyObject instance) throws InjectionException;
 
 }

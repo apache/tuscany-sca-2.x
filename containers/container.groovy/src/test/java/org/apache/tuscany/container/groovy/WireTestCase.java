@@ -25,25 +25,25 @@ import org.jmock.core.Stub;
  */
 public class WireTestCase extends MockObjectTestCase {
 
-    private static final String SCRIPT = "import org.apache.tuscany.container.groovy.mock.Greeting;" +
-            "class Foo implements Greeting{" +
-            "   Greeting wire;" +
-            "   " +
-            "   void setWire(Greeting ref){" +
-            "       wire = ref;" +
-            "   };" +
-            "   " +
-            "   String greet(String name){" +
-            "       return wire.greet(name);  " +
-            "   };" +
-            "}";
+    private static final String SCRIPT = "import org.apache.tuscany.container.groovy.mock.Greeting;"
+            + "class Foo implements Greeting{"
+            + "   Greeting wire;"
+            + "   "
+            + "   void setWire(Greeting ref){"
+            + "       wire = ref;"
+            + "   };"
+            + "   "
+            + "   String greet(String name){"
+            + "       return wire.greet(name);  "
+            + "   };"
+            + "}";
 
-    private static final String SCRIPT2 = "import org.apache.tuscany.container.groovy.mock.Greeting;" +
-            "class Foo implements Greeting{" +
-            "   public String greet(String name){" +
-            "       return name;  " +
-            "   }" +
-            "}";
+    private static final String SCRIPT2 = "import org.apache.tuscany.container.groovy.mock.Greeting;"
+            + "class Foo implements Greeting{"
+            + "   public String greet(String name){"
+            + "       return name;  "
+            + "   }"
+            + "}";
 
     /**
      * Tests a basic invocation down a source wire
@@ -94,7 +94,8 @@ public class WireTestCase extends MockObjectTestCase {
         GroovyAtomicComponent<Greeting> context = new GroovyAtomicComponent<Greeting>("source", SCRIPT2, services,
                 Scope.MODULE, null, null, scope, ArtifactFactory.createWireService());
         scope.register(context);
-        TargetInvoker invoker = context.createTargetInvoker("greeting", Greeting.class.getMethod("greet", String.class));
+        TargetInvoker invoker =
+                context.createTargetInvoker("greeting", Greeting.class.getMethod("greet", String.class));
         assertEquals("foo", invoker.invokeTarget(new String[]{"foo"}));
         scope.stop();
     }
