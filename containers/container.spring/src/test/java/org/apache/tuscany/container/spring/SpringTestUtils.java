@@ -14,7 +14,7 @@ import org.apache.tuscany.test.ArtifactFactory;
  * @version $$Rev: $$ $$Date: $$
  */
 
-public class SpringTestUtils {
+public final class SpringTestUtils {
     private SpringTestUtils() {
     }
     
