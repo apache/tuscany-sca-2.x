@@ -21,10 +21,10 @@ import javax.xml.stream.XMLInputFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.Loader;
@@ -75,7 +75,7 @@ public class DeployerImpl implements Deployer {
         throws LoaderException {
         ScopeContainer moduleScope = new ModuleScopeContainer();
         DeploymentContext deploymentContext = new DeploymentContext(null, xmlFactory, moduleScope);
-        load(componentDefinition, deploymentContext);
+        load(parent, componentDefinition, deploymentContext);
         Component<?> component = (Component<?>) build(parent, componentDefinition, deploymentContext);
         if (component instanceof CompositeComponent) {
             CompositeComponent composite = (CompositeComponent) component;
@@ -93,9 +93,10 @@ public class DeployerImpl implements Deployer {
      * @param componentDefinition the componentDefinition being deployed
      * @param deploymentContext   the current deployment context
      */
-    protected <I extends Implementation<?>> void load(ComponentDefinition<I> componentDefinition,
+    protected <I extends Implementation<?>> void load(CompositeComponent<?> parent,
+                                                      ComponentDefinition<I> componentDefinition,
                                                       DeploymentContext deploymentContext) throws LoaderException {
-        loader.loadComponentType(componentDefinition.getImplementation(), deploymentContext);
+        loader.loadComponentType(null, componentDefinition.getImplementation(), deploymentContext);
     }
 
     /**

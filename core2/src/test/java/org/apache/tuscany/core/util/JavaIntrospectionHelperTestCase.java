@@ -74,6 +74,25 @@ public class JavaIntrospectionHelperTestCase extends TestCase {
         assertTrue(Bean2.class == ctr.newInstance((Object[]) null).getClass());
     }
 
+
+    public void testGetAllInterfaces() {
+        Set<Class> interfaces = JavaIntrospectionHelper.getAllInterfaces(Z.class);
+        assertEquals(2, interfaces.size());
+        assertTrue(interfaces.contains(W.class));
+        assertTrue(interfaces.contains(W2.class));
+    }
+
+
+    public void testGetAllInterfacesObject() {
+        Set<Class> interfaces = JavaIntrospectionHelper.getAllInterfaces(Object.class);
+        assertEquals(0, interfaces.size());
+    }
+
+    public void testGetAllInterfacesNoInterfaces() {
+        Set<Class> interfaces = JavaIntrospectionHelper.getAllInterfaces(NoInterface.class);
+        assertEquals(0, interfaces.size());
+    }
+
     /**
      * Tests generics introspection capabilities
      */
@@ -115,4 +134,29 @@ public class JavaIntrospectionHelperTestCase extends TestCase {
 
     public void setTestArray(Target[] array) {
     }
+
+    private interface W {
+
+    }
+
+    private interface W2 {
+
+    }
+
+    private class X implements W {
+
+    }
+
+    private class Y extends X implements W, W2 {
+
+    }
+
+    private class Z extends Y {
+
+    }
+
+    private class NoInterface {
+
+    }
+
 }

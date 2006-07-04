@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import org.osoa.sca.annotations.Destroy;
 
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.component.CompositeComponent;
 
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
@@ -34,7 +35,7 @@ import org.apache.tuscany.core.implementation.ProcessingException;
  */
 public class DestroyProcessor extends ImplementationProcessorSupport {
 
-    public void visitMethod(Method method,
+    public void visitMethod(CompositeComponent<?> parent, Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context)
         throws ProcessingException {

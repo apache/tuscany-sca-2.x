@@ -19,7 +19,7 @@ public class ReferenceProcessorTestCase extends TestCase {
     ReferenceProcessor processor = new ReferenceProcessor();
 
     public void testMethodAnnotation() throws Exception {
-        processor.visitMethod(ReferenceProcessorTestCase.Foo.class.getMethod("setFoo", Ref.class), type, null);
+        processor.visitMethod(null, ReferenceProcessorTestCase.Foo.class.getMethod("setFoo", Ref.class), type, null);
         JavaMappedReference reference = type.getReferences().get("foo");
         assertNotNull(reference);
         JavaServiceContract contract = (JavaServiceContract) reference.getServiceContract();
@@ -28,19 +28,21 @@ public class ReferenceProcessorTestCase extends TestCase {
     }
 
     public void testMethodRequired() throws Exception {
-        processor.visitMethod(ReferenceProcessorTestCase.Foo.class.getMethod("setFooRequired", Ref.class), type, null);
+        processor
+            .visitMethod(null, ReferenceProcessorTestCase.Foo.class.getMethod("setFooRequired", Ref.class), type, null);
         JavaMappedReference prop = type.getReferences().get("fooRequired");
         assertNotNull(prop);
         assertTrue(prop.isRequired());
     }
 
     public void testMethodName() throws Exception {
-        processor.visitMethod(ReferenceProcessorTestCase.Foo.class.getMethod("setBarMethod", Ref.class), type, null);
+        processor
+            .visitMethod(null, ReferenceProcessorTestCase.Foo.class.getMethod("setBarMethod", Ref.class), type, null);
         assertNotNull(type.getReferences().get("bar"));
     }
 
     public void testFieldAnnotation() throws Exception {
-        processor.visitField(ReferenceProcessorTestCase.Foo.class.getDeclaredField("baz"), type, null);
+        processor.visitField(null, ReferenceProcessorTestCase.Foo.class.getDeclaredField("baz"), type, null);
         JavaMappedReference reference = type.getReferences().get("baz");
         assertNotNull(reference);
         JavaServiceContract contract = (JavaServiceContract) reference.getServiceContract();
@@ -49,21 +51,21 @@ public class ReferenceProcessorTestCase extends TestCase {
     }
 
     public void testFieldRequired() throws Exception {
-        processor.visitField(ReferenceProcessorTestCase.Foo.class.getDeclaredField("bazRequired"), type, null);
+        processor.visitField(null, ReferenceProcessorTestCase.Foo.class.getDeclaredField("bazRequired"), type, null);
         JavaMappedReference prop = type.getReferences().get("bazRequired");
         assertNotNull(prop);
         assertTrue(prop.isRequired());
     }
 
     public void testFieldName() throws Exception {
-        processor.visitField(ReferenceProcessorTestCase.Foo.class.getDeclaredField("bazField"), type, null);
+        processor.visitField(null, ReferenceProcessorTestCase.Foo.class.getDeclaredField("bazField"), type, null);
         assertNotNull(type.getReferences().get("theBaz"));
     }
 
     public void testDuplicateFields() throws Exception {
-        processor.visitField(ReferenceProcessorTestCase.Bar.class.getDeclaredField("dup"), type, null);
+        processor.visitField(null, ReferenceProcessorTestCase.Bar.class.getDeclaredField("dup"), type, null);
         try {
-            processor.visitField(ReferenceProcessorTestCase.Bar.class.getDeclaredField("baz"), type, null);
+            processor.visitField(null, ReferenceProcessorTestCase.Bar.class.getDeclaredField("baz"), type, null);
             fail();
         } catch (DuplicateReferenceException e) {
             //expected
@@ -71,10 +73,11 @@ public class ReferenceProcessorTestCase extends TestCase {
     }
 
     public void testDuplicateMethods() throws Exception {
-        processor.visitMethod(ReferenceProcessorTestCase.Bar.class.getMethod("dupMethod", Ref.class), type, null);
+        processor.visitMethod(null, ReferenceProcessorTestCase.Bar.class.getMethod("dupMethod", Ref.class), type, null);
         try {
             processor
-                .visitMethod(ReferenceProcessorTestCase.Bar.class.getMethod("dupSomeMethod", Ref.class), type, null);
+                .visitMethod(null, ReferenceProcessorTestCase.Bar.class.getMethod("dupSomeMethod", Ref.class), type,
+                    null);
             fail();
         } catch (DuplicateReferenceException e) {
             //expected
@@ -83,7 +86,7 @@ public class ReferenceProcessorTestCase extends TestCase {
 
     public void testInvalidProperty() throws Exception {
         try {
-            processor.visitMethod(ReferenceProcessorTestCase.Bar.class.getMethod("badMethod"), type, null);
+            processor.visitMethod(null, ReferenceProcessorTestCase.Bar.class.getMethod("badMethod"), type, null);
             fail();
         } catch (IllegalReferenceException e) {
             //expected

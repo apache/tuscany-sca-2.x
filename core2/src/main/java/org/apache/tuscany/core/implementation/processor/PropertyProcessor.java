@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import org.osoa.sca.annotations.Property;
 
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.component.CompositeComponent;
 
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
@@ -22,7 +23,7 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyNam
  */
 public class PropertyProcessor extends ImplementationProcessorSupport {
 
-    public void visitMethod(Method method,
+    public void visitMethod(CompositeComponent<?> parent, Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context)
         throws ProcessingException {
@@ -53,7 +54,7 @@ public class PropertyProcessor extends ImplementationProcessorSupport {
         type.getProperties().put(name, property);
     }
 
-    public void visitField(Field field,
+    public void visitField(CompositeComponent<?> parent, Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
         Property annotation = field.getAnnotation(Property.class);

@@ -51,7 +51,7 @@ public class SystemImplementationLoader extends LoaderExtension<SystemImplementa
         String implClass = reader.getAttributeValue(null, "class");
         Class<?> implementationClass = StAXUtil.loadClass(implClass, deploymentContext.getClassLoader());
         implementation.setImplementationClass(implementationClass);
-        registry.loadComponentType(implementation, deploymentContext);
+        registry.loadComponentType(null, implementation, deploymentContext);
         StAXUtil.skipToEndElement(reader);
         return implementation;
     }

@@ -28,6 +28,7 @@ import java.util.Set;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
@@ -38,6 +39,7 @@ import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.createService;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllInterfaces;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllPublicAndProtectedFields;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
@@ -54,19 +56,21 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyNam
  * @version $Rev$ $Date$
  */
 public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
-    public void visitEnd(Class<?> clazz,
+    public void visitEnd(CompositeComponent<?> parent, Class<?> clazz,
                          PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                          DeploymentContext context) throws ProcessingException {
         Map<String, JavaMappedService> services = type.getServices();
         if (services.isEmpty()) {
             // heuristically determine the service
             // TODO finish algorithm
-            Class[] interfaces = clazz.getInterfaces();
-            if (interfaces.length == 0) {
+            //clazz.get()
+            Set<Class> interfaces = getAllInterfaces(clazz);
+            if (interfaces.size() == 0) {
                 // class is the interface
-                throw new UnsupportedOperationException("Classes not yet supported as interfaces");
-            } else if (interfaces.length == 1) {
-                JavaMappedService service = createService(interfaces[0]);
+                throw new UnsupportedOperationException(
+                    "Classes not yet supported as interfaces [" + clazz.getName() + "]");
+            } else if (interfaces.size() == 1) {
+                JavaMappedService service = createService(interfaces.iterator().next());
                 type.getServices().put(service.getName(), service);
             }
         }

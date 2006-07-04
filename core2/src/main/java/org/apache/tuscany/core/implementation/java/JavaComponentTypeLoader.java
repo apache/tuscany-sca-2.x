@@ -21,6 +21,8 @@ import java.net.URL;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.component.CompositeComponent;
+
 import org.apache.tuscany.core.implementation.PojoComponentType;
 
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
@@ -34,7 +36,8 @@ public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaIm
         super();
     }
 
-    public void load(JavaImplementation implementation, DeploymentContext deploymentContext) throws LoaderException {
+    public void load(CompositeComponent<?> parent, JavaImplementation implementation,
+                     DeploymentContext deploymentContext) throws LoaderException {
         Class<?> implClass = implementation.getImplementationClass();
         URL resource = implClass.getResource(JavaIntrospectionHelper.getBaseName(implClass) + ".componentType");
         PojoComponentType componentType;

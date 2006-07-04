@@ -4,6 +4,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.component.CompositeComponent;
 
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
@@ -31,7 +32,8 @@ public class ComponentTypeLoaderExtensionTestCase extends MockObjectTestCase {
             return null;
         }
 
-        public void load(Implementation implementation, DeploymentContext deploymentContext) throws LoaderException {
+        public void load(CompositeComponent parent, Implementation implementation,
+                         DeploymentContext deploymentContext) throws LoaderException {
 
         }
     }

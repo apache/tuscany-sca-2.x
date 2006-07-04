@@ -17,43 +17,43 @@ public class PropertyProcessorTestCase extends TestCase {
     PropertyProcessor processor;
 
     public void testMethodAnnotation() throws Exception {
-        processor.visitMethod(Foo.class.getMethod("setFoo", String.class), type, null);
+        processor.visitMethod(null, Foo.class.getMethod("setFoo", String.class), type, null);
         assertNotNull(type.getProperties().get("foo"));
     }
 
     public void testMethodRequired() throws Exception {
-        processor.visitMethod(Foo.class.getMethod("setFooRequired", String.class), type, null);
+        processor.visitMethod(null, Foo.class.getMethod("setFooRequired", String.class), type, null);
         JavaMappedProperty prop = type.getProperties().get("fooRequired");
         assertNotNull(prop);
         assertTrue(prop.isRequired());
     }
 
     public void testMethodName() throws Exception {
-        processor.visitMethod(Foo.class.getMethod("setBarMethod", String.class), type, null);
+        processor.visitMethod(null, Foo.class.getMethod("setBarMethod", String.class), type, null);
         assertNotNull(type.getProperties().get("bar"));
     }
 
     public void testFieldAnnotation() throws Exception {
-        processor.visitField(Foo.class.getDeclaredField("baz"), type, null);
+        processor.visitField(null, Foo.class.getDeclaredField("baz"), type, null);
         assertNotNull(type.getProperties().get("baz"));
     }
 
     public void testFieldRequired() throws Exception {
-        processor.visitField(Foo.class.getDeclaredField("bazRequired"), type, null);
+        processor.visitField(null, Foo.class.getDeclaredField("bazRequired"), type, null);
         JavaMappedProperty prop = type.getProperties().get("bazRequired");
         assertNotNull(prop);
         assertTrue(prop.isRequired());
     }
 
     public void testFieldName() throws Exception {
-        processor.visitField(Foo.class.getDeclaredField("bazField"), type, null);
+        processor.visitField(null, Foo.class.getDeclaredField("bazField"), type, null);
         assertNotNull(type.getProperties().get("theBaz"));
     }
 
     public void testDuplicateFields() throws Exception {
-        processor.visitField(Bar.class.getDeclaredField("dup"), type, null);
+        processor.visitField(null, Bar.class.getDeclaredField("dup"), type, null);
         try {
-            processor.visitField(Bar.class.getDeclaredField("baz"), type, null);
+            processor.visitField(null, Bar.class.getDeclaredField("baz"), type, null);
             fail();
         } catch (DuplicatePropertyException e) {
             //expected
@@ -61,9 +61,9 @@ public class PropertyProcessorTestCase extends TestCase {
     }
 
     public void testDuplicateMethods() throws Exception {
-        processor.visitMethod(Bar.class.getMethod("dupMethod", String.class), type, null);
+        processor.visitMethod(null, Bar.class.getMethod("dupMethod", String.class), type, null);
         try {
-            processor.visitMethod(Bar.class.getMethod("dupSomeMethod", String.class), type, null);
+            processor.visitMethod(null, Bar.class.getMethod("dupSomeMethod", String.class), type, null);
             fail();
         } catch (DuplicatePropertyException e) {
             //expected
@@ -72,7 +72,7 @@ public class PropertyProcessorTestCase extends TestCase {
 
     public void testInvalidProperty() throws Exception {
         try {
-            processor.visitMethod(Bar.class.getMethod("badMethod"), type, null);
+            processor.visitMethod(null, Bar.class.getMethod("badMethod"), type, null);
             fail();
         } catch (IllegalPropertyException e) {
             //expected

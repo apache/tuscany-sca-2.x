@@ -16,21 +16,21 @@
  */
 package org.apache.tuscany.core.implementation.system.loader;
 
-import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
+import org.apache.tuscany.core.implementation.processor.HeuristicPojoProcessor;
 import org.apache.tuscany.core.implementation.processor.InitProcessor;
 import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
 import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
 import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
 import org.apache.tuscany.core.implementation.processor.ServiceProcessor;
-import org.apache.tuscany.core.implementation.processor.HeuristicPojoProcessor;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.mock.component.BasicInterface;
 import org.apache.tuscany.core.mock.component.BasicInterfaceImpl;
@@ -44,7 +44,7 @@ public class SystemComponentTypeLoaderTestCase extends TestCase {
 
     public void testIntrospectUnannotatedClass() throws ProcessingException {
         SystemImplementation impl = new SystemImplementation(BasicInterfaceImpl.class);
-        PojoComponentType<?, ?, ?> componentType = loader.loadByIntrospection(impl, null);
+        PojoComponentType<?, ?, ?> componentType = loader.loadByIntrospection(null, impl, null);
         ServiceDefinition service = componentType.getServices().get("BasicInterface");
         assertEquals(BasicInterface.class, service.getServiceContract().getInterfaceClass());
         Property<?> property = componentType.getProperties().get("publicProperty");

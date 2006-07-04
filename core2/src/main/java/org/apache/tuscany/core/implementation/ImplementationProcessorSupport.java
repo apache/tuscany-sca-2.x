@@ -18,6 +18,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.component.CompositeComponent;
 
 /**
  * A convenience class for annotation processors which alleviates the need to implement unused callbacks
@@ -26,36 +27,36 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  */
 public abstract class ImplementationProcessorSupport implements ImplementationProcessor {
 
-    public void visitClass(Class<?> clazz,
+    public void visitClass(CompositeComponent<?> parent, Class<?> clazz,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context)
         throws ProcessingException {
     }
 
-    public void visitSuperClass(Class<?> clazz,
+    public void visitSuperClass(CompositeComponent<?> parent, Class<?> clazz,
                                 PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                 DeploymentContext context)
         throws ProcessingException {
     }
 
-    public void visitMethod(Method method,
+    public void visitMethod(CompositeComponent<?> parent, Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context)
         throws ProcessingException {
     }
 
-    public void visitConstructor(Constructor<?> constructor,
+    public void visitConstructor(CompositeComponent<?> parent, Constructor<?> constructor,
                                  PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                  DeploymentContext context)
         throws ProcessingException {
     }
 
-    public void visitField(Field field,
+    public void visitField(CompositeComponent<?> parent, Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
     }
 
-    public void visitEnd(Class<?> clazz,
+    public void visitEnd(CompositeComponent<?> parent, Class<?> clazz,
                          PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                          DeploymentContext context) throws ProcessingException {
 

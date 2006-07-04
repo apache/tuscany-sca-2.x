@@ -3,6 +3,8 @@ package org.apache.tuscany.container.spring;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.ComponentTypeLoader;
 import org.apache.tuscany.spi.model.CompositeComponentType;
+import org.apache.tuscany.spi.component.CompositeComponent;
+
 import org.apache.tuscany.container.spring.config.SCABeanDefinitionReader;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
@@ -18,7 +20,8 @@ import org.springframework.core.io.Resource;
  */
 public class SpringComponentTypeLoader implements ComponentTypeLoader<SpringImplementation> {
 
-    public void load(SpringImplementation implementation, DeploymentContext deploymentContext) {
+    public void load(CompositeComponent<?> parent, SpringImplementation implementation,
+                     DeploymentContext deploymentContext) {
         Resource resource = null; //FIXME
         CompositeComponentType componentType = new CompositeComponentType();
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();

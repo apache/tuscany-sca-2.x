@@ -82,7 +82,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         Implementation<?> impl = (Implementation<?>) o;
         ComponentDefinition<?> componentDefinition = new ComponentDefinition<Implementation<?>>(impl);
         componentDefinition.setName(name);
-        registry.loadComponentType(impl, deploymentContext);
+        registry.loadComponentType(null, impl, deploymentContext);
 
         try {
             while (true) {

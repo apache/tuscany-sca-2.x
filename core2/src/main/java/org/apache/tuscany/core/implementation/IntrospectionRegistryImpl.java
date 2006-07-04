@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.component.CompositeComponent;
 
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
@@ -56,15 +57,16 @@ public class IntrospectionRegistryImpl implements IntrospectionRegistry {
         cache.remove(processor);
     }
 
-    public PojoComponentType introspect(Class<?> clazz, PojoComponentType type, DeploymentContext context)
+    public PojoComponentType introspect(CompositeComponent<?> parent, Class<?> clazz, PojoComponentType type,
+                                        DeploymentContext context)
         throws ProcessingException {
         for (ImplementationProcessor processor : cache) {
-            processor.visitClass(clazz, type, null);
+            processor.visitClass(null, clazz, type, null);
         }
 
         for (Constructor constructor : clazz.getConstructors()) {
             for (ImplementationProcessor processor : cache) {
-                processor.visitConstructor(constructor, type, null);
+                processor.visitConstructor(null, constructor, type, null);
             }
         }
 
@@ -84,14 +86,14 @@ public class IntrospectionRegistryImpl implements IntrospectionRegistry {
         Set<Method> methods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(clazz);
         for (Method method : methods) {
             for (ImplementationProcessor processor : cache) {
-                processor.visitMethod(method, type, null);
+                processor.visitMethod(null, method, type, null);
             }
         }
 
         Set<Field> fields = JavaIntrospectionHelper.getAllPublicAndProtectedFields(clazz);
         for (Field field : fields) {
             for (ImplementationProcessor processor : cache) {
-                processor.visitField(field, type, null);
+                processor.visitField(null, field, type, null);
             }
         }
 
@@ -101,7 +103,7 @@ public class IntrospectionRegistryImpl implements IntrospectionRegistry {
         }
 
         for (ImplementationProcessor processor : cache) {
-            processor.visitEnd(clazz, type, null);
+            processor.visitEnd(null, clazz, type, null);
         }
         return type;
     }
@@ -109,7 +111,7 @@ public class IntrospectionRegistryImpl implements IntrospectionRegistry {
     private void visitSuperClass(Class<?> clazz, PojoComponentType type) throws ProcessingException {
         if (!Object.class.equals(clazz)) {
             for (ImplementationProcessor processor : cache) {
-                processor.visitSuperClass(clazz, type, null);
+                processor.visitSuperClass(null, clazz, type, null);
             }
             clazz = clazz.getSuperclass();
             if (clazz != null) {

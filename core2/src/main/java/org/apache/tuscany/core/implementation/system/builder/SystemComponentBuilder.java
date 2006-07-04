@@ -12,6 +12,7 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -114,6 +115,14 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
                 wire = new SystemOutboundWireImpl(referenceName, targetName, interfaze);
             }
             systemContext.addOutboundWire(wire);
+        }
+        // hack for now
+        for (ReferenceDefinition reference : componentType.getReferences().values()) {
+            if (reference.isAutowire()) {
+                Class interfaze = reference.getServiceContract().getInterfaceClass();
+                OutboundWire<?> wire = new SystemOutboundAutowire(reference.getName(), interfaze, autowireContext);
+                systemContext.addOutboundWire(wire);
+            }
         }
         return systemContext;
     }

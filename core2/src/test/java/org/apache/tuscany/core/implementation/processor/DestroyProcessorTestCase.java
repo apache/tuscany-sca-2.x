@@ -29,7 +29,7 @@ public class DestroyProcessorTestCase extends TestCase {
         DestroyProcessor processor = new DestroyProcessor();
         PojoComponentType type = new PojoComponentType();
         Method method = Foo.class.getMethod("destroy");
-        processor.visitMethod(method, type, null);
+        processor.visitMethod(null, method, type, null);
         assertNotNull(type.getDestroyMethod());
     }
 
@@ -38,7 +38,7 @@ public class DestroyProcessorTestCase extends TestCase {
         PojoComponentType type = new PojoComponentType();
         Method method = Bar.class.getMethod("badDestroy", String.class);
         try {
-            processor.visitMethod(method, type, null);
+            processor.visitMethod(null, method, type, null);
             fail();
         } catch (IllegalDestructorException e) {
             // expected
@@ -50,9 +50,9 @@ public class DestroyProcessorTestCase extends TestCase {
         PojoComponentType type = new PojoComponentType();
         Method method = Bar.class.getMethod("destroy");
         Method method2 = Bar.class.getMethod("destroy2");
-        processor.visitMethod(method, type, null);
+        processor.visitMethod(null, method, type, null);
         try {
-            processor.visitMethod(method2, type, null);
+            processor.visitMethod(null, method2, type, null);
             fail();
         } catch (DuplicateDestructorException e) {
             // expected

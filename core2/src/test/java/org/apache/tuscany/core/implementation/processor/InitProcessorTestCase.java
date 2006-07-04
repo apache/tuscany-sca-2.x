@@ -16,7 +16,7 @@ public class InitProcessorTestCase extends TestCase {
         InitProcessor processor = new InitProcessor();
         PojoComponentType type = new PojoComponentType();
         Method method = InitProcessorTestCase.Foo.class.getMethod("init");
-        processor.visitMethod(method, type, null);
+        processor.visitMethod(null, method, type, null);
         assertNotNull(type.getInitMethod());
         assertTrue(type.isEagerInit());
     }
@@ -26,7 +26,7 @@ public class InitProcessorTestCase extends TestCase {
         PojoComponentType type = new PojoComponentType();
         Method method = InitProcessorTestCase.Bar.class.getMethod("badInit", String.class);
         try {
-            processor.visitMethod(method, type, null);
+            processor.visitMethod(null, method, type, null);
             fail();
         } catch (IllegalInitException e) {
             // expected
@@ -38,9 +38,9 @@ public class InitProcessorTestCase extends TestCase {
         PojoComponentType type = new PojoComponentType();
         Method method = InitProcessorTestCase.Bar.class.getMethod("init");
         Method method2 = InitProcessorTestCase.Bar.class.getMethod("init2");
-        processor.visitMethod(method, type, null);
+        processor.visitMethod(null, method, type, null);
         try {
-            processor.visitMethod(method2, type, null);
+            processor.visitMethod(null, method2, type, null);
             fail();
         } catch (DuplicateInitException e) {
             // expected

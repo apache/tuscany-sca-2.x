@@ -19,6 +19,7 @@ package org.apache.tuscany.core.implementation.system.loader;
 import java.net.URL;
 
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -55,12 +56,13 @@ public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<Syst
         this.introspector = introspector;
     }
 
-    public void load(SystemImplementation implementation, DeploymentContext deploymentContext) throws LoaderException {
+    public void load(CompositeComponent<?> parent, SystemImplementation implementation,
+                     DeploymentContext deploymentContext) throws LoaderException {
         Class<?> implClass = implementation.getImplementationClass();
         URL sidefile = implClass.getResource(JavaIntrospectionHelper.getBaseName(implClass) + ".componentType");
         PojoComponentType componentType;
         if (sidefile == null) {
-            componentType = loadByIntrospection(implementation, deploymentContext);
+            componentType = loadByIntrospection(parent, implementation, deploymentContext);
         } else {
             componentType = loadFromSidefile(sidefile, deploymentContext);
         }
@@ -71,12 +73,13 @@ public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<Syst
         return SystemImplementation.class;
     }
 
-    protected PojoComponentType loadByIntrospection(SystemImplementation implementation,
+    protected PojoComponentType loadByIntrospection(CompositeComponent<?> parent,
+                                                    SystemImplementation implementation,
                                                     DeploymentContext deploymentContext) throws ProcessingException {
         PojoComponentType componentType = new PojoComponentType();
 
         Class<?> implClass = implementation.getImplementationClass();
-        introspector.introspect(implClass, componentType, deploymentContext);
+        introspector.introspect(null, implClass, componentType, deploymentContext);
 
         return componentType;
     }

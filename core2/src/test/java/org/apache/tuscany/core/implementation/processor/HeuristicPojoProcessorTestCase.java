@@ -13,6 +13,7 @@ import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.core.implementation.ProcessingException;
 
 /**
  * Verfies component type information is properly introspected from an unadorned POJO according to the SCA Java Client
@@ -30,7 +31,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
     public void testSingleInterface() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(SingleInterfaceImpl.class, type, null);
+        processor.visitEnd(null, SingleInterfaceImpl.class, type, null);
         assertEquals(1, type.getServices().size());
         assertEquals(PropertyInterface.class,
             type.getServices().get("HeuristicPojoProcessorTestCase$PropertyInterface")
@@ -45,7 +46,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
     public void testPropertyReference() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(SingleInterfaceWithPropertyReferenceImpl.class, type, null);
+        processor.visitEnd(null, SingleInterfaceWithPropertyReferenceImpl.class, type, null);
         assertEquals(1, type.getServices().size());
         assertEquals(Interface1.class,
             type.getServices().get("HeuristicPojoProcessorTestCase$Interface1")
@@ -62,7 +63,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
     public void testPropertySetterInInterface() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(SingleInterfaceImpl.class, type, null);
+        processor.visitEnd(null, SingleInterfaceImpl.class, type, null);
         assertEquals(0, type.getProperties().size());
     }
 
@@ -72,7 +73,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
     public void testReferenceSetterInInterface() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(RefInterfaceImpl.class, type, null);
+        processor.visitEnd(null, RefInterfaceImpl.class, type, null);
         assertEquals(0, type.getReferences().size());
     }
 
@@ -82,7 +83,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
     public void testReferenceCollectionType() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(ReferenceCollectionImpl.class, type, null);
+        processor.visitEnd(null, ReferenceCollectionImpl.class, type, null);
         assertEquals(0, type.getProperties().size());
         assertEquals(4, type.getReferences().size());
     }
@@ -93,7 +94,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
     public void testPropertyCollectionType() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(PropertyCollectionImpl.class, type, null);
+        processor.visitEnd(null, PropertyCollectionImpl.class, type, null);
         assertEquals(0, type.getReferences().size());
         assertEquals(4, type.getProperties().size());
     }
@@ -104,9 +105,16 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
     public void testRemotableRef() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitEnd(RemotableRefImpl.class, type, null);
+        processor.visitEnd(null, RemotableRefImpl.class, type, null);
         assertEquals(2, type.getReferences().size());
         assertEquals(0, type.getProperties().size());
+    }
+
+    public void testParentInterface() throws ProcessingException {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        processor.visitEnd(null, Child.class, type, null);
+        assertTrue(type.getServices().containsKey("HeuristicPojoProcessorTestCase$Interface1"));
     }
 
     private interface PropertyInterface {
@@ -114,6 +122,14 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
     }
 
     private interface Interface1 {
+    }
+
+    private class Parent implements Interface1 {
+
+    }
+
+    private class Child extends Parent {
+
     }
 
     private class SingleInterfaceImpl implements PropertyInterface {
@@ -167,7 +183,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         JavaMappedProperty<?> prop2 = new JavaMappedProperty();
         prop2.setName("string2");
         type.add(prop2);
-        processor.visitEnd(ServiceImpl.class, type, null);
+        processor.visitEnd(null, ServiceImpl.class, type, null);
         assertEquals(1, type.getServices().size());
     }
 

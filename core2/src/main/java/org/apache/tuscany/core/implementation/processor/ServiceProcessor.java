@@ -13,8 +13,11 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import java.util.Set;
+
 import org.osoa.sca.annotations.Remotable;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
@@ -24,6 +27,7 @@ import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.createService;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
  * Processes an {@link org.osoa.sca.annotations.Service} annotation and updates the component type with corresponding
@@ -32,7 +36,7 @@ import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.cr
  * @version $Rev$ $Date$
  */
 public class ServiceProcessor extends ImplementationProcessorSupport {
-    public void visitClass(Class<?> clazz,
+    public void visitClass(CompositeComponent<?> parent, Class<?> clazz,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context)
         throws ProcessingException {
@@ -40,7 +44,7 @@ public class ServiceProcessor extends ImplementationProcessorSupport {
         if (annotation == null) {
             // scan intefaces for remotable
             //TODO also service?
-            Class<?>[] interfaces = clazz.getInterfaces();
+            Set<Class> interfaces = JavaIntrospectionHelper.getAllInterfaces(clazz);
             for (Class<?> interfaze : interfaces) {
                 if (interfaze.getAnnotation(Remotable.class) != null) {
                     JavaMappedService service = createService(interfaze);

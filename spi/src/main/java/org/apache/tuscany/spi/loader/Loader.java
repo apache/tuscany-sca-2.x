@@ -23,6 +23,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.component.CompositeComponent;
 
 /**
  * System service for loading physical artifacts that represent SCDL configurations and creating the model objects that
@@ -64,10 +65,12 @@ public interface Loader {
      * artifact related to the implementation, some combination of those techniques or any other implementation-defined
      * mechanism.
      *
+     * @param parent the parent composite
      * @param implementation    the implementation whose component type should be loaded
      * @param deploymentContext the current deployment context
      * @throws LoaderException if there was a problem loading the component type definition
      */
-    <I extends Implementation<?>> void loadComponentType(I implementation, DeploymentContext deploymentContext)
+    <I extends Implementation<?>> void loadComponentType(CompositeComponent<?> parent, I implementation,
+                                                         DeploymentContext deploymentContext)
         throws LoaderException;
 }

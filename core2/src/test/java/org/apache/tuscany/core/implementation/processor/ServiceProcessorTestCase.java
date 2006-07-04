@@ -33,7 +33,7 @@ public class ServiceProcessorTestCase extends TestCase {
     private PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type;
 
     public void testMultipleInterfaces() throws Exception {
-        processor.visitClass(FooMultiple.class, type, null);
+        processor.visitClass(null, FooMultiple.class, type, null);
         assertEquals(2, type.getServices().size());
         JavaMappedService service = type.getServices().get("ServiceProcessorTestCase$Baz");
         JavaServiceContract contract = (JavaServiceContract) service.getServiceContract();
@@ -44,18 +44,18 @@ public class ServiceProcessorTestCase extends TestCase {
     }
 
     public void testSingleInterfaces() throws Exception {
-        processor.visitClass(FooSingle.class, type, null);
+        processor.visitClass(null, FooSingle.class, type, null);
         assertEquals(1, type.getServices().size());
         assertNotNull(type.getServices().get("ServiceProcessorTestCase$Baz"));
     }
 
     public void testMultipleNoService() throws Exception {
-        processor.visitClass(FooMultipleNoService.class, type, null);
+        processor.visitClass(null, FooMultipleNoService.class, type, null);
         assertEquals(0, type.getServices().size());
     }
 
     public void testRemotableNoService() throws Exception {
-        processor.visitClass(FooRemotableNoService.class, type, null);
+        processor.visitClass(null, FooRemotableNoService.class, type, null);
         assertEquals(1, type.getServices().size());
         JavaMappedService service = type.getServices().get("ServiceProcessorTestCase$BazRemotable");
         JavaServiceContract contract = (JavaServiceContract) service.getServiceContract();
@@ -64,7 +64,7 @@ public class ServiceProcessorTestCase extends TestCase {
 
     public void testNonInterface() throws Exception {
         try {
-            processor.visitClass(BadImpl.class, type, null);
+            processor.visitClass(null, BadImpl.class, type, null);
             fail();
         } catch (InvalidServiceType e) {
             //expected
@@ -73,7 +73,7 @@ public class ServiceProcessorTestCase extends TestCase {
 
     public void testNoInterfaces() throws Exception {
         try {
-            processor.visitClass(BadDefinition.class, type, null);
+            processor.visitClass(null, BadDefinition.class, type, null);
             fail();
         } catch (IllegalServiceDefinitionException e) {
             //expected

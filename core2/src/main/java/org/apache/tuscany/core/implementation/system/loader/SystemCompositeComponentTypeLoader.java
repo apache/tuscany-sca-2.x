@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.CompositeComponent;
 
 /**
  * Loads a system composite component type
@@ -45,7 +46,8 @@ public class SystemCompositeComponentTypeLoader extends ComponentTypeLoaderExten
         return SystemCompositeImplementation.class;
     }
 
-    public void load(SystemCompositeImplementation implementation, DeploymentContext deploymentContext)
+    public void load(CompositeComponent<?> parent, SystemCompositeImplementation implementation,
+                     DeploymentContext deploymentContext)
         throws LoaderException {
         URL scdlLocation = implementation.getScdlLocation();
         ClassLoader cl = implementation.getClassLoader();

@@ -17,6 +17,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
@@ -34,36 +35,42 @@ public interface ImplementationProcessor {
     /**
      * A callback received when the component implementation class is first loaded
      *
+     * @param parent  the parent composite
      * @param clazz   the component implementation class
      * @param type    the incomplete component type associated with the implementation class
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    void visitClass(Class<?> clazz,
+    void visitClass(CompositeComponent<?> parent,
+                    Class<?> clazz,
                     PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                     DeploymentContext context) throws ProcessingException;
 
     /**
      * A callback received as the component implementation class hierarchy is evaluated
      *
+     * @param parent  the parent composite
      * @param clazz   the superclass in the component implmentation's class hierarchy
      * @param type    the incomplete component type associated with the implementation class
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    void visitSuperClass(Class<?> clazz,
+    void visitSuperClass(CompositeComponent<?> parent,
+                         Class<?> clazz,
                          PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                          DeploymentContext context) throws ProcessingException;
 
     /**
      * A callback received as the component implementation's public and protected methods are evaluated
      *
+     * @param parent  the parent composite
      * @param method  the current public or protected method being evaluated
      * @param type    the incomplete component type associated with the implementation class
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    void visitMethod(Method method,
+    void visitMethod(CompositeComponent<?> parent,
+                     Method method,
                      PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                      DeploymentContext context) throws ProcessingException;
 
@@ -72,12 +79,14 @@ public interface ImplementationProcessor {
      * evaluated. If an implementation contains more than one constructor, the constructor passed to the callback will
      * be chosen according to the algorithm described in the SCA Java Client and Implementation Model Specification.
      *
+     * @param parent      the parent composite
      * @param constructor the constructor used for instantiating component implementation instances
      * @param type        the incomplete component type associated with the implementation class
      * @param context     the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    void visitConstructor(Constructor<?> constructor,
+    void visitConstructor(CompositeComponent<?> parent,
+                          Constructor<?> constructor,
                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                           DeploymentContext context)
         throws ProcessingException;
@@ -85,12 +94,14 @@ public interface ImplementationProcessor {
     /**
      * A callback received as the component implementation's public and protected fields are evaluated
      *
+     * @param parent  the parent composite
      * @param field   the current public or protected field being evaluated
      * @param type    the incomplete component type associated with the implementation class
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    void visitField(Field field,
+    void visitField(CompositeComponent<?> parent,
+                    Field field,
                     PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                     DeploymentContext context) throws ProcessingException;
 
@@ -98,12 +109,14 @@ public interface ImplementationProcessor {
      * The final callback received when all other callbacks during evaluation of the component implementation have been
      * issued
      *
+     * @param parent  the parent composite
      * @param clazz   the component implementation class
      * @param type    the incomplete component type associated with the implementation class
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    void visitEnd(Class<?> clazz,
+    void visitEnd(CompositeComponent<?> parent,
+                  Class<?> clazz,
                   PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                   DeploymentContext context) throws ProcessingException;
 

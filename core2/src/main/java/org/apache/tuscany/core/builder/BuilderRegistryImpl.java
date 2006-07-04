@@ -21,6 +21,9 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Init;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -43,6 +46,7 @@ import org.apache.tuscany.spi.model.Implementation;
  *
  * @version $Rev$ $Date$
  */
+@Scope("MODULE")
 public class BuilderRegistryImpl implements BuilderRegistry {
 
     //protected WireService wireService;
@@ -62,6 +66,10 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         this.scopeRegistry = scopeRegistry;
     }
 
+    @Init(eager = true)
+    public void init() {
+    }
+    
     @Autowire
     public void setScopeRegistry(ScopeRegistry scopeRegistry) {
         this.scopeRegistry = scopeRegistry;

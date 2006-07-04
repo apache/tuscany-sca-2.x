@@ -2,6 +2,7 @@ package org.apache.tuscany.core.implementation.processor;
 
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.component.CompositeComponent;
 
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
@@ -17,7 +18,7 @@ import org.apache.tuscany.core.implementation.ProcessingException;
  */
 public class ScopeProcessor extends ImplementationProcessorSupport {
 
-    public void visitClass(Class<?> clazz,
+    public void visitClass(CompositeComponent<?> parent, Class<?> clazz,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context)
         throws ProcessingException {

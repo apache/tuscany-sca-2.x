@@ -34,6 +34,7 @@ import org.apache.tuscany.spi.loader.StAXElementLoader;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.component.CompositeComponent;
 
 /**
  * The default implementation of a loader registry
@@ -135,7 +136,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <I extends Implementation<?>> void loadComponentType(I implementation,
+    public <I extends Implementation<?>> void loadComponentType(CompositeComponent<?> parent, I implementation,
                                                                 DeploymentContext deploymentContext)
         throws LoaderException {
         Class<I> key = (Class<I>) implementation.getClass();
@@ -143,7 +144,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         if (loader == null) {
             throw new UnsupportedOperationException();
         }
-        loader.load(implementation, deploymentContext);
+        loader.load(null, implementation, deploymentContext);
     }
 
     public static interface Monitor {

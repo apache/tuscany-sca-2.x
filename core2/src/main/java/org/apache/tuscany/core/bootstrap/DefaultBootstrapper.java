@@ -34,6 +34,7 @@ import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
 import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
 import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
 import org.apache.tuscany.core.implementation.processor.ServiceProcessor;
+import org.apache.tuscany.core.implementation.processor.HeuristicPojoProcessor;
 import org.apache.tuscany.core.implementation.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemCompositeBuilder;
@@ -231,6 +232,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         introspectionRegistry.registerProcessor(new PropertyProcessor());
         introspectionRegistry.registerProcessor(new ReferenceProcessor());
         introspectionRegistry.registerProcessor(new ServiceProcessor());
+        introspectionRegistry.registerProcessor(new HeuristicPojoProcessor());
         return introspectionRegistry;
     }
 

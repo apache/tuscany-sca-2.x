@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
@@ -25,12 +27,13 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyNam
  */
 public class ReferenceProcessor extends ImplementationProcessorSupport {
 
-    public void visitMethod(Method method,
+    public void visitMethod(CompositeComponent<?> parent, Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context)
         throws ProcessingException {
         Reference annotation = method.getAnnotation(Reference.class);
-        if (annotation == null) {
+        boolean autowire = method.getAnnotation(Autowire.class) != null;
+        if (annotation == null && !autowire) {
             return;
         }
         if (method.getParameterTypes().length != 1) {
@@ -38,12 +41,18 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
             e.setIdentifier(method.getName());
             throw e;
         }
-        String name = annotation.name();
-        if (name.length() == 0) {
+        String name = null;
+        boolean required = false;
+        if (annotation != null) {
+            if (annotation.name() != null && annotation.name().length() > 0) {
+                name = annotation.name();
+            }
+            required = annotation.required();
+        }
+        if (name == null) {
+            name = method.getName();
             if (method.getName().startsWith("set")) {
                 name = toPropertyName(method.getName());
-            } else {
-                name = method.getName();
             }
         }
         if (type.getReferences().get(name) != null) {
@@ -51,7 +60,9 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         }
         JavaMappedReference reference = new JavaMappedReference();
         reference.setMember(method);
-        reference.setRequired(annotation.required());
+        reference.setAutowire(autowire);
+        reference.setRequired(required);
+        reference.setName(name);
         JavaServiceContract contract = new JavaServiceContract();
         Class<?> interfaceType = method.getParameterTypes()[0];
         String interfaceName = getBaseName(interfaceType);
@@ -61,14 +72,22 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         type.getReferences().put(name, reference);
     }
 
-    public void visitField(Field field,
+    public void visitField(CompositeComponent<?> parent, Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
         Reference annotation = field.getAnnotation(Reference.class);
-        if (annotation == null) {
+        boolean autowire = field.getAnnotation(Autowire.class) != null;
+        if (annotation == null && !autowire) {
             return;
         }
-        String name = annotation.name();
+        String name = field.getName();
+        boolean required = false;
+        if (annotation != null) {
+            if (annotation.name() != null) {
+                name = annotation.name();
+            }
+            required = annotation.required();
+        }
         if (name.length() == 0) {
             name = field.getName();
         }
@@ -77,7 +96,8 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         }
         JavaMappedReference reference = new JavaMappedReference();
         reference.setMember(field);
-        reference.setRequired(annotation.required());
+        reference.setRequired(required);
+        reference.setAutowire(autowire);
         JavaServiceContract contract = new JavaServiceContract();
         Class<?> interfaceType = field.getType();
         String interfaceName = getBaseName(interfaceType);
