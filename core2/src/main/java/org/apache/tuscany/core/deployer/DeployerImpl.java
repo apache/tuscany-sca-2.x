@@ -96,7 +96,7 @@ public class DeployerImpl implements Deployer {
     protected <I extends Implementation<?>> void load(CompositeComponent<?> parent,
                                                       ComponentDefinition<I> componentDefinition,
                                                       DeploymentContext deploymentContext) throws LoaderException {
-        loader.loadComponentType(null, componentDefinition.getImplementation(), deploymentContext);
+        loader.loadComponentType(parent, componentDefinition.getImplementation(), deploymentContext);
     }
 
     /**
