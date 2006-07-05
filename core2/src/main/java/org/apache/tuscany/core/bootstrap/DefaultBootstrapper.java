@@ -51,7 +51,6 @@ import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
 import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
 import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
 import org.apache.tuscany.core.implementation.processor.ServiceProcessor;
-import org.apache.tuscany.core.implementation.processor.MonitorProcessor;
 import org.apache.tuscany.core.implementation.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemCompositeBuilder;
