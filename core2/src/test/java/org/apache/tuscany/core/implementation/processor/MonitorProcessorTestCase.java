@@ -18,13 +18,15 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.apache.tuscany.spi.annotation.Monitor;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
 
 import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.injection.MonitorObjectFactory;
+import org.apache.tuscany.core.injection.SingletonObjectFactory;
+
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
@@ -33,26 +35,26 @@ import org.jmock.MockObjectTestCase;
  */
 public class MonitorProcessorTestCase extends MockObjectTestCase {
 
-    private AutowireComponent parent;
+    private MonitorProcessor processor;
+    private Mock monitorFactory;
 
     public void testSetter() throws Exception {
-        MonitorProcessor processor = new MonitorProcessor();
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Method method = Foo.class.getMethod("setMonitor", Foo.class);
-        processor.visitMethod(parent, method, type, null);
+        monitorFactory.expects(once()).method("getMonitor").with(eq(Foo.class)).will(returnValue(null));
+        processor.visitMethod(null, method, type, null);
         Map<String, JavaMappedProperty<?>> properties = type.getProperties();
-        assertTrue(properties.get("monitor").getDefaultValueFactory() instanceof MonitorObjectFactory);
+        assertTrue(properties.get("monitor").getDefaultValueFactory() instanceof SingletonObjectFactory);
     }
 
 
     public void testBadSetter() throws Exception {
-        MonitorProcessor processor = new MonitorProcessor();
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Method method = BadMonitor.class.getMethod("setMonitor");
         try {
-            processor.visitMethod(parent, method, type, null);
+            processor.visitMethod(null, method, type, null);
             fail();
         } catch (IllegalPropertyException e) {
             // expected
@@ -60,19 +62,19 @@ public class MonitorProcessorTestCase extends MockObjectTestCase {
     }
 
     public void testField() throws Exception {
-        MonitorProcessor processor = new MonitorProcessor();
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Field field = Foo.class.getDeclaredField("bar");
-        processor.visitField(parent, field, type, null);
+        monitorFactory.expects(once()).method("getMonitor").with(eq(Foo.class)).will(returnValue(null));
+        processor.visitField(null, field, type, null);
         Map<String, JavaMappedProperty<?>> properties = type.getProperties();
-        assertTrue(properties.get("bar").getDefaultValueFactory() instanceof MonitorObjectFactory);
+        assertTrue(properties.get("bar").getDefaultValueFactory() instanceof SingletonObjectFactory);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        Mock mock = mock(AutowireComponent.class);
-        parent = (AutowireComponent) mock.proxy();
+        monitorFactory = mock(MonitorFactory.class);
+        processor = new MonitorProcessor((MonitorFactory) monitorFactory.proxy());
     }
 
     private class Foo {

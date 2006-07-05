@@ -16,6 +16,8 @@
  */
 package org.apache.tuscany.core.loader;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -26,6 +28,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.InvalidReferenceException;
 import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ModelObject;
@@ -57,6 +60,7 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
         throws XMLStreamException, LoaderException {
         assert AssemblyConstants.SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
+        String target = reader.getAttributeValue(null, "target");
         Binding binding = null;
         ServiceContract serviceContract = null;
         while (true) {
@@ -72,8 +76,22 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                     break;
                 case END_ELEMENT:
                     if (binding != null) {
+                        if (target == null) {
+                            InvalidReferenceException e = new InvalidReferenceException("No target for service ");
+                            e.setIdentifier(name);
+                            throw e;
+                        }
+                        URI targetURI;
+                        try {
+                            targetURI = new URI(target);
+                        } catch (URISyntaxException e) {
+                            InvalidReferenceException ire = new InvalidReferenceException(target);
+                            ire.setIdentifier(name);
+                            throw ire;
+                        }
+
                         //FIXME need a way to specify "remotable" on a service
-                        return new BoundServiceDefinition<Binding>(name, serviceContract, false, binding, null);
+                        return new BoundServiceDefinition<Binding>(name, serviceContract, false, binding, targetURI);
                     } else {
                         //FIXME need a way to specify "remotable" on a service
                         return new ServiceDefinition(name, serviceContract, false);

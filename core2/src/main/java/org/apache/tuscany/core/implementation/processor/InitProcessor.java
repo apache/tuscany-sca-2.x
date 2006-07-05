@@ -14,6 +14,7 @@
 package org.apache.tuscany.core.implementation.processor;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import org.osoa.sca.annotations.Init;
 
@@ -51,7 +52,9 @@ public class InitProcessor extends ImplementationProcessorSupport {
         if (type.getInitMethod() != null) {
             throw new DuplicateInitException("More than one initializer found on implementaton");
         }
-        method.setAccessible(true);
+        if (Modifier.isProtected(method.getModifiers())) {
+            method.setAccessible(true);
+        }
         type.setEagerInit(annotation.eager());
         type.setInitMethod(method);
     }

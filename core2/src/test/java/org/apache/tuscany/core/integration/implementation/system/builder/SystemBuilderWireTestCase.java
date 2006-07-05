@@ -136,11 +136,12 @@ public class SystemBuilderWireTestCase extends TestCase {
         ComponentDefinition<SystemImplementation> componentDefinition = MockComponentFactory.createTarget();
 
         AtomicComponent sourceComponent = builder.build(parent, componentDefinition, deploymentContext);
+        parent.register(sourceComponent);
+
         Service service = bindingBuilder.build(parent, serviceDefinition, deploymentContext);
+        parent.register(service);
 
         connector.connect(service.getInboundWire(), service.getOutboundWire(), true);
-        parent.register(sourceComponent);
-        parent.register(service);
 
         connector.connect(sourceComponent);
         String serviceName = service.getOutboundWire().getTargetName().getPortName();

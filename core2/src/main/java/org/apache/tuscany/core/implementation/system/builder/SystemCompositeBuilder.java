@@ -66,16 +66,16 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
         CompositeComponentType<?, ?, ?> componentType = impl.getComponentType();
         SystemCompositeComponent<?> context =
             new SystemCompositeComponentImpl(componentDefinition.getName(), parent, getAutowireContext(parent));
+        for (ComponentDefinition<? extends Implementation> childComponentDefinition
+            : componentType.getComponents().values()) {
+            context.register(builderRegistry.build(context, childComponentDefinition, deploymentContext));
+        }
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             if (serviceDefinition instanceof BoundServiceDefinition) {
                 context.register(builderRegistry.build(context,
                     (BoundServiceDefinition<? extends Binding>) serviceDefinition,
                     deploymentContext));
             }
-        }
-        for (ComponentDefinition<? extends Implementation> childComponentDefinition
-            : componentType.getComponents().values()) {
-            context.register(builderRegistry.build(context, childComponentDefinition, deploymentContext));
         }
         return context;
     }

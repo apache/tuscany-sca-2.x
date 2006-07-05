@@ -18,6 +18,7 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -58,6 +59,8 @@ public class ConnectorImpl implements Connector {
             for (SCAObject<?> child : (List<SCAObject<?>>) composite.getChildren()) {
                 connect(child);
             }
+        } else if (source instanceof Service) {
+            Service<T> service = (Service<T>) source;
         } else {
             BuilderConfigException e = new BuilderConfigException("Invalid source context type");
             e.setIdentifier(source.getName());

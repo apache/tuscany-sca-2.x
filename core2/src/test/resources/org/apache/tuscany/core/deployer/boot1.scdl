@@ -17,7 +17,7 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/0.9"
            xmlns:system="http://tuscany.apache.org/xmlns/system/0.9"
            name="simple">
-    <service name="service">
+    <service name="service" target="component">
         <interface.java interface="org.apache.tuscany.core.mock.component.BasicInterface"/>
         <system:binding.system/>
     </service>

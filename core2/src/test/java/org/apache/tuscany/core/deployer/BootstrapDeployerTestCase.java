@@ -20,8 +20,19 @@ import java.net.URL;
 import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
+
+import org.apache.tuscany.core.bootstrap.Bootstrapper;
+import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
+import org.apache.tuscany.core.implementation.system.model.SystemBinding;
+import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
+import org.apache.tuscany.core.mock.component.BasicInterface;
+import org.apache.tuscany.core.monitor.NullMonitorFactory;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -30,15 +41,6 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-
-import org.apache.tuscany.core.bootstrap.Bootstrapper;
-import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
-import org.apache.tuscany.core.implementation.system.model.SystemBinding;
-import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
-import org.apache.tuscany.core.mock.component.BasicInterface;
-import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
 
 /**
  * Verifies the default boostrap deployer
@@ -50,6 +52,7 @@ public class BootstrapDeployerTestCase extends MockObjectTestCase {
     private DeploymentContext deploymentContext;
     private ComponentDefinition<SystemCompositeImplementation> componentDefinition;
     private SystemCompositeImplementation implementation;
+    private Mock parent;
 
     public void testBoot1Load() throws LoaderException {
         Mock mock = mock(CompositeComponent.class);
@@ -83,6 +86,34 @@ public class BootstrapDeployerTestCase extends MockObjectTestCase {
         assertNotNull(componentType); // details checked in SystemComponentTypeLoaderTestCase
     }
 
+    public void testBoot2Deployment() throws LoaderException {
+        URL scdl = BootstrapDeployerTestCase.class.getResource("boot2.scdl");
+        implementation.setScdlLocation(scdl);
+        parent.expects(once()).method("register").withAnyArguments();
+
+        // load the boot2 file using the bootstrap deployer
+        componentDefinition.setName("newDeployer");
+        Component<?> component = deployer.deploy((CompositeComponent<?>) parent.proxy(), componentDefinition);
+        assertNotNull(component);
+        parent.verify();
+        component.start();
+        Deployer newDeployer = (Deployer) component.getServiceInstance("deployer");
+        assertNotNull(newDeployer);
+
+/*      // FIXME
+        // load the boot2 file using the newly loaded deployer
+        parent.reset();
+        parent.expects(once()).method("register").withAnyArguments();
+        componentDefinition.setName("newDeployer2");
+        component = newDeployer.deploy((CompositeComponent<?>) parent.proxy(), componentDefinition);
+        assertNotNull(component);
+        parent.verify();
+        component.start();
+        Deployer newDeployer2 = (Deployer) component.getServiceInstance("deployer");
+        assertNotNull(newDeployer2);
+*/
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
@@ -92,5 +123,6 @@ public class BootstrapDeployerTestCase extends MockObjectTestCase {
         implementation = new SystemCompositeImplementation();
         implementation.setClassLoader(getClass().getClassLoader());
         componentDefinition = new ComponentDefinition<SystemCompositeImplementation>(implementation);
+        parent = mock(CompositeComponent.class);
     }
 }

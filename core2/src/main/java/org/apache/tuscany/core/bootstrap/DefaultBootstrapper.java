@@ -51,6 +51,7 @@ import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
 import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
 import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
 import org.apache.tuscany.core.implementation.processor.ServiceProcessor;
+import org.apache.tuscany.core.implementation.processor.MonitorProcessor;
 import org.apache.tuscany.core.implementation.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemCompositeBuilder;
@@ -219,10 +220,10 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
         introspectionRegistry.registerProcessor(new InitProcessor());
         introspectionRegistry.registerProcessor(new ScopeProcessor());
         introspectionRegistry.registerProcessor(new PropertyProcessor());
-        introspectionRegistry.registerProcessor(new MonitorProcessor());
         introspectionRegistry.registerProcessor(new ReferenceProcessor());
         introspectionRegistry.registerProcessor(new ServiceProcessor());
         introspectionRegistry.registerProcessor(new HeuristicPojoProcessor());
+        introspectionRegistry.registerProcessor(new MonitorProcessor(monitorFactory));
         return introspectionRegistry;
     }
 

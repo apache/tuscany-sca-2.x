@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeNotFoundException;
 import org.apache.tuscany.spi.component.ScopeRegistry;
@@ -13,18 +14,27 @@ import org.apache.tuscany.spi.model.Scope;
 /**
  * The default implementation of a scope registry
  *
- * @version $$Rev: 415032 $$ $$Date: 2006-06-17 10:28:07 -0700 (Sat, 17 Jun 2006) $$
+ * @version $Rev: 415032 $ $Date: 2006-06-17 10:28:07 -0700 (Sat, 17 Jun 2006) $
  */
 public class ScopeRegistryImpl implements ScopeRegistry {
 
-    private final Map<Scope, ScopeContainer> scopeCache;
-    private final Map<Scope, ObjectFactory<? extends ScopeContainer>> factoryCache;
-    private final WorkContext workContext;
+    private final Map<Scope, ScopeContainer> scopeCache =
+            new ConcurrentHashMap<Scope, ScopeContainer>();
+    private final Map<Scope, ObjectFactory<? extends ScopeContainer>> factoryCache =
+            new ConcurrentHashMap<Scope, ObjectFactory<? extends ScopeContainer>>();
+    private WorkContext workContext;
 
     public ScopeRegistryImpl(WorkContext workContext) {
         assert workContext != null;
-        scopeCache = new ConcurrentHashMap<Scope, ScopeContainer>();
-        factoryCache = new ConcurrentHashMap<Scope, ObjectFactory<? extends ScopeContainer>>();
+        this.workContext = workContext;
+    }
+
+    // TODO remove and replace with CDI
+    public ScopeRegistryImpl() {
+    }
+
+    @Autowire
+    public void setWorkContext(WorkContext workContext) {
         this.workContext = workContext;
     }
 

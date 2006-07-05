@@ -1,84 +1,62 @@
 /**
  *
- * Copyright 2006 The Apache Software Foundation or its licensors, as applicable.
+ * Copyright 2006 The Apache Software Foundation or its licensors as applicable
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
+import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.spi.annotation.Monitor;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-
-import org.apache.tuscany.core.component.AutowireComponent;
-import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.ProcessingException;
-import org.apache.tuscany.core.injection.MonitorObjectFactory;
-import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
 
 /**
- * Processes the {@link Monitor} annotation, creating a property on the component type
+ * Processes an {@link @Monitor} annotation, updating the component type with corresponding
+ * {@link org.apache.tuscany.core.implementation.JavaMappedProperty}
  *
  * @version $Rev$ $Date$
  */
-public class MonitorProcessor extends ImplementationProcessorSupport {
+public class MonitorProcessor extends AbstractPropertyProcessor<Monitor>{
+    private MonitorFactory monitorFactory;
 
-    public void visitMethod(CompositeComponent<?> parent, Method method,
-                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                            DeploymentContext context) throws IllegalPropertyException {
-        Monitor annotation = method.getAnnotation(Monitor.class);
-        if (annotation == null) {
-            return;
-        }
-        assert parent instanceof AutowireComponent;
-        if (method.getParameterTypes().length != 1) {
-            IllegalPropertyException e =
-                new IllegalPropertyException("Monitor setters must take exactly one parameter");
-            e.setIdentifier(method.getName());
-            throw e;
-        }
-        AutowireComponent autowireComponent = (AutowireComponent) parent;
-        String name = toPropertyName(method.getName());
-        Class<?> monitorType = method.getParameterTypes()[0];
-        JavaMappedProperty property = new JavaMappedProperty();
-        property.setName(name);
-        property.setMember(method);
-        property.setJavaType(monitorType);
-        property.setDefaultValueFactory(new MonitorObjectFactory(autowireComponent, monitorType));
-        type.getProperties().put(name, property);
+    public MonitorProcessor(MonitorFactory monitorFactory) {
+        super(Monitor.class);
+        this.monitorFactory = monitorFactory;
     }
 
-    public void visitField(CompositeComponent<?> parent, Field field,
-                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                           DeploymentContext context) throws ProcessingException {
+    // TODO replace with CDI
+    public MonitorProcessor() {
+        super(Monitor.class);
+    }
 
-        Monitor annotation = field.getAnnotation(Monitor.class);
-        if (annotation == null) {
-            return;
-        }
-        assert parent instanceof AutowireComponent;
-        AutowireComponent autowireComponent = (AutowireComponent) parent;
-        String name = field.getName();
-        Class<?> monitorType = field.getType();
-        JavaMappedProperty property = new JavaMappedProperty();
-        property.setName(name);
-        property.setMember(field);
-        property.setJavaType(monitorType);
-        property.setDefaultValueFactory(new MonitorObjectFactory(autowireComponent, monitorType));
-        type.getProperties().put(name, property);
+    @Autowire
+    public void setMonitorFactory(MonitorFactory monitorFactory) {
+        this.monitorFactory = monitorFactory;
+    }
+
+    protected String getName(Monitor annotation) {
+        return null;
+    }
+
+    protected <T> void initProperty(JavaMappedProperty<T> property,
+                                    Monitor annotation,
+                                    CompositeComponent<?> parent,
+                                    DeploymentContext context) {
+        Class<T> javaType = property.getJavaType();
+        property.setDefaultValueFactory(new SingletonObjectFactory<T>(monitorFactory.getMonitor(javaType)));
     }
 }

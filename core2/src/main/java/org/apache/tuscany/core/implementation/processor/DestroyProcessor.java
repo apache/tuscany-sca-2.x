@@ -14,6 +14,7 @@
 package org.apache.tuscany.core.implementation.processor;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import org.osoa.sca.annotations.Destroy;
 
@@ -51,7 +52,9 @@ public class DestroyProcessor extends ImplementationProcessorSupport {
         if (type.getDestroyMethod() != null) {
             throw new DuplicateDestructorException("More than one destructor found on implementation");
         }
-        method.setAccessible(true);
+        if (Modifier.isProtected(method.getModifiers())) {
+            method.setAccessible(true);
+        }
         type.setDestroyMethod(method);
     }
 }
