@@ -1,5 +1,18 @@
 package org.apache.tuscany.core.integration.implementation.java.builder;
 
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
+
+import org.apache.tuscany.core.component.AutowireComponent;
+import org.apache.tuscany.core.component.WorkContextImpl;
+import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
+import org.apache.tuscany.core.component.scope.StatelessScopeObjectFactory;
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
+import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
+import org.apache.tuscany.core.implementation.java.JavaImplementation;
+import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeRegistry;
@@ -8,18 +21,6 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-
-import org.apache.tuscany.core.component.AutowireComponent;
-import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
-import org.apache.tuscany.core.component.scope.StatelessScopeObjectFactory;
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
-import org.apache.tuscany.core.implementation.java.JavaImplementation;
-import org.apache.tuscany.core.injection.SingletonObjectFactory;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
 
 /**
  * Verifies that the system builder handles configured properties correctly
@@ -54,7 +55,7 @@ public class JavaBuilderPropertyTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        deploymentContext = new DeploymentContext(null, null, null);
+        deploymentContext = new RootDeploymentContext(null, null, null);
         Mock mock = mock(AutowireComponent.class);
         parent = (CompositeComponent<?>) mock.proxy();
         registry = new ScopeRegistryImpl(new WorkContextImpl());

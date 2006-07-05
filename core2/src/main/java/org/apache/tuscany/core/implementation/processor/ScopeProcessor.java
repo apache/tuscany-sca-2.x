@@ -1,9 +1,5 @@
 package org.apache.tuscany.core.implementation.processor;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.Scope;
-
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
@@ -11,6 +7,9 @@ import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.model.Scope;
 
 /**
  * Processes the {@link Scope} annotation and updates the component type with the corresponding implmentation scope

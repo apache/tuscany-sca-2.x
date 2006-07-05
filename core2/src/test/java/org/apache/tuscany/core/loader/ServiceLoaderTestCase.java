@@ -16,7 +16,6 @@
  */
 package org.apache.tuscany.core.loader;
 
-import java.net.URI;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
@@ -25,6 +24,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -83,6 +83,6 @@ public class ServiceLoaderTestCase extends MockObjectTestCase {
         mockReader = mock(XMLStreamReader.class);
         mockRegistry = mock(LoaderRegistry.class);
         loader.setRegistry((LoaderRegistry) mockRegistry.proxy());
-        deploymentContext = new DeploymentContext(null, null, null);
+        deploymentContext = new RootDeploymentContext(null, null, null);
     }
 }

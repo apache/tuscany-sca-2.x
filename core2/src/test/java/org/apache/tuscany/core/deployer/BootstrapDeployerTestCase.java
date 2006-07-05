@@ -31,8 +31,8 @@ import org.apache.tuscany.core.mock.component.BasicInterface;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -119,7 +119,7 @@ public class BootstrapDeployerTestCase extends MockObjectTestCase {
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
         Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), xmlFactory);
         deployer = (DeployerImpl) bootstrapper.createDeployer();
-        deploymentContext = new DeploymentContext(null, xmlFactory, null);
+        deploymentContext = new RootDeploymentContext(null, xmlFactory, null);
         implementation = new SystemCompositeImplementation();
         implementation.setClassLoader(getClass().getClassLoader());
         componentDefinition = new ComponentDefinition<SystemCompositeImplementation>(implementation);

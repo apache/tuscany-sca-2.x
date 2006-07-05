@@ -28,9 +28,6 @@ import java.util.Set;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
@@ -44,6 +41,8 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllPublicA
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * Heuristically evaluates an un-annotated Java implementation type to determine services, references, and properties

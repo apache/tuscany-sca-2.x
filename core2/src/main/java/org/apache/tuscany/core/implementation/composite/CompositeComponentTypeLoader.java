@@ -1,10 +1,9 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import java.net.URL;
-import javax.xml.stream.XMLInputFactory;
 
+import org.apache.tuscany.core.deployer.ChildDeploymentContext;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -35,9 +34,7 @@ public class CompositeComponentTypeLoader extends ComponentTypeLoaderExtension<C
         URL scdlLocation = implementation.getScdlLocation();
         //FIXME classloader below
         ClassLoader cl = implementation.getClass().getClassLoader();
-        XMLInputFactory xmlFactory = deploymentContext.getXmlFactory();
-        ScopeContainer moduleScope = deploymentContext.getModuleScope();
-        deploymentContext = new DeploymentContext(cl, xmlFactory, moduleScope);
+        deploymentContext = new ChildDeploymentContext(deploymentContext, cl);
         CompositeComponentType componentType = loadFromSidefile(parent, scdlLocation, deploymentContext);
         implementation.setComponentType(componentType);
     }

@@ -3,26 +3,27 @@ package org.apache.tuscany.core.implementation.java;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
+import org.jmock.core.Invocation;
+import org.jmock.core.Stub;
+
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaServiceContract;
+import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
+import org.apache.tuscany.core.implementation.java.mock.components.Source;
+import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
+import org.apache.tuscany.core.implementation.java.mock.components.Target;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-
-import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
-import org.apache.tuscany.core.implementation.java.mock.components.Source;
-import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
-import org.apache.tuscany.core.implementation.java.mock.components.Target;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
-import org.jmock.core.Invocation;
-import org.jmock.core.Stub;
 
 /**
  * @version $$Rev: 415162 $$ $$Date: 2006-06-18 11:19:43 -0700 (Sun, 18 Jun 2006) $$
@@ -66,7 +67,7 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        deploymentContext = new DeploymentContext(null, null, createMock());
+        deploymentContext = new RootDeploymentContext(null, null, createMock());
     }
 
     private ScopeContainer createMock() {

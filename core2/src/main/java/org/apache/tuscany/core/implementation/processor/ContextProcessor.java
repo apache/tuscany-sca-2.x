@@ -20,9 +20,6 @@ import org.osoa.sca.CompositeContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.annotations.Context;
 
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.component.CompositeComponent;
-
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
@@ -30,6 +27,8 @@ import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * Processes {@link @Context} annotations on a component implementation and adds a {@link JavaMappedProperty} to the

@@ -4,14 +4,14 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
+
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.component.CompositeComponent;
-
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
 
 /**
  * @version $Rev$ $Date$

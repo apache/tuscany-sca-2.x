@@ -17,14 +17,15 @@
 package org.apache.tuscany.databinding.sdo;
 
 import java.io.StringReader;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLInputFactory;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.loader.LoaderException;
 
 /**
  * @version $Rev$ $Date$
@@ -55,7 +56,7 @@ public class ImportSDOLoaderTestCase extends TestCase {
         super.setUp();
         loader = new ImportSDOLoader();
         xmlFactory = XMLInputFactory.newInstance();
-        deploymentContext = new DeploymentContext(getClass().getClassLoader(), xmlFactory, null);
+        deploymentContext = new RootDeploymentContext(getClass().getClassLoader(), xmlFactory, null);
     }
 
     protected XMLStreamReader getReader(String xml) throws XMLStreamException {

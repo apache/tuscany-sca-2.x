@@ -1,15 +1,15 @@
 package org.apache.tuscany.container.spring;
 
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.loader.ComponentTypeLoader;
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.component.CompositeComponent;
-
-import org.apache.tuscany.container.spring.config.SCABeanDefinitionReader;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.Resource;
+
+import org.apache.tuscany.container.spring.config.SCABeanDefinitionReader;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.loader.ComponentTypeLoader;
+import org.apache.tuscany.spi.model.CompositeComponentType;
 
 /**
  * Loads a component type for a Spring <code>ApplicationContext</code>. The implementation creates a new

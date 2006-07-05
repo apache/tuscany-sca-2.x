@@ -83,7 +83,7 @@ public class DeployerImpl implements Deployer {
                                                              ComponentDefinition<I> componentDefinition)
         throws LoaderException {
         ScopeContainer moduleScope = new ModuleScopeContainer();
-        DeploymentContext deploymentContext = new DeploymentContext(null, xmlFactory, moduleScope);
+        DeploymentContext deploymentContext = new RootDeploymentContext(null, xmlFactory, moduleScope);
         load(parent, componentDefinition, deploymentContext);
         Component<?> component = (Component<?>) build(parent, componentDefinition, deploymentContext);
         if (component instanceof CompositeComponent) {

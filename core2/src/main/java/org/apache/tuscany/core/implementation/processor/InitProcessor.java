@@ -18,15 +18,14 @@ import java.lang.reflect.Modifier;
 
 import org.osoa.sca.annotations.Init;
 
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.component.CompositeComponent;
-
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * Processes the {@link @Init} annotation on a component implementation and updates the component type with the

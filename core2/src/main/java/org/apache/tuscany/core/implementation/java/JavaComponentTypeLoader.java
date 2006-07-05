@@ -20,9 +20,9 @@ import java.net.URL;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 import org.apache.tuscany.core.implementation.IntrospectionRegistry;
 import org.apache.tuscany.core.implementation.Introspector;

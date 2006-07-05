@@ -16,16 +16,16 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import java.lang.reflect.Method;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
-import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
-import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
@@ -112,10 +112,10 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
 
     protected abstract String getName(A annotation);
 
-    protected <T> void initProperty(JavaMappedProperty<T> property, 
-                                A annotation,
-                                CompositeComponent<?> parent,
-                                DeploymentContext context) {
+    protected <T> void initProperty(JavaMappedProperty<T> property,
+                                    A annotation,
+                                    CompositeComponent<?> parent,
+                                    DeploymentContext context) {
     }
 
     protected <T> JavaMappedProperty<T> createProperty(String name, Class<T> javaType, Member member) {

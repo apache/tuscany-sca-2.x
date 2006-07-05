@@ -28,11 +28,11 @@ import commonj.sdo.helper.XSDHelper;
 
 import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.sdo.util.SDOUtil;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * Loader that handles &lt;import.sdo&gt; elements.

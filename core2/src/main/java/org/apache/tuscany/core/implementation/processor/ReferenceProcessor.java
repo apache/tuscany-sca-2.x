@@ -5,10 +5,6 @@ import java.lang.reflect.Method;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
@@ -18,6 +14,9 @@ import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
+import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * Processes an {@link @Reference} annotation, updating the component type with corresponding {@link

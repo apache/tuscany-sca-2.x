@@ -17,8 +17,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * A convenience class for annotation processors which alleviates the need to implement unused callbacks

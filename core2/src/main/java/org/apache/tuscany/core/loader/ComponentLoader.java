@@ -25,8 +25,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.InvalidReferenceException;

@@ -20,14 +20,15 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
+
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.StAXElementLoader;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.ModelObject;
-
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
 
 /**
  * Verifies the default loader registry
@@ -80,7 +81,7 @@ public class StAXLoaderRegistryImplTestCase extends MockObjectTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         name = new QName("http://mock", "test");
-        deploymentContext = new DeploymentContext(null, null, null);
+        deploymentContext = new RootDeploymentContext(null, null, null);
         registry = new LoaderRegistryImpl();
         mockMonitor = mock(LoaderRegistryImpl.Monitor.class);
         registry.setMonitor((LoaderRegistryImpl.Monitor) mockMonitor.proxy());

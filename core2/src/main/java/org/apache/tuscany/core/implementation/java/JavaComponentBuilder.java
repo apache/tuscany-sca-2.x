@@ -17,6 +17,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.core.implementation.PojoConfiguration;
+import org.apache.tuscany.core.injection.FieldInjector;
+import org.apache.tuscany.core.injection.MethodEventInvoker;
+import org.apache.tuscany.core.injection.MethodInjector;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -26,16 +35,6 @@ import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.injection.FieldInjector;
-import org.apache.tuscany.core.injection.MethodInjector;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
  * Builds a Java-based atomic context from a component definition

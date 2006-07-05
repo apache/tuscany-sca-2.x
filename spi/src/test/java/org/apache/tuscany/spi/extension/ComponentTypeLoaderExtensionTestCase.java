@@ -1,13 +1,13 @@
 package org.apache.tuscany.spi.extension;
 
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
+
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.component.CompositeComponent;
-
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
 
 /**
  * @version $Rev$ $Date$

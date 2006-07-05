@@ -17,9 +17,6 @@ import java.util.Set;
 
 import org.osoa.sca.annotations.Remotable;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
@@ -28,6 +25,8 @@ import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.createService;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * Processes an {@link org.osoa.sca.annotations.Service} annotation and updates the component type with corresponding

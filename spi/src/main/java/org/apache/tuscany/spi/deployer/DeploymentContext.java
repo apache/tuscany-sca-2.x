@@ -21,53 +21,38 @@ import javax.xml.stream.XMLInputFactory;
 import org.apache.tuscany.spi.component.ScopeContainer;
 
 /**
- * An holder that can be used during the load process to store information that is not part of the logical assembly
+ * A holder that can be used during the load process to store information that is not part of the logical assembly
  * model. This should be regarded as transient and references to this context should not be stored inside the model.
  *
- * @version $Rev$ $Date$
+ * $Rev$ $Date$
  */
-public class DeploymentContext {
-    private final ClassLoader classLoader;
-    private final XMLInputFactory xmlFactory;
-    private final ScopeContainer moduleScope;
-
+public interface DeploymentContext {
     /**
-     * Constructor specifying the loader for application resources.
+     * Returns the parent of this deployment context.
+     * Will be null for the context created at the root of a deployment.
      *
-     * @param classLoader the loader for application resources
-     * @param xmlFactory  a factory that can be used to obtain an StAX XMLStreamReader
-     * @param moduleScope the scope context representing this deployment's MODULE scope
+     * @return the parent of this deployment context; may be null
      */
-    public DeploymentContext(ClassLoader classLoader, XMLInputFactory xmlFactory, ScopeContainer moduleScope) {
-        this.classLoader = classLoader;
-        this.xmlFactory = xmlFactory;
-        this.moduleScope = moduleScope;
-    }
+    DeploymentContext getParent();
 
     /**
      * Returns a class loader that can be used to load application resources.
      *
      * @return a class loader that can be used to load application resources
      */
-    public ClassLoader getClassLoader() {
-        return classLoader;
-    }
+    ClassLoader getClassLoader();
 
     /**
      * Returns a factory that can be used to obtain an StAX XMLStreamReader.
      *
      * @return a factory that can be used to obtain an StAX XMLStreamReader
      */
-    public XMLInputFactory getXmlFactory() {
-        return xmlFactory;
-    }
+    XMLInputFactory getXmlFactory();
 
     /**
      * Returns the ScopeContainer for the MODULE scope that will be associated with this deployment unit.
      *
      * @return the ScopeContainer for the MODULE scope that will be associated with this deployment unit
      */
-    public ScopeContainer getModuleScope() {
-        return moduleScope;
-    }
+    ScopeContainer getModuleScope();
 }
