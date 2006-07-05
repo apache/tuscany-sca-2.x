@@ -21,6 +21,7 @@ import javax.xml.stream.XMLInputFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
@@ -29,6 +30,7 @@ import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.Loader;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 
@@ -56,12 +58,19 @@ public class DeployerImpl implements Deployer {
     }
 
     @Autowire
-    public void setLoader(Loader loader) {
+    public void setXmlFactory(XMLInputFactory xmlFactory) {
+        this.xmlFactory = xmlFactory;
+    }
+
+    //FIXME allow autowire to register multiple service types
+    @Autowire
+    public void setLoader(LoaderRegistry loader) {
         this.loader = loader;
     }
 
+    //FIXME allow autowire to register multiple service types
     @Autowire
-    public void setBuilder(Builder builder) {
+    public void setBuilder(BuilderRegistry builder) {
         this.builder = builder;
     }
 

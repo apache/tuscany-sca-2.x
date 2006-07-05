@@ -25,6 +25,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
@@ -67,13 +68,14 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         return AssemblyConstants.COMPONENT;
     }
 
-    public ComponentDefinition<?> load(XMLStreamReader reader,
+    public ComponentDefinition<?> load(CompositeComponent parent,
+                                       XMLStreamReader reader,
                                        DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         assert AssemblyConstants.COMPONENT.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         reader.nextTag();
-        ModelObject o = registry.load(reader, deploymentContext);
+        ModelObject o = registry.load(parent, reader, deploymentContext);
         if (!(o instanceof Implementation)) {
             MissingImplementationException e = new MissingImplementationException();
             e.setIdentifier(name);
@@ -82,7 +84,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         Implementation<?> impl = (Implementation<?>) o;
         ComponentDefinition<?> componentDefinition = new ComponentDefinition<Implementation<?>>(impl);
         componentDefinition.setName(name);
-        registry.loadComponentType(null, impl, deploymentContext);
+        registry.loadComponentType(parent, impl, deploymentContext);
 
         try {
             while (true) {

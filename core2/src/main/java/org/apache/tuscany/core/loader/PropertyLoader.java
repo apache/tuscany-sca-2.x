@@ -20,6 +20,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -45,7 +46,8 @@ public class PropertyLoader extends LoaderExtension<Property> {
         return PROPERTY;
     }
 
-    public Property<?> load(XMLStreamReader reader, DeploymentContext ctx) throws XMLStreamException, LoaderException {
+    public Property<?> load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext ctx)
+        throws XMLStreamException, LoaderException {
         assert PROPERTY.equals(reader.getName());
         Property<?> property = new Property();
         property.setName(reader.getAttributeValue(null, "name"));

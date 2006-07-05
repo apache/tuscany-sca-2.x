@@ -1,8 +1,8 @@
 package org.apache.tuscany.core.implementation.processor;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.component.CompositeComponent;
 
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
@@ -10,6 +10,7 @@ import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
+import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
 
 /**
  * Processes the {@link Scope} annotation and updates the component type with the corresponding implmentation scope
@@ -24,7 +25,12 @@ public class ScopeProcessor extends ImplementationProcessorSupport {
         throws ProcessingException {
         org.osoa.sca.annotations.Scope annotation = clazz.getAnnotation(org.osoa.sca.annotations.Scope.class);
         if (annotation == null) {
-            type.setLifecycleScope(Scope.STATELESS);
+            // TODO do this with a specialization of a system POJO
+            if (SystemCompositeComponent.class.isAssignableFrom(parent.getClass())) {
+                type.setLifecycleScope(Scope.MODULE);
+            } else {
+                type.setLifecycleScope(Scope.STATELESS);
+            }
             return;
         }
         //FIXME deal with eager init

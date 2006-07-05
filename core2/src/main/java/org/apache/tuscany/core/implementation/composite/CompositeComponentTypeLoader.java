@@ -1,20 +1,4 @@
-/**
- *
- * Copyright 2006 The Apache Software Foundation or its licensors as applicable
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
-package org.apache.tuscany.core.implementation.system.loader;
+package org.apache.tuscany.core.implementation.composite;
 
 import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
@@ -26,31 +10,31 @@ import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.CompositeComponentType;
-
-import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
+import org.apache.tuscany.spi.model.CompositeImplementation;
 
 /**
- * Loads a system composite component type
+ * Loads a composite component type
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 418879 $ $Date: 2006-07-03 17:06:26 -0700 (Mon, 03 Jul 2006) $
  */
-public class SystemCompositeComponentTypeLoader extends ComponentTypeLoaderExtension<SystemCompositeImplementation> {
-    public SystemCompositeComponentTypeLoader() {
+public class CompositeComponentTypeLoader extends ComponentTypeLoaderExtension<CompositeImplementation> {
+    public CompositeComponentTypeLoader() {
     }
 
-    public SystemCompositeComponentTypeLoader(LoaderRegistry loaderRegistry) {
+    public CompositeComponentTypeLoader(LoaderRegistry loaderRegistry) {
         super(loaderRegistry);
     }
 
-    protected Class<SystemCompositeImplementation> getImplementationClass() {
-        return SystemCompositeImplementation.class;
+    protected Class<CompositeImplementation> getImplementationClass() {
+        return CompositeImplementation.class;
     }
 
-    public void load(CompositeComponent<?> parent, SystemCompositeImplementation implementation,
+    public void load(CompositeComponent<?> parent, CompositeImplementation implementation,
                      DeploymentContext deploymentContext)
         throws LoaderException {
         URL scdlLocation = implementation.getScdlLocation();
-        ClassLoader cl = implementation.getClassLoader();
+        //FIXME classloader below
+        ClassLoader cl = implementation.getClass().getClassLoader();
         XMLInputFactory xmlFactory = deploymentContext.getXmlFactory();
         ScopeContainer moduleScope = deploymentContext.getModuleScope();
         deploymentContext = new DeploymentContext(cl, xmlFactory, moduleScope);

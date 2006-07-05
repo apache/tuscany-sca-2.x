@@ -20,6 +20,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+import org.osoa.sca.annotations.Init;
+
 import org.apache.tuscany.spi.monitor.MonitorFactory;
 
 /**
@@ -36,6 +38,10 @@ public class NullMonitorFactory implements MonitorFactory {
             return null;
         }
     };
+
+    @Init(eager = true)
+    public void init() {
+    }
 
     public <T> T getMonitor(Class<T> monitorInterface) {
         /*

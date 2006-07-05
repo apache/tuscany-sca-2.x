@@ -16,11 +16,11 @@
  */
 package org.apache.tuscany.core.implementation.system.loader;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
-import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
@@ -35,16 +35,20 @@ import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.mock.component.BasicInterface;
 import org.apache.tuscany.core.mock.component.BasicInterfaceImpl;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
 
 /**
  * @version $Rev$ $Date$
  */
-public class SystemComponentTypeLoaderTestCase extends TestCase {
+public class SystemComponentTypeLoaderTestCase extends MockObjectTestCase {
     private SystemComponentTypeLoader loader;
 
     public void testIntrospectUnannotatedClass() throws ProcessingException {
+        Mock mock = mock(CompositeComponent.class);
+        CompositeComponent parent = (CompositeComponent) mock.proxy();
         SystemImplementation impl = new SystemImplementation(BasicInterfaceImpl.class);
-        PojoComponentType<?, ?, ?> componentType = loader.loadByIntrospection(null, impl, null);
+        PojoComponentType<?, ?, ?> componentType = loader.loadByIntrospection(parent, impl, null);
         ServiceDefinition service = componentType.getServices().get("BasicInterface");
         assertEquals(BasicInterface.class, service.getServiceContract().getInterfaceClass());
         Property<?> property = componentType.getProperties().get("publicProperty");

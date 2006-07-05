@@ -39,7 +39,7 @@ public class ImportSDOLoaderTestCase extends TestCase {
     public void testMinimal() throws XMLStreamException, LoaderException {
         String xml = "<import.sdo xmlns='http://www.osoa.org/xmlns/sca/0.9'/>";
         XMLStreamReader reader = getReader(xml);
-        assertNull(loader.load(reader, null));
+        assertNull(loader.load(null, reader, null));
     }
 
     public void testFactory() throws XMLStreamException, LoaderException {
@@ -47,7 +47,7 @@ public class ImportSDOLoaderTestCase extends TestCase {
                 + "factory='org.apache.tuscany.databinding.sdo.ImportSDOLoaderTestCase$MockFactory'/>";
         XMLStreamReader reader = getReader(xml);
         assertFalse(inited);
-        assertNull(loader.load(reader, deploymentContext));
+        assertNull(loader.load(null, reader, deploymentContext));
         assertTrue(inited);
     }
 

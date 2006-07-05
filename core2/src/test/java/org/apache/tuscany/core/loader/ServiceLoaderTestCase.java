@@ -46,7 +46,7 @@ public class ServiceLoaderTestCase extends MockObjectTestCase {
         mockReader.expects(once()).method("getName").will(returnValue(AssemblyConstants.SERVICE));
         mockReader.expects(once()).method("getAttributeValue").with(NULL, eq("name")).will(returnValue(name));
         mockReader.expects(once()).method("next").will(returnValue(END_ELEMENT));
-        ServiceDefinition serviceDefinition = loader.load((XMLStreamReader) mockReader.proxy(), null);
+        ServiceDefinition serviceDefinition = loader.load(null, (XMLStreamReader) mockReader.proxy(), null);
         assertNotNull(serviceDefinition);
         assertEquals(name, serviceDefinition.getName());
     }
@@ -59,9 +59,10 @@ public class ServiceLoaderTestCase extends MockObjectTestCase {
         mockReader.expects(once()).method("getAttributeValue").with(NULL, eq("name")).will(returnValue(name));
         mockReader.expects(atLeastOnce()).method("next")
             .will(onConsecutiveCalls(returnValue(START_ELEMENT), returnValue(END_ELEMENT)));
-        mockRegistry.expects(once()).method("load").with(eq(mockReader.proxy()), eq(deploymentContext))
+        mockRegistry.expects(once()).method("load").with(eq(null), eq(mockReader.proxy()), eq(deploymentContext))
             .will(returnValue(sc));
-        ServiceDefinition serviceDefinition = loader.load((XMLStreamReader) mockReader.proxy(), deploymentContext);
+        ServiceDefinition serviceDefinition =
+            loader.load(null, (XMLStreamReader) mockReader.proxy(), deploymentContext);
         assertNotNull(serviceDefinition);
         assertEquals(name, serviceDefinition.getName());
         assertSame(sc, serviceDefinition.getServiceContract());

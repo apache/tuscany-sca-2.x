@@ -32,6 +32,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.component.CompositeComponent;
 
 /**
  * Loader that handles &lt;import.sdo&gt; elements.
@@ -45,7 +46,7 @@ public class ImportSDOLoader extends LoaderExtension {
         return IMPORT_SDO;
     }
 
-    public ModelObject load(XMLStreamReader reader, DeploymentContext loaderContext)
+    public ModelObject load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext loaderContext)
         throws XMLStreamException, LoaderException {
         assert IMPORT_SDO.equals(reader.getName());
         importFactory(reader, loaderContext);

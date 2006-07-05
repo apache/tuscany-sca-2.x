@@ -26,6 +26,9 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.osoa.sca.annotations.Init;
+
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.ComponentTypeLoader;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -34,7 +37,6 @@ import org.apache.tuscany.spi.loader.StAXElementLoader;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.component.CompositeComponent;
 
 /**
  * The default implementation of a loader registry
@@ -62,6 +64,11 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         this.monitor = monitor;
     }
 
+    @Init(eager = true)
+    public void init() {
+
+    }
+
     public <T extends ModelObject> void registerLoader(QName element, StAXElementLoader<T> loader) {
         monitor.registeringLoader(element);
         loaders.put(element, loader);
@@ -72,7 +79,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         loaders.remove(element);
     }
 
-    public ModelObject load(XMLStreamReader reader,
+    public ModelObject load(CompositeComponent parent, XMLStreamReader reader,
                             DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         QName name = reader.getName();
         monitor.elementLoad(name);
@@ -80,10 +87,11 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         if (loader == null) {
             throw new UnrecognizedElementException(name);
         }
-        return loader.load(reader, deploymentContext);
+        return loader.load(parent, reader, deploymentContext);
     }
 
-    public <MO extends ModelObject> MO load(URL url, Class<MO> type, DeploymentContext ctx) throws LoaderException {
+    public <MO extends ModelObject> MO load(CompositeComponent parent, URL url, Class<MO> type,
+                                            DeploymentContext ctx) throws LoaderException {
         try {
             XMLStreamReader reader;
             InputStream is;
@@ -94,7 +102,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
                 try {
                     reader.nextTag();
                     QName name = reader.getName();
-                    ModelObject mo = load(reader, ctx);
+                    ModelObject mo = load(parent, reader, ctx);
                     if (type.isInstance(mo)) {
                         return type.cast(mo);
                     } else {
@@ -144,7 +152,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         if (loader == null) {
             throw new UnsupportedOperationException();
         }
-        loader.load(null, implementation, deploymentContext);
+        loader.load(parent, implementation, deploymentContext);
     }
 
     public static interface Monitor {

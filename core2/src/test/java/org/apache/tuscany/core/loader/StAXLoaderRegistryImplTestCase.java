@@ -58,11 +58,11 @@ public class StAXLoaderRegistryImplTestCase extends MockObjectTestCase {
         mockReader.expects(once()).method("getName").will(returnValue(name));
         mockMonitor.expects(once()).method("registeringLoader").with(eq(name));
         mockMonitor.expects(once()).method("elementLoad").with(eq(name));
-        mockLoader.expects(once()).method("load").with(eq(mockReader.proxy()), eq(deploymentContext))
+        mockLoader.expects(once()).method("load").with(eq(null), eq(mockReader.proxy()), eq(deploymentContext))
             .will(returnValue(modelObject));
 
         registry.registerLoader(name, (StAXElementLoader<ModelObject>) mockLoader.proxy());
-        assertSame(modelObject, registry.load((XMLStreamReader) mockReader.proxy(), deploymentContext));
+        assertSame(modelObject, registry.load(null, (XMLStreamReader) mockReader.proxy(), deploymentContext));
     }
 
     public void testUnsuccessfulDispatch() throws LoaderException, XMLStreamException {
@@ -70,7 +70,7 @@ public class StAXLoaderRegistryImplTestCase extends MockObjectTestCase {
         mockMonitor.expects(once()).method("elementLoad").with(eq(name));
 
         try {
-            registry.load((XMLStreamReader) mockReader.proxy(), deploymentContext);
+            registry.load(null, (XMLStreamReader) mockReader.proxy(), deploymentContext);
             fail();
         } catch (UnrecognizedElementException e) {
             assertSame(name, e.getElement());

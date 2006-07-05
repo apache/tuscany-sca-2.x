@@ -111,7 +111,7 @@ public class MainLauncher extends LauncherSupport {
                 throw new InvalidMainException(main.toString());
             }
             try {
-                main.invoke(null, (Object) getArgs());
+                main.invoke(null, getArgs());
             } catch (IllegalAccessException e) {
                 // assertion as getMethod() should not have returned a method that is not accessible
                 throw new AssertionError();

@@ -18,39 +18,55 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.net.URL;
 
+import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.component.CompositeComponent;
 
+import org.apache.tuscany.core.implementation.IntrospectionRegistry;
+import org.apache.tuscany.core.implementation.Introspector;
 import org.apache.tuscany.core.implementation.PojoComponentType;
-
+import org.apache.tuscany.core.implementation.ProcessingException;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
  * @version $Rev$ $Date$
  */
 public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaImplementation> {
+    private Introspector introspector;
 
     public JavaComponentTypeLoader() {
         super();
     }
 
-    public void load(CompositeComponent<?> parent, JavaImplementation implementation,
+    //FIXME autowire to support multiple interfaces
+    @Autowire
+    public void setIntrospector(IntrospectionRegistry introspector) {
+        this.introspector = introspector;
+    }
+
+    public void load(CompositeComponent<?> parent,
+                     JavaImplementation implementation,
                      DeploymentContext deploymentContext) throws LoaderException {
         Class<?> implClass = implementation.getImplementationClass();
         URL resource = implClass.getResource(JavaIntrospectionHelper.getBaseName(implClass) + ".componentType");
         PojoComponentType componentType;
         if (resource == null) {
-            componentType = loadByIntrospection(implementation);
+            componentType = loadByIntrospection(parent, implementation, deploymentContext);
         } else {
             componentType = loadFromSidefile(resource, deploymentContext);
         }
         implementation.setComponentType(componentType);
     }
 
-    protected PojoComponentType loadByIntrospection(JavaImplementation implementation) {
-        throw new UnsupportedOperationException();
+    protected PojoComponentType loadByIntrospection(CompositeComponent<?> parent,
+                                                    JavaImplementation implementation,
+                                                    DeploymentContext deploymentContext) throws ProcessingException {
+        PojoComponentType componentType = new PojoComponentType();
+        Class<?> implClass = implementation.getImplementationClass();
+        introspector.introspect(parent, implClass, componentType, deploymentContext);
+        return componentType;
     }
 
     @Override
@@ -59,6 +75,6 @@ public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaIm
     }
 
     protected PojoComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext) throws LoaderException {
-        return loaderRegistry.load(url, PojoComponentType.class, deploymentContext);
+        return loaderRegistry.load(null, url, PojoComponentType.class, deploymentContext);
     }
 }

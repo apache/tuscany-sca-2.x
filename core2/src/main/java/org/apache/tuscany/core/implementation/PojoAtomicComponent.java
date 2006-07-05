@@ -22,6 +22,7 @@ import org.apache.tuscany.core.injection.InvalidAccessorException;
 import org.apache.tuscany.core.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.NoAccessorException;
+import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.WireObjectFactory;
 
 /**
@@ -67,13 +68,25 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
 
     public void init(Object instance) throws TargetException {
         if (initInvoker != null) {
-            initInvoker.invokeEvent(instance);
+            try {
+                initInvoker.invokeEvent(instance);
+            } catch (ObjectCallbackException e) {
+                TargetException t = new TargetException("Error initializing component instance", e);
+                t.setIdentifier(getName());
+                throw t;
+            }
         }
     }
 
     public void destroy(Object instance) throws TargetException {
         if (destroyInvoker != null) {
-            destroyInvoker.invokeEvent(instance);
+            try {
+                destroyInvoker.invokeEvent(instance);
+            } catch (ObjectCallbackException e) {
+                TargetException t = new TargetException("Error destroying component instance", e);
+                t.setIdentifier(getName());
+                throw t;
+            }
         }
     }
 

@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
@@ -30,29 +31,32 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
-import junit.framework.TestCase;
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.implementation.system.model.SystemBinding;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.mock.component.BasicInterface;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
 
 /**
  * Verifies the default boostrap deployer
  *
  * @version $Rev$ $Date$
  */
-public class BootstrapDeployerTestCase extends TestCase {
+public class BootstrapDeployerTestCase extends MockObjectTestCase {
     private DeployerImpl deployer;
     private DeploymentContext deploymentContext;
     private ComponentDefinition<SystemCompositeImplementation> componentDefinition;
     private SystemCompositeImplementation implementation;
 
     public void testBoot1Load() throws LoaderException {
+        Mock mock = mock(CompositeComponent.class);
+        CompositeComponent parent = (CompositeComponent) mock.proxy();
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
         implementation.setScdlLocation(scdl);
-        deployer.load(null, componentDefinition, deploymentContext);
+        deployer.load(parent, componentDefinition, deploymentContext);
         CompositeComponentType composite = implementation.getComponentType();
         assertNotNull(composite);
         assertEquals("simple", composite.getName());

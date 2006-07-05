@@ -19,6 +19,9 @@ import org.osoa.sca.annotations.Destroy;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.core.implementation.JavaMappedService;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaMappedProperty;
 
 /**
  * @version $Rev$ $Date$
@@ -27,7 +30,8 @@ public class DestroyProcessorTestCase extends TestCase {
 
     public void testDestroy() throws Exception {
         DestroyProcessor processor = new DestroyProcessor();
-        PojoComponentType type = new PojoComponentType();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Method method = Foo.class.getMethod("destroy");
         processor.visitMethod(null, method, type, null);
         assertNotNull(type.getDestroyMethod());
@@ -35,7 +39,8 @@ public class DestroyProcessorTestCase extends TestCase {
 
     public void testBadDestroy() throws Exception {
         DestroyProcessor processor = new DestroyProcessor();
-        PojoComponentType type = new PojoComponentType();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Method method = Bar.class.getMethod("badDestroy", String.class);
         try {
             processor.visitMethod(null, method, type, null);
@@ -47,7 +52,8 @@ public class DestroyProcessorTestCase extends TestCase {
 
     public void testTwoDestroy() throws Exception {
         DestroyProcessor processor = new DestroyProcessor();
-        PojoComponentType type = new PojoComponentType();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Method method = Bar.class.getMethod("destroy");
         Method method2 = Bar.class.getMethod("destroy2");
         processor.visitMethod(null, method, type, null);

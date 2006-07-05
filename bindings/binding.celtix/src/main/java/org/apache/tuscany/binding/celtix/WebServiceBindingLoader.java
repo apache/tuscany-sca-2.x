@@ -27,13 +27,15 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.osoa.sca.annotations.Scope;
+
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.services.wsdl.WSDLDefinitionRegistry;
-import org.osoa.sca.annotations.Scope;
 
 
 /**
@@ -63,7 +65,9 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
         return BINDING_WS;
     }
 
-    public WebServiceBinding load(XMLStreamReader reader, DeploymentContext deploymentContext)
+    public WebServiceBinding load(CompositeComponent parent, XMLStreamReader reader,
+                                  DeploymentContext deploymentContext
+    )
         throws XMLStreamException, LoaderException {
         String uri = reader.getAttributeValue(null, "uri");
         String portURI = reader.getAttributeValue(null, "port");
@@ -108,7 +112,7 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
                 for (Service serv : (Collection<Service>) def.getServices().values()) {
                     QName sqn = serv.getQName();
                     if (serviceName != null
-                            && !serviceName.equals(sqn.getLocalPart())) {
+                        && !serviceName.equals(sqn.getLocalPart())) {
                         continue;
                     }
 

@@ -19,6 +19,7 @@ package org.apache.tuscany.spi.loader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ModelObject;
 
@@ -32,9 +33,11 @@ public interface StAXElementLoader<T extends ModelObject> {
      * Create the model object for an element in an XML stream. When this method returns the stream will be positioned
      * on the corresponding END_ELEMENT.
      *
+     * @param parent
      * @param reader            the XML stream reader positioned on the applicable START_ELEMENT
      * @param deploymentContext the context for the load operation
      * @return the model object for that element
      */
-    T load(XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException;
+    T load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException;
 }

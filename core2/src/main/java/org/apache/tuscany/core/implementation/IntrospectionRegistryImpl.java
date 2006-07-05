@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
@@ -61,12 +61,12 @@ public class IntrospectionRegistryImpl implements IntrospectionRegistry {
                                         DeploymentContext context)
         throws ProcessingException {
         for (ImplementationProcessor processor : cache) {
-            processor.visitClass(null, clazz, type, null);
+            processor.visitClass(parent, clazz, type, null);
         }
 
         for (Constructor constructor : clazz.getConstructors()) {
             for (ImplementationProcessor processor : cache) {
-                processor.visitConstructor(null, constructor, type, null);
+                processor.visitConstructor(parent, constructor, type, null);
             }
         }
 
@@ -86,36 +86,37 @@ public class IntrospectionRegistryImpl implements IntrospectionRegistry {
         Set<Method> methods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(clazz);
         for (Method method : methods) {
             for (ImplementationProcessor processor : cache) {
-                processor.visitMethod(null, method, type, null);
+                processor.visitMethod(parent, method, type, null);
             }
         }
 
         Set<Field> fields = JavaIntrospectionHelper.getAllPublicAndProtectedFields(clazz);
         for (Field field : fields) {
             for (ImplementationProcessor processor : cache) {
-                processor.visitField(null, field, type, null);
+                processor.visitField(parent, field, type, null);
             }
         }
 
         Class superClass = clazz.getSuperclass();
         if (superClass != null) {
-            visitSuperClass(superClass, type);
+            visitSuperClass(parent, superClass, type);
         }
 
         for (ImplementationProcessor processor : cache) {
-            processor.visitEnd(null, clazz, type, null);
+            processor.visitEnd(parent, clazz, type, null);
         }
         return type;
     }
 
-    private void visitSuperClass(Class<?> clazz, PojoComponentType type) throws ProcessingException {
+    private void visitSuperClass(CompositeComponent<?> parent, Class<?> clazz, PojoComponentType type)
+        throws ProcessingException {
         if (!Object.class.equals(clazz)) {
             for (ImplementationProcessor processor : cache) {
-                processor.visitSuperClass(null, clazz, type, null);
+                processor.visitSuperClass(parent, clazz, type, null);
             }
             clazz = clazz.getSuperclass();
             if (clazz != null) {
-                visitSuperClass(clazz, type);
+                visitSuperClass(parent, clazz, type);
             }
         }
     }

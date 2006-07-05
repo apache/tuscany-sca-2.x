@@ -48,6 +48,7 @@ public class PropertyProcessor extends ImplementationProcessorSupport {
             throw new DuplicatePropertyException(name);
         }
         JavaMappedProperty property = new JavaMappedProperty();
+        property.setName(name);
         property.setMember(method);
         property.setRequired(annotation.required());
         property.setJavaType(method.getParameterTypes()[0]);

@@ -21,8 +21,8 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
@@ -69,7 +69,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     @Init(eager = true)
     public void init() {
     }
-    
+
     @Autowire
     public void setScopeRegistry(ScopeRegistry scopeRegistry) {
         this.scopeRegistry = scopeRegistry;

@@ -294,6 +294,9 @@ public final class JavaIntrospectionHelper {
      * example, <code>setFoo(var)</code> is returned as property <code>foo<code>
      */
     public static String toPropertyName(String name) {
+        if (!name.startsWith("set")) {
+            return name;
+        }
         return Character.toLowerCase(name.charAt(3)) + name.substring(4);
     }
 

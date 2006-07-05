@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.component.CompositeComponent;
 
 /**
  * @version $Rev$ $Date$
@@ -47,7 +48,8 @@ public class ComponentTypeElementLoader extends LoaderExtension<ComponentType> {
         return AssemblyConstants.COMPONENT_TYPE;
     }
 
-    public ComponentType load(XMLStreamReader reader,
+    public ComponentType load(CompositeComponent parent,
+                              XMLStreamReader reader,
                               DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert AssemblyConstants.COMPONENT_TYPE.equals(reader.getName());
         ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType
@@ -56,7 +58,7 @@ public class ComponentTypeElementLoader extends LoaderExtension<ComponentType> {
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
-                    ModelObject o = registry.load(reader, deploymentContext);
+                    ModelObject o = registry.load(parent, reader, deploymentContext);
                     if (o instanceof ServiceDefinition) {
                         componentType.add((ServiceDefinition) o);
                     } else if (o instanceof ReferenceDefinition) {

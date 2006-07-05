@@ -116,7 +116,7 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
             }
             systemContext.addOutboundWire(wire);
         }
-        // hack for now
+        // FIXME we need a way to build configuration references from autowires in the loader to eliminate this eval
         for (ReferenceDefinition reference : componentType.getReferences().values()) {
             if (reference.isAutowire()) {
                 Class interfaze = reference.getServiceContract().getInterfaceClass();

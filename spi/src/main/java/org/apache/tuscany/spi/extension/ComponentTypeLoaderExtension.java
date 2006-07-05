@@ -18,6 +18,7 @@ package org.apache.tuscany.spi.extension;
 
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.loader.ComponentTypeLoader;
@@ -27,6 +28,7 @@ import org.apache.tuscany.spi.model.Implementation;
 /**
  * @version $Rev$ $Date$
  */
+@Scope("MODULE")
 public abstract class ComponentTypeLoaderExtension<I extends Implementation> implements ComponentTypeLoader<I> {
     protected LoaderRegistry loaderRegistry;
 
@@ -42,9 +44,7 @@ public abstract class ComponentTypeLoaderExtension<I extends Implementation> imp
         this.loaderRegistry = loaderRegistry;
     }
 
-    protected abstract Class<I> getImplementationClass();
-
-    @Init
+    @Init(eager = true)
     public void start() {
         loaderRegistry.registerLoader(getImplementationClass(), this);
     }
@@ -53,4 +53,7 @@ public abstract class ComponentTypeLoaderExtension<I extends Implementation> imp
     public void stop() {
         loaderRegistry.unregisterLoader(getImplementationClass());
     }
+
+    protected abstract Class<I> getImplementationClass();
+
 }

@@ -93,7 +93,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
                 continue;
             }
             if (!isInServiceInterface(method, services)) {
-                String name = calcName(method.getName());
+                String name = toPropertyName(method.getName());
                 // avoid duplicate property or ref names
                 if (type.getProperties().get(name) == null && type.getReferences().get(name) == null) {
                     Class<?> param = method.getParameterTypes()[0];
@@ -112,7 +112,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
                 continue;
             }
             Class<?> param = method.getParameterTypes()[0];
-            String name = calcName(method.getName());
+            String name = toPropertyName(method.getName());
             // avoid duplicate property or ref names
             if (type.getProperties().get(name) == null && type.getReferences().get(name) == null) {
                 if (isReferenceType(param)) {
@@ -223,7 +223,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
         Map<String, JavaMappedProperty<?>> properties = type.getProperties();
         // calculate methods that are not properties or references
         for (Method method : methods) {
-            String name = calcName(method.getName());
+            String name = toPropertyName(method.getName());
             if (references.get(name) == null && properties.get(name) == null) {
                 nonPropRefMethods.add(method);
             }
@@ -276,15 +276,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
         return true;
     }
 
-    /**
-     * Calculates the setter name equivalent of the given string
-     */
-    private String calcName(String name) {
-        if (name.startsWith("set")) {
-            name = toPropertyName(name);
-        }
-        return name;
-    }
+
 }
 
 /*

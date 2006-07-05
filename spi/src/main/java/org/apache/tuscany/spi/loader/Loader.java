@@ -39,24 +39,27 @@ public interface Loader {
      * This method must be called with the XML cursor positioned on a START_ELEMENT event. When this method returns, the
      * stream will be positioned on the corresponding END_ELEMENT event.
      *
+     * @param parent
      * @param reader            the XML stream to parse
      * @param deploymentContext the current deployment context
      * @return the model object obtained by parsing the current element on the stream
      * @throws XMLStreamException if there was a problem reading the stream
      */
-    ModelObject load(XMLStreamReader reader, DeploymentContext deploymentContext)
+    ModelObject load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException;
 
     /**
      * Load a model object from a specified location.
      *
+     * @param parent
      * @param url               the location of an XML document to be loaded
      * @param type              the type of ModelObject that is expected to be in the document
      * @param deploymentContext the current deployment context
      * @return the model ojbect loaded from the document
      * @throws LoaderException if there was a problem loading the document
      */
-    <MO extends ModelObject> MO load(URL url, Class<MO> type, DeploymentContext deploymentContext)
+    <MO extends ModelObject> MO load(CompositeComponent parent, URL url, Class<MO> type,
+                                     DeploymentContext deploymentContext)
         throws LoaderException;
 
     /**

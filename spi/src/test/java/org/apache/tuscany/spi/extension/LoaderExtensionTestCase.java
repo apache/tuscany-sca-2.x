@@ -8,6 +8,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.component.CompositeComponent;
 
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
@@ -35,7 +36,8 @@ public class LoaderExtensionTestCase extends MockObjectTestCase {
             return null;
         }
 
-        public ModelObject load(XMLStreamReader reader,
+        public ModelObject load(CompositeComponent parent,
+                                XMLStreamReader reader,
                                 DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
             return null;
         }

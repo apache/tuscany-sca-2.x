@@ -20,13 +20,14 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 
-import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.core.implementation.system.model.SystemBinding;
+import org.apache.tuscany.core.loader.StAXUtil;
 
 /**
  * Loads a system binding specified in an XML-based assembly
@@ -48,7 +49,7 @@ public class SystemBindingLoader extends LoaderExtension<SystemBinding> {
         return SYSTEM_BINDING;
     }
 
-    public SystemBinding load(XMLStreamReader reader, DeploymentContext deploymentContext)
+    public SystemBinding load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         StAXUtil.skipToEndElement(reader);
         return new SystemBinding();

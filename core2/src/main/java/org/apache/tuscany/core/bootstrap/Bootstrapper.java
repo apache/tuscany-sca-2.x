@@ -22,6 +22,7 @@ import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.Loader;
 import org.apache.tuscany.spi.loader.StAXPropertyFactory;
@@ -34,7 +35,7 @@ import org.apache.tuscany.spi.monitor.MonitorFactory;
  *
  * @version $Rev$ $Date$
  */
-public interface Bootstrapper {
+public interface Bootstrapper<T extends CompositeComponent> {
     /**
      * Return the MonitorFactory being used by the implementation to provide monitor
      * interfaces for the primordial components.
@@ -52,7 +53,7 @@ public interface Bootstrapper {
      *
      * @return a new RuntimeComponent; basically a new Tuscany instance
      */
-    RuntimeComponent<?> createRuntime();
+    RuntimeComponent<T> createRuntime();
 
     /**
      * Create a Deployer that can be used to deploy the system definition. This will most likely

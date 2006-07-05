@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.component.CompositeComponent;
 
 /**
  * Loads a service definition from an XML-based assembly file
@@ -49,7 +50,10 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
         return AssemblyConstants.SERVICE;
     }
 
-    public ServiceDefinition load(XMLStreamReader reader, DeploymentContext deploymentContext)
+    public ServiceDefinition load(CompositeComponent parent,
+                                  XMLStreamReader reader,
+                                  DeploymentContext deploymentContext
+    )
         throws XMLStreamException, LoaderException {
         assert AssemblyConstants.SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
@@ -59,7 +63,7 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
             int i = reader.next();
             switch (i) {
                 case START_ELEMENT:
-                    ModelObject o = registry.load(reader, deploymentContext);
+                    ModelObject o = registry.load(parent, reader, deploymentContext);
                     if (o instanceof ServiceContract) {
                         serviceContract = (ServiceContract) o;
                     } else if (o instanceof Binding) {

@@ -20,10 +20,12 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+
 import org.apache.tuscany.core.implementation.JavaServiceContract;
 
 /**
@@ -43,7 +45,8 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
         return AssemblyConstants.INTERFACE_JAVA;
     }
 
-    public JavaServiceContract load(XMLStreamReader reader,
+    public JavaServiceContract load(CompositeComponent parent,
+                                    XMLStreamReader reader,
                                     DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 
