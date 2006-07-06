@@ -29,7 +29,16 @@
     <name>Tuscany SCA Data Bindings</name>
 
     <modules>
-        <module>sdo</module>
+	 <!--
+        <module>databinding-axiom</module>
+        <module>databinding-castor</module>
+        <module>databinding-framework</module>
+        <module>databinding-jaxb</module>
+        <module>databinding-sdo</module>
+        <module>databinding-test</module>
+        <module>databinding-xmlbeans</module>
+		  
+		  -->
     </modules>
 
 </project>

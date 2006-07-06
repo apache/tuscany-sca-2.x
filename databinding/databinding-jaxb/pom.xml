@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	*  Copyright (c) 2006 The Apache Software Foundation or its licensors, as applicable.
+	*
+	*  Licensed under the Apache License, Version 2.0 (the "License");
+	*  you may not use this file except in compliance with the License.
+	*  You may obtain a copy of the License at
+	*
+	*     http://www.apache.org/licenses/LICENSE-2.0
+	*
+	*  Unless required by applicable law or agreed to in writing, software
+	*  distributed under the License is distributed on an "AS IS" BASIS,
+	*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	*  See the License for the specific language governing permissions and
+	*  limitations under the License.
+-->
+<project>
+
+	<parent>
+		<groupId>org.apache.tuscany.databinding</groupId>
+		<artifactId>databinding</artifactId>
+		<version>1.0-sandbox-SNAPSHOT</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>databinding-jaxb</artifactId>
+	<name>Tuscany JAXB Data Binding</name>
+	<description>Tuscany JAXB Data Binding</description>
+	<version>1.0-sandbox-SNAPSHOT</version>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.0.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.tuscany.databinding</groupId>
+			<artifactId>databinding-framework</artifactId>
+			<version>${pom.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>java.net</id>
+			<name>java.net Maven 1.x Repository</name>
+			<url>https://maven-repository.dev.java.net/nonav/repository</url>
+			<layout>legacy</layout>
+		</repository>
+	</repositories>
+
+	<build>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+			</testResource>
+			<testResource>
+				<directory>target/jaxb-source</directory>
+				<filtering>true</filtering>
+			</testResource>
+		</testResources>
+
+		<plugins>
+
+			<plugin>
+				<groupId>com.sun.tools.xjc.maven2</groupId>
+				<artifactId>maven-jaxb-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<id>generate-jaxb</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<generatePackage>com.example.ipo.jaxb</generatePackage>
+					<generateDirectory>${project.build.directory}/jaxb-source</generateDirectory>
+					<schemaDirectory>${basedir}/src/test/resources</schemaDirectory>
+					<includeSchemas>
+						<includeSchema>ipo.xsd</includeSchema>
+					</includeSchemas>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>
