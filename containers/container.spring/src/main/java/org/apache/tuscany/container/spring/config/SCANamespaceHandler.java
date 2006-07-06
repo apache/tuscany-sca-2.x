@@ -11,21 +11,18 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
  */
 public class SCANamespaceHandler extends NamespaceHandlerSupport {
 
-    private CompositeComponentType componentType;
-
     public SCANamespaceHandler() {
     }
 
     // TODO: fix when custom HanespaceHandlerResolver impl can be plugged in 
     public SCANamespaceHandler(CompositeComponentType componentType) {
-        this.componentType = componentType;
     }
 
     public void init() {
         registerBeanDefinitionParser(ScaReferenceBeanDefinitionParser.REFERENCE_ELEMENT,
-                new ScaReferenceBeanDefinitionParser(componentType));
+                new ScaReferenceBeanDefinitionParser());
         registerBeanDefinitionParser(ScaServiceBeanDefinitionParser.SERVICE_ELEMENT,
-                new ScaServiceBeanDefinitionParser(componentType));
+                new ScaServiceBeanDefinitionParser());
         registerBeanDefinitionParser(ScaCompositeBeanDefinitionParser.COMPOSITE_ELEMENT,
                 new ScaCompositeBeanDefinitionParser());
     }

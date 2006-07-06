@@ -7,6 +7,8 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.w3c.dom.Element;
 
 import org.apache.tuscany.spi.model.CompositeComponentType;
@@ -23,13 +25,10 @@ public class ScaReferenceBeanDefinitionParser implements BeanDefinitionParser {
     private static final String TYPE_ATTRIBUTE            = "type";
     private static final String DEFAULT_SERVICE_ATTRIBUTE = "default";
 
-    public ScaReferenceBeanDefinitionParser(CompositeComponentType componentType) {
-//        this.componentType = componentType;
+    public ScaReferenceBeanDefinitionParser() {
     }
 
     public BeanDefinition parse(Element element, ParserContext parserContext) {
-        RootBeanDefinition beanDef = new RootBeanDefinition();
-        beanDef.setBeanClass(SCAReference.class);
 
         String name = element.getAttribute(REFERENCE_NAME_ATTRIBUTE);
         String type = element.getAttribute(TYPE_ATTRIBUTE);
@@ -37,6 +36,23 @@ public class ScaReferenceBeanDefinitionParser implements BeanDefinitionParser {
         if (element.hasAttribute(DEFAULT_SERVICE_ATTRIBUTE)) {
             service = element.getAttribute(DEFAULT_SERVICE_ATTRIBUTE);
         }
+
+        return null;
+
+        /*
+        BeanDefinitionBuilder proxyBean = BeanDefinitionBuilder.rootBeanDefinition(ProxyFactoryBean.class);
+        proxyBean.addPropertyReference("target", targetName);
+        proxyBean.addPropertyValue("proxyInterfaces", type);
+
+        // REVIEW: May need to account for singleton-ness of the target?  (ie, if target is singleton=false,
+        // perhaps the proxy should also be singleton=false).
+
+        parserContext.getRegistry().registerBeanDefinition(name, proxyBean.getBeanDefinition());
+        */
+
+        /*
+        RootBeanDefinition beanDef = new RootBeanDefinition();
+        beanDef.setBeanClass(SCAReference.class);
 
         ConstructorArgumentValues ctorArgs = beanDef.getConstructorArgumentValues();
         ctorArgs.addIndexedArgumentValue(0, name);
@@ -57,5 +73,6 @@ public class ScaReferenceBeanDefinitionParser implements BeanDefinitionParser {
         BeanDefinitionReaderUtils.registerBeanDefinition(holder, parserContext.getRegistry());
 
         return beanDef;
+        */
     }
 }

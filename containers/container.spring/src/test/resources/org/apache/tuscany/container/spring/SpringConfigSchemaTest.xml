@@ -6,13 +6,10 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 http://www.springframework.org/schema/sca http://www.springframework.org/schema/sca/spring-sca.xsd">
 
-<sca:service name="fooService" type="org.apache.tuscany.container.spring.mock.TestBeanImpl" target="testBean" />
-
-<sca:reference name="fooReference" type="org.apache.tuscany.container.spring.mock.TestBeanImpl" />
-
-<!--
 <bean id="testBean" class="org.apache.tuscany.container.spring.mock.TestBeanImpl">
 </bean>
--->
+
+<sca:service name="fooService" type="org.apache.tuscany.container.spring.mock.TestBean" target="testBean" />
+<sca:reference name="fooReference" type="org.apache.tuscany.container.spring.mock.TestBeanImpl" />
 
 </beans>

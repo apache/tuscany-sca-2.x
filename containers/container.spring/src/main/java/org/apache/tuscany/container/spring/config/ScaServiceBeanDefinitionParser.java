@@ -8,6 +8,8 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.w3c.dom.Element;
 
 /**
@@ -22,34 +24,36 @@ public class ScaServiceBeanDefinitionParser implements BeanDefinitionParser {
     private static final String TYPE_ATTRIBUTE = "type";
     private static final String TARGET_ATTRIBUTE = "target";
 
-//    private CompositeComponentType componentType;
-
-    public ScaServiceBeanDefinitionParser(CompositeComponentType componentType) {
-//        this.componentType = componentType;
+    public ScaServiceBeanDefinitionParser() {
     }
 
     public BeanDefinition parse(Element element, ParserContext parserContext) {
-        RootBeanDefinition beanDef = new RootBeanDefinition();
-        beanDef.setBeanClass(SCAService.class);
 
         String name = element.getAttribute(NAME_ATTRIBUTE);
         String type = element.getAttribute(TYPE_ATTRIBUTE);
-        String target = element.getAttribute(TARGET_ATTRIBUTE);
+        String targetName = element.getAttribute(TARGET_ATTRIBUTE);
 
-        ConstructorArgumentValues ctorArgs = beanDef.getConstructorArgumentValues();
-        ctorArgs.addIndexedArgumentValue(0, name);
-        ctorArgs.addIndexedArgumentValue(1, type);
-        ctorArgs.addIndexedArgumentValue(2, target);
+        BeanDefinitionBuilder proxyBean = BeanDefinitionBuilder.rootBeanDefinition(ProxyFactoryBean.class);
+        proxyBean.addPropertyReference("target", targetName);
+        proxyBean.addPropertyValue("proxyInterfaces", type);
 
-        // create a bean definition holder to be able to register the
-        // bean definition with the bean definition registry
-        // (obtained through the ParserContext).  Use name as key.
-        BeanDefinitionHolder holder = new BeanDefinitionHolder(beanDef, name);
+        // REVIEW: May need to account for singleton-ness of the target?  (ie, if target is singleton=false,
+        // perhaps the proxy should also be singleton=false).
 
-        // register the BeanDefinitionHolder (which contains the bean definition)
-        // with the BeanDefinitionRegistry
-        BeanDefinitionReaderUtils.registerBeanDefinition(holder, parserContext.getRegistry());
+        parserContext.getRegistry().registerBeanDefinition(name, proxyBean.getBeanDefinition());
 
-        return beanDef;
+        // REVIEW: It may make sense to register an additional bean to capture/expose the presence &
+        // attributes of the service element itself.  Such code as:
+        
+        /*
+        BeanDefinitionBuilder serviceBean = BeanDefinitionBuilder.rootBeanDefinition(SCAService.class);
+        serviceBean.addConstructorArg(name);
+        serviceBean.addConstructorArg(type);
+        serviceBean.addConstructorArg(targetName);
+
+        parserContext.getRegistry().registerBeanDefinition(name, serviceBean.getBeanDefinition());
+        */
+
+        return null;
     }
 }
