@@ -17,18 +17,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.apache.tuscany.spi.annotation.Monitor;
-import org.apache.tuscany.spi.monitor.MonitorFactory;
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
 
-import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
-
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import org.apache.tuscany.spi.annotation.Monitor;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
 
 /**
  * @version $Rev$ $Date$

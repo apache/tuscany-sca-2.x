@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.monitor.MonitorFactory;
  *
  * @version $Rev$ $Date$
  */
-public class MonitorProcessor extends AbstractPropertyProcessor<Monitor>{
+public class MonitorProcessor extends AbstractPropertyProcessor<Monitor> {
     private MonitorFactory monitorFactory;
 
     public MonitorProcessor(MonitorFactory monitorFactory) {

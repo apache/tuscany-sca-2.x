@@ -60,7 +60,6 @@ public class ConnectorImpl implements Connector {
                 connect(child);
             }
         } else if (source instanceof Service) {
-            Service<T> service = (Service<T>) source;
         } else {
             BuilderConfigException e = new BuilderConfigException("Invalid source context type");
             e.setIdentifier(source.getName());
