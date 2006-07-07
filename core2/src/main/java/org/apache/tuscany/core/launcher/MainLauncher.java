@@ -122,7 +122,9 @@ public class MainLauncher extends LauncherSupport {
     }
 
     private CompositeComponent<?> bootRuntime() throws LoaderException {
-        Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), XMLInputFactory.newInstance());
+        XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory",
+                                                                 getClass().getClassLoader());
+        Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), xmlFactory);
         Deployer deployer = bootstrapper.createDeployer();
 
         // create and start the core runtime

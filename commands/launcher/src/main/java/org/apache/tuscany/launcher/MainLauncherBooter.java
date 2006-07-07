@@ -21,6 +21,7 @@ import java.io.FilenameFilter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ResourceBundle;
@@ -31,12 +32,6 @@ import java.util.ResourceBundle;
  * @version $Rev: 412898 $ $Date: 2006-06-08 21:31:50 -0400 (Thu, 08 Jun 2006) $
  */
 public class MainLauncherBooter {
-    protected static final FilenameFilter FILE_FILTER = new FilenameFilter() {
-        public boolean accept(File dir, String name) {
-            return name.endsWith(".jar");
-        }
-    };
-
     /**
      * Main method.
      *
@@ -45,35 +40,58 @@ public class MainLauncherBooter {
     public static void main(String[] args) throws Throwable {
         // The classpath to load the launcher should not contain any of
         // Tuscany jar files except the launcher.
-        ClassLoader currentContextClassLoader = Thread.currentThread().getContextClassLoader();
+        MainLauncherBooter booter = new MainLauncherBooter();
+        ClassLoader tuscanyCL = booter.getTuscanyClassLoader();
+
+        Class<?> launcherClass;
         try {
-
-            ClassLoader tuscanyCL = getTuscanyClassLoader();
-            Class<?> launcherClass = tuscanyCL.loadClass("org.apache.tuscany.core.launcher.MainLauncher");
-
-            Method mainMethod = launcherClass.getMethod("main", String[].class);
-            Thread.currentThread().setContextClassLoader(tuscanyCL);
-            mainMethod.invoke(null, new Object[]{args});
-
+            String className = System.getProperty("tuscany.LauncherClass",
+                                                  "org.apache.tuscany.core.launcher.MainLauncher");
+            launcherClass = tuscanyCL.loadClass(className);
         } catch (ClassNotFoundException e) {
-            System.err.println(e);
-            e.printStackTrace();
-            System.err.println("Main-Class not found: " + e.getMessage());
-            System.exit(1);
-
-        } catch (InvocationTargetException e) {
-            e.getCause().printStackTrace(System.err);
+            System.err.println("Tuscany bootstrapper not found: " + e.getMessage());
             System.exit(2);
-        } finally {
-            Thread.currentThread().setContextClassLoader(currentContextClassLoader);
+            throw new AssertionError();
+        }
+
+        Method mainMethod;
+        try {
+            mainMethod = launcherClass.getMethod("main", String[].class);
+        } catch (NoSuchMethodException e) {
+            // this is our class so the method should be there
+            throw new AssertionError(e);
+        }
+
+        try {
+            mainMethod.invoke(null, new Object[]{args});
+        } catch (IllegalAccessException e) {
+            throw new AssertionError(e);
+        } catch (IllegalArgumentException e) {
+            throw new AssertionError(e);
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
         }
     }
 
-    protected static ClassLoader getTuscanyClassLoader() {
-        // assume that even though the the rest of tuscany jars are not loaded
-        // it co-located with the rest of the tuscany jars.
-        File tuscanylib = findLoadLocation();
-        File[] jars = tuscanylib.listFiles(FILE_FILTER);
+    protected ClassLoader getTuscanyClassLoader() {
+        File tuscanylib = findBootDir();
+        URL[] urls = scanDirectory(tuscanylib);
+        return new URLClassLoader(urls, getClass().getClassLoader());
+    }
+
+    /**
+     * Scan a directory for jar files to be added to the classpath.
+     *
+     * @param tuscanylib the directory to scan
+     * @return the URLs or jar files in that directory
+     */
+    protected URL[] scanDirectory(File tuscanylib) {
+        File[] jars = tuscanylib.listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".jar");
+            }
+        });
+
         URL[] urls = new URL[jars.length];
         for (int i = 0; i < jars.length; i++) {
             try {
@@ -83,33 +101,35 @@ public class MainLauncherBooter {
                 throw new AssertionError();
             }
         }
-        return new URLClassLoader(urls, MainLauncherBooter.class.getClassLoader());
+        return urls;
     }
 
-    protected static File findLoadLocation() {
+    /**
+     * Find the directory containing the bootstrap jars.
+     * If the <code>tuscany.bootDir</code> system property is set then its value is used as the boot directory.
+     * Otherwise, we locate a jar file containing this class and return a "boot" directory that is a sibling
+     * to the directory that contains it. This class must be loaded from a jar file located on the local filesystem.
+     *
+     * @return the directory of the bootstrap jars
+     */
+    protected File findBootDir() {
+        String property = System.getProperty("tuscany.bootDir");
+        if (property != null) {
+            return new File(property);
+        }
 
-        String resourceName = MainLauncherBooter.class.getName().replace('.', '/') + ".class";
-        URL dirURL = MainLauncherBooter.class.getClassLoader().getResource(resourceName);
-        String location = dirURL.getFile();
-        // boolean jarred = false;
-        if ("jar".equals(dirURL.getProtocol())) {
-            // jarred = true;
-            int sep = location.indexOf('!');
-            if (sep != -1) {
-                location = location.substring(0, sep);
-            }
+        URL url = MainLauncherBooter.class.getResource("MainLauncherBooter.class");
+        if (!"jar".equals(url.getProtocol())) {
+            throw new IllegalStateException("Must be run from a jar: " + url);
         }
-        if (location.startsWith("file:")) {
-            location = location.substring(5);
+        String jarLocation = url.toString();
+        jarLocation = jarLocation.substring(4, jarLocation.lastIndexOf("!/"));
+        if (!jarLocation.startsWith("file:")) {
+            throw new IllegalStateException("Must be run from a local filesystem: " + jarLocation);
         }
-        if (File.separatorChar == '\\'
-                && location.length() > 2
-                && location.charAt(0) == '/'
-                && location.charAt(2) == ':') {
-            location = location.substring(1);
-        }
-        File locfile = new File(location);
-        return locfile.getParentFile();
+
+        File jarFile = new File(URI.create(jarLocation));
+        return new File(jarFile.getParentFile().getParentFile(), "boot");
     }
 
     protected void usage() {
