@@ -47,7 +47,10 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <archive>
-                        <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+                        <manifest>
+                            <mainClass>org.apache.tuscany.launcher.MainLauncherBooter</mainClass>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
                     </archive>
                 </configuration>
             </plugin>
