@@ -39,7 +39,19 @@
             <includes>
                 <include>org.apache.tuscany:launcher</include>
             </includes>
+            <excludes>
+                <exclude>org.osoa:sca-api</exclude>
+            </excludes>
             <fileMode>755</fileMode>
+        </dependencySet>
+
+        <!-- include libraries in bin directory (with versions) -->
+        <dependencySet>
+            <outputDirectory>bin</outputDirectory>
+            <includes>
+                <include>org.osoa:sca-api</include>
+            </includes>
+            <fileMode>644</fileMode>
         </dependencySet>
 
         <!-- libraries needed to boot the runtime -->
