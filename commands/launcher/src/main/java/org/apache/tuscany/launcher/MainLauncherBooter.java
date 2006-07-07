@@ -69,42 +69,21 @@ public class MainLauncherBooter {
         }
     }
 
-    /**
-     * Create a classloader for a classpath supplied as individual file names.
-     *
-     * @param files  a list of file/directory names
-     * @param parent the parent for the new classloader
-     * @return a classloader that will load classes from the supplied path
-     */
-    protected static ClassLoader createClassLoader(ClassLoader parent, String[] files) {
-        URL[] urls = new URL[files.length];
-        for (int i = 0; i < files.length; i++) {
-            try {
-                File file = new File(files[i]);
-                urls[i] = file.toURI().toURL();
-            } catch (MalformedURLException e) {
-                // just ignore this value
-                continue;
-            }
-        }
-
-        return new URLClassLoader(urls, parent);
-    }
-
     protected static ClassLoader getTuscanyClassLoader() {
         // assume that even though the the rest of tuscany jars are not loaded
         // it co-located with the rest of the tuscany jars.
         File tuscanylib = findLoadLocation();
-        String[] jars = tuscanylib.list(FILE_FILTER);
-        String[] urls = new String[jars.length];
-        int i = 0;
-        for (String jar : jars) {
-
-            urls[i++] = tuscanylib.getAbsolutePath() + "/" + jar;
-
+        File[] jars = tuscanylib.listFiles(FILE_FILTER);
+        URL[] urls = new URL[jars.length];
+        for (int i = 0; i < jars.length; i++) {
+            try {
+                urls[i] = jars[i].toURI().toURL();
+            } catch (MalformedURLException e) {
+                // toURI should have escaped the URL
+                throw new AssertionError();
+            }
         }
-
-        return createClassLoader(MainLauncherBooter.class.getClassLoader(), urls);
+        return new URLClassLoader(urls, MainLauncherBooter.class.getClassLoader());
     }
 
     protected static File findLoadLocation() {
