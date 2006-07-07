@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ASCII"?>
+<composite xmlns="http://www.osoa.org/xmlns/sca/0.9"
+           xmlns:system="http://tuscany.apache.org/xmlns/system/0.9"
+           name="LocalWireComposite">
+
+    <component name="SourceComponent">
+		<system:implementation.system class="localwire.SourceImpl"/>
+		<references>
+			<reference name="target" target="TargetComponent"/>
+		</references>
+    </component>
+    <component name="TargetComponent">
+		<system:implementation.system class="localwire.TargetImpl"/>
+    </component>
+
+</composite>
