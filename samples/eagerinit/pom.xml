@@ -32,14 +32,6 @@
             <groupId>org.osoa</groupId>
             <artifactId>sca-api</artifactId>
         </dependency>
-
-<!-- the below really shouldn't be needed except for the lifetime demo -->
-        <dependency>
-            <groupId>org.apache.tuscany</groupId>
-            <artifactId>core</artifactId>
-            <version>${pom.version}</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <build>
