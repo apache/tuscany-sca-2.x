@@ -64,7 +64,7 @@ public class MainLauncherBooter {
 
         try {
             Object launcher = launcherClass.newInstance();
-            mainMethod.invoke(launcher, args);
+            mainMethod.invoke(launcher, new Object[] {args});
         } catch (InstantiationException e) {
             throw new AssertionError(e);
         } catch (IllegalAccessException e) {

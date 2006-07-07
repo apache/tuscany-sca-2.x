@@ -31,6 +31,7 @@ import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
+import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -43,6 +44,9 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
  * @version $Rev: 412898 $ $Date: 2006-06-08 21:31:50 -0400 (Thu, 08 Jun 2006) $
  */
 public class MainLauncher extends LauncherSupport {
+    private RuntimeComponent runtime;
+    private Deployer deployer;
+
     /**
      * Set the application classpath from a string delimited by path separators.
      * If the application classname is not defined, any jars on the path are examined
@@ -93,9 +97,14 @@ public class MainLauncher extends LauncherSupport {
      * @throws InvalidMainException      if the main method does not exist or is invalid
      * @throws InvocationTargetException if the main method throws an exception
      */
-    public void callApplication() throws InvalidMainException, ClassNotFoundException, InvocationTargetException {
+    public void callApplication(CompositeComponent<?> application)
+        throws InvalidMainException, ClassNotFoundException, InvocationTargetException {
+
         final ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        final CompositeContextImpl context = new CompositeContextImpl(application);
+
         Thread.currentThread().setContextClassLoader(getApplicationLoader());
+        context.start();
         try {
             if (getClassName() == null) {
                 throw new InvalidMainException("Main-Class not specified");
@@ -111,42 +120,73 @@ public class MainLauncher extends LauncherSupport {
                 throw new InvalidMainException(main.toString());
             }
             try {
-                main.invoke(null, getArgs());
+                main.invoke(null, new Object[]{getArgs()});
             } catch (IllegalAccessException e) {
                 // assertion as getMethod() should not have returned a method that is not accessible
                 throw new AssertionError();
             }
         } finally {
+            context.stop();
             Thread.currentThread().setContextClassLoader(cl);
         }
     }
 
     private CompositeComponent<?> bootRuntime() throws LoaderException {
-        XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory",
-                                                                 getClass().getClassLoader());
+        ClassLoader systemClassLoader = getClass().getClassLoader();
+        XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", systemClassLoader);
         Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), xmlFactory);
-        Deployer deployer = bootstrapper.createDeployer();
+        Deployer bootDeployer = bootstrapper.createDeployer();
 
         // create and start the core runtime
-        RuntimeComponent runtime = bootstrapper.createRuntime();
+        runtime = bootstrapper.createRuntime();
         runtime.start();
 
         // create a ComponentDefinition to represent the component we are going to deploy
         SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
-        URL scdl = getApplicationLoader().getResource("eagerinit.composite");
+        URL scdl = getClass().getResource("/META-INF/tuscany/system.scdl");
+        if (scdl == null) {
+            throw new LoaderException("No system scdl found");
+        }
         moduleImplementation.setScdlLocation(scdl);
-        moduleImplementation.setClassLoader(getApplicationLoader());
+        moduleImplementation.setClassLoader(systemClassLoader);
         ComponentDefinition<SystemCompositeImplementation> moduleDefinition =
-                new ComponentDefinition<SystemCompositeImplementation>("eagerinit", moduleImplementation);
+                new ComponentDefinition<SystemCompositeImplementation>(ComponentNames.TUSCANY_SYSTEM,
+                                                                       moduleImplementation);
 
-        // deploy the component into the system under the application root
-        System.out.println("Deploying composite component");
-        CompositeComponent root = runtime.getRootComponent();
-        CompositeComponent<?> composite = (CompositeComponent<?>) deployer.deploy(root, moduleDefinition);
+        // deploy the component into the runtime under the system parent
+        System.out.println("Deploying system component");
+        CompositeComponent parent = runtime.getSystemComponent();
+        CompositeComponent<?> composite = (CompositeComponent<?>) bootDeployer.deploy(parent, moduleDefinition);
 
-        // start the composite (which will fire the init method)
-        System.out.println("Starting composite component");
+        // start the system
+        System.out.println("Starting system component");
         composite.start();
+
+        // todo get the deployer from the system component
+        deployer = bootDeployer;
+        return composite;
+    }
+
+    private CompositeComponent<?> bootApplication() throws LoaderException {
+        ClassLoader applicationLoader = getApplicationLoader();
+
+        // create a ComponentDefinition to represent the component we are going to deploy
+        SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
+        URL scdl = applicationLoader.getResource("META-INF/sca/default.scdl");
+        if (scdl == null) {
+            throw new LoaderException("No application scdl found");
+        }
+        moduleImplementation.setScdlLocation(scdl);
+        moduleImplementation.setClassLoader(applicationLoader);
+        ComponentDefinition<SystemCompositeImplementation> moduleDefinition =
+                new ComponentDefinition<SystemCompositeImplementation>(ComponentNames.TUSCANY_SYSTEM,
+                                                                       moduleImplementation);
+
+        // deploy the component into the runtime under the system parent
+        System.out.println("Deploying application component");
+        CompositeComponent parent = runtime.getRootComponent();
+        CompositeComponent<?> composite = (CompositeComponent<?>) deployer.deploy(parent, moduleDefinition);
+
         return composite;
     }
 
@@ -160,7 +200,13 @@ public class MainLauncher extends LauncherSupport {
         try {
             parseArguments(args);
             bootRuntime();
-            callApplication();
+            CompositeComponent application = bootApplication();
+            application.start();
+            try {
+                callApplication(application);
+            } finally {
+                application.stop();
+            }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             System.err.println("Main-Class not found: " + e.getMessage());
