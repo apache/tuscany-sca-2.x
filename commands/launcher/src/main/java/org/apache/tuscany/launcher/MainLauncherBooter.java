@@ -56,14 +56,17 @@ public class MainLauncherBooter {
 
         Method mainMethod;
         try {
-            mainMethod = launcherClass.getMethod("main", String[].class);
+            mainMethod = launcherClass.getMethod("boot", String[].class);
         } catch (NoSuchMethodException e) {
             // this is our class so the method should be there
             throw new AssertionError(e);
         }
 
         try {
-            mainMethod.invoke(null, new Object[]{args});
+            Object launcher = launcherClass.newInstance();
+            mainMethod.invoke(launcher, args);
+        } catch (InstantiationException e) {
+            throw new AssertionError(e);
         } catch (IllegalAccessException e) {
             throw new AssertionError(e);
         } catch (IllegalArgumentException e) {

@@ -155,13 +155,12 @@ public class MainLauncher extends LauncherSupport {
      *
      * @param args the command line args
      */
-    public static void main(String[] args) throws Throwable {
+    public void boot(String[] args) throws Throwable {
         // The classpath to load the launcher should not contain any of Tuscany jar files except the launcher.
         try {
-            MainLauncher launcher = new MainLauncher();
-            launcher.parseArguments(args);
-            launcher.bootRuntime();
-            launcher.callApplication();
+            parseArguments(args);
+            bootRuntime();
+            callApplication();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             System.err.println("Main-Class not found: " + e.getMessage());
