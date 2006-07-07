@@ -45,11 +45,11 @@ public class MainLauncherBooter {
 
         Class<?> launcherClass;
         try {
-            String className = System.getProperty("tuscany.LauncherClass",
+            String className = System.getProperty("tuscany.launcherClass",
                                                   "org.apache.tuscany.core.launcher.MainLauncher");
             launcherClass = tuscanyCL.loadClass(className);
         } catch (ClassNotFoundException e) {
-            System.err.println("Tuscany bootstrapper not found: " + e.getMessage());
+            System.err.println("Tuscany bootstrap class not found: " + e.getMessage());
             System.exit(2);
             throw new AssertionError();
         }
