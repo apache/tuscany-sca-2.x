@@ -56,12 +56,12 @@ public interface OutboundWire<T> extends RuntimeWire<T> {
     /**
      * Adds the collection of invocation chains keyed by operation
      */
-    void addInvocationChains(Map<Method, OutboundInvocationChain> chains);
+    void addInvocationChains(Map<Method, OutboundInvocationChain> chain);
 
     /**
      * Adds the invocation chain associated with the given operation
      */
-    void addInvocationChain(Method method, OutboundInvocationChain chains);
+    void addInvocationChain(Method method, OutboundInvocationChain chain);
 
     /**
      * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end
