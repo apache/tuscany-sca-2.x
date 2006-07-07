@@ -37,8 +37,6 @@ public class MainLauncherBooter {
         }
     };
 
-    protected static ClassLoader tuscanyClassLoader;
-
     /**
      * Main method.
      *
@@ -94,22 +92,19 @@ public class MainLauncherBooter {
     }
 
     protected static ClassLoader getTuscanyClassLoader() {
-        if (null == tuscanyClassLoader) {
-            // assume that even though the the rest of tuscany jars are not loaded
-            // it co-located with the rest of the tuscany jars.
-            File tuscanylib = findLoadLocation();
-            String[] jars = tuscanylib.list(FILE_FILTER);
-            String[] urls = new String[jars.length];
-            int i = 0;
-            for (String jar : jars) {
+        // assume that even though the the rest of tuscany jars are not loaded
+        // it co-located with the rest of the tuscany jars.
+        File tuscanylib = findLoadLocation();
+        String[] jars = tuscanylib.list(FILE_FILTER);
+        String[] urls = new String[jars.length];
+        int i = 0;
+        for (String jar : jars) {
 
-                urls[i++] = tuscanylib.getAbsolutePath() + "/" + jar;
+            urls[i++] = tuscanylib.getAbsolutePath() + "/" + jar;
 
-            }
-
-            tuscanyClassLoader = createClassLoader(MainLauncherBooter.class.getClassLoader(), urls);
         }
-        return tuscanyClassLoader;
+
+        return createClassLoader(MainLauncherBooter.class.getClassLoader(), urls);
     }
 
     protected static File findLoadLocation() {
