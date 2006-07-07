@@ -23,25 +23,25 @@ import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.core.wire.PojoTargetInvoker;
 
 /**
- * Uses a scope context to resolve an implementation instance based on the current thread context
+ * Uses a scope component to resolve an implementation instance based on the current thread component
  *
  * @version $Rev$ $Date$
  */
 public class JavaTargetInvoker extends PojoTargetInvoker {
 
-    private JavaAtomicComponent context;
+    private JavaAtomicComponent component;
     private Object target;
 
     /**
      * Creates a new invoker
      *
      * @param operation the operation the invoker is associated with
-     * @param context   the scope context the component is resolved in
+     * @param context   the scope component the component is resolved in
      */
     public JavaTargetInvoker(Method operation, JavaAtomicComponent context) {
         super(operation);
-        assert context != null : "No atomic context specified";
-        this.context = context;
+        assert context != null : "No atomic component specified";
+        this.component = context;
     }
 
     /**
@@ -49,10 +49,10 @@ public class JavaTargetInvoker extends PojoTargetInvoker {
      */
     protected Object getInstance() throws TargetException {
         if (!cacheable) {
-            return context.getTargetInstance();
+            return component.getTargetInstance();
         } else {
             if (target == null) {
-                target = context.getTargetInstance();
+                target = component.getTargetInstance();
             }
             return target;
         }
@@ -62,7 +62,7 @@ public class JavaTargetInvoker extends PojoTargetInvoker {
         JavaTargetInvoker invoker = (JavaTargetInvoker) super.clone();
         invoker.target = null;
         invoker.cacheable = this.cacheable;
-        invoker.context = this.context;
+        invoker.component = this.component;
         return invoker;
     }
 }
