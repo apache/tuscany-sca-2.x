@@ -4,7 +4,7 @@
            name="EagerInitComposite">
 
     <component name="EagerInitComponent">
-        <system:implementation.system class="eagerinit.EagerInitImpl"/>
+        <implementation.java class="eagerinit.EagerInitImpl"/>
     </component>
 
 </composite>
