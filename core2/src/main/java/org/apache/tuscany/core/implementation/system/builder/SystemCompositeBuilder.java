@@ -20,7 +20,6 @@ import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
 import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponentImpl;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
@@ -40,8 +39,6 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  * @version $Rev$ $Date$
  */
 public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemCompositeImplementation> {
-    private BuilderRegistry builderRegistry;
-
     public SystemCompositeBuilder() {
     }
 
@@ -51,11 +48,6 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
 
     protected Class<SystemCompositeImplementation> getImplementationType() {
         return SystemCompositeImplementation.class;
-    }
-
-    @Autowire
-    public void setBuilderRegistry(BuilderRegistry builderRegistry) {
-        this.builderRegistry = builderRegistry;
     }
 
     public Component<?> build(CompositeComponent<?> parent,

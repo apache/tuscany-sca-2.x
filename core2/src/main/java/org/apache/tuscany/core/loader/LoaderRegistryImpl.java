@@ -90,7 +90,9 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         return loader.load(parent, reader, deploymentContext);
     }
 
-    public <MO extends ModelObject> MO load(CompositeComponent parent, URL url, Class<MO> type,
+    public <MO extends ModelObject> MO load(CompositeComponent parent,
+                                            URL url,
+                                            Class<MO> type,
                                             DeploymentContext ctx) throws LoaderException {
         try {
             XMLStreamReader reader;

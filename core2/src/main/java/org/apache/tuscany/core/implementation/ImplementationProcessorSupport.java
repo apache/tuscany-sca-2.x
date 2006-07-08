@@ -17,6 +17,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
+
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
@@ -26,6 +30,22 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  * @version $Rev$ $Date$
  */
 public abstract class ImplementationProcessorSupport implements ImplementationProcessor {
+    private IntrospectionRegistry registry;
+
+    @Autowire
+    public void setRegistry(IntrospectionRegistry registry) {
+        this.registry = registry;
+    }
+
+    @Init(eager = true)
+    public void init() {
+        registry.registerProcessor(this);
+    }
+
+    @Destroy
+    public void destroy() {
+        registry.unregisterProcessor(this);
+    }
 
     public void visitClass(CompositeComponent<?> parent, Class<?> clazz,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,

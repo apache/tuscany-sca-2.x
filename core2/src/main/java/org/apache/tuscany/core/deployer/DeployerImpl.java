@@ -55,12 +55,15 @@ public class DeployerImpl implements Deployer {
     }
 
     public DeployerImpl() {
+        xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
     }
 
+/*
     @Autowire
     public void setXmlFactory(XMLInputFactory xmlFactory) {
         this.xmlFactory = xmlFactory;
     }
+*/
 
     //FIXME allow autowire to register multiple service types
     @Autowire

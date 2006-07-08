@@ -152,6 +152,9 @@
     <component name="system.componentBuilder">
         <system:implementation.system class="org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder"/>
     </component>
+    <component name="system.compositeBuilder">
+        <system:implementation.system class="org.apache.tuscany.core.implementation.system.builder.SystemCompositeBuilder"/>
+    </component>
 
     <!-- Java implementation type -->
     <component name="java.implementationLoader">

@@ -23,8 +23,8 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -39,7 +39,11 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemComponentBuilder implements ComponentBuilder<SystemImplementation> {
+public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImplementation> {
+
+    protected Class<SystemImplementation> getImplementationType() {
+        return SystemImplementation.class;
+    }
 
     public AtomicComponent<?> build(CompositeComponent<?> parent,
                                     ComponentDefinition<SystemImplementation> definition,

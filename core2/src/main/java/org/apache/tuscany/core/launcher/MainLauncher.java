@@ -162,9 +162,7 @@ public class MainLauncher extends LauncherSupport {
         System.out.println("Starting system component");
         composite.start();
 
-        // todo get the deployer from the system component
-        deployer = bootDeployer;
-//        deployer = (Deployer) composite.getChild("deployer").getServiceInstance();
+        deployer = (Deployer) composite.getChild("deployer").getServiceInstance();
         return composite;
     }
 
