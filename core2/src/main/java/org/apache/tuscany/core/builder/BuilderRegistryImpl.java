@@ -114,13 +114,6 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         Component<?> component = componentBuilder.build(parent, componentDefinition, deploymentContext);
         ComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
         assert componentType != null : "Component type must be set";
-        for (ServiceDefinition service : componentType.getServices().values()) {
-            component.addInboundWire(createWire(service));
-        }
-        for (ReferenceTarget reference : componentDefinition.getReferenceTargets().values()) {
-            component.addOutboundWire(
-                createWire(reference, componentType.getReferences().get(reference.getReferenceName())));
-        }
         return component;
     }
 

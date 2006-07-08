@@ -32,13 +32,20 @@
             <groupId>org.osoa</groupId>
             <artifactId>sca-api</artifactId>
         </dependency>
-
-<!-- the below really shouldn't be needed except for the demo -->
-        <dependency>
-            <groupId>org.apache.tuscany</groupId>
-            <artifactId>core</artifactId>
-            <version>${pom.version}</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>localwire.LocalWireClient</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

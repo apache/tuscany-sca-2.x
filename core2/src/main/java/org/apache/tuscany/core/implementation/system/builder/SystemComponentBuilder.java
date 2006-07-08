@@ -103,9 +103,10 @@ public class SystemComponentBuilder implements ComponentBuilder<SystemImplementa
         // handle references directly with no proxies
         for (ReferenceTarget target : definition.getReferenceTargets().values()) {
             String referenceName = target.getReferenceName();
-            Class interfaze = target.getReference().getServiceContract().getInterfaceClass();
+            JavaMappedReference referenceDefiniton = componentType.getReferences().get(referenceName);
+            Class interfaze = referenceDefiniton.getServiceContract().getInterfaceClass();
             OutboundWire<?> wire;
-            if (target.getReference().isAutowire()) {
+            if (referenceDefiniton.isAutowire()) {
                 wire = new SystemOutboundAutowire(referenceName, interfaze, autowireContext);
             } else {
                 //FIXME support multiplicity!
