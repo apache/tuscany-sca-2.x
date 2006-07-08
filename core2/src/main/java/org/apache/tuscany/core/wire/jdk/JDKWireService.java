@@ -45,14 +45,14 @@ public class JDKWireService implements WireService {
             InboundWire<T> inbound = (InboundWire<T>) wire;
             JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(inbound.getInvocationChains());
             Class<T> interfaze = inbound.getBusinessInterface();
-            return interfaze.cast(Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-                new Class[]{interfaze}, handler));
+            ClassLoader cl = interfaze.getClassLoader();
+            return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
         } else if (wire instanceof OutboundWire) {
             OutboundWire<T> inbound = (OutboundWire<T>) wire;
             JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(inbound.getInvocationChains());
             Class<T> interfaze = inbound.getBusinessInterface();
-            return interfaze.cast(Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-                new Class[]{interfaze}, handler));
+            ClassLoader cl = interfaze.getClassLoader();
+            return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
         } else {
             ProxyCreationException e = new ProxyCreationException("Invalid wire type");
             e.setIdentifier(wire.getClass().getName());
