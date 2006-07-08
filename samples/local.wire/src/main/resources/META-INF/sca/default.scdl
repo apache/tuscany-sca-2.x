@@ -4,13 +4,13 @@
            name="LocalWireComposite">
 
     <component name="SourceComponent">
-		<system:implementation.system class="localwire.SourceImpl"/>
+		<implementation.java class="localwire.SourceImpl"/>
 		<references>
 			<reference name="target" target="TargetComponent"/>
 		</references>
     </component>
     <component name="TargetComponent">
-		<system:implementation.system class="localwire.TargetImpl"/>
+		<implementation.java class="localwire.TargetImpl"/>
     </component>
 
 </composite>

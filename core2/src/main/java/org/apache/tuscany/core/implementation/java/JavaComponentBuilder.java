@@ -26,7 +26,17 @@ import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import org.apache.tuscany.core.wire.OutboundWireImpl;
+import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.InboundWireImpl;
+import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -35,6 +45,8 @@ import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.ReferenceTarget;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 
 /**
  * Builds a Java-based atomic context from a component definition
@@ -100,9 +112,51 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             configuration.addReferenceSite(reference.getName(), reference.getMember());
         }
 
-        return new JavaAtomicComponent(definition.getName(), configuration);
+        JavaAtomicComponent component = new JavaAtomicComponent(definition.getName(), configuration);
+        for (ServiceDefinition service : componentType.getServices().values()) {
+            component.addInboundWire(createWire(service));
+        }
+        for (ReferenceTarget reference : definition.getReferenceTargets().values()) {
+            component.addOutboundWire(
+                createWire(reference, componentType.getReferences().get(reference.getReferenceName())));
+        }
+        return component;
     }
 
+
+    //FIXME attach referenceDefinition to ref in loader
+    private OutboundWire createWire(ReferenceTarget reference, ReferenceDefinition def) {
+        //TODO multiplicity
+        if (reference.getTargets().size() != 1) {
+            throw new UnsupportedOperationException();
+        }
+        Class<?> interfaze = def.getServiceContract().getInterfaceClass();
+        OutboundWire wire = new OutboundWireImpl();
+        wire.setTargetName(new QualifiedName(reference.getTargets().get(0).toString()));
+        wire.setBusinessInterface(interfaze);
+        wire.setReferenceName(reference.getReferenceName());
+        for (Method method : interfaze.getMethods()) {
+            //TODO handle policy
+            OutboundInvocationChain chain = new OutboundInvocationChainImpl(method);
+            wire.addInvocationChain(method, chain);
+        }
+        return wire;
+    }
+
+    private InboundWire createWire(ServiceDefinition service) {
+        Class<?> interfaze = service.getServiceContract().getInterfaceClass();
+        InboundWire wire = new InboundWireImpl();
+        wire.setBusinessInterface(interfaze);
+        wire.setServiceName(service.getName());
+        for (Method method : interfaze.getMethods()) {
+            InboundInvocationChain chain = new InboundInvocationChainImpl(method);
+            // TODO handle policy
+            //TODO statement below could be cleaner
+            chain.addInterceptor(new InvokerInterceptor());
+            wire.addInvocationChain(method, chain);
+        }
+        return wire;
+    }
 
     protected Class<JavaImplementation> getImplementationType() {
         return JavaImplementation.class;
