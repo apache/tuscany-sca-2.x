@@ -13,10 +13,11 @@
  */
 package localwire;
 
-import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
 /**
+ * The component at the source end of the wire.
+ *
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
@@ -26,10 +27,11 @@ public class SourceImpl implements Source {
     public SourceImpl() {
     }
 
-    @Init(eager = true)
-    public void init() {
-    }
-
+    /**
+     * The reference to the other component. Default introspection will make this a reference.
+     *
+     * @param target the other component
+     */
     public void setTarget(Target target) {
         this.target = target;
     }

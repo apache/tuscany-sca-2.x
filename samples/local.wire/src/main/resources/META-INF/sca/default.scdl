@@ -3,12 +3,16 @@
            xmlns:system="http://tuscany.apache.org/xmlns/system/0.9"
            name="LocalWireComposite">
 
+    <!-- the component that is the source end of the wire -->
     <component name="SourceComponent">
 		<implementation.java class="localwire.SourceImpl"/>
 		<references>
-			<reference name="target" target="TargetComponent"/>
+            <!-- specify which component will be the target of the "target" reference -->
+            <reference name="target" target="TargetComponent"/>
 		</references>
     </component>
+
+    <!-- the component that is the target of the wire -->
     <component name="TargetComponent">
 		<implementation.java class="localwire.TargetImpl"/>
     </component>
