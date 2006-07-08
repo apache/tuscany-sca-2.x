@@ -25,7 +25,7 @@ public class MethodEventInvoker<T> implements EventInvoker<T> {
         } catch (IllegalAccessException e) {
             throw new AssertionError("Method is not accessible [" + method + "]");
         } catch (InvocationTargetException e) {
-            throw new ObjectCallbackException("Exception thrown by callback method [" + method + "]", e);
+            throw new ObjectCallbackException("Exception thrown by callback method [" + method + "]", e.getCause());
         }
     }
 
