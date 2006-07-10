@@ -29,16 +29,26 @@
     <name>Tuscany SCA Data Bindings</name>
 
     <modules>
-	 <!--
         <module>databinding-axiom</module>
-        <module>databinding-castor</module>
+        <!--<module>databinding-castor</module>-->
         <module>databinding-framework</module>
         <module>databinding-jaxb</module>
         <module>databinding-sdo</module>
         <module>databinding-test</module>
         <module>databinding-xmlbeans</module>
-		  
-		  -->
     </modules>
+	<dependencies>
+ 
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>jmock</groupId>
+			<artifactId>jmock</artifactId>
+		</dependency>
+
+	</dependencies>
 
 </project>

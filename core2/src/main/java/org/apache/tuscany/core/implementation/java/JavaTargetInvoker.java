@@ -23,7 +23,7 @@ import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.core.wire.PojoTargetInvoker;
 
 /**
- * Uses a scope component to resolve an implementation instance based on the current thread component
+ * Uses a component to resolve an implementation instance based on the current thread component
  *
  * @version $Rev$ $Date$
  */
