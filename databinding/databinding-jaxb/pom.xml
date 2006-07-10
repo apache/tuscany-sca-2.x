@@ -56,6 +56,8 @@
 
 	</dependencies>
 
+ 
+
 	<repositories>
 		<repository>
 			<snapshots>
@@ -67,6 +69,17 @@
 			<layout>legacy</layout>
 		</repository>
 	</repositories>
+       <pluginRepositories>
+        <pluginRepository>
+               <snapshots>
+                <enabled>true</enabled>
+               </snapshots>
+               <id>java.net</id>
+               <name>java.net Maven 1.x Repository</name>
+               <url>https://maven-repository.dev.java.net/repository</url>
+               <layout>legacy</layout>
+              </pluginRepository>
+       </pluginRepositories>
 
 	<build>
 		<testResources>
