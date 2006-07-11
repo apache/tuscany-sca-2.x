@@ -28,12 +28,6 @@
     <description>Data Binding based on SDO.</description>
     <version>1.0-sandbox-SNAPSHOT</version>
 
-    <repositories>
-        <repository>
-            <id>jsdelfino</id>
-            <url>http://people.apache.org/~jsdelfino/maven2</url>
-        </repository>
-    </repositories>
     <dependencies>
 		<dependency>
 			<groupId>org.apache.tuscany.databinding</groupId>
@@ -51,28 +45,22 @@
         <dependency>
             <groupId>org.apache.tuscany</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
-            <version>incubating-M1</version>
+            <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
         </dependency>
     </dependencies>
     
-    <pluginRepositories>
-        <pluginRepository>
-            <id>jsdelfino</id>
-            <url>http://people.apache.org/~jsdelfino/maven2</url>
-        </pluginRepository>
-    </pluginRepositories>
     <build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.tuscany</groupId>
 				<artifactId>tuscany-sdo-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
 				<executions>
 					<execution>
 						<id>generate-sdo</id>
