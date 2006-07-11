@@ -62,6 +62,12 @@
         </dependency>
     </dependencies>
     
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jsdelfino</id>
+            <url>http://people.apache.org/~jsdelfino/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
     <build>
 		<plugins>
 			<plugin>
@@ -70,7 +76,7 @@
 				<executions>
 					<execution>
 						<id>generate-sdo</id>
-						<phase>generate-sources</phase>
+						<phase>generate-test-sources</phase>
 						<configuration>
 							<schemaFile>${basedir}/src/test/resources/ipo.xsd</schemaFile>
 							<javaPackage>com.example.ipo.sdo</javaPackage>
