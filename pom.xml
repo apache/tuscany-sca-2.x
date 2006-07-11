@@ -31,7 +31,7 @@
 
     <modules>
         <module>spi</module>
-        <module>core2</module>
+        <module>core</module>
         <module>test</module>
         <module>containers</module>
         <module>databinding</module>
