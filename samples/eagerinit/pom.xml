@@ -18,19 +18,19 @@
     <parent>
         <groupId>org.apache.tuscany.samples.sca</groupId>
         <artifactId>tuscany-samples-sca</artifactId>
-        <version>1.0-sandbox-SNAPSHOT</version>
+        <version>1.0-chianti-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sample-eagerinit</artifactId>
     <packaging>jar</packaging>
     <name>Tuscany Eagerinit Sample</name>
     <description>A sample implementation showing Eager init using an SCA component.</description>
-    <version>1.0-sandbox-SNAPSHOT</version>
+    <version>1.0-chianti-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>org.osoa</groupId>
-            <artifactId>sca-api</artifactId>
+            <artifactId>sca-api-r0.92</artifactId>
         </dependency>
     </dependencies>
 

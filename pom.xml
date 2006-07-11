@@ -18,15 +18,15 @@
     <parent>
         <groupId>org.apache.tuscany</groupId>
         <artifactId>project</artifactId>
-        <version>1.0-sandbox-SNAPSHOT</version>
+        <version>1.0-chianti-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sca</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany SCA Implementation Project</name>
-    <version>1.0-sandbox-SNAPSHOT</version>
+    <version>1.0-chianti-SNAPSHOT</version>
     <properties>
-        <sca.version>1.0-sandbox-SNAPSHOT</sca.version>
+        <sca.version>1.0-chianti-SNAPSHOT</sca.version>
     </properties>
 
     <modules>
@@ -50,8 +50,8 @@
             <!-- org.osoa.sca API -->
             <dependency>
                 <groupId>org.osoa</groupId>
-                <artifactId>sca-api</artifactId>
-                <version>1.0-sandbox-r0.92-SNAPSHOT</version>
+                <artifactId>sca-api-r0.92</artifactId>
+                <version>1.0-chianti-SNAPSHOT</version>
                 <scope>compile</scope>
             </dependency>
             <!-- javax.servlet API -->

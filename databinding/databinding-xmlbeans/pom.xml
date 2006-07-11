@@ -19,14 +19,13 @@
 	<parent>
 		<groupId>org.apache.tuscany.databinding</groupId>
 		<artifactId>databinding</artifactId>
-		<version>1.0-sandbox-SNAPSHOT</version>
+		<version>1.0-chianti-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>databinding-xmlbeans</artifactId>
 	<name>Tuscany XmlBeans Data Binding</name>
 	<description>Tuscany XmlBeans Data Binding</description>
-	<version>1.0-sandbox-SNAPSHOT</version>
 
 	<dependencies>
 		<dependency>

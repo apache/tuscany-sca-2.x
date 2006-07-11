@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.apache.tuscany.containers</groupId>
         <artifactId>containers</artifactId>
-        <version>1.0-sandbox-SNAPSHOT</version>
+        <version>1.0-chianti-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
