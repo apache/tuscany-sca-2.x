@@ -30,7 +30,7 @@
 
     <modules>
         <module>databinding-axiom</module>
-        <!--<module>databinding-castor</module>-->
+        <module>databinding-castor</module>
         <module>databinding-framework</module>
         <module>databinding-jaxb</module>
         <module>databinding-sdo</module>

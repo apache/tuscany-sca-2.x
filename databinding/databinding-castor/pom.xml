@@ -71,6 +71,13 @@
 						<artifactId>commons-logging</artifactId>
 						<version>1.0.4</version>
 					</dependency>
+					<!--  Adding Apache xerces to workaround the castor references for SAX parser -->
+					<dependency>
+						<groupId>xerces</groupId>
+						<artifactId>xercesImpl</artifactId>
+						<version>2.8.0</version>
+					</dependency>
+
 				</dependencies>
 
 				<executions>
@@ -80,7 +87,7 @@
 						<configuration>
 							<tasks> 
 								<taskdef name="castor-srcgen"
-									classname="org.exolab.castor.tools.ant.taskdefs.CastorSourceGenTask" classpathref="maven.compile.classpath" />
+									classname="org.exolab.castor.tools.ant.taskdefs.CastorSourceGenTask" classpathref="maven.plugin.classpath" />
 								<mkdir dir="${project.build.directory}/castor-source"></mkdir>
 								<castor-srcgen file="${basedir}/src/test/resources/ipo.xsd"
 									todir="${project.build.directory}/castor-source" package="com.example.ipo.castor" types="j2" warnings="false" 
