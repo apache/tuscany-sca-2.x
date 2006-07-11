@@ -4,7 +4,6 @@ import junit.framework.TestCase;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.apache.tuscany.container.spring.mock.TestBean;
-import junit.framework.TestCase;
 
 /**
  * Tests the SCA extensible schema elements for Spring's XML configuration files

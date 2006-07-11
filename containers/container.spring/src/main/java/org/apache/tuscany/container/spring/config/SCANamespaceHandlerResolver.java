@@ -27,7 +27,7 @@ public class SCANamespaceHandlerResolver extends DefaultNamespaceHandlerResolver
     public SCANamespaceHandlerResolver(String handlerMappingsLocation,
                                        ClassLoader classLoader,
                                        CompositeComponentType componentType) {
-        super(handlerMappingsLocation, classLoader);
+        super(classLoader, handlerMappingsLocation);
         handler = new SCANamespaceHandler(componentType);
     }
 

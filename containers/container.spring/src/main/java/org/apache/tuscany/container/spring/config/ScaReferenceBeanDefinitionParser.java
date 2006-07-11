@@ -1,17 +1,9 @@
 package org.apache.tuscany.container.spring.config;
 
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.ConstructorArgumentValues;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.w3c.dom.Element;
-
-import org.apache.tuscany.spi.model.CompositeComponentType;
 
 /**
  * Processes <code>reference</code> elements in a Spring configuration

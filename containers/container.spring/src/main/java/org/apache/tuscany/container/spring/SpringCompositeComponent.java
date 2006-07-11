@@ -201,5 +201,11 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
         public Resource getResource(String location) {
             return null;
         }
+
+        public ClassLoader getClassLoader() {
+            // REVIEW: this is almost certainly flawed, but it's not clear how the SCA runtime's
+            // resource loading mechanism is exposed right now.
+            return this.getClass().getClassLoader();
+        }
     }
 }
