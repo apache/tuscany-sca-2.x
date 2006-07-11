@@ -25,6 +25,22 @@
     <name>Tuscany SCA Core Implementation</name>
     <description>Core Tuscany runtime.</description>
 
+    <!--
+        add in Apache M1 repository to allow download of commonj snapshot
+        remove this when we update to a release version which can be fetched from ibiblio
+    -->
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>apache-legacy</id>
+            <name>Apache Snapshot Maven 1.x Repository</name>
+            <url>http://people.apache.org/repository</url>
+            <layout>legacy</layout>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany</groupId>
@@ -49,6 +65,10 @@
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-commonj_1.1_spec</artifactId>
         </dependency>
 
         <dependency>
