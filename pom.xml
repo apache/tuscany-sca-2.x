@@ -34,7 +34,7 @@
         <module>core2</module>
         <module>test</module>
         <module>containers</module>
-        <module>databinding</module>
+        <!--<module>databinding</module>-->
         <module>bindings</module>
         <module>services</module>
         <module>commands/launcher</module>
