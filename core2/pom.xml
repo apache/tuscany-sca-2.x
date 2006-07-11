@@ -48,6 +48,12 @@
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany</groupId>
+            <artifactId>commonj-api_1.1</artifactId>
+            <version>${sca.version}</version>
+            <scope>compile</scope>
+        </dependency>
 
         <dependency>
             <groupId>woodstox</groupId>
@@ -65,10 +71,6 @@
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-commonj_1.1_spec</artifactId>
         </dependency>
 
         <dependency>
