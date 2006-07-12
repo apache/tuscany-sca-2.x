@@ -16,6 +16,9 @@
  */
 package org.apache.tuscany.core.implementation.system.builder;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
 import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponentImpl;
@@ -32,9 +35,10 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.Include;
 
 /**
- * Produces system compisite components by evaluating an assembly
+ * Produces system composite components by evaluating an assembly.
  *
  * @version $Rev$ $Date$
  */
@@ -55,18 +59,45 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
                               DeploymentContext deploymentContext) throws BuilderConfigException {
         SystemCompositeImplementation impl = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = impl.getComponentType();
-        SystemCompositeComponent<?> context =
-            new SystemCompositeComponentImpl(componentDefinition.getName(), parent, getAutowireContext(parent));
-        for (ComponentDefinition<? extends Implementation> childComponentDefinition
-            : componentType.getComponents().values()) {
-            context.register(builderRegistry.build(context, childComponentDefinition, deploymentContext));
-        }
+
+        // create lists of all components and services in this composite
+        List<ComponentDefinition<? extends Implementation<?>>> allComponents =
+                new ArrayList<ComponentDefinition<? extends Implementation<?>>>();
+        allComponents.addAll(componentType.getComponents().values());
+
+        List<BoundServiceDefinition<? extends Binding>> allBoundServices =
+                new ArrayList<BoundServiceDefinition<? extends Binding>>();
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             if (serviceDefinition instanceof BoundServiceDefinition) {
-                context.register(builderRegistry.build(context,
-                    (BoundServiceDefinition<? extends Binding>) serviceDefinition,
-                    deploymentContext));
+                BoundServiceDefinition<? extends Binding> boundService =
+                        (BoundServiceDefinition<? extends Binding>) serviceDefinition;
+                allBoundServices.add(boundService);
             }
+        }
+
+        // add in components and services from included composites
+        for (Include include : componentType.getIncludes().values()) {
+            CompositeComponentType<?,?,?> included = include.getIncluded();
+            allComponents.addAll(included.getComponents().values());
+            for (ServiceDefinition serviceDefinition : included.getServices().values()) {
+                if (serviceDefinition instanceof BoundServiceDefinition) {
+                    BoundServiceDefinition<? extends Binding> boundService =
+                            (BoundServiceDefinition<? extends Binding>) serviceDefinition;
+                    allBoundServices.add(boundService);
+                }
+            }
+        }
+
+        // create the composite component
+        String name = componentDefinition.getName();
+        AutowireComponent autowireContext = getAutowireContext(parent);
+        SystemCompositeComponent<?> context = new SystemCompositeComponentImpl(name, parent, autowireContext);
+        for (ComponentDefinition<? extends Implementation> childComponentDefinition : allComponents) {
+            context.register(builderRegistry.build(context, childComponentDefinition, deploymentContext));
+        }
+
+        for (BoundServiceDefinition<? extends Binding> serviceDefinition : allBoundServices) {
+            context.register(builderRegistry.build(context, serviceDefinition, deploymentContext));
         }
         return context;
     }

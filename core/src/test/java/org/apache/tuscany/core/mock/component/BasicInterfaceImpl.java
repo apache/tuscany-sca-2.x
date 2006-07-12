@@ -26,7 +26,9 @@ public class BasicInterfaceImpl implements BasicInterface {
 
     @Property
     public String publicProperty;
+    @Reference
     public BasicInterface publicReference;
+    @Property
     protected String protectedProperty;
     @Reference
     protected BasicInterface protectedReference;
@@ -38,7 +40,7 @@ public class BasicInterfaceImpl implements BasicInterface {
         this.privateProperty = privateProperty;
     }
 
-
+    @Reference
     public void setPrivateReference(BasicInterface privateReference) {
         this.privateReference = privateReference;
     }

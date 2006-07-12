@@ -81,14 +81,16 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         // handle properties
         for (JavaMappedProperty<?> property : componentType.getProperties().values()) {
             ObjectFactory<?> factory = property.getDefaultValueFactory();
-            if (property.getMember() instanceof Field) {
-                configuration.addPropertyInjector(new FieldInjector((Field) property.getMember(), factory));
-            } else if (property.getMember() instanceof Method) {
-                configuration.addPropertyInjector(new MethodInjector((Method) property.getMember(), factory));
-            } else {
-                BuilderConfigException e = new BuilderConfigException("Invalid property injection site");
-                e.setIdentifier(property.getName());
-                throw e;
+            if (factory != null) {
+                if (property.getMember() instanceof Field) {
+                    configuration.addPropertyInjector(new FieldInjector((Field) property.getMember(), factory));
+                } else if (property.getMember() instanceof Method) {
+                    configuration.addPropertyInjector(new MethodInjector((Method) property.getMember(), factory));
+                } else {
+                    BuilderConfigException e = new BuilderConfigException("Invalid property injection site");
+                    e.setIdentifier(property.getName());
+                    throw e;
+                }
             }
         }
         // setup reference injection sites

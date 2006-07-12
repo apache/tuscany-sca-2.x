@@ -96,6 +96,18 @@ public class BootstrapDeployerTestCase extends MockObjectTestCase {
         assertEquals(1, included.getComponents().size());
     }
 
+    public void testBoot1Deployment() throws LoaderException {
+        URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
+        implementation.setScdlLocation(scdl);
+        parent.expects(once()).method("register").withAnyArguments();
+
+        // load the boot1 file using the bootstrap deployer
+        componentDefinition.setName("simple");
+        Component<?> component = deployer.deploy((CompositeComponent<?>) parent.proxy(), componentDefinition);
+        assertNotNull(component);
+        parent.verify();
+    }
+
     public void testBoot2Deployment() throws LoaderException {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot2.scdl");
         implementation.setScdlLocation(scdl);
