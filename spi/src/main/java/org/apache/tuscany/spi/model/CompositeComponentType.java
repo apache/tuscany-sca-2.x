@@ -20,16 +20,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A specialization of component type for composite components
+ * A specialization of component type for composite components.
  *
  * @version $Rev$ $Date$
  */
 public class CompositeComponentType<S extends ServiceDefinition,
     R extends ReferenceDefinition,
     P extends Property<?>> extends ComponentType<S, R, P> {
+
     private String name;
     private final Map<String, ComponentDefinition<? extends Implementation<?>>> components =
         new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
+    private final Map<String, Include> includes = new HashMap<String, Include>();
 
     public String getName() {
         return name;
@@ -45,5 +47,13 @@ public class CompositeComponentType<S extends ServiceDefinition,
 
     public void add(ComponentDefinition<? extends Implementation<?>> componentDefinition) {
         components.put(componentDefinition.getName(), componentDefinition);
+    }
+
+    public Map<String, Include> getIncludes() {
+        return includes;
+    }
+
+    public void add(Include include) {
+        includes.put(include.getName(), include);
     }
 }
