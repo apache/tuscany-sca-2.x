@@ -35,7 +35,7 @@ import org.apache.tuscany.spi.loader.LoaderUtil;
  */
 public class SystemBindingLoader extends LoaderExtension<SystemBinding> {
     public static final QName SYSTEM_BINDING =
-        new QName("http://tuscany.apache.org/xmlns/system/0.9", "binding.system");
+        new QName("http://tuscany.apache.org/xmlns/system/1.0-chianti-SNAPSHOT", "binding.system");
 
     public SystemBindingLoader() {
     }

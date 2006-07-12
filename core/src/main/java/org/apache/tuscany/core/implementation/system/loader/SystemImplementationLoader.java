@@ -35,7 +35,7 @@ import org.apache.tuscany.spi.loader.LoaderUtil;
  */
 public class SystemImplementationLoader extends LoaderExtension<SystemImplementation> {
     public static final QName SYSTEM_IMPLEMENTATION =
-        new QName("http://tuscany.apache.org/xmlns/system/0.9", "implementation.system");
+        new QName("http://tuscany.apache.org/xmlns/system/1.0-chianti-SNAPSHOT", "implementation.system");
 
     public SystemImplementationLoader() {
     }
