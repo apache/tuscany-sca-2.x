@@ -90,6 +90,8 @@
                 <filtering>true</filtering>
             </testResource>
         </testResources>
+        
+        <testSourceDirectory>${project.build.directory}/jaxb-source</testSourceDirectory>
 
         <plugins>
 
@@ -100,7 +102,7 @@
                 <executions>
                     <execution>
                         <id>generate-jaxb</id>
-                        <phase>generate-sources</phase>
+                        <phase>generate-test-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
