@@ -25,7 +25,6 @@
     <packaging>jar</packaging>
     <name>Tuscany Eagerinit Sample</name>
     <description>A sample implementation showing Eager init using an SCA component.</description>
-    <version>1.0-chianti-SNAPSHOT</version>
 
     <dependencies>
         <dependency>

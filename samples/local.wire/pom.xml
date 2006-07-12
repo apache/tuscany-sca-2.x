@@ -25,7 +25,6 @@
     <packaging>jar</packaging>
     <name>Tuscany Local Wiring Sample</name>
     <description>A sample implementation showing wiring to a local service.</description>
-    <version>1.0-chianti-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
