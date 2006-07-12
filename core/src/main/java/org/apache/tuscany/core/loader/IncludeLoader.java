@@ -14,44 +14,43 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.implementation.composite;
+package org.apache.tuscany.core.loader;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.Version;
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
-import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderUtil;
+import org.apache.tuscany.spi.model.Include;
 
 /**
- * Loader that handles an &lt;implementation.composite&gt; element.
+ * Loader that handles &lt;include&gt; elements.
  *
  * @version $Rev$ $Date$
  */
-public class ImplementationCompositeLoader extends LoaderExtension<CompositeImplementation> {
-    private static final QName IMPLEMENTATION_COMPOSITE =
-            new QName(Version.XML_NAMESPACE_1_0, "implementation.composite");
+public class IncludeLoader extends LoaderExtension<Include> {
+    private static final QName INCLUDE = new QName(XML_NAMESPACE_1_0, "include");
 
     public QName getXMLType() {
-        return IMPLEMENTATION_COMPOSITE;
+        return INCLUDE;
     }
 
-    public CompositeImplementation load(CompositeComponent parent,
-                                        XMLStreamReader reader,
-                                        DeploymentContext deploymentContext)
+    public Include load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 
-        assert IMPLEMENTATION_COMPOSITE.equals(reader.getName());
+        assert INCLUDE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
-        CompositeImplementation impl = new CompositeImplementation();
-        impl.setName(name);
+
+        Include include = new Include();
+        include.setName(name);
+
         LoaderUtil.skipToEndElement(reader);
-        return impl;
+        return include;
     }
 }
