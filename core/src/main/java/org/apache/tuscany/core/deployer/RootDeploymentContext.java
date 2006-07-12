@@ -16,6 +16,7 @@
  */
 package org.apache.tuscany.core.deployer;
 
+import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -31,18 +32,23 @@ public class RootDeploymentContext implements DeploymentContext {
     private final ClassLoader classLoader;
     private final XMLInputFactory xmlFactory;
     private final ScopeContainer moduleScope;
-
+    private final URL scdlLocation;
     /**
      * Constructor specifying the loader for application resources.
      *
      * @param classLoader the loader for application resources
      * @param xmlFactory  a factory that can be used to obtain an StAX XMLStreamReader
      * @param moduleScope the scope context representing this deployment's MODULE scope
+     * @param scdlLocation the location of the SCDL being deployed
      */
-    public RootDeploymentContext(ClassLoader classLoader, XMLInputFactory xmlFactory, ScopeContainer moduleScope) {
+    public RootDeploymentContext(ClassLoader classLoader,
+                                 XMLInputFactory xmlFactory,
+                                 ScopeContainer moduleScope,
+                                 URL scdlLocation) {
         this.classLoader = classLoader;
         this.xmlFactory = xmlFactory;
         this.moduleScope = moduleScope;
+        this.scdlLocation = scdlLocation;
     }
 
     public DeploymentContext getParent() {
@@ -59,5 +65,9 @@ public class RootDeploymentContext implements DeploymentContext {
 
     public ScopeContainer getModuleScope() {
         return moduleScope;
+    }
+
+    public URL getScdlLocation() {
+        return scdlLocation;
     }
 }

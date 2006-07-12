@@ -81,7 +81,7 @@ public class StAXLoaderRegistryImplTestCase extends MockObjectTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         name = new QName("http://mock", "test");
-        deploymentContext = new RootDeploymentContext(null, null, null);
+        deploymentContext = new RootDeploymentContext(null, null, null, null);
         registry = new LoaderRegistryImpl();
         mockMonitor = mock(LoaderRegistryImpl.Monitor.class);
         registry.setMonitor((LoaderRegistryImpl.Monitor) mockMonitor.proxy());

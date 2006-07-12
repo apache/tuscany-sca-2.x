@@ -56,7 +56,7 @@ public class ImportSDOLoaderTestCase extends TestCase {
         super.setUp();
         loader = new ImportSDOLoader();
         xmlFactory = XMLInputFactory.newInstance();
-        deploymentContext = new RootDeploymentContext(getClass().getClassLoader(), xmlFactory, null);
+        deploymentContext = new RootDeploymentContext(getClass().getClassLoader(), xmlFactory, null, null);
     }
 
     protected XMLStreamReader getReader(String xml) throws XMLStreamException {

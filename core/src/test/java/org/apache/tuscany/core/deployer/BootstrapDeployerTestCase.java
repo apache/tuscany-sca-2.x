@@ -41,6 +41,7 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.Include;
 
 /**
  * Verifies the default boostrap deployer
@@ -60,9 +61,9 @@ public class BootstrapDeployerTestCase extends MockObjectTestCase {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
         implementation.setScdlLocation(scdl);
         deployer.load(parent, componentDefinition, deploymentContext);
-        CompositeComponentType composite = implementation.getComponentType();
+        CompositeComponentType<ServiceDefinition,?,?> composite = implementation.getComponentType();
         assertNotNull(composite);
-        assertEquals("simple", composite.getName());
+        assertEquals("boot1", composite.getName());
 
         // check parse of <service>
         Map<String, ServiceDefinition> services = composite.getServices();
@@ -84,6 +85,15 @@ public class BootstrapDeployerTestCase extends MockObjectTestCase {
         // check introspection of implementation
         ComponentType<?, ?, ?> componentType = component.getImplementation().getComponentType();
         assertNotNull(componentType); // details checked in SystemComponentTypeLoaderTestCase
+
+        // check included component
+        Map<String, Include> includes = composite.getIncludes();
+        assertEquals(1, includes.size());
+        Include include = includes.get("boot1-include");
+        assertNotNull(include);
+        CompositeComponentType included = include.getIncluded();
+        assertNotNull(included);
+        assertEquals(1, included.getComponents().size());
     }
 
     public void testBoot2Deployment() throws LoaderException {
@@ -119,7 +129,7 @@ public class BootstrapDeployerTestCase extends MockObjectTestCase {
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
         Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), xmlFactory);
         deployer = (DeployerImpl) bootstrapper.createDeployer();
-        deploymentContext = new RootDeploymentContext(null, xmlFactory, null);
+        deploymentContext = new RootDeploymentContext(null, xmlFactory, null, null);
         implementation = new SystemCompositeImplementation();
         implementation.setClassLoader(getClass().getClassLoader());
         componentDefinition = new ComponentDefinition<SystemCompositeImplementation>(implementation);

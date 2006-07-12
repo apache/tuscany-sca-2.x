@@ -67,7 +67,7 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        deploymentContext = new RootDeploymentContext(null, null, createMock());
+        deploymentContext = new RootDeploymentContext(null, null, createMock(), null);
     }
 
     private ScopeContainer createMock() {

@@ -87,6 +87,6 @@ public class ServiceLoaderTestCase extends MockObjectTestCase {
         mockReader = mock(XMLStreamReader.class);
         mockRegistry = mock(LoaderRegistry.class);
         loader.setRegistry((LoaderRegistry) mockRegistry.proxy());
-        deploymentContext = new RootDeploymentContext(null, null, null);
+        deploymentContext = new RootDeploymentContext(null, null, null, null);
     }
 }

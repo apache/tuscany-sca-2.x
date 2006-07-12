@@ -16,6 +16,7 @@
  */
 package org.apache.tuscany.core.deployer;
 
+import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -30,17 +31,20 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 public class ChildDeploymentContext implements DeploymentContext {
     private final DeploymentContext parent;
     private final ClassLoader classLoader;
+    private final URL scdlLocation;
 
     /**
      * Constructor specifying the loader for application resources.
      *
      * @param parent the parent of this context
      * @param classLoader the loader for application resources
+     * @param scdlLocation the location of the SCDL being deployed
      */
-    public ChildDeploymentContext(DeploymentContext parent, ClassLoader classLoader) {
+    public ChildDeploymentContext(DeploymentContext parent, ClassLoader classLoader, URL scdlLocation) {
         assert parent != null;
         this.parent = parent;
         this.classLoader = classLoader;
+        this.scdlLocation = scdlLocation;
     }
 
     public DeploymentContext getParent() {
@@ -57,5 +61,9 @@ public class ChildDeploymentContext implements DeploymentContext {
 
     public ScopeContainer getModuleScope() {
         return parent.getModuleScope();
+    }
+
+    public URL getScdlLocation() {
+        return scdlLocation;
     }
 }

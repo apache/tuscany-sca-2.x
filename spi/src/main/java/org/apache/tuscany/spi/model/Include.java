@@ -16,6 +16,8 @@
  */
 package org.apache.tuscany.spi.model;
 
+import java.net.URL;
+
 /**
  * Model object that represents the include of a composite by value.
  * 
@@ -23,6 +25,8 @@ package org.apache.tuscany.spi.model;
  */
 public class Include extends ModelObject {
     private String name;
+    private URL scdlLocation;
+    private CompositeComponentType included;
 
     /**
      * Returns the name of the composite that is being included.
@@ -38,5 +42,37 @@ public class Include extends ModelObject {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Returns the location of the SCDL for composite being included.
+     * @return the location of the SCDL for composite being included
+     */
+    public URL getScdlLocation() {
+        return scdlLocation;
+    }
+
+    /**
+     * Sets the location of the SCDL for composite being included.
+     * @param scdlLocation the location of the SCDL for composite being included
+     */
+    public void setScdlLocation(URL scdlLocation) {
+        this.scdlLocation = scdlLocation;
+    }
+
+    /**
+     * Returns the composite that was included.
+     * @return the composite that was included
+     */
+    public CompositeComponentType getIncluded() {
+        return included;
+    }
+
+    /**
+     * Sets the composite that was included.
+     * @param included the composite that was included
+     */
+    public void setIncluded(CompositeComponentType included) {
+        this.included = included;
     }
 }

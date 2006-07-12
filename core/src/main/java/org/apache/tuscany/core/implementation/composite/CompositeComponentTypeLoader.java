@@ -34,11 +34,10 @@ public class CompositeComponentTypeLoader extends ComponentTypeLoaderExtension<C
         URL scdlLocation = implementation.getScdlLocation();
         //FIXME classloader below
         ClassLoader cl = implementation.getClass().getClassLoader();
-        deploymentContext = new ChildDeploymentContext(deploymentContext, cl);
+        deploymentContext = new ChildDeploymentContext(deploymentContext, cl, scdlLocation);
         CompositeComponentType componentType = loadFromSidefile(parent, scdlLocation, deploymentContext);
         implementation.setComponentType(componentType);
     }
-
 
     protected CompositeComponentType loadFromSidefile(CompositeComponent<?> parent,
                                                       URL url,

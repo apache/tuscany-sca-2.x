@@ -41,7 +41,7 @@ public class DataObjectLoaderTestCase extends TestCase {
             event = reader.nextTag();
         }
         DataObjectLoader loader = new DataObjectLoader(name);
-        DeploymentContext context = new RootDeploymentContext(getClass().getClassLoader(), inputFactory, new ModuleScopeContainer());
+        DeploymentContext context = new RootDeploymentContext(getClass().getClassLoader(), inputFactory, new ModuleScopeContainer(), null);
         ModelDataObject modelObject = (ModelDataObject) loader.load(null, reader, context);
         Assert.assertNotNull(modelObject.getDataObject());
         Assert.assertTrue(modelObject.getDataObject().getString("myAttr").equals("helloworld.HelloWorldImpl"));

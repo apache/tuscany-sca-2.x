@@ -164,7 +164,7 @@ public class SystemBuilderWireTestCase extends TestCase {
         super.setUp();
         ModuleScopeContainer moduleScope = new ModuleScopeContainer();
         moduleScope.start();
-        deploymentContext = new RootDeploymentContext(null, null, moduleScope);
+        deploymentContext = new RootDeploymentContext(null, null, moduleScope, null);
 
     }
 }

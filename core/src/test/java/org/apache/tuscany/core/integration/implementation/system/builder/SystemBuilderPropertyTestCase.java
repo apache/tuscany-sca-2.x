@@ -60,7 +60,7 @@ public class SystemBuilderPropertyTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        deploymentContext = new RootDeploymentContext(null, null, null);
+        deploymentContext = new RootDeploymentContext(null, null, null, null);
         Mock mock = mock(AutowireComponent.class);
         parent = (CompositeComponent<?>) mock.proxy();
     }

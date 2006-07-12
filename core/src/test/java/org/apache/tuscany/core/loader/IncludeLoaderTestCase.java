@@ -42,7 +42,7 @@ public class IncludeLoaderTestCase extends MockObjectTestCase {
         mockReader.expects(once()).method("getName").will(returnValue(IncludeLoaderTestCase.INCLUDE));
         mockReader.expects(atLeastOnce()).method("getAttributeValue")
                 .with(ANYTHING, ANYTHING)
-                .will(returnValue(name));
+                .will(onConsecutiveCalls(returnValue(name), returnValue(null)));
         mockReader.expects(once()).method("next").will(returnValue(XMLStreamConstants.END_ELEMENT));
         Include include = loader.load(null, (XMLStreamReader) mockReader.proxy(), null);
         assertEquals(name, include.getName());

@@ -47,7 +47,7 @@ public class BuilderRegistryTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         registry = new BuilderRegistryImpl();
-        deploymentContext = new RootDeploymentContext(null, null, null);
+        deploymentContext = new RootDeploymentContext(null, null, null, null);
     }
 
     public static class GenerifiedBuilder implements ComponentBuilder<CompositeImplementation> {

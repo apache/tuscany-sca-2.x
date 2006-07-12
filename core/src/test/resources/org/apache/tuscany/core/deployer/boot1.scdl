@@ -16,7 +16,7 @@
  -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-chianti-SNAPSHOT"
-           name="simple">
+           name="boot1">
     <service name="service" target="component">
         <interface.java interface="org.apache.tuscany.core.mock.component.BasicInterface"/>
         <system:binding.system/>
@@ -27,4 +27,6 @@
         <property name="publicProperty">propval</property>
         <reference name="publicReference" target="target"/>
     </component>
+    
+    <include name="boot1-include" scdlLocation="boot1-include.scdl"/>
 </composite>

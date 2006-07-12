@@ -16,6 +16,7 @@
  */
 package org.apache.tuscany.spi.deployer;
 
+import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -55,4 +56,11 @@ public interface DeploymentContext {
      * @return the ScopeContainer for the MODULE scope that will be associated with this deployment unit
      */
     ScopeContainer getModuleScope();
+
+    /**
+     * Returns the location of the SCDL definition being deployed.
+     *
+     * @return the location of the SCDL definition being deployed
+     */
+    URL getScdlLocation();
 }
