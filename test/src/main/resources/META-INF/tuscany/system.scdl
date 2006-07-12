@@ -15,19 +15,13 @@
  *  limitations under the License.
  -->
 <!--
-    A more complex example closer to a typical bootstrap configuration
+    Default system configuration for the launcher environment.
+
     $Rev$ $Date$
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-chianti-SNAPSHOT"
-           name="org.apache.tuscany.launcher.Runtime">
-    <!-- expose Deployer API as a service -->
-<!--
-    <service name="deployer">
-        <interface.java interface="org.apache.tuscany.spi.deployer.Deployer"/>
-        <reference target="deployer"/>
-    </service>
--->
+           name="org.apache.tuscany.test.System">
 
     <!-- Component that provides the Deployer service -->
     <component name="deployer">
@@ -77,93 +71,18 @@
         <system:implementation.system class="org.apache.tuscany.core.component.scope.StatelessScopeObjectFactory"/>
     </component>
 
-    <!-- Foundation element loader implementations -->
-    <component name="elementLoader.component">
-        <system:implementation.system class="org.apache.tuscany.core.loader.ComponentLoader"/>
-    </component>
-    <component name="elementLoader.componentType">
-        <system:implementation.system class="org.apache.tuscany.core.loader.ComponentTypeElementLoader"/>
-    </component>
-    <component name="elementLoader.interface.java">
-        <system:implementation.system class="org.apache.tuscany.core.loader.InterfaceJavaLoader"/>
-    </component>
-    <component name="elementLoader.property">
-        <system:implementation.system class="org.apache.tuscany.core.loader.PropertyLoader"/>
-    </component>
-    <component name="elementLoader.reference">
-        <system:implementation.system class="org.apache.tuscany.core.loader.ReferenceLoader"/>
-    </component>
-    <component name="elementLoader.service">
-        <system:implementation.system class="org.apache.tuscany.core.loader.ServiceLoader"/>
-    </component>
+    <!-- include loader configuration -->
+    <include name="org.apache.tuscany.test.Loader" scdlLocation="loader.scdl"/>
 
-    <!-- Foundation annotation processors -->
-    <component name="annotation.Destroy">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.processor.DestroyProcessor"/>
-    </component>
-    <component name="annotation.Init">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.processor.InitProcessor"/>
-    </component>
-    <component name="annotation.Scope">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.processor.ScopeProcessor"/>
-    </component>
-    <component name="annotation.Property">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.processor.PropertyProcessor"/>
-    </component>
-    <component name="annotation.Reference">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.processor.ReferenceProcessor"/>
-    </component>
-    <component name="annotation.Service">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.processor.ServiceProcessor"/>
-    </component>
-    <component name="annotation.HeuristicPojo">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.processor.HeuristicPojoProcessor"/>
-    </component>
-    <component name="annotation.Monitor">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.processor.MonitorProcessor"/>
-    </component>
+    <!-- include implementation processor configuration -->
+    <include name="org.apache.tuscany.test.Implementation" scdlLocation="implementation.scdl"/>
 
-    <!-- Composite implementation type -->
-    <component name="composite.loader">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.composite.CompositeLoader"/>
-    </component>
-    <component name="composite.componentTypeLoader">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.composite.CompositeComponentTypeLoader"/>
-    </component>
-    <component name="composite.builder">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.composite.CompositeBuilder"/>
-    </component>
+    <!-- include omposite implementation type -->
+    <include name="org.apache.tuscany.test.Composite" scdlLocation="composite.scdl"/>
 
     <!-- System implementation type -->
-    <component name="system.bindingLoader">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.system.loader.SystemBindingLoader"/>
-    </component>
-
-    <component name="system.componentTypeLoader">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.system.loader.SystemComponentTypeLoader"/>
-    </component>
-
-    <component name="system.compositeComponentTypeLoader">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.system.loader.SystemCompositeComponentTypeLoader"/>
-    </component>
-    <component name="system.implementationLoader">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.system.loader.SystemImplementationLoader"/>
-    </component>
-    <component name="system.componentBuilder">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder"/>
-    </component>
-    <component name="system.compositeBuilder">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.system.builder.SystemCompositeBuilder"/>
-    </component>
+    <include name="org.apache.tuscany.test.SystemImplementation" scdlLocation="systemImplementation.scdl"/>
 
     <!-- Java implementation type -->
-    <component name="java.implementationLoader">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.java.JavaImplementationLoader"/>
-    </component>
-    <component name="java.componentTypeLoader">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.java.JavaComponentTypeLoader"/>
-    </component>
-    <component name="java.componentBuilder">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.java.JavaComponentBuilder"/>
-    </component>
+    <include name="org.apache.tuscany.test.JavaImplementation" scdlLocation="javaImplementation.scdl"/>
 </composite>
