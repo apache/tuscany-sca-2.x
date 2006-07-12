@@ -16,21 +16,25 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
+import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.Include;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * Instantiates a composite component from an assembly definition
@@ -44,30 +48,58 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
                               DeploymentContext deploymentContext) throws BuilderConfigException {
         CompositeImplementation implementation = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = implementation.getComponentType();
-        CompositeComponentImpl<?> context = new CompositeComponentImpl(componentDefinition.getName(),
-            parent,
-            null
-        );
-        for (ReferenceTarget target : componentDefinition.getReferenceTargets().values()) {
-            ReferenceDefinition referenceDefinition = target.getReference();
-            if (referenceDefinition instanceof BoundReferenceDefinition) {
-                SCAObject<?> refereceSCAObject = builderRegistry.build(context,
-                    (BoundReferenceDefinition) referenceDefinition,
-                    deploymentContext);
-                context.register(refereceSCAObject);
-            }
-        }
-        for (ComponentDefinition<? extends Implementation<?>> child : componentType.getComponents().values()) {
-            SCAObject<?> childSCAObject = builderRegistry.build(context, child, deploymentContext);
-            context.register(childSCAObject);
-        }
+
+        // create lists of all components, services and references in this composite
+        List<ComponentDefinition<? extends Implementation<?>>> allComponents =
+                new ArrayList<ComponentDefinition<? extends Implementation<?>>>();
+        allComponents.addAll(componentType.getComponents().values());
+
+        List<BoundServiceDefinition<? extends Binding>> allBoundServices =
+                new ArrayList<BoundServiceDefinition<? extends Binding>>();
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             if (serviceDefinition instanceof BoundServiceDefinition) {
-                SCAObject<?> serviceSCAObject = builderRegistry.build(context,
-                    (BoundServiceDefinition) serviceDefinition,
-                    deploymentContext);
-                context.register(serviceSCAObject);
+                BoundServiceDefinition<? extends Binding> boundService =
+                        (BoundServiceDefinition<? extends Binding>) serviceDefinition;
+                allBoundServices.add(boundService);
             }
+        }
+
+        // FIXME is this right?
+        List<BoundReferenceDefinition<? extends Binding>> allBoundReferences =
+                new ArrayList<BoundReferenceDefinition<? extends Binding>>();
+        for (ReferenceTarget referenceTarget : componentDefinition.getReferenceTargets().values()) {
+            ReferenceDefinition referenceDefinition = referenceTarget.getReference();
+            if (referenceDefinition instanceof BoundReferenceDefinition<?>) {
+                BoundReferenceDefinition<? extends Binding> boundReference =
+                        (BoundReferenceDefinition<? extends Binding>) referenceDefinition;
+                allBoundReferences.add(boundReference);
+            }
+        }
+
+        // add in components and services from included composites
+        for (Include include : componentType.getIncludes().values()) {
+            CompositeComponentType<?,?,?> included = include.getIncluded();
+            allComponents.addAll(included.getComponents().values());
+            for (ServiceDefinition serviceDefinition : included.getServices().values()) {
+                if (serviceDefinition instanceof BoundServiceDefinition) {
+                    BoundServiceDefinition<? extends Binding> boundService =
+                            (BoundServiceDefinition<? extends Binding>) serviceDefinition;
+                    allBoundServices.add(boundService);
+                }
+            }
+            // TODO how to include references
+        }
+
+        String name = componentDefinition.getName();
+        CompositeComponentImpl<?> context = new CompositeComponentImpl(name, parent, null);
+        for (BoundReferenceDefinition<? extends Binding> referenceDefinition : allBoundReferences) {
+            context.register(builderRegistry.build(context, referenceDefinition, deploymentContext));
+        }
+        for (ComponentDefinition<? extends Implementation<?>> child : allComponents) {
+            context.register(builderRegistry.build(context, child, deploymentContext));
+        }
+        for (BoundServiceDefinition<? extends Binding> serviceDefinition : allBoundServices) {
+            context.register(builderRegistry.build(context, serviceDefinition, deploymentContext));
         }
         return context;
     }
