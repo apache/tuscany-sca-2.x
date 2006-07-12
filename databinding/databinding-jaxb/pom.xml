@@ -16,108 +16,107 @@
 -->
 <project>
 
-	<parent>
-		<groupId>org.apache.tuscany.databinding</groupId>
-		<artifactId>databinding</artifactId>
-		<version>1.0-chianti-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>org.apache.tuscany.databinding</groupId>
+        <artifactId>databinding</artifactId>
+        <version>1.0-chianti-SNAPSHOT</version>
+    </parent>
 
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>databinding-jaxb</artifactId>
-	<name>Tuscany JAXB Data Binding</name>
-	<description>Tuscany JAXB Data Binding</description>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>databinding-jaxb</artifactId>
+    <name>Tuscany JAXB Data Binding</name>
+    <description>Tuscany JAXB Data Binding</description>
 
-	<dependencies>
+    <dependencies>
 
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-			<version>2.0</version>
-			<scope>compile</scope>
-		</dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.0</version>
+            <scope>compile</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>com.sun.xml.bind</groupId>
-			<artifactId>jaxb-impl</artifactId>
-			<!-- Using 2.0 instead of 2.0.1 for now because the SUN repository has an incorrect reference
-			to jaxb-api 2.0.1 -->
-			<version>2.0</version>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <!-- Using 2.0 instead of 2.0.1 for now because the SUN repository has an incorrect reference
+               to jaxb-api 2.0.1 -->
+            <version>2.0</version>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.tuscany.databinding</groupId>
-			<artifactId>databinding-framework</artifactId>
-			<version>${pom.version}</version>
-			<scope>compile</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.databinding</groupId>
+            <artifactId>databinding-framework</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency>
 
 
-	</dependencies>
+    </dependencies>
 
- 
 
-	<repositories>
-		<repository>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<id>java.net</id>
-			<name>java.net Maven 1.x Repository</name>
-			<url>https://maven-repository.dev.java.net/nonav/repository</url>
-			<layout>legacy</layout>
-		</repository>
-	</repositories>
-       <pluginRepositories>
-        <pluginRepository>
-               <snapshots>
+    <repositories>
+        <repository>
+            <snapshots>
                 <enabled>true</enabled>
-               </snapshots>
-               <id>java.net</id>
-               <name>java.net Maven 1.x Repository</name>
-               <url>https://maven-repository.dev.java.net/repository</url>
-               <layout>legacy</layout>
-              </pluginRepository>
-       </pluginRepositories>
+            </snapshots>
+            <id>java.net</id>
+            <name>java.net Maven 1.x Repository</name>
+            <url>https://maven-repository.dev.java.net/nonav/repository</url>
+            <layout>legacy</layout>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>java.net</id>
+            <name>java.net Maven 1.x Repository</name>
+            <url>https://maven-repository.dev.java.net/repository</url>
+            <layout>legacy</layout>
+        </pluginRepository>
+    </pluginRepositories>
 
-	<build>
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-				<filtering>true</filtering>
-			</testResource>
-			<testResource>
-				<directory>target/jaxb-source</directory>
-				<filtering>true</filtering>
-			</testResource>
-		</testResources>
+    <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+            <testResource>
+                <directory>target/jaxb-source</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
 
-		<plugins>
+        <plugins>
 
-			<plugin>
-				<groupId>com.sun.tools.xjc.maven2</groupId>
-				<artifactId>maven-jaxb-plugin</artifactId>
-				<version>1.0</version>
-				<executions>
-					<execution>
-						<id>generate-jaxb</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<generatePackage>com.example.ipo.jaxb</generatePackage>
-					<generateDirectory>${project.build.directory}/jaxb-source</generateDirectory>
-					<schemaDirectory>${basedir}/src/test/resources</schemaDirectory>
-					<includeSchemas>
-						<includeSchema>ipo.xsd</includeSchema>
-					</includeSchemas>
-				</configuration>
-			</plugin>
+            <plugin>
+                <groupId>com.sun.tools.xjc.maven2</groupId>
+                <artifactId>maven-jaxb-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-jaxb</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <generatePackage>com.example.ipo.jaxb</generatePackage>
+                    <generateDirectory>${project.build.directory}/jaxb-source</generateDirectory>
+                    <schemaDirectory>${basedir}/src/test/resources</schemaDirectory>
+                    <includeSchemas>
+                        <includeSchema>ipo.xsd</includeSchema>
+                    </includeSchemas>
+                </configuration>
+            </plugin>
 
-		</plugins>
-	</build>
+        </plugins>
+    </build>
 
 </project>
