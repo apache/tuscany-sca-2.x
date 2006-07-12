@@ -23,11 +23,14 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.WSDLServiceContract;
 import org.apache.tuscany.spi.services.wsdl.WSDLDefinitionRegistry;
 
@@ -41,6 +44,7 @@ public class InterfaceWSDLLoader extends LoaderExtension {
     private static final String WSDLI_LOCATION = "wsdlLocation";
 
     private WSDLDefinitionRegistry wsdlRegistry;
+    public static final QName INTERFACE_WSDL = new QName(XML_NAMESPACE_1_0, "interface.wsdl");
 
     @Autowire
     public void setWsdlRegistry(WSDLDefinitionRegistry wsdlRegistry) {
@@ -48,14 +52,14 @@ public class InterfaceWSDLLoader extends LoaderExtension {
     }
 
     public QName getXMLType() {
-        return AssemblyConstants.INTERFACE_WSDL;
+        return INTERFACE_WSDL;
     }
 
     public WSDLServiceContract load(CompositeComponent parent,
                                     XMLStreamReader reader,
                                     DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
-        assert AssemblyConstants.INTERFACE_WSDL.equals(reader.getName());
+        assert INTERFACE_WSDL.equals(reader.getName());
         WSDLServiceContract serviceContract = new WSDLServiceContract();
         serviceContract.setInteractionScope(StAXUtil.interactionScope(reader.getAttributeValue(null, "scope")));
 
@@ -83,7 +87,7 @@ public class InterfaceWSDLLoader extends LoaderExtension {
         if (portTypeURI != null) {
             serviceContract.setCallbackPortType(getPortType(portTypeURI));
         }
-        StAXUtil.skipToEndElement(reader);
+        LoaderUtil.skipToEndElement(reader);
         return serviceContract;
     }
 

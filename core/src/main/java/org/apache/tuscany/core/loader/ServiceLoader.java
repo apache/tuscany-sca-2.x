@@ -24,6 +24,8 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
@@ -42,6 +44,8 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  * @version $Rev$ $Date$
  */
 public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
+    private static final QName SERVICE = new QName(XML_NAMESPACE_1_0, "service");
+
     public ServiceLoader() {
     }
 
@@ -50,7 +54,7 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
     }
 
     public QName getXMLType() {
-        return AssemblyConstants.SERVICE;
+        return SERVICE;
     }
 
     public ServiceDefinition load(CompositeComponent parent,
@@ -58,7 +62,7 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                                   DeploymentContext deploymentContext
     )
         throws XMLStreamException, LoaderException {
-        assert AssemblyConstants.SERVICE.equals(reader.getName());
+        assert SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         String target = reader.getAttributeValue(null, "target");
         Binding binding = null;

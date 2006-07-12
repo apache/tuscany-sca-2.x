@@ -22,6 +22,8 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
@@ -38,6 +40,8 @@ import org.apache.tuscany.spi.model.ServiceContract;
  * @version $Rev$ $Date$
  */
 public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
+    public static final QName REFERENCE = new QName(XML_NAMESPACE_1_0, "reference");
+
     public ReferenceLoader() {
     }
 
@@ -46,7 +50,7 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
     }
 
     public QName getXMLType() {
-        return AssemblyConstants.REFERENCE;
+        return REFERENCE;
     }
 
     public ReferenceDefinition load(CompositeComponent parent,
@@ -54,7 +58,7 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
                                     DeploymentContext deploymentContext
     )
         throws XMLStreamException, LoaderException {
-        assert AssemblyConstants.REFERENCE.equals(reader.getName());
+        assert REFERENCE.equals(reader.getName());
         ReferenceDefinition referenceDefinition = new ReferenceDefinition();
         referenceDefinition.setName(reader.getAttributeValue(null, "name"));
         referenceDefinition.setMultiplicity(

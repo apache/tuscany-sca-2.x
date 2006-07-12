@@ -22,6 +22,8 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
@@ -37,6 +39,8 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  * @version $Rev$ $Date$
  */
 public class ComponentTypeElementLoader extends LoaderExtension<ComponentType> {
+    public static final QName COMPONENT_TYPE = new QName(XML_NAMESPACE_1_0, "componentType");
+
     public ComponentTypeElementLoader() {
     }
 
@@ -45,13 +49,13 @@ public class ComponentTypeElementLoader extends LoaderExtension<ComponentType> {
     }
 
     public QName getXMLType() {
-        return AssemblyConstants.COMPONENT_TYPE;
+        return COMPONENT_TYPE;
     }
 
     public ComponentType load(CompositeComponent parent,
                               XMLStreamReader reader,
                               DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
-        assert AssemblyConstants.COMPONENT_TYPE.equals(reader.getName());
+        assert COMPONENT_TYPE.equals(reader.getName());
         ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType
             = new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
 

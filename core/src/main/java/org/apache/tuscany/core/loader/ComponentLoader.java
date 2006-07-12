@@ -24,6 +24,8 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -49,6 +51,10 @@ import org.apache.tuscany.spi.model.ReferenceTarget;
  * @version $Rev$ $Date$
  */
 public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
+    private static final QName COMPONENT = new QName(XML_NAMESPACE_1_0, "component");
+    private static final QName PROPERTY = new QName(XML_NAMESPACE_1_0, "property");
+    private static final QName REFERENCE = new QName(XML_NAMESPACE_1_0, "reference");
+
     private StAXPropertyFactory defaultPropertyFactory;
 
     public ComponentLoader() {
@@ -65,14 +71,14 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
     }
 
     public QName getXMLType() {
-        return AssemblyConstants.COMPONENT;
+        return COMPONENT;
     }
 
     public ComponentDefinition<?> load(CompositeComponent parent,
                                        XMLStreamReader reader,
                                        DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
-        assert AssemblyConstants.COMPONENT.equals(reader.getName());
+        assert COMPONENT.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         reader.nextTag();
         ModelObject o = registry.load(parent, reader, deploymentContext);
@@ -89,17 +95,17 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         try {
             while (true) {
                 switch (reader.next()) {
-                    case START_ELEMENT:
-                        QName qname = reader.getName();
-                        if (AssemblyConstants.PROPERTY.equals(qname)) {
-                            loadProperty(reader, deploymentContext, componentDefinition);
-                        } else if (AssemblyConstants.REFERENCE.equals(qname)) {
-                            loadReference(reader, deploymentContext, componentDefinition);
-                        }
-                        reader.next();
-                        break;
-                    case END_ELEMENT:
-                        return componentDefinition;
+                case START_ELEMENT:
+                    QName qname = reader.getName();
+                    if (PROPERTY.equals(qname)) {
+                        loadProperty(reader, deploymentContext, componentDefinition);
+                    } else if (REFERENCE.equals(qname)) {
+                        loadReference(reader, deploymentContext, componentDefinition);
+                    }
+                    reader.next();
+                    break;
+                case END_ELEMENT:
+                    return componentDefinition;
                 }
             }
         } catch (LoaderException e) {

@@ -18,9 +18,6 @@ package org.apache.tuscany.core.loader;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.InteractionScope;
@@ -42,27 +39,6 @@ public final class StAXUtil {
     }
 
     private StAXUtil() {
-    }
-
-    /**
-     * Advance the stream to the next END_ELEMENT event skipping any nested content.
-     *
-     * @param reader the reader to advance
-     * @throws XMLStreamException if there was a problem reading the stream
-     */
-    public static void skipToEndElement(XMLStreamReader reader) throws XMLStreamException {
-        int depth = 0;
-        while (true) {
-            int event = reader.next();
-            if (event == XMLStreamConstants.START_ELEMENT) {
-                depth++;
-            } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (depth == 0) {
-                    return;
-                }
-                depth--;
-            }
-        }
     }
 
     /**
@@ -91,19 +67,4 @@ public final class StAXUtil {
         }
     }
 
-    /**
-     * Load but do not define the class (to avoid any initializers being fired).
-     *
-     * @param name the name of the class to load
-     * @param cl   the classloader to use to load it
-     * @return the class
-     * @throws MissingResourceException if the class could not be found
-     */
-    public static Class<?> loadClass(String name, ClassLoader cl) throws MissingResourceException {
-        try {
-            return Class.forName(name, false, cl);
-        } catch (ClassNotFoundException e) {
-            throw new MissingResourceException(name, e);
-        }
-    }
 }

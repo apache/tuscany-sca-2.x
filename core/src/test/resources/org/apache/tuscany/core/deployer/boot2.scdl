@@ -18,7 +18,7 @@
     A more complex example closer to a typical bootstrap configuration
     $Rev$ $Date$
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/0.9"
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:system="http://tuscany.apache.org/xmlns/system/0.9"
            name="boot2">
 

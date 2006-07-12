@@ -26,10 +26,10 @@ import javax.xml.stream.XMLStreamReader;
 import commonj.sdo.helper.TypeHelper;
 import commonj.sdo.helper.XSDHelper;
 
-import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -51,7 +51,7 @@ public class ImportSDOLoader extends LoaderExtension {
         assert IMPORT_SDO.equals(reader.getName());
         importFactory(reader, loaderContext);
         importWSDL(reader, loaderContext);
-        StAXUtil.skipToEndElement(reader);
+        LoaderUtil.skipToEndElement(reader);
         return null;
     }
 

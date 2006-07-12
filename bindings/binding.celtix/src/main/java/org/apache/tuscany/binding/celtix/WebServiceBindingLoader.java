@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -45,7 +46,7 @@ import org.apache.tuscany.spi.services.wsdl.WSDLDefinitionRegistry;
  */
 @Scope("MODULE")
 public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> {
-    public static final QName BINDING_WS = new QName("http://www.osoa.org/xmlns/sca/0.9", "binding.ws");
+    public static final QName BINDING_WS = new QName(XML_NAMESPACE_1_0, "binding.ws");
 
     protected LoaderRegistry registry;
     protected WSDLDefinitionRegistry wsdlRegistry;

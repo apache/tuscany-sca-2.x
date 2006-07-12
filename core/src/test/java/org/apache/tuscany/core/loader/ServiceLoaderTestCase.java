@@ -16,6 +16,7 @@
  */
 package org.apache.tuscany.core.loader;
 
+import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
@@ -23,6 +24,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -37,6 +39,8 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  * @version $Rev$ $Date$
  */
 public class ServiceLoaderTestCase extends MockObjectTestCase {
+    private static final QName SERVICE = new QName(XML_NAMESPACE_1_0, "service");
+
     private ServiceLoader loader;
     private DeploymentContext deploymentContext;
     private Mock mockReader;
@@ -45,7 +49,7 @@ public class ServiceLoaderTestCase extends MockObjectTestCase {
     public void testWithNoInterface() throws LoaderException, XMLStreamException {
         String name = "serviceDefinition";
         String target = "target";
-        mockReader.expects(once()).method("getName").will(returnValue(AssemblyConstants.SERVICE));
+        mockReader.expects(once()).method("getName").will(returnValue(SERVICE));
         // todo figure out how to check ordering
         mockReader.expects(atLeastOnce()).method("getAttributeValue")
                 .with(ANYTHING, ANYTHING)
@@ -61,7 +65,7 @@ public class ServiceLoaderTestCase extends MockObjectTestCase {
         String target = "target";
         ServiceContract sc = new ServiceContract() {
         };
-        mockReader.expects(once()).method("getName").will(returnValue(AssemblyConstants.SERVICE));
+        mockReader.expects(once()).method("getName").will(returnValue(SERVICE));
         // todo figure out how to check ordering
         mockReader.expects(atLeastOnce()).method("getAttributeValue")
                 .with(ANYTHING, ANYTHING)

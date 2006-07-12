@@ -20,12 +20,15 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+
 import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.LoaderUtil;
 
 /**
  * Loads a Java interface definition from an XML-based assembly file
@@ -33,6 +36,8 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
  * @version $Rev$ $Date$
  */
 public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
+    public static final QName INTERFACE_JAVA = new QName(XML_NAMESPACE_1_0, "interface.java");
+
     public InterfaceJavaLoader() {
     }
 
@@ -41,7 +46,7 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
     }
 
     public QName getXMLType() {
-        return AssemblyConstants.INTERFACE_JAVA;
+        return INTERFACE_JAVA;
     }
 
     public JavaServiceContract load(CompositeComponent parent,
@@ -49,7 +54,7 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
                                     DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 
-        assert AssemblyConstants.INTERFACE_JAVA.equals(reader.getName());
+        assert INTERFACE_JAVA.equals(reader.getName());
         JavaServiceContract serviceContract = new JavaServiceContract();
         serviceContract.setInteractionScope(StAXUtil.interactionScope(reader.getAttributeValue(null, "scope")));
         String name = reader.getAttributeValue(null, "interface");
@@ -58,14 +63,14 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
             name = reader.getAttributeValue(null, "class");
         }
         serviceContract.setInterfaceName(name);
-        serviceContract.setInterfaceClass(StAXUtil.loadClass(name, deploymentContext.getClassLoader()));
+        serviceContract.setInterfaceClass(LoaderUtil.loadClass(name, deploymentContext.getClassLoader()));
 
         name = reader.getAttributeValue(null, "callbackInterface");
         serviceContract.setCallbackName(name);
         if (name != null) {
-            serviceContract.setCallbackClass(StAXUtil.loadClass(name, deploymentContext.getClassLoader()));
+            serviceContract.setCallbackClass(LoaderUtil.loadClass(name, deploymentContext.getClassLoader()));
         }
-        StAXUtil.skipToEndElement(reader);
+        LoaderUtil.skipToEndElement(reader);
         return serviceContract;
     }
 }
