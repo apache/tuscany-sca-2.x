@@ -97,6 +97,7 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         reference.setMember(field);
         reference.setRequired(required);
         reference.setAutowire(autowire);
+        reference.setName(name);
         JavaServiceContract contract = new JavaServiceContract();
         Class<?> interfaceType = field.getType();
         String interfaceName = getBaseName(interfaceType);
