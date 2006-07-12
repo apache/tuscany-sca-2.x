@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.binding.celtix;
+package org.apache.tuscany.binding.celtix.io;
 
 import org.w3c.dom.Node;
 

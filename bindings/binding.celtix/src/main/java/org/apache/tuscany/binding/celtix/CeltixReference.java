@@ -37,7 +37,6 @@ public class CeltixReference<T> extends ReferenceExtension<T> {
     private Port port;
     private Definition wsdlDef;
     private Service wsdlService;
-    private WSDLMetaDataCache wsdlCache;
 
     public CeltixReference(String name,
                            Definition wsdlDef,
@@ -51,11 +50,10 @@ public class CeltixReference<T> extends ReferenceExtension<T> {
         this.wsdlDef = wsdlDef;
         this.wsdlService = wsdlService;
         this.bus = bus;
-        wsdlCache = new WSDLMetaDataCache(wsdlDef, port);
     }
 
     public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
         //FIXME - can we pass in the method name as the operation name?
-        return new CeltixInvoker(operation.getName(), bus, wsdlCache, port, wsdlService, wsdlDef);
+        return new CeltixInvoker(operation.getName(), bus, port, wsdlService, wsdlDef);
     }
 }

@@ -76,7 +76,8 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
 
     private WebServiceBinding createBinding(String port, String portURI) {
         List<Definition> definitions = null;
-        //FIXME wsdlRegistry.getDefinitionsForNamespace(portNamespace, resourceLoader);
+        // FIXME wsdlRegistry.getDefinitionsForNamespace(portNamespace,
+        // resourceLoader);
         // Get the WSDL port namespace and name
         if (port == null && portURI != null) {
             int h = portURI.indexOf('#');
@@ -131,7 +132,7 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
             }
             return new WebServiceBinding(definition, thePort, port, portURI, service);
         }
-        //FIXME
+        // FIXME
         return null;
 
     }

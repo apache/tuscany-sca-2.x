@@ -33,6 +33,7 @@ import javax.wsdl.extensions.soap.SOAPBody;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceProvider;
 
+import org.apache.tuscany.binding.celtix.io.SCAServerDataBindingCallback;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -67,7 +68,7 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
     private Object proxy;
 
     private Map<QName, ServerDataBindingCallback> opMap =
-            new ConcurrentHashMap<QName, ServerDataBindingCallback>();
+        new ConcurrentHashMap<QName, ServerDataBindingCallback>();
 
 
     public CeltixService(String name,
@@ -98,8 +99,8 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
         }
 
         EndpointReferenceType reference = EndpointReferenceUtils.getEndpointReference(url,
-                wsdlService.getQName(),
-                port.getName());
+                                                                                      wsdlService.getQName(),
+                                                                                      port.getName());
 
         AttributedURIType address = new AttributedURIType();
 
@@ -134,7 +135,7 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
 
         try {
             ServerBinding serverBinding = bus.getBindingManager().getBindingFactory(bindingId).createServerBinding(
-                    reference, this);
+                                                                                                                   reference, this);
             serverBinding.activate();
         } catch (Exception e) {
             throw new CeltixServiceInitException(e);
@@ -163,7 +164,7 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
             }
 
             ServerDataBindingCallback cb = getDataBindingCallback(qn, null,
-                    DataBindingCallback.Mode.PARTS);
+                                                                  DataBindingCallback.Mode.PARTS);
             opMap.put(qn, cb);
             if (!"".equals(cb.getRequestWrapperQName().getLocalPart())) {
                 opMap.put(cb.getRequestWrapperQName(), cb);
@@ -211,7 +212,7 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
             }
         }
         throw new BuilderConfigException("no operation named " + operationName
-                + " found on service interface: " + serviceInterface.getName());
+                                         + " found on service interface: " + serviceInterface.getName());
     }
 
 
