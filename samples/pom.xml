@@ -29,5 +29,6 @@
     <modules>
         <module>eagerinit</module>
         <module>local.wire</module>
+        <module>calculator</module>
     </modules>
 </project>
