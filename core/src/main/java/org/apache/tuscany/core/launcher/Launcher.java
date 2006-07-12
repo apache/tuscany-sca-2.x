@@ -17,37 +17,40 @@
 package org.apache.tuscany.core.launcher;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+
+import javax.xml.stream.XMLInputFactory;
+
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.bootstrap.ComponentNames;
+import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
+import org.apache.tuscany.core.bootstrap.Bootstrapper;
+import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
+import org.apache.tuscany.core.monitor.NullMonitorFactory;
+import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 
 /**
  * Support class for launcher implementations.
  *
  * @version $Rev: 417136 $ $Date: 2006-06-26 03:54:48 -0400 (Mon, 26 Jun 2006) $
  */
-public abstract class LauncherSupport {
-    protected static final FilenameFilter FILE_FILTER = new FilenameFilter() {
-
-        public boolean accept(File dir, String name) {
-            return name.endsWith(".jar");
-        }
-
-    };
-
-    protected static ClassLoader tuscanyClassLoader;
-
+public class Launcher {
     private ClassLoader applicationLoader = ClassLoader.getSystemClassLoader();
     private String className;
-    private String[] args;
+    private RuntimeComponent runtime;
+    private Deployer deployer;
 
     /**
      * Returns the classloader for application classes.
      *
      * @return the classloader for application classes
      */
-    protected ClassLoader getApplicationLoader() {
+    public ClassLoader getApplicationLoader() {
         return applicationLoader;
     }
 
@@ -56,7 +59,7 @@ public abstract class LauncherSupport {
      *
      * @param applicationLoader the classloader to be used for application classes
      */
-    protected void setApplicationLoader(ClassLoader applicationLoader) {
+    public void setApplicationLoader(ClassLoader applicationLoader) {
         this.applicationLoader = applicationLoader;
     }
 
@@ -87,7 +90,6 @@ public abstract class LauncherSupport {
                 urls[i] = file.toURI().toURL();
             } catch (MalformedURLException e) {
                 // just ignore this value
-                e.printStackTrace();
                 continue;
             }
         }
@@ -134,56 +136,55 @@ public abstract class LauncherSupport {
         this.className = className;
     }
 
-    protected String[] getArgs() {
-        return args;
+    public CompositeComponent<?> bootRuntime() throws LoaderException {
+        ClassLoader systemClassLoader = getClass().getClassLoader();
+        XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", systemClassLoader);
+        Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), xmlFactory);
+        Deployer bootDeployer = bootstrapper.createDeployer();
+
+        // create and start the core runtime
+        runtime = bootstrapper.createRuntime();
+        runtime.start();
+
+        // create a ComponentDefinition to represent the component we are going to deploy
+        SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
+        URL scdl = getClass().getResource("/META-INF/tuscany/system.scdl");
+        if (scdl == null) {
+            throw new LoaderException("No system scdl found");
+        }
+        moduleImplementation.setScdlLocation(scdl);
+        moduleImplementation.setClassLoader(systemClassLoader);
+        ComponentDefinition<SystemCompositeImplementation> moduleDefinition =
+                new ComponentDefinition<SystemCompositeImplementation>(ComponentNames.TUSCANY_SYSTEM,
+                                                                       moduleImplementation);
+
+        // deploy the component into the runtime under the system parent
+        CompositeComponent parent = runtime.getSystemComponent();
+        CompositeComponent<?> composite = (CompositeComponent<?>) bootDeployer.deploy(parent, moduleDefinition);
+
+        // start the system
+        composite.start();
+
+        deployer = (Deployer) composite.getChild("deployer").getServiceInstance();
+        return composite;
     }
 
-    protected void setArgs(String[] args) {
-        this.args = args;
-    }
+    public CompositeComponent<?> bootApplication() throws LoaderException {
+        ClassLoader applicationLoader = getApplicationLoader();
 
-    protected static ClassLoader getTuscanyClassLoader() {
-        if (null == tuscanyClassLoader) {
-            //assume that even though the the rest of tuscany jars are not loaded
-            // it  co-located with the rest of the tuscany jars.
-            File tuscanylib = findLoadLocation();
-            String[] jars = tuscanylib.list(FILE_FILTER);
-            String[] urls = new String[jars.length];
-            int i = 0;
-            for (String jar : jars) {
-
-                urls[i++] = tuscanylib.getAbsolutePath() + "/" + jar;
-                System.err.println("classpath '" + urls[i - 1] + "'");
-            }
-
-            tuscanyClassLoader = createClassLoader(LauncherSupport.class.getClassLoader(), urls);
+        // create a ComponentDefinition to represent the component we are going to deploy
+        SystemCompositeImplementation impl = new SystemCompositeImplementation();
+        URL scdl = applicationLoader.getResource("META-INF/sca/default.scdl");
+        if (scdl == null) {
+            throw new LoaderException("No application scdl found");
         }
-        return tuscanyClassLoader;
-    }
+        impl.setScdlLocation(scdl);
+        impl.setClassLoader(applicationLoader);
+        ComponentDefinition<SystemCompositeImplementation> moduleDefinition =
+                new ComponentDefinition<SystemCompositeImplementation>(ComponentNames.TUSCANY_SYSTEM, impl);
 
-    protected static File findLoadLocation() {
-
-        String resourceName = LauncherSupport.class.getName().replace('.', '/') + ".class";
-        URL dirURL = LauncherSupport.class.getClassLoader().getResource(resourceName);
-        String location = dirURL.getFile();
-//        boolean jarred = false;
-        if ("jar".equals(dirURL.getProtocol())) {
-//            jarred = true;
-            int sep = location.indexOf('!');
-            if (sep != -1) {
-                location = location.substring(0, sep);
-            }
-        }
-        if (location.startsWith("file:")) {
-            location = location.substring(5);
-        }
-        if (File.separatorChar == '\\'
-                && location.length() > 2
-                && location.charAt(0) == '/'
-                && location.charAt(2) == ':') {
-            location = location.substring(1);
-        }
-        File locfile = new File(location);
-        return locfile.getParentFile();
+        // deploy the component into the runtime under the system parent
+        CompositeComponent parent = runtime.getRootComponent();
+        return (CompositeComponent<?>) deployer.deploy(parent, moduleDefinition);
     }
 }

@@ -32,6 +32,12 @@
             <groupId>org.osoa</groupId>
             <artifactId>sca-api-r0.92</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany</groupId>
+            <artifactId>test</artifactId>
+            <version>${sca.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
