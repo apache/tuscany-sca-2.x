@@ -18,15 +18,17 @@ import java.lang.reflect.Constructor;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
+import org.apache.tuscany.core.implementation.ConstructorDefinition;
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
-import org.apache.tuscany.core.implementation.ConstructorDefinition;
 
 /**
+ * Handles processing of a constructor decorated with {@link org.osoa.sca.annotations.Constructor}
+ *
  * @version $Rev$ $Date$
  */
 public class ConstructorProcessor extends ImplementationProcessorSupport {
@@ -48,6 +50,10 @@ public class ConstructorProcessor extends ImplementationProcessorSupport {
         }
         definition = new ConstructorDefinition(constructor);
         String[] names = annotation.value();
+        if (names.length != constructor.getParameterTypes().length) {
+            throw new InvalidConstructorException(
+                "Number of parameters does not match values specified in @Cosntructor");
+        }
         for (String name : names) {
             definition.getInjectionNames().add(name);
         }

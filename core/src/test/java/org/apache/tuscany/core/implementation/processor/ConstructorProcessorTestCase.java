@@ -12,9 +12,9 @@ import org.apache.tuscany.core.implementation.PojoComponentType;
  * @version $Rev$ $Date$
  */
 public class ConstructorProcessorTestCase extends TestCase {
+    private ConstructorProcessor processor = new ConstructorProcessor();
 
     public void testDuplicateConstructor() throws Exception {
-        ConstructorProcessor processor = new ConstructorProcessor();
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor ctor1 = BadFoo.class.getConstructor(String.class);
@@ -28,6 +28,34 @@ public class ConstructorProcessorTestCase extends TestCase {
         }
     }
 
+    public void testConstructorAnnotation() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor1 = Foo.class.getConstructor(String.class);
+        processor.visitConstructor(null, ctor1, type, null);
+        assertEquals("foo", type.getConstructorDefinition().getInjectionNames().get(0));
+    }
+
+    public void testNoAnnotation() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor1 = NoAnnotation.class.getConstructor();
+        processor.visitConstructor(null, ctor1, type, null);
+        assertNull(type.getConstructorDefinition());
+    }
+
+    public void testBadAnnotation() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor1 = BadAnnotation.class.getConstructor(String.class, Foo.class);
+        try {
+            processor.visitConstructor(null, ctor1, type, null);
+            fail();
+        } catch (InvalidConstructorException e) {
+            // expected
+        }
+
+    }
 
     private static class BadFoo {
 
@@ -43,5 +71,22 @@ public class ConstructorProcessorTestCase extends TestCase {
 
     }
 
+    private static class Foo {
+        @org.osoa.sca.annotations.Constructor("foo")
+        public Foo(String foo) {
+
+        }
+    }
+
+    private static class NoAnnotation {
+        public NoAnnotation() {
+        }
+    }
+
+    private static class BadAnnotation {
+        @org.osoa.sca.annotations.Constructor("foo")
+        public BadAnnotation(String foo, Foo ref) {
+        }
+    }
 
 }
