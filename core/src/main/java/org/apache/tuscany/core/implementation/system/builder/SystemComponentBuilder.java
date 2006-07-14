@@ -3,6 +3,7 @@ package org.apache.tuscany.core.implementation.system.builder;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
@@ -32,6 +33,7 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
@@ -78,9 +80,17 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             configuration.addServiceInterface(serviceDefinition.getServiceContract().getInterfaceClass());
         }
+
         // handle properties
+        Map<String, PropertyValue<?>> propertyValues = definition.getPropertyValues();
         for (JavaMappedProperty<?> property : componentType.getProperties().values()) {
-            ObjectFactory<?> factory = property.getDefaultValueFactory();
+            PropertyValue value = propertyValues.get(property.getName());
+            ObjectFactory<?> factory;
+            if (value != null) {
+                factory = value.getValueFactory();
+            } else {
+                factory = property.getDefaultValueFactory();
+            }
             if (factory != null) {
                 if (property.getMember() instanceof Field) {
                     configuration.addPropertyInjector(new FieldInjector((Field) property.getMember(), factory));
@@ -93,6 +103,7 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
                 }
             }
         }
+
         // setup reference injection sites
         for (JavaMappedReference reference : componentType.getReferences().values()) {
             configuration.addReferenceSite(reference.getName(), reference.getMember());
