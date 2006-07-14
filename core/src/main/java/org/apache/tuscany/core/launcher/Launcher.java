@@ -20,6 +20,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URI;
 
 import javax.xml.stream.XMLInputFactory;
 
@@ -29,10 +30,12 @@ import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
+import org.apache.tuscany.spi.services.info.RuntimeInfo;
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
+import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
 
 /**
  * Support class for launcher implementations.
@@ -146,6 +149,11 @@ public class Launcher {
         runtime = bootstrapper.createRuntime();
         runtime.start();
 
+        // initialize the runtime info
+        SystemCompositeComponent parent = (SystemCompositeComponent) runtime.getSystemComponent();
+        RuntimeInfo runtimeInfo = new LauncherRuntimeInfo(getInstallDirectory());
+        parent.registerJavaObject("RuntimeInfo", RuntimeInfo.class, runtimeInfo);
+
         // create a ComponentDefinition to represent the component we are going to deploy
         SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
         URL scdl = getClass().getResource("/META-INF/tuscany/system.scdl");
@@ -159,7 +167,6 @@ public class Launcher {
                                                                        moduleImplementation);
 
         // deploy the component into the runtime under the system parent
-        CompositeComponent parent = runtime.getSystemComponent();
         CompositeComponent<?> composite = (CompositeComponent<?>) bootDeployer.deploy(parent, moduleDefinition);
 
         // start the system
@@ -186,5 +193,25 @@ public class Launcher {
         // deploy the component into the runtime under the system parent
         CompositeComponent parent = runtime.getRootComponent();
         return (CompositeComponent<?>) deployer.deploy(parent, moduleDefinition);
+    }
+
+    public File getInstallDirectory() {
+        String property = System.getProperty("tuscany.installDir");
+        if (property != null) {
+            return new File(property);
+        }
+
+        URL url = getClass().getResource("Launcher.class");
+        if (!"jar".equals(url.getProtocol())) {
+            throw new IllegalStateException("Must be run from a jar: " + url);
+        }
+        String jarLocation = url.toString();
+        jarLocation = jarLocation.substring(4, jarLocation.lastIndexOf("!/"));
+        if (!jarLocation.startsWith("file:")) {
+            throw new IllegalStateException("Must be run from a local filesystem: " + jarLocation);
+        }
+
+        File jarFile = new File(URI.create(jarLocation));
+        return jarFile.getParentFile().getParentFile();
     }
 }
