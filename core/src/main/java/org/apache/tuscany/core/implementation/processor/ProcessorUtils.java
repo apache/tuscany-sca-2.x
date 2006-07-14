@@ -15,6 +15,9 @@ package org.apache.tuscany.core.implementation.processor;
 
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
+import org.osoa.sca.annotations.Scope;
+
+import org.apache.tuscany.spi.model.InteractionScope;
 
 import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.JavaServiceContract;
@@ -40,6 +43,16 @@ public final class ProcessorUtils {
         service.setServiceInterface(interfaze);
         JavaServiceContract contract = new JavaServiceContract();
         contract.setInterfaceClass(interfaze);
+        Scope interactionScope = interfaze.getAnnotation(Scope.class);
+        if (interactionScope == null) {
+            contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+        } else {
+            if ("CONVERSATIONAL".equalsIgnoreCase(interactionScope.value())) {
+                contract.setInteractionScope(InteractionScope.CONVERSATIONAL);
+            } else {
+                contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+            }
+        }
         Callback callback = interfaze.getAnnotation(Callback.class);
         if (callback != null && !Void.class.equals(callback.value())) {
             Class<?> callbackClass = callback.value();
@@ -48,6 +61,40 @@ public final class ProcessorUtils {
         }
         service.setServiceContract(contract);
         return service;
+    }
+
+    /**
+     * Determines if all the members of a collection have unique types
+     *
+     * @param collection the collection to analyze
+     * @return true if the types are unique
+     */
+    public static boolean areUnique(Class[] collection) {
+        if (collection.length == 0){
+            return true;
+        }
+        return areUnique(collection, 0);
+    }
+
+    /**
+     * Determines if all the members of a collection have unique types
+     *
+     * @param collection the collection to analyze
+     * @param start      the position in the collection to start
+     * @return true if the types are unique
+     */
+    private static boolean areUnique(Class[] collection, int start) {
+        Object compare = collection[start];
+        for (int i = start + 1; i < collection.length; i++) {
+            if (compare.equals(collection[i])) {
+                return false;
+            }
+        }
+        if (start + 1 < collection.length) {
+            return areUnique(collection, start + 1);
+        } else {
+            return true;
+        }
     }
 
 }

@@ -1,13 +1,15 @@
 package org.apache.tuscany.core.implementation.processor;
 
+import org.osoa.sca.annotations.Remotable;
+
 import org.apache.tuscany.spi.model.ServiceContract;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.JavaServiceContract;
+import org.apache.tuscany.core.implementation.PojoComponentType;
 
 /**
  * @version $Rev$ $Date$
@@ -70,15 +72,19 @@ public class HeuristicConstructorTestCase extends TestCase {
     }
 
 
-    public void testSingleConstructorUnresolvableParam() throws Exception {
+    public void testSingleConstructorResolvableParam() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        try {
-            processor.visitEnd(null, Foo1.class, type, null);
-            fail();
-        } catch (UnresolvableConstructorParameterException e) {
-            // expected
-        }
+        processor.visitEnd(null, Foo5.class, type, null);
+        assertEquals(String.class, type.getProperties().get("string").getJavaType());
+    }
+
+    public void testSingleConstructorResolvableRef() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        processor.visitEnd(null, Foo6.class, type, null);
+        assertEquals(Ref.class,
+            type.getReferences().get("heuristicconstructortestcase$ref").getServiceContract().getInterfaceClass());
     }
 
     public void testSingleConstructorAmbiguousRef() throws Exception {
@@ -96,7 +102,7 @@ public class HeuristicConstructorTestCase extends TestCase {
         try {
             processor.visitEnd(null, Foo4.class, type, null);
             fail();
-        } catch (UnresolvableConstructorParameterException e) {
+        } catch (AmbiguousConstructorException e) {
             // expected
         }
     }
@@ -124,6 +130,25 @@ public class HeuristicConstructorTestCase extends TestCase {
 
     public static class Foo4 {
         public Foo4(Foo1 ref) {
+        }
+    }
+
+    public static class Prop {
+
+    }
+
+    @Remotable
+    public static interface Ref {
+
+    }
+
+    public static class Foo5 {
+        public Foo5(String val) {
+        }
+    }
+
+    public static class Foo6 {
+        public Foo6(Ref ref) {
         }
     }
 

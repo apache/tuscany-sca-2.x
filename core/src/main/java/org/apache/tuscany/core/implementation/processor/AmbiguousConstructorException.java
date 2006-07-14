@@ -16,23 +16,23 @@ package org.apache.tuscany.core.implementation.processor;
 import org.apache.tuscany.core.implementation.ProcessingException;
 
 /**
- * Thrown when a constructor parameter cannot be unambiguously resolved to a property or reference
+ * Thrown when constructor parameters cannot be unambiguously resolved to a property or reference
  *
  * @version $Rev$ $Date$
  */
-public class UnresolvableConstructorParameterException extends ProcessingException {
-    public UnresolvableConstructorParameterException() {
+public class AmbiguousConstructorException extends ProcessingException {
+    public AmbiguousConstructorException() {
     }
 
-    public UnresolvableConstructorParameterException(String message) {
+    public AmbiguousConstructorException(String message) {
         super(message);
     }
 
-    public UnresolvableConstructorParameterException(String message, Throwable cause) {
+    public AmbiguousConstructorException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public UnresolvableConstructorParameterException(Throwable cause) {
+    public AmbiguousConstructorException(Throwable cause) {
         super(cause);
     }
 }
