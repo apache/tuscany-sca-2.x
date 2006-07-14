@@ -29,6 +29,7 @@
     <modules>
         <module>eagerinit</module>
         <module>local.wire</module>
+        <module>local.wire.cdi</module>
         <module>calculator</module>
         <module>supplychain</module>
     </modules>
