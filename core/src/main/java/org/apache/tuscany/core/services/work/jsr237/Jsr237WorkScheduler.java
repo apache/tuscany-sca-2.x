@@ -29,24 +29,23 @@ import commonj.work.WorkRejectedException;
 
 /**
  * A work scheduler implementation based on a JSR 237 work manager.
- * 
- * <p>
- * This needs a JSR 237 work manager implementation available for scheduling work. 
- * Instances can be configured with a work manager implementation that is injected in.
- * It is the responsibility of the runtime environment to make a work manager implementaion
- * available. For example, if the managed environment supports work manager the runtime can 
- * use the appropriate lookup mechanism to inject the work manager implementation.
- * </p>
- *
+ * <p/>
+ * <p/>
+ * This needs a JSR 237 work manager implementation available for scheduling work. Instances can be configured with a
+ * work manager implementation that is injected in. It is the responsibility of the runtime environment to make a work
+ * manager implementaion available. For example, if the managed environment supports work manager the runtime can use
+ * the appropriate lookup mechanism to inject the work manager implementation. </p>
  */
 public class Jsr237WorkScheduler implements WorkScheduler {
 
-    /** Underlying JSR-237 work manager */
+    /**
+     * Underlying JSR-237 work manager
+     */
     private WorkManager jsr237WorkManager;
 
     /**
      * Initializes the JSR 237 work manager.
-     * 
+     *
      * @param jsr237WorkManager JSR 237 work manager.
      */
     public Jsr237WorkScheduler(WorkManager jsr237WorkManager) {
@@ -59,9 +58,9 @@ public class Jsr237WorkScheduler implements WorkScheduler {
     }
 
     /**
-     * Schedules a unit of work for future execution. The notification listener 
-     * is used to register interest in callbacks regarding the status of the work.
-     * 
+     * Schedules a unit of work for future execution. The notification listener is used to register interest in
+     * callbacks regarding the status of the work.
+     *
      * @param work The unit of work that needs to be asynchronously executed.
      */
     public <T extends Runnable> void scheduleWork(T work) {
@@ -69,10 +68,10 @@ public class Jsr237WorkScheduler implements WorkScheduler {
     }
 
     /**
-     * Schedules a unit of work for future execution. The notification listener 
-     * is used to register interest in callbacks regarding the status of the work.
-     * 
-     * @param work The unit of work that needs to be asynchronously executed.
+     * Schedules a unit of work for future execution. The notification listener is used to register interest in
+     * callbacks regarding the status of the work.
+     *
+     * @param work     The unit of work that needs to be asynchronously executed.
      * @param listener Notification listener for callbacks.
      */
     public <T extends Runnable> void scheduleWork(T work, NotificationListener<T> listener) {
@@ -89,8 +88,8 @@ public class Jsr237WorkScheduler implements WorkScheduler {
                 Jsr237WorkListener<T> jsr237WorkListener = new Jsr237WorkListener<T>(listener, work);
                 jsr237WorkManager.schedule(jsr237Work, jsr237WorkListener);
             }
-        } catch(WorkRejectedException ex) {
-            if(listener != null) {
+        } catch (WorkRejectedException ex) {
+            if (listener != null) {
                 listener.workRejected(work);
             } else {
                 throw new WorkSchedulerException(ex);
@@ -112,10 +111,10 @@ public class Jsr237WorkScheduler implements WorkScheduler {
 
         // Work
         private T work;
-        
+
         /*
-         * Initializes the notification listener.
-         */
+        * Initializes the notification listener.
+        */
         public Jsr237WorkListener(NotificationListener<T> listener, T work) {
             this.listener = listener;
             this.work = work;
@@ -157,10 +156,10 @@ public class Jsr237WorkScheduler implements WorkScheduler {
                 listener.workCompleted(work);
             }
         }
-        
+
         /*
-         * Gets the underlying work from the work event.
-         */
+        * Gets the underlying work from the work event.
+        */
         private T getWork() {
             return work;
         }

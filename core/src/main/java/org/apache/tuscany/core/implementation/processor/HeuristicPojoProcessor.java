@@ -41,12 +41,12 @@ import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.createService;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllInterfaces;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllPublicAndProtectedFields;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
  * Heuristically evaluates an un-annotated Java implementation type to determine services, references, and properties
@@ -66,7 +66,6 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
         if (services.isEmpty()) {
             // heuristically determine the service
             // TODO finish algorithm
-            //clazz.get()
             Set<Class> interfaces = getAllInterfaces(clazz);
             if (interfaces.size() == 0) {
                 // class is the interface
@@ -151,74 +150,75 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
                                  Class<?> clazz) throws NoConstructorException,
                                                         AmbiguousConstructorException {
         // determine constructor if one is not annotated
-        if (type.getConstructorDefinition() == null) {
-            Constructor[] constructors = clazz.getConstructors();
-            if (constructors.length == 0) {
-                NoConstructorException e = new NoConstructorException("No public constructor for class");
-                e.setIdentifier(clazz.getName());
-                throw e;
-            } else if (constructors.length > 1) {
-                Constructor selected = null;
-                int sites = type.getProperties().size() + type.getReferences().size();
-                for (Constructor constructor : constructors) {
-                    if (constructor.getParameterTypes().length == 0) {
-                        selected = constructor;
-                    }
-                    if (constructor.getParameterTypes().length == sites) {
-                        //TODO finish
-                        //selected = constructor;
-                        // select constructor
-                        //break;
-                    }
-                }
-                ConstructorDefinition<?> definition = new ConstructorDefinition(selected);
+        if (type.getConstructorDefinition() != null) {
+            return;
+        }
+        Constructor[] constructors = clazz.getConstructors();
+        if (constructors.length == 0) {
+            NoConstructorException e = new NoConstructorException("No public constructor for class");
+            e.setIdentifier(clazz.getName());
+            throw e;
+        } else if (constructors.length == 1) {
+            Constructor constructor = constructors[0];
+            Class[] params = constructor.getParameterTypes();
+            if (params.length == 0) {
+                ConstructorDefinition<?> definition = new ConstructorDefinition(constructor);
                 type.setConstructorDefinition(definition);
+                return;
+            }
+            Map<String, JavaMappedProperty<?>> props = type.getProperties();
+            Map<String, JavaMappedReference> refs = type.getReferences();
+            if (!ProcessorUtils.areUnique(params)) {
+                throw new AmbiguousConstructorException(
+                    "Unable to resolve parameter types as they are not unique, use @Constructor");
+            }
+            if (!calcPropRefUniqueness(props.values(), refs.values())) {
+                throw new AmbiguousConstructorException(
+                    "Unable to resolve parameter types as reference and property types are not unique, "
+                        + "use @Constructor");
+            }
+            boolean empty = props.size() + refs.size() == 0;
+            List<String> paramNames = new ArrayList<String>();
+            if (!empty) {
+                // the constructor param types must unambiguously match defined reference or property types
+                for (Class param : params) {
+                    String name = findReferenceOrProperty(param, props, refs);
+                    if (name == null) {
+                        throw new AmbiguousConstructorException(param.getName());
+                    }
+                    paramNames.add(name);
+                }
             } else {
-                Constructor constructor = constructors[0];
-                Class[] params = constructor.getParameterTypes();
-                if (params.length != 0) {
-                    Map<String, JavaMappedProperty<?>> props = type.getProperties();
-                    Map<String, JavaMappedReference> refs = type.getReferences();
-                    if (!ProcessorUtils.areUnique(params)) {
-                        throw new AmbiguousConstructorException(
-                            "Unable to resolve parameter types as they are not unique, use @Constructor");
-                    }
-                    if (!calcPropRefUniqueness(props.values(), refs.values())) {
-                        throw new AmbiguousConstructorException(
-                            "Unable to resolve parameter types as reference and property types are not unique, " +
-                                "use @Constructor");
-                    }
-                    boolean empty = props.size() + refs.size() == 0;
-                    List<String> paramNames = new ArrayList<String>();
-                    if (!empty) {
-                        // the constructor param types must unambiguously match defined reference or property types
-                        for (Class param : params) {
-                            String name = findReferenceOrProperty(param, props, refs);
-                            if (name == null) {
-                                throw new AmbiguousConstructorException(param.getName());
-                            }
-                            paramNames.add(name);
-                        }
+                // heuristically determine refs and props from the parameter types
+                for (Class<?> param : params) {
+                    String name = JavaIntrospectionHelper.getBaseName(param).toLowerCase();
+                    if (isReferenceType(param)) {
+                        refs.put(name, createReference(name, null, param));
                     } else {
-                        // heuristically determine refs and props from the parameter types
-                        for (Class<?> param : params) {
-                            String name =  JavaIntrospectionHelper.getBaseName(param).toLowerCase();
-                            if (isReferenceType(param)) {
-                                refs.put(name, createReference(name, null, param));
-                            } else {
-                                props.put(name, createProperty(name, null, param));
-                            }
-                            paramNames.add(name);
-                        }
+                        props.put(name, createProperty(name, null, param));
                     }
-                    ConstructorDefinition<?> definition = new ConstructorDefinition(constructor);
-                    definition.setInjectionNames(paramNames);
-                    type.setConstructorDefinition(definition);
-                } else {
-                    ConstructorDefinition<?> definition = new ConstructorDefinition(constructor);
-                    type.setConstructorDefinition(definition);
+                    paramNames.add(name);
                 }
             }
+            ConstructorDefinition<?> definition = new ConstructorDefinition(constructor);
+            definition.setInjectionNames(paramNames);
+            type.setConstructorDefinition(definition);
+        } else {
+            Constructor selected = null;
+            int sites = type.getProperties().size() + type.getReferences().size();
+            for (Constructor constructor : constructors) {
+                if (constructor.getParameterTypes().length == 0) {
+                    selected = constructor;
+                }
+                if (constructor.getParameterTypes().length == sites) {
+                    //TODO finish
+                    //selected = constructor;
+                    // select constructor
+                    //break;
+                }
+            }
+            ConstructorDefinition<?> definition = new ConstructorDefinition(selected);
+            type.setConstructorDefinition(definition);
         }
     }
 
@@ -338,6 +338,13 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
         return false;
     }
 
+    /**
+     * Creates a mapped reference
+     *
+     * @param name      the reference name
+     * @param member    the injection site the reference maps to
+     * @param paramType the service interface of the reference
+     */
     private JavaMappedReference createReference(String name, Member member, Class<?> paramType) {
         JavaMappedReference reference = new JavaMappedReference();
         reference.setName(name);
@@ -351,6 +358,13 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
         return reference;
     }
 
+    /**
+     * Creates a mapped property
+     *
+     * @param name      the property name
+     * @param member    the injection site the reference maps to
+     * @param paramType the property type
+     */
     private <T> JavaMappedProperty<T> createProperty(String name, Member member, Class<T> paramType) {
         JavaMappedProperty<T> property = new JavaMappedProperty<T>();
         property.setName(name);
@@ -360,6 +374,15 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
         return property;
     }
 
+    /**
+     * Populates a component type with a service whose interface type is determined by examining all implemented
+     * interfaces of the given class and chosing one whose operations match all of the class's non-property and
+     * non-reference methods
+     *
+     * @param clazz   the class to examine
+     * @param type    the component type
+     * @param methods all methods in the class to examine
+     */
     private void calculateServiceInterface(
         Class<?> clazz,
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
@@ -388,6 +411,13 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
         }
     }
 
+    /**
+     * Determines if the methods of a given interface match the given list of methods
+     *
+     * @param interfaze         the interface to examine
+     * @param nonPropRefMethods the list of methods to match against
+     * @return true if the interface matches
+     */
     private boolean analyzeInterface(Class<?> interfaze, List<Method> nonPropRefMethods) {
         Method[] interfaceMethods = interfaze.getMethods();
         if (nonPropRefMethods.size() != interfaceMethods.length) {

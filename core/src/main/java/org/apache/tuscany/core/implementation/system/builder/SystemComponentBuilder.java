@@ -65,7 +65,6 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         if (destroyMethod != null) {
             configuration.setDestroyInvoker(new MethodEventInvoker<Object>(destroyMethod));
         }
-
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             configuration.addServiceInterface(serviceDefinition.getServiceContract().getInterfaceClass());
         }

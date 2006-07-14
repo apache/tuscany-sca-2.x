@@ -33,14 +33,12 @@ import commonj.work.WorkManager;
 import commonj.work.WorkRejectedException;
 
 /**
- * A thread-pool based implementation for the JSR-237 work manager. 
- * 
- * <p>
+ * A thread-pool based implementation for the JSR-237 work manager.
+ * <p/>
+ * <p/>
  * This implementation supports only local work.
- * 
- * TODO Elaborate the implementation.
- * </p>
- *
+ * <p/>
+ * TODO Elaborate the implementation. </p>
  */
 public class ThreadPoolWorkManager implements WorkManager {
 
@@ -52,7 +50,7 @@ public class ThreadPoolWorkManager implements WorkManager {
 
     /**
      * Initializes the thread-pool.
-     * 
+     *
      * @param threadPoolSize Thread-pool size.
      */
     public ThreadPoolWorkManager(int threadPoolSize) {
@@ -61,7 +59,7 @@ public class ThreadPoolWorkManager implements WorkManager {
 
     /**
      * Schedules a unit of work asynchronously.
-     * 
+     *
      * @param work Work that needs to be scheduled.
      * @return Work Work item representing the asynchronous work
      */
@@ -71,8 +69,8 @@ public class ThreadPoolWorkManager implements WorkManager {
 
     /**
      * Schedules a unit of work asynchronously.
-     * 
-     * @param work Work that needs to be scheduled.
+     *
+     * @param work         Work that needs to be scheduled.
      * @param workListener Work listener for callbacks.
      * @return Work Work item representing the asynchronous work
      */
@@ -96,8 +94,8 @@ public class ThreadPoolWorkManager implements WorkManager {
 
     /**
      * Wait for all the specified units of work to finish.
-     * 
-     * @param works Units of the work that need to finish.
+     *
+     * @param works   Units of the work that need to finish.
      * @param timeout Timeout for waiting for the units of work to finish.
      */
     public boolean waitForAll(Collection works, long timeout) {
@@ -106,8 +104,8 @@ public class ThreadPoolWorkManager implements WorkManager {
 
     /**
      * Wait for any of the specified units of work to finish.
-     * 
-     * @param works Units of the work that need to finish.
+     *
+     * @param works   Units of the work that need to finish.
      * @param timeout Timeout for waiting for the units of work to finish.
      */
     public Collection waitForAny(Collection works, long timeout) {
@@ -120,8 +118,8 @@ public class ThreadPoolWorkManager implements WorkManager {
      * @param workItem Work item representing the work that was accepted.
      * @param work     Work that was accepted.
      */
-    private final void workAccepted(final DefaultWorkItem workItem, final Work work) {
-        WorkListener listener = (WorkListener) workItems.get(workItem);
+    private void workAccepted(final DefaultWorkItem workItem, final Work work) {
+        WorkListener listener = workItems.get(workItem);
         if (listener != null) {
             workItem.setStatus(WorkEvent.WORK_ACCEPTED);
             WorkEvent event = new DefaultWorkEvent(workItem);
@@ -132,8 +130,8 @@ public class ThreadPoolWorkManager implements WorkManager {
     /*
      * Method to indicate a work start.
      */
-    private final synchronized void workStarted(final DefaultWorkItem workItem, final Work work) {
-        WorkListener listener = (WorkListener) workItems.get(workItem);
+    private synchronized void workStarted(final DefaultWorkItem workItem, final Work work) {
+        WorkListener listener = workItems.get(workItem);
         if (listener != null) {
             workItem.setStatus(WorkEvent.WORK_STARTED);
             WorkEvent event = new DefaultWorkEvent(workItem);
@@ -144,15 +142,15 @@ public class ThreadPoolWorkManager implements WorkManager {
     /*
      * Method to indicate a work completion.
      */
-    private final void workCompleted(final DefaultWorkItem workItem, final Work work) {
+    private void workCompleted(final DefaultWorkItem workItem, final Work work) {
         workCompleted(workItem, work, null);
     }
 
     /*
      * Method to indicate a work completion.
      */
-    private final void workCompleted(final DefaultWorkItem workItem, final Work work, final WorkException exception) {
-        WorkListener listener = (WorkListener) workItems.get(workItem);
+    private void workCompleted(final DefaultWorkItem workItem, final Work work, final WorkException exception) {
+        WorkListener listener = workItems.get(workItem);
         if (listener != null) {
             workItem.setStatus(WorkEvent.WORK_COMPLETED);
             workItem.setResult(work);
@@ -206,7 +204,7 @@ public class ThreadPoolWorkManager implements WorkManager {
                 workCompleted(workItem, decoratedWork, new WorkException(th.getMessage(), th));
             }
         }
-        
+
     }
 
 }

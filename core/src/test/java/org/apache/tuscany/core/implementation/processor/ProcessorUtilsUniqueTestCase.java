@@ -20,27 +20,27 @@ import junit.framework.TestCase;
  */
 public class ProcessorUtilsUniqueTestCase extends TestCase {
 
-    public void testUniquess1() throws Exception{
+    public void testUniquess1() throws Exception {
         Class[] classes = new Class[2];
         classes[0] = String.class;
         classes[1] = Integer.class;
         assertTrue(ProcessorUtils.areUnique(classes));
     }
 
-    public void testUniquess2() throws Exception{
+    public void testUniquess2() throws Exception {
         Class[] classes = new Class[2];
         classes[0] = String.class;
         classes[1] = String.class;
         assertFalse(ProcessorUtils.areUnique(classes));
     }
 
-    public void testUniquess3() throws Exception{
+    public void testUniquess3() throws Exception {
         Class[] classes = new Class[1];
         classes[0] = String.class;
         assertTrue(ProcessorUtils.areUnique(classes));
     }
 
-    public void testUniquess4() throws Exception{
+    public void testUniquess4() throws Exception {
         Class[] classes = new Class[3];
         classes[0] = String.class;
         classes[1] = Integer.class;
@@ -48,7 +48,7 @@ public class ProcessorUtilsUniqueTestCase extends TestCase {
         assertFalse(ProcessorUtils.areUnique(classes));
     }
 
-    public void testUniquess5() throws Exception{
+    public void testUniquess5() throws Exception {
         Class[] classes = new Class[0];
         assertTrue(ProcessorUtils.areUnique(classes));
     }

@@ -57,7 +57,7 @@ public class ProcessorUtilsServiceTestCase extends TestCase {
 
     }
 
-    public interface Baz{
+    public interface Baz {
 
     }
 }

@@ -70,7 +70,7 @@ public final class ProcessorUtils {
      * @return true if the types are unique
      */
     public static boolean areUnique(Class[] collection) {
-        if (collection.length == 0){
+        if (collection.length == 0) {
             return true;
         }
         return areUnique(collection, 0);

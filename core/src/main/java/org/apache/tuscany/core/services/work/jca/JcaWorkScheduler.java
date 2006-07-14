@@ -29,23 +29,22 @@ import org.apache.tuscany.spi.services.work.WorkSchedulerException;
 
 /**
  * A work scheduler implementation based on the JCA SPI work manager.
- * 
- * <p>
- * This needs a JCA SPI work manager implementation available for scheduling work. 
- * Instances can be configured with a work manager implementation that is injected in.
- * It is the responsibility of the runtime environment to make a work manager implementaion
- * available.
- * </p>
- *
+ * <p/>
+ * <p/>
+ * This needs a JCA SPI work manager implementation available for scheduling work. Instances can be configured with a
+ * work manager implementation that is injected in. It is the responsibility of the runtime environment to make a work
+ * manager implementaion available. </p>
  */
 public class JcaWorkScheduler implements WorkScheduler {
 
-    /** Underlying JCA work manager */
+    /**
+     * Underlying JCA work manager
+     */
     private WorkManager jcaWorkManager;
 
     /**
      * Initializes the JCA work manager.
-     * 
+     *
      * @param workManager JCA work manager.
      */
     public JcaWorkScheduler(WorkManager jcaWorkManager) {
@@ -58,9 +57,9 @@ public class JcaWorkScheduler implements WorkScheduler {
     }
 
     /**
-     * Schedules a unit of work for future execution. The notification listener 
-     * is used to register interest in callbacks regarding the status of the work.
-     * 
+     * Schedules a unit of work for future execution. The notification listener is used to register interest in
+     * callbacks regarding the status of the work.
+     *
      * @param work The unit of work that needs to be asynchronously executed.
      */
     public <T extends Runnable> void scheduleWork(T work) {
@@ -68,10 +67,10 @@ public class JcaWorkScheduler implements WorkScheduler {
     }
 
     /**
-     * Schedules a unit of work for future execution. The notification listener 
-     * is used to register interest in callbacks regarding the status of the work.
-     * 
-     * @param work The unit of work that needs to be asynchronously executed.
+     * Schedules a unit of work for future execution. The notification listener is used to register interest in
+     * callbacks regarding the status of the work.
+     *
+     * @param work     The unit of work that needs to be asynchronously executed.
      * @param listener Notification listener for callbacks.
      */
     public <T extends Runnable> void scheduleWork(T work, NotificationListener<T> listener) {
@@ -89,8 +88,8 @@ public class JcaWorkScheduler implements WorkScheduler {
                 // TODO Clarify the usage of timeout and execution context
                 jcaWorkManager.scheduleWork(jcaWork, -1, null, jcaWorkListener);
             }
-        } catch(WorkRejectedException ex) {
-            if(listener != null) {
+        } catch (WorkRejectedException ex) {
+            if (listener != null) {
                 listener.workRejected(work);
             } else {
                 throw new WorkSchedulerException(ex);
@@ -153,13 +152,13 @@ public class JcaWorkScheduler implements WorkScheduler {
                 listener.workCompleted(work);
             }
         }
-        
+
         /*
-         * Gets the underlying work from the work event.
-         */
+        * Gets the underlying work from the work event.
+        */
         private T getWork(WorkEvent workEvent) {
             JcaWork<T> jcaWork = (JcaWork<T>) workEvent.getWork();
-            return jcaWork.getWork();            
+            return jcaWork.getWork();
         }
 
     }
